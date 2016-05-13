@@ -1,0 +1,39 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/header"
+    android:layout_width="fill_parent"
+    android:layout_height="54dp"
+    android:layout_gravity="center"
+    android:background="@color/title" >
+
+    <Button
+        android:id="@+id/btn_Settings"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="2dp"
+        android:background="@drawable/icon_sidemenu" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginRight="5dp"
+        android:text="Utility"
+        android:textColor="#FFF"
+        android:textSize="17dp"
+        android:textStyle="bold" >
+    </TextView>
+
+    <Button
+        android:id="@+id/util_im"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="3dp"
+        android:layout_toRightOf="@+id/tv_title"
+        android:background="@drawable/small_blue_balloon"
+        android:visibility="gone" />
+
+</RelativeLayout>

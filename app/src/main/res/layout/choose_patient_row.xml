@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
+    <TextView
+        android:id="@+id/patient_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/icon_patient"
+        android:text="Joe Bloggs"
+        android:textColor="@color/white"
+        android:layout="@+id/notes_icon"
+        android:textSize="20dp"
+        android:gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"/>
+    <TextView
+        android:id="@+id/dob"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="DOB: 08/02/16"
+        android:textSize="15dp"
+        android:layout_marginLeft="40dp"/>
+    <TextView
+        android:id="@+id/hospital"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hospital: "
+        android:drawableRight="@drawable/input_arrow"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/snazash"
+        android:layout="@+id/age"
+        android:layout_marginLeft="40dp"/>
+
+    <TextView
+        android:id="@+id/mrn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="MRN: "
+        android:textColor="@color/snazash"
+        android:layout="@+id/age"
+        android:layout_marginLeft="40dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="5dp"
+        android:id="@+id/details_lay"
+        android:visibility="gone">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:weightSum="1">
+        <TextView
+            android:id="@+id/los"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Los: "
+            android:textColor="@color/white"
+            android:layout="@+id/age"
+            android:layout_weight="0.5"
+            android:layout_marginLeft="30dp"/>
+        <TextView
+            android:id="@+id/floor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Floor:"
+            android:textColor="@color/white"
+            android:layout="@+id/Floor"
+            android:layout_weight="0.5" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:weightSum="1">
+        <TextView
+            android:id="@+id/sex"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sex: "
+            android:textColor="@color/white"
+            android:layout="@+id/age"
+            android:layout_weight="0.5"
+            android:layout_marginLeft="30dp"/>
+        <TextView
+            android:id="@+id/ward"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ward: "
+            android:textColor="@color/white"
+            android:layout="@+id/Floor"
+            android:layout_weight="0.5" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:weightSum="1">
+        <TextView
+            android:id="@+id/bed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bed: "
+            android:textColor="@color/white"
+            android:layout="@+id/age"
+            android:layout_marginLeft="30dp"
+            android:layout_weight="0.5"/>
+        <TextView
+            android:id="@+id/room"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Room :"
+            android:textColor="@color/white"
+            android:layout="@+id/Floor"
+            android:layout_weight="0.5" />
+    </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:background="@color/black2"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <org.cryse.android.controls.RoundedImageView
+        android:id="@+id/buddyicon"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:scaleType="center"
+        android:layout_margin="10dp"
+        android:focusable="false"
+        android:src="@drawable/img_user" />
+    <TextView
+        android:id="@+id/buddyName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:focusable="false"
+        android:layout_margin="18dp"
+        android:layout_toRightOf="@+id/buddyicon"
+        android:textColor="@color/white"
+        android:text="@string/textview"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/occupation"
+        android:layout_width="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:focusable="false"
+        android:layout_alignParentRight="true"
+        android:text="Prof.Designation"
+        android:textColor="#7E8080" />
+
+</RelativeLayout>

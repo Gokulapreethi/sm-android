@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llay"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <ViewFlipper
+        android:id="@+id/ctrlviewFlipper"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <RelativeLayout
+            android:id="@+id/relBuddyList"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dip" >
+
+            <org.cryse.android.controls.RoundedImageView
+                android:id="@+id/icon1"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginRight="6dip"
+                android:scaleType="center"
+                android:src="@drawable/ic_action_person" />
+
+<!--             <ImageView -->
+<!--                 android:id="@+id/icon1" -->
+<!--                 android:layout_width="64dp" -->
+<!--                 android:layout_height="64dp" -->
+<!--                 android:layout_marginRight="6dip" -->
+<!--                 android:src="@drawable/ic_action_person" /> -->
+
+            <ImageView
+                android:id="@+id/icon2"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_below="@+id/txtViewTitle"
+                android:layout_marginRight="2dp"
+                android:layout_toRightOf="@+id/icon1"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/txtViewTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dip"
+                android:layout_toRightOf="@+id/icon2"
+                android:text="@string/textview"
+                android:textAppearance="?android:attr/textAppearanceLarge" >
+            </TextView>
+
+            <RelativeLayout
+                android:id="@+id/relstatus_lay"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtViewTitle"
+                android:layout_toRightOf="@+id/icon2" >
+
+                <TextView
+                    android:id="@+id/txtViewStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="2dip"
+                    android:text="@string/textview" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/txtdistance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtViewTitle"
+                    android:layout_marginLeft="4dip"
+                    android:layout_toRightOf="@+id/txtViewStatus"
+                    android:background="@drawable/lay_distance"
+                    android:padding="3dp"
+                    android:text="@string/textview"
+                    android:textColor="#FFF"
+                    android:textStyle="bold"
+                    android:visibility="visible" >
+                </TextView>
+
+                <Button
+                    android:id="@+id/im_view"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:background="@drawable/patch"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:textColor="@color/red"
+                    android:textSize="12dp"
+                    android:textStyle="bold"
+                    android:visibility="gone" >
+                </Button>
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_baddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relstatus_lay"
+                android:layout_marginLeft="2dip"
+                android:layout_marginTop="3dp"
+                android:layout_toRightOf="@+id/icon2"
+                android:lines="1"
+                android:singleLine="true"
+                android:text="@string/instant_messages"
+                android:textColor="#339999"
+                android:visibility="visible" >
+            </TextView>
+
+            <TextView
+                android:id="@+id/instantmessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_baddress"
+                android:layout_marginLeft="2dip"
+                android:layout_marginTop="3dp"
+                android:layout_toRightOf="@+id/icon2"
+                android:lines="1"
+                android:singleLine="true"
+                android:text="@string/instant_messages"
+                android:textColor="@color/blue_light_bg"
+                android:visibility="gone" >
+            </TextView>
+
+            <ImageView
+                android:id="@+id/icon3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:gravity="right"
+                android:src="@drawable/bluedot"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/llayCallOption"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent" >
+
+            <Button
+                android:id="@+id/lst_detete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/delete" >
+            </Button>
+
+            <Button
+                android:id="@+id/lst_acall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/audio_call" >
+            </Button>
+
+            <Button
+                android:id="@+id/lst_vcall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/video_call" >
+            </Button>
+        </LinearLayout>
+    </ViewFlipper>
+
+</LinearLayout>

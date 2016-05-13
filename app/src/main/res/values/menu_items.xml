@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="menu_items">
+        <!--<item>@string/contacts</item>-->
+     <!-- -->
+        <!--<item>@string/conversations</item>-->
+        <!--<item>@string/my_profile</item>-->
+        <!--<item>@string/utilities</item>-->
+        <!--<item>@string/files</item>-->
+     <!-- -->
+        <!--<item>@string/apps</item>-->
+        <!--<item>@string/avatar</item>-->
+        <!--<item>@string/settings</item>-->
+        <!--<item>@string/quickaction</item>-->
+        <!--<item>@string/forms</item>-->
+        <!--<item>@string/feedback</item>-->
+         <!--<item>@string/screen_sharing</item> -->
+        <!--<item>@string/call_history</item>-->
+        <item>DASHBOARD</item>
+        <item>CONTACTS</item>
+        <item>SNAZBOX FILES</item>
+        <item>FORMS</item>
+        <item>SNAZBOT</item>
+        <item>CALENDAR</item>
+
+
+      
+    </string-array>
+
+    <array name="icons">
+        <item>@drawable/icon_contacts</item>
+        <!-- <item>@drawable/icon_contacts</item> -->
+        <item>@drawable/conference_buddy</item>
+        <item>@drawable/userprofiles</item>
+        <item>@drawable/invitesend</item>
+        <item>@drawable/icon_notes</item>
+        <!-- <item>@drawable/icon_notes</item> -->
+        <item>@drawable/starapp</item>
+        <item>@drawable/avatar_main</item>
+        <item>@drawable/menu_settings_icon</item>
+        <item>@drawable/menu_qa_icon</item>
+        <item>@drawable/menu_form_icon</item>
+        <item>@drawable/mail_box</item>
+        <item>@drawable/callhistory</item>
+<!--         <item>@drawable/menu_form_icon</item> -->
+        <!-- <item>@drawable/menu_form_icon</item> -->
+    </array>
+
+</resources>

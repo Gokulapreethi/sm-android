@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#35465c"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/logout_confirmation"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:typeface="sans" />
+
+        <View
+            android:id="@+id/view_brsep1"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/rlay_brselectall"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/view_bg" >
+        </View>
+
+        <ScrollView
+            android:id="@+id/info"
+            android:layout_width="260dp"
+            android:layout_height="100dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:cacheColorHint="#00000000"
+            android:overScrollMode="never" >
+
+            <LinearLayout
+                android:id="@+id/titles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/premium"
+                    android:layout_width="260dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/are_you_sure_you_want_to_signout"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:typeface="sans" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view_brsep1"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/rlay_brselectall"
+        android:background="@drawable/view_bg" >
+    </View>
+
+    <LinearLayout
+        android:id="@+id/logout_lay"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#35465c"
+        android:gravity="center" >
+
+
+        <Button
+            android:id="@+id/log_no"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:background="@color/light_gray"
+            android:text="@string/ok"
+            android:textColor="@color/m_blue"
+            android:textSize="13dp">
+        </Button>
+
+        <Button
+            android:id="@+id/log_yes"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:background="@color/light_gray"
+            android:text="@string/cancel"
+            android:textColor="@color/m_blue"
+            android:textSize="13dp" >
+        </Button>
+    </LinearLayout>
+
+</LinearLayout>

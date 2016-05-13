@@ -1,0 +1,159 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@color/black2">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                android:id="@+id/oldpin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="Old PIN"
+                android:textColor="#7E8080"
+                android:layout_gravity="left"
+                android:visibility="gone"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"/>
+
+            <EditText
+                android:id="@+id/et_oldpin"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:gravity="center_vertical"
+                android:maxLength="4"
+                android:digits="@string/numeric"
+                android:textColor="@color/white"
+                android:hint="Old PIN"
+                android:inputType="numberPassword"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="15dp"
+                android:background="#7E8080" />
+
+            <TextView
+                android:id="@+id/newpin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="New PIN"
+                android:textColor="#7E8080"
+                android:layout_gravity="left"
+                android:visibility="gone"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"/>
+
+            <EditText
+                android:id="@+id/et_newpin"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:gravity="center_vertical"
+                android:maxLength="4"
+                android:digits="@string/numeric"
+                android:textColor="@color/white"
+                android:hint="New PIN"
+                android:inputType="numberPassword"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="15dp"
+                android:background="#7E8080" />
+
+            <TextView
+                android:id="@+id/repeatpin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="Confirm New PIN"
+                android:textColor="#7E8080"
+                android:layout_gravity="left"
+                android:visibility="gone"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"/>
+
+            <EditText
+                android:id="@+id/et_repeatpin"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:gravity="center_vertical"
+                android:maxLength="4"
+                android:digits="@string/numeric"
+                android:textColor="@color/white"
+                android:hint="Confirm New PIN"
+                android:inputType="numberPassword"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="15dp"
+                android:background="#7E8080" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="Activate Touch ID"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/btn_touch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/toggle_dummy" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/linear3"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true" >
+        <Button
+            android:id="@+id/savepswd"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="SAVE"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:background="@color/blue2" />
+    </LinearLayout>
+
+</RelativeLayout>

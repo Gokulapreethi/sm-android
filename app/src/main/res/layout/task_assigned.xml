@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black2">
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/black2" >
+
+        <TextView
+            android:id="@+id/txtView01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="ASSIGNED"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@drawable/navigation_close"/>
+        <Button
+            android:id="@+id/search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/navigation_search"
+            android:layout_alignTop="@+id/txtView01"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:visibility="gone"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/header"
+        android:layout_marginTop="10dp">
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:weightSum="2"
+            android:id="@+id/assigned_group">
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Show All"
+                android:id="@+id/showall"
+                android:textColor="@color/blue2"
+                android:button="@drawable/checkbox_checked"
+                android:checked="true"/>
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Assigned to Me"
+                android:id="@+id/assignedtome"
+                android:textColor="@color/white"
+                android:layout_marginTop="10dp"
+                android:button="@drawable/checkbox_checked"
+                android:checked="false" />
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Assigned by Me"
+                android:id="@+id/assignedbyme"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/white"
+                android:button="@drawable/checkbox_checked"
+                android:checked="false" />
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Unassigned"
+                android:id="@+id/unassigned"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/white"
+                android:button="@drawable/checkbox_checked"
+                android:checked="false" />
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Assigned to Specific Team Members"
+                android:id="@+id/assigntoteam"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/white"
+                android:button="@drawable/checkbox_checked"
+                android:checked="false" />
+        </RadioGroup>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/members_list"
+            android:layout_marginBottom="50dp"></LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/linear3"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="10dp">
+
+        <Button
+            android:id="@+id/apply"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/blue2"
+            android:text="APPLY"
+            android:textColor="@color/white"
+            android:textSize="17dp"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

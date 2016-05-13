@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LinearLayout01"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/black2"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_margin="15dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/menu_account"/>
+
+        <TextView
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:textSize="12sp"
+            android:text="User id :"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/grey3"
+            android:id="@+id/tv1" />
+
+        <TextView
+            android:id="@+id/userid"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:text=""
+            android:textColor="@color/white"
+            android:layout_marginLeft="10dp"/>
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/password"
+                android:weightSum="1"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:background="@color/black3"
+                android:padding="15dp"
+                android:layout_marginBottom="2dp"
+                android:text="PASSWORD"
+                android:textColor="@color/white"
+                android:drawableRight="@drawable/button_arrow_right"/>
+
+            <TextView
+                android:id="@+id/resetpin"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:background="@color/black3"
+                android:padding="15dp"
+                android:layout_marginBottom="2dp"
+                android:text="PIN &amp; TOUCH ID"
+                android:textColor="@color/white"
+                android:drawableRight="@drawable/button_arrow_right"/>
+
+            <TextView
+                android:id="@+id/secQues"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:background="@color/black3"
+                android:padding="15dp"
+                android:layout_marginBottom="2dp"
+                android:text="SECURITY QUESTIONS"
+                android:textColor="@color/white"
+                android:drawableRight="@drawable/button_arrow_right"/>
+
+            <TextView
+                android:id="@+id/invite"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:background="#343536"
+                android:padding="15dp"
+                android:layout_marginBottom="2dp"
+                android:text="INVITE CODE"
+                android:textColor="@color/white"
+                android:drawableRight="@drawable/button_arrow_right"/>
+
+            <TextView
+                android:id="@+id/endrose"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:background="#343536"
+                android:padding="15dp"
+                android:layout_marginBottom="2dp"
+                android:text="ENDORSE"
+                android:textColor="@color/white"
+                android:drawableRight="@drawable/button_arrow_right"/>
+
+            <TextView
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:background="#404142"
+                android:padding="15dp"
+                android:visibility="gone"
+                android:layout_marginBottom="2dp"
+                android:text="TONES AND SOUNDS"
+                android:textColor="@color/white"
+                android:drawableRight="@drawable/button_arrow_right"/>
+
+            <TextView
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:background="#404142"
+                android:padding="15dp"
+                android:layout_marginBottom="2dp"
+                android:text="COLOR SCHEME"
+                android:visibility="gone"
+                android:textColor="@color/white"
+                android:drawableRight="@drawable/button_arrow_right"/>
+
+            <TextView
+                android:id="@+id/feedback"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:background="#404142"
+                android:padding="15dp"
+                android:layout_marginBottom="2dp"
+                android:text="FEEDBACK"
+                android:textColor="@color/white"
+                android:drawableRight="@drawable/button_arrow_right"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

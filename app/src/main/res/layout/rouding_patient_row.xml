@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black2">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="30dp"
+    android:id="@+id/patient_header"
+    android:visibility="gone"
+    android:background="@color/black">
+    <TextView
+        android:id="@+id/headertext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:padding="5dp"
+        android:text="@string/header"
+        android:textColor="@color/snazlgray"
+        android:textSize="16dp"
+        android:textStyle="bold" />
+
+</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <CheckBox
+            android:id="@+id/btn_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/checkbok_selector"
+            android:textSize="15sp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_centerVertical="true"/>
+        <ImageView
+            android:id="@+id/img_pad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/icon_patient"/>
+
+        <TextView
+            android:id="@+id/patient_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Joe Bloggs"
+            android:textColor="@color/white"
+            android:layout="@+id/notes_icon"
+            android:textSize="20dp"
+            android:gravity="center"
+            android:layout_marginTop="10dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:weightSum="1">
+        <TextView
+            android:id="@+id/age"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Age: "
+            android:textColor="@color/white"
+            android:layout="@+id/age"
+            android:layout_weight="0.5"
+            android:layout_marginLeft="30dp"/>
+        <TextView
+            android:id="@+id/floor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Floor:"
+            android:textColor="@color/white"
+            android:layout="@+id/Floor"
+            android:layout_weight="0.5" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:weightSum="1">
+        <TextView
+            android:id="@+id/sex"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sex: "
+            android:textColor="@color/white"
+            android:layout="@+id/age"
+            android:layout_weight="0.5"
+            android:layout_marginLeft="30dp"/>
+        <TextView
+            android:id="@+id/ward"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ward: "
+            android:textColor="@color/white"
+            android:layout="@+id/Floor"
+            android:layout_weight="0.5" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:weightSum="1">
+        <TextView
+            android:id="@+id/mrn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="MRN: "
+            android:textColor="@color/white"
+            android:layout="@+id/age"
+            android:layout_marginLeft="30dp"
+            android:layout_weight="0.5"/>
+        <TextView
+            android:id="@+id/room"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Room :"
+            android:textColor="@color/white"
+            android:layout="@+id/Floor"
+            android:layout_weight="0.5" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:weightSum="1">
+        <TextView
+            android:id="@+id/los"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="LOS:"
+            android:textColor="@color/snazash"
+            android:layout="@+id/age"
+            android:layout_marginLeft="30dp"
+            android:layout_weight="0.5"/>
+        <TextView
+            android:id="@+id/bed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bed :"
+            android:textColor="@color/snazash"
+            android:layout="@+id/Floor"
+            android:layout_weight="0.5" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="15dp">
+        <TextView
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:text="Critical"
+            android:textColor="@color/pink"
+            android:gravity="center"
+            android:layout_marginLeft="60dp"
+            android:visibility="gone"
+            android:background="@drawable/sender_border"/>
+        <TextView
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:text="Other"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:layout_marginLeft="50dp"
+            android:visibility="gone"
+            android:background="@drawable/sender_border" />
+    </LinearLayout>
+
+
+</LinearLayout>

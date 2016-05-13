@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black2">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+        <TextView
+            android:id="@+id/tv_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="75 GB"
+            android:textSize="16dp"
+            android:textColor="@color/pink"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"/>
+        <TextView
+            android:id="@+id/used"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="USED"
+            android:textSize="16dp"
+            android:textColor="@color/white"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+        <TextView
+            android:id="@+id/tv_free"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="25 GB"
+            android:textSize="16dp"
+            android:textColor="@color/pink"
+            android:layout_marginTop="10dp"/>
+        <TextView
+            android:layout_toRightOf="@+id/tv_free"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FREE"
+            android:textSize="16dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/white"
+            android:layout_marginTop="10dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rlMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView7"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+    <com.cg.commongui.LineProgressBar
+        android:id="@+id/line_progressbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:padding="20dp"
+        android:visibility="visible"
+        app:bar_width="50dp"
+        app:progress_color="@color/pink"
+        app:progress_width="100dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp">
+
+    <TextView
+        android:text="40 GB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:textColor="@color/pink"
+        android:textSize="15sp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:id="@+id/tv_audio" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AUDIO"
+            android:layout_alignBottom="@+id/tv_audio"
+            android:layout_toRightOf="@+id/tv_audio"
+            android:layout_toEndOf="@+id/tv_audio" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/broadcast"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+
+
+    <com.cg.commongui.LineProgressBar
+        android:id="@+id/line_progressbar1"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:padding="20dp"
+        android:visibility="visible"
+        app:bar_width="50dp"
+        app:progress_color="@color/pink"
+        app:progress_width="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:text="15 GB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textColor="@color/pink"
+            android:textSize="15sp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:id="@+id/tv_video" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="VIDEO"
+            android:layout_alignBottom="@+id/tv_video"
+            android:layout_toRightOf="@+id/tv_video"
+            android:layout_toEndOf="@+id/tv_video" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/memory_video"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+    <com.cg.commongui.LineProgressBar
+        android:id="@+id/line_progressbar2"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:padding="20dp"
+        android:visibility="visible"
+        app:bar_width="50dp"
+        app:progress_color="@color/pink"
+        app:progress_width="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:text="10 GB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textColor="@color/pink"
+            android:textSize="15sp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:id="@+id/tv_photo" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PHOTO"
+            android:layout_alignBottom="@+id/tv_photo"
+            android:layout_toRightOf="@+id/tv_photo"
+            android:layout_toEndOf="@+id/tv_photo" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/memory_photo"
+
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+    <com.cg.commongui.LineProgressBar
+        android:id="@+id/line_progressbar3"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:padding="20dp"
+        android:visibility="visible"
+        app:bar_width="50dp"
+        app:progress_color="@color/pink"
+        app:progress_width="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:text="5 GB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textColor="@color/pink"
+            android:textSize="15sp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:id="@+id/tv_others" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OTHER FILES"
+            android:layout_alignBottom="@+id/tv_others"
+            android:layout_toRightOf="@+id/tv_others"
+            android:layout_toEndOf="@+id/tv_others" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/memory_other"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+    <com.cg.commongui.LineProgressBar
+        android:id="@+id/line_progressbar4"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:padding="20dp"
+        android:visibility="visible"
+        app:bar_width="50dp"
+        app:progress_color="@color/pink"
+        app:progress_width="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:text="5 GB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textColor="@color/pink"
+            android:textSize="15sp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:id="@+id/tv_chat" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MESSAGES"
+            android:id="@+id/audio_mem"
+            android:layout_alignBottom="@+id/tv_chat"
+            android:layout_toRightOf="@+id/tv_chat"
+            android:layout_toEndOf="@+id/tv_chat" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/capture_image_vie"
+            android:background="@drawable/memory_messages"
+
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+    <com.cg.commongui.LineProgressBar
+        android:id="@+id/line_progressbar5"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:padding="20dp"
+        android:visibility="visible"
+        app:bar_width="50dp"
+        app:progress_color="@color/pink"
+        app:progress_width="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+</LinearLayout>
+    <LinearLayout
+        android:id="@+id/linear3"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="10dp">
+    <Button
+        android:id="@+id/donebtn"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/blue2"
+        android:text="MANAGE"
+        android:textColor="@color/white"
+        android:textSize="17dp"/>
+        </LinearLayout>
+
+</RelativeLayout>

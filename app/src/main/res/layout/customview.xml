@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+ <LinearLayout android:id="@+id/custom"  xmlns:android="http://schemas.android.com/apk/res/android"
+   android:orientation="vertical"
+   android:layout_width="fill_parent" 
+   android:layout_height="wrap_content"
+  >
+        <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/view_bg" >
+                </View>
+<RelativeLayout 
+   android:layout_width="fill_parent"
+   android:layout_height="wrap_content"
+   android:background="@color/white"
+   android:padding="8dp">
+ <LinearLayout android:id="@+id/Text"
+   android:orientation="vertical"
+   android:layout_width="wrap_content" 
+   android:layout_height="wrap_content"
+   android:paddingLeft="10dip">
+   <TextView
+     android:id="@+id/fieldname"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:textColor="@color/light_gray" 
+     android:textSize="10dip"
+     android:text="@string/field_name"
+
+     />
+   <TextView
+     android:id="@+id/fieldvalue"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:textSize="15sp"
+     android:text="@string/field_value"
+     android:textStyle="bold"
+     android:textColor="@color/black"
+     />
+ </LinearLayout>
+ <ImageView
+   android:id="@+id/phone"
+   android:layout_width="48dp"
+   android:layout_height="48dp"
+   android:padding="5dp"
+   android:src="@drawable/ic_action_call_grey"
+   android:layout_alignParentRight="true" android:visibility="gone"
+   />
+
+  <ImageView
+      android:id="@+id/email"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:layout_alignParentRight="true"
+      android:layout_centerVertical="true"  android:visibility="gone"
+      android:layout_marginRight="54dp"
+      android:padding="5dp"
+      android:src="@drawable/ic_action_new_email" />
+
+</RelativeLayout >
+</LinearLayout>

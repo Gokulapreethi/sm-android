@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"  android:id="@+id/linear_tables"
+    android:layout_height="fill_parent"  android:background="#FFFFFF"
+    >
+<LinearLayout android:id="@+id/wherecolumn" 
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" android:orientation="vertical" 
+    >
+    <LinearLayout android:id="@+id/linear_table" 
+    android:layout_width="fill_parent"  
+    android:layout_height="wrap_content" android:orientation="horizontal" 
+    >
+<TextView  android:textColor="#000000" android:background="#FFFFFF" android:gravity="center" 
+    android:layout_width="fill_parent"  android:layout_margin="0.5dp"
+    android:layout_height="fill_parent"  android:layout_weight="1.60" android:textSize="16sp"
+    android:text="Column"  android:id="@+id/table"
+    />
+   
+     <EditText  
+    android:layout_width="fill_parent"  android:layout_weight="0.60" android:layout_margin="0.5dp" android:padding="2dp"
+    android:layout_height="fill_parent"  android:gravity="center"
+   android:id="@+id/columnname" android:focusableInTouchMode="false"
+    />
+    </LinearLayout>
+     <LinearLayout android:id="@+id/linear_table"  
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" android:orientation="horizontal" 
+    >
+<TextView  android:textColor="#000000" android:background="#FFFFFF" android:gravity="center" 
+    android:layout_width="fill_parent"  android:layout_margin="0.5dp"
+    android:layout_height="fill_parent"  android:layout_weight="1.60" android:textSize="16sp"
+    android:text="Condition"  android:id="@+id/table"
+    />
+   
+    <EditText  
+    android:layout_width="fill_parent"  android:layout_weight="0.60" android:layout_margin="0.5dp" android:padding="2dp"
+    android:layout_height="fill_parent"  android:gravity="center"
+    android:focusableInTouchMode="false"
+       android:id="@+id/condition"
+    
+    />
+    </LinearLayout>
+    <LinearLayout android:id="@+id/linear_table"  
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" android:orientation="horizontal"  
+    >
+<TextView  android:textColor="#000000" android:background="#FFFFFF" android:gravity="center" 
+    android:layout_width="fill_parent"  android:layout_margin="0.5dp"
+    android:layout_height="fill_parent"  android:layout_weight="1.60" android:textSize="16sp"
+    android:text="Value"  android:id="@+id/table"
+    />
+    <EditText  
+    android:layout_width="275dp"  android:layout_weight="0.60" android:layout_margin="0.5dp" android:padding="2dp"
+    android:layout_height="fill_parent"  android:gravity="center"
+       android:id="@+id/value"
+    
+    />
+    
+     <ImageView  
+    android:layout_width="125dp" android:src="@drawable/expander_down"  android:layout_weight="0.60" android:layout_margin="0.5dp"
+     android:padding="2dp"
+    android:layout_height="fill_parent"  android:gravity="center"
+	android:id="@+id/image_col"    
+    />
+<!--     <ImageView   -->
+<!--     android:layout_width="wrap_content"  android:src="@drawable/expander_down" -->
+<!--      android:layout_height="wrap_content"   -->
+<!--    android:id="@+id/wh_image_col" -->
+<!--     /> -->
+    </LinearLayout>
+    
+    
+ 
+       <Spinner  
+    android:layout_width="fill_parent"   
+
+ android:layout_height="wrap_content" 
+      android:id="@+id/inf_andor"   android:entries="@array/conditions"
+        android:prompt="@string/condition_prompt" 
+    />
+    </LinearLayout>
+    <LinearLayout android:id="@+id/inf"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" android:orientation="vertical" 
+    ></LinearLayout>
+<!--          <LinearLayout android:id="@+id/wherecolumn"  -->
+<!--     android:layout_width="fill_parent" -->
+<!--     android:layout_height="wrap_content" android:orientation="vertical" android:weightSum="2" -->
+<!--     > -->
+<!--     <LinearLayout android:id="@+id/linear_table" android:background="@drawable/form_reocordrw"  -->
+<!--     android:layout_width="fill_parent" -->
+<!--     android:layout_height="wrap_content" android:orientation="horizontal" android:weightSum="2" -->
+<!--     > -->
+<!-- <TextView  android:textColor="#000000"   -->
+<!--     android:layout_width="wrap_content"  -->
+<!--     android:layout_height="wrap_content"  -->
+<!--     android:text="Column"   android:id="@+id/table" -->
+<!--     /> -->
+<!--     <EditText   -->
+<!--     android:layout_width="fill_parent"  android:focusableInTouchMode="false" -->
+<!--     android:layout_height="wrap_content"   android:layout_marginLeft="20dp" -->
+<!--    android:id="@+id/columnname" -->
+<!--     /> -->
+<!--     </LinearLayout> -->
+<!--      <LinearLayout android:id="@+id/linear_table" android:background="@drawable/form_reocordrw"  -->
+<!--     android:layout_width="fill_parent" -->
+<!--     android:layout_height="wrap_content" android:orientation="horizontal" android:weightSum="2" -->
+<!--     > -->
+<!-- <TextView  android:textColor="#000000"   -->
+<!--     android:layout_width="wrap_content"  -->
+<!--     android:layout_height="wrap_content"  -->
+<!--     android:text="Condition"   android:id="@+id/conditiontextview" -->
+<!--     /> -->
+<!--     <EditText   -->
+<!--     android:layout_width="fill_parent"  android:focusableInTouchMode="false" -->
+<!--     android:layout_height="wrap_content"  android:layout_marginLeft="10dp" -->
+<!--    android:id="@+id/condition" -->
+<!--     /> -->
+<!--     </LinearLayout>  -->
+<!--     <LinearLayout android:id="@+id/linear_table" android:background="@drawable/form_reocordrw"  -->
+<!--     android:layout_width="fill_parent" -->
+<!--     android:layout_height="wrap_content" android:orientation="horizontal" android:weightSum="2" -->
+<!--     > -->
+<!-- <TextView  android:textColor="#000000"   -->
+<!--     android:layout_width="wrap_content"  -->
+<!--     android:layout_height="wrap_content"  -->
+<!--     android:text="Value"   android:id="@+id/table" -->
+<!--     /> -->
+<!--     <EditText   -->
+<!--     android:layout_width="220dp"  -->
+<!--     android:layout_height="wrap_content"   -->
+<!--    android:id="@+id/value" android:layout_marginLeft="35dp" -->
+<!--     /> -->
+<!--     <ImageView   -->
+<!--     android:layout_width="wrap_content"  android:src="@drawable/expander_down" -->
+<!--     android:layout_height="wrap_content"   -->
+<!--    android:id="@+id/image_col" -->
+<!--     /> -->
+<!--     </LinearLayout> -->
+     
+    
+    
+<!--       <Spinner   -->
+<!--     android:layout_width="fill_parent"   -->
+<!--     android:layout_height="wrap_content"  -->
+<!--       android:id="@+id/inf_andor"   android:entries="@array/conditions" -->
+<!--         android:prompt="@string/condition_prompt"  -->
+<!--     /> -->
+<!--      <LinearLayout android:id="@+id/linear_table" -->
+<!--     android:layout_width="fill_parent" -->
+<!--     android:layout_height="wrap_content" android:orientation="vertical"  -->
+<!--     > -->
+<!--     </LinearLayout> -->
+<!--     </LinearLayout> -->
+</LinearLayout>

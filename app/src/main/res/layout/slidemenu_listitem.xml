@@ -1,0 +1,89 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFF" >
+
+    <RelativeLayout
+        android:id="@+id/wrapper_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="7dp"
+        android:background="#FFF" >
+
+        <ImageView
+            android:id="@+id/menu_icon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="3dp"
+            android:layout_toRightOf="@+id/userimageview" />
+
+        <TextView
+            android:id="@+id/menu_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="10dip"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dip"
+            android:layout_toLeftOf="@+id/patch_container"
+            android:layout_toRightOf="@+id/menu_icon"
+            android:ellipsize="end"
+            android:text="@string/files"
+            android:textColor="#000"
+            android:textSize="17dp" />
+
+        <LinearLayout
+            android:id="@+id/patch_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="2dp"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/patch_view"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:background="@drawable/patch"
+                android:clickable="false"
+                android:focusable="false"
+                android:gravity="center"
+                android:tag="not"
+                android:textColor="@color/red"
+                android:textSize="12dp"
+                android:textStyle="bold"
+                android:visibility="gone" >
+            </Button>
+
+            <Button
+                android:id="@+id/im_view"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_below="@+id/patch_view"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:background="@drawable/patch"
+                android:clickable="false"
+                android:focusable="false"
+                android:gravity="center"
+                android:textColor="@color/red"
+                android:textSize="12dp"
+                android:textStyle="bold"
+                android:visibility="gone" >
+            </Button>
+
+            <ToggleButton
+                android:id="@+id/feedback_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="2dp"
+                android:layout_marginLeft="2dp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="42dp"
+        android:background="@color/background" >
+
+        <TextView
+            android:id="@+id/txtView01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Search Results"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:textStyle="bold" >
+        </TextView>
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/toolbar_button_back" />
+    </RelativeLayout>
+    <ListView
+        android:id="@+id/listview"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@+id/sidebar"
+        android:cacheColorHint="#FFFFFF"
+        android:divider="#C6C6C6"
+        android:dividerHeight="0.5dip"
+        android:fadingEdge="none"
+        android:fillViewport="false"
+        android:paddingRight="0dp"
+        android:scrollbarAlwaysDrawVerticalTrack="false"
+        android:scrollbarSize="0dp"
+        android:scrollbarStyle="insideOverlay"
+        android:visibility="visible"/>
+
+</LinearLayout>

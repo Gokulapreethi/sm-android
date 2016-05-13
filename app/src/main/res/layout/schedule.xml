@@ -1,0 +1,471 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF"
+    android:scrollbars="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/schedule_screen"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#FFFFFF"
+        android:scrollbars="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="42dp"
+                android:background="@color/title">
+
+                <ImageView
+                    android:id="@+id/bt_back"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/ic_action_back" />
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="Schedule"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14dp" />
+
+                <Button
+                    android:id="@+id/notification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/title"
+                    android:background="@drawable/one"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/im"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="2dp"
+                    android:layout_toRightOf="@+id/notification"
+                    android:background="@drawable/one"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/btn_save"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:background="@color/title"
+                    android:textColor="@color/white"
+                    android:text="Save" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp" >
+
+                <ImageView
+                    android:id="@+id/call"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/icons_report" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="10dp" >
+
+                    <TextView
+                        android:id="@+id/text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Action title"
+                        android:textColor="#000000"
+                        android:textSize="18dp"
+                        android:textStyle="bold" >
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Generate a report"
+                        android:textColor="#000000"
+                        android:textSize="14dp" >
+                    </TextView>
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2sp"
+                android:background="@drawable/list_divider" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:id="@+id/scheduleone"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FFFFFF"
+                    android:orientation="horizontal"
+                    android:padding="10dp" >
+
+                    <CheckBox
+                        android:id="@+id/ch_runmanually"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:button="@drawable/checkbok_selector" />
+
+                    <TextView
+                        android:id="@+id/run_manually"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="7dp"
+                        android:layout_toRightOf="@+id/ch_runmanually"
+                        android:text="Run Manually"
+                        android:textColor="#000000"
+                        android:textSize="16dp" >
+                    </TextView>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1sp"
+                    android:background="@drawable/list_divider" />
+
+                <LinearLayout
+                    android:id="@+id/schedultwo"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FFFFFF"
+                    android:orientation="horizontal"
+                    android:padding="10dp" >
+
+                    <CheckBox
+                        android:id="@+id/ch_runonspecific"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@drawable/checkbok_selector" />
+
+                    <TextView
+                        android:id="@+id/runanspecific"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="7dp"
+                        android:text="Run on a specific date and time"
+                        android:textColor="#000000"
+                        android:textSize="16dp" >
+                    </TextView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/currentTimeandDate"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FFFFFF"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:visibility="gone" >
+
+                    <TextView
+                        android:id="@+id/timedate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:text="Monday 16/13/2013"
+                        android:textColor="#000000"
+                        android:textSize="16dp" >
+                    </TextView>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1sp"
+                    android:background="@drawable/list_divider" />
+
+                <LinearLayout
+                    android:id="@+id/schedulethree"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FFFFFF"
+                    android:orientation="horizontal"
+                    android:padding="10dp" >
+
+                    <CheckBox
+                        android:id="@+id/ch_repeat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:button="@drawable/checkbok_selector" />
+
+                    <TextView
+                        android:id="@+id/repeat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="7dp"
+                        android:text="Repeat"
+                        android:textColor="#000000"
+                        android:textSize="16dp" >
+                    </TextView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/Repeatby"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:background="#FFFFFF"
+                    android:orientation="vertical"
+                    android:padding="10dp"
+                    android:visibility="gone" >
+
+                    <TextView
+                        android:id="@+id/repeat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="Run This Action every"
+                        android:textColor="#000000"
+                        android:textSize="16dp" >
+                    </TextView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <EditText
+                            android:id="@+id/userinput"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:hint="Repeat"
+                            android:inputType="number"
+                            android:textColor="#000000"
+                            android:textSize="16dp" >
+                        </EditText>
+
+                        <Spinner
+                            android:id="@+id/Repeat_spinner"
+                            android:layout_width="200dp"
+                            android:layout_height="50dp"
+                            android:layout_marginLeft="10dp"
+                            android:background="@color/white"
+                            android:spinnerMode="dialog"
+                            android:textAlignment="center"
+                            android:textSize="16dp" >
+                        </Spinner>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/Repeat_currentTimeandDate"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FFFFFF"
+                    android:orientation="horizontal"
+                    android:padding="10dp" >
+
+                    <TextView
+                        android:id="@+id/Repeat_timedate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:text="Monday 16/13/2013"
+                        android:textColor="#000000"
+                        android:textSize="16dp"
+                        android:visibility="gone" >
+                    </TextView>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1sp"
+                    android:background="@drawable/list_divider" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_run"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FFFFFF"
+                    android:padding="5dp"
+                    android:visibility="gone" >
+
+                    <TextView
+                        android:id="@+id/tv_run"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="3dp"
+                        android:text="Run"
+                        android:textColor="#000000"
+                        android:textSize="16dp" >
+                    </TextView>
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="5dp"
+                        android:layout_toRightOf="@+id/tv_run"
+                        android:background="@drawable/rounded_borderschedule" >
+
+                        <LinearLayout
+                            android:id="@+id/linear_run"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:weightSum="7" >
+
+                            <TextView
+                                android:id="@+id/tv_sunday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:padding="2dp"
+                                android:text="SU"
+                                android:textColor="#13ABE1"
+                                android:textSize="14dp"
+                                android:textStyle="bold" >
+                            </TextView>
+
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="fill_parent"
+                                android:background="@drawable/list_divider" />
+
+                            <TextView
+                                android:id="@+id/tv_monday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:padding="2dp"
+                                android:text="MO"
+                                android:textColor="#13ABE1"
+                                android:textSize="14dp"
+                                android:textStyle="bold" >
+                            </TextView>
+
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="fill_parent"
+                                android:background="@drawable/list_divider" />
+
+                            <TextView
+                                android:id="@+id/tv_tuesday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:padding="2dp"
+                                android:text="TU"
+                                android:textColor="#13ABE1"
+                                android:textSize="14dp"
+                                android:textStyle="bold" >
+                            </TextView>
+
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="fill_parent"
+                                android:background="@drawable/list_divider" />
+
+                            <TextView
+                                android:id="@+id/tv_wednday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:padding="2dp"
+                                android:text="WE"
+                                android:textColor="#13ABE1"
+                                android:textSize="14dp"
+                                android:textStyle="bold" >
+                            </TextView>
+
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="fill_parent"
+                                android:background="@drawable/list_divider" />
+
+                            <TextView
+                                android:id="@+id/tv_thurday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:padding="2dp"
+                                android:text="TH"
+                                android:textColor="#13ABE1"
+                                android:textSize="14dp"
+                                android:textStyle="bold" >
+                            </TextView>
+
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="fill_parent"
+                                android:background="@drawable/list_divider" />
+
+                            <TextView
+                                android:id="@+id/tv_friday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:padding="2dp"
+                                android:text="FR"
+                                android:textColor="#13ABE1"
+                                android:textSize="14dp"
+                                android:textStyle="bold" >
+                            </TextView>
+
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="fill_parent"
+                                android:background="@drawable/list_divider" />
+
+                            <TextView
+                                android:id="@+id/tv_saturday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:padding="2dp"
+                                android:text="SA"
+                                android:textColor="#13ABE1"
+                                android:textSize="14dp"
+                                android:textStyle="bold" >
+                            </TextView>
+                        </LinearLayout>
+                    </RelativeLayout>
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

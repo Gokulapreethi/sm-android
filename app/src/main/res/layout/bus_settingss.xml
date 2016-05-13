@@ -1,0 +1,741 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF"
+    android:scrollbars="vertical" >
+
+    <LinearLayout
+        android:id="@+id/menu"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+       
+        android:orientation="horizontal"
+        android:weightSum="4" >
+
+        <LinearLayout
+            android:id="@+id/lcall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/call"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icons_call" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/call"
+                android:textColor="#000000" >
+            </TextView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lbroadcast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/broadcast"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icons_broadcast" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               
+                android:text="@string/broadcast"
+                android:textColor="#000000" >
+            </TextView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lshare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icons_share" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                
+                android:text="@string/share"
+                android:textColor="#000000" >
+            </TextView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lreport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/report"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icons_report" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               
+                android:text="@string/report"
+                android:textColor="#000000" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="fill_parent"
+        android:layout_height="2sp"
+        android:layout_below="@+id/menu"
+        android:background="@drawable/list_divider" />
+
+    <ViewFlipper
+        android:id="@+id/viewflipper"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/line" >
+
+        <RelativeLayout
+            android:id="@+id/rlay"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:id="@+id/levelicon"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="#FFFFFF"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/qa_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                   
+                    android:src="@drawable/qa_icon" />
+
+                <TextView
+                    android:id="@+id/iview1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/quick_actions_allows_you_to"
+                    android:textColor="#737373"
+                    android:textSize="14dp" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/iview2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/connect_your_data_and_applications"
+                    android:textColor="#737373" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/iview3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/to_automate_repetitive_tasks"
+                    android:textColor="#737373" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/iview4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/start_selecting_an_action_from_the"
+                    android:textColor="#737373" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/iview5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/menu_above"
+                    android:textColor="#737373" >
+                </TextView>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <RelativeLayout
+                android:id="@+id/calloptions"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <RelativeLayout
+                        android:id="@+id/audiocall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp" >
+
+                        <TextView
+                            android:id="@+id/tv_audio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/start_an_audio_call"
+                            android:textColor="#000000"
+                            android:textSize="18dp" >
+                        </TextView>
+
+                        <Button
+                            android:id="@+id/btn_audiocall"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/icon_detail" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="1sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/list_divider" />
+
+                    <RelativeLayout
+                        android:id="@+id/videocall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp" >
+
+                        <TextView
+                            android:id="@+id/tv_video"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/start_an_video_call"
+                            android:textColor="#000000"
+                            android:textSize="18dp" >
+                        </TextView>
+
+                        <Button
+                            android:id="@+id/btn_videocall"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/icon_detail" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="1sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/list_divider" />
+
+                    <RelativeLayout
+                        android:id="@+id/audioconference"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp" >
+
+                        <TextView
+                            android:id="@+id/tv_audioconferen"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/start_an_audio_conference"
+                            android:textColor="#000000"
+                            android:textSize="18dp" >
+                        </TextView>
+
+                        <Button
+                            android:id="@+id/btn_audioconference"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/icon_detail" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="1sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/list_divider" />
+
+                    <RelativeLayout
+                        android:id="@+id/videoconference"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp" >
+
+                        <TextView
+                            android:id="@+id/tv_videoconferen"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/start_an_video_conference"
+                            android:textColor="#000000"
+                            android:textSize="18dp" >
+                        </TextView>
+
+                        <Button
+                            android:id="@+id/btn_videoconference"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/icon_detail" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="1sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/list_divider" />
+
+                    <RelativeLayout
+                        android:id="@+id/hostedconference"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp" >
+
+                        <TextView
+                            android:id="@+id/tv_hostedconferen"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/start_an_hosted_conference"
+                            android:textColor="#000000"
+                            android:textSize="18dp" >
+                        </TextView>
+
+                        <Button
+                            android:id="@+id/btn_hostedconference"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/icon_detail" />
+                    </RelativeLayout>
+
+                    <!-- <View -->
+                    <!-- android:layout_width="fill_parent" -->
+                    <!-- android:layout_height="1sp" -->
+                    <!-- android:layout_weight="1" -->
+                    <!-- android:background="@drawable/list_divider" /> -->
+
+                    <RelativeLayout
+                        android:id="@+id/dynamicAcall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp" >
+
+                        <TextView
+                            android:id="@+id/dynamicAudiocall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/dynamic_audio_call"
+                            android:textColor="#000000"
+                            android:textSize="18dp"
+                            android:visibility="gone" >
+                        </TextView>
+
+                        <!-- <Button -->
+                        <!-- android:id="@+id/btn_hostedconference" -->
+                        <!-- android:layout_width="15dp" -->
+                        <!-- android:layout_height="15dp" -->
+                        <!-- android:layout_alignParentRight="true" -->
+                        <!-- android:layout_centerVertical="true" -->
+                        <!-- android:background="@drawable/icon_detail" /> -->
+
+                    </RelativeLayout>
+
+                    <!-- <View -->
+                    <!-- android:layout_width="fill_parent" -->
+                    <!-- android:layout_height="1sp" -->
+                    <!-- android:layout_weight="1" -->
+                    <!-- android:background="@drawable/list_divider" /> -->
+
+                    <RelativeLayout
+                        android:id="@+id/dynamicVcall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp" >
+
+                        <TextView
+                            android:id="@+id/dynamicVideocall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/dynamic_video_call"
+                            android:textColor="#000000"
+                            android:textSize="18dp"
+                            android:visibility="gone" >
+                        </TextView>
+
+                        <!-- <Button -->
+                        <!-- android:id="@+id/btn_hostedconference" -->
+                        <!-- android:layout_width="15dp" -->
+                        <!-- android:layout_height="15dp" -->
+                        <!-- android:layout_alignParentRight="true" -->
+                        <!-- android:layout_centerVertical="true" -->
+                        <!-- android:background="@drawable/icon_detail" /> -->
+
+                    </RelativeLayout>
+
+                    <!-- <View -->
+                    <!-- android:layout_width="fill_parent" -->
+                    <!-- android:layout_height="1sp" -->
+                    <!-- android:layout_weight="1" -->
+                    <!-- android:background="@drawable/list_divider" /> -->
+                </LinearLayout>
+            </RelativeLayout>
+        </ScrollView>
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <RelativeLayout
+                android:id="@+id/calloptions_1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <RelativeLayout
+                        android:id="@+id/audiobroadcast"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp" >
+
+                        <TextView
+                            android:id="@+id/tv_audiobrca"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/audio_broadcast_bc"
+                            android:textColor="#000000"
+                            android:textSize="18dp" >
+                        </TextView>
+
+                        <Button
+                            android:id="@+id/audio_broadcast"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/icon_detail" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="1sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/list_divider" />
+
+                    <RelativeLayout
+                        android:id="@+id/videobroadcast"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp" >
+
+                        <TextView
+                            android:id="@+id/tv_videocast"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/video_broadcast_bc"
+                            android:textColor="#000000"
+                            android:textSize="18dp" >
+                        </TextView>
+
+                        <Button
+                            android:id="@+id/video_broadcast"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/icon_detail" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="1sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/list_divider" />
+                </LinearLayout>
+            </RelativeLayout>
+        </ScrollView>
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <RelativeLayout
+                android:id="@+id/shareoptions"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <RelativeLayout
+                        android:id="@+id/sharetext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp" >
+
+                        <TextView
+                            android:id="@+id/tv_sharetext"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/share_a_text_note"
+                            android:textColor="#000000"
+                            android:textSize="18dp" >
+                        </TextView>
+
+                        <Button
+                            android:id="@+id/btn_sharetext"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/icon_detail" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="1sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/list_divider" />
+
+                    <RelativeLayout
+                        android:id="@+id/shareaudio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp" >
+
+                        <TextView
+                            android:id="@+id/tv_shareaudio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/share_an_audio_note"
+                            android:textColor="#000000"
+                            android:textSize="18dp" >
+                        </TextView>
+
+                        <Button
+                            android:id="@+id/btn_shareaudio"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/icon_detail" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="1sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/list_divider" />
+
+                    <RelativeLayout
+                        android:id="@+id/sharevideo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp" >
+
+                        <TextView
+                            android:id="@+id/tv_videonote"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/share_a_video_note"
+                            android:textColor="#000000"
+                            android:textSize="18dp" >
+                        </TextView>
+
+                        <Button
+                            android:id="@+id/btn_videonote"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/icon_detail" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="1sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/list_divider" />
+
+                    <RelativeLayout
+                        android:id="@+id/sharephoto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp" >
+
+                        <TextView
+                            android:id="@+id/tv_sharephoto"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/share_a_photo_note"
+                            android:textColor="#000000"
+                            android:textSize="18dp" >
+                        </TextView>
+
+                        <Button
+                            android:id="@+id/btn_sharephoto"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/icon_detail" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="1sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/list_divider" />
+
+                    <RelativeLayout
+                        android:id="@+id/sharehandsketch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp" >
+
+                        <TextView
+                            android:id="@+id/tv_sharehandsketch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/share_a_hand_sketch"
+                            android:textColor="#000000"
+                            android:textSize="18dp" >
+                        </TextView>
+
+                        <Button
+                            android:id="@+id/btn_sharehandsketch"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/icon_detail" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="1sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/list_divider" />
+                </LinearLayout>
+            </RelativeLayout>
+        </ScrollView>
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <RelativeLayout
+                android:id="@+id/rl_generatereport"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <RelativeLayout
+                        android:id="@+id/generatereport"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp" >
+
+                        <TextView
+                            android:id="@+id/tv_generatereport"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/generate_a_report"
+                            android:textColor="#000000"
+                            android:textSize="18dp" >
+                        </TextView>
+
+                        <Button
+                            android:id="@+id/btn_generate_report"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/icon_detail" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="1sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/list_divider" />
+                </LinearLayout>
+            </RelativeLayout>
+        </ScrollView>
+    </ViewFlipper>
+
+</RelativeLayout>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    android:padding="25dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Maximum number of attempts reached for this Invite Code."
+        android:textColor="#000"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_marginTop="10dp"
+        android:text="Please obtain anew valid Invite Code from a Registered Snazmed Physician."
+        android:textColor="#000"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"/>
+
+    <Button
+        android:layout_marginTop="25dp"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:text="OK"
+        android:textColor="#fff"
+        android:id="@+id/button"
+        android:background="@drawable/buttonround_new"
+        android:layout_gravity="center_horizontal"/>
+</LinearLayout>

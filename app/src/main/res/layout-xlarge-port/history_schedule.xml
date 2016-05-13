@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<!-- <ScrollView android:id="@+id/scrollItemInfo" android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"> -->
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="fill_parent" android:id="@+id/complete_List_container" android:background="#FFFFFF">
+
+		<!-- <ListView android:id="@+id/historylist" android:layout_height="fill_parent" 
+			android:layout_width="0px" android:layout_weight="2"> </ListView> <fragment 
+			class="com.IM.NoteOpenFragment" android:layout_weight="2" android:id="@+id/the_frag" 
+			android:layout_width="0px" android:layout_height="match_parent" /> -->
+	</LinearLayout>
+	<!-- </ScrollView> -->
+	<LinearLayout android:orientation="vertical"
+		android:layout_height="wrap_content" android:layout_width="fill_parent"
+		android:id="@+id/linearLayoutclv" android:paddingTop="10dp">
+	</LinearLayout>
+</LinearLayout>

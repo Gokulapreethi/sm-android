@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/rlayout_grp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        android:paddingBottom="10dp" >
+
+        <LinearLayout
+            android:id="@+id/tview_lay"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/tview_clms"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="2dp"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
+                android:text="@string/form_field1"
+                android:textColor="@color/black"
+                android:textStyle="normal" >
+            </TextView>
+
+            <ScrollView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" >
+
+                <TextView
+                    android:id="@+id/tview_clm"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/form_field1"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="normal"
+                    android:visibility="gone" >
+                </TextView>
+            </ScrollView>
+
+            <ImageView
+                android:id="@+id/image_clm"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/v_play"
+                android:text="@string/form_field1"
+                android:visibility="gone" >
+            </ImageView>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iview_dtype"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/tview_lay"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/icon_detail" >
+        </ImageView>
+
+        <EditText
+            android:id="@+id/edtxt_frmfield"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tview_lay"
+            android:layout_margin="10dp"
+            android:layout_toLeftOf="@+id/iview_dtype"
+            android:focusableInTouchMode="true"
+            android:hint="Form Field Name" >
+        </EditText>
+
+        <RelativeLayout
+            android:id="@+id/progresscontainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" >
+
+            <ProgressBar
+                android:id="@+id/progressBar2"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:indeterminateDrawable="@drawable/customprogress_previous"
+                android:indeterminateOnly="true"
+                android:minHeight="50dip"
+                android:minWidth="50dip"
+                android:progress="0"
+                android:progressDrawable="@drawable/customprogress_previous"
+                android:visibility="gone" >
+            </ProgressBar>
+
+            <ProgressBar
+                android:id="@+id/down_progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="false"
+                android:max="100"
+                android:minHeight="50dip"
+                android:minWidth="50dip"
+                android:progress="0"
+                android:progressDrawable="@drawable/customprogress"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/down_percentage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/sender_datetime"
+                android:padding="15dp"
+                android:text="bsfkj"
+                android:textColor="@color/red"
+                android:textSize="9dp"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tview_clm_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edtxt_frmfield"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/form_field1"
+            android:textColor="#FFFFFF"
+            android:textSize="15dp"
+            android:textStyle="normal"
+            android:visibility="gone" >
+        </TextView>
+    </RelativeLayout>
+
+</LinearLayout>

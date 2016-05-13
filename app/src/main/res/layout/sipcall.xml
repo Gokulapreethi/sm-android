@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llay"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <ViewFlipper
+        android:id="@+id/ctrlviewFlipper"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <RelativeLayout
+            android:id="@+id/relBuddyList"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dip" >
+
+            <ImageView
+                android:id="@+id/icon2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="6dip"
+                android:contentDescription="df"
+                android:scaleType="center" >
+            </ImageView>
+
+            <TextView
+                android:id="@+id/txtViewTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+                android:layout_toRightOf="@+id/icon2"
+                android:text="TextView"
+                android:textAppearance="?android:attr/textAppearanceLarge" >
+            </TextView>
+
+            <TextView
+                android:id="@+id/txtViewStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtViewTitle"
+                android:layout_marginLeft="2dip"
+                android:layout_toRightOf="@+id/icon2"
+                android:text="TextView" >
+            </TextView>
+
+            <CheckBox
+                android:id="@+id/select_checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:button="@drawable/sipselector"
+                android:gravity="right" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/llayCallOption"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent" >
+
+            <Button
+                android:id="@+id/lst_detete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete" >
+            </Button>
+
+            <Button
+                android:id="@+id/lst_acall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Audio Call" >
+            </Button>
+
+            <Button
+                android:id="@+id/lst_vcall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Video Call" >
+            </Button>
+        </LinearLayout>
+    </ViewFlipper>
+
+</LinearLayout>

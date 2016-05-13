@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@color/black2"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/temp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/blue2"
+        android:layout_gravity="center_horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NEW USER"
+            android:layout_centerInParent="true"
+            android:textSize="20sp"
+            android:textColor="@color/white" />
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@drawable/navigation_back"/>
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_below="@id/temp"
+        android:layout_above="@id/btnnewuser"
+        android:scrollbars="none"
+        android:layout_margin="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <ImageView
+                android:id="@+id/temp1"
+                android:layout_width="213dp"
+                android:layout_height="99dp"
+                android:background="@drawable/img_logo"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="30dp"/>
+
+            <TextView
+                android:id="@+id/temp2"
+                android:layout_below="@id/temp1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SnazMed is a trusted physician community."
+                android:textSize="16sp"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:layout_below="@id/temp2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="We take the authenticity of our users very seriously. In order to verify your credentials as a doctor or medical student we verify each user through the AMA (American Medical Association) and third party verification services.\n\nWe kindly request you to fill in the mandatory fields on the next screen in order to be verified."
+                android:layout_marginTop="20dp"
+                android:textSize="16sp"
+                android:textColor="#808282" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btnnewuser"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/blue2"
+        android:text="CONTINUE"
+        android:textColor="@color/white"
+        android:layout_alignParentBottom="true"
+        android:textSize="17sp" />
+
+</RelativeLayout>

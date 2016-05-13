@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutg"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF" >
+
+    <LinearLayout
+        android:id="@+id/layout1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/build"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_margin="3dp"
+            android:text="Build Query"
+            android:background="@color/red"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+        <!-- <LinearLayout -->
+        <!-- android:id="@+id/linearLayout3" -->
+        <!-- android:layout_width="match_parent" -->
+        <!-- android:layout_height="wrap_content"  android:background="#3a92e0"> -->
+
+
+        <!-- <TextView android:textColor="#000000" android:gravity="center" -->
+        <!-- android:layout_margin="0.5dp"  android:background="#FFFFFF" android:text="ACCESS CODE" -->
+        <!-- android:textStyle="bold" android:id="@+id/serialnum" -->
+        <!-- android:layout_height="fill_parent" -->
+        <!-- android:layout_width="fill_parent" android:layout_weight="1.60" android:textSize="16sp"/> -->
+
+
+        <!-- <Spinner  android:gravity="center" -->
+        <!-- android:layout_margin="0.5dp" -->
+        <!-- android:textStyle="bold" android:id="@+id/access_spinner" -->
+        <!-- android:layout_height="fill_parent" -->
+        <!-- android:layout_width="fill_parent" android:layout_weight="0.60" android:textSize="16sp" android:inputType="number"/> -->
+
+
+        <!-- </LinearLayout> -->
+
+        <LinearLayout
+            android:id="@+id/linear_table"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/table"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="0.5dp"
+                android:layout_weight="1.60"
+                android:background="#FFFFFF"
+                android:gravity="center"
+                android:text="Select table"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/tables"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="0.5dp"
+                android:layout_weight="0.60"
+                android:focusableInTouchMode="false"
+                android:gravity="center"
+                android:padding="2dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_table"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/table"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="0.5dp"
+                android:layout_weight="1.60"
+                android:background="#FFFFFF"
+                android:gravity="center"
+                android:text="Select fields"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/fields"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="0.5dp"
+                android:layout_weight="0.60"
+                android:focusableInTouchMode="false"
+                android:gravity="center"
+                android:padding="2dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_table"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/aggregate_table"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" 
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/table"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="0.5dp"
+                    android:layout_weight="1.60"
+                    android:background="#FFFFFF"
+                    android:gravity="center"
+                    android:text="select Agregate"
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/aggregate"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="0.5dp"
+                    android:layout_weight="0.60"
+                    android:focusableInTouchMode="false"
+                    android:gravity="center"
+                    android:padding="2dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/submit"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_margin="3dp"
+            android:background="@drawable/layout_bg"
+            android:text="Where"
+            android:textColor="#000000"
+            android:textStyle="bold" 
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/wherecolumn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <LinearLayout
+                android:id="@+id/linear_table"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/table"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="0.5dp"
+                    android:layout_weight="1.60"
+                    android:background="#FFFFFF"
+                    android:gravity="center"
+                    android:text="Column"
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/wh_columnname"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="0.5dp"
+                    android:layout_weight="0.60"
+                    android:focusableInTouchMode="false"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_table"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/table"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="0.5dp"
+                    android:layout_weight="1.60"
+                    android:background="#FFFFFF"
+                    android:gravity="center"
+                    android:text="Condition"
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/wh_condition"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="0.5dp"
+                    android:layout_weight="0.60"
+                    android:focusableInTouchMode="false"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_table"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/table"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="0.5dp"
+                    android:layout_weight="1.60"
+                    android:background="#FFFFFF"
+                    android:gravity="center"
+                    android:text="Value"
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/wh_value"
+                    android:layout_width="275dp"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="0.5dp"
+                    android:layout_weight="0.60"
+                    android:gravity="center" />
+
+                <ImageView
+                    android:id="@+id/wh_image_col"
+                    android:layout_width="125dp"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="0.5dp"
+                    android:layout_weight="0.60"
+                    android:gravity="center"
+                    android:src="@drawable/expander_down" />
+            </LinearLayout>
+
+            <Spinner
+                android:id="@+id/andor"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:entries="@array/conditions"
+                android:prompt="@string/condition_prompt" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/inf"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

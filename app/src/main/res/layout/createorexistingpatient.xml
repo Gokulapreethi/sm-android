@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black2">
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/blue2" >
+
+        <TextView
+            android:id="@+id/txtView01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="CREATE PATIENT"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/navigation_close"/>
+        <Button
+            android:id="@+id/save_new_patient"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/navigation_check"
+            android:layout_alignTop="@+id/txtView01"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+    <ScrollView
+        android:layout_below="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:layout_marginBottom="50dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/choose_existing_patient">
+        <TextView
+            android:id="@+id/firstname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="First Name "
+            android:textColor="@color/snazlgray"
+            android:textSize="17dp"
+            android:layout_marginLeft="15dp"
+            android:visibility="gone"
+            android:layout_marginTop="10dp"/>
+    <EditText
+        android:id="@+id/ed_firstname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="First name"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@color/grey3" />
+        <TextView
+            android:id="@+id/middlename"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Middle Name "
+            android:textColor="@color/snazlgray"
+            android:textSize="17dp"
+            android:layout_marginLeft="15dp"
+            android:visibility="gone"
+            android:layout_marginTop="10dp"/>
+    <EditText
+        android:id="@+id/ed_middlename"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Middle Name"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
+        android:textSize="20dp"
+        android:textColor="@color/white"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@color/grey3" />
+    <TextView
+        android:id="@+id/lastname"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Last Name "
+    android:textColor="@color/snazlgray"
+    android:textSize="17dp"
+    android:layout_marginLeft="15dp"
+        android:visibility="gone"/>
+    <EditText
+        android:id="@+id/ed_lastname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Last name"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@color/grey3" />
+            </LinearLayout>
+        <TextView
+            android:id="@+id/dob"
+            android:text="DOB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/snazlgray"
+            android:textSize="17dp"
+            android:layout_marginLeft="15dp"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/ed_dob"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="DOB"
+            android:drawableRight="@drawable/inpet_date"
+            android:drawableEnd="@drawable/inpet_date"
+            android:layout_marginLeft="15dp"
+            android:textColor="@color/white"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="10dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@color/grey3" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sex "
+        android:textColor="@color/snazlgray"
+        android:textSize="17dp"
+        android:layout_marginLeft="15dp"/>
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="2"
+        android:id="@+id/gender_patient">
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Male"
+            android:id="@+id/radioMale"
+            android:layout_gravity="center"
+            android:textColor="#808080"
+            android:layout_weight="1"
+            android:button="@drawable/checkbok_selector"
+            android:checked="false"/>
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Female"
+            android:id="@+id/radioFemale"
+            android:layout_gravity="center"
+            android:textColor="#808080"
+            android:layout_weight="1"
+            android:button="@drawable/checkbok_selector"
+            android:checked="false" />
+    </RadioGroup>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@color/grey3" />
+    <AutoCompleteTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:popupBackground="#202021"
+        android:spinnerMode="dropdown"
+        android:paddingLeft="13dp"
+        android:hint="Hospital"
+        android:textColor="@color/white"
+        style="@style/spinner_style"
+        android:id="@+id/hospital"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@color/grey3" />
+    <TextView
+        android:id="@+id/mrn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="MRN "
+        android:textColor="@color/snazlgray"
+        android:textSize="17dp"
+        android:layout_marginLeft="15dp"
+        android:visibility="gone"/>
+        <EditText
+            android:id="@+id/ed_mrn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="MRN"
+            android:inputType="number"
+            android:textColor="@color/white"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="10dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@color/grey3" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Location "
+            android:textColor="@color/snazlgray"
+            android:textSize="17dp"
+            android:layout_marginLeft="15dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:layout_weight="0.5">
+            <TextView
+                android:id="@+id/floor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="40dp"
+                android:gravity="left"
+                android:text="Floor"
+                android:visibility="gone"
+                android:textColor="#808080"
+                android:textSize="15dp" />
+
+            <EditText
+                android:id="@+id/ed_floor"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="40dp"
+                android:hint="Floor"
+                android:background="#272829"
+                android:maxLength="5"
+                android:gravity="center_vertical"
+                android:inputType="number"
+                android:textColor="#fff" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="40dp"
+                android:background="@color/grey3" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp"
+                android:layout_weight="0.5">
+
+            <TextView
+                android:id="@+id/ward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="40dp"
+                android:gravity="left"
+                android:text="Ward"
+                android:visibility="gone"
+                android:textColor="#808080"
+                android:textSize="15dp" />
+
+            <EditText
+                android:id="@+id/ed_ward"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="40dp"
+                android:hint="Ward"
+                android:background="#272829"
+                android:gravity="center_vertical"
+                android:inputType="number"
+                android:maxLength="5"
+                android:textColor="#fff" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginLeft="40dp"
+                    android:background="@color/grey3" />
+                </LinearLayout>
+            </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp"
+            android:weightSum="1">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="0.5">
+            <TextView
+                android:id="@+id/room"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="40dp"
+                android:gravity="left"
+                android:text="ROOM"
+                android:visibility="gone"
+                android:textColor="#808080"
+                android:textSize="15dp" />
+
+            <EditText
+                android:id="@+id/ed_room"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="40dp"
+                android:hint="Room"
+                android:background="#272829"
+                android:gravity="center_vertical"
+                android:inputType="number"
+                android:maxLength="5"
+                android:textColor="#fff" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="40dp"
+                    android:background="@color/grey3" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="0.5">
+
+            <TextView
+                android:id="@+id/bed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="40dp"
+                android:gravity="left"
+                android:text="Bed"
+                android:visibility="gone"
+                android:textColor="#808080"
+                android:textSize="15dp" />
+
+            <EditText
+                android:id="@+id/ed_bed"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="40dp"
+                android:hint="Bed"
+                android:background="#272829"
+                android:gravity="center_vertical"
+                android:inputType="number"
+                android:maxLength="5"
+                android:textColor="#fff" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginLeft="40dp"
+                    android:background="@color/grey3" />
+                </LinearLayout>
+        </LinearLayout>
+            <TextView
+                android:id="@+id/Admit_date"
+                android:text="Admission Date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textColor="@color/snazlgray"
+                android:textSize="17dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:visibility="gone"/>
+            <TextView
+                android:id="@+id/ed_Admitdate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Admission Date"
+                android:drawableRight="@drawable/inpet_date"
+                android:drawableEnd="@drawable/inpet_date"
+                android:layout_marginLeft="15dp"
+                android:textColor="@color/white"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="28dp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@color/grey3" />
+        <TextView
+            android:id="@+id/membercount"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="ASSIGNED MEMBERS"
+            android:textColor="@color/snazlgray"
+            android:textSize="17dp"
+            android:gravity="center"
+            android:background="@color/lblack"/>
+        <LinearLayout
+            android:id="@+id/membersList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    </ScrollView>
+    <LinearLayout
+        android:id="@+id/linear3"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="10dp">
+
+        <Button
+            android:id="@+id/assibnBtn"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/blue2"
+            android:text="ASSIGN MEMBERS"
+            android:textColor="@color/white"
+            android:textSize="17dp"/>
+
+    </LinearLayout>
+</RelativeLayout>

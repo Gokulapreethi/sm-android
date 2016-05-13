@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/chat_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="8dp" >
+
+    <RelativeLayout
+        android:id="@+id/sender_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible" >
+
+
+        <ImageView
+            android:id="@+id/sender_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentLeft="true"
+            android:visibility="gone"
+            android:src="@drawable/senderarrow" />
+
+        <RelativeLayout
+            android:id="@+id/sender_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/sender_arrow"
+            android:background="@drawable/sender_border" >
+
+            <RelativeLayout
+                android:id="@+id/msg_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/sender_text_msg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="@string/this_is_the_message_view"
+                    android:textColor="@color/black" />
+
+                <ImageView
+                    android:id="@+id/sender_loc_icon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_below="@+id/sender_text_msg"
+                    android:layout_centerHorizontal="true"
+                    android:padding="5dp"
+                    android:src="@drawable/location_icon" />
+
+                <ImageView
+                    android:id="@+id/sender_multi_msg"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:padding="5dp"
+                    android:src="@drawable/btn_play_new"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/sender_datetime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/msg_container"
+                android:padding="5dp"
+                android:singleLine="true"
+                android:text="@string/_29_10_2014_07_34_pm"
+                android:textColor="@color/black"
+                android:textSize="9dp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/receiver_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:visibility="gone" >
+
+
+        <ImageView
+            android:id="@+id/receiver_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/receiverarrow"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:id="@+id/receiver_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/receiver_arrow"
+            android:background="@drawable/receiver_border"
+            android:padding="5dp" >
+
+            <RelativeLayout
+                android:id="@+id/msg_container_receiver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/receiver_text_msg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/this_is_the_message_view_we_can_add_our_custom_message_here_thank_you"
+                    android:textColor="@color/black" />
+
+                <ImageView
+                    android:id="@+id/receiver_loc_icon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_below="@+id/receiver_text_msg"
+                    android:layout_centerHorizontal="true"
+                    android:padding="5dp"
+                    android:src="@drawable/location_icon" />
+
+                <ImageView
+                    android:id="@+id/receiver_multi_msg"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:padding="5dp"
+                    android:src="@drawable/btn_play_new" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/receiver_datetime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/msg_container_receiver"
+                android:padding="5dp"
+                android:singleLine="true"
+                android:text="@string/_29_10_2014_07_34_pm"
+                android:textColor="@color/black"
+                android:textSize="9dp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

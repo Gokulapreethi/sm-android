@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:keepScreenOn="true"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        
+        android:id="@+id/relativeLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/openarrow_l" />
+
+        <TextView
+            android:id="@+id/Rem_Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/back"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/textview" />
+
+        <ImageView
+            android:id="@+id/forward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/rem_close"
+            android:src="@drawable/closearrow" />
+
+        <ImageView
+            android:id="@+id/rem_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="10dip"
+            android:gravity="center"
+            android:src="@drawable/rem_close2" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/more_rem_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_toLeftOf="@+id/back"
+        android:background="@color/lgyellow"
+        android:orientation="horizontal"
+        android:gravity="center" >
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="42dp"
+        android:background="@color/blue2">
+
+        <TextView
+            android:id="@+id/txtView01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Message Info"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:textStyle="bold"></TextView>
+
+        <ImageView
+            android:id="@+id/side_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/navigation_menu"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/side_menu"
+            android:background="@drawable/toolbar_button_back"
+            android:gravity="center" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/msglay"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@color/black2"
+        android:layout_below="@+id/header">
+
+        <TextView
+            android:id="@+id/msgView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:layout_marginLeft="20dp"
+            android:padding="5dp"
+            android:text="Message Info"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:textStyle="bold"></TextView>
+
+        <TextView
+            android:id="@+id/sentView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/msgView"
+            android:layout_marginTop="15dp"
+            android:text="Message Info"
+            android:layout_marginLeft="20dp"
+            android:textColor="#ffffff"
+            android:textSize="15dp"></TextView>
+
+        <TextView
+            android:id="@+id/tvdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/msgView"
+            android:text="Message Info"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="3dp"
+            android:textColor="#ffffff"
+            android:textSize="15dp"></TextView>
+
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tvread"
+        android:layout_width="fill_parent"
+        android:layout_height="33dp"
+        android:layout_below="@+id/msglay"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="Read "
+        android:textSize="19dp" />
+
+    <ListView
+        android:id="@+id/read"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvread">
+
+    </ListView>
+
+    <TextView
+        android:id="@+id/tvdelivered"
+        android:layout_width="fill_parent"
+        android:layout_height="33dp"
+        android:layout_below="@+id/read"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="Delivered "
+        android:textSize="19dp" />
+
+    <ListView
+        android:id="@+id/deliverd"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvdelivered">
+
+    </ListView>
+</RelativeLayout>

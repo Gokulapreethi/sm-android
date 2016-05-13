@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/blue3"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Snaz box"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:gravity="center" />
+        <TextView
+            android:id="@+id/tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" >"
+            android:layout_toRightOf="@+id/tv1"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:gravity="center" />
+        <TextView
+            android:id="@+id/tv3"
+            android:layout_toRightOf="@+id/tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" My folder"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:gravity="center" />
+
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/header1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/blue2"
+        android:layout_below="@+id/header"
+        android:weightSum="3">
+        <LinearLayout
+            android:layout_weight="1"
+            android:id="@+id/chat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/info_img"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="7dp"
+                android:background="@drawable/dashboard_message_white"
+                android:layout_gravity="center" />
+            <TextView
+                android:id="@+id/tv_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Info"
+                android:textColor="#fff"
+                android:textSize="12dp"
+                android:gravity="center"
+                android:layout_marginBottom="3dp"/>
+            <View
+                android:id="@+id/view_info"
+                android:layout_gravity="bottom"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:background="@color/white" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:id="@+id/profilechat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+            <ImageView
+                android:id="@+id/comment_img"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="7dp"
+                android:background="@drawable/tab_comments" />
+            <TextView
+                android:id="@+id/tv_comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Comments"
+                android:textColor="#000"
+                android:textSize="12dp"
+                android:gravity="center"
+                android:layout_marginBottom="3dp"/>
+            <View
+                android:id="@+id/view_comment"
+                android:layout_gravity="bottom"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:background="@color/white"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:id="@+id/snazbox_chat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/access_img"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="7dp"
+                android:background="@drawable/tab_members" />
+            <TextView
+                android:id="@+id/tv_access"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Access"
+                android:textColor="#000"
+                android:textSize="12dp"
+                android:gravity="center"
+                android:layout_marginBottom="3dp"/>
+            <View
+                android:id="@+id/view_access"
+                android:layout_gravity="bottom"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:background="@color/white"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        </LinearLayout>
+    <LinearLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginBottom="40dp"
+        android:layout_below="@+id/header1">
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:weightSum="2">
+            <TextView
+                android:id="@+id/tv_accept"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:text="SHARE"
+                android:background="@color/blue2"/>
+
+            <TextView
+                android:layout_marginLeft="1dp"
+                android:id="@+id/tv_reject"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:background="@color/blue2"
+                android:textColor="@color/white"
+                android:text="SEND"/>
+    </LinearLayout>
+
+</RelativeLayout>

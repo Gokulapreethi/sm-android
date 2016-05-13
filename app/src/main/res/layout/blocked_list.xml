@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/block_header"
+        android:layout_width="fill_parent"
+        android:layout_height="54dp"
+        android:layout_gravity="center"
+        android:background="#FF494D" >
+
+        <ImageView
+            android:id="@+id/iv_blockback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/toolbar_button_back" >
+        </ImageView>
+
+        <TextView
+            android:id="@+id/tv_blocktitle"
+            android:layout_width="fill_parent"
+            android:layout_toRightOf="@+id/iv_blockback"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+           	android:gravity="center_horizontal"
+            android:layout_marginRight="5dp"
+            android:text="@string/my_blocked_buddies_list"
+            android:textColor="#FFF"
+            android:textSize="17dp"
+            android:textStyle="bold" >
+        </TextView>
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/lview_blocklist"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#FFFFFF"
+        android:cacheColorHint="#00000000"
+        android:divider="@color/light_gray"
+        android:dividerHeight="1dp" >
+    </ListView>
+
+</LinearLayout>

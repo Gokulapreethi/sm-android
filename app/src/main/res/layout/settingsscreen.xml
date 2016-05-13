@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="5sp"
+    android:scrollbars="vertical" >
+
+    <!-- <RelativeLayout -->
+    <!-- android:id="@+id/header" -->
+    <!-- style="@style/adrenalin:pageHeader" -->
+    <!-- android:layout_width="fill_parent" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:layout_alignParentTop="true" -->
+    <!-- android:paddingTop="3dp" > -->
+
+
+    <!-- <TextView -->
+    <!-- android:id="@+id/txtView01" -->
+    <!-- android:layout_width="wrap_content" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:layout_centerInParent="true" -->
+    <!-- android:text="@string/settings" -->
+    <!-- android:textColor="@color/black" /> -->
+    <!-- </RelativeLayout> -->
+
+
+    <!-- <ScrollView -->
+    <!-- android:id="@+id/svLrBody" -->
+    <!-- style="@style/adrenalin:pageContent" -->
+    <!-- android:layout_width="fill_parent" -->
+    <!-- android:layout_height="fill_parent" -->
+    <!-- android:layout_above="@+id/footer" -->
+    <!-- android:layout_below="@+id/header" -->
+    <!-- android:scrollbars="none" > -->
+
+
+    <!-- <LinearLayout -->
+    <!-- android:layout_width="fill_parent" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:orientation="vertical" > -->
+
+
+    <!-- <LinearLayout -->
+    <!-- android:id="@+id/iplayout" -->
+    <!-- android:layout_width="fill_parent" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:orientation="vertical" > -->
+
+
+    <!-- <TextView -->
+    <!-- android:layout_width="wrap_content" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:text="@string/ip_address" -->
+    <!-- android:textColor="@color/black" /> -->
+
+
+    <!-- <EditText -->
+    <!-- android:id="@+id/etSettingsIp" -->
+    <!-- android:layout_width="fill_parent" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:inputType="textPersonName" -->
+    <!-- android:maxLength="1000" /> -->
+
+
+    <!-- <View -->
+    <!-- android:layout_width="fill_parent" -->
+    <!-- android:layout_height="2sp" -->
+    <!-- android:layout_marginBottom="5dip" -->
+    <!-- android:layout_marginTop="5dip" -->
+    <!-- android:layout_weight="1" -->
+    <!-- android:background="@drawable/list_divider_wh" /> -->
+    <!-- </LinearLayout> -->
+
+
+    <!-- <LinearLayout -->
+    <!-- android:id="@+id/fbconfiglayout" -->
+    <!-- android:layout_width="fill_parent" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:orientation="vertical" > -->
+
+
+    <!-- <Button -->
+    <!-- android:id="@+id/fbconfig" -->
+    <!-- android:layout_width="fill_parent" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:layout_gravity="center" -->
+    <!-- android:layout_marginTop="20dip" -->
+    <!-- android:text="@string/delink_facebook_" -->
+    <!-- android:textStyle="bold" /> -->
+
+
+    <!-- <View -->
+    <!-- android:layout_width="fill_parent" -->
+    <!-- android:layout_height="2sp" -->
+    <!-- android:layout_marginBottom="5dip" -->
+    <!-- android:layout_marginTop="5dip" -->
+    <!-- android:layout_weight="1" -->
+    <!-- android:background="@drawable/list_divider_wh" /> -->
+    <!-- </LinearLayout> -->
+    <!-- </LinearLayout> -->
+    <!-- </ScrollView> -->
+
+
+    <!-- <LinearLayout -->
+    <!-- android:id="@+id/footer" -->
+    <!-- style="@style/adrenalin:pageFooter" -->
+    <!-- android:layout_width="fill_parent" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:layout_alignParentBottom="true" -->
+    <!-- android:gravity="center" -->
+    <!-- android:orientation="horizontal" -->
+    <!-- android:paddingTop="3dp" > -->
+
+
+    <!-- <Button -->
+    <!-- android:id="@+id/btnSaveSettings" -->
+    <!-- android:layout_width="wrap_content" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:text="@string/_save_" > -->
+    <!-- </Button> -->
+
+
+    <!-- <Button -->
+    <!-- android:id="@+id/btnCancelSettings" -->
+    <!-- android:layout_width="wrap_content" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:text="@string/cancel" /> -->
+    <!-- </LinearLayout> -->
+
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/rounded_bordercolor_clone_border"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp" >
+
+        <LinearLayout
+            android:id="@+id/iplayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ip_address"
+                android:textColor="@color/black" />
+
+            <EditText
+                android:id="@+id/etSettingsIp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:inputType="textPersonName"
+                android:maxLength="1000" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/container"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:paddingTop="3dp" >
+
+        <Button
+            android:id="@+id/btnSaveSettings"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:background="@drawable/rounded_bordercolor_changepass1"
+            android:text="@string/save"
+            android:textColor="@color/white" >
+        </Button>
+
+        <Button
+            android:id="@+id/btnCancelSettings"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/rounded_bordercolor_changepass2"
+            android:text="@string/cancel"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+</RelativeLayout>

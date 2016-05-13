@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#272829"
+    android:orientation="vertical"
+    android:scrollbars="vertical">
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@color/blue2" >
+
+        <TextView
+            android:id="@+id/txtView01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="GET ENDORSEMENTS"
+            android:textColor="@color/white"
+            android:textSize="20sp" >
+        </TextView>
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_below="@+id/header"
+        android:id="@+id/svLrBody"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#202021">
+            <ImageView
+                android:id="@+id/success_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:background="@drawable/check_circle"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center_horizontal"/>
+            <TextView
+                android:id="@+id/title2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="17sp"
+                android:layout_marginTop="30dp"
+                android:gravity="center"
+                android:textColor="#00b254"
+                android:text="CONGRATULATIONS!"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#808080"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:text="Now you can continue the registration"/>
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#272829"
+                android:layout_marginTop="20dp">
+                <TextView
+                    android:id="@+id/code1"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="5dp"
+                    android:textSize="26sp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:gravity="center"
+                    android:textColor="#fff" />
+                <LinearLayout
+                    android:id="@+id/endorse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="15dp"
+                    android:layout_gravity="center"
+                    android:visibility="visible"
+                    android:layout_marginBottom="20dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="7dp"
+                        android:layout_gravity="center"
+                        android:text="Endorsed by:"
+                        android:textColor="#808080"
+                        android:textSize="14sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="7dp"
+                        android:layout_gravity="center"
+                        android:text="Dr.Robertson"
+                        android:textColor="#00b254"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#272829">
+                <TextView
+                    android:id="@+id/code2"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="15dp"
+                    android:textSize="26sp"
+                    android:layout_marginLeft="15dp"
+                    android:gravity="center"
+                    android:textColor="#fff" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="15dp"
+                    android:layout_gravity="center"
+                    android:visibility="visible">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="7dp"
+                        android:layout_gravity="center"
+                        android:text="Endorsed by:"
+                        android:textColor="#808080"
+                        android:textSize="14sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="7dp"
+                        android:layout_gravity="center"
+                        android:text="Mary"
+                        android:textColor="#00b254"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+    <LinearLayout
+        android:id="@+id/linear3"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/donebtn"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#0092db"
+            android:text="CONTINUE"
+            android:textColor="#FFFFFF"
+            android:textSize="17sp"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parentlinlayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffff"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/RelativeLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="42dp"
+        android:background="@color/white" >
+
+        <TextView
+            android:id="@+id/callscreen"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:text="@string/audio_call"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/listView_rlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/marquee_rlayout"
+        android:layout_below="@+id/RelativeLayout1" >
+
+        <ListView
+            android:id="@+id/llayoutcallitem"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="#00000000" >
+        </ListView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/marquee_rlayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/end_allcall_rlayout"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@layout/border_black" >
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/end_allcall_rlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp" >
+
+        <LinearLayout
+            android:id="@+id/endcall_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:padding="7dp"
+             >
+             
+            <ImageView
+                android:id="@+id/speaker"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:layout_marginTop="7dp"
+                android:src="@drawable/speakericonblue" />
+
+            <ImageView
+                android:id="@+id/endcall_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               android:layout_weight="1"
+                android:src="@drawable/hang" />
+
+            
+
+            <ImageView
+                android:id="@+id/mute"
+               android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:layout_marginTop="7dp"
+                android:src="@drawable/mute_icon_blue" />
+
+           
+          
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

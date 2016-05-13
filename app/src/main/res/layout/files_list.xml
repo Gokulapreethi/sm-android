@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black2" >
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sort_table_white"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sort_list"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/sort"
+            android:layout_weight="1"
+            android:gravity="right|center"
+            android:layout_marginBottom="10dp">
+            <TextView
+                android:id="@+id/type_sort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/black2"
+                android:drawableRight="@drawable/sort_arrow"
+                android:drawableEnd="@drawable/sort_arrow"
+                android:textColor="@color/snazlgray"
+                android:layout_marginRight="10dp"
+                android:text="Type"/>
+            <TextView
+                android:id="@+id/alpha_sort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="A &gt; Z"
+                android:textColor="@color/snazlgray"
+                android:background="@color/black2"
+                android:layout_marginRight="20dp"/>
+
+            <TextView
+                android:id="@+id/date_sort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/snazlgray"
+                android:background="@color/black2"
+                android:text="DATE"
+                android:layout_marginRight="10dp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/search_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header"
+        android:hint="@string/type_here_to_filter"
+        android:visibility="gone"/>
+    <RelativeLayout
+        android:id="@+id/rl_file"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/header"
+        android:background="@color/pink"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:layout_margin="10dp"
+            android:drawablePadding="15dp"
+            android:textColor="@color/white"
+            android:drawableLeft="@drawable/tab_snazbox_white"
+            android:layout_centerVertical="true"
+            android:text="Other files"/>
+
+        <Button
+            android:id="@+id/bt_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/navigation_close" />
+
+    </RelativeLayout>
+
+    <com.cg.commongui.listswipe.SwipeMenuListView
+        android:id="@+id/filesList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_container"
+        android:layout_below="@+id/rl_file"
+        android:layout_marginTop="5dp"
+        android:cacheColorHint="#FFFFFF"
+        android:choiceMode="multipleChoice"
+        android:divider="@color/light_gray"
+        android:dividerHeight="0dp"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/emptytext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+         />
+
+    <LinearLayout
+        android:id="@+id/button_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:weightSum="2" >
+
+        <Button
+            android:id="@+id/shareAll"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:background="@color/lblue"
+            android:text="@string/share"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/deleteAll"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:background="@color/red"
+            android:text="@string/delete"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+</RelativeLayout>

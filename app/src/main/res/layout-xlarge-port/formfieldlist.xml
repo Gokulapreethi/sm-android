@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white" >
+
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:id="@+id/imgcontainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/textfields"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/deletebtn"
+            android:layout_toRightOf="@+id/imgcontainer"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/fieldName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="#696969" />
+
+            <TextView
+                android:id="@+id/fieldType"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="#A9A9A9" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/deletebtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:scaleType="centerCrop" />
+    </RelativeLayout>
+
+</RelativeLayout>

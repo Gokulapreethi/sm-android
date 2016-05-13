@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/ad_play"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginBottom="7dp"
+        android:visibility="gone"
+        android:layout_marginTop="7dp"
+        android:layout_toLeftOf="@+id/settings_image"
+        android:background="@drawable/bg_bluecolr">
+
+        <ImageView
+            android:id="@+id/play_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/play" />
+
+        <TextView
+            android:id="@+id/txt_time"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="15dp"
+            android:layout_toRightOf="@+id/play_button"
+            android:text="00:00"
+            android:textColor="@color/white" />
+
+        <SeekBar
+            android:id="@+id/seekBar1"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="15dp"
+            android:layout_toLeftOf="@+id/xbutton"
+            android:layout_toRightOf="@+id/txt_time"
+            android:progressDrawable="@drawable/progress"
+            android:thumb="@drawable/seek_handler" />
+
+        <ImageView
+            android:id="@+id/xbutton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="3dp"
+            android:background="@drawable/ic_action_remove" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/filelayout"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginBottom="7dp"
+        android:visibility="gone"
+        android:layout_marginTop="7dp"
+        android:layout_toLeftOf="@+id/settings_image"
+        android:background="@drawable/bg_bluecolr">
+
+        <TextView
+            android:id="@+id/tv_fname"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginLeft="15dp"
+            android:layout_gravity="center"
+            android:text="photofile.jpg"
+            android:textColor="@color/white" />
+
+        <ImageView
+            android:id="@+id/filexbutton"
+            android:layout_width="32dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_height="32dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/ic_action_remove" />
+    </LinearLayout>
+</LinearLayout>

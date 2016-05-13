@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white" >
+
+    <RelativeLayout
+        android:id="@+id/rlay_tilte"
+        android:layout_width="fill_parent"
+        android:layout_height="42dp"
+        android:background="@color/title"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_Settings"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="2dp"
+            android:background="@drawable/ic_action_back" />
+
+        <TextView
+            android:id="@+id/heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/buddies_list"
+            android:textColor="#FFFFFF"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/textContainer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rlay_tilte"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/buddynames"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible" />
+
+        <ListView
+            android:id="@+id/contact_listview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="#00000000"
+            android:divider="#C6C6C6"
+            android:dividerHeight="0.5dip"
+            android:fadingEdge="none"
+            android:fillViewport="false"
+            android:paddingRight="0dp"
+            android:scrollbarAlwaysDrawVerticalTrack="false"
+            android:scrollbarSize="0dp"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbars="none" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:weightSum="3" >
+
+        <Button
+            android:id="@+id/audioconf"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_border_custom_profile"
+            android:text="@string/audio_broadcast_bc"
+            android:textColor="@color/title"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/videoconf"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_border_custom_profile"
+            android:text="@string/video_broadcast_bc"
+            android:textColor="@color/title"
+            android:visibility="gone" />
+         <Button
+            android:id="@+id/videoconfer"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_border_custom_profile"
+            android:text="Video Conference"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/call"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_border_custom_profile"
+            android:text="Audio Conference"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+</RelativeLayout>

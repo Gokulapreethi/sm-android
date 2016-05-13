@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="15dp"
+    android:gravity="bottom">
+    <TextView
+        android:id="@+id/round_edit"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@color/blue2"
+        android:gravity="center"
+        android:layout_marginTop="3dp"
+        android:text="Edit Rounding Group"
+        android:textColor="@color/white"
+        android:textSize="17dp" />
+    <TextView
+        android:id="@+id/round_role"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@color/blue2"
+        android:gravity="center"
+        android:layout_marginTop="3dp"
+        android:text="Roles Management"
+        android:textColor="@color/white"
+        android:textSize="17dp" />
+    <TextView
+        android:id="@+id/roun_new_task"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@color/blue2"
+        android:gravity="center"
+        android:layout_marginTop="3dp"
+        android:text="Create New Task"
+        android:textColor="@color/white"
+        android:textSize="17dp" />
+    <TextView
+        android:id="@+id/roun_new_patient"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@color/blue2"
+        android:gravity="center"
+        android:layout_marginTop="3dp"
+        android:text="Create New Patient"
+        android:textColor="@color/white"
+        android:textSize="17dp" />
+
+    <TextView
+        android:id="@+id/roun_ownership"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@color/pink"
+        android:gravity="center"
+        android:padding="7dp"
+        android:layout_marginTop="3dp"
+        android:text="Transfer Ownership"
+        android:textColor="@color/white"
+        android:textSize="17dp" />
+
+    <TextView
+        android:id="@+id/roun_delete"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@color/pink"
+        android:gravity="center"
+        android:layout_marginTop="3dp"
+        android:text="Delete Group"
+        android:textColor="@color/white"
+        android:textSize="17dp" />
+
+    <TextView
+        android:id="@+id/cancel"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:background="#4d4d4d"
+        android:gravity="center"
+        android:text="Cancel"
+        android:textColor="@color/white"
+        android:textSize="17dp" />
+
+</LinearLayout>

@@ -1,0 +1,635 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+                android:background="@color/lblack" >
+
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue2" >
+
+        <TextView
+            android:id="@+id/txtView01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="TERMS OF AGREEMENT"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:textStyle="bold" >
+        </TextView>
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@drawable/navigation_back" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header"
+        android:layout_above="@+id/sendrequest"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="AGREEMENT."
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="THIS IS A LEGAL AGREEMENT BETWEEN YOU AND SNAZMED, LLC (“SnazMed”) STATING THE TERMS THAT GOVERN YOUR USE OF CERTAIN SERVICES (AS HEREINAFTERDEFINED).By accessing, downloading or using the Services, you (“Client”) agree to be bound by the terms of this Agreement.  If Client is an entity, the term Client shall include all of Client’s employees, representatives, contractors, and users of the Services. If Client does not agree to the terms of this Agreement, Client may not access, download or use the Services or and must immediately remove and delete the Services if Client has already downloaded them.  The agreement by an employee, consultant or contractor acting on behalf of an entity to these terms will be deemed to be the agreement of that entity. Any such employee, consultant or contractor hereby represents and warrants that he, she or it has authority, or has been provided authority, to bind the entity to the terms and conditions of this Agreement. SnazMed is only willing to grant Client access to the Services upon the condition that Client accepts all of the terms contained herein.  Written approval is not a prerequisite to the validity or enforceability of this Agreement and no solicitation or any such written approval by or on behalf of SnazMed shall be construed as an inference to the contrary."
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:text="Notwithstanding anything to the contrary, if Client and SnazMed have both executed a written Client Agreement which governs access to or use of the Services, then the terms of the Client Agreement shall govern and control and to the extent there is a direct conflict between the terms of this Agreement and the terms of the Client Agreement."
+                android:padding="7dp"
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:text="Each of Client and SnazMed may be referred to herein as a “party,” and Client and SnazMed together may be referred to as the “parties.”"
+                android:padding="7dp"
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:text="SNAZMED RESERVES THE RIGHT TO UPDATE THIS AGREEMENT AT ANY TIME BY PUBLISHING THE REVISED AGREEMENT ON THE SNAZMED WEBSITE OR BY PROVIDING NOTICE TO YOU TO BY THE EMAIL ADDRESS YOU HAVE PROVIDED. THE REVISED AGREEMENT SHALL BECOME EFFECTIVE AFTER THIRTY (30) DAYS OF SUCH PUBLICATION OR NOTICE, UNLESS YOU EXPRESSLY ACCEPT THE REVISED AGREEMENT EARLIER BY CLICKING ON THE ACCEPT BUTTON. YOUR EXPRESS ACCEPTANCE OR YOUR CONTINUED USE OF THE SNAZMED SOFTWARE AFTER THE EXPIRATION OF THE PUBLICATION OR NOTICE PERIOD OF THIRTY (30) DAYS SHALL CONSTITUTE YOUR ACCEPTANCE TO BE BOUND BY THE TERMS AND CONDITIONS OF THE REVISED AGREEMENT."
+                android:padding="7dp"
+                android:textColor="#808282"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="PERMITTED USES AND RESTRICTIONS"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="Subject to the terms and conditions of this Agreement, during the applicable Term (as defined below), SnazMed grants to you a non-exclusive, non-transferable and non-sublicensable right for you to access, download and use the Services in conjunction with your internal business purposes and in accordance with SnazMed’s applicable documentation. “Services” means (i) one or more mobile or web based proprietary communications solutions, services and/or applications; (ii) any of SnazMed’s websites or webpages, including applications and SnazMed interface (collectively, the “Site”), (iii) product demos and interaction with SnazMed representatives, employees and contractors; and (iv) all other software, applications, application programming interface, proprietary computer programs, documentation relating to any of the foregoing, including updates, upgrades, maintenance releases, or bug fixes provided by SnazMed in any form or media."
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:text="Other than as expressly set forth in this Agreement, SnazMed grants to Client no license or other rights in or to the Service, software or any other proprietary technology, material or information made available to Client through the Service or otherwise in connection with this Agreement (collectively, the “SnazMed Technology”), and all such rights are hereby expressly reserved. SnazMed (or its licensors where applicable) owns all rights, title and interest in and to the Service, and any SnazMed Technology, and all patent, copyright, trade secret and other intellectual property rights (“IP Rights”) therein, as well as (i) all feedback and other information provided to SnazMed by you, and (ii) all transactional, performance, derivative data and metadata generated in connection with the Services.  The IP Rights and Client’s agreements as set forth above shall survive a termination of this Agreement."
+                android:padding="7dp"
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:text="Licensee shall not: (a) copy the Services, except as expressly permitted by this license; (b) modify, translate, adapt or otherwise create derivative works or improvements, whether or not patentable, of the Services; (c) reverse engineer, disassemble, decompile, decode or otherwise attempt to derive or gain access to the source code of the Services or any part thereof; (d) remove, delete, alter or obscure any trademarks or any copyright, trademark, patent or other intellectual property or proprietary rights notices from the Services, including any copy thereof; or (e) rent, lease, lend, sell, sublicense, assign, distribute, publish, transfer or otherwise make available the Services or any features or functionality of the Services, to any third party for any reason, including by making the Services available on a network where it is capable of being accessed by more than one device at any time (except as may be expressly set forth in Client Services Agreement)."
+                android:padding="7dp"
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:text="Any license granted hereunder is limited to persons  18 years of age or older. You are responsible for all activity occurring under your Client account and shall comply with all applicable laws and regulations in connection with your use of the Services. Client shall use the Service in accordance with SnazMed’s then applicable use and privacy policy. Client shall promptly notify SnazMed of any unauthorized use of any password or account or any other act or omission that would constitute a breach or violation of this Agreement."
+                android:padding="7dp"
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:text="Client agrees to verify its identification through a third party verification service, including a medical verification service for any medical personnel.  Client agrees that SnazMed shall have the right to immediately terminate this Agreement and Client’s account if Client makes any misrepresentation in connection with its identity and/or impersonates another person in connection with the Services and/or the SnazMed account."
+                android:padding="7dp"
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:text="A violation of any of the terms in this Agreement may result in the termination of your SnazMed account and your inability to access or use the Services. In addition, we reserve the right to refuse service to anyone for any reason at any time."
+                android:padding="7dp"
+                android:textColor="#808282"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="CLIENT ACKNOWLEDGEMENT"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="Client represents and warrants that Client fully understands and acknowledges that (i) the Services are intended to deliver non-critical, non-emergency messages between users; (ii) the Services are dependent upon a number of factors outside the control of SnazMed, including but not limited to, the operation of third party provided hardware and network services; (iii) the Services are not a substitute for any of Client’s current systems of administering and safeguarding medical treatment and/or medicine; (iv) there may be occasional communication failures or delays in the delivery or receipt of properly sent SnazMed messages, and (v) the Services are not expected to perform at the same level of performance and/or reliability one might expect from medical devices used in the delivery of critical medical care environments."
+                android:textColor="#808282"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="SERVICES UPDATES"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="By using the Services, Client grants SnazMed permission to send all Client end users messages regarding the Services, its features, service alerts, and network activity. Notwithstanding the foregoing, it is Client’s responsibility to register for updates from, and/or regularly check, SnazMed’s webpages at http://snazmed.com for updates with respect to the Services. Client’s continued use of the Services after such updates will constitute its acceptance of the changes."
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="TERM AND TERMINATION"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="This Agreement shall be effective as of the earliest of the date you accept the terms herein or first access, download or use any of the Services (the “Effective Date”) and shall remain in effect for so long as you use or access any of the Services (the “Term”). You may terminate this Agreement by deleting the application Services and all copies thereof from your mobile or other device. Subject to any Client Services Agreement, SnazMed may terminate this Agreement at any time without notice if it ceases to support the Application, which Company may do in its sole discretion. In addition, this Agreement will terminate immediately and automatically without any notice if you violate any of the terms and conditions of this Agreement. Upon termination: (i) all rights granted to you under this Agreement will also terminate; and (ii) you must cease all use of the Services and delete all copies of the Application from your mobile device and account. The terms herein that contemplate obligations after the Term, including but not limited to Indemnification, Disclaimer, Limitation of Liability, Controlling Law and Severability, IP Rights and Confidentiality, shall survive termination."
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="PRIVACY POLICY"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="This Agreement is subject to Client’s acceptance of the terms and conditions set forth in SnazMed’s Privacy Policy, the terms of which are hereby incorporated herein, and which can be found at http://snazmed.com/privacy. The terms and conditions set forth in SnazMed’s Privacy Policy may be changed by SnazMed in its sole discretion and those changes become effective upon posting. It is Client’s responsibility to review the Privacy Policy for revisions thereto.  Other than confidential personal information, which is subject to our Privacy Policy, any material, information or other communication you transmit or post to this Site is, and will be treated as, non-confidential and non-proprietary, and may be used by SnazMed and its affiliates for any purpose without compensation to you.
+
+"
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="PRIVACY AND SECURITY"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="SnazMed will comply with data breach laws and industry standards in the United States of America, including but not limited to HIPAA and HITECH. SnazMed and any subcontractors to whom Data is provided shall maintain a comprehensive data security program, which shall include reasonable and appropriate technical, organizational and security measures against the destruction, loss, unauthorized access or alteration of Data in the possession of SnazMed or its subcontractors, and which shall be (i) no less rigorous than those maintained by SnazMed for its own information of a similar nature, and (ii) no less rigorous than typical security standards in the industry.  Client agrees that Client shall be fully responsible for safeguarding and maintaining security for all patient health information uploaded to the SnazMed Site by Client."
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="SUPPORT, IMPLEMENTATION AND PROFESSIONAL SERVICES"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="SnazMed may from time to time in its sole discretion develop and provide Service updates, which may include upgrades, bug fixes, patches and other error corrections and/or new features (collectively, including related documentation, “Updates”). Updates may also modify or delete in their entirety certain features and functionality. You agree that SnazMed has no obligation to provide any Updates or to continue to provide or enable any particular features or functionality, except as otherwise provided in a Client Services Agreement. Based on your mobile device settings, when your mobile device is connected to the internet either: (a) the application for the Services will automatically download and install all available Updates; or (b) you may receive notice of or be prompted to download and install available Updates. If you are using a desktop version the Update may occur automatically. You shall promptly download and install all Updates and acknowledge and agree that the Services or portions thereof may not properly operate should you fail to do so. You further agree that all Updates will be deemed part of the Services and be subject to all terms and conditions of this Agreement."
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="INDEMNIFICATION"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="You agree to defend, indemnify and hold harmless SnazMed, its officers, shareholders, predecessors, successors in interest, directors, employees, agents, subsidiaries, affiliates, licensors and suppliers from and against any and all claims, charges, complaints, damages, losses, liabilities, costs and expenses (including attorneys’ fees) due to, arising out of or relating in any way to your use of, or access to, the Services."
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="DISCLAIMER"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE SERVICES ARE PROVIDED “AS IS” AND “AS AVAILABLE” WITH ALL FAULTS AND WITHOUT WARRANTY OF ANY KIND, AND SNAZMED, ON ITS OWN BEHALF AND ON BEHALF OF ITS AFFILIATES AND LICENSORS AND SERVICE PROVIDERS, HEREBY DISCLAIMS ALL WARRANTIES AND CONDITIONS WITH RESPECT TO THE SERVICES, EITHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES AND/OR CONDITIONS OF MERCHANTABILITY, SATISFACTORY QUALITY, FITNESS FOR A PARTICULAR PURPOSE, ACCURACY, TITLE, AND NON-INFRINGEMENT OF THIRD PARTY RIGHTS, AND WARRANTIES THAT MAY ARISE OUT OF COURSE OF DEALING, COURSE OF PERFORMANCE OR USAGE OF TRADE. WE DO NOT WARRANT AGAINST INTERFERENCE WITH YOUR ENJOYMENT OF THE SERVICES, THAT THE FUNCTIONS CONTAINED IN OR PERFORMED BY THE SERVICES WILL MEET YOUR REQUIREMENTS, THAT THE OPERATION OF THE SERVICES WILL BE UNINTERRUPTED OR ERROR-FREE, THAT ANY UPDATE WILL CONTINUE TO BE MADE AVAILABLE, THAT DEFECTS IN THE SERVICES WILL BE CORRECTED, OR THAT THE SERVICES WILL BE COMPATIBLE OR WORK WITH ANY THIRD PARTY SERVICES OR APPLICATIONS. INSTALLATION OF THE SERVICES MAY AFFECT THE USABILITY OF THIRD PARTY SERVICES OR APPLICATIONS. YOU FURTHER ACKNOWLEDGE THAT THE SERVICES ARE NOT INTENDED OR SUITABLE FOR USE IN SITUATIONS WHERE THE FAILURE OR TIME DELAY OF, OR ERRORS OR INACCURACIES IN, THE CONTENT, DATA OR INFORMATION PROVIDED BY THE SERVICES COULD LEAD TO DEATH, PERSONAL INJURY, OR SEVERE PHYSICAL OR PROPERTY DAMAGE. NO ORAL OR WRITTEN INFORMATION OR ADVICE GIVEN BY US OR AN APPROVED REPRESENTATIVE SHALL CREATE A WARRANTY. SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF IMPLIED WARRANTIES OR LIMITATIONS ON APPLICABLE STATUTORY RIGHTS OF A CONSUMER, SO THE ABOVE EXCLUSIONS AND LIMITATIONS MAY NOT APPLY TO YOU."
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="LIMITATION OF LIABILITY"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT WILL COMPANY OR ITS AFFILIATES, OR ANY OF ITS OR THEIR RESPECTIVE LICENSORS OR SERVICE PROVIDERS, HAVE ANY LIABILITY ARISING FROM OR RELATED TO YOUR USE OF OR INABILITY TO USE THE SERVICES OR THE CONTENT AND SERVICES FOR: (a) PERSONAL INJURY, PROPERTY DAMAGE, LOST PROFITS, COST OF SUBSTITUTE GOODS OR SERVICES, LOSS OF DATA, LOSS OF GOODWILL, BUSINESS INTERRUPTION, COMPUTER FAILURE OR MALFUNCTION OR ANY OTHER CONSEQUENTIAL, INCIDENTAL, INDIRECT, EXEMPLARY, SPECIAL OR PUNITIVE DAMAGES (b) DIRECT DAMAGES IN AMOUNTS THAT IN THE AGGREGATE EXCEED THE AMOUNT ACTUALLY PAID BY YOU FOR THE SERVICES DURING THE PRECEDING 12 MONTHS.
+THE FOREGOING LIMITATIONS WILL APPLY WHETHER SUCH DAMAGES ARISE OUT OF BREACH OF CONTRACT, TORT (INCLUDING NEGLIGENCE) OR OTHERWISE AND REGARDLESS OF WHETHER SUCH DAMAGES WERE FORESEEABLE OR COMPANY WAS ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. SOME JURISDICTIONS DO NOT ALLOW CERTAIN LIMITATIONS OF LIABILITY SO SOME OR ALL OF THE ABOVE LIMITATIONS OF LIABILITY MAY NOT APPLY TO YOU.
+"
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="ANY CAUSE OF ACTION OR CLAIM YOU MAY HAVE ARISING OUT OF OR RELATING TO THIS AGREEMENT OR THE SERVICES MUST BE COMMENCED WITHIN ONE (1) YEAR AFTER THE CAUSE OF ACTION ACCRUES, OTHERWISE, SUCH CAUSE OF ACTION OR CLAIM IS PERMANENTLY BARRED."
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="CLIENT CONTENT DISCLAIMER"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="Clients understands that users of the Site and the Services share files and upload information through the Site.  SnazMeddoes not guarantee or warrant that the shared files available for downloading through the Site are or will be free of infection or viruses, worms, Trojan horses or other code that manifest contaminating or destructive properties. Client is responsible for implementing sufficient procedures and checkpoints to satisfy your particular requirements for accuracy of data input and output, and for maintaining a means external to the Site for the reconstruction of any lost data. SnazMedis not responsible for the accuracy and/or completeness of information or material shared on this Site by users, nor does SnazMed undertake any obligation to ensure the Site or such shared information is updated. "
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="INTELLECTUAL PROPERTY"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="Trademarks, logos, images, illustrations, video clips, files text and graphics used or displayed at this Site are copyrights, trademarks, and or intellectual property owned, controlled, and/or registered by SnazMed, LLC. Any unauthorized use of any materials at this Site may violate copyright, trademark, and other laws. No logo, graphic, text, illustration, video clip, or trademark from this Site may be copied or retransmitted unless expressly permitted by SnazMed.Nothing on this Site shall be construed as conferring any license to any of the information available on this Site or under any of SnazMed’s or any third party’s intellectual property rights, whether by estoppel, implication, or otherwise. ."
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="NOTICE"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:text="Legal notices to be provided under this Agreement shall be delivered in writing. Notices to SnazMed shall be sent by personal delivery, registered or certified mail (return receipt requested, postage prepaid) or commercial express courier (with written verification of receipt) to: 224 Fifth Avenue, Suite F-295, New York, NY 10001. For contractual purposes, you consent to receive communications from SnazMed electronically. Notices sent to you shall be sent by personal delivery, electronic mail, registered or certified mail (return receipt requested, postage prepaid) or commercial express courier (with written verification of receipt) to the address listed on your account. All notices will be deemed given: (i) when delivered personally; (ii) 24 hours after electronic mail is sent, unless SnazMed is notified that the email address is invalid; (iii) three (3) business days after being deposited in the mail; or (iv) one (1) day after deposit with a commercial express courier specifying next day delivery. Either party may change its address for receipt of notice by notice to the other party in accordance with this section."
+                android:padding="7dp"
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="EQUITABLE RELIEF"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:text="The parties agree that a material breach of this Agreement adversely affecting SnazMed’s intellectual property rights in the Services or its Confidential Information may cause irreparable injury to SnazMed for which monetary damages would not be an adequate remedy and SnazMed shall be entitled to equitable relief (without a requirement to post a bond) in addition to any remedies it may have hereunder or at law."
+                android:padding="7dp"
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="ASSIGNMENT"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:text="You may not assign or transfer this Agreement, in whole or in part, by operation of law or otherwise without our prior written consent. Any attempted assignment or transfer without such consent will be void. Subject to these limits, this Agreement will inure to the benefit of the parties and their respective successors and assigns."
+                android:padding="7dp"
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="MODIFICATION"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:text="SnazMed, LLC may modify these Terms at any time, and such modifications will be effective immediately upon posting of the modified Terms to this Site. You agree to review these Terms periodically to be are of any such modifications and your continued access or use of the Site shall be deemed your conclusive acceptance of such modified Terms."
+                android:padding="7dp"
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="LINKS TO THIRD PARTY APPLICATIONS AND WEBSITES"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:text="By using any link to a third party applications or site that are located on theSnazMed Site or its applications, you are leaving the SnazMed Site. Links to third party web sites are provided solely as a convenience to you. SnazMed has not reviewed these third party sites and does not control and is not responsible for any of these sites or their content. SnazMed does not endorse or make any representations about these third party sites, or any information, software or other products or materials found there, or any results that may be obtained from using them. Your access of any third party site is at your own risk."
+                android:padding="7dp"
+                android:textColor="#808282"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:padding="7dp"
+                android:text="CONTROLLING LAW"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left"
+                android:text="These Terms constitute the entire agreement between you and SnazMed, LLC and supersede any prior or contemporaneous agreements, whether written, oral or otherwise with regard to your use of the Site. These Terms shall all be governed and construed in accordance with the laws of the state of Delaware. You agree that any legal action or proceeding between SnazMed, LLC and you for any purpose concerning these Terms or the parties’ obligations hereunder shall be brought exclusively in a federal or state court of competent jurisdiction sitting in Delaware. Neither the course of conduct between the parties nor trade practice shall act to modify any provision of these Terms. SnazMed’s failure to enforce any provision of these Terms shall not constitute a waiver of its rights to do so. SnazMed, LLC may assign its rights and duties under these Terms to any party at any time without notice to you."
+                android:padding="7dp"
+                android:textColor="#808282"
+                android:textSize="15dp" />
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/sendrequest"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="ACCEPT"
+        android:background="@color/blue2"
+        android:textColor="@color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>

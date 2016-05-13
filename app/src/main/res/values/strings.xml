@@ -1,0 +1,1278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SnazMed</string>
+    <!-- Menu Items and Title -->
+    <string name="buddy_group">Other Groups(s)</string>
+    <string name="alphaNumeric">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</string>
+    <string name="emailId">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.</string>
+    <string name="alpha">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+    <string name="numeric">0123456789</string>
+    <string name="my_group">My Group(s)</string>
+    <string name="my_contact">My Contact(s)</string>
+    <string name="contacts">Contacts</string>
+    <string name="sec_contacts">SecondContacts</string>
+    <string name="conversations">Conversations</string>
+    <string name="view_profile">View Profile</string>
+    <string name="utilities">Utilities</string>
+    <string name="files">Files</string>
+    <string name="me">Me</string>
+    <string name="orders">Orders</string>
+    <string name="apps">My apps</string>
+    <string name="avatar">Answering Machine</string>
+    <string name="settings">Settings</string>
+    <string name="kindly_select_any_buddies">Kindly select any buddies</string>
+    <string name="confirm_stop_recording">Confirm Stop Recording</string>
+    <string name="quickaction">Quick Action</string>
+    <string name="forms">Forms</string>
+    <string name="feedback">FeedBack</string>
+    <string name="call_history">Call History</string>
+    <string name="screen_sharing">Screen Sharing</string>
+    <!-- Menu Items and Title End -->
+
+
+    <!-- Settings Page -->
+    <string name="do_you_want_to_leave_before_sharing_the_note">Do you want to leave before sharing the note?</string>
+    <string name="do_you_want_to_go_back_before_sending">Do you want to go back before sending?</string>
+    <string name="configs">Configurations</string>
+    <string name="keys">Keys</string>
+    <string name="locservices">Location Services</string>
+    <string name="busyresponse">Busy Responses</string>
+    <string name="share_settings">Share Settings</string>
+    <string name="current_loc">Current Location</string>
+    <string name="autoplay">Autoplay</string>
+    <string name="change_password">Change Password</string>
+    <string name="change_image">Change image</string>
+    <string name="logout">Logout</string>
+    <string name="location">Location</string>
+    <string name="remember_sign_in_details">Remember Password</string>
+    <string name="auto_sign_in">Auto Login</string>
+    <string name="date_format">Date Format</string>
+    <string name="show_my_location">Show My Location</string>
+    <string name="share_tone">Share tone</string>
+    <string name="auto_accept_call">Auto Accept Call</string>
+    <string name="configure_stores">Configure Stores</string>
+    <string name="change_language">Select Language</string>
+    <string name="select_langugage">English</string>
+    <string name="english_langugage">English</string>
+    <string name="tamil_langugage">Tamil</string>
+    <string name="chinese_langugage">Chinese</string>
+    <!-- Settings Page End -->
+
+
+    <!-- Location Services -->
+    <string name="configure_for">Configure for</string>
+    <string name="when_buddy_is_at_location">When Buddy is at location</string>
+    <string name="manual">Manual</string>
+    <string name="clear_location">Clear Location</string>
+    <string name="off">OFF</string>
+    <string name="on">ON</string>
+    <string name="when_busy_respond_with">When busy Respond with</string>
+    <string name="redirect">Redirect</string>
+    <string name="forward">Forward</string>
+    <string name="note_path">Note Path</string>
+    <string name="response_type">Response type</string>
+    <string name="cancel">Cancel</string>
+    <string name="enable_disable_services">Enable/Disable Services</string>
+
+    <!-- Location Services End -->
+
+
+    <!-- Call Types -->
+    <string name="audio_call">Audio Call</string>
+    <string name="video_call">Video Call</string>
+    <string name="audio_broadcast_bc">Audio Broadcast</string>
+    <string name="video_broadcast_bc">Video Broadcast</string>
+    <string name="audio_unicast">Audio Unicast</string>
+    <string name="video_unicast">Video Unicast</string>
+    <string name="connecting">Connecting</string>
+    <string name="connected">Connecting</string>
+    <string name="calling">Calling</string>
+    <string name="snooze">Snooze</string>
+    <string name="need_call_hangup">Are you sure, want to hangup call?</string>
+    <string name="ringing">Ringing</string>
+    <string name="hangup">Hangup</string>
+    <string name="auconnected">Connected</string>
+    <string name="audiocall_connected_">Audiocall Connected  </string>
+    <string name="connected_buddies1">Connected  </string>
+    <string name="connected_buddies">Connected Buddies :  </string>
+    <string name="screen_share">Screen Sharing</string>
+    <string name="call_types1">Call Type:</string>
+    <string name="call_contents1">Content:</string>
+    <string name="durations">Duration:</string>
+    <string name="previews">Preview:</string>
+    <!-- Call Types End -->
+
+
+    <!-- About Page -->
+    <string name="about">About</string>
+    <!-- About Page End -->
+
+
+    <!-- Multimedia Option -->
+    <string name="gallery">Open Gallery</string>
+    <string name="photo">photo</string>
+    <string name="photo_avatar">Photo</string>
+    <string name="start_camera">Start Camera</string>
+    <string name="text_message">Text Message</string>
+    <string name="photo_message">Photo Message</string>
+    <string name="audio_message">Audio Message</string>
+    <string name="video_message">Video Message</string>
+    <string name="sketch_message">Sketch Message</string>
+    <string name="audio">audio</string>
+    <string name="audio_avatar">Audio</string>
+    <string name="video">video</string>
+    <string name="video_avatar">Video</string>
+    <string name="sketch">sketch</string>
+    <string name="text">text</string>
+    <string name="text_avatar">Text</string>
+    <string name="document">document</string>
+    <string name="text_share"> shared Text file with you</string>
+    <string name="audio_share"> shared audio file with you</string>
+    <string name="video_share"> shared video file with you</string>
+    <string name="sketch_share"> shared sketch file with you</string>
+    <string name="document_share"> shared document file with you</string>
+    <string name="image_share"> shared image file with you</string>
+    <string name="brush_size">Brush size</string>
+    <string name="choose_the_brush_size">Choose the brush size</string>
+    <string name="record_audio">Record Audio</string>
+    <string name="choose_existing_audio1">Choose the existing audio</string>
+    <string name="audio_note_picker_screen1">Audio note picker screen</string>
+    <string name="record_video">Record video</string>
+    <string name="choose_existing_video1">Choose the existing video</string>
+    <string name="video_note_picker_screen1">Video note picker screen</string>
+    <string name="add_photo">Add photo !</string>
+    <string name="take_photo">Take photo</string>
+    <string name="save_handsketch">Save Handsketch</string>
+    <string name="save_handsketches1">Save Handsketch?</string>
+    <string name="fontfamily">fonts/ARIAL.TTF</string>
+    <string name="fontfamilybold">fonts/ARIALBD.TTF</string>
+
+    <!-- Photo Option End -->
+
+
+    <!-- Contacts Dialog Box -->
+    <string name="inbox">Inbox</string>
+    <string name="conference_call">Conference call</string>
+    <string name="delete_contact">Delete Contact</string>
+    <string name="withdraw">Withdraw</string>
+    <string name="all_files">All Files</string>
+    <string name="please_login_to_the_system">please login to the system</string>
+    <string name="access">Access</string>
+    <string name="chat">Chat</string>
+    <!-- Contacts Dialog Box Ends -->
+
+
+    <!-- Change Password -->
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password:</string>
+    <string name="confirm_password">Confirm Password:</string>
+    <string name="old_password_hint">Enter Old Password</string>
+    <string name="new_password_hint">Enter New Password</string>
+    <string name="confirm_password_hint">Enter Confirm Password</string>
+    <string name="submit">Submit</string>
+    <!-- Change Password Ends -->
+
+
+    <!-- Logout -->
+    <string name="logout_confirmation">Logout confirmation</string>
+    <string name="are_you_sure_you_want_to_signout">Are you sure,You want to Logout?</string>
+    <string name="ok">Ok</string>
+    <!-- Logout Ends -->
+
+
+    <!-- Login -->
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <!-- Login Ends -->
+
+
+    <!-- Share Tone -->
+    <string name="share_tone_settings">Alert can be set for incoming notes</string>
+    <string name="enable_share_tone_">Enable Share Tone </string>
+    <string name="play_preview">Play Preview</string>
+    <!-- Share Tone Ends -->
+
+
+    <!-- Configure Stores -->
+    <string name="store_1">Store 1</string>
+    <string name="store_1_front">Front : </string>
+    <string name="store_1_side">Side : </string>
+    <string name="store_1_back">Back : </string>
+    <string name="store_2">Store 2</string>
+    <string name="store_2_cashier">Cashier : </string>
+    <string name="please_select">-Please Select-</string>
+    <string name="please_select_without_hyphen">Please Select</string>
+    <!-- Configure Stores Ends -->
+
+
+    <!-- Alert Dialog -->
+    <string name="warning">Warning !</string>
+    <string name="are_you_sure_you_want_to_delete">Are you sure you want to delete </string>
+    <string name="yes">Yes</string>
+    <string name="select_buddy">Select Buddy</string>
+    <string name="app_background">Are you sure, You want to Send this application to Background ? </string>
+    <string name="autoplay_dialog">Auto play will begin in 5 seconds. Click on Stop to prevent automatic playback now.</string>
+    <string name="play">Play </string>
+    <string name="add_people">Add People</string>
+    <string name="reminder_hangup">You have a reminder.Do you wish to Hangup Call ?</string>
+    <string name="near_loc_buddies">Nearest Location Buddies</string>
+    <string name="no_near_contacts">No Nearest Contacts</string>
+    <string name="video_bc_people">List of buddies</string>
+    <string name="out_audio_uc">Outgoing Audio Unicast</string>
+    <string name="in_audio_uc">Incoming Audio Unicast</string>
+    <string name="out_audio_bc">Outgoing Audio Broadcast</string>
+    <string name="in_audio_bc">Incoming Audio Broadcast</string>
+    <string name="no_result_found">No Result Found</string>
+    <!-- Alert Dialog Ends -->
+
+
+    <!-- Contacts -->
+    <string name="running_letters">*Swipe Left To Make Video Call*/ *Swipe Right To Make Audio Call*/ *Long Press To Go Chat*/                          *Swipe Left To Make Video Call*/ *Swipe Right To Make Audio Call*/ *Long Press To Go Chat*/</string>
+    <string name="all">Contact(s)</string>
+    <string name="requests">Requests</string>
+    <string name="contacts_groups">Group(s)</string>
+    <string name="individual">Individual</string>
+    <string name="both">Both</string>
+    <string name="my_groups">My Groups</string>
+    <string name="buddy_groups">Other Groups</string>
+    <string name="search_by_user">Search by user</string>
+    <string name="search_by_profile">Search by profile</string>
+    <string name="search_contacts">Search contacts</string>
+    <string name="select_all_fp">Select All</string>
+    <string name="selected" formatted="false">%d selected</string>
+    <string name="send_invite">Send Invite</string>
+    <string name="enter_value_to_search">Enter value to search</string>
+    <string name="click_arrow_to_set_dob">Click on arrow to set date of birth</string>
+    <string name="click_arrow_to_set_profession">Click on arrow to set profession</string>
+    <!-- Contacts End -->
+
+
+    <!-- Group -->
+    <string name="group_chat">Group Chat</string>
+    <string name="group_chat_settings">Group Chat Settings</string>
+    <string name="edit_group">Edit Group</string>
+    <string name="delete_group">Delete Group</string>
+    <string name="group_access">Group Access</string>
+    <string name="group_admin">Group Admin</string>
+    <string name="groups">Group(s)</string>
+    <string name="create_group">Create Group</string>
+    <string name="enter_group_name">Enter Group Name</string>
+    <string name="create">Create</string>
+    <string name="datetime">DateTime</string>
+    <string name="add_member_from_contact">Edit Members	From Contact</string>
+    <string name="add_member_from_profile">Edit Members from Profile</string>
+    <string name="member">Member</string>
+    <string name="members">Members</string>
+    <string name="update_members">Update Members</string>
+    <string name="modify_group">Modify</string>
+    <string name="group_created_success">Group Created Successfully</string>
+    <string name="clear_history1">Clear History</string>
+    <string name="no_profile_for1">No Profile For</string>
+    <string name="chat_options">Chat options</string>
+    <string name="clear_chat_history">Clear Chat History</string>
+    <!-- Group Ends -->
+
+
+    <!-- Calendar -->
+    <string name="date">Date</string>
+    <!-- Calendar Ends -->
+
+
+    <!-- Toast Messages -->
+    <string name="snoozed_for">Snoozed for</string>
+    <string name="please_enter_values_for_search">Please Enter Values for Search</string>
+    <string name="response_group">Response</string>
+    <string name="receive_all_services">You can receive all services from your buddies</string>
+    <string name="not_receive_call_services">You will not receive any call/ broadcast services from your buddies</string>
+    <string name="not_receive_call_msg_services">You will not receive any call/ broadcast/ Messaging</string>
+    <string name="network_error">NetWork Error, The NetWork Connection Lost. You cannot change the Status</string>
+    <string name="pls_create_profile">Please create profile</string>
+    <string name="large_image">Kindly Select someother image,this image is too large</string>
+    <string name="max_conf_members">You can add only 3 contacts to a conference</string>
+    <string name="sorry_no_online_users">Sorry no online users</string>
+    <string name="unable_send_video">Currently this people unable to send Video</string>
+    <string name="no_active_participants">No active conference participants</string>
+    <string name="selected_user_is_in_offline">Selected user is in Offline</string>
+    <string name="sent_request_to_you">sent request to you</string>
+    <string name="buddy_request_sent_successfully_to1">Buddy request sent successfully to</string>
+    <string name="cleared_successfully">Cleared successfully</string>
+    <string name="cannot_clear_empty">Cannot clear empty</string>
+    <string name="kindly_save_before_setting_reminder">Kindly save before setting reminder</string>
+    <string name="please_select_valid_option">Please select valid option</string>
+    <string name="kindly_give_your_form_record_name">Kindly Give Your Form Record Name</string>
+
+    <!-- Toast Messages Ends -->
+
+
+    <!-- Status -->
+    <string name="online">Online</string>
+    <string name="busy">Busy</string>
+    <string name="away">Away</string>
+    
+    <string name="is_offline">is offline</string>
+    <string name="stealth">Stealth</string>
+    <string name="open_camera">Open Camera</string>
+    <string name="select_from_gallery">Select from gallery</string>
+    <string name="offline">Offline</string>
+    <string name="make_your_selection">Make your selection</string>
+    
+    <string name="airport">Airport</string>
+    <string name="pending">Pending</string>
+    <string name="change_status">Change Status</string>
+    <!-- Status Ends -->
+
+    <string name="signin">Sign In</string>
+    <string name="fpwd">Forgot Password</string>
+    <string name="add_contact">Add Contacts</string>
+    <string name="callhistory">Call History</string>
+    <string name="fb">FB</string>
+    <string name="signout">Sign out</string>
+    <string name="others">Others</string>
+    <string name="condition_prompt">Bind</string>
+
+    <string-array name="conditions">
+        <item>BIND</item>
+        <item>AND</item>
+        <item>OR</item>
+    </string-array>
+
+    <string name="custom">Custom</string>
+    <string name="standard">My Profiles</string>
+    <string name="close">Close</string>
+    <string name="loading_video">Loading video</string>
+    <string name="option1">Option 1</string>
+    <string name="option2">Option 2</string>
+    <string name="option3">Option 3</string>
+
+    <string name="app_version">Snazmed Beta Version 30Dec2015</string>
+    <string name="app_date">2014-12-12 00:00:00</string>
+    <!-- <string name="service_url"> https://172.16.1.92:443/NOTESServices/Service</string> -->
+    <!-- <string name="service_url"> https://122.165.92.171:443/NOTESServices/Service</string> -->
+    <!-- <string name="service_url"> https://66.109.17.204:443/NOTESServices/Service</string>-->
+    <!-- <string name="service_url"> https://222.222.124.220:443/NOTESServices/Service</string>-->
+    <!-- <string name="service_url"> https://122.165.92.35:443/NOTESServices/Service</string> -->
+    <!-- <string name="service_url"> https://178.73.210.171:443/NOTESServices/Service</string> -->
+    <!-- <string name="service_url"> https://192.168.1.4:443/NOTESServices/Service</string> -->
+    <!-- <string name="service_url"> https://192.168.1.20:443/NOTESServices/Service</string> -->
+    <!-- <string name="service_url"> https://192.168.1.122:443/NOTESServices/Service</string> -->
+    <!-- <string name="service_url">https://122.165.92.171:443/AlphaServices/Service</string> -->
+    <!-- <string name="service_url">https://122.165.92.35:443/NOTESServices/Service</string>-->
+    <!-- <string name="service_url"> https://172.16.1.92:8443/AlphaServices/Service</string> -->
+    <!--<string name="service_url">https://122.165.92.35:443/SNAZMEDServices/Service</string>-->
+    <string name="service_url">https://66.36.228.47:443/SNAZMEDServices/Service</string>
+    <!--<string name="service_url">https://10.20.95.201:443/SNAZMEDServices/Service</string>-->
+    <!--<string name="service_url">https://172.16.1.92:8443/SNAZMEDServices/Service</string>-->
+       <string name="error">Sorry, unable to continue with Notes. Please try again later.
+   </string>
+       <string name="image">Image</string>
+
+       <string-array name="note_array">
+           <item>--Please Select--</item>
+           <item>Note</item>
+           <item>Image</item>
+           <item>Audio</item>
+           <item>Video</item>
+       </string-array>
+       <!-- -List of Text view in Notes -->
+    <string name="textview">TextView</string>
+    <string name="myself">Myself</string>
+    <string name="complete">Complete</string>
+    <string name="no_access">No Access</string>
+    <string name="chart">Chart</string>
+    <string name="test">Test</string>
+    <string name="_06_03_2012_12_06_38_pm_">06/03/2012 12:06:38 PM </string>
+    <string name="form_field1">Form Field1</string>
+    <string name="login_screen">Login Screen</string>
+    <string name="label">Label</string>
+    <string name="condition">Condition</string>
+    <string name="time">Time</string>
+    <string name="action">Action</string>
+    <string name="to">To</string>
+    <string name="url">URL</string>
+    <string name="_accept_"> Accept </string>
+    <string name="reject">Reject</string>
+    <string name="delete">Delete</string>
+    <string name="xxxxxxxxxx">XXXXXXXXXX</string>
+    <string name="quick_action_screen_">You can configure services for specified contacts.The services can be initiated on a single tap from the quick action screen.</string>
+    <string name="incomming_audio_call_from_xxxx">Incoming Audio Call from xxxx</string>
+    <string name="missed_call_from_xxxx">Missed Call from xxxx</string>
+    <string name="notes_f">Files</string>
+    <string name="recents">Recents</string>
+    <string name="back">Back</string>
+    <string name="set">Set</string>
+    <string name="members_present">MEMBERS PRESENT</string>
+    <string name="s_no">S.NO</string>
+    <string name="client_name">CLIENT NAME</string>
+    <string name="contact_number">CONTACT NUMBER</string>
+    <string name="members_present_m_s_eel">MEMBERS PRESENT:M/S EEL</string>
+    <string name="_1">1</string>
+    <string name="_2">2</string>
+    <string name="_3">3</string>
+    <string name="_4">4</string>
+    <string name="update">UPDATE</string>
+    <string name="profile_send">Send</string>
+    <string name="access_code">ACCESS CODE</string>
+    <string name="sync_code">SYNC CODE</string>
+    <string name="sync_query">SYNC QUERY</string>
+    <string name="custom_profilename">Enter Profile Name</string>
+    <string name="find">Find</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="user_id">User ID:</string>
+    <string name="email_id">Email ID:</string>
+    <string name="valid_data">Valid Data</string>
+    <string name="add">Add</string>
+    <string name="access_permissions_contacts">You can Set access permissions for you and your contacts from here</string>
+    <string name="add_datas">Add Datas</string>
+    <string name="form_records">Form Records</string>
+    <string name="save_and_add_data">Save and Add Data</string>
+    <string name="save_by">Save by QuickAction</string>
+    <string name="note_title">Note Title</string>
+    <string name="from">From</string>
+    <string name="reminder">Reminder</string>
+    <string name="_cancel_"> Cancel </string>
+    <string name="_done_"> Done </string>
+    <string name="response">Response</string>
+    <string name="comment">Comment</string>
+    <string name="form_creation">Form Creation</string>
+    <string name="custom_form_title">You can create your Own Custom Form,Use Form Name,Field Name,Valid Data,
+		Default Value,Instruction,Error Tip to create your form.
+</string>
+    <string name="field_name">Field Name</string>
+    <string name="form_field_name">Form Field Name</string>
+    <string name="entry_mode">Entry Mode</string>
+    <string name="form_name">Form Name</string>
+    <string name="default_value">Default Value</string>
+    <string name="instruction">Fill-in Instruction</string>
+    <string name="enter_the_instruction">Enter the Instruction</string>
+    <string name="error_tip">Error Tip</string>
+    <string name="enter_the_error_tip">Enter the Error Tip</string>
+    <string name="save_and_add_field">Save and Add Field</string>
+    <string name="enter_the_value_data">Enter the Value data</string>
+    <string name="valid_data_">Valid Data </string>
+    <string name="enter_valid_data">Enter Valid Data</string>
+    <string name="select_start_date_and_time">Select start Date and Time</string>
+    <string name="select_end_date_and_time">Select End Date and Time</string>
+    <string name="end_date_and_time">End Date and Time</string>
+    <string name="start_date_and_time">Start Date and Time</string>
+    <string name="please_enter_number_here">Please enter number here</string>
+    <string name="first_number">First Number</string>
+    <string name="second_number">Second Number</string>
+    <string name="secret_question">Secret Question:</string>
+    <string name="secret_answer">Secret Answer:</string>
+    <string name="already_have_an_account_">Already have an account?</string>
+    <string name="sign_in">Sign In</string>
+    <string name="buddy">Buddy</string>
+    <string name="type_help">Type #help to view robobuddy settings</string>
+    <string name="send">Send</string>
+    <string name="enter_instructions">Enter Instructions</string>
+    <string name="save_the_">Save the note</string>
+    <string name="save_and_add">Save and Add</string>
+    <string name="_text_"> Text </string>
+    <string name="_audio_"> Audio </string>
+    <string name="list_row">List Row</string>
+    <string name="enter_location">Enter Location</string>
+    <string name="search">Search</string>
+    <string name="password">Password:</string>
+    <string name="_sign_in_"> Sign In </string>
+    <string name="registration">Registration</string>
+    <string name="regis">Create New User</string>
+    <string name="network_settings">Network Settings</string>
+    <string name="_ok_"> OK </string>
+    <string name="select_all">Select All</string>
+    <string name="enter_title">Enter Title</string>
+    <string name="done">Done</string>
+    <string name="deselect">Deselect</string>
+    <string name="rbutton">rbutton</string>
+    <string name="view_note">View Note</string>
+    <string name="front">Front</string>
+    <string name="capture">Capture</string>
+    <string name="record">Record</string>
+    <string name="hand_sketch">Hand Sketch</string>
+    <string name="post_on_facebook">Post on FaceBook</string>
+    <string name="full_screen">Full Screen Image</string>
+    <string name="enter_userid">Enter User ID</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="retype_password">Retype Password:</string>
+    <string name="repeat_password">Retype Password</string>
+    <string name="phone_number">Phone No:</string>
+    <string name="enter_valid_phonenumber">Ex:9234567890</string>
+    <string name="enter_valid_email_address">Valid Email Address</string>
+    <string name="type_your_secret_answer_here_">Enter Secret Answer</string>
+    <string name="register">Register</string>
+    <string name="_cancel"> Cancel</string>
+    <string name="audio_robo">AUDIO ROBO</string>
+    <string name="key">Key</string>
+    <string name="maximum_key">Maximum key length is 256</string>
+    <string name="description">Description</string>
+    <string name="brief_description">Brief description of this key.</string>
+    <string name="_delete_"> Delete </string>
+    <string name="photo_robo">PHOTO ROBO</string>
+    <string name="value">Value</string>
+    <string name="text_robo">TEXT ROBO</string>
+    <string name="enter_value_for_key">Enter value for key</string>
+    <string name="video_robo">VIDEO ROBO</string>
+    <string name="rule_description">Rule Description</string>
+    <string name="expression">Expression</string>
+    <string name="value1">Value1</string>
+    <string name="value2">Value2</string>
+    <string name="clear">Clear</string>
+    <string name="rules">Rules</string>
+    <string name="_id_historytext">History</string>
+    <string name="my_buddy_s_forms">"My Buddy's Forms"</string>
+    <string name="services">Services</string>
+    <string name="access_and_sync_settings">Access and Sync Settings</string>
+    <string name="location_services">Location Services</string>
+    <string name="network">Network</string>
+    <string name="busy_response">Busy Response</string>
+    <string name="app_informations">App Informations</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="initiate_service">Initiate Service</string>
+    <string name="ip_address">IP Address</string>
+    <string name="delink_facebook_">Delink FaceBook.</string>
+    <string name="share_reminder">Share Note</string>
+    <string name="buddies">Buddies</string>
+    <string name="select_buddies">Select Buddies</string>
+    <string name="reminder_time">Reminder Time</string>
+    <string name="reminder_timezone">Reminder TimeZone</string>
+    <string name="reminder_zone">Reminder Zone</string>
+    <string name="reminder_response_type">Reminder Response Type</string>
+    <string name="enable_streaming">Enable Streaming</string>
+    <string name="sql_">SQL:</string>
+    <string name="view">View</string>
+    <string name="video_chat_with">Video Chat with</string>
+    <string name="name">Name</string>
+    <string name="virtual_buddy">Virtual Buddy</string>
+    <string name="vbuddy_name">Vbuddy Name</string>
+    <string name="enable_services">Enable Services</string>
+    <string name="enter_6_33_characters">Enter (6-33) Characters</string>
+    <string name="add_a_comment">Click here to add a comment</string>
+    <string name="addwithcall">Add\nWith Call</string>
+    <string name="title_activity_add_new_form">AddNewForm</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_form_input_mode">FormInputMode</string>
+    <string name="title_activity_text_input">TextInputActivity</string>
+    <string name="default_error_message">Default Error Message</string>
+    <string name="validation">Please select</string>
+    <string name="title_activity_save_text">SaveTextActivity</string>
+    <string name="titleofprofession">Choose a Profession</string>
+    <string name="dateformat1">MM-dd-yyyy</string>
+    <string name="dateformat2">dd-MM-yyyy</string>
+    <string name="user_name">User Name</string>
+    <string name="change_settings">Change Settings</string>
+    <string name="access_">Access:</string>
+    <string name="sync_">Sync:</string>
+    <string name="always_sync">Always Sync</string>
+    <string name="query_">Query</string>
+    <string name="sync_based_on_query">sync based on query</string>
+    <string name="new_form">New Form</string>
+    <string name="add_fields">Add Fields</string>
+    <string name="tap_to_add_a_new_field1">Tap to add a new field</string>
+    <string name="hosted_conference_call">Hosted Conference Call</string>
+    <string name="call">Call</string>
+    <string name="apps_av">Apps</string>
+    <string name="quick_actions_av">Quick Action</string>
+    <string name="your_app_list_is_empty">Your App list is empty</string>
+    <string name="add_a_new_app">Add a new App</string>
+    <string name="your_quick_action_list_is_empty">Your Quick Action list is empty</string>
+    <string name="add_a_new_qa">Add a new QA</string>
+    <string name="column">Column</string>
+    <string name="condition_bind">Condition</string>
+    <string name="my_blocked_buddies_list">My Blocked Buddies List</string>
+    <string name="buddy_name">Buddy Name</string>
+    <string name="status">Status</string>
+    <string name="user_name_asr">User Name</string>
+    <string name="t">T</string>
+    <string name="broadcast">Broadcast</string>
+    <string name="multimedia_option">Multimedia Option</string>
+    <string name="report">Report</string>
+    <string name="quick_actions_allows_you_to">Quick actions allows you to</string>
+    <string name="connect_your_data_and_applications">Connect your data and Applications</string>
+    <string name="to_automate_repetitive_tasks">to automate repetitive tasks.</string>
+    <string name="start_selecting_an_action_from_the">Start selecting an action from the</string>
+    <string name="menu_above">menu above</string>
+    <string name="start_an_video_call">Start an video call</string>
+    <string name="start_an_audio_conference">Start an audio conference</string>
+    <string name="start_an_video_conference">Start an video conference</string>
+    <string name="start_an_hosted_conference">Start an hosted conference</string>
+    <string name="dynamic_audio_call">Dynamic Audio Call</string>
+    <string name="dynamic_video_call">Dynamic Video Call</string>
+    <string name="share_a_text_note">Share a text note</string>
+    <string name="share_an_audio_note">Share an audio note</string>
+    <string name="share_a_video_note">Share a video note</string>
+    <string name="share_a_photo_note">Share a photo note</string>
+    <string name="share_a_hand_sketch">Share a hand sketch</string>
+    <string name="generate_a_report">Generate a report</string>
+    <string name="reset">Reset</string>
+    <string name="my_profile">My Profile</string>
+    <string name="share">Share</string>
+    <string name="you_have_not_created_any">You have not created any</string>
+    <string name="automated_action_yet">automated action yet.</string>
+    <string name="add_an_action">Add an action</string>
+    <string name="quick_actions">Quick Actions</string>
+    <string name="settings_header">Settings</string>
+    <string name="april_22_2014">April 22 2014</string>
+    <string name="buyer_name">Buyer Name</string>
+    <string name="product_name">Product Name</string>
+    <string name="quantity">Quantity</string>
+    <string name="number_of_quantity">Number of quantity</string>
+    <string name="name_organization">Name(or)Organization</string>
+    <string name="price">Price</string>
+    <string name="product_price">Product price</string>
+    <string name="add_your_product_images">Add your product images</string>
+    <string name="add_more_information_about_your_product">Add more informations about your product</string>
+    <string name="address">Address</string>
+    <string name="countrytv">Country</string>
+    <string name="country">Country</string>
+    <string name="state">State</string>
+    <string name="city_district">City/District</string>
+    <string name="pin">PIN</string>
+    <string name="email">E-Mail</string>
+    <string name="code">Code</string>
+    <string name="number">Number</string>
+    <string name="show_Result">Show Result(s)</string>
+    <string name="distance">Distance</string>
+    <string name="post">Post</string>
+    <string name="action_title">Action title</string>
+    <string name="start_an_audio_call">Start an audio call</string>
+    <string name="description_co3">Description...</string>
+    <string name="contact">Contact</string>
+    <string name="to_user">To User</string>
+    <string name="file">FILE</string>
+    <string name="schedule">SCHEDULE</string>
+    <string name="this_task_will_run_manually">This task will run manually</string>
+    <string name="trigger_setting">TRIGGER SETTINGS</string>
+    <string name="no_trigger_configured">No trigger configured.</string>
+    <string name="run_now">Run Now</string>
+    <string name="run">Run</string>
+    <string name="edit">Edit</string>
+    <string name="action_settings">Action settings</string>
+    <string name="title">Title</string>
+    <string name="call_screen">Call Screen</string>
+    <string name="text_view">Text View</string>
+    <string name="coordinator">Coordinator</string>
+    <string name="end">End</string>
+
+    <string name="call_disconnected">Call Disconnected</string>
+    <string name="select_date_format">Select Date Format</string>
+    <string name="this_is_the_message_view_we_can_add_our_custom_message_here_thank_you">This is the message view. We can add our custom message here. Thank you.</string>
+    <string name="_29_10_2014_07_34_pm">29.10.2014 07.34pm</string>
+    <string name="this_is_the_message_view">This is the message view</string>
+    <string name="mmchat">MMChat</string>
+    <string name="subject">Subject</string>
+    <string name="enter_description_about_avatar">Enter description about A.M</string>
+    <string name="message">Message</string>
+    <string name="select_field">Select Field</string>
+    <string name="add_new_field">Add New Field</string>
+    <string name="compute">Compute</string>
+    <string name="buddies_list">Buddies List</string>
+    <string name="instant_messages">Instant Messages....</string>
+    <string name="sip_audio">Sip Audio</string>
+    <string name="rename">Rename</string>
+    <string name="date_and_time">Date and Time</string>
+    <string name="avatar_from">A.M From</string>
+    <string name="username">Username</string>
+    <string name="response_car">Response</string>
+    <string name="received_time">Received Time</string>
+    <string name="current_time">Current Time</string>
+    <string name="reply_back_by">Chain by</string>
+    <string name="time_received">Time Received</string>
+    <string name="click_here_to_view_profile">Click Here to View Profile</string>
+    <string name="field_value">field value</string>
+    <string name="exchanges">Exchanges</string>
+    <string name="please_select_file">Please select file</string>
+    <string name="browse">Browse</string>
+    <string name="type_here_to_filter">Search by file name</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="user_id_forp">User ID</string>
+    <string name="email_address">Email address</string>
+    <string name="form_name_fprmd">Form Name</string>
+    <string name="form_icon">Form Icon</string>
+    <string name="form_description">Form Description</string>
+    <string name="search_bar">search your forms</string>
+    <string name="tap_list_item_to_update_settings">Tap list item to update settings</string>
+    <string name="field_list">Field List</string>
+    <string name="where">Where</string>
+    <string name="aggregate_not_selected">Aggregate:Not Selected</string>
+    <string name="what_is_your_question">What is your question?</string>
+    <string name="answer">Answer...</string>
+    <string name="conform_password">Conform Password</string>
+    <string name="hi">Hi</string>
+    <string name="aggregate">Aggregate</string>
+    <string name="group_name">Group Name</string>
+    <string name="header">Header</string>
+    <string name="view_group">View Group</string>
+    <string name="leave_group">Leave Group</string>
+    <string name="search_by_files_name">Search by files name</string>
+    <string name="hello_tv">Hello</string>
+    <string name="handsketch">Handsketch</string>
+    <string name="enter_email_id">Enter Email Id</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="login">Login</string>
+    <string name="user_id_login">User ID</string>
+    <string name="password_login">Password</string>
+    <string name="or">OR</string>
+    <string name="create_an_account">Create an account</string>
+    <string name="build_query">Build Query</string>
+    <string name="select_table">Select table</string>
+    <string name="select_fields">Select fields</string>
+    <string name="select_agregate">select Agregate</string>
+    <string name="stop">Stop</string>
+    <string name="select_note">Select note</string>
+    <string name="hign_resolution">Hign Resolution</string>
+    <string name="chronometer">Chronometer</string>
+    <string name="attach">Attach</string>
+    <string name="enter_valid_data_2">Enter Valid Data 2</string>
+    <string name="pending_avtaar">Pending Avtaar</string>
+    <string name="your_message">Your Message</string>
+    <string name="send_with_options">Send With Options</string>
+    <string name="deadLine">DeadLine</string>
+    <string name="private_pm">Private</string>
+    <string name="reply_back_by_pm">Chain By</string>
+    <string name="schedule_small">Schedule</string>
+    <string name="my_apps">My apps</string>
+    <string name="enter_no_of_characters">Enter No of Characters</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="user_name_r">User Name*</string>
+    <string name="email_address_r">Email address*</string>
+    <string name="password_r">Password*</string>
+    <string name="confirm_password_r">Confirm password*</string>
+    <string name="phone_number_optional">Phone number (Optional)</string>
+    <string name="what_is_your_question_r">What is your question?*</string>
+    <string name="secret_question_r">Secret Question</string>
+    <string name="select_secred_question">SELECT SECRET QUESTION</string>
+    <string name="what_is_your_pet_name">What is your pet name?</string>
+    <string name="what_is_your_school_teacher_name">What is your school teacher name?</string>
+    <string name="what_was_your_mobile_number">What was your mobile number?</string>
+    <string name="write_an_answer">Write an Answer...</string>
+    <string name="app_name_rg">App name</string>
+    <string name="schedule_tv">SCHEDULE</string>
+    <string name="run_manually">Run Manually</string>
+    <string name="run_on_a_specific_date_and_time">Run on a specific date and time</string>
+    <string name="repeat">Repeat</string>
+    <string name="run_this_action_every">Run This Action every</string>
+    <string name="update_sf">Update</string>
+    <string name="permissions">Permissions</string>
+    <string name="name_organization_tv">Name/Organization</string>
+    <string name="contact_number_small">Contact Number</string>
+    <string name="available">Available</string>
+    <string name="ttlby">TTL By</string>
+    <string name="elapse_time">Elapse Time</string>
+    <string name="enter_time_for_file_expiry">Enter time for file expiry</string>
+    <string name="after_one_hour">File Will Be Delete After Hr From The Time Of File</string>
+    <string name="group_owner">Group Owner</string>
+    <string name="form_query">Form Query</string>
+    <string name="enter_text">Enter Text</string>
+    <string name="time_bound_file_sharing">Time Bound File Sharing</string>
+    <string name="data_insertion">Data Insertion</string>
+    <string name="insert_data_by_executed_query">Insert Data By Executed Query</string>
+    <string name="make_action">Make Action</string>
+    <string name="to_users">To users</string>
+    <string name="execute">Execute</string>
+    <string name="enter_sql_query_here">Enter SQL query here</string>
+    <string name="required">Required</string>
+    <string name="error_message">Error Message</string>
+    <string name="notes">Notes</string>
+    <string name="clear_all">ClearAll</string>
+    <string name="add_filters">Add filters</string>
+    <string name="add_the_filter_taping_the">Add the filter taping the</string>
+    <string name="icon">icon.</string>
+    <string name="select_columns">Select columns</string>
+    <string name="buddies_distance">Buddies Distance</string>
+    <string name="utility">Utility</string>
+    <string name="quantity__">Quantity :</string>
+    <string name="invite">Invite</string>
+    <string name="price__">Price :</string>
+    <string name="my_selling_list">My Selling List</string>
+    <string name="select_your_category">Select Your Category</string>
+    <string name="buyer">Buyer</string>
+    <string name="seller">Seller</string>
+    <string name="service_provider">Service Provider</string>
+    <string name="service_needed">Service Needed</string>
+    <string name="exit">Exit</string>
+    <string name="save_ut">  Save  </string>
+    <string name="ok_caps"> OK </string>
+    <string name="monday_16_13_2013">Monday 16/13/2013</string>
+    <string name="su">SU</string>
+    <string name="mo">MO</string>
+    <string name="tu">TU</string>
+    <string name="we">WE</string>
+    <string name="th">TH</string>
+    <string name="fr">FR</string>
+    <string name="sa">SA</string>
+    <string name="select_any_service_you_want_to_make">Select any service you want to make</string>
+    <string name="view_group_code">View Group</string>
+    <string name="are_you_sure_you_want_to_leave">Are you sure you want to leave</string>
+    <string name="please_check_your_Internet_connection_before_make_call">Please check your Internet connection before make call</string>
+    <string name="please_check_your_internet_connection_before_make_conference_call">Please check your internet connection before make conference call</string>
+    <string name="sorry_no_members_to_chat">Sorry no members to chat</string>
+    <string name="no_network_connection_can_not_delete_buddy">No Network Connection,Can not Delete Buddy</string>
+    <string name="leave_group_code">Leave Group</string>
+    <string name="deleted_succesfully">Deleted Succesfully</string>
+    <string name="no_network_connection">No Network Connection</string>
+    <string name="no_profile_assigned_for_this_user">No profile assigned for this user</string>
+    <string name="kindly_check_your_network">Kindly check your network</string>
+    <string name="please_check_your_internet_connection_before_withdraw">Please check your Internet connection before withdraw</string>
+    <string name="are_you_sure_you_want_to_withdraw_all_your_share_with">Are you sure, you want to withdraw all your share with</string>
+    <string name="please_check_your_internet_connection">Please check your internet connection</string>
+    <string name="please_check_settings">Please check Settings</string>
+    <string name="please_enter_username_and_password">Please enter Username and Password</string>
+    <string name="your_username_maximum_limit_reached">Your username maximum Limit reached</string>
+    <string name="your_password_maximum_limit_reached">Your Password maximum Limit reached</string>
+    <string name="your_phone_number_maximum_limit_reached">Your Phone Number maximum Limit reached</string>
+    <string name="please_enter_the_answer">Please Enter the answer</string>
+    <string name="please_select_the_question">Please select the question</string>
+    <string name="username_must_be_6_33_characters">Username must be 6-33 characters</string>
+    <string name="username_must_be_less_than_34_characters">Username must be less than 34 characters</string>
+    <string name="please_enter_valid_email_address">Please enter valid Email address</string>
+    <string name="enter_alpha_numeric_characters_the_first_letter_must_be_alpha_value">Enter Alpha Numeric characters.The first letter must be Alpha value.</string>
+    <string name="password_must_be_less_than_34_characters">Password must be less than 34 characters</string>
+    <string name="kindly_retype_your_password">Kindly retype your password</string>
+    <string name="password_must_be_6_characters">Password must be 6 characters</string>
+    <string name="password_mismatch">Password Mismatch</string>
+    <string name="please_enter_secret_answer">Please enter secret answer</string>
+    <string name="phone_number_must_be_10_15_characters">Phone Number must be 10-15 characters</string>
+    <string name="you_may_loss_the_data_are_you_sure_want_to_go_back">You may Loss the data. Are you sure want to Go Back</string>
+    <string name="go_back">Go Back</string>
+    <string name="no">No</string>
+    <string name="info">Info</string>
+    <string name="old_Password_and_new_password_are_same">Old Password and New password are same !</string>
+    <string name="enter_mandatory_fields">Enter Mandatory Fields</string>
+    <string name="message_code">Message</string>
+    <string name="enter_a_new_password">Enter a new password</string>
+    <string name="enter_your_old_password">Enter your old password</string>
+    <string name="retype_your_new_password">Retype your new password</string>
+    <string name="enter_6_33_characters_code">Enter (6-33) Characters</string>
+    <string name="sorry_no_users_to_select">Sorry no users to select</string>
+    <string name="please_enter_buddy_name_to_search">Please enter buddy name to search</string>
+    <string name="is_already_in_your_buddy_list"> is already in your buddy list !</string>
+    <string name="_144_try_again_possible_network_problem">144 Try again: possible network problem</string>
+    <string name="no_matches_found_try_again">No matches found try again</string>
+    <string name="progress">progress ...</string>
+    <string name="please_wait">Please wait</string>
+    <string name="username_must_be_6_characters">username must be 6 characters</string>
+    <string name="forgot_password_error">Forgot Password Error</string>
+    <string name="check_ur_settings">check ur settings</string>
+    <string name="password_change_error">Password Change Error</string>
+    <string name="enter_confirm_password">Enter Confirm Password</string>
+    <string name="password_must_be_same">Password must be same</string>
+    <string name="no_matches_found">No matches found</string>
+    <string name="please_enter_values">Please Enter Values</string>
+    <string name="please_enter_valid_details">Please Enter Valid Details</string>
+    <string name="select_all_code">select all</string>
+    <string name="deselect_all_code">Deselect All</string>
+    <string name="kindly_select_buddy">Kindly select buddy</string>
+    <string name="share_photo_note">Share photo note</string>
+    <string name="share_audio_note">Share audio note</string>
+    <string name="share_text_note">Share text note</string>
+    <string name="share_video_note">Share video note</string>
+    <string name="share_sketch_note">Share sketch note</string>
+    <string name="audio_call_code">Audio call</string>
+    <string name="video_call_code">Video call</string>
+    <string name="audio_broadcast_code">Audio Broadcast</string>
+    <string name="video_broadcast_code">Video Broadcast</string>
+    <string name="audio_conference">Audio conference</string>
+    <string name="video_conference">Video conference</string>
+    <string name="hosted_conference_call_code">Hosted Conference Call</string>
+    <string name="dynamic_audio_call_code">Dynamic Audio Call</string>
+    <string name="dynamic_video_call_code">Dynamic Video Call</string>
+    <string name="show_results_form">Show Results Form</string>
+    <string name="start_new">New</string>
+    <string name="brush">Brush</string>
+    <string name="erase">Erase</string>
+    <string name="save">Save</string>
+    <string name="paint">Paint</string>
+    <string name="sml">Small</string>
+    <string name="med">Medium</string>
+    <string name="lrg">Large</string>
+
+    <string-array name="proffesion_arrays">
+        <item>None</item>
+        <item>Doctor</item>
+    </string-array>
+
+    <!-- Form field access settings -->
+    <string name="field_access">Field Access</string>
+    <string name="settings_field_name">Field Name: </string>
+    <string name="default_access">Default Access: </string>
+    <string name="add_access">Add Access: </string>
+    <string name="modify_access">Modify</string>
+    <string name="add_access_sym">+</string>
+    <string name="remove_access_sym">-</string>
+    <string name="save_field_access">Save</string>
+
+
+    <!-- Files Page -->
+    <string name="share_by_profile_use">Share by Profile User</string>
+    <string name="send_to_a_contact">Share to a Contact</string>
+    <string name="pls_create_note">Please create the note...</string>
+    <string name="kindly_login_to_send"> Kindly login to send response</string>
+    <string name="kindly_save_before_dele">Kindly save your file before deleting</string>
+    <string name="kindly_save_before_share">Kindly save your file before Sharing</string>
+    <string name="kindly_save_before_rename">Kindly save your file before Rename</string>
+    <string name="you_don_have_buddies">Sorry, You dont have buddies to share</string>
+    <string name="kindly_login_before_share">Kindly login before share</string>
+    <string name="select_response_type">Select Response Type</string>
+    <string name="text_note_saved_succesfully">Text note saved succesfully</string>
+    <string name="cannot_save_empty_file">Please enter some content to save. Cannot save empty file</string>
+    <string name="video_note_saved_succesfully">Video note saved succesfully</string>
+    <string name="audio_note_saved_succesfully">Audio note saved succesfully</string>
+    <string name="image_note_saved_succesfully">Image note saved succesfully</string>
+    <string name="cannot_saved_">Cannot save empty file</string>
+    <string name="from_self">From : Self</string>
+    <string name="not_yet_set">Reminder :Not yet set</string>
+    <string name="type">Type :</string>
+    <string name="open">Open </string>
+    <string name="pls_future_time"> Please assign future date and time</string>
+    <string name="pls_click_below">Please click below to open the file</string>
+    <string name="plz_write_reminder">Please write the reminder notes. </string>
+    <string name="reminder_added">Reminder added. </string>
+    <string name="note_reminder_added">Note saved and reminder added. </string>
+    <string name="tap_to_add">Tap to add text note</string>
+    <string name="txt_note">Text Note</string>
+    <string name="insufficient_memory">InSufficient memory...</string>
+    <string name="image_size_too_large">Image size is too large choose another image file</string>
+    <string name="file_nt_send">Sorry, file not send</string>
+    <string name="pause">Pause</string>
+    <string name="save_and_goback">Are you sure want to Save and Go Back?</string>
+    <string name="audio_save_and_goback">Audio Recording in Progress Do you want to cancel recording?</string>
+    <string name="save_and_send">Are you sure want to send and go back ?</string>
+    <string name="change_note_name">Change note name</string>
+    <string name="video_kindly_stop">Video is Playing.Kindly stop to proceed.</string>
+    <string name="note_name_nt_empty">Note name can not be empty</string>
+    <string name="no_such_items">No such items found</string>
+    <string name="component_error">Component Error</string>
+    <string name="sorry_component_error">Sorry Can not open this component,because the file not exist.</string>
+    <string name="file_explorer">File Explorer</string>
+    <string name="choose_your_file">Choose your file</string>
+    <string name="no_files_toedit">No files to edit</string>
+    <string name="you_edit_mode">You Are In Edit Mode</string>
+    <string name="signin_before_createnote">Kindly Signin before creating note</string>
+    <string name="no_notes_to_delete">Sorry!there is no notes to delete</string>
+    <string name="notes_to_delete">Are you sure, you want to delete selected notes?</string>
+    <string name="delete_confirm">Delete Confirmation</string>
+    <string name="select_delete_confirm">Please select atleast one item to delete</string>
+    <string name="select_share_confirm">Please select atleast one item to Share</string>
+    <string name="create_different_file">Press Plus to create different kinds of files</string>
+    <string name="selected_files_deleted">Selected Files Are Deleted</string>
+    <string name="please_select_one_file">Please select at least one file to share</string>
+
+    <!-- Utilities -->
+
+    <string name="buying_list">My Buying List</string>
+    <string name="selling_list">My Selling List</string>
+    <string name="provider_list">My Provider List</string>
+    <string name="needed_list">My Needed List</string>
+    <string name="hide">Hide</string>
+    <string name="no_sellers_found_for_this_add">No Sellers found for this add</string>
+    <string name="no_buyer_found_for_this_add">No buyers found for this add</string>
+    <string name="is_pending">is Pending</string>
+    <string name="is_not_in_your_buddies_list"> is not in your buddies list</string>
+    <string name="access_denied">Access Denied</string>
+    <string name="kindly_select_any_result">Kindly select any result</string>
+    <string name="buddies_locaton_distance_not_available">Sorry buddies locaton distance not available</string>
+    <string name="you_are_not_blocked_any_buddy">You are not blocked any buddy</string>
+    <string name="block_buddy">Block Buddy</string>
+    <string name="block_this_ad">Block this Add</string>
+
+    <!-- quickaction -->
+    <string name="share_photo">Share Photo</string>
+    <string name="share_audio">Share Audio</string>
+    <string name="share_text">Share Text</string>
+    <string name="share_video">Share Video</string>
+    <string name="share_handsketch">Share HandSketch</string>
+    <string name="there_is_no_record_exists">There is no Record exists</string>
+    <string name="invalid_query">Invalid Query</string>
+    <string name="quick_action_executed">Quick Action Executed</string>
+    <string name="do_you_want_to_see_forms">Do you want to see forms</string>
+    <string name="do_u_want_to_go_back_without_saving_your_changes">Do u want to go back without saving your changes?</string>
+    <string name="please_select_future_date_and_time">Please select future date and time</string>
+    <string name="please_select_frequency_mode_or_enter_proper_interval">Please select frequency mode or enter proper interval</string>
+    <string name="please_select_any_one_of_the_run_option">Please select any one of the run option</string>
+    <string name="kindly_select_the_buddy">Kindly select the buddy</string>
+    <string name="broadcast_call">Broadcast Call</string>
+    <string name="generate_report">Generate Report</string>
+    <string name="start_a_call">Start a call</string>
+    <string name="share_notes">Share Notes</string>
+    <string name="trigger_configure_is_mandatory">Trigger configure is mandatory</string>
+    <string name="no_forms_are_created">No forms are created</string>
+    <string name="kindly_enter_the_title">Kindly Enter the Title</string>
+    <string name="no_note_to_select">No note to select</string>
+    <string name="no_details_to_select">No details to select</string>
+    <string name="audio_is_playing_kindly_stop_that_first">Audio is Playing .Kindly Stop that first</string>
+    <string name="are_you_sure_you_want_to_go_back">Are you sure,You want to go back ?</string>
+    <string name="please_stop_audio">Please stop audio</string>
+    <string name="please_select_atleast_one_note">Please select atleast one note</string>
+    <string name="sorry_no_file_selected">Sorry no file(s) were selected</string>
+    <string name="no_files">Sorry no files</string>
+    <string name="required_fields">Please enter required fields</string>
+    <string name="values">Values</string>
+    <string name="integer">Integer</string>
+    <string name="forms_has_no_entries">Forms has no entries</string>
+    <string name="please_enter_all_fields">Please enter all fields</string>
+    <string name="kindly_select_previous_column">Kindly select previous column</string>
+    <string name="no_permission_to_view_the_records">Sorry you have no permission to view the records</string>
+    <string name="view_menu">View Menu</string>
+    <string name="are_you_sure_you_want_to_delete_entire_chat_history">Are you sure ,you want to delete entire chat history of </string>
+
+    <!-- services -->
+    <string name="audiocall_in_progress">AudioCall in Progress</string>
+
+    <!-- settings -->
+    <string name="do_you_want_withdraw">Do you want withdraw?</string>
+    <string name="please_select_valid_users">Please select valid users</string>
+    <string name="saved_successfully">Saved Successfully</string>
+    <string name="link_to_facebook">Link To Facebook</string>
+    <string name="save_the_changes_logged">If you save the changes you will be logged out.Are you sure you want to save changes</string>
+    <string name="save_settings">Save Settings</string>
+    <string name="settings_saved">Settings saved</string>
+    <string name="please_fill_fields_completely">Please fill fields completely!</string>
+    <string name="select_option">Select option</string>
+    <string name="redirect_to_url">Redirect to url</string>
+    <string name="call_forwarding">Call Forwarding</string>
+    <string name="kindly_give_the_latitude">Kindly give the latitude</string>
+    <string name="kindly_give_the_longitude">Kindly give the longitude</string>
+    <string name="automatic_messages_initiate_calls">You can send automatic messages/initiate calls to your contacts when they are in specified region</string>
+    <string name="unable_to_answer_a_call">When you are unable to answer a call,you send an alternative response.This response will be automatically sent when you reject a call or you are already in another call</string>
+    <string name="location_services_not_active">Location Services Not Active</string>
+    <string name="please_enable_location_services_gps">Please enable Location Services and GPS</string>
+    <string name="place_to_search">Please enter place to search</string>
+    <string name="google_map">Google Map</string>
+    <string name="please_provide_the_proper_place">Please Provide the Proper Place</string>
+    <string name="set_location">Set Location</string>
+    <string name="satellite_view_selected">Satellite View selected</string>
+    <string name="street_view_selected">Street View selected</string>
+    <string name="search_location_is_not_saved_exit">Search Location is not saved.Do you want to exit</string>
+    <string name="close_confirmation">Close Confirmation</string>
+    <string name="error_err">Error</string>
+    <string name="kindly_login">kindly login</string>
+    <string name="not_receive_call_broadcast_chat">You could  not receive any call/broadcast/chat services from your buddies</string>
+    <string name="cannot_upload">Sorry cannot upload your profile picture</string>
+    <string name="do_you_want_to_logout">Do you want to logout?</string>
+    <string name="do_you_want_to_login">Do you want to login?</string>
+
+    <!-- forms -->
+    <string name="unable_to_connect_server">Unable to connect server</string>
+    <string name="network_err">Network Error</string>
+    <string name="network_unreachable">Network Unreachable</string>
+    <string name="free_text">Free Text</string>
+    <string name="current_date">Current Date</string>
+    <string name="multimedia">Multimedia</string>
+    <string name="drop_down">Drop Down</string>
+    <!--<string name="numeric">Numeric</string>-->
+    <string name="my_forms">My Forms</string>
+    <string name="radio_button">Radio Button</string>
+    <string name="records1">Record</string>
+    <string name="delete_field">Are you sure, You want to Delete this Field</string>
+    <string name="create_form">Do you want to create form?</string>
+    <string name="audio_stop">Audio is recording.Kindly stop to proceed</string>
+    <string name="video_stop">video is Playing.Kindly stop to proceed</string>
+    <string name="empty_instruction_cannot_created">Empty instruction can not be created</string>
+    <string name="create_instruction">Please create the instruction</string>
+    <string name="empty_components_cannot_created">Empty Components can not be created</string>
+    <string name="stop_audio_save">Kindly Stop Audio Recording before save</string>
+    <string name="from_gallery">From Gallery</string>
+    <string name="from_camera">From Camera</string>
+    <string name="add_two_fields">Please add minimum two fields to compute</string>
+    <string name="add_any_fields">Kindly add any fields in this forms</string>
+    <string name="add_fields_form">Kindly add fields in this form</string>
+    <string name="no_data_delete">There is no data to delete</string>
+    <string name="form_name_alpha">Form Name  BEGIN with alpha</string>
+    <string name="enter_form_name">Please Enter Form Name</string>
+    <string name="icon_upload_failed">Form icon upload failed. Upload another icon</string>
+    <string name="upload_failed">Upload Failed</string>
+    <string name="connected_members">Connected members</string>
+    <string name="choose_image">Kindly Choose any one Image</string>
+    <string name="file_upload">File Upload</string>
+    <string name="icon_upload_try_again">Form Icon upload failed. Please try again</string>
+    <string name="cant_delete_users_permission">Cant able to delete own users permission</string>
+    <string name="tap_to_get_current_location">Tap to get current Location</string>
+    <string name="tap_to_get_value_computed">Tap to get value computed</string>
+    <string name="add_lessthan_ten_digit">Please add lessthen 10 digit number to calculate</string>
+    <string name="buddy_delete_this_form">Sorry, your buddy delete this form/ remove permission to access this form</string>
+    <string name="upload_failed_another_file">Upload failed.Upload another file</string>
+    <string name="valid_text">Please enter valid text</string>
+    <string name="cannot_read_image">Can not read this image</string>
+    <string name="choose_audio">Kindly Choose any one Audio</string>
+    <string name="choose_video">Kindly Choose any one video</string>
+    <string name="never_sync_to_view">Never Sync to View this Form</string>
+    <string name="no_access_to__view">No Access to View this Form</string>
+    <string name="offline_state">You Are In offline state</string>
+    <string name="not_have_permission_to_delete">Sorry you donot have permission to delete</string>
+    <string name="forms_loading">Forms settings loading</string>
+    <string name="uploading_failed">Uploading Failed</string>
+    <string name="downloading_failed">Downloading Failed</string>
+    <string name="no_permission_to_edit_the_records">No permission to edit records</string>
+    <string name="no_permission_to_add_with_call">Sorry you donot have permission to add with call</string>
+    <string name="no_permission_to_add_the_records">Sorry you donot have permission to add records</string>
+    <string name="kindly_enter_details">Kindly Enter Details</string>
+    <string name="kindly_select_table">Kindly Select Table</string>
+    <string name="kindly_select_column">Kindly Select column</string>
+    <string name="begin_with_alpha">Starting Letter Must BEGIN with alpha</string>
+    <string name="choose_image_files">Kindly choose image files</string>
+    <string name="access_and_sync">Access and sync</string>
+    <string name="minimum_no_char">MINIMUM NO OF CHAR</string>
+    <string name="maximum_no_char">MAXIMUM NO OF CHAR</string>
+    <string name="no_special_char">NO SPECIAL CHAR</string>
+    <string name="alpha_begin">BEGINS WITH ALPHA</string>
+    <string name="greater_than_date_time">Greater than Date and Time</string>
+    <string name="less_than_date_time">Less than Date and Time</string>
+    <string name="between_date_time">Between Date and Time</string>
+    <string name="hard_coded_value">Hard Coded Value</string>
+    <string name="query_based_value">Query Based Value</string>
+    <string name="get_valid_data">Get Valid Data</string>
+    <string name="no_special_characters_allowed">No special characters allowed</string>
+    <string name="enter_less_than_values">Please Enter the Less than Values from Valid Data</string>
+    <string name="enter_less_than_equal_values">Please Enter the Less than or Equal Values from Valid Data</string>
+    <string name="enter_greater_than_values">Please Enter the greater than Values from Valid Data</string>
+    <string name="enter_greater_than_equal_values">Please Enter the greater than or Equal  Values from Valid Data</string>
+    <string name="enter_equal_values">Please Enter the  Equal  Values from Valid Data</string>
+    <string name="enter_non_equal_values">Please Enter the Non Equal  Values from Valid Data</string>
+    <string name="field_name_already_exist">Field name already exist</string>
+    <string name="field_type">Field Type</string>
+    <string name="select_date_and_time">Kindly select the Date and Time</string>
+    <string name="kindly_enter_the_number">Kindly Enter the Number</string>
+    <string name="lesser_than">Lesser Than</string>
+    <string name="lesser_equal">Lesser Than Or Equal</string>
+    <string name="greater_than">Greater Than</string>
+    <string name="greater_than_equal">Greater Than Or Equal</string>
+    <string name="equal">Equal</string>
+    <string name="not_equal">Not Equal</string>
+    <string name="accuracy">Accuracy</string>
+    <string name="between">Between</string>
+    <string name="is_on_offline">is on Offline</string>
+    <string name="special_quick_action">Special Quick Action</string>
+
+    <!-- Avatar -->
+    <string name="move_to_pending_avtaar">This avtaar(s) will move to pending avtaar</string>
+    <string name="kindly_give_your_response">Kindly give your response</string>
+    <string name="file_downloading">file downloading</string>
+    <string name="click_here_to_response">Click here to response</string>
+    <string name="wait_for_background_process">Wait for Background Process</string>
+    <string name="result_cancelled">Result cancelled</string>
+ 
+    <string name="do_you_want_to_clear_all">Are you sure want to delete all A.M</string>
+    <string name="configure_avatar_when_you_needed">Configure A.M for your buddies when needed</string>
+    <string name="history_responses">These are the history of responses from your buddy</string>
+    <string name="view_or_respond_back_avatar">Please view or respond back to your buddies A.M</string>
+    <string name="stop_audio_response">Please stop audio before sending response</string>
+    <string name="stop_recording_response">Please stop recording before sending response</string>
+    <string name="reply_back_by_photo_message">Reply back by photo message</string>
+    <string name="reply_back_by_audio_message">Reply back by audio message</string>
+    <string name="reply_back_by_video_message">Reply back by video message</string>
+    <string name="reply_back_by_text_message">Reply back by text message</string>
+    <string name="please_see_below_for_text_message">Please see below for text message</string>
+    <string name="please_see_below_for_photo_message">Please see below for photo message</string>
+    <string name="click_play_audio">Click to play audio</string>
+    <string name="call_forward_to_gsm">Call forward to GSM</string>
+    <string name="unable_to_connect">Unable To Connect</string>
+    <string name="no_answers">No Answer</string>
+    <string name="call_dropped">Call Dropped</string>
+    <string name="call_rejected">Call Rejected</string>
+    <string name="select_when">Select When</string>
+    <string name="select_message_type">Select Message Type</string>
+    <string name="no_updates_available">No Updates Available</string>
+    <string name="new_avatar_deleted">New A.M Deleted</string>
+    <string name="delete_avatar">Delete A.M</string>
+    <string name="no_response_to_view">Sorry no response to view</string>
+    <string name="file_uploading_failed">File Uploading failed,Try again later</string>
+    <string name="all_users">All Users</string>
+    <string name="enter_subject">Please fill mandatory fields</string>
+    <string name="buddy_reply">Response Option</string>
+    <string name="select_message">Select Message</string>
+    <string name="stop_existing_recording">Please Stop existing recording</string>
+    <string name="set_avatar">Set A.M</string>
+    <string name="buddies_response">Buddies Response</string>
+    <string name="buddies_avatar">Buddies A.M</string>
+    <string name="kindly_enter_product_name">Kindly Enter Product name</string>
+    <string name="needer_name">Needer Name</string>
+    <string name="provider_name">Provider Name</string>
+    <string name="service_provided">Service Provided</string>
+    <string name="hide_result">Hide Result</string>
+    <string name="select_avatar_type">Select A.M Type</string>
+    <string name="reply_back_option">Reply Back Option</string>
+    <string name="avatar_mode">Change A.M Mode</string>
+    <!-- Screen Sharing -->
+    <string name="start_share">Start</string>
+    <string name="stop_share">Stop</string>
+    <string name="image_1">Image 1</string>
+    <string name="image_2">Image 2</string>
+    <string name="video_1">Video</string>
+<!--     #define  for the screenshot yes for ON, no for OFF -->
+    <string name="screenshot">no</string>
+
+    <!-- Screen Sharing Ends -->
+    <!-- title -->
+    <string name="sorry_turn_on_location_service">sorry! Turn on  Location Service</string>
+    <string name="select_buddy_info">Select Buddy Info</string>
+    <string name="are_you_sure_want_to_delete_this_group">Are you sure want to delete this group</string>
+    <string name="group_modified_successfully">Group Modified Successfully</string>
+    <string name="image_from_camera">Image from Camera</string>
+    <string name="audio_recording">Audio Recording</string>
+     <string name="video_recording">Video Recording</string>
+     <string name="draw_sketch">Draw Sketch</string>
+       <string name="chat_hist">Chat History</string>
+        <string name="call_hist">Call History</string>
+     <string name="notdone">Not Done</string>
+      <string name="taskcancel">Cancel the Task</string>
+      <string name="resp_later">Respond later</string>
+    <string name="special_characters_not_allowed">Special Characters Not Allowed</string>
+    <string name="reply_back_message_from">Chain message from:</string>
+    <string name="select_group_info">Select Group Info</string>
+    <string name="please_enter_the_group_name">Please Enter the Group Name</string>
+    <string name="cant_send_empty_text">Can’t send empty text</string>
+    <string name="share_by_profile">Share by Profile</string>
+    <string name="share_by_contact">Share by contact</string>
+    <string name="hour">Hour</string>
+    <string name="are_you_sure_you_want_to_withdraw_all_files_shared_earlier_with">Are you sure you want to withdraw all files shared earlier with</string>
+    <string name="file_will_be_deleted_after">File Will Be Deleted After</string>
+    <string name="hr_from_the_time_of_file_received"> Hr From The Time Of File Received</string>
+    <string name="already_you_having_this_group_name">Already you having this Group Name</string>
+    <!-- title Ends -->
+    
+    <!-- newly -->
+     <string name="feed_back">Feedback</string>
+     <string name="from_call">From :</string>
+     <string name="to_call">To :</string>
+     <string name="time_call">Time :</string>
+     <string name="with_draw">Withdraw</string>
+     <string name="view_group1">View Group</string>
+      <string name="leave_group1">Leave Group</string>
+       <string name="file_app">Files</string>
+       <string name="contacts_app">Contacts</string>
+       <string name="settings_app">Settings</string>
+     <string name="recents_app">Recents</string>
+     <string name="call_history_tab">Call History</string>
+     <string name="chat_history_tab">Chat History</string>
+     <string name="select_all_filess2">Select All</string>
+     <string name="todo_view">   TODO   </string>
+     <string name="chain_view">  CHAIN  </string>
+     <string name="schedule_view"> TIMED </string>
+     <string name="private_view"> ONE TO ONE </string>
+     <string name="no_files_available">No Files Available For This Buddy</string>
+     <string name="deadline_msg">TODO Message</string>
+     <string name="no_filess">No Files</string>
+     <string name="dead_received_from">Received TODO reply from</string>
+     <string name="dead_line_assigned_to">TODO Assigned to : </string>
+     <string name="dead_line_assigned_from">TODO Assigned from : </string>
+      <string name="dead_line_assigned_by">TODO Assigned by : </string>
+      <string name="private_msg_to">ONE TO ONE message to : </string>
+      <string name="private_msg_from">ONE TO ONE message from : </string>
+      <string name="schedule_message">TIMED Message</string>
+      <string name="message_schedule_by">Message Timed by : </string>
+      <string name="pressed">Chain pressed </string>
+      <string name="recevied_chain_from">Receive Chain From : </string>
+       <string name="message_schedule_to">Message Timed to : </string>
+       <string name="timed_info_from">Timed Info from : </string>
+        <string name="Are_you_sure_to_delete_this">Are you sure to delete this</string>
+	<string name="am_avatar">Answering Machine</string>
+        <string name="send_message_grid">Send Message</string>
+    <string name="action_today">Today</string>
+    <string name="action_day_view">Day view</string>
+    <string name="action_three_day_view">3 day view</string>
+    <string name="action_week_view">Week view</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+     
+
+</resources>

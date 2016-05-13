@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/photo"
+        android:icon="@drawable/ic_action_camera_white"
+        android:title="Photo"/>
+    <item
+        android:id="@+id/handsketch"
+        android:icon="@drawable/ic_action_edit_sketch"
+        android:title="Handsketch"/>
+    <item
+        android:id="@+id/audio"
+        android:icon="@drawable/ic_action_mic_white"
+        android:title="Audio"/>
+    <item
+        android:id="@+id/sip"
+        android:icon="@drawable/ic_action_mic_white"
+        android:title="Quick Audio"/>
+    <item
+        android:id="@+id/video"
+        android:icon="@drawable/ic_action_video_white"
+        android:title="Video"/>
+    <item
+        android:id="@+id/location"
+        android:icon="@drawable/ic_action_place_white"
+        android:title="Location"/>
+
+</menu>

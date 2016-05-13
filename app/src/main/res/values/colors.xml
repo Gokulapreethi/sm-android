@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="grey">#222</color>
+    <color name="im_grey">#D3D3D3</color>
+    <color name="trans">#80000000</color>
+    <!-- <color name="lgyellow">#fafad2</color> -->
+    <color name="lgyellow">#FF4D4D</color>
+    <color name="deadlingclr">#FFCC99</color>
+    <color name="transparent">#17170445</color>
+    <color name="titleColor">#90929A</color>
+    <color name="test">#B5B7B9</color>
+    <color name="text_color">#31D1F1</color>
+    <!--<color name="orange">#FFE56717</color>-->
+    <color name="lable_textcolor">#7F3131</color>
+    <color name="red_color">#FF0000</color>
+    <color name="red">#EE494E</color>
+    <color name="pink_tv">#ff1493</color>
+
+    <color name="shader_color">#9b9b9b</color>
+
+    <color name="progress">#B0BEC5</color>
+    <color name="progress_color">#1DE9B6</color>
+
+    <color name="titlenew">#d80021</color>
+    
+    <color name="title">#05ABE0</color>
+    <color name="gridtitle">#FFFFFF</color>
+    <color name="background">#333333</color>
+
+    <color name="lightgrey">#C0C0C0</color>
+    <color name="connected">#006600</color>
+    <color name="connecting_ringing">#FFA500</color>
+    <color name="disconnect">#FF0000</color>
+    <!--<color name="blue">#3333FF</color>-->
+    <color name="grey_light_bg">#E5E5E4</color>
+    <color name="blue_light_bg">#05ABE0</color>
+    <color name="m_blue">#0000CD</color>
+    <color name="login">#AAAAAA</color>
+    <color name="vtab_col1">#FFC600</color>
+    <color name="Note_color">#90929A</color>
+    <color name="audio_color">#90929A</color>
+    <color name="Note_title">#48d1cc</color>
+    <color name="dark_gray">#808080</color>
+    <color name="light_gray">#C0C0C0</color>
+    <color name="chat1">#5dc6f0</color>
+    <color name="trans_color">#F0F0F0 </color>
+    <color name="lblue">#1D90C3</color>
+    <color name="greycolor">#353A40</color>
+    <color name="dblue">#05ABE0</color>
+    <color name="tabcolor">#FF4D4D</color>
+    <color name="greendark">#004747</color>
+    <color name="greenlight">#06F235</color>
+    <color name="greybg">#F7F7F7</color>
+    <!--<color name="yellow">#FFFFCC</color>-->
+    <color name="lgreen">#6699CC</color>
+    <color name="hidepost">#D8D8D8 </color>
+    <color name="light_grey">#CCCCCC</color>
+    <color name="gchat_bg">#f0ece1</color>
+    <color name="snazgray">#333333</color>
+    <color name="snazlgray">#757575</color>
+    <color name="snazash">#E5E5E4</color>
+    <color name="event_color_01">#59dbe0</color>
+    <color name="event_color_02">#f57f68</color>
+    <color name="event_color_03">#87d288</color>
+    <color name="event_color_04">#f8b552</color>
+    <color name="toolbar">#efefef</color>
+    <color name="toolbar_text">#8f000000</color>
+    <color name="accent">#2789e4</color>
+
+    <color name="lblack">#202021</color>
+    <color name="black1">#202021</color>
+    <color name="black2">#272829</color>
+    <color name="black3">#2E2F30</color>
+    <color name="grey1">#3C3C3C</color>
+    <color name="grey2">#4D4D4D</color>
+    <color name="grey3">#808282</color>
+    <color name="ash">#B3B3B3</color>
+    <color name="blue1">#092135</color>
+    <color name="blue2">#0092DB</color>
+    <color name="blue3">#0075AF</color>
+    <color name="green">#00B254</color>
+    <color name="yellow">#E8B100</color>
+    <color name="orange">#EA6400</color>
+    <color name="pink">#DD2671</color>
+    <color name="trans_black2">#99272829</color>
+
+      <!--Date picker colors-->
+
+    <color name="btn_cancel_color">#999999</color>
+    <color name="btn_confirm_color">#303F9F</color>
+
+</resources>

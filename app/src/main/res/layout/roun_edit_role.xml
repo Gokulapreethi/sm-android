@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="@color/black2">
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/blue2" >
+
+        <TextView
+            android:id="@+id/txtView01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="EDIT ROLE"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/navigation_back"/>
+        <Button
+            android:id="@+id/save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/navigation_check"
+            android:layout_alignTop="@+id/txtView01"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    <org.cryse.android.controls.RoundedImageView
+        android:id="@+id/riv1"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="left"
+        android:layout_below="@+id/tv"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/img_user" />
+    <TextView
+        android:id="@+id/buddy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Buddy Name"
+        android:textSize="22dp"
+        android:layout_alignTop="@+id/riv1"
+        android:layout_toRightOf="@+id/riv1"
+        android:layout_toEndOf="@+id/riv1"
+        android:layout_marginLeft="38dp"
+        android:layout_marginStart="38dp"
+        android:layout_marginTop="30dp" />
+        <TextView
+            android:id="@+id/profession"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Prof Designation"
+            android:layout_alignTop="@+id/riv1"
+            android:layout_toRightOf="@+id/riv1"
+            android:layout_toEndOf="@+id/riv1"
+            android:layout_marginLeft="38dp"
+            android:layout_marginStart="38dp"
+            android:layout_marginTop="65dp" />
+        </RelativeLayout>
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Membership Rights"
+        android:layout_alignTop="@+id/riv1"
+        android:layout_toRightOf="@+id/riv1"
+        android:layout_toEndOf="@+id/riv1"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="38dp"
+        android:layout_marginTop="30dp" />
+    <Spinner
+        android:id="@+id/rights"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="10dp"
+        android:popupBackground="#202021"
+        style="@style/spinner_style"
+        android:spinnerMode="dropdown"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:background="#7E8080" />
+
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Admin Rights"
+        android:layout_alignTop="@+id/riv1"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp" />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/chbox1"
+        android:button="@drawable/checkbok_selector"
+        android:layout_marginLeft="15dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="set as administrator"
+        android:layout_alignTop="@+id/riv1"
+        android:layout_marginLeft="20dp"
+        android:textSize="17dp"
+        android:textColor="@color/title"
+        android:layout_marginTop="3dp" />
+    </LinearLayout>
+
+</LinearLayout>

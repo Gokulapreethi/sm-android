@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="5dp" >
+
+    <ImageView
+        android:id="@+id/item_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/home" >
+    </ImageView>
+
+    <TextView
+        android:id="@+id/appnameTXT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="App name"
+        android:textColor="#C0C0C0"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:typeface="normal" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/actionTXT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Action"
+        android:textColor="#C0C0C0"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:typeface="normal" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/ownerTXT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Action"
+        android:textColor="#C0C0C0"
+        android:textSize="15sp"
+        android:visibility="gone" >
+    </TextView>
+
+</LinearLayout>

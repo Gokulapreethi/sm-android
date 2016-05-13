@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llay"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:id="@+id/relBuddyList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:layout_marginTop="3dp"
+        android:padding="5dip" >
+
+        <TextView
+            android:id="@+id/tv_permissionname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dip"
+            android:layout_toRightOf="@+id/icon2"
+            android:text="TextView"
+            android:textColor="#575757"
+            android:textSize="18dp" >
+        </TextView>
+
+        <CheckBox
+            android:id="@+id/ch_setpermission"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:button="@drawable/sipselector"
+            android:gravity="right" />
+    </RelativeLayout>
+
+</LinearLayout>

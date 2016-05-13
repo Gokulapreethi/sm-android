@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    
+       <item android:id="@+id/menu_keys"
+       
+          android:title="@string/keys"
+          />
+          
+           <item android:id="@+id/menu_locservice"
+       
+          android:title="@string/locservices" 
+           />
+            <item android:id="@+id/menu_busyres"
+       
+          android:title="@string/busyresponse"  />
+          
+           <item android:id="@+id/menu_fb"
+       
+          android:title="@string/fb"  />
+          
+           <item android:id="@+id/menu_autoplay"
+       
+          android:title="@string/autoplay" android:checkable="true"  />
+          
+           <item android:id="@+id/menu_nwsett"
+       
+          android:title="@string/network_settings"  />
+</menu>

@@ -1,0 +1,656 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:crysecontrol="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout01"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/rlay_tilte"
+        android:layout_width="fill_parent"
+        android:layout_height="42dp"
+        android:background="@color/title" >
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/settings"
+            android:textColor="#FFFFFF"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_Settings"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/icon_sidemenu" />
+
+        <Button
+            android:id="@+id/menuim"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/btn_aboutpg"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/small_blue_balloon" />
+
+        <ImageView
+            android:id="@+id/btn_aboutpg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/info"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/mainLay"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/title"
+        android:orientation="vertical"
+        android:weightSum="2" >
+
+        <RelativeLayout
+            android:id="@+id/useLay"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.30"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:id="@+id/useimage"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp"
+                android:orientation="vertical" >
+
+                <org.cryse.android.controls.RoundedImageView
+                    android:id="@+id/user_icon"
+                    android:layout_width="100dp"
+                    android:layout_height="75dp"
+                    android:layout_gravity="left"
+                    android:layout_marginTop="5dp"
+                    android:scaleType="center"
+                    android:src="@drawable/icon_buddy_aoffline" />
+
+                <TextView
+                    android:id="@+id/usernameTxtVw"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/user_icon"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:ellipsize="end"
+                    android:text=""
+                    android:textColor="#ffffff"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:id="@+id/statuslay2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/usernameTxtVw"
+                    android:layout_centerHorizontal="true" >
+
+                    <TextView
+                        android:id="@+id/statusTxt1"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/usernameTxtVw"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"
+                        android:text="Available"
+                        android:textColor="@color/white"
+                        android:textSize="14dp" />
+
+                    <ImageView
+                        android:id="@+id/change_status"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_toRightOf="@+id/statusTxt1"
+                        android:src="@drawable/select" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/subbuttonsLay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@+id/useimage" >
+
+                <Button
+                    android:id="@+id/btn_changeimg"
+                    android:layout_width="150dp"
+                    android:layout_height="30dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="10dp"
+                    android:background="#FFFFFF"
+                    android:text="Change image"
+                    android:textColor="@color/title"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/btn_logout"
+                    android:layout_width="150dp"
+                    android:layout_height="30dp"
+                    android:layout_below="@+id/btn_changepassword"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="10dp"
+                    android:background="#FFFFFF"
+                    android:text="Logout"
+                    android:textColor="@color/title"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/btn_changepassword"
+                    android:layout_width="150dp"
+                    android:layout_height="30dp"
+                    android:layout_below="@+id/btn_changeimg"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="10dp"
+                    android:background="#FFFFFF"
+                    android:text="Change Password"
+                    android:textColor="@color/title"
+                    android:textSize="13sp" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/settinglay"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight=".70"
+            android:background="#F0F1F3"
+            android:orientation="vertical" >
+
+            <ScrollView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="#ffffff"
+                        android:orientation="vertical" >
+
+                        <RelativeLayout
+                            android:id="@+id/statusLay"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="10dp"
+                            android:visibility="gone" >
+
+                            <TextView
+                                android:id="@+id/textView1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:text="Status"
+                                android:textColor="#000000"
+                                android:textSize="14dp" />
+
+                            <TextView
+                                android:id="@+id/statusTxt"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginRight="22dp"
+                                android:text="Available"
+                                android:textColor="@color/greycolor"
+                                android:textSize="14dp" />
+                        </RelativeLayout>
+
+                        <!-- <View -->
+                        <!-- android:layout_width="fill_parent" -->
+                        <!-- android:layout_height="1dp" -->
+                        <!-- android:background="#C0C0C0" /> -->
+
+
+                        <!-- <RelativeLayout -->
+                        <!-- android:id="@+id/btn_form" -->
+                        <!-- android:layout_width="fill_parent" -->
+                        <!-- android:layout_height="wrap_content" -->
+                        <!-- android:layout_marginBottom="10dp" -->
+                        <!-- android:layout_marginTop="10dp" > -->
+
+
+                        <!-- <TextView -->
+                        <!-- android:id="@+id/textView2" -->
+                        <!-- android:layout_width="wrap_content" -->
+                        <!-- android:layout_height="wrap_content" -->
+                        <!-- android:layout_centerVertical="true" -->
+                        <!-- android:layout_marginLeft="10dp" -->
+                        <!-- android:text="Forms" -->
+                        <!-- android:textColor="#000000" -->
+                        <!-- android:textSize="14dp" /> -->
+                        <!-- </RelativeLayout> -->
+
+
+                        <!-- <View -->
+                        <!-- android:layout_width="fill_parent" -->
+                        <!-- android:layout_height="1dp" -->
+                        <!-- android:background="#C0C0C0" /> -->
+
+
+                        <!-- <RelativeLayout -->
+                        <!-- android:id="@+id/btn_syncset" -->
+                        <!-- android:layout_width="fill_parent" -->
+                        <!-- android:layout_height="wrap_content" -->
+                        <!-- android:layout_marginBottom="10dp" -->
+                        <!-- android:layout_marginTop="10dp" > -->
+
+
+                        <!-- <TextView -->
+                        <!-- android:id="@+id/textView1" -->
+                        <!-- android:layout_width="wrap_content" -->
+                        <!-- android:layout_height="wrap_content" -->
+                        <!-- android:layout_centerVertical="true" -->
+                        <!-- android:layout_marginLeft="10dp" -->
+                        <!-- android:text="Access and sync settings" -->
+                        <!-- android:textColor="#000000" -->
+                        <!-- android:textSize="14dp" /> -->
+
+
+                        <!-- <Button -->
+                        <!-- android:id="@+id/btn_syncsett" -->
+                        <!-- android:layout_width="15dp" -->
+                        <!-- android:layout_height="15dp" -->
+                        <!-- android:layout_alignParentRight="true" -->
+                        <!-- android:layout_centerVertical="true" -->
+                        <!-- android:layout_marginRight="20dp" -->
+                        <!-- android:background="@drawable/icon_detail" /> -->
+                        <!-- </RelativeLayout> -->
+
+
+                        <!-- <View -->
+                        <!-- android:layout_width="fill_parent" -->
+                        <!-- android:layout_height="1dp" -->
+                        <!-- android:background="#C0C0C0" /> -->
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="1dp"
+                            android:background="#C0C0C0"
+                            android:visibility="gone" />
+                         <RelativeLayout
+                             android:id="@+id/avatarlay"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp"
+                            android:visibility="gone" >
+
+                            <TextView
+                                android:id="@+id/textView1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:text="Answering Machine"
+                                android:textColor="#000000"
+                                android:textSize="14dp" />
+
+                             <ImageView
+                                android:id="@+id/iview_davatar"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:background="@drawable/icon_footer_forward" >
+                            </ImageView>
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp"
+                            android:visibility="gone" >
+
+                            <TextView
+                                android:id="@+id/textView1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:text="Location"
+                                android:textColor="#000000"
+                                android:textSize="14dp" />
+
+                            <ToggleButton
+                                android:id="@+id/btn_location"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginRight="5dp"
+                                android:background="@drawable/bgtoggle"
+                                android:button="@null"
+                                android:textOff=""
+                                android:textOn="" />
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="1dp"
+                            android:background="#C0C0C0" />
+
+                        <RelativeLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp" >
+
+                            <TextView
+                                android:id="@+id/textView1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:text="Remember password"
+                                android:textColor="#000000"
+                                android:textSize="14dp" />
+
+                            <ToggleButton
+                                android:id="@+id/btn_rempass"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginRight="5dp"
+                                android:background="@drawable/bgtoggle"
+                                android:button="@null"
+                                android:clickable="false"
+                                android:textOff=""
+                                android:textOn="" />
+                        </RelativeLayout>
+
+                        <!-- <RelativeLayout -->
+                        <!-- android:id="@+id/btn_changepassword" -->
+                        <!-- android:layout_width="fill_parent" -->
+                        <!-- android:layout_height="wrap_content" -->
+                        <!-- android:layout_marginBottom="10dp" -->
+                        <!-- android:layout_marginTop="10dp" > -->
+
+
+                        <!-- <TextView -->
+                        <!-- android:id="@+id/textView1" -->
+                        <!-- android:layout_width="wrap_content" -->
+                        <!-- android:layout_height="wrap_content" -->
+                        <!-- android:layout_centerVertical="true" -->
+                        <!-- android:layout_marginLeft="10dp" -->
+                        <!-- android:text="Change password" -->
+                        <!-- android:textColor="#000000" -->
+                        <!-- android:textSize="14dp" /> -->
+                        <!-- </RelativeLayout> -->
+
+
+                        <!-- <View -->
+                        <!-- android:layout_width="fill_parent" -->
+                        <!-- android:layout_height="1dp" -->
+                        <!-- android:background="#C0C0C0" /> -->
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="1dp"
+                            android:background="#C0C0C0" />
+
+                        <RelativeLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp" >
+
+                            <TextView
+                                android:id="@+id/textView1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:text="Auto Login"
+                                android:textColor="#000000"
+                                android:textSize="14dp" />
+
+                            <ToggleButton
+                                android:id="@+id/btn_autologin"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginRight="5dp"
+                                android:background="@drawable/bgtoggle"
+                                android:button="@null"
+                                android:clickable="false"
+                                android:textOff=""
+                                android:textOn="" />
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="1dp"
+                            android:background="#C0C0C0"
+                            android:visibility="gone" />
+
+                        <RelativeLayout
+                            android:id="@+id/rl_datefrmt"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp"
+                            android:visibility="gone" >
+
+                            <TextView
+                                android:id="@+id/tv_dateformat"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:text="Date Format"
+                                android:textColor="#000000"
+                                android:textSize="14dp" />
+
+                            <TextView
+                                android:id="@+id/tv_dateset"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_toLeftOf="@+id/iview_dtarrow"
+                                android:text="Date Format"
+                                android:textColor="#C8C8C8"
+                                android:textSize="14dp" />
+
+                            <ImageView
+                                android:id="@+id/iview_dtarrow"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:background="@drawable/icon_footer_forward" >
+                            </ImageView>
+                        </RelativeLayout>
+
+                        <!-- <View -->
+                        <!-- android:layout_width="fill_parent" -->
+                        <!-- android:layout_height="1dp" -->
+                        <!-- android:background="#C0C0C0" /> -->
+
+                        <RelativeLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="10dp"
+                            android:visibility="gone" >
+
+                            <TextView
+                                android:id="@+id/textView1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:text="Show My Location"
+                                android:textColor="#000000"
+                                android:textSize="14dp" />
+
+                            <ToggleButton
+                                android:id="@+id/btn_show_loc"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginRight="5dp"
+                                android:background="@drawable/bgtoggle"
+                                android:button="@null"
+                                android:textOff=""
+                                android:textOn="" />
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="1dp"
+                            android:background="#C0C0C0" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:background="#ffffff"
+                        android:orientation="vertical" >
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="1dp"
+                            android:background="#C0C0C0" />
+
+                        <RelativeLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp"
+                            android:visibility="gone" >
+
+                            <TextView
+                                android:id="@+id/textView1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:text="Autoplay"
+                                android:textColor="#000000"
+                                android:textSize="14dp" />
+
+                            <ToggleButton
+                                android:id="@+id/btn_autoplay"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginRight="5dp"
+                                android:background="@drawable/bgtoggle"
+                                android:button="@null"
+                                android:textOff=""
+                                android:textOn="" />
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="1dp"
+                            android:background="#C0C0C0"
+                            android:visibility="gone" />
+
+                        <RelativeLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp" >
+
+                            <ToggleButton
+                                android:id="@+id/btn_sharetone"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginRight="5dp"
+                                android:background="@drawable/bgtoggle"
+                                android:button="@null"
+                                android:textOff=""
+                                android:textOn="" />
+
+                            <TextView
+                                android:id="@+id/tv_sharetone"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="3dp"
+                                android:layout_toLeftOf="@+id/btn_sharetone"
+                                android:text="Share tone"
+                                android:textColor="#000000"
+                                android:textSize="14dp" />
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="1dp"
+                            android:background="#C0C0C0" />
+
+                        <RelativeLayout
+                            android:id="@+id/btn_networks"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="10dp" >
+
+                            <TextView
+                                android:id="@+id/textView1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:text="Network"
+                                android:textColor="#000000"
+                                android:textSize="14dp" />
+
+                            <ImageView
+                                android:id="@+id/iview_nwarrow"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:background="@drawable/icon_footer_forward" >
+                            </ImageView>
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="1dp"
+                            android:background="#C0C0C0" />
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

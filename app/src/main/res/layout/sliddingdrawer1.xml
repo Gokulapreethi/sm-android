@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/relate"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/black2"
+                android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <FrameLayout
+            android:id="@+id/buddieslistlayout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/black2" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/black2"
+                android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/linear"
+                android:layout_width="fill_parent"
+                android:layout_height="55dp"
+                android:background="@color/blue2"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <LinearLayout
+                    android:id="@+id/my_contacts"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:paddingTop="10dp"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/contacts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="My Contacts"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/list_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="1dp"
+                        android:textSize="12dp"
+                        android:text="LIST"
+                        android:textColor="@color/white" />
+
+                    <View
+                        android:id="@+id/view_mycontact"
+                        android:layout_width="match_parent"
+                        android:layout_height="5dp"
+                        android:layout_gravity="bottom"
+                        android:background="@color/white"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/my_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingTop="10dp"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal" >
+
+                        <TextView
+                            android:id="@+id/groups"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="My Groups"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:id="@+id/list_2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="1dp"
+                            android:textSize="12dp"
+                            android:text="LIST"
+                            android:textColor="@color/black" />
+
+                    <View
+                        android:id="@+id/view_mygroup"
+                        android:layout_gravity="bottom"
+                        android:layout_width="match_parent"
+                        android:layout_height="5dp"
+                        android:background="@color/white"
+                        android:visibility="gone"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/main_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:orientation="vertical">
+                    <EditText
+                        android:id="@+id/searchtext"
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_toLeftOf="@+id/btnsearch"
+                        android:inputType="textPersonName"
+                        android:digits="0123456789abcdefghijklmnopqrstuvwxyz_"
+                        android:hint="search Buddies and Groups"
+                        android:imeOptions="actionSearch" >
+                    </EditText>
+
+                    <View
+                        android:layout_gravity="bottom"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/white" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/sort_lay"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_margin="10dp"
+                    android:weightSum="2"
+                    android:gravity="right">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:visibility="invisible"
+                        android:text="Sort by:"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:weightSum="2">
+
+                        <Button
+                            android:id="@+id/online_sort"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:background="@color/black2"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:text="ONLINE"
+                            android:layout_marginRight="5dp"/>
+
+                        <Button
+                            android:id="@+id/alpha_sort"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@color/black2"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:drawableRight="@drawable/sort_arrow"
+                            android:drawableEnd="@drawable/sort_arrow"
+                            android:textColor="@color/snazlgray"
+                            android:text="A &gt; Z"
+                            android:layout_marginRight="5dp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                    <ListView
+                        android:id="@+id/listview_coontact"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toLeftOf="@+id/sidebar"
+                        android:scrollbars="none"/>
+                <ListView
+                    android:id="@+id/listview_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toLeftOf="@+id/sidebar"
+                    android:scrollbars="none"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+        </FrameLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

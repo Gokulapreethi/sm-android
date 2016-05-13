@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LinearLayout01"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/black2"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_margin="15dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="Manage Membership Rights for"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/grey3"
+            android:id="@+id/tv1" />
+
+        <TextView
+            android:id="@+id/grp_name"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:text="GroupName"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:layout_marginLeft="10dp"/>
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/attending"
+                android:weightSum="1"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:background="@color/black3"
+                android:padding="15dp"
+                android:layout_marginBottom="2dp"
+                android:text="ATTENDING"
+                android:textColor="@color/white"
+                android:drawableRight="@drawable/button_arrow_right"/>
+
+            <TextView
+                android:id="@+id/fellow"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:background="@color/black3"
+                android:padding="15dp"
+                android:layout_marginBottom="2dp"
+                android:text="FELLOW"
+                android:textColor="@color/white"
+                android:drawableRight="@drawable/button_arrow_right"/>
+
+            <TextView
+                android:id="@+id/chief_res"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:background="@color/black3"
+                android:padding="15dp"
+                android:layout_marginBottom="2dp"
+                android:text="CHIEF RESIDENT"
+                android:textColor="@color/white"
+                android:drawableRight="@drawable/button_arrow_right"/>
+
+            <TextView
+                android:id="@+id/resident"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:background="#343536"
+                android:padding="15dp"
+                android:layout_marginBottom="2dp"
+                android:text="RESIDENT"
+                android:textColor="@color/white"
+                android:drawableRight="@drawable/button_arrow_right"/>
+
+            <TextView
+                android:id="@+id/med_student"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:background="#343536"
+                android:padding="15dp"
+                android:layout_marginBottom="2dp"
+                android:text="MED STUDENT"
+                android:textColor="@color/white"
+                android:drawableRight="@drawable/button_arrow_right"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

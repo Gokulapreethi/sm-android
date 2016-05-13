@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="5sp"
+    android:scrollbars="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/loc_busy_hint"
+        style="@style/adrenalin_pageHeader"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="3dp" >
+
+        <TextView
+            android:id="@+id/txtView02"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/location_services"
+            android:textColor="@color/grey" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/scrlloc_busy_1"
+        style="@style/adrenalin_pageContent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/loc_busy_hint"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:id="@+id/llsetmain"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/locllsett1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/configure_for"
+                    android:textColor="@color/black" />
+
+                <Spinner
+                    android:id="@+id/self_Spinner"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:scaleType="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/when_buddy_is_at_location"
+                    android:textColor="@color/black" />
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayout1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@+id/btnLocManual"
+                        android:orientation="vertical" >
+
+                        <EditText
+                            android:id="@+id/et_lat"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal"
+                            android:maxLength="1000"
+                            android:visibility="gone" >
+
+                            <requestFocus>
+                            </requestFocus>
+                        </EditText>
+
+                        <EditText
+                            android:id="@+id/et_long"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal"
+                            android:maxLength="1000"
+                            android:visibility="gone" >
+                        </EditText>
+
+                        <EditText
+                            android:id="@+id/ed_address"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textMultiLine" >
+                        </EditText>
+                    </LinearLayout>
+
+                    <ToggleButton
+                        android:id="@+id/btnLocManual"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="@string/manual"
+                        android:textOff="@string/manual"
+                        android:textOn="@string/manual" >
+                    </ToggleButton>
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/initiate_service"
+                    android:textColor="@color/black" />
+
+                <Spinner
+                    android:id="@+id/locservice_spinner"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:scaleType="center" />
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayout2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/clear_location"
+                        android:textColor="@color/black" />
+
+                    <ToggleButton
+                        android:id="@+id/btnLocClear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="@string/off"
+                        android:textOff="@string/off"
+                        android:textOn="@string/on" >
+                    </ToggleButton>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayout3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/enable_disable_services"
+                        android:textColor="@color/black" />
+
+                    <ToggleButton
+                        android:id="@+id/btnLocservEnabled"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="@string/off"
+                        android:textOff="@string/off"
+                        android:textOn="@string/on" >
+                    </ToggleButton>
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="2sp"
+                    android:layout_marginBottom="5dip"
+                    android:layout_marginTop="5dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/list_divider_wh" />
+            </LinearLayout>
+
+            <ScrollView
+                android:id="@+id/scrlloc_busy"
+                style="@style/adrenalin_pageContent"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/loc_busy_hint"
+                android:scrollbars="none" >
+
+                <LinearLayout
+                    android:id="@+id/busyllsett2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/when_busy_respond_with"
+                        android:textColor="@color/black" />
+
+                    <Spinner
+                        android:id="@+id/forward_spinner"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:scaleType="center" />
+
+                    <TextView
+                        android:id="@+id/tvredirect"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/redirect"
+                        android:textColor="@color/black" />
+
+                    <EditText
+                        android:id="@+id/etredirect"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName"
+                        android:maxLength="1000" />
+
+                    <TextView
+                        android:id="@+id/tv_forward"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/forward"
+                        android:textColor="@color/black" />
+
+                    <Spinner
+                        android:id="@+id/sp_forward"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:scaleType="center" />
+
+                    <TextView
+                        android:id="@+id/tvsharepath"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/note_path"
+                        android:textColor="@color/black" />
+
+                    <EditText
+                        android:id="@+id/etsharepath"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:editable="false"
+                        android:maxLength="1000" />
+
+                    <TextView
+                        android:id="@+id/tvrestype"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/response_type"
+                        android:textColor="@color/black" />
+
+                    <Spinner
+                        android:id="@+id/restype_spinner"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:scaleType="center" />
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/footer"
+        style="@style/adrenalin_pageFooter"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="3dp" >
+
+        <Button
+            android:id="@+id/btnSaveSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/save" >
+        </Button>
+
+        <Button
+            android:id="@+id/btnCancelSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel" />
+    </LinearLayout>
+
+</RelativeLayout>

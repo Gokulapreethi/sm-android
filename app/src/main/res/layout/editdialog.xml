@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/greybg"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/greybg" >
+
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/greybg"
+            android:orientation="vertical" >
+
+            <!-- <LinearLayout -->
+            <!-- android:id="@+id/linearLayout3" -->
+            <!-- android:layout_width="fill_parent" -->
+            <!-- android:layout_height="wrap_content"  android:background="#3a92e0"> -->
+
+
+            <!-- <TextView android:textColor="#FFFFFF" android:gravity="center" -->
+            <!-- android:layout_margin="0.5dp" android:background="#000000" -->
+            <!-- android:textStyle="bold" android:id="@+id/checkpoints" android:text="UPDATE ACCESS AND PERMISSION" -->
+            <!-- android:padding="2dp" android:layout_height="fill_parent" -->
+            <!-- android:layout_width="fill_parent" android:layout_weight="0.90" android:textSize="10sp"/> -->
+
+
+            <!-- </LinearLayout> -->
+
+            <LinearLayout
+                android:id="@+id/linearLayout3"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/greybg" >
+
+                <TextView
+                    android:id="@+id/tv_location"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="0.5dp"
+                    android:layout_weight="0.9"
+                    android:background="@color/greybg"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:text="@string/location"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout3"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/greybg" >
+
+                <TextView
+                    android:id="@+id/serialnum"
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:layout_margin="0.5dp"
+                    android:layout_weight="1.60"
+                    android:background="@color/greybg"
+                    android:gravity="center"
+                    android:text="@string/access_code"
+                    android:textColor="@color/black"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/access_spinner"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0.5dp"
+                    android:layout_weight="0.60"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:padding="2dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout3"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/greybg" >
+
+                <TextView
+                    android:id="@+id/serialnum"
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:layout_margin="0.5dp"
+                    android:layout_weight="1.60"
+                    android:background="@color/greybg"
+                    android:gravity="center"
+                    android:text="@string/sync_code"
+                    android:textColor="@color/black"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/sync_spinner"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0.5dp"
+                    android:layout_weight="0.60"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:padding="2dp"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_query"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/greybg"
+                android:visibility="gone" >
+
+                <TextView
+                    android:id="@+id/serialnum"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="0.5dp"
+                    android:layout_weight="1.60"
+                    android:gravity="center"
+                    android:text="@string/sync_query"
+                    android:textColor="@color/black"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/query"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="0.5dp"
+                    android:layout_weight="0.60"
+                    android:gravity="center"
+                    android:inputType="text"
+                    android:padding="2dp"
+                    android:textColor="@color/black"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout3"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/greybg"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/update"
+                    android:layout_width="134dp"
+                    android:layout_height="39dp"
+                    android:layout_margin="3dp"
+                    android:background="@drawable/rounded_bordercolor_clone"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:text="@string/update"
+                    android:textColor="#FFFFFF"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/cancel_update"
+                    android:layout_width="134dp"
+                    android:layout_height="39dp"
+                    android:layout_margin="3dp"
+                    android:background="@drawable/rounded_bordercolor_clone2"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:text="@string/cancel"
+                    android:textColor="@color/title"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

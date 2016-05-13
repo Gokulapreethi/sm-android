@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_margin="15dp"
+    android:gravity="bottom">
+
+    <TextView
+        android:id="@+id/delete_acc"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@color/blue2"
+        android:gravity="center"
+        android:padding="7dp"
+        android:text="Delete my account"
+        android:textColor="@color/white"
+        android:textSize="17dp" />
+
+    <TextView
+        android:id="@+id/log_out"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@color/blue2"
+        android:gravity="center"
+        android:layout_marginTop="3dp"
+        android:text="Log out"
+        android:textColor="@color/white"
+        android:textSize="17dp" />
+
+    <TextView
+        android:id="@+id/cancel"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:background="#4d4d4d"
+        android:gravity="center"
+        android:text="Cancel"
+        android:textColor="@color/white"
+        android:textSize="17dp" />
+
+</LinearLayout>

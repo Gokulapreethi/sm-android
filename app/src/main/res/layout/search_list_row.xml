@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_below="@+id/header_title"
+        android:id="@+id/buddy_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="5px"
+        android:visibility="visible" >
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/checkbok_selector"
+            android:text=""
+            android:layout_marginLeft="8dp"
+            android:layout_gravity="center">
+        </CheckBox>
+
+
+    <org.cryse.android.controls.RoundedImageView
+        android:id="@+id/buddy_icon"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginRight="6dip"
+        android:scaleType="center"
+        android:src="@drawable/icon_buddy_aoffline"
+        android:layout_toRightOf="@+id/selectAll_buddy"/>
+
+    <TextView
+        android:id="@+id/tv_buddyName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="2dip"
+        android:layout_toRightOf="@+id/buddy_icon"
+        android:text="@string/textview"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/black" >
+    </TextView>
+        <RelativeLayout
+            android:id="@+id/statusLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_buddyName"
+            android:layout_toRightOf="@+id/status_icon_1" >
+
+            <TextView
+                android:id="@+id/tv_dept"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="2dip" >
+            </TextView>
+
+            <TextView
+                android:id="@+id/tv_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
+                android:text="@string/textview" >
+            </TextView>
+
+            <ImageView
+                android:id="@+id/status_icon"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginRight="2dp"
+                android:layout_alignParentRight="true"
+                />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

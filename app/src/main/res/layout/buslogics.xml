@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/buss_lay"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:padding="15dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/level"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:background="#FFFFFF"
+            android:orientation="vertical"
+            android:padding="15dp" >
+
+            <ImageView
+                android:id="@+id/qa_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/qa_icon" />
+
+            <TextView
+                android:id="@+id/iview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:text="@string/you_have_not_created_any"
+                android:textColor="#737373" >
+            </TextView>
+
+            <TextView
+                android:id="@+id/iview2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/automated_action_yet"
+                android:textColor="#737373" >
+            </TextView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/foote"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="90dp"
+            android:background="#FFFFFF"
+            android:orientation="vertical" >
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2sp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/list_divider" />
+
+            <Button
+                android:id="@+id/addanaction"
+                android:layout_width="210dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp"
+                android:background="#13ADE1"
+                android:text="@string/add_an_action"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </RelativeLayout>
+  <RelativeLayout
+        android:id="@+id/footer1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buss_lay"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+       >
+
+        <TextView
+            android:id="@+id/buss_txtusr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/xxxxxxxxxx"
+            android:textColor="@color/white"
+            android:visibility="gone" />
+ 
+        <LinearLayout
+            android:id="@+id/segment_lay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:visibility="gone" >
+
+            <RadioGroup
+                android:id="@+id/segment_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dip"
+                android:checkedButton="@+id/button_one"
+                android:orientation="horizontal" >
+
+                <RadioButton
+                    android:id="@id/button_one"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:minHeight="33dip"
+                    android:minWidth="40dip"
+                    android:text="@string/quick_actions"
+                    android:textColor="@color/radio_colors" />
+
+                <RadioButton
+                    android:id="@+id/button_two"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:minHeight="33dip"
+                    android:minWidth="40dip"
+                    android:text="@string/settings"
+                    android:textColor="@color/radio_colors" />
+            </RadioGroup>
+        </LinearLayout>
+    </RelativeLayout>
+ 
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/footer1"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        >
+    </LinearLayout>
+
+</RelativeLayout>

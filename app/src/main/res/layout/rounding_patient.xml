@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/search_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:visibility="gone">
+    <EditText
+        android:id="@+id/ed_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Search"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textColor="@color/snazlgray"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp">
+        <TextView
+            android:id="@+id/patients"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MY PATIENTS"
+            android:layout_gravity="center"
+            android:textColor="@color/snazlgray"
+            android:layout_marginLeft="20dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NAME"
+            android:id="@+id/name"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/location"
+            android:layout_marginRight="20dp"
+            android:layout_toStartOf="@+id/location" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LOC"
+            android:id="@+id/location"
+            android:layout_gravity="center"
+            android:textColor="@color/snazlgray"
+            android:layout_marginRight="20dp"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/status"
+            android:layout_toStartOf="@+id/status" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="STATUS"
+            android:textColor="@color/snazlgray"
+            android:layout_gravity="center"
+            android:id="@+id/status"
+            android:layout_marginRight="20dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
+    <ListView
+        android:id="@+id/listview_patient"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:layout_below="@+id/header"/>
+    <LinearLayout
+        android:id="@+id/linear3"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@android:color/transparent"
+        android:layout_alignParentBottom="true">
+
+        <ImageView
+            android:id="@+id/plusBtn_patient"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/button_photo"
+            android:layout_gravity="right" />
+
+    </LinearLayout>
+</RelativeLayout>

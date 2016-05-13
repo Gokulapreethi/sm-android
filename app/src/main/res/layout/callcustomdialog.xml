@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="250dp"
+    android:layout_height="150dp"
+    android:background="#FFFFFF"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/call_alert1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:textColor="#808080" />
+
+    <LinearLayout
+        android:id="@+id/layout_decline"
+        android:layout_width="100dp"
+        android:layout_height="35dp"
+        android:layout_below="@+id/call_alert1"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="30dp"
+        android:background="#D84141"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:id="@+id/cancel"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="2dp"
+            android:focusable="false"
+            android:clickable="false"
+            android:src="@drawable/decline_image" />
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="65dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="5dp"
+            android:focusable="false"
+            android:clickable="false"
+            android:gravity="center"
+            android:inputType="textMultiLine"
+            android:singleLine="false"
+            android:text="decline"
+            android:textColor="@color/white"
+            android:textSize="14dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_accept"
+        android:layout_width="100dp"
+        android:layout_height="35dp"
+        android:layout_below="@+id/call_alert1"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="30dp"
+        android:layout_toRightOf="@+id/layout_decline"
+        android:background="#0AAF54"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:id="@+id/answer"
+            android:layout_width="25dp"
+            android:clickable="false"
+            android:layout_height="22dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="1dp"
+            android:focusable="false"
+            android:src="@drawable/answer_image" />
+
+        <TextView
+            android:id="@+id/tv_accept"
+            android:layout_width="65dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="5dp"
+            android:focusable="false"
+            android:clickable="false"
+            android:gravity="center"
+            android:inputType="textMultiLine"
+            android:singleLine="false"
+            android:text="@string/answer"
+            android:textColor="@color/white"
+            android:textSize="14dp" />
+    </LinearLayout>
+
+</RelativeLayout>

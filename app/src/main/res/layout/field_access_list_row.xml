@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white" >
+
+    <RelativeLayout
+        android:id="@+id/column_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2.5dp"
+        android:paddingBottom="2.5dp"
+        android:paddingTop="2.5dp" >
+
+        <RelativeLayout
+            android:id="@+id/field_name_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="5dp"
+            android:padding="5dp" >
+
+            <TextView
+                android:id="@+id/fieldname_lbl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:text="@string/settings_field_name"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/fieldname_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/fieldname_lbl"
+                android:textColor="@color/black" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="fill_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/field_name_container"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:background="#DCDCDC" />
+
+        <RelativeLayout
+            android:id="@+id/default_access_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/divider1"
+            android:layout_marginLeft="5dp"
+            android:padding="5dp" >
+
+            <TextView
+                android:id="@+id/default_access_lbl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:text="@string/default_access"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/default_access_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/field_access_btn_default"
+                android:padding="10dp"
+                android:text="@string/modify_access"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="fill_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/default_access_container"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:background="#DCDCDC" />
+
+        <RelativeLayout
+            android:id="@+id/add_access_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/divider2"
+            android:layout_marginLeft="5dp"
+            android:padding="5dp" >
+
+            <TextView
+                android:id="@+id/add_access_lbl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:text="@string/add_access"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/add_access_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/field_access_btn_add"
+                android:padding="10dp"
+                android:text="@string/add_access_sym"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/divider3"
+            android:layout_width="fill_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/add_access_container"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:background="#DCDCDC" />
+
+        <LinearLayout
+            android:id="@+id/buddy_access_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/divider3"
+            android:layout_marginLeft="5dp"
+            android:orientation="vertical"
+            android:padding="5dp" >
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

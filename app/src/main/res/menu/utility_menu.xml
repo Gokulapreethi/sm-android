@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/a_call"
+        android:title="Audio Call"/>
+    <item
+        android:id="@+id/img_msg"
+        android:title="Send Photo Message"/>
+    <item
+        android:id="@+id/a_msg"
+        android:title="Send Audio Message"/>
+    <item
+        android:id="@+id/v_msg"
+        android:title="Send Video message"/>
+    <item
+        android:id="@+id/s_msg"
+        android:title="Send Sketch Message"/>
+
+</menu>

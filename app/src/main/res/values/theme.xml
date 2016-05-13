@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--<style name="TitlebarBackgroundStyle">-->
+    <!--<item name="android:background">@drawable/icon_toolbar</item>-->
+    <!--</style>-->
+    <style name="Theme.OTPMain" parent="android:Theme">
+        <!--<item name="android:windowTitleSize">40dip</item>-->
+        <!--<item name="android:windowTitleBackgroundStyle">@style/TitlebarBackgroundStyle</item>-->
+        <item name="android:editTextStyle">@style/EditTextStyle</item>
+        <item name="colorPrimaryDark">@color/white</item>
+        <item name="colorAccent">@color/white</item>
+    </style>
+
+    <style name="LaunchTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!--<item name="colorPrimary">@color/blue2</item>-->
+        <item name="colorPrimaryDark">@color/black2</item>
+        <item name="colorAccent">@color/black2</item>
+    </style>
+
+</resources>

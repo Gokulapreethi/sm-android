@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/rlay_viewrectilte"
+        android:layout_width="fill_parent"
+        android:layout_height="42dp"
+        android:layout_gravity="center"
+        android:background="@color/title"
+        android:baselineAligned="false"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/headerc"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentLeft="true"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/btn_viewrecback"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_action_back" />
+
+            <Button
+                android:id="@+id/viewnotification"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="6dp"
+                android:background="@drawable/ic_action_settings" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/headerc1"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_toLeftOf="@+id/headerc2"
+            android:layout_toRightOf="@+id/headerc"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/tv_viewrectilte"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:duplicateParentState="true"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:text="@string/notes_f"
+                android:textColor="@color/white" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/headerc2"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/one"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/viewim"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="3dp"
+                android:background="@drawable/small_blue_balloon"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/btn_viewcall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_action_call"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/btn_viewaddanother"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/toolbar_buttons_plus" />
+
+            <!-- <Button android:id="@+id/settings" android:layout_width="wrap_content" -->
+            <!-- android:layout_height="wrap_content" android:src="@drawable/home" android:layout_gravity="right" -->
+
+
+            <!-- /> -->
+            <!-- <Button android:id="@+id/settings" android:layout_width="wrap_content" -->
+            <!-- android:layout_height="wrap_content" android:src="@drawable/home" android:layout_gravity="right" -->
+
+
+            <!-- /> -->
+            <!-- <Button android:id="@+id/settings" android:layout_width="wrap_content" -->
+            <!-- android:layout_height="wrap_content" android:src="@drawable/home"  android:layout_gravity="right" -->
+
+
+            <!-- /> -->
+            <!-- <Button android:id="@+id/settings" android:layout_width="wrap_content" -->
+            <!-- android:layout_height="wrap_content" android:src="@drawable/home"  android:layout_gravity="right" -->
+
+
+            <!-- /> -->
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/rlay_viewrectiltes"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/lightgrey"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:weightSum="6" >
+
+        <LinearLayout
+            android:id="@+id/heade"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="2.25"
+            android:gravity="left"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/formicon_img"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:contentDescription="formicon"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:src="@drawable/menu_form_icon" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/header"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3.5"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <ScrollView
+                android:id="@+id/scrollView1"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" >
+
+                <TextView
+                    android:id="@+id/tv_frmdescription"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:duplicateParentState="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:maxLines="100"
+                    android:text="@string/description"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+            </ScrollView>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rlay_viewrectiltes"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tv_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="@string/tap_list_item_to_update_settings"
+            android:textColor="@color/grey"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/content_recscroller"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/greybg" >
+
+        <LinearLayout
+            android:id="@+id/llayout_viewholder"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

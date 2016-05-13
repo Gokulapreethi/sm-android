@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/relayLay1"
+    android:background="@color/black2">
+
+    <ScrollView
+        android:id="@+id/Scroll_address"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#272829"
+        android:scrollbars="none"
+        android:layout_above="@+id/relay_bottom1"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        >
+
+    <TextView
+        android:id="@+id/address_text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Address 1"
+        android:textSize="15dp"
+        android:textColor="@color/grey3"
+        android:layout_marginLeft="20dp"
+        />
+
+        <EditText
+            android:id="@+id/address_edit1"
+            android:layout_below="@id/address_text1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="20dp"
+            android:hint="Address 1"
+            android:background="@color/black2"
+            android:textColor="@color/white"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            />
+        <View
+            android:id="@+id/address_view1"
+            android:layout_below="@+id/address_edit1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/snazgray" />
+
+        <TextView
+            android:layout_below="@+id/address_view1"
+            android:id="@+id/address_text2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Address 2"
+            android:textSize="15dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/grey3"
+            android:layout_marginLeft="20dp"
+            />
+
+        <EditText
+            android:id="@+id/address_edit2"
+            android:layout_below="@id/address_text2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="20dp"
+            android:background="@color/black2"
+            android:textColor="@color/white"
+            android:hint="Address 2"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="10dp"
+            />
+        <View
+            android:id="@+id/address_view2"
+            android:layout_below="@+id/address_edit2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/snazgray" />
+        <TextView
+            android:layout_below="@+id/address_view2"
+            android:id="@+id/address_text3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Zip +4"
+            android:textSize="15dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/grey3"
+            android:layout_marginLeft="20dp"
+            />
+
+        <EditText
+            android:id="@+id/address_edit3"
+            android:layout_below="@id/address_text3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="20dp"
+            android:background="@color/black2"
+            android:textColor="@color/white"
+            android:hint="zip"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="10dp"
+            />
+        <View
+            android:id="@+id/address_view3"
+            android:layout_below="@+id/address_edit3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/snazgray" />
+
+        <TextView
+            android:layout_below="@+id/address_view3"
+            android:id="@+id/address_text4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="City"
+            android:textSize="15dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/grey3"
+            android:layout_marginLeft="20dp"
+            />
+
+        <EditText
+            android:id="@+id/address_edit4"
+            android:layout_below="@id/address_text4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="20dp"
+            android:hint="city"
+            android:background="@color/black2"
+            android:textColor="@color/white"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="10dp"
+            />
+        <View
+            android:id="@+id/address_view4"
+            android:layout_below="@+id/address_edit4"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/snazgray" />
+
+        <AutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:id="@+id/state_of_practice"
+            android:textColor="@color/white"
+            android:hint="State"
+            android:textSize="20dp"
+            android:padding="7dp"
+            android:layout_below="@+id/address_view4"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edittext_style"
+            android:drawableRight="@drawable/input_arrow"/>
+        <View
+            android:id="@+id/address_view5"
+            android:layout_below="@+id/state_of_practice"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/snazgray" />
+
+        <TextView
+            android:layout_below="@+id/address_view5"
+            android:id="@+id/address_text5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Office phone number"
+            android:textSize="15dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/grey3"
+            android:layout_marginLeft="20dp"
+            />
+
+        <EditText
+            android:id="@+id/address_edit5"
+            android:layout_below="@id/address_text5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="20dp"
+            android:background="@color/black2"
+            android:textColor="@color/white"
+            android:hint="Office phone number"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="10dp"
+            />
+        <View
+            android:id="@+id/address_view6"
+            android:layout_below="@+id/address_edit5"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/snazgray" />
+
+        <TextView
+            android:layout_below="@+id/address_view6"
+            android:id="@+id/address_text6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Office fax number"
+            android:textSize="15dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/grey3"
+            android:layout_marginLeft="20dp"
+            />
+
+        <EditText
+            android:id="@+id/address_edit6"
+            android:layout_below="@id/address_text6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="20dp"
+            android:background="@color/black2"
+            android:textColor="@color/white"
+            android:hint="office fax number"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="10dp"
+            />
+        <View
+            android:id="@+id/address_view7"
+            android:layout_below="@+id/address_edit6"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/snazgray"
+            />
+
+    </RelativeLayout>
+    </ScrollView>
+
+        <RelativeLayout
+            android:id="@+id/relay_bottom1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <Button
+                    android:id="@+id/cancel_button2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_weight="1"
+                    android:text="CANCEL"
+                    android:textColor="@color/white"
+                    android:background="@color/snazgray"/>
+
+                <Button
+                    android:id="@+id/save_button2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_weight="1"
+                    android:text="SAVE"
+                    android:textColor="@color/white"
+                    android:background="@color/blue2"
+                    />
+            </LinearLayout>
+        </RelativeLayout>
+
+
+
+</RelativeLayout>

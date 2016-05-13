@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menu_username"
+        android:title=""/>
+    <item
+        android:id="@+id/menu_contacts"
+        android:title="@string/contacts"/>
+    <item
+        android:id="@+id/menu_addcontacts"
+        android:title="@string/add_contact"/>
+    <item
+        android:id="@+id/menu_callhistory"
+        android:title="@string/callhistory"/>
+    <item
+        android:id="@+id/menu_qa"
+        android:title="@string/quickaction"/>
+    <item
+        android:id="@+id/menu_configs"
+        android:title="@string/configs"/>
+    <item
+        android:id="@+id/menu_keys"
+        android:title="@string/keys"/>
+    <item
+        android:id="@+id/menu_locservice"
+        android:title="@string/locservices"/>
+    <item
+        android:id="@+id/menu_busyres"
+        android:title="@string/busyresponse"/>
+    <item
+        android:id="@+id/menu_fb"
+        android:title="@string/fb"/>
+    <item
+        android:id="@+id/menu_autoplay"
+        android:checkable="true"
+        android:title="@string/autoplay"/>
+    <item
+        android:id="@+id/menu_nwsett"
+        android:title="@string/network_settings"/>
+    <item
+        android:id="@+id/menu_sharesett"
+        android:title="@string/share_settings"/>
+    <item
+        android:id="@+id/menu_others"
+        android:title="@string/others"/>
+    <item
+        android:id="@+id/menu_currloc"
+        android:title="@string/current_loc"/>
+    <item
+        android:id="@+id/menu_chagepwd"
+        android:title="@string/change_password"/>
+    <item
+        android:id="@+id/menu_sout"
+        android:title="@string/signout"/>
+
+</menu>

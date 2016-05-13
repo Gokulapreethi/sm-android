@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="#272829" >
+
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/blue2" >
+
+        <TextView
+            android:id="@+id/txtView01"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="CONTACTS"
+            android:textColor="@color/white"
+            android:layout_centerInParent="true"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+
+        <EditText
+            android:id="@+id/searchet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:hint="Search"
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@drawable/navigation_close"/>
+
+        <Button
+            android:id="@+id/search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/navigation_search"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/selectAll_container"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/header"
+        android:gravity="center"
+        android:background="@color/lblack">
+
+        <CheckBox
+            android:id="@+id/selectAll_buddy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/checkbok_selector"
+            android:textSize="15sp"
+            android:layout_centerVertical="true"
+            android:text="select all"/>
+
+        <TextView
+            android:id="@+id/selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dip"
+            android:textSize="15sp"
+            android:text="0 selected"
+            android:textColor="@color/white"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/searchResult"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/selectAll_container"
+        android:layout_above="@+id/RelativeLayout2"/>
+
+    <LinearLayout
+        android:id="@+id/dialogue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/RelativeLayout2"
+        android:visibility="gone"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="#343536">
+            <Button
+                android:background="#343536"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:drawableTop="@drawable/grid_text"
+                android:textColor="@color/white"
+                android:text="Text\nMessage"/>
+            <Button
+                android:background="#343536"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:drawableTop="@drawable/memory_photo"
+                android:textColor="@color/white"
+                android:text="Photo\nMessage"/>
+            <Button
+                android:background="#343536"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:drawableTop="@drawable/grid_audio"
+                android:textColor="@color/white"
+                android:text="Text\nMessage"/>
+            <Button
+                android:background="#343536"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:drawableTop="@drawable/memory_video"
+                android:textColor="@color/white"
+                android:text="Text\nMessage"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="#343536">
+            <Button
+                android:background="#343536"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:drawableTop="@drawable/grid_sketch"
+                android:textColor="@color/white"
+                android:text="Sktech\nMessage"/>
+            <Button
+                android:background="#343536"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:drawableTop="@drawable/memory_audio"
+                android:textColor="@color/white"
+                android:text="Photo\nMessage"/>
+            <Button
+                android:background="#343536"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:drawableTop="@drawable/grid_videobroadcast"
+                android:textColor="@color/white"
+                android:text="Text\nMessage"/>
+            <Button
+                android:background="#343536"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:drawableTop="@drawable/memory_video"
+                android:textColor="@color/white"
+                android:text="Text\nMessage"
+                android:visibility="invisible"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="#343536">
+            <Button
+                android:background="#343536"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:drawableTop="@drawable/memory_messages"
+                android:textColor="@color/white"
+                android:text="Chat"/>
+            <Button
+                android:background="#343536"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:drawableTop="@drawable/recent_calls"
+                android:textColor="@color/white"
+                android:text="Audio Call"/>
+            <Button
+                android:background="#343536"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:drawableTop="@drawable/grid_video"
+                android:textColor="@color/white"
+                android:text="Video Call"/>
+            <Button
+                android:background="#343536"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:drawableTop="@drawable/recent_files"
+                android:textColor="@color/white"
+                android:text="Send File"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/RelativeLayout2"
+        android:layout_width="fill_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/lblack"
+        android:visibility="gone" >
+
+        <Button
+            android:id="@+id/btnGrp"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/lblack"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="5dp"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:text="Add to\nGroup"
+            android:drawableTop="@drawable/dashboard_group_blue"/>
+
+        <Button
+            android:layout_toRightOf="@+id/btnGrp"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/lblack"
+            android:layout_margin="5dp"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:text="Delete\ncontacts"
+            android:drawableTop="@drawable/grid_delete"/>
+
+        <LinearLayout
+            android:id="@+id/groupbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:padding="5dp"
+            android:background="@color/blue2"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/grid_grid"
+                android:layout_margin="5dp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

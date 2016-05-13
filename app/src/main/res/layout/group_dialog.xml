@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="15dp">
+
+    <TextView
+        android:id="@+id/edit_grp"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@color/blue2"
+        android:gravity="center"
+        android:padding="7dp"
+        android:text="Edit Group"
+        android:textColor="@color/white"
+        android:textSize="17dp" />
+
+    <TextView
+        android:id="@+id/invite_grp"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@color/blue2"
+        android:gravity="center"
+        android:layout_marginTop="3dp"
+        android:text="Invite Members to Group"
+        android:textColor="@color/white"
+        android:textSize="17dp" />
+    <TextView
+        android:id="@+id/leave_grp"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@color/pink"
+        android:gravity="center"
+        android:padding="7dp"
+        android:text="Leave this Group"
+        android:layout_marginTop="3dp"
+        android:textColor="@color/white"
+        android:textSize="17dp" />
+
+    <TextView
+        android:id="@+id/delete_grp"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@color/pink"
+        android:gravity="center"
+        android:layout_marginTop="3dp"
+        android:text="Delete Group"
+        android:textColor="@color/white"
+        android:textSize="17dp" />
+
+    <TextView
+        android:id="@+id/cancel"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:background="#4d4d4d"
+        android:gravity="center"
+        android:text="Cancel"
+        android:textColor="@color/white"
+        android:textSize="17dp" />
+
+</LinearLayout>

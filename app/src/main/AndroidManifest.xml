@@ -1,0 +1,1095 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.cg.snazmed"
+    android:versionCode="3"
+    android:versionName="@string/app_version" >
+
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="23" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true" />
+
+    <permission
+        android:name="com.IM.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" >
+    </uses-permission>
+    <uses-permission android:name="com.IM.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="android.permission.VIBRATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" >
+    </uses-permission>
+    <!-- Required OpenGL ES 2.0. for Maps V2 -->
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+
+    <!-- <uses-permission android:name="android.permission.DEVICE_POWER" /> -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera.front" />
+
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <application
+        android:icon="@drawable/logo_snazmed"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:theme="@style/Theme.OTPMain" >
+
+        <!-- <uses-library -->
+        <!-- android:name="com.google.android.maps" -->
+        <!-- android:required="true" /> -->
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name="com.cg.account.SplashScreen"
+            android:configChanges="orientation"
+            android:theme="@style/LaunchTheme"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.group.chat.ShortMessage"
+            android:configChanges="orientation"
+            android:theme="@android:style/Theme.Dialog" >
+        </activity>
+]
+        <activity
+            android:name="com.util.CustomVideoCamera"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.callHistory.OrderMenuActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.FormsActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.FormFieldAccessActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.main.AppMainActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+        </activity>
+        <activity
+            android:name="com.chat.ChatActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+         <activity
+            android:name="com.group.chat.ProfessionList"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.NumberOperation"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.DateBetween"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.AddNewForm"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.FormSettings"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.FormPermission"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.Compute"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <activity
+            android:name="com.cg.commongui.WebView_doc"
+            android:label="@string/app_name" >
+            
+        </activity>
+        <activity
+            android:name="com.cg.forms.AccessAndSync"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.FormCreator"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.FormPermissionViewer"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.FormRecordsCreators"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.FormViewer"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.FormSync"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.Form_instruction"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.Component"
+            android:configChanges="orientation"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.instancemessage.NotePickerViewer"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.settings.IpSettings"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.account.RuleMainScreen"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.account.RuleCreator"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.account.acceptrejectresponse"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog" >
+        </activity>
+        <activity
+            android:name="com.cg.quickaction.ShareNotePicker"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.account.ShareByProfileByddy"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.account.HistoryView"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.OTPMain" >
+        </activity>
+        <activity
+            android:name="com.cg.account.BuddySettings"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.OTPMain" >
+        </activity>
+        <activity
+            android:name="com.cg.account.buddyView1"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.files.BaseActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.QueryActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.Queryaggregate"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.Query"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.HardCodeQuery"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.callservices.VideoCallScreen"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name="com.cg.callservices.VideoPagingSRWindow"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name="com.cg.callservices.AudioPagingSRWindow"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.callHistory.CallHistoryActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.timer.ReminderManager"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog" >
+        </activity>
+        <activity
+            android:name="com.cg.commongui.VideoPlayer"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
+        </activity>
+        <activity
+            android:name="com.cg.files.CompleteListView"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.OTPMain" >
+            <intent-filter>
+                <action android:name="android.intent.action.ATTACH_DATA" />
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.EDIT" />
+                <action android:name="android.intent.action.INSERT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="application/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.ATTACH_DATA" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="*"
+                    android:mimeType="application/*"
+                    android:pathPattern=".*.doc"
+                    android:scheme="content" />
+            </intent-filter>
+
+            <!-- For file browsers -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="*"
+                    android:mimeType="application/*"
+                    android:pathPattern=".*.doc"
+                    android:scheme="file" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="*"
+                    android:mimeType="application/*"
+                    android:pathPattern=".*.doc"
+                    android:scheme="http" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.EDIT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="*"
+                    android:mimeType="application/octet-stream"
+                    android:pathPattern=".*\\.doc" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:scheme="about" />
+                <data android:scheme="javascript" />
+            </intent-filter>
+            <!--
+                  For these schemes where any of these particular MIME types
+                  have been supplied, we are a good candidate.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:scheme="inline" />
+                <data android:mimeType="text/html" />
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="application/xhtml+xml" />
+                <data android:mimeType="application/vnd.wap.xhtml+xml" />
+            </intent-filter>
+            <!-- For viewing saved web archives. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:scheme="file" />
+                <data android:mimeType="application/x-webarchive-xml" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.WEB_SEARCH" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.cg.commongui.MultimediaUtils"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.instancemessage.NotePickerScreen"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.OTPMain" >
+        </activity>
+        <activity
+            android:name="com.cg.files.AutoPlayerScreen"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.settings.LocandBusySettings"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.settings.ShareSettings"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.commongui.HandSketchActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+        </activity>
+        <activity android:name="com.cg.account.VideoRecorder" >
+        </activity>
+        <activity
+            android:name="com.cg.commongui.TestHTML5WebView"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.settings.MenuPage"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.settings.About"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.AppsView"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.account.forgotPassword"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.account.getnewpassword"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.Specialquickaction"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.account.callScreen"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.account.callScreen1"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="android.androidVNC.VncCanvasActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.settings.LocationPickerMapView"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.account.HostedList"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.account.VideoPlayer2"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
+        </activity>
+        <activity
+            android:name="com.cg.account.Custom_Camara"
+            android:configChanges="orientation"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name="com.cg.files.sendershare"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.commongui.PhotoZoomActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.hostedconf.CallScreenActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.hostedconf.IncomingCallActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.hostedconf.SipMainActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.quickaction.TriggerMain"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.quickaction.QuickActionQueryBuilder"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.quickaction.TrigerActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.quickaction.QuickActionQueryActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.quickaction.QuickActionSelectcalls"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.quickaction.QuickActionCallsSchedule"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.quickaction.QuickActionSettingcalls"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.quickaction.QuickActionTitlecalls"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.account.CamsampleActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name="com.cg.account.buddiesList"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.instancemessage.InstantMessageScreen"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|adjustPan" >
+        </activity>
+        <activity
+            android:name="com.cg.instancemessage.IMTabScreen"
+            android:configChanges="orientation"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.callservices.AudioCallScreen"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.callservices.inCommingCallAlert"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog" >
+        </activity>
+        <activity
+            android:name="com.cg.account.MissedCallScreen"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog" >
+        </activity>
+        <activity
+            android:name="com.cg.callservices.CallConnectingScreen"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.account.MultiSelectScreen"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.files.ComponentCreator"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/android:Theme">
+        </activity>
+        <activity
+            android:name="com.cg.files.BuddyNoteList"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.account.ComponentForBuddy"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.account.ShareByProfile"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.files.TestFilterListView"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.account.ConnectionChangeReceiver"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.quickaction.QuickActionShareSelection"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.quickaction.ContactLogics"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.account.ReceiversideScreen1"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <service
+            android:name="com.cg.timer.ReminderService"
+            android:enabled="true" >
+        </service>
+
+        <receiver android:name="com.cg.locker.StartupReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="StartupReceiver_Manual_Start" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.cg.locker.CheckRunningApplicationReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="StartupReceiver_Manual_Start" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.cg.broadcastreceivers.ConnectionChangeReceiver"
+            android:label="NetworkConnection" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.cg.broadcastreceivers.ReminderBroadcastReceiver"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.HEADSET_PLUG" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.cg.quickaction.QuickActionBroadCastReceiver"
+            android:label="quickaction" >
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.HEADSET_PLUG" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.cg.timer.MissedDownloadReceiver"
+            android:label="misseddownload" >
+        </receiver>
+        <receiver
+            android:name="com.group.chat.GroupChatBroadCastReceiver"
+            android:label="groupchat" >
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.HEADSET_PLUG" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.cg.timer.KeepAliveReceiver" >
+        </receiver>
+        <receiver android:name="com.cg.timer.FileBroadCastReceiver" >
+        </receiver>
+        <receiver
+            android:name="org.core.PortRefresher"
+            android:process=":remote" >
+        </receiver>
+
+        <service android:name="com.service.BrowserUpnpService" >
+        </service>
+        <service android:name="com.cg.account.PlayerService" >
+        </service>
+        <!-- Goolge API Key -->
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyBNhI7p7FnHW81OIqj7acFh1jZGuQ4OdEQ" />
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="7228dd8e4dfe85b0dd8263c30847d24a46aab323" />
+
+        <activity
+            android:name="com.cg.forms.TextInputActivity"
+            android:label="@string/title_activity_text_input"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.FormDescription"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.avatar.CloneActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.commongui.CloneTextinput"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.avatar.AnsweringMachineActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.permissions.PermissionsActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.profiles.BusCard"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.profiles.ViewProfiles"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.profiles.InviteProfile"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.utilities.UtilityBuyer"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.utilities.UtilitySeller"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.utilities.Blocked_list"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.hostedconf.ContactConference"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.utilities.UtilityDistanceActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.utilities.UtilityServiceProvider"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.utilities.UtilityServiceNeeder"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.utilities.UtilitiyActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.locations.buddyLocation"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.files.FileExplorer"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.group.GroupActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.group.AddGroupMembers"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.group.ViewGroups"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.exchanges.ExchangesActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.group.chat.GroupChatActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.group.chat.GroupChatSettings"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.util.VideoPlayer"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.util.FullScreenImage"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.hostedconf.SipIncomingCallAlertActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.main.Registration"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.group.chat.PrivateMessageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.group.chat.MemberListActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.utilities.UtilityBuyerNew"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.commongui.HandSketchActivity2"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:theme="@style/android:Theme">
+        </activity>
+        <activity
+            android:name="com.cg.settings.AutomaticCall"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+
+        <service
+            android:name="com.service.LoginService"
+            android:enabled="true" />
+
+        <activity
+            android:name="com.screensharing.ScreenSharingActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.forms.EditFormFields"
+            android:screenOrientation="portrait" >
+        </activity>
+           <activity
+            android:name="com.cg.callservices.SipCallConnectingScreen"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.account.NewUser"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.cg.account.NewUserError"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.cg.account.NewUserRole"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.cg.account.GetEndorsement"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.cg.account.InviteCodeAttempt"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.cg.account.NewUserVerification"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.cg.account.AMAVerification"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.cg.account.VeratadVerification"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.cg.account.ResetPassword"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.cg.account.GenerateNewInviteCode"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.cg.account.TermsAndAgreement"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.cg.account.AdvanceSearchPeople"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.cg.account.NewUserTC">
+        </activity>
+	<activity
+            android:name="com.cg.Calendar.CalendarActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.cg.Calendar.DateView"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.cg.Calendar.ScheduleActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.cg.account.new_user_5"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.account.PinSecurity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.account.MyAccountActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.account.GenerateInviteCode"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.files.FilePicker"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.cg.rounding.RoundingGroupActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.rounding.RoundingEditActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.cg.rounding.TaskCreationActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.cg.rounding.AttendingRightsActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.cg.rounding.OwnershipActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.cg.rounding.RoundNewPatientActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+	<activity
+            android:name="com.group.chat.ChatTemplateActivity"
+            android:theme="@android:style/Theme.Translucent"></activity>
+ <activity
+            android:name="com.group.chat.ChatInfoActivity"
+            ></activity>
+        <activity
+            android:name="com.group.chat.ForwardUserSelect"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.group.chat.ChatInfo"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cg.rounding.CommentsSeeAllActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.cg.rounding.AssignPatientActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+    </application>
+
+</manifest>
