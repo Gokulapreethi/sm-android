@@ -116,6 +116,7 @@ import com.cg.rounding.PatientRoundingFragment;
 import com.cg.rounding.PatientStatusComparator;
 import com.cg.rounding.RolesManagementFragment;
 import com.cg.rounding.RoundNewPatientActivity;
+import com.cg.rounding.RoundingAdapter;
 import com.cg.rounding.RoundingGroupActivity;
 import com.cg.rounding.RoundingPatientAdapter;
 import com.cg.rounding.RoundingTaskAdapter;
@@ -288,6 +289,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     TextView tv_status, tv_assigned;
     ImageView img_status;
     private String signalid="";
+    private static int membercount = 0;
     private static int checkBoxCounter = 0;
     public static Vector<CompleteListBean> filesList = new Vector<CompleteListBean>();
     FilesAdapter filesAdapter = null;
@@ -8221,6 +8223,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         final TextView name = (TextView) v1.findViewById(R.id.name);
         final TextView location = (TextView) v1.findViewById(R.id.location);
         final TextView status = (TextView) v1.findViewById(R.id.status);
+        final ImageView name_image = (ImageView)v1.findViewById(R.id.name_image);
+        name_image.setVisibility(View.VISIBLE);
+        final ImageView location_image = (ImageView)v1.findViewById(R.id.location_image);
+        location_image.setVisibility(View.GONE);
+        final ImageView status_image = (ImageView)v1.findViewById(R.id.status_image);
+        status_image.setVisibility(View.GONE);
+
         search_header = (RelativeLayout) v1.findViewById(R.id.search_header);
         ed_search = (EditText) v1.findViewById(R.id.ed_search);
         ImageView plusBtn = (ImageView) v1.findViewById(R.id.plusBtn_patient);
@@ -8290,8 +8299,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             public void onClick(View view) {
                 patientType = "name";
                 name.setTextColor(getResources().getColor(R.color.white));
+                name_image.setVisibility(View.VISIBLE);
                 location.setTextColor(getResources().getColor(R.color.snazlgray));
+                location_image.setVisibility(View.GONE);
                 status.setTextColor(getResources().getColor(R.color.snazlgray));
+                status_image.setVisibility(View.GONE);
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -8316,8 +8328,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             public void onClick(View view) {
                 patientType = "loc";
                 name.setTextColor(getResources().getColor(R.color.snazlgray));
+                name_image.setVisibility(View.GONE);
                 location.setTextColor(getResources().getColor(R.color.white));
+                location_image.setVisibility(View.VISIBLE);
                 status.setTextColor(getResources().getColor(R.color.snazlgray));
+                status_image.setVisibility(View.GONE);
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -8342,8 +8357,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             public void onClick(View view) {
                 patientType = "status";
                 status.setTextColor(getResources().getColor(R.color.white));
+                status_image.setVisibility(View.VISIBLE);
                 location.setTextColor(getResources().getColor(R.color.snazlgray));
+                location_image.setVisibility(View.GONE);
                 name.setTextColor(getResources().getColor(R.color.snazlgray));
+                name_image.setVisibility(View.GONE);
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -8376,10 +8394,17 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         final TextView role = (TextView) v1.findViewById(R.id.role_sort);
         TextView groupname = (TextView) v1.findViewById(R.id.groupname);
         TextView groupDesc = (TextView) v1.findViewById(R.id.groupDesc);
+        TextView members_count = (TextView)v1.findViewById(R.id.members_count);
+//        members_count.setText(Integer.toString();
+
+
+//        int member_groupcount = RoundingAdapter.membercount();
         ImageView groupIcon = (ImageView) v1.findViewById(R.id.groupicon);
+
         final GroupBean gBean = calldisp.getdbHeler(context).getGroupAndMembers("select * from groupdetails where groupid="
                 + groupId);
         final Vector<BuddyInformationBean> memberslist = new Vector<BuddyInformationBean>();
+
         groupname.setText(groupBean.getGroupName());
         groupDesc.setText(gBean.getGroupdescription());
         if (gBean.getGroupIcon() != null) {
@@ -8454,6 +8479,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 }
             }
         }
+        int count_memberslist = memberslist.size();
+        Log.d("memberslist", "value--->"+count_memberslist);
+        members_count.setText("("+Integer.toString(count_memberslist)+")");
         online.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -8584,6 +8612,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 }
             }
         }
+
         online.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -8591,6 +8620,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 alpha.setTextColor(getResources().getColor(R.color.snazlgray));
                 sorting = "online";
                 MembersAdapter adapter = new MembersAdapter(context, R.layout.rounding_member_row, getOnlineList(memberslist));
+
                 list.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
             }
@@ -8732,8 +8762,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         createddate.setText(date[0]);
         String[] mlist = (gBean.getActiveGroupMembers())
                 .split(",");
-        int membercount = mlist.length + 1;
+        membercount = mlist.length + 1;
         members.setText(Integer.toString(membercount));
+        Log.d("Members group","value---------->"+ membercount);
         ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(gBean.getOwnerName());
         if (pbean != null)
             owner.setText(pbean.getFirstname() + " " + pbean.getLastname());

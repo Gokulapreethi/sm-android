@@ -1054,7 +1054,7 @@
                         android:paddingLeft="13dp"
                         android:textColor="@color/white"
                         android:popupBackground="#202021"
-                        android:hint="Medical School"
+                        android:hint="Medical Schools"
                         style="@style/spinner_style"
                         android:id="@+id/medical_scl"/>
                 <View

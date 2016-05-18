@@ -117,7 +117,7 @@
                     android:id="@+id/call_patient"
                     android:textColor="@color/white"
 
-                    android:hint="Patient Name"
+                    android:hint="Call this Patient"
                     android:textSize="15sp"
                     android:background="@drawable/edittext_style"
                     android:drawableRight="@drawable/input_arrow"/>
