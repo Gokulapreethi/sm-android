@@ -190,7 +190,7 @@
 
                 <EditText
                     android:id="@+id/ed_securityno"
-                    android:hint="Last 4 Number of the SSN"
+                    android:hint="Last 4 Numbers of the SSN"
                     android:digits="@string/numeric"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

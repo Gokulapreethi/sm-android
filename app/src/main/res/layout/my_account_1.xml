@@ -754,6 +754,7 @@
                             android:gravity="left"
                             android:layout_weight="1"
                             android:padding="7dp"
+                            android:inputType="text"
                             android:hint="Carpathian mathematical Publications"
                             android:textColor="@color/white"
                             android:textSize="15dp"

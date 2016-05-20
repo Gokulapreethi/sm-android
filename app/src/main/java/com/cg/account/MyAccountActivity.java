@@ -20,6 +20,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -59,7 +60,7 @@ public class MyAccountActivity extends Activity {
     private Context context;
     Boolean isClicked=true;
     AutoCompleteTextView title, usertype;
-    AutoCompleteTextView state,hospital;
+    AutoCompleteTextView state,hospital,state1;
     RadioButton genderSelected;
     RadioGroup gender;
     ImageView profile_pic, edit_pic,status_icon;
@@ -75,13 +76,15 @@ public class MyAccountActivity extends Activity {
     AutoCompleteTextView medical_schools ;
     AutoCompleteTextView association_membership;
     ArrayAdapter<String> hospitalDetailsAdapter;
-    private String add_citation = "";
+    private String add_citation, Addressline1,Addressline2, office_phone_no, office_fax, zip_code, city_value,office_address, state_value = "";
     ArrayAdapter<String> medicalDetailsAdapter;
     ArrayList<String> stateList = new ArrayList<String>();
     ArrayList<String> specialityList = new ArrayList<String>();
     ArrayList<String> medicalschoolsList = new ArrayList<String>();
     ArrayList<String> hospitalList = new ArrayList<String>();
     ArrayList<String> medicalSocietyList = new ArrayList<String>();
+    ArrayList<String> states=new ArrayList<String>();
+
     protected void onCreate(Bundle savedInstanceState) {
 
 
@@ -102,7 +105,9 @@ public class MyAccountActivity extends Activity {
           citations=(TextView)findViewById(R.id.tv_citations);
           tv_cite=(EditText)findViewById(R.id.tv_cite);
           tv_addr=(EditText)findViewById(R.id.tv_addr);
-          gender = (RadioGroup) findViewById(R.id.gender);
+
+
+        gender = (RadioGroup) findViewById(R.id.gender);
 
           edNickname = (EditText) findViewById(R.id.etRegisuser);
           edFname = (EditText) findViewById(R.id.etfname);
@@ -127,6 +132,7 @@ public class MyAccountActivity extends Activity {
         final TextView tv_hospital=(TextView)findViewById(R.id.tv_hospital);
         final TextView tv_state=(TextView)findViewById(R.id.tv_state);
         final TextView tv_medical=(TextView)findViewById(R.id.tv_medical);
+//        final EditText tv_addr = (EditText)findViewById(R.id.tv_addr);
         final TextView tv_association=(TextView)findViewById(R.id.tv_association);
         statusTxt.setText(status);
         if(status.equalsIgnoreCase("online"))
@@ -193,35 +199,84 @@ public class MyAccountActivity extends Activity {
             public void onClick(View arg0) {
 
                 try {
-                    final Dialog dialog = new Dialog(context);
-                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    dialog.setContentView(R.layout.office_address);
+                    final Dialog dialog1 = new Dialog(context);
+                    dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog1.setContentView(R.layout.office_address);
                     WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-                    lp.copyFrom(dialog.getWindow().getAttributes());
+                    lp.copyFrom(dialog1.getWindow().getAttributes());
                     lp.width = WindowManager.LayoutParams.MATCH_PARENT;
                     lp.height = WindowManager.LayoutParams.MATCH_PARENT;
-                    Window window = dialog.getWindow();
-                    dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
+                    Window window = dialog1.getWindow();
+                    dialog1.getWindow().setBackgroundDrawableResource(R.color.black2);
                     window.setAttributes(lp);
-                    dialog.show();
+                    dialog1.show();
 
-                    Button save1 = (Button)dialog.findViewById(R.id.save_button2);
-                    Button cancel1 = (Button)dialog.findViewById(R.id.cancel_button2);
+                   final EditText Address1 = (EditText)dialog1.findViewById(R.id.address_edit1);
+                    final EditText address2 = (EditText)dialog1.findViewById(R.id.address_edit2);
+                    final EditText zip = (EditText)dialog1.findViewById(R.id.address_edit3);
+                    final EditText city = (EditText)dialog1.findViewById(R.id.address_edit4);
+                    final EditText office_phone_number = (EditText)dialog1.findViewById(R.id.address_edit5);
+                    final EditText office_fax_number = (EditText)dialog1.findViewById(R.id.address_edit6);
+                   state1 = (AutoCompleteTextView)dialog1.findViewById(R.id.state_of_practice);
+
+                    Button save1 = (Button)dialog1.findViewById(R.id.save_button2);
+                    Button cancel1 = (Button)dialog1.findViewById(R.id.cancel_button2);
 
                     cancel1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            dialog.dismiss();
+                            dialog1.dismiss();
                         }
                     });
                     save1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            Addressline1 = Address1.getText().toString();
+                            Addressline2 = address2.getText().toString();
+                            zip_code = zip.getText().toString();
+                            city_value = city.getText().toString();
+                            state_value = state1.getText().toString().trim();
+                            office_phone_no = office_phone_number.getText().toString();
+                            office_fax= office_fax_number.getText().toString();
 
-                            dialog.dismiss();
+                            String office_address = "";
+                            if(Addressline1!= null && !Addressline1.trim().equals("")){
+                                 office_address =Addressline1;
+                            }
+                            if(Addressline2!= null && !Addressline2.trim().equals("")){
+                                office_address =office_address+","+Addressline2;
+                            }
+                            if(zip_code!= null && !zip_code.trim().equals("")){
+                                office_address =office_address+","+zip_code;
+                            }
+                            if(city_value!= null && !city_value.trim().equals("")){
+                                office_address =office_address+","+city_value;
+                            }
+                            if(state_value!= null && !state_value.trim().equals("")){
+                                office_address =office_address+","+state_value;
+                            }
+                            if(office_phone_no!= null && !office_phone_no.trim().equals("")){
+                                office_address =office_address+","+office_phone_no;
+                            }
+                            if(office_fax!= null && !office_fax.trim().equals("")){
+                                office_address =office_address+","+office_fax;
+                            }
+
+//                            office_address = (Addressline1 + ", "+ Addressline2+ ", "+ zip_code+ ", "+city_value+ ", "+state_value+","+office_phone_no+ ", "+office_fax);
+
+                            if (Address1.length()> 0) {
+                                Address1.append(",");
+                            }
+                            tv_addr.setText(office_address);
+                            dialog1.dismiss();
 
                         }
                     });
+                    states= DBAccess.getdbHeler().getStateDetails();
+
+                    stateAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, states);
+                    state1.setAdapter(stateAdapter);
+                    state1.setThreshold(1);
 
                     addr_lay.setVisibility(View.VISIBLE);
 //                    tv_addr.setText(edOffc.getText().toString());
@@ -234,6 +289,8 @@ public class MyAccountActivity extends Activity {
         optional.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(optional.getWindowToken(), 0);
                 if(isClicked) {
                     isClicked=false;
                     advance_lay.setVisibility(View.VISIBLE);

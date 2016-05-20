@@ -144,10 +144,12 @@ public class TaskCreationActivity extends Activity {
                 selectedMembers.clear();
                     for(String tmp:list) {
                         ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(tmp);
-                        names=names+pBean.getFirstname()+" "+pBean.getLastname()+", ";
                         BuddyInformationBean bean=new BuddyInformationBean();
                         bean.setName(tmp);
-                        bean.setFirstname(pBean.getFirstname()+" "+pBean.getLastname());
+                        if(pBean.getTitle()!= null && pBean.getTitle() != "") {
+                            bean.setFirstname(pBean.getTitle() + " " + pBean.getFirstname());
+                        }else
+                            bean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname());
                         selectedMembers.add(bean);
                     }
                 memberadapter = new MemberNamesAdapter(context, R.layout.task_member_names, selectedMembers);
@@ -402,7 +404,12 @@ public class TaskCreationActivity extends Activity {
                         .split(",");
                 BuddyInformationBean bean=new BuddyInformationBean();
                 ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(gBean.getOwnerName());
-                bean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname());
+
+                if(pBean.getTitle()!= null && pBean.getTitle() != "") {
+                    bean.setFirstname(pBean.getTitle() + " " + pBean.getFirstname());
+                }else
+                    bean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname());
+//                bean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname());
                 bean.setName(gBean.getOwnerName());
                 bean.setProfile_picpath(pBean.getPhoto());
                 bean.setType("0");
@@ -410,7 +417,11 @@ public class TaskCreationActivity extends Activity {
                 for (String tmp : mlist) {
                     BuddyInformationBean uBean = new BuddyInformationBean();
                     ProfileBean pbean=DBAccess.getdbHeler().getProfileDetails(tmp);
-                    uBean.setFirstname(pbean.getFirstname()+" "+pbean.getLastname());
+                    if(pbean.getTitle()!= null && pbean.getTitle() != "") {
+                        uBean.setFirstname(pbean.getTitle() + " " + pbean.getFirstname());
+                    }else
+                        uBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
+//                    uBean.setFirstname(pbean.getFirstname()+" "+pbean.getLastname());
                     uBean.setName(tmp);
                     uBean.setProfile_picpath(pbean.getPhoto());
                     uBean.setType("0");

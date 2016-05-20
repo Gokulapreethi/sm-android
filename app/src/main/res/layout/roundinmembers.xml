@@ -70,16 +70,42 @@
                 android:textColor="@color/white"
                 android:textSize="17dp"
                 android:layout_marginTop="12dp"/>
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:text="MEMBERS"
-                android:textColor="@color/snazash"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:background="@color/black1"
                 android:layout_gravity="center"
                 android:gravity="center"
+                >
+
+
+            <TextView
+                android:id="@+id/members_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MEMBERS"
+                android:textColor="@color/snazash"
                 android:visibility="visible"
                 android:background="@color/black1"
-                android:layout_marginTop="10dp"/>
+                android:layout_gravity="center"
+                android:layout_marginLeft="0dp"
+                />
+            <TextView
+                android:id="@+id/members_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(0)"
+                android:textColor="@color/blue2"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="0dp"
+                android:layout_gravity="center"
+                android:background="@color/black1"
+
+                />
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="30dp"

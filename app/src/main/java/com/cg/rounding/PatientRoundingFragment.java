@@ -95,6 +95,7 @@ public class PatientRoundingFragment extends Fragment {
     TextView tv_status,tv_assigned;
     GroupBean gmembersbean;
     public boolean Edit = false;
+    public String sorting = "online";
     private Button edit;
     PatientDescriptionBean pDescBean;
     public static PatientRoundingFragment newInstance(Context context) {
@@ -313,7 +314,11 @@ public class PatientRoundingFragment extends Fragment {
         LayoutInflater layoutInflater = (LayoutInflater) mainContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         content.removeAllViews();
         final View v1 = layoutInflater.inflate(R.layout.members_layout, content);
-        ListView list=(ListView)v1.findViewById(R.id.memberslist);
+
+        final ListView list=(ListView)v1.findViewById(R.id.memberslist);
+        final Button alpha_sort = (Button)v1.findViewById(R.id.alpha_sort);
+        final Button online_sort = (Button)v1.findViewById(R.id.online_sort);
+
 
         final Vector<UserBean> memberslist=new Vector<UserBean>();
         if ( gmembersbean != null) {
@@ -336,8 +341,76 @@ public class PatientRoundingFragment extends Fragment {
             }
         }
 
+        online_sort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                online_sort.setTextColor(getResources().getColor(R.color.white));
+                alpha_sort.setTextColor(getResources().getColor(R.color.snazlgray));
+                sorting = "online";
+                MembersAdapter adapter=new MembersAdapter(mainContext, R.layout.rounding_member_row,getOnlineList(memberslist));
+                list.setAdapter(adapter);
+                final int adapterCount = adapter.getCount();
+                for (int i = 0; i < adapterCount; i++) {
+                    View item = adapter.getView(i, null, null);
+                    list.addView(item);
+                }
+                adapter.notifyDataSetChanged();
+            }
+        });
+        alpha_sort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alpha_sort.setTextColor(getResources().getColor(R.color.white));
+                online_sort.setTextColor(getResources().getColor(R.color.snazlgray));
+                sorting = "online";
+                MembersAdapter adapter=new MembersAdapter(mainContext, R.layout.rounding_member_row,getOnlineList(memberslist));
+                list.setAdapter(adapter);
+                final int adapterCount = adapter.getCount();
+                for (int i = 0; i < adapterCount; i++) {
+                    View item = adapter.getView(i, null, null);
+                    list.addView(item);
+                }
+                adapter.notifyDataSetChanged();
+            }
+        });
         MembersAdapter adapter=new MembersAdapter(mainContext, R.layout.rounding_member_row,memberslist);
         list.setAdapter(adapter);
+
+
+    }
+
+    public static Vector<UserBean> getOnlineList(Vector<UserBean> vectorBean) {
+        String status = null;
+        Vector<UserBean> tempList = new Vector<UserBean>();
+        Vector<UserBean> onlinelist = new Vector<UserBean>();
+        Vector<UserBean> offlinelist = new Vector<UserBean>();
+        Vector<UserBean> airplanelist = new Vector<UserBean>();
+        Vector<UserBean> awaylist = new Vector<UserBean>();
+        tempList.clear();
+        for (UserBean sortlistbeanstatus : vectorBean) {
+            status = sortlistbeanstatus.getStatus();
+            Log.i("AAAA","online list "+status);
+            if (status.equalsIgnoreCase("Online")) {
+                onlinelist.add(sortlistbeanstatus);
+            } else if (status.equalsIgnoreCase("Offline") || status.equalsIgnoreCase("Stealth")) {
+                offlinelist.add(sortlistbeanstatus);
+            } else if (status.equalsIgnoreCase("Airport")|| status.equalsIgnoreCase("busy")) {
+                airplanelist.add(sortlistbeanstatus);
+            } else if (status.equalsIgnoreCase("Away")) {
+                awaylist.add(sortlistbeanstatus);
+            }
+        }
+        if(onlinelist.size()>0)
+            tempList.addAll(onlinelist);
+        if(airplanelist.size()>0)
+            tempList.addAll(airplanelist);
+        if(awaylist.size()>0)
+            tempList.addAll(awaylist);
+        if(offlinelist.size()>0)
+            tempList.addAll(offlinelist);
+
+        return tempList;
+
     }
     public class MembersAdapter extends ArrayAdapter<UserBean> {
 

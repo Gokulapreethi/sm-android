@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -88,6 +89,9 @@ public class RoundingFragment extends Fragment {
 
         final Button search1 = (Button) getActivity().findViewById(R.id.btn_settings);
         search1.setVisibility(View.GONE);
+
+        final EditText search_box = (EditText)getActivity().findViewById(R.id.search_box);
+        search_box.setVisibility(View.GONE);
 
         final Button plusBtn = (Button) getActivity().findViewById(R.id.add_group);
         plusBtn.setVisibility(View.VISIBLE);

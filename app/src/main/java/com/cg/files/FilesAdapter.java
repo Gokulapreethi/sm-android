@@ -241,24 +241,21 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
 			length = length/1024;
 			holder.size.setText(bytesToSize((int) length));
 			String filename=null;
-			if(fileBean.getContentName().equalsIgnoreCase("hand sketch"))
+			if(fileBean.getcomponentType().equalsIgnoreCase("hand sketch"))
 			{
-				filename=SingleInstance.mainContext.getResources()
-						.getString(R.string.hand_sketch);
+
+				filename=fileBean.getContentName()+ ".jpg";
 			}
-			else if(fileBean.getContentName().equalsIgnoreCase("video"))
+			else if(fileBean.getcomponentType().equalsIgnoreCase("video"))
 			{
-				filename=SingleInstance.mainContext.getResources()
-						.getString(R.string.video_avatar);
+				filename=fileBean.getContentName()+ ".mp4";
 			}
-			else if(fileBean.getContentName().equalsIgnoreCase("Audio"))
+			else if(fileBean.getcomponentType().equalsIgnoreCase("Audio"))
 			{
-				filename=SingleInstance.mainContext.getResources()
-						.getString(R.string.audio_avatar);
-			}else if(fileBean.getContentName().equalsIgnoreCase("photo"))
+				filename=fileBean.getContentName()+ ".mp3";
+			}else if(fileBean.getcomponentType().equalsIgnoreCase("photo"))
 			{
-				filename=SingleInstance.mainContext.getResources()
-						.getString(R.string.photo_avatar);
+				filename=fileBean.getContentName()+ ".jpg";
 			}
 			else{
 				filename=fileBean.getContentName();

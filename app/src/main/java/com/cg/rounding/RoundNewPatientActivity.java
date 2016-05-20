@@ -110,7 +110,7 @@ public class RoundNewPatientActivity extends Activity {
         final TextView room=(TextView)findViewById(R.id.room);
         final TextView bed=(TextView)findViewById(R.id.bed);
         final TextView date=(TextView)findViewById(R.id.Admit_date);
-        membercount=(TextView)findViewById(R.id.membercount);
+        membercount=(TextView)findViewById(R.id.members_count);
         lv_buddylist = (LinearLayout) findViewById(R.id.membersList);
         gender_patient = (RadioGroup) findViewById(R.id.gender_patient);
         groupid=getIntent().getStringExtra("groupid");
@@ -593,7 +593,7 @@ public class RoundNewPatientActivity extends Activity {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                membercount.setText("ASSIGNED MEMBERS ("
+                membercount.setText("("
                         + String.valueOf(membersList.size()) + ")");
                 lv_buddylist.removeAllViews();
                 adapter = new MembersAdapter(RoundNewPatientActivity.this,R.layout.rounding_member_row, membersList);
@@ -653,16 +653,17 @@ public class RoundNewPatientActivity extends Activity {
                     holder.edit.setVisibility(View.GONE);
                     holder.buddyName.setText(bib.getFirstname());
                     if(bib.getBuddyName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+
                         holder.rights.setVisibility(View.VISIBLE);
                         holder.rights.setText("Creator");
                         holder.rights.setTextColor(getResources().getColor(R.color.green));
                     }else{
+
                         holder.rights.setVisibility(View.GONE);
                         holder.position.setTextColor(getResources().getColor(R.color.snazash));
                     }
-                    holder.rights.setTextColor(getResources().getColor(R.color.snazash));
-                    holder.statusIcon.setVisibility(View.GONE);
 
+                    holder.statusIcon.setVisibility(View.GONE);
 
                 }
             }catch(Exception e){
