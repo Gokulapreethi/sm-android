@@ -28,6 +28,7 @@
     </uses-permission>
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" >
     </uses-permission>
     <!-- Required OpenGL ES 2.0. for Maps V2 -->
@@ -60,6 +61,7 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.READ_LOGS" />
     <application
+        android:name="com.Fingerprint.InjectedApplication"
         android:icon="@drawable/logo_snazmed"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -225,19 +227,6 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.cg.account.RuleMainScreen"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.cg.account.RuleCreator"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.cg.account.acceptrejectresponse"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog" >
-        </activity>
-        <activity
             android:name="com.cg.quickaction.ShareNotePicker"
             android:screenOrientation="portrait" >
         </activity>
@@ -246,23 +235,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.cg.account.HistoryView"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.OTPMain" >
-        </activity>
-        <activity
-            android:name="com.cg.account.BuddySettings"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.OTPMain" >
-        </activity>
-        <activity
             android:name="com.cg.account.buddyView1"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" >
-        </activity>
-        <activity
-            android:name="com.cg.files.BaseActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
         </activity>
@@ -302,11 +275,6 @@
             android:name="com.cg.timer.ReminderManager"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Dialog" >
-        </activity>
-        <activity
-            android:name="com.cg.commongui.VideoPlayer"
-            android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
         </activity>
         <activity
             android:name="com.cg.files.CompleteListView"
@@ -486,35 +454,8 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.cg.account.callScreen"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.cg.account.callScreen1"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="android.androidVNC.VncCanvasActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name="com.cg.settings.LocationPickerMapView"
             android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.cg.account.HostedList"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.cg.account.VideoPlayer2"
-            android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
-        </activity>
-        <activity
-            android:name="com.cg.account.Custom_Camara"
-            android:configChanges="orientation"
-            android:screenOrientation="landscape" >
         </activity>
         <activity
             android:name="com.cg.files.sendershare"
@@ -526,34 +467,12 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.cg.hostedconf.CallScreenActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.cg.hostedconf.IncomingCallActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.cg.hostedconf.SipMainActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name="com.cg.quickaction.TriggerMain"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
-            android:name="com.cg.quickaction.QuickActionQueryBuilder"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" >
-        </activity>
-        <activity
             android:name="com.cg.quickaction.TrigerActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" >
-        </activity>
-        <activity
-            android:name="com.cg.quickaction.QuickActionQueryActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
         </activity>
@@ -591,32 +510,15 @@
             android:windowSoftInputMode="adjustResize|adjustPan" >
         </activity>
         <activity
-            android:name="com.cg.instancemessage.IMTabScreen"
-            android:configChanges="orientation"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name="com.cg.callservices.AudioCallScreen"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.cg.callservices.inCommingCallAlert"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog" >
-        </activity>
-        <activity
-            android:name="com.cg.account.MissedCallScreen"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog" >
-        </activity>
-        <activity
-            android:name="com.cg.callservices.CallConnectingScreen"
-            android:configChanges="orientation"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.cg.account.MultiSelectScreen"
+            android:name="com.cg.callservices.CallConnectingScreen"
             android:configChanges="orientation"
             android:screenOrientation="portrait" >
         </activity>
@@ -632,11 +534,6 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.cg.account.ComponentForBuddy"
-            android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name="com.cg.account.ShareByProfile"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" >
@@ -646,20 +543,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.cg.account.ConnectionChangeReceiver"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.cg.quickaction.QuickActionShareSelection"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name="com.cg.quickaction.ContactLogics"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.cg.account.ReceiversideScreen1"
-            android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" >
         </activity>
 
@@ -879,13 +763,6 @@
             android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
-            android:name="com.cg.hostedconf.SipIncomingCallAlertActivity"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog"
-            android:windowSoftInputMode="stateHidden" >
-        </activity>
-        <activity
             android:name="com.main.Registration"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
@@ -1087,6 +964,16 @@
         </activity>
         <activity
             android:name="com.cg.rounding.AssignPatientActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.Fingerprint.MainActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
+            android:name="com.Fingerprint.SettingsActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
         </activity>

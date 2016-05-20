@@ -1849,8 +1849,8 @@ public class ContactsFragment extends Fragment {
 					else
 						res_info[2] = "";
 
-					WebServiceReferences.webServiceClient
-							.OfflineCallResponse(res_info);
+//					WebServiceReferences.webServiceClient
+//							.OfflineCallResponse(res_info);
 				}
 
 			} else {

@@ -90,6 +90,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Fingerprint.MainActivity;
 import com.base.android.pjsua.PjsuaInterface;
 import com.base.sipclientwrapper.SipClientWrapper;
 import com.bean.BuddyPermission;
@@ -7655,7 +7656,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		Log.d("AAAA", "onStop ");
 		if(isPinEnable) {
 			if (isApplicationBroughtToBackground()) {
-				Intent i = new Intent(AppMainActivity.this, PinSecurity.class);
+				Intent i = new Intent(AppMainActivity.this, MainActivity.class);
 				startActivity(i);
 			} else {
 				count=0;
@@ -7874,64 +7875,6 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						gcBean1.setSent(gcBean.getSent());
 					}
 						String  mem="";
-//						if(gcBean1.getCategory().equalsIgnoreCase("g"))
-//						{
-//							String members=DBAccess.getdbHeler(getApplicationContext()).groupMembers(Integer.parseInt(gcBean.getGroupId()));
-//							String spl[]=members.split(",");
-//							for(int i1=0;i1<spl.length;i1++)
-//							{
-//								if(spl[i1].equals(gcBean.getFrom()))
-//								{
-//									String meminfo=DBAccess.getdbHeler(getApplicationContext()).ChatInfoMembers(gcBean.getSignalid());
-//									if(meminfo==null)
-//									{
-//										meminfo=members;
-//									}
-//									if(meminfo!=null&&meminfo.contains(","))
-//									{
-//										String arr[]=meminfo.split(",");
-//										for(int i2=0;i2<spl.length;i2++)
-//										{
-//											if(arr[i2].contains("_")) {
-//												if (arr[i2].split("_")[0].equals(gcBean.getFrom())) {
-//													String ar[] = arr[i2].split("_");
-//													mem = ar[0] + "_" + gcBean.getSent();
-//													arr[i2] = mem;
-//												}
-//											}else{
-//												if (arr[i2].equals(gcBean.getFrom())) {
-//													String ar[] = arr[i2].split("_");
-//													mem = ar[0] + "_" + gcBean.getSent();
-//													arr[i2] = mem;
-//												}
-//											}
-//										}
-//										StringBuilder strBuilder = new StringBuilder();
-//										String va=null;
-//										for (int i3 = 0; i3 < arr.length; i3++) {
-//											strBuilder.append(arr[i3]);
-//											if(va==null){
-//												va=arr[i3];
-//											}else
-//											{
-//												va=arr[i3]+","+va;
-//											}
-//
-//										}
-//										mem=va;
-//									}
-//									else if(meminfo!=null){
-//										mem = gcBean.getFrom()+"_"+gcBean.getSent();
-//									}
-//								}
-//							}
-//
-////							mem=gcBean1.get
-//						}
-//						else{
-//							mem = gcBean.getFrom()+"_"+gcBean.getSent();
-//
-//						}
 						DBAccess.getdbHeler(getApplicationContext()).ChatInfo(gcBean.getFrom(), gcBean.getSignalid(),gcBean.getSent(),gcBean.getSenttimez());
                         if (SingleInstance.groupChatHistory.containsKey(gcBean1.getGroupId())) {
                             SingleInstance.groupChatHistory.remove(gcBean1.getGroupId());
@@ -7948,15 +7891,6 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
                 }
             });
         }
-
-//        groupChatActivity.chatList;
-//        if (groupChatActivity.buddy.equalsIgnoreCase(gcBean
-//                .getGroupId())) {
-//            ((GroupChatActivity) SingleInstance.contextTable
-//                    .get("groupchat")).notifyUI(gcBean);
-//        } else {
-//            saveChatInBackGround(gcBean);
-//        }
 
     }
 

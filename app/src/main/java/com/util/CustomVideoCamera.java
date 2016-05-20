@@ -203,7 +203,7 @@ public class CustomVideoCamera extends Activity {
 		   // }, 1000);
 		   mediaRecorder.start();
 		   recording = true;
-		   back.setVisibility(View.GONE);
+		   back.setVisibility(View.VISIBLE);
 		   front.setVisibility(View.GONE);
 		   // myButton.setText("STOP");
 		   // myButton.setBackgroundResource(R.drawable.stop_recording);

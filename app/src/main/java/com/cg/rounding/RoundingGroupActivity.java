@@ -279,7 +279,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                             UserBean userBean = new UserBean();
                             ProfileBean pbean=DBAccess.getdbHeler().getProfileDetails(tmp);
                             if(pbean!=null)
-                            if(pbean.getTitle().equalsIgnoreCase("Dr.") || pbean.getTitle().equalsIgnoreCase("Prof."))
+                            if(pbean.getTitle()!=null &&pbean.getTitle().equalsIgnoreCase("Dr.") || pbean.getTitle().equalsIgnoreCase("Prof."))
                                 userBean.setFirstname(pbean.getTitle() +pbean.getFirstname());
                             else
                                 userBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
@@ -300,7 +300,8 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                             UserBean userBean = new UserBean();
                             ProfileBean pbean=DBAccess.getdbHeler().getProfileDetails(tmp);
                             if(pbean!=null)
-                                if(pbean.getTitle().equalsIgnoreCase("Dr.") || pbean.getTitle().equalsIgnoreCase("Prof."))
+                                if(pbean.getTitle()!=null &&pbean.getTitle().equalsIgnoreCase("Dr.")
+                                        || pbean.getTitle().equalsIgnoreCase("Prof."))
                                     userBean.setFirstname(pbean.getTitle() +pbean.getFirstname());
                                 else
                                     userBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
@@ -326,7 +327,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                             UserBean userBean = new UserBean();
                             ProfileBean pbean=DBAccess.getdbHeler().getProfileDetails(tmp);
                             if(pbean!=null)
-                                if(pbean.getTitle().equalsIgnoreCase("Dr.") || pbean.getTitle().equalsIgnoreCase("Prof."))
+                                if(pbean.getTitle()!=null &&pbean.getTitle().equalsIgnoreCase("Dr.") || pbean.getTitle().equalsIgnoreCase("Prof."))
                                     userBean.setFirstname(pbean.getTitle() +pbean.getFirstname());
                                 else
                                     userBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());

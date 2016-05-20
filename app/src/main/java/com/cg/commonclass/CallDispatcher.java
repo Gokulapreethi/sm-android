@@ -13195,8 +13195,8 @@ private TrustManager[] get_trust_mgr() {
 							.getwheninfo(
 									"select cid from clonemaster where cdescription=\""
 											+ reason + "\"");
-					WebServiceReferences.webServiceClient
-							.OfflineCallResponse(details);
+//					WebServiceReferences.webServiceClient
+//							.OfflineCallResponse(details);
 				}
 
 			}

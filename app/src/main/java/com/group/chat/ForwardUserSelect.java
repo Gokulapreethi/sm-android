@@ -549,6 +549,12 @@ public class ForwardUserSelect extends Activity {
         total_groupcount = groupcount;
 
     }
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        WebServiceReferences.contextTable.remove("forwarduser");
+        super.onDestroy();
+    }
 
 
 }

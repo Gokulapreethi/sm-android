@@ -139,8 +139,8 @@
                             android:layout_below="@+id/sender_multi_msg"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="8dp"
-                            android:layout_marginTop="20dp"
-                            android:text="PhotoFile.jpg"
+                            android:layout_marginTop="22dp"
+                            android:text=""
                             android:textColor="@color/white"
                             android:textSize="12dp" />
 
@@ -607,8 +607,8 @@
                                 android:layout_below="@+id/receiver_multi_msg"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="8dp"
-                                android:layout_marginTop="20dp"
-                                android:text="PhotoFile.jpg"
+                                android:layout_marginTop="22dp"
+                                android:text=""
                                 android:textColor="@color/white"
                                 android:textSize="12dp"
                                 />

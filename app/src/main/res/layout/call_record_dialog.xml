@@ -1,6 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:background="@color/white" >
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_margin="20dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/error_img"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/question_circle"/>
+
+
+        <TextView
+            android:id="@+id/tv_firstLine"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="This session was recorded\n by the video call initiator."/>
+
+        <TextView
+            android:id="@+id/tv_SecondLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:layout_marginTop="15dp"
+            android:textColor="@color/snazlgray"
+            android:text="Would you like to save a copy for yourself?"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_below="@+id/msg_container_receiver"
+            android:layout_toLeftOf="@+id/settings_image"
+            android:layout_marginTop="10dp"
+            android:visibility="visible"
+            android:id="@+id/ad_play"
+            android:background="@drawable/bg_bluecolr"
+            >
+
+            <ImageView
+                android:id="@+id/play_button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/play" />
+
+
+
+            <SeekBar
+                android:id="@+id/seekBar1"
+                android:thumb="@drawable/seek_handler"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="13dp"
+                android:layout_toRightOf="@+id/play_button"
+                android:progressDrawable="@drawable/progress"
+                />
+            <TextView
+                android:id="@+id/txt_time"
+                android:layout_width="wrap_content"
+                android:layout_height="18dp"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@+id/seekBar1"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="20dp"
+                android:text="00:00"
+                android:textColor="@color/white" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/delete"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@color/pink"
+            android:textColor="@color/white"
+            android:text="NO, DELETE IT"
+            android:textSize="17sp"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/save"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@color/blue2"
+            android:textColor="@color/white"
+            android:layout_weight="1"
+            android:text="SAVE"
+            android:textSize="17sp" />
+    </LinearLayout>
+
+
 
 </LinearLayout>

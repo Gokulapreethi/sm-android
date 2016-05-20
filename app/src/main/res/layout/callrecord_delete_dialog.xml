@@ -1,6 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:background="@color/white" >
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_margin="20dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/error_img"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/attantion_circle"/>
+
+
+        <TextView
+            android:id="@+id/tv_firstLine"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/pink"
+            android:text="ATTENTION!"/>
+
+        <TextView
+            android:id="@+id/tv_SecondLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/black"
+            android:text="Are you sure you want \n to delete this recording?"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/delete"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@color/pink"
+            android:textColor="@color/white"
+            android:text="DELETE"
+            android:textSize="17sp"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/save"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@color/grey2"
+            android:textColor="@color/white"
+            android:layout_weight="1"
+            android:text="CANCEL"
+            android:textSize="17sp" />
+    </LinearLayout>
+
+
 
 </LinearLayout>
