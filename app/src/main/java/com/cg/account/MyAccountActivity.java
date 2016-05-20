@@ -20,6 +20,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -288,6 +289,8 @@ public class MyAccountActivity extends Activity {
         optional.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(optional.getWindowToken(), 0);
                 if(isClicked) {
                     isClicked=false;
                     advance_lay.setVisibility(View.VISIBLE);

@@ -8481,7 +8481,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         }
         int count_memberslist = memberslist.size();
         Log.d("memberslist", "value--->"+count_memberslist);
-        members_count.setText("("+Integer.toString(count_memberslist)+")");
+        members_count.setText("(" + Integer.toString(count_memberslist) + ")");
         online.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {

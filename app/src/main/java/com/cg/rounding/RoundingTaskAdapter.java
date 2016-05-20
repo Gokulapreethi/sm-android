@@ -85,7 +85,7 @@ public class RoundingTaskAdapter extends ArrayAdapter<TaskDetailsBean> {
                     String names="";
                     for(String tmp:list) {
                         ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(tmp);
-                        names=names+pBean.getFirstname()+" "+pBean.getLastname()+", ";
+                        names=names+pBean.getTitle()+" "+pBean.getFirstname()+", ";
                     }
                     holder.doctorname.setText(names.substring(0,names.length() - 2));
                 }

@@ -122,8 +122,25 @@ public class FileInfoFragment extends Fragment {
 
                     fileImageLoader = new FileImageLoader(mainContext);
                     if(cbean!=null){
-                        if(cbean.getContentName()!=null)
-                            filename.setText(cbean.getContentName());
+                        if(cbean.getContentName()!=null) {
+
+
+                            String fileName = null;
+                            if (cbean.getcomponentType().equalsIgnoreCase("hand sketch")) {
+
+                                fileName = cbean.getContentName() + ".jpg";
+                            } else if (cbean.getcomponentType().equalsIgnoreCase("video")) {
+                                fileName = cbean.getContentName() + ".mp4";
+                            } else if (cbean.getcomponentType().equalsIgnoreCase("Audio")) {
+                                fileName = cbean.getContentName() + ".mp3";
+                            } else if (cbean.getcomponentType().equalsIgnoreCase("photo")) {
+                                fileName = cbean.getContentName() + ".jpg";
+                            } else {
+                                fileName = cbean.getContentName();
+                            }
+                            filename.setText(fileName);
+                        }
+
                         if(cbean.getContent()!=null)
                             filedesc.setText(cbean.getContent());
                         if(cbean.getcomponentType()!=null)
