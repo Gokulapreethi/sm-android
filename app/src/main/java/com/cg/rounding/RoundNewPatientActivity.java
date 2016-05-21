@@ -60,6 +60,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -237,7 +238,7 @@ public class RoundNewPatientActivity extends Activity {
         ed_dob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Dialog dialog = new DatePickerDialog(RoundNewPatientActivity.this, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog dialog = new DatePickerDialog(RoundNewPatientActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
                         myCalendar.set(Calendar.YEAR, i);
@@ -248,13 +249,15 @@ public class RoundNewPatientActivity extends Activity {
                     }
                 }, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH));
+                Calendar c = Calendar.getInstance();
+                dialog.getDatePicker().setMaxDate(c.getTimeInMillis());
                 dialog.show();
             }
         });
         ed_Admitdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Dialog dialog = new DatePickerDialog(RoundNewPatientActivity.this, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog dialog = new DatePickerDialog(RoundNewPatientActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
                         myCalendar.set(Calendar.YEAR, i);
@@ -265,6 +268,8 @@ public class RoundNewPatientActivity extends Activity {
                     }
                 }, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH));
+                Calendar c = Calendar.getInstance();
+                dialog.getDatePicker().setMaxDate(c.getTimeInMillis());
                 dialog.show();
             }
         });

@@ -38,6 +38,7 @@ import android.widget.Toast;
 import com.bean.ProfileBean;
 import com.bean.UserBean;
 import com.cg.DB.DBAccess;
+import com.cg.commonclass.BuddyListComparator;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.snazmed.R;
@@ -72,6 +73,7 @@ public class PatientRoundingFragment extends Fragment {
     private String pastingContentCopy;
     View _rootView;
     private String groupName;
+    public Boolean title = false;
     TextView tv_rounding,tv_task,tv_comments,tv_members;
     ImageView rounding_img,task_img,comments_img,members_img;
     View view_rounding,view_task,view_comments,view_members;
@@ -318,6 +320,7 @@ public class PatientRoundingFragment extends Fragment {
         final ListView list=(ListView)v1.findViewById(R.id.memberslist);
         final Button alpha_sort = (Button)v1.findViewById(R.id.alpha_sort);
         final Button online_sort = (Button)v1.findViewById(R.id.online_sort);
+        final Button role_sort = (Button)v1.findViewById(R.id.role_sort);
 
 
         final Vector<UserBean> memberslist=new Vector<UserBean>();
@@ -328,12 +331,16 @@ public class PatientRoundingFragment extends Fragment {
                         .split(",");
                 for (String tmp : mlist) {
                     UserBean uBean = new UserBean();
+
                     for(BuddyInformationBean bib: ContactsFragment.getBuddyList()){
                         if(bib.getName().equalsIgnoreCase(tmp)) {
                             uBean.setFirstname(bib.getFirstname() + " " + bib.getLastname());
                             break;
                         }else
                             uBean.setFirstname(tmp);
+                        uBean.setStatus(bib.getStatus());
+                        ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(tmp);
+                        uBean.setProfilePic(pbean.getPhoto());
                     }
                     uBean.setBuddyName(tmp);
                     memberslist.add(uBean);
@@ -344,32 +351,46 @@ public class PatientRoundingFragment extends Fragment {
         online_sort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                title = false;
                 online_sort.setTextColor(getResources().getColor(R.color.white));
                 alpha_sort.setTextColor(getResources().getColor(R.color.snazlgray));
+                role_sort.setTextColor(getResources().getColor(R.color.snazlgray));
                 sorting = "online";
                 MembersAdapter adapter=new MembersAdapter(mainContext, R.layout.rounding_member_row,getOnlineList(memberslist));
                 list.setAdapter(adapter);
-                final int adapterCount = adapter.getCount();
-                for (int i = 0; i < adapterCount; i++) {
-                    View item = adapter.getView(i, null, null);
-                    list.addView(item);
-                }
                 adapter.notifyDataSetChanged();
             }
         });
         alpha_sort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                title=true;
                 alpha_sort.setTextColor(getResources().getColor(R.color.white));
                 online_sort.setTextColor(getResources().getColor(R.color.snazlgray));
-                sorting = "online";
-                MembersAdapter adapter=new MembersAdapter(mainContext, R.layout.rounding_member_row,getOnlineList(memberslist));
+                role_sort.setTextColor(getResources().getColor(R.color.snazlgray));
+
+                sorting = "alpha";
+                Collections.sort(memberslist, new PatientListComparator());
+                MembersAdapter adapter=new MembersAdapter(mainContext, R.layout.rounding_member_row, memberslist);
                 list.setAdapter(adapter);
-                final int adapterCount = adapter.getCount();
-                for (int i = 0; i < adapterCount; i++) {
-                    View item = adapter.getView(i, null, null);
-                    list.addView(item);
+                adapter.notifyDataSetChanged();
+            }
+        });
+        role_sort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                title = false;
+                alpha_sort.setTextColor(getResources().getColor(R.color.snazlgray));
+                online_sort.setTextColor(getResources().getColor(R.color.snazlgray));
+                role_sort.setTextColor(getResources().getColor(R.color.white));
+                sorting = "role";
+                Vector<UserBean> templist = new Vector<UserBean>();
+                for (UserBean userb : memberslist) {
+                    if (userb.getRole() != null && !userb.getRole().equalsIgnoreCase(""))
+                        templist.add(userb);
                 }
+                MembersAdapter adapter = new MembersAdapter(mainContext, R.layout.rounding_member_row, templist);
+                list.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -389,15 +410,17 @@ public class PatientRoundingFragment extends Fragment {
         tempList.clear();
         for (UserBean sortlistbeanstatus : vectorBean) {
             status = sortlistbeanstatus.getStatus();
-            Log.i("AAAA","online list "+status);
-            if (status.equalsIgnoreCase("Online")) {
-                onlinelist.add(sortlistbeanstatus);
-            } else if (status.equalsIgnoreCase("Offline") || status.equalsIgnoreCase("Stealth")) {
-                offlinelist.add(sortlistbeanstatus);
-            } else if (status.equalsIgnoreCase("Airport")|| status.equalsIgnoreCase("busy")) {
-                airplanelist.add(sortlistbeanstatus);
-            } else if (status.equalsIgnoreCase("Away")) {
-                awaylist.add(sortlistbeanstatus);
+            Log.i("AAAA", "online list " + status);
+            if (status != null) {
+                if (status.equalsIgnoreCase("Online")) {
+                    onlinelist.add(sortlistbeanstatus);
+                } else if (status.equalsIgnoreCase("Offline") || status.equalsIgnoreCase("Stealth")) {
+                    offlinelist.add(sortlistbeanstatus);
+                } else if (status.equalsIgnoreCase("Airport") || status.equalsIgnoreCase("busy")) {
+                    airplanelist.add(sortlistbeanstatus);
+                } else if (status.equalsIgnoreCase("Away")) {
+                    awaylist.add(sortlistbeanstatus);
+                }
             }
         }
         if(onlinelist.size()>0)
@@ -453,7 +476,40 @@ public class PatientRoundingFragment extends Fragment {
                             imageLoader.DisplayImage(pic_Path, holder.buddyicon, R.drawable.img_user);
                         }
                     }
-                    holder.header_title.setVisibility(View.GONE);
+                    if (bib.getStatus() != null) {
+                        Log.i("AAAA", "Buddy adapter status " + bib.getStatus());
+                        if (bib.getStatus().equalsIgnoreCase("offline") || bib.getStatus().equalsIgnoreCase("stealth")) {
+                            holder.statusIcon.setBackgroundResource(R.drawable.offline_icon);
+                        } else if (bib.getStatus().equalsIgnoreCase("online")) {
+                            holder.statusIcon.setBackgroundResource(R.drawable.online_icon);
+                        } else if (bib.getStatus().equalsIgnoreCase("busy") || bib.getStatus().equalsIgnoreCase("airport")) {
+                            holder.statusIcon.setBackgroundResource(R.drawable.busy_icon);
+                        } else if (bib.getStatus().equalsIgnoreCase("away")) {
+                            holder.statusIcon.setBackgroundResource(R.drawable.invisibleicon);
+                        } else {
+                            holder.statusIcon.setBackgroundResource(R.drawable.offline_icon);
+                        }
+                    }
+                    if(title = false) {
+                        holder.header_title.setVisibility(View.GONE);
+                    }else if(title = true) {
+                        holder.header_title.setVisibility(View.VISIBLE);
+                        String cname1, cname2;
+                        cname1 = String.valueOf(bib.getFirstname().charAt(0));
+
+                        holder.header_title.setText(cname1.toUpperCase());
+
+                        if (i > 0) {
+                            final GroupBean groupbean1 = ContactsFragment.getGroupList().get(i - 1);
+                            cname2 = String.valueOf(groupbean1.getGroupName().charAt(0));
+                            if (cname1.equalsIgnoreCase(cname2)) {
+                                holder.header_title.setVisibility(View.GONE);
+                            } else {
+                                holder.header_title.setVisibility(View.VISIBLE);
+                            }
+
+                        }
+                    }
                     holder.selectUser.setVisibility(View.GONE);
                     holder.rights.setVisibility(View.GONE);
                     holder.edit.setVisibility(View.GONE);

@@ -2,20 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/black2"
     android:orientation="vertical" >
     <RelativeLayout
         android:id="@+id/call_hist_title_layout"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/title" >
+        android:layout_height="50dp"
+        android:background="@color/blue2" >
       
         <ImageView
             android:id="@+id/back_button"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentLeft="true"
-            android:src="@drawable/ic_action_back"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/navigation_close"
             android:textColor="#FFFFFF"
             android:textSize="20dp" />
 
@@ -25,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="Call History"
+            android:text="CALL HISTORY"
             android:textColor="#FFFFFF"
             android:textSize="20dp" />
             
@@ -36,8 +38,10 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal" >
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:layout_marginLeft="10dp"
+        >
 
         <TextView
             android:layout_width="wrap_content"
@@ -45,7 +49,7 @@
             android:layout_marginLeft="7dp"
             android:layout_marginRight="5dp"
             android:text="@string/call_types1"
-            android:textColor="@color/grey"
+            android:textColor="@color/snazlgray"
             android:textSize="17dp"
             android:textStyle="bold" />
 
@@ -55,7 +59,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="5dp"
-            android:textColor="@color/grey"
+            android:textColor="@color/snazlgray"
+            android:text=""
             android:textSize="17dp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -90,15 +95,17 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="5dp"
-            android:text="@string/from_call"
-            android:textColor="@color/grey"
+            android:text="@string/time_call"
+            android:textColor="@color/snazlgray"
             android:textSize="17dp"
             android:textStyle="bold" />
 
@@ -108,7 +115,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="5dp"
-            android:textColor="@color/grey"
+            android:textColor="@color/snazlgray"
             android:textSize="17dp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -116,15 +123,17 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="5dp"
-            android:text="@string/to_call"
-            android:textColor="@color/grey"
+            android:text="@string/durations"
+            android:textColor="@color/snazlgray"
             android:textSize="17dp"
             android:textStyle="bold" />
 
@@ -134,7 +143,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="5dp"
-            android:textColor="@color/grey"
+            android:textColor="@color/snazlgray"
             android:textSize="17dp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -142,15 +151,17 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="5dp"
-            android:text="@string/time_call"
-            android:textColor="@color/grey"
+            android:text="@string/from_call"
+            android:textColor="@color/snazlgray"
             android:textSize="17dp"
             android:textStyle="bold" />
 
@@ -160,7 +171,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="5dp"
-            android:textColor="@color/grey"
+            android:textColor="@color/snazlgray"
             android:textSize="17dp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -168,15 +179,17 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="5dp"
-            android:text="@string/durations"
-            android:textColor="@color/grey"
+            android:text="@string/to_call"
+            android:textColor="@color/snazlgray"
             android:textSize="17dp"
             android:textStyle="bold" />
 
@@ -186,7 +199,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="5dp"
-            android:textColor="@color/grey"
+            android:textColor="@color/snazlgray"
             android:textSize="17dp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -220,20 +233,76 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="7dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginRight="5dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:text="@string/previews"
-        android:textColor="@color/grey"
+        android:textColor="@color/snazlgray"
         android:textSize="17dp"
         android:textStyle="bold" />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/value_img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@drawable/playrecordhistory" />
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="42dp"
+        android:layout_below="@+id/msg_container_receiver"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:visibility="visible"
+        android:id="@+id/ad_play"
+        android:background="@drawable/bg_bluecolr"
+        >
+
+        <ImageView
+            android:id="@+id/play_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/play" />
+
+
+
+        <SeekBar
+            android:id="@+id/seekBar1"
+            android:thumb="@drawable/seek_handler"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="13dp"
+            android:layout_toRightOf="@+id/play_button"
+            android:progressDrawable="@drawable/progress"
+            />
+        <TextView
+            android:id="@+id/txt_time"
+            android:layout_width="wrap_content"
+            android:layout_height="18dp"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/seekBar1"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="20dp"
+            android:text="00:00"
+            android:textColor="@color/white" />
+
+    </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/ic_action_delete"/>
+        </RelativeLayout>
+
+</RelativeLayout>
 
     <LinearLayout
         android:id="@+id/btn_container"

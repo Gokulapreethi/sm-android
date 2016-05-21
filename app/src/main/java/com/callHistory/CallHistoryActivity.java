@@ -73,7 +73,7 @@ public class CallHistoryActivity extends Activity {
 			TextView duration = (TextView) findViewById(R.id.duration_title);
 
 			TextView callstate = (TextView) findViewById(R.id.cstate_title);
-			ImageView preview = (ImageView) findViewById(R.id.value_img);
+			ImageView preview = (ImageView) findViewById(R.id.play_button);
 
 			back.setOnClickListener(new OnClickListener() {
 
