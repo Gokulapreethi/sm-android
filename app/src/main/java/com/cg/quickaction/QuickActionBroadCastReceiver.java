@@ -8,6 +8,7 @@ import android.util.Log;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.forms.Alert;
+import com.util.SingleInstance;
 
 public class QuickActionBroadCastReceiver extends BroadcastReceiver {
 
@@ -55,7 +56,7 @@ public class QuickActionBroadCastReceiver extends BroadcastReceiver {
 							|| type.equalsIgnoreCase("VBC")
 							|| type.equalsIgnoreCase("ACF")
 							|| type.equalsIgnoreCase("HC")) {
-						if (!WebServiceReferences.contextTable
+						if (!SingleInstance.instanceTable
 								.containsKey("callscreen")
 								&& !WebServiceReferences.contextTable
 										.containsKey("alertscreen")

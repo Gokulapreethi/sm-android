@@ -3810,13 +3810,17 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             gcpBean = SingleInstance.mainContext
                                     .getGroupChatPermission(groupBean);
                             if (gcpBean.getAudioConference().equalsIgnoreCase("1")) {
-                                groupCallMenu(0);
+                                if(!CallDispatcher.isCallInitiate) {
+                                    groupCallMenu(0);
+                                }
                             } else {
                                 showToast("Sorry you dont have permission");
                             }
                         } else {
-//                        individualCallMenu(0);
-                            ContactsFragment.getInstance(context).sipprocessCallRequest(buddy);
+                            if(!CallDispatcher.isCallInitiate) {
+                                individualCallMenu(0);
+                            }
+//                            ContactsFragment.getInstance(context).sipprocessCallRequest(buddy);
                         }
                     }
                     break;
@@ -4613,6 +4617,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             .findViewById(R.id.sender_user_1);
                     message = (TextView) convertView
                             .findViewById(R.id.sender_text_msg);
+                    im_pin = (TextView) convertView
+                            .findViewById(R.id.sendtv_pathname);
                     multimediaIcon = (ImageView) convertView
                             .findViewById(R.id.sender_multi_msg);
                     dateTime = (TextView) convertView
@@ -5104,6 +5110,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 
                                 // start 07-10-15 changes
 
+                                im_pin.setText(gcBean.getMediaName().split("COMMedia/")[1]);
                                 imageViewer.display(gcBean.getMediaName(),
                                         multimediaIcon, R.drawable.refresh);
                                 if (gcBean.getMessage() != null)
@@ -5115,6 +5122,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 
                                 // start 07-10-15 changes
 
+                                im_pin.setText(gcBean.getMediaName().split("COMMedia/")[1]);
                                 imageViewer.display(gcBean.getMediaName(),
                                         multimediaIcon, R.drawable.refresh);
                                 if (gcBean.getMessage() != null)
@@ -9801,7 +9809,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             }
         } else if (isprivateclicked) {
             isprivateclicked = false;
+            if(members!=null)
             sendSpecialMessage("gp", members);
+            else
+                showToast("Please select members to send");
 
         } else if (isconfirmclicked) {
             isconfirmclicked = false;

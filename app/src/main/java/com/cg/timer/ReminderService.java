@@ -20,6 +20,7 @@ import android.util.Log;
 import com.cg.DB.DBAccess;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.files.Components;
+import com.util.SingleInstance;
 
 /**
  * ReminderService is run in the main thread of their hosting process. If any
@@ -128,7 +129,7 @@ public class ReminderService extends Service {
 										}
 									}
 
-									if (!WebServiceReferences.contextTable
+									if (!SingleInstance.instanceTable
 											.containsKey("callscreen")) {
 										if (!WebServiceReferences.isReminderOpened) {
 											Components comp = (Components) WebServiceReferences.reminderQueue
@@ -151,7 +152,7 @@ public class ReminderService extends Service {
 												.remove(Integer.toString(comp
 														.getComponentId()));
 
-										Object objIns = WebServiceReferences.contextTable
+										Object objIns = SingleInstance.instanceTable
 												.get("callscreen");
 										// if (objIns instanceof VideoCallScreen) {
 										// VideoCallScreen vcal = (VideoCallScreen)

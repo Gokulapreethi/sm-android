@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
+    android:background="@color/black2"
     android:orientation="vertical" >
   <RelativeLayout
         android:id="@+id/RelativeLayout1"
@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true" >
       <Button
+          android:id="@+id/minimize_btn"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginLeft="15dp"
@@ -17,6 +18,7 @@
           android:background="@drawable/minimize_back"
           android:visibility="visible" />
       <Button
+          android:id="@+id/members"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginLeft="15dp"
@@ -36,36 +38,40 @@
             android:textSize="18dp"
             android:visibility="gone"
             android:textStyle="bold" />
-         <Chronometer
-            android:id="@+id/call_timer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="3dp"
-            android:text="@string/chronometer"
-            android:textColor="#000"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:visibility="gone" >
-        </Chronometer>
+
     </RelativeLayout>
 
 <RelativeLayout
     android:id="@+id/myrelative_layout1"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_alignParentLeft="true"
-    android:layout_below="@+id/RelativeLayout1"
     android:padding="2dp"
-    android:gravity="center">
+    android:gravity="center"
+    android:layout_centerVertical="true"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentStart="true">
 
     <org.cryse.android.controls.RoundedImageView
-        android:id="@+id/my_broadcast_ibtn1"
+        android:id="@+id/profilePic"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="75dp"
+        android:layout_marginTop="20dp"
+        android:visibility="visible"
         android:background="@drawable/user_default" />
+    <Chronometer
+        android:id="@+id/call_timer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/chronometer"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:textColor="#fff"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        android:visibility="gone" >
+    </Chronometer>
 
     <View
         android:layout_width="match_parent"
@@ -134,7 +140,7 @@
         android:layout_centerVertical="true"
         android:hint="Status"
         android:visibility="visible"
-        android:textColor="@color/white"
+        android:textColor="@color/blue2"
         android:textStyle="bold" />
 
     <TextView
@@ -174,8 +180,8 @@
             android:visibility="gone" />
      <Button
          android:id="@+id/btn_han"
-         android:layout_width="80dp"
-         android:layout_height="80dp"
+         android:layout_width="70dp"
+         android:layout_height="70dp"
          android:layout_alignBaseline="@+id/btn_addbuddy1"
          android:layout_alignBottom="@+id/btn_addbuddy1"
          android:layout_marginLeft="15dp"
@@ -200,7 +206,7 @@
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/mic"
             android:layout_weight="1"
-            android:background="@drawable/call_speaker_active"
+            android:background="@drawable/call_speaker"
             android:visibility="gone" />
      <Button
          android:id="@+id/mic"
@@ -209,7 +215,7 @@
          android:layout_alignParentLeft="true"
          android:layout_alignParentTop="true"
          android:layout_weight="1"
-         android:background="@drawable/call_mic_active"
+         android:background="@drawable/call_mic"
          android:visibility="gone" />
      <Button
          android:id="@+id/btn_video"

@@ -2985,7 +2985,7 @@ public class Component extends Activity implements OnClickListener {
 	private boolean isReadyToPlay() {
 
 		boolean result = false;
-		if (WebServiceReferences.contextTable.containsKey("callscreen")) {
+		if (SingleInstance.instanceTable.containsKey("callscreen")) {
 			result = false;
 		} else if (ValueHandler.isRecordinginProgress) {
 			result = false;

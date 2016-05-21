@@ -12,7 +12,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -21,13 +26,16 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
 import com.util.SingleInstance;
 
@@ -57,6 +65,8 @@ public class CallConnectingScreen extends Activity {
 
 	private boolean isBConf = false;
 	private String callerName;
+	private ImageLoader imageLoader;
+	private ImageView profilePicture;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +76,7 @@ public class CallConnectingScreen extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		context = this;
 		setContentView(R.layout.call_connecting);
+		getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 		final Window win = getWindow();
 		win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
 				| WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
@@ -74,7 +85,23 @@ public class CallConnectingScreen extends Activity {
 		Bundle bndl = getIntent().getExtras();
 		calltype = bndl.getString("type");
 		UserId = bndl.getString("name");
+		profilePicture = (ImageView) findViewById(R.id.profilePic);
 	ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(UserId);
+		imageLoader = new ImageLoader(SingleInstance.mainContext);
+		if(pBean.getPhoto()!=null){
+			String profilePic=pBean.getPhoto();
+			Log.i("AAAA", "MYACCOUNT "+profilePic);
+			if (profilePic != null && profilePic.length() > 0) {
+				if (!profilePic.contains("COMMedia")) {
+					profilePic = Environment
+							.getExternalStorageDirectory()
+							+ "/COMMedia/" + profilePic;
+				}
+				Log.i("AAAA","MYACCOUNT "+profilePic);
+				imageLoader.DisplayImage(profilePic, profilePicture,
+						R.drawable.img_user);
+			}
+		}
 	 callerName = pBean.getFirstname() + " " + pBean.getLastname();
 		iscoonecting = bndl.getBoolean("status");
 		isBConf = bndl.getBoolean("bconf");
@@ -416,16 +443,32 @@ public class CallConnectingScreen extends Activity {
 
 			CallDispatcher.isAudioCallWindowOpened = true;
 
-			Intent i = new Intent(CallConnectingScreen.this,
-					AudioCallScreen.class);
-
+//			Intent i = new Intent(CallConnectingScreen.this,
+//					AudioCallScreen.class);
+//
+//			Bundle bun = new Bundle();
+//			bun.putSerializable("signal", sbean);
+//			i.putExtra("buddy", from);
+//			i.putExtra("receive", "true");
+//			i.putExtra("signal", bun);
+//			i.putExtra("isreceiver", true);
+//			startActivity(i);
+			finish();
+			FragmentManager fm =
+					AppReference.mainContext.getSupportFragmentManager();
 			Bundle bun = new Bundle();
 			bun.putSerializable("signal", sbean);
-			i.putExtra("buddy", from);
-			i.putExtra("receive", "true");
-			i.putExtra("signal", bun);
-			i.putExtra("isreceiver", true);
-			startActivity(i);
+			bun.putString("buddy", from);
+			bun.putString("receive", "true");
+//			bun.putExtra("signal", bun);
+			bun.putBoolean("isreceiver", true);
+			FragmentTransaction ft = fm.beginTransaction();
+			AudioCallScreen audioCallScreen = AudioCallScreen
+					.getInstance(context);
+			audioCallScreen.setArguments(bun);
+			ft.replace(R.id.activity_main_content_fragment,
+					audioCallScreen);
+			ft.commitAllowingStateLoss();
 
 			Log.d("test",
 					"open AC ***** " + CallDispatcher.conferenceMembers.size());
@@ -581,15 +624,29 @@ public class CallConnectingScreen extends Activity {
 				CallDispatcher.isIncomingCall = false;
 				CallDispatcher.isIncomingAlert = true;
 
-				Intent i = new Intent(CallConnectingScreen.this,
-						VideoCallScreen.class);
+//				Intent i = new Intent(CallConnectingScreen.this,
+//						VideoCallScreen.class);
+//				Bundle bundle = new Bundle();
+//				bundle.putString("sessionid", sbean.getSessionid());
+//				bundle.putString("buddyName", from);
+//				bundle.putString("receive", "true");
+//				i.putExtras(bundle);
+//
+//				startActivity(i);
+				finish();
+				FragmentManager fm =
+						AppReference.mainContext.getSupportFragmentManager();
 				Bundle bundle = new Bundle();
 				bundle.putString("sessionid", sbean.getSessionid());
 				bundle.putString("buddyName", from);
 				bundle.putString("receive", "true");
-				i.putExtras(bundle);
-
-				startActivity(i);
+				FragmentTransaction ft = fm.beginTransaction();
+				VideoCallScreen videoCallScreen = VideoCallScreen
+						.getInstance(context);
+				videoCallScreen.setArguments(bundle);
+				ft.replace(R.id.activity_main_content_fragment,
+						videoCallScreen);
+				ft.commitAllowingStateLoss();
 				Log.d("test", "open VC ***** "
 						+ CallDispatcher.conferenceMembers.size());
 

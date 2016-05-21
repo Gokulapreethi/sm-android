@@ -223,7 +223,7 @@ public class VideoPagingSRWindow extends Activity implements VideoCallback,
 			Log.d("test", "video paging window loaded");
 
 			strStartTime = getCurrentDateTime();
-			WebServiceReferences.contextTable.put("callscreen", this);
+			SingleInstance.instanceTable.put("callscreen", this);
 
 			objCallDispatcher.startPlayer(context);
 
@@ -1993,8 +1993,8 @@ public class VideoPagingSRWindow extends Activity implements VideoCallback,
 			 * CallDispatcher.conferenceMembers.clear();
 			 * CallDispatcher.conferenceMembersTime.clear();
 			 */
-			if (WebServiceReferences.contextTable.containsKey("callscreen")) {
-				WebServiceReferences.contextTable.remove("callscreen");
+			if (SingleInstance.instanceTable.containsKey("callscreen")) {
+				SingleInstance.instanceTable.remove("callscreen");
 			}
 			CallDispatcher.videoScreenVisibleState = false;
 			CallDispatcher.isCallInProgress = false;

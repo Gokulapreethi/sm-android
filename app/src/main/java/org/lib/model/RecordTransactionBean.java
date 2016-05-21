@@ -22,6 +22,8 @@ public class RecordTransactionBean {
 	private String bs_calltype = null;
 	private String bsStatus;
 	private int status=0;
+   private String host;
+    private String participants;
 
 	public String getFromName() {
 		return fromName;
@@ -158,4 +160,19 @@ public class RecordTransactionBean {
 	public void setStatus(int status) {
 		this.status = status;
 	}
+   public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(String participants) {
+        this.participants = participants;
+    }
 }

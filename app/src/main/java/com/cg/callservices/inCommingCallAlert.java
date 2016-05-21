@@ -15,7 +15,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -24,6 +27,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bean.ProfileBean;
@@ -32,6 +37,7 @@ import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.commongui.MultimediaUtils;
+import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
 import com.util.SingleInstance;
 
@@ -39,7 +45,7 @@ public class inCommingCallAlert extends Activity {
 
 	private ImageView accept = null;
 
-	private ImageView reject = null;
+	private ImageView reject = null, ignore = null;
 
 	private TextView tv_title = null;
 
@@ -64,6 +70,8 @@ public class inCommingCallAlert extends Activity {
 	private KeyguardLock lock;
 
 	private HashMap<String, Object> xmlmap = new HashMap<String, Object>();
+	private ImageLoader imageLoader;
+	private ProfileBean bean;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +89,9 @@ public class inCommingCallAlert extends Activity {
 		int noScrHeight = displaymetrics.heightPixels;
 		int noScrWidth = displaymetrics.widthPixels;
 		this.setFinishOnTouchOutside(false);
+		RelativeLayout ll = (RelativeLayout) findViewById(R.id.callalert_lay);
+		Window window=getWindow();
+		getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
 		if (WebServiceReferences.callDispatch.containsKey("calldisp"))
 			callDisp = (CallDispatcher) WebServiceReferences.callDispatch
@@ -94,20 +105,32 @@ public class inCommingCallAlert extends Activity {
 
 		accept = (ImageView) findViewById(R.id.tv_accept);
 		reject = (ImageView) findViewById(R.id.tv_decline);
+		ignore = (ImageView) findViewById(R.id.tv_ignore);
+
 		tv_title = (TextView) findViewById(R.id.caller_name);
 		call_type = (TextView) findViewById(R.id.call_type);
 		profilePicture = (ImageView) findViewById(R.id.profile_pic);
 		sbaen = (SignalingBean) getIntent().getSerializableExtra("bean");
 		CallDispatcher.sb = sbaen;
 		CallDispatcher.notify_sb = sbaen;
+		bean = DBAccess.getdbHeler().getProfileDetails(sbaen.getFrom());
 		changeTextalert();
 		Log.i("thread", ">>>>>>>>>>>> incoming call on create");
-		Bitmap bitmap = null;
-		String profilePic = callDisp.getdbHeler(context).getProfilePic(
-				sbaen.getFrom());
-		bitmap = callDisp.setProfilePicture(profilePic,
-				R.drawable.icon_buddy_aoffline);
-		profilePicture.setImageBitmap(bitmap);
+		imageLoader = new ImageLoader(SingleInstance.mainContext);
+		if(bean.getPhoto()!=null){
+			String profilePic=bean.getPhoto();
+			Log.i("AAAA", "MYACCOUNT "+profilePic);
+			if (profilePic != null && profilePic.length() > 0) {
+				if (!profilePic.contains("COMMedia")) {
+					profilePic = Environment
+							.getExternalStorageDirectory()
+							+ "/COMMedia/" + profilePic;
+				}
+				Log.i("AAAA","MYACCOUNT "+profilePic);
+				imageLoader.DisplayImage(profilePic, profilePicture,
+						R.drawable.img_user);
+			}
+		}
 		if (WebServiceReferences.contextTable
 				.containsKey("multimediautils"))
 			((MultimediaUtils) WebServiceReferences.contextTable
@@ -141,6 +164,15 @@ public class inCommingCallAlert extends Activity {
 				rejectCall();
 			}
 		});
+
+		ignore.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				callDisp.stopRingTone();
+				finishactivity();
+			}
+		});
+
 		SharedPreferences sPreferences = PreferenceManager
 				.getDefaultSharedPreferences(SingleInstance.mainContext
 						.getApplicationContext());
@@ -184,8 +216,7 @@ public class inCommingCallAlert extends Activity {
 		callDisp.setNoScrHeight(noScrHeight);
 		callDisp.setNoScrWidth(noScrWidth);
 		displaymetrics = null;
-		ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(sbaen.getFrom());
-		String CallerName=pBean.getFirstname()+" "+pBean.getLastname();
+		String CallerName=bean.getFirstname()+" "+bean.getLastname();
 
 		if (sbaen.getCallType().equals("AC")) {
 			tv_title.setText(CallerName);
@@ -230,6 +261,24 @@ public class inCommingCallAlert extends Activity {
 			if (CallDispatcher.LoginUser != null) {
 
 				callDisp.rejectInComingCall(sbaen);
+
+				//For HangUp
+				CallDispatcher.sb.setEndTime(callDisp.getCurrentDateandTime());
+				Object objCallScreen = SingleInstance.instanceTable
+						.get("callscreen");
+				if (objCallScreen == null) {
+					CallDispatcher.sb.setCallDuration("0:0:0");
+				}else
+					CallDispatcher.sb
+							.setCallDuration(SingleInstance.mainContext
+									.getCallDuration(
+											CallDispatcher.sb.getStartTime(),
+											CallDispatcher.sb.getEndTime()));
+				Log.d("Test","TimeDuration inside callDispatcher"+CallDispatcher.sb.getStartTime()+""+CallDispatcher.sb.getEndTime());
+
+
+				DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
+						CallDispatcher.sb);
 			}
 			CallDispatcher.currentSessionid = null;
 			callDisp.isHangUpReceived = false;

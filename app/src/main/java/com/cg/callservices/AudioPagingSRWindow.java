@@ -157,7 +157,7 @@ public class AudioPagingSRWindow extends Activity {
 			CallDispatcher.currentSessionid = sessionid;
 			Log.i("call", "Assigned session" + sessionid);
 
-			WebServiceReferences.contextTable.put("callscreen", this);
+			SingleInstance.instanceTable.put("callscreen", this);
 
 			objCallDispatcher.startPlayer(context);
 			Log.d("test", "before paging init");
@@ -166,7 +166,7 @@ public class AudioPagingSRWindow extends Activity {
 
 			initFields();
 
-			WebServiceReferences.contextTable.put("callscreen", this);
+//			WebServiceReferences.contextTable.put("callscreen", this);
 			try {
 
 				if (!audioProperties.isHeadsetOn()) {
@@ -422,8 +422,8 @@ public class AudioPagingSRWindow extends Activity {
 			objCallDispatcher.isHangUpReceived = false;
 			CallDispatcher.conferenceMembers.clear();
 			CallDispatcher.conferenceMembersTime.clear();
-			if (WebServiceReferences.contextTable.containsKey("callscreen")) {
-				WebServiceReferences.contextTable.remove("callscreen");
+			if (SingleInstance.instanceTable.containsKey("callscreen")) {
+				SingleInstance.instanceTable.remove("callscreen");
 
 			}
 

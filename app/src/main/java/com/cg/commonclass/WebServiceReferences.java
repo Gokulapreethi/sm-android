@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -165,6 +166,11 @@ public class WebServiceReferences {
 	public static boolean isAutoPlay = false;
 
 	public static LinkedList<Components> llAutoPlayContent = new LinkedList<Components>();
+
+
+	public static LinkedHashMap<Integer, String> videoSSRC_total = new LinkedHashMap<Integer, String>();
+
+	public static ArrayList<Integer> videoSSRC_total_list = new ArrayList<>();
 
 	public static String getNoteCreateTimeForFiles() {
 		try {

@@ -1,23 +1,5 @@
 package com.cg.callservices;
 
-import java.nio.ByteBuffer;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.Timer;
-
-import org.audio.AudioProperties;
-import org.core.VideoCallback;
-import org.lib.model.SignalingBean;
-import org.util.GraphicsUtil;
-import org.util.Queue;
-import org.video.Preview;
-import org.video.PreviewFrameSink;
-import org.video.VideoFrameRenderer;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.KeyguardManager;
@@ -27,24 +9,29 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.hardware.Camera;
+import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.Button;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -58,10 +45,35 @@ import com.cg.DB.DBAccess;
 import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
+import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
+import com.main.ContactsFragment;
 import com.util.SingleInstance;
 
-public class VideoCallScreen extends Activity implements VideoCallback,
+import org.audio.AudioProperties;
+import org.core.VideoCallback;
+import org.lib.model.BuddyInformationBean;
+import org.lib.model.SignalingBean;
+import org.util.GraphicsUtil;
+import org.util.Queue;
+import org.video.Preview;
+import org.video.PreviewFrameSink;
+import org.video.VideoFrameRenderer;
+
+import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.Vector;
+
+public class VideoCallScreen extends Fragment implements VideoCallback,
 		AnimationListener {
 
 	// ImageView[] view = null;
@@ -69,7 +81,7 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 	Timer timer = null;
 	Handler handler = null;
 	LinearLayout linearLayout;
-	RelativeLayout relativeLayout;
+//	RelativeLayout relativeLayout;
 	int orientation = 0;
 	int i = 0;
 	boolean isreject = false;
@@ -88,19 +100,27 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 	boolean mRenderFrame = false;
 	public String failedUser = null;
 	private HashMap<String, Object> xmlmap = new HashMap<String, Object>();
+
+	private HashMap<String, Integer> videoSSRC = new HashMap<String, Integer>();
+	private Vector<BuddyInformationBean> total_buddyList;
+	private ImageLoader imageLoader;
+	private int numOfCam;
 	String record_path = null;
 
 	AlertDialog alert = null;
 	private String sessionid = null;
 	private String receiver = null;
-	private Handler videocall = null;
+	private Handler videocall;
 	private boolean hasRemoved = false;
+	private boolean hasRemoved2 = false;
 	Preview pv = null;
 	FrameLayout videopreview = null;
-	static Context context = null;
+	public static Context context = null;
 	boolean mReceiveVideo = false;
+	boolean mReceiveVideo2 = false;
 	// private AudioProperties audioProperties=null;
 	RelativeLayout layout;
+	RelativeLayout relative_layout2 , relative_layout3;
 	//
 	int obtainWidth = 0;
 	int obtainHeight = 0;
@@ -110,19 +130,28 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 	private CallDispatcher objCallDispatcher = (CallDispatcher) WebServiceReferences.callDispatch
 			.get("calldispatch");
 
-	GLSurfaceView gls = null;
+//	GLSurfaceView gls = null;
 	private static GLSurfaceView glSurfaceView = null;
-	private VideoFrameRenderer frameRenderer = null;
-	private PreviewFrameSink frameSink = null;
-	private byte[] frame = null;
-	private ByteBuffer frameBuffer = null;
+	private static GLSurfaceView glSurfaceView2 = null;
+	private static GLSurfaceView glSurfaceView3 = null;
+
+	TextView on_off1,on_off2,on_off3,onoff_preview,participant_name1,participant_name2,participant_name3;
+	ImageView buddyimageview1, buddyimageview2, buddyimageview3, ownimageview;
+	Timer buddytimer1 = null, buddytimer2 = null, buddyTimer3 = null;
+	VideoOnOffTimerTask buddyTimerTask1 = null, buddyTimerTask2 = null, buddyTimerTask3 = null;
+//	private VideoFrameRenderer frameRenderer = null;
+	private PreviewFrameSink frameSink = null, frameSink2 = null, frameSink3 = null;
+
+//	private byte[] frame = null;
+	private ByteBuffer frameBuffer = null, frameBuffer2 = null, frameBuffer3 = null;
+
 
 	// public ImageAdapter ad = null;
 	private String buddyName;
 	private Queue videoQueue;
-	private VideoThread videoThread;
+	private VideoThreadMultiWindow videoThread;
 
-	public Handler videoHandler = new Handler();
+	public Handler videoHandler;
 
 	private ArrayList<String> strALCallMembers = new ArrayList<String>();
 
@@ -130,17 +159,20 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 
 	private String strCallStartTime = "";
 
-	private FrameLayout videosurface;
+	private FrameLayout videosurface, videosurface2, videosurface3;
+
+//	private GLSurfaceView glSurfaceView2;
 
 	private AudioProperties audioProperties = null;
 	private boolean speaker = false;
 	private boolean micmute = false;
 	private String strStartTime;
-	private Button mic;
-	private Button loudSpeaker;
+	private ImageView mic;
+	private ImageView loudSpeaker;
 	// TextView tvTitle;
 	String tvTitlename = null;
-	FrameLayout.LayoutParams layoutParamsf;
+	FrameLayout.LayoutParams layoutParamsf, layoutParamsf2, layoutParamsf3;
+
 	String conferenceWindowTitle = "Conference People";
 	String title = conferenceWindowTitle;
 	// RenderBitmap renderBitmap = null;
@@ -151,21 +183,53 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 
 	private boolean selfHangup = false;
 
+//	TextView textView1;
+//	TextView textView2;
+//	TextView textView3;
+
+	MediaPlayer mediaPlayer;
+	boolean video_1_shown= true, video_2_shown= true;
 	// String acStatus=null;
+
+	private static VideoCallScreen videoCallScreen;
+	public View rootView;
+	Bundle bundlevalues;
+
+	public static VideoCallScreen getInstance(Context maincontext) {
+		try {
+			if (videoCallScreen == null) {
+
+				context = maincontext;
+				videoCallScreen = new VideoCallScreen();
+
+			}
+
+			return videoCallScreen;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return videoCallScreen;
+		}
+	}
+
 
 	/**
 	 * Called when the activity is starting. Also used to Initialize the members
 	 * of the class. Show the videoCall view and their controls.
 	 */
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+							 Bundle savedInstanceState) {
+//		super.onCreate(savedInstanceState);
 		try {
-
-			context = this;
-			WebServiceReferences.contextTable.put("callscreen", this);
-
+//			requestWindowFeature(Window.FEATURE_NO_TITLE);
+//			context = this;
+//			WebServiceReferences.contextTable.put("callscreen", this);
+			SingleInstance.instanceTable.put("callscreen",videoCallScreen);
+            bundlevalues=getArguments();
+			videocall = new Handler();
+			videoHandler = new Handler();
 			DisplayMetrics displaymetrics = new DisplayMetrics();
-			getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+			getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 			int nosHeight = displaymetrics.heightPixels;
 			int nosWidth = displaymetrics.widthPixels;
 
@@ -178,12 +242,12 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 			objCallDispatcher.setNoScrHeight(nosHeight);
 			objCallDispatcher.setNoScrWidth(nosWidth);
 			displaymetrics = null;
-			objCallDispatcher.startPlayer(this);
+			objCallDispatcher.startPlayer(context);
 
 			CallDispatcher.networkState = objCallDispatcher.connectivityType();
 
-			keyguardManager = (KeyguardManager) getSystemService(Activity.KEYGUARD_SERVICE);
-			lock = keyguardManager.newKeyguardLock(KEYGUARD_SERVICE);
+			keyguardManager = (KeyguardManager) context.getSystemService(Activity.KEYGUARD_SERVICE);
+			lock = keyguardManager.newKeyguardLock(context.KEYGUARD_SERVICE);
 			lock.disableKeyguard();
 
 			CallDispatcher.networkState = objCallDispatcher.connectivityType();
@@ -197,8 +261,8 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 
 				public void handleMessage(Message result) {
 					// Log.d("one", "videocall");
-					super.handleMessage(result);
-					Bundle bundle = (Bundle) result.obj;
+//					super.handleMessage(result);
+					final Bundle bundle = (Bundle) result.obj;
 					try {
 						if (bundle.containsKey("newbuddy")) {
 							if (!strALCallMembers.contains(bundle
@@ -207,6 +271,7 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 								strALCallMembers.add(bundle
 										.getString("newbuddy"));
 							}
+							switchVideo("");
 							// if (ad != null) {
 							// Log.e("cover", "339");
 							// ad.notifyDataSetChanged();
@@ -350,20 +415,51 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 							// System.out
 							// .println("notifyDataSetChanged.....................");
 						} else if (bundle.containsKey("img")) {
+//							Log.i("NotesVideo","came to bundle.containsKey(\"img\") : window id is : "+bundle.getInt("windowid")+" videossrc : "+bundle.getInt("videossrc"));
+							if (bundle.getInt("windowid") == 0) {
 
-							// Log.d("video",
-							// "******************* From img *******************");
-							frameSink.getFrameLock().lock();
-							frameBuffer.position(0);
-							// frameRenderer.setPreviewFrameWidth(obtainWidth);
-							// frameRenderer.setPreviewFrameHeight(obtainHeight);
+//							if(video_1_shown) {
+//								Log.i("NotesVideo","video_1_shown");
+								frameSink.getFrameLock().lock();
+								frameBuffer.position(0);
+								// frameRenderer.setPreviewFrameWidth(obtainWidth);
+								// frameRenderer.setPreviewFrameHeight(obtainHeight);
 
-							frameBuffer.put(bundle.getByteArray("img"));
-							frameBuffer.position(0);
-							frameSink.setNextFrame(frameBuffer);
-							frameSink.getFrameLock().unlock();
-							glSurfaceView.requestRender();
+								frameBuffer.put(bundle.getByteArray("img"));
+								frameBuffer.position(0);
+								frameSink.setNextFrame(frameBuffer);
+								frameSink.getFrameLock().unlock();
 
+								glSurfaceView.requestRender();
+
+//							}
+							} else if(bundle.getInt("windowid") == 1) {
+//							if(video_2_shown) {
+								Log.i("NotesVideo","video_2_shown");
+								frameSink2.getFrameLock().lock();
+								frameBuffer2.position(0);
+								// frameRenderer.setPreviewFrameWidth(obtainWidth);
+								// frameRenderer.setPreviewFrameHeight(obtainHeight);
+
+								frameBuffer2.put(bundle.getByteArray("img"));
+								frameBuffer2.position(0);
+								frameSink2.setNextFrame(frameBuffer2);
+								frameSink2.getFrameLock().unlock();
+								glSurfaceView2.requestRender();
+//							}
+							} else if(bundle.getInt("windowid") == 2) {
+
+								frameSink3.getFrameLock().lock();
+								frameBuffer3.position(0);
+								// frameRenderer.setPreviewFrameWidth(obtainWidth);
+								// frameRenderer.setPreviewFrameHeight(obtainHeight);
+
+								frameBuffer3.put(bundle.getByteArray("img"));
+								frameBuffer3.position(0);
+								frameSink3.setNextFrame(frameBuffer3);
+								frameSink3.getFrameLock().unlock();
+								glSurfaceView3.requestRender();
+							}
 						} else if (bundle.containsKey("video")) {
 							// Log.d("video", "videopre");
 
@@ -526,7 +622,9 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 							}
 							//
 							clearResources();
-							finish();
+//							finish();
+ 							finishVideocallScreen();
+
 						}
 					} catch (Exception e) {
 						// TODO: handle exception
@@ -544,16 +642,16 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 			layoutParams.setMargins(20, 0, 0, 15);
 
-			context = this;
+//			context = this;
 			WebServiceReferences.contextTable.put("VideoCallscreen", context);
 
 			if (savedInstanceState == null) {
 
-				sessionid = (String) getIntent().getStringExtra("sessionid");
+				sessionid = (String) bundlevalues.getString("sessionid");
 
-				receiver = (String) getIntent().getStringExtra("receive");
+				receiver = (String) bundlevalues.getString("receive");
 
-				buddyName = (String) getIntent().getStringExtra("buddyName");
+				buddyName = (String) bundlevalues.getString("buddyName");
 			} else {
 				sessionid = (String) savedInstanceState.getString("sessionid");
 
@@ -562,7 +660,8 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 				buddyName = (String) savedInstanceState.getString("buddyName");
 
 			}
-
+			Log.i("NOTES","sessionid : "+sessionid);
+			CallDispatcher.currentSessionid =sessionid;
 			tvTitlename = buddyName;
 
 			// tvTitle.setText(buddyName);
@@ -575,16 +674,59 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 
 			strCallStartTime = objCallDispatcher.getCurrentDateTime();
 
-			audioProperties = new AudioProperties(this);
-			LayoutInflater inflateLayout = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			RelativeLayout callControls = (RelativeLayout) inflateLayout
-					.inflate(R.layout.videocall, null);
-			videopreview = (FrameLayout) callControls
-					.findViewById(R.id.VideoView01);
-			videosurface = (FrameLayout) callControls
-					.findViewById(R.id.VideoView02);
+			audioProperties = new AudioProperties(context);
+			LayoutInflater inflateLayout = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			rootView = inflater.inflate(R.layout.videocall, null);
 
-			LinearLayout llCallControl = (LinearLayout) callControls
+//			Animation rotation = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_xml);
+//			rotation.setRepeatCount(Animation.INFINITE);
+//			rootView.startAnimation(rotation);
+//
+			LinearLayout callControls = (LinearLayout) rootView.findViewById
+					(R.id.LinearLayout01);
+			videopreview = (FrameLayout) rootView
+					.findViewById(R.id.VideoView01);
+
+//			RotateAnimation rotate= (RotateAnimation)AnimationUtils.loadAnimation(context,R.anim.rotate_xml);
+//			callControls.setAnimation(rotate);
+
+			videosurface = (FrameLayout) rootView
+					.findViewById(R.id.VideoView02);
+			videosurface2 = (FrameLayout) rootView
+					.findViewById(R.id.VideoView03);
+			videosurface3 = (FrameLayout) rootView
+					.findViewById(R.id.VideoView04);
+
+			glSurfaceView = (GLSurfaceView)rootView.findViewById(R.id.surfaceview02);
+			glSurfaceView2 = (GLSurfaceView)rootView.findViewById(R.id.surfaceview03);
+			glSurfaceView3 = (GLSurfaceView)rootView.findViewById(R.id.surfaceview04);
+
+			onoff_preview = (TextView)rootView.findViewById(R.id.onoffpreview);
+			onoff_preview.setTag(true);
+			on_off1 = (TextView)rootView.findViewById(R.id.onoff2);
+			on_off1.setTag(true);
+//			RotateAnimation rotate1= (RotateAnimation)AnimationUtils.loadAnimation(context,R.anim.rotate_xml);
+//			on_off1.setAnimation(rotate1);
+			on_off2 = (TextView)rootView.findViewById(R.id.onoff3);
+			on_off2.setTag(true);
+			on_off3 = (TextView)rootView.findViewById(R.id.onoff4);
+			on_off3.setTag(true);
+
+			participant_name1 = (TextView)rootView.findViewById(R.id.name2);
+			participant_name2 = (TextView)rootView.findViewById(R.id.name3);
+			participant_name3 = (TextView)rootView.findViewById(R.id.name4);
+
+			ownimageview = (ImageView)rootView.findViewById(R.id.own_image);
+			buddyimageview1 = (ImageView)rootView.findViewById(R.id.user_image2);
+			buddyimageview2 = (ImageView)rootView.findViewById(R.id.user_image3);
+			buddyimageview3 = (ImageView)rootView.findViewById(R.id.user_image4);
+
+			total_buddyList = ContactsFragment.getBuddyList();
+			imageLoader = new ImageLoader(context);
+
+			numOfCam = Camera.getNumberOfCameras();
+
+			LinearLayout llCallControl = (LinearLayout) rootView
 					.findViewById(R.id.LinearLayout01);
 
 			CallDispatcher.videoScreenVisibleState = true;
@@ -592,16 +734,16 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 			llControlss.setLayoutParams(new LayoutParams(
 					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 			llControlss.setVerticalScrollBarEnabled(false);
-			LinearLayout llControls = new LinearLayout(context);
-			llControls.setLayoutParams(new LayoutParams(
-					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-			llControls.setOrientation(LinearLayout.VERTICAL);
+//			LinearLayout llControls = new LinearLayout(context);
+//			llControls.setLayoutParams(new LayoutParams(
+//					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+//			llControls.setOrientation(LinearLayout.VERTICAL);
 
-			Button add = new Button(this);
+			ImageView add = (ImageView) rootView.findViewById(R.id.add);
 			add.setKeepScreenOn(true);
 			// add.setText("ADD");
 
-			add.setBackgroundResource(R.drawable.add_icon_video);
+			add.setImageResource(R.drawable.add_icon_video);
 			add.setPadding(0, 20, 0, 0);
 			add.setOnClickListener(new OnClickListener() {
 
@@ -633,9 +775,9 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 
 				}
 			});
-			Button hangup = new Button(context);
+			ImageView hangup = (ImageView) rootView.findViewById(R.id.hang);
 
-			hangup.setBackgroundResource(R.drawable.hang);
+			hangup.setImageResource(R.drawable.hang);
 
 			hangup.setOnClickListener(new OnClickListener() {
 
@@ -652,23 +794,23 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 				}
 			});
 
-			loudSpeaker = new Button(this);
+			loudSpeaker  = (ImageView) rootView.findViewById(R.id.loudspeaker);
 
-			loudSpeaker.setBackgroundResource(R.drawable.headphone_video);
-			mic = new Button(this);
+			loudSpeaker.setImageResource(R.drawable.headphone_video);
+			mic = (ImageView) rootView.findViewById(R.id.speaker);
 
 			// mic.setBackgroundDrawable(micUnmuteState());
-			mic.setBackgroundResource(R.drawable.mic_video);
+			mic.setImageResource(R.drawable.mic_video);
 			speaker = false;
 
 			if (SingleInstance.mainContext.isAutoAcceptEnabled(
 					CallDispatcher.LoginUser, buddyName)) {
 				speaker = true;
-				loudSpeaker.setBackgroundResource(R.drawable.loudspeaker_video);
+				loudSpeaker.setImageResource(R.drawable.loudspeaker_video);
 
 			} else {
 				speaker = false;
-				loudSpeaker.setBackgroundResource(R.drawable.headphone_video);
+				loudSpeaker.setImageResource(R.drawable.headphone_video);
 			}
 			audioProperties.setSpeakerphoneOn(speaker);
 			loudSpeaker.setOnClickListener(new OnClickListener() {
@@ -691,10 +833,10 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 							speaker = true;
 							// loudSpeaker.setHint("off");
 							loudSpeaker
-									.setBackgroundResource(R.drawable.loudspeaker_video);
+									.setImageResource(R.drawable.loudspeaker_video);
 						} else if (speaker) {
 							loudSpeaker
-									.setBackgroundResource(R.drawable.headphone_video);
+									.setImageResource(R.drawable.headphone_video);
 							speaker = false;
 							// loudSpeaker.setHint("on");
 						}
@@ -714,11 +856,11 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 						if (micmute) {
 							micmute = false;
 							// mic.setBackgroundResource(R.drawable.mic_unmute);
-							mic.setBackgroundResource(R.drawable.mic_video);
+							mic.setImageResource(R.drawable.mic_video);
 						} else if (!micmute) {
 							micmute = true;
 							// mic.setBackgroundResource(R.drawable.mic_mute);
-							mic.setBackgroundResource(R.drawable.mic_mutex_video);
+							mic.setImageResource(R.drawable.mic_mutex_video);
 						}
 
 						AppMainActivity.commEngine.micMute(micmute);
@@ -730,10 +872,10 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 				}
 			});
 
-			final Button buddies = new Button(this);
-
+//			final Button buddies = new Button(this);
+			ImageView	buddies  = (ImageView) rootView.findViewById(R.id.switchuser);
 			// buddies.setHint("off");
-			buddies.setBackgroundResource(R.drawable.buddies_video);
+			buddies.setImageResource(R.drawable.buddies_video);
 			buddies.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -755,8 +897,8 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 
 				}
 			});
-			Button btn_loc = new Button(this);
-			btn_loc.setBackgroundResource(R.drawable.loc_pin);
+			ImageView btn_loc  = (ImageView) rootView.findViewById(R.id.location);
+			btn_loc.setImageResource(R.drawable.loc_pin);
 
 			if (!receiver.equalsIgnoreCase("true")) {
 				btn_loc.setVisibility(View.GONE);
@@ -798,15 +940,15 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 				}
 			});
 
-			llControls.addView(add, layoutParams);
-			llControls.addView(mic, layoutParams);
-			llControls.addView(loudSpeaker, layoutParams);
-			llControls.addView(hangup, layoutParams);
-			llControls.addView(buddies, layoutParams);
-			llControls.addView(btn_loc, layoutParams);
-			llControlss.addView(llControls);
+//			llControls.addView(add, layoutParams);
+//			llControls.addView(mic, layoutParams);
+//			llControls.addView(loudSpeaker, layoutParams);
+//			llControls.addView(hangup, layoutParams);
+//			llControls.addView(buddies, layoutParams);
+//			llControls.addView(btn_loc, layoutParams);
+//			llControlss.addView(llControls);
 
-			RelativeLayout rlForAlignment = new RelativeLayout(this);
+			RelativeLayout rlForAlignment = new RelativeLayout(context);
 			rlForAlignment.setLayoutParams(new LayoutParams(
 					RelativeLayout.LayoutParams.FILL_PARENT,
 					RelativeLayout.LayoutParams.FILL_PARENT));
@@ -821,14 +963,14 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 			llCallControl.addView(rlForAlignment);
 			// 2222222222
 
-			final LinearLayout showBuddies = new LinearLayout(this);
+			final LinearLayout showBuddies = new LinearLayout(context);
 			showBuddies.setBackgroundColor(Color.TRANSPARENT);
 			/* Code Clean up */
 			showBuddies.setOrientation(LinearLayout.VERTICAL);
 			showBuddies.setGravity(Gravity.CENTER);
 			showBuddies.setLayoutParams(new LayoutParams(
 					LayoutParams.FILL_PARENT, 50));
-			MyAbsoluteLayout mal = new MyAbsoluteLayout(this);
+			MyAbsoluteLayout mal = new MyAbsoluteLayout(context);
 
 			TextView tv = new TextView(context);
 			tv.setText("Test");
@@ -841,16 +983,44 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 			videoQueue = new Queue();
 
 			AppMainActivity.commEngine.setVideoCallback(this);
-			gls = getGLSurfaceView(context);
+			 getGLSurfaceView(context);
+//			glSurfaceView2 =
+					getGLSurfaceView2(context);
+//			glSurfaceView3 =
+					getGLSurfaceView3(context);
 
-			pv = AppMainActivity.commEngine.getVideoPreview(this);
 
-			pv.setZOrderOnTop(true);
+			boolean hasFrontCamera = context.getPackageManager()
+					.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT);
+			if (Integer.parseInt(Build.VERSION.SDK) > 8) {
+				WebServiceReferences.CAMERA_ID = 1;
+				if (!hasFrontCamera) {
+					WebServiceReferences.CAMERA_ID = 0;
+				}
+
+			} else {
+
+				WebServiceReferences.CAMERA_ID = 2;
+
+			}
+
+					AppMainActivity.commEngine.setVideoParameters(
+							WebServiceReferences.VIDEO_WIDTH,
+							WebServiceReferences.VIDEO_HEIGHT,
+							WebServiceReferences.CAMERA_ID);
+
+			pv = AppMainActivity.commEngine.getVideoPreview(context);
+
+			pv.setZOrderOnTop(false);
 
 			videopreview.addView(pv);
 			// ......
 
 			glSurfaceView.setZOrderOnTop(false);
+			glSurfaceView2.setZOrderOnTop(false);
+//			glSurfaceView2.setZOrderMediaOverlay(false);
+			glSurfaceView3.setZOrderOnTop(false);
+//			glSurfaceView3.setZOrderMediaOverlay(true);
 
 			double c = nosHeight * 1.1;
 			c1 = (int) c;
@@ -869,7 +1039,7 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 			}
 
 			if (percentage > remSizeforButton) {
-				llControls.setVisibility(View.GONE);
+//				llControls.setVisibility(View.GONE);
 			}
 
 			// Log.d("NN", "height width " + c1);
@@ -877,11 +1047,22 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 					LayoutParams.FILL_PARENT);
 			layout = getCallConnectingView();
 
+			layoutParamsf2 = new FrameLayout.LayoutParams(c1,
+					LayoutParams.FILL_PARENT);
+			relative_layout2 = getCallConnectingView();
+
+			layoutParamsf3 = new FrameLayout.LayoutParams(c1,
+					LayoutParams.FILL_PARENT);
+			relative_layout3 = getCallConnectingView();
+
 			// layout.setLayoutParams(new
 			// LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT));
 
 			// videosurface.addView(glSurfaceView, layoutParamsf);
-			videosurface.addView(layout, layoutParamsf);
+
+//			videosurface.addView(layout, layoutParamsf);
+//			videosurface2.addView(relative_layout2, layoutParamsf2);
+//			videosurface3.addView(relative_layout3,layoutParamsf3);
 
 			AnimationThread animationThread = new AnimationThread(
 					VideoCallScreen.this);
@@ -898,46 +1079,192 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 				}
 			};
 
-			glSurfaceView.setOnTouchListener(new OnTouchListener() {
+//			glSurfaceView.setOnTouchListener(new OnTouchListener() {
+//
+//				@Override
+//				public boolean onTouch(View v, MotionEvent event) {
+//					try {
+//						showBuddies.bringToFront();
+//
+//						showBuddies.postDelayed(runnable, 5000);
+//
+//					} catch (Exception e) {
+//						// TODO: handle exception
+//						e.printStackTrace();
+//					}
+//
+//					return false;
+//				}
+//			});
 
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					try {
-						showBuddies.bringToFront();
-
-						showBuddies.postDelayed(runnable, 5000);
-
-					} catch (Exception e) {
-						// TODO: handle exception
-						e.printStackTrace();
-					}
-
-					return false;
-				}
-			});
-
-			videocall = new Handler() {
-				public void handleMessage(Message result) {
-					super.handleMessage(result);
-					/* Code Clean up */
-					// Bundle bundle = (Bundle) result.obj;
-
-				}
-			};
-			mal.addView(callControls, new MyAbsoluteLayout.LayoutParams(
-					LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 0, 0));
+//			videocall = new Handler() {
+//				public void handleMessage(Message result) {
+//					super.handleMessage(result);
+//					/* Code Clean up */
+//					// Bundle bundle = (Bundle) result.obj;
+//
+//				}
+//			};
+//			mal.addView(callControls, new MyAbsoluteLayout.LayoutParams(
+//					LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 0, 0));
 
 			mal.addView(showBuddies, new MyAbsoluteLayout.LayoutParams(
 					LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 0,
 					nosHeight - 200));
 
-			videoThread = new VideoThread(videoQueue);
+			videoThread = new VideoThreadMultiWindow(videoQueue);
 			videoThread.setHandler(videoHandler);
 			videoThread.start();
 
-			setContentView(mal);
+//			textView1 = new TextView(context);
+//			textView1.setText("one");
+//
+//			textView2 = new TextView(context);
+//			textView2.setText("two");
+//
+//			textView3 = new TextView(context);
+//			textView3.setText(" window ");
 
-			final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+//			mal.addView(textView1, new MyAbsoluteLayout.LayoutParams(
+//					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 0,
+//					nosHeight - 300));
+//			mal.addView(textView2, new MyAbsoluteLayout.LayoutParams(
+//					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 0,
+//					nosHeight - 200));
+//
+//			mal.addView(textView3, new MyAbsoluteLayout.LayoutParams(
+//					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 0,
+//					nosHeight - 400));
+//			setContentView(mal);
+
+
+//			textView1.setOnClickListener(new OnClickListener() {
+//				@Override
+//				public void onClick(View view) {
+//					if(CallDispatcher.conferenceMembers.size() > 0) {
+//						onOffVideo(CallDispatcher.conferenceMembers.get(0));
+//						Log.i("NotesVideo", "video_1_shown on click ");
+//					}
+////					video_1_shown = !video_1_shown;
+////					Log.i("NotesVideo"," video_1_shown = "+video_1_shown);
+//				}
+//			});
+
+//			textView2.setOnClickListener(new OnClickListener() {
+//				@Override
+//				public void onClick(View view) {
+//					if(CallDispatcher.conferenceMembers.size() > 1) {
+//						onOffVideo(CallDispatcher.conferenceMembers.get(1));
+//					}
+////					video_2_shown = !video_2_shown;
+//				}
+//			});
+//
+//			textView3.setOnClickListener(new OnClickListener() {
+//				@Override
+//				public void onClick(View view) {
+////					onOffVideo("preethi1");
+//					video_1_shown = !video_1_shown;
+//				}
+//			});
+
+			videopreview.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					if(numOfCam > 1){
+						if (Integer.parseInt(Build.VERSION.SDK) > 8) {
+
+							if (WebServiceReferences.CAMERA_ID == 1) {
+								WebServiceReferences.CAMERA_ID = 0;
+							} else if (WebServiceReferences.CAMERA_ID == 0) {
+								WebServiceReferences.CAMERA_ID = 1;
+							}
+
+							if (pv != null) {
+								pv.stopPreview();
+								videopreview.removeView(pv);
+								pv = null;
+								AppMainActivity.commEngine.setVideoParameters(
+										WebServiceReferences.VIDEO_WIDTH,
+										WebServiceReferences.VIDEO_HEIGHT,
+										WebServiceReferences.CAMERA_ID);
+								pv = AppMainActivity.commEngine.getVideoPreview(context);
+
+//								pv.setZOrderOnTop(false);
+
+//							videopreview.addView(pv);
+
+								videopreview.addView(pv, 0);
+							}
+						}
+					}
+
+				}
+			});
+
+			AppMainActivity.commEngine.enable_disable_VideoPreview(true);
+
+			onoff_preview.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					boolean shown = (boolean) onoff_preview.getTag();
+					AppMainActivity.commEngine.enable_disable_VideoPreview(!shown);
+
+					if(shown){
+						ownimageview.setVisibility(View.VISIBLE);
+						videopreview.setVisibility(View.GONE);
+						boolean have_image = false;
+						for (BuddyInformationBean buddyInformationBean : total_buddyList) {
+							if (buddyInformationBean.getName().equalsIgnoreCase(objCallDispatcher.LoginUser)) {
+								String pic_path = buddyInformationBean.getProfile_picpath();
+								if (pic_path != null) {
+									have_image = true;
+
+									imageLoader.DisplayImage(pic_path, ownimageview, R.drawable.icon_buddy_aoffline);
+
+								}
+							}
+						}
+						if (!have_image) {
+							imageLoader.DisplayImage("", ownimageview, R.drawable.icon_buddy_aoffline);
+						}
+					} else {
+						ownimageview.setVisibility(View.GONE);
+						videopreview.setVisibility(View.VISIBLE);
+					}
+					onoff_preview.setTag(!shown);
+				}
+			});
+
+			on_off1.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					boolean shown = (boolean) on_off1.getTag();
+
+					onOffVideoForSelectedUser(0, !shown);
+					on_off1.setTag(!shown);
+				}
+			});
+
+			on_off2.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					boolean shown = (boolean) on_off2.getTag();
+					onOffVideoForSelectedUser(1,!shown);
+					on_off2.setTag(!shown);
+				}
+			});
+
+			on_off3.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					boolean shown = (boolean) on_off3.getTag();
+					onOffVideoForSelectedUser(2,!shown);
+					on_off3.setTag(!shown);
+				}
+			});
+
+			final PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 			this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
 					"My Tag");
 			this.mWakeLock.acquire();
@@ -1009,6 +1336,74 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 		}
 		// }
 		//
+		return rootView;
+
+	}
+
+	private void onOffVideoForSelectedUser(final int selectedposition, final boolean onoff){
+		if(WebServiceReferences.videoSSRC_total_list != null && WebServiceReferences.videoSSRC_total_list.size() > selectedposition){
+			int turn_ssrc =	WebServiceReferences.videoSSRC_total_list.get(selectedposition);
+			final String buddy_name = WebServiceReferences.videoSSRC_total.get(turn_ssrc);
+			onOffVideo(buddy_name,onoff);
+			handler.post(new Runnable() {
+				@Override
+				public void run() {
+					if (onoff) {
+						if(selectedposition == 0) {
+							buddyimageview1.setVisibility(View.GONE);
+							glSurfaceView.setVisibility(View.VISIBLE);
+
+							buddyTimerTask1 = new VideoOnOffTimerTask(buddy_name,onoff);
+							buddytimer1 = new Timer();
+							buddytimer1.schedule(buddyTimerTask1,2000,2000);
+
+						} else if(selectedposition == 1) {
+							buddyimageview2.setVisibility(View.GONE);
+							glSurfaceView2.setVisibility(View.VISIBLE);
+						} else if(selectedposition == 2) {
+							buddyimageview3.setVisibility(View.GONE);
+							glSurfaceView3.setVisibility(View.VISIBLE);
+						}
+					} else {
+						boolean have_image = false;
+						for (BuddyInformationBean buddyInformationBean : total_buddyList) {
+							if (buddyInformationBean.getName().equalsIgnoreCase(buddy_name)) {
+								String pic_path = buddyInformationBean.getProfile_picpath();
+								if (pic_path != null) {
+									have_image = true;
+									if(selectedposition == 0) {
+										imageLoader.DisplayImage(pic_path, buddyimageview1, R.drawable.icon_buddy_aoffline);
+									} else if(selectedposition == 1) {
+										imageLoader.DisplayImage(pic_path, buddyimageview2, R.drawable.icon_buddy_aoffline);
+									} else if(selectedposition == 2) {
+										imageLoader.DisplayImage(pic_path, buddyimageview3, R.drawable.icon_buddy_aoffline);
+									}
+								}
+							}
+						}
+						if(selectedposition == 0) {
+							if (!have_image) {
+								imageLoader.DisplayImage("", buddyimageview1, R.drawable.icon_buddy_aoffline);
+							}
+							buddyimageview1.setVisibility(View.VISIBLE);
+							glSurfaceView.setVisibility(View.GONE);
+						} else if(selectedposition == 1) {
+							if (!have_image) {
+								imageLoader.DisplayImage("", buddyimageview2, R.drawable.icon_buddy_aoffline);
+							}
+							buddyimageview2.setVisibility(View.VISIBLE);
+							glSurfaceView2.setVisibility(View.GONE);
+						} else if(selectedposition == 2) {
+							if (!have_image) {
+								imageLoader.DisplayImage("", buddyimageview3, R.drawable.icon_buddy_aoffline);
+							}
+							buddyimageview3.setVisibility(View.VISIBLE);
+							glSurfaceView3.setVisibility(View.GONE);
+						}
+					}
+				}
+			});
+		}
 
 	}
 
@@ -1153,7 +1548,7 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 	}
 
 	public void showDialog(String msg) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setMessage(msg)
 				.setCancelable(false)
 				.setPositiveButton(
@@ -1161,7 +1556,8 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 								R.string.ok),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								finish();
+//								finish();
+								finishVideocallScreen();
 								return;
 							}
 						});
@@ -1170,7 +1566,7 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 	}
 
 	// Used to save Activity State...
-	protected void onSaveInstanceState(Bundle outState) {
+	public void onSaveInstanceState(Bundle outState) {
 		// outState.putString("test", "value");
 		// Used to save data on Bundle..
 		if (outState == null) {
@@ -1229,7 +1625,8 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 								e.printStackTrace();
 							}
 							clearResources();
-							finish();
+//							finish();
+							finishVideocallScreen();
 
 							//
 						}
@@ -1291,7 +1688,8 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 		//
 		objCallDispatcher.isHangUpReceived = false;
 		clearResources();
-		finish();
+//		finish();
+		finishVideocallScreen();
 
 	}
 
@@ -1322,7 +1720,7 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 	void showHangUpAlert() {
 		try {
 
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 			String ask = SingleInstance.mainContext.getResources().getString(
 					R.string.need_call_hangup);
 
@@ -1494,7 +1892,7 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 				}
 			}
 			if (membersList.size() > 0) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 				builder.create();
 				builder.setTitle(SingleInstance.mainContext.getResources()
 						.getString(R.string.add_people));
@@ -1545,7 +1943,7 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 	 *            BuddyName.
 	 */
 	public void switchVideo(final String buddyVideo) {
-		// Log.d("name", "one " + " two " + buddyVideo);
+		 Log.d("NotesVideo", "came to switchVideo " + buddyVideo);
 		new Thread(new Runnable() {
 
 			@Override
@@ -1564,9 +1962,10 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 						sb.setFrom(objCallDispatcher.LoginUser);
 						sb.setTo(buddy);
 						sb.setType("9");
-						sb.setGmember(buddyVideo);
+						sb.setGmember(buddy);
 						sb.setCallType("VC");
 						sb.setSessionid(sessionid);
+						Log.d("NotesVideo", "came to switchVideo 1" + buddy);
 						AppMainActivity.commEngine.makeCall(sb);
 					}
 				} catch (Exception e) {
@@ -1579,29 +1978,65 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 
 	}
 
+	public void onOffVideo(final String buddyVideo, final boolean addOrRemove) {
+		Log.d("NotesVideo", "came to switchVideo " + buddyVideo);
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+
+				try {
+
+//					for (int i = 0; i < CallDispatcher.conferenceMembers.size(); i++) {
+//						String buddy = CallDispatcher.conferenceMembers.get(i);
+
+						SignalingBean sb = CallDispatcher.buddySignall
+								.get(buddyVideo);
+						sb.setFrom(objCallDispatcher.LoginUser);
+						sb.setTo(buddyVideo);
+						sb.setType("9");
+					if(addOrRemove) {
+						sb.setGmember(buddyVideo);
+					} else {
+						sb.setGmember(objCallDispatcher.LoginUser);
+					}
+						sb.setCallType("VC");
+						sb.setSessionid(sessionid);
+						AppMainActivity.commEngine.turnOnOffVideo(sb);
+//					}
+				} catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+				}
+
+			}
+		}).start();
+
+	}
 	/**
 	 * Called when a key was pressed down and not handled by any of the views
 	 * inside of the activity. Also used to remove the hangUp the call and Close
 	 * the Window.
 	 */
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-
-		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-
-			if (alert == null) {
-
-				showHangUpAlert();
-
-			} else if (!alert.isShowing()) {
-				showHangUpAlert();
-			}
-
-			// showHangUpAlert();
-
-		}
-		return super.onKeyDown(keyCode, event);
-
-	}
+//	public boolean onKeyDown(int keyCode, KeyEvent event) {
+//
+//		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+//
+//			if (alert == null) {
+//
+//				showHangUpAlert();
+//
+//			} else if (!alert.isShowing()) {
+//				showHangUpAlert();
+//			}
+//
+//			// showHangUpAlert();
+//
+//		}
+//		return super.onKeyDown(keyCode, event);
+//
+//	}
 
 	public void notifyGSMCallAccepted() {
 		Message message = new Message();
@@ -1616,7 +2051,7 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 	 * Called when you are no longer visible to the user. Also used to remove
 	 * the preview and GLSurface View from the Screen.
 	 */
-	protected void onStop() {
+	public void onStop() {
 		// TODO Auto-generated method stub
 		// Log.d("video", "videostop");
 		//
@@ -1745,11 +2180,14 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 	 * Perform any final cleanup before an activity is destroyed.
 	 * 
 	 */
-	protected void onDestroy() {
+	public void onDestroy() {
 
 		// RenderBitmap.count=0;
 		// HomeTabViewScreen home =null;
 		try {
+			AppMainActivity.commEngine.enable_disable_VideoPreview(true);
+			WebServiceReferences.videoSSRC_total.clear();
+			WebServiceReferences.videoSSRC_total_list.clear();
 			CallDispatcher.conConference.clear();
 			CallDispatcher.issecMadeConference = false;
 			CallDispatcher.isCallInitiate = false;
@@ -1782,8 +2220,8 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 				screen.finish();
 			}
 
-			if (WebServiceReferences.contextTable.containsKey("callscreen")) {
-				WebServiceReferences.contextTable.remove("callscreen");
+			if (SingleInstance.instanceTable.containsKey("callscreen")) {
+				SingleInstance.instanceTable.remove("callscreen");
 			}
 			CallDispatcher.videoScreenVisibleState = false;
 
@@ -1819,15 +2257,15 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 	}
 
 	public GLSurfaceView getGLSurfaceView(Context context) {
-		glSurfaceView = new GLSurfaceView(context);
+//		GLSurfaceView glSurfaceView_temp = new GLSurfaceView(context);
 		try {
-			frameRenderer = new VideoFrameRenderer();
+			VideoFrameRenderer frameRenderer = new VideoFrameRenderer();
 			frameRenderer.setPreviewFrameSize(512,
 					WebServiceReferences.VIDEO_WIDTH,
 					WebServiceReferences.VIDEO_HEIGHT);
 			glSurfaceView.setRenderer(frameRenderer);
 			frameSink = frameRenderer;
-			frame = new byte[WebServiceReferences.VIDEO_WIDTH
+			byte[] frame = new byte[WebServiceReferences.VIDEO_WIDTH
 					* WebServiceReferences.VIDEO_WIDTH * 3];
 			frameBuffer = GraphicsUtil.makeByteBuffer(frame.length);
 		} catch (Exception e) {
@@ -1837,29 +2275,67 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 		return glSurfaceView;
 	}
 
-	private void resumeGlSurface() {
+	public GLSurfaceView getGLSurfaceView2(Context context) {
+//		GLSurfaceView glSurfaceView_temp = new GLSurfaceView(context);
 		try {
-			frameRenderer = new VideoFrameRenderer();
+			VideoFrameRenderer frameRenderer = new VideoFrameRenderer();
 			frameRenderer.setPreviewFrameSize(512,
 					WebServiceReferences.VIDEO_WIDTH,
 					WebServiceReferences.VIDEO_HEIGHT);
-			glSurfaceView.setRenderer(frameRenderer);
-			frameSink = frameRenderer;
-			frame = new byte[WebServiceReferences.VIDEO_WIDTH
+			glSurfaceView2.setRenderer(frameRenderer);
+			frameSink2 = frameRenderer;
+			byte[] frame = new byte[WebServiceReferences.VIDEO_WIDTH
 					* WebServiceReferences.VIDEO_WIDTH * 3];
-			frameBuffer = GraphicsUtil.makeByteBuffer(frame.length);
+			frameBuffer2 = GraphicsUtil.makeByteBuffer(frame.length);
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
+		return glSurfaceView2;
 	}
 
-	@Override
-	public void notifyDecodedVideoCallback(byte[] data, long ssrc) {
-		// Log.d("NDVC", "Video Received mreceive "
-		// +mReceiveVideo+" isswitched "+isSwitched+" mRenderFrame "+mRenderFrame);
+	public GLSurfaceView getGLSurfaceView3(Context context) {
+//		GLSurfaceView glSurfaceView_temp = new GLSurfaceView(context);
+		try {
+			VideoFrameRenderer frameRenderer = new VideoFrameRenderer();
+			frameRenderer.setPreviewFrameSize(512,
+					WebServiceReferences.VIDEO_WIDTH,
+					WebServiceReferences.VIDEO_HEIGHT);
+			glSurfaceView3.setRenderer(frameRenderer);
+			frameSink3 = frameRenderer;
+			byte[] frame = new byte[WebServiceReferences.VIDEO_WIDTH
+					* WebServiceReferences.VIDEO_WIDTH * 3];
+			frameBuffer3 = GraphicsUtil.makeByteBuffer(frame.length);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return glSurfaceView3;
+	}
+//	private void resumeGlSurface() {
+//		try {
+//			VideoFrameRenderer frameRenderer = new VideoFrameRenderer();
+//			frameRenderer.setPreviewFrameSize(512,
+//					WebServiceReferences.VIDEO_WIDTH,
+//					WebServiceReferences.VIDEO_HEIGHT);
+////			glSurfaceView.setRenderer(frameRenderer);
+//
+//			frameSink = frameRenderer;
+//			byte[] frame = new byte[WebServiceReferences.VIDEO_WIDTH
+//					* WebServiceReferences.VIDEO_WIDTH * 3];
+//			frameBuffer = GraphicsUtil.makeByteBuffer(frame.length);
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//			e.printStackTrace();
+//		}
+//	}
 
-		// System.out.println("VIDEO");
+	int count=0;
+
+	@Override
+	public void notifyDecodedVideoCallback(final byte[] data, final long ssrc) {
+		Log.i("NotesVideo", "came to notifyDecodedVideoCallback : ssrc :"+ssrc+" mReceiveVideo : "+mReceiveVideo+" isSwitched : "+isSwitched);
+
 		try {
 			if (mReceiveVideo) {
 
@@ -1875,11 +2351,21 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 							if (timer != null) {
 								timer.cancel();
 							}
-							videosurface.removeView(layout);
+//							videosurface.removeView(layout);
 							isShowingMediaFailureIcon = false;
-							videosurface.addView(glSurfaceView, layoutParamsf);
+//							videosurface.addView(glSurfaceView, layoutParamsf);
 							ismediaNotified = false;
+
+//							videosurface2.removeView(relative_layout2);
+//							videosurface2.addView(glSurfaceView2, layoutParamsf2);
+
+//							videosurface3.removeView(relative_layout3);
+//							videosurface3.addView(glSurfaceView3, layoutParamsf3);
+
 							// Log.d("NDVC1", "started completed");
+
+
+
 						} catch (Exception e) {
 							// TODO: handle exception
 							e.printStackTrace();
@@ -1908,15 +2394,17 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 						try {
 							// if(layout.)
 							// {
-							videosurface.removeView(layout);
+//							videosurface.removeView(layout);
 							isShowingMediaFailureIcon = false;
-							getGLSurfaceView(context);
-							videosurface.addView(glSurfaceView, layoutParamsf);
+//							glSurfaceView =
+									getGLSurfaceView(context);
+//							videosurface.addView(glSurfaceView, layoutParamsf);
 							ismediaNotified = false;
 							// Log.d("NDVC1", "started completed");
 							// }
-						} catch (Exception e) {
 							// TODO: handle exception
+
+						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					}
@@ -1925,9 +2413,71 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 				isSwitched = false;
 			}
 
+
+
 			if (videoQueue.getSize() < 1) {
 				if (mRenderFrame) {
-					videoQueue.addMsg(data);
+
+						videocall.post(new Runnable() {
+
+							@Override
+							public void run() {
+
+								try {
+//									textView3.setText(" window " + String.valueOf(ssrc));
+									if (WebServiceReferences.videoSSRC_total_list.size() > 0) {
+										int size = WebServiceReferences.videoSSRC_total_list.size();
+										if (size == 1) {
+											videosurface.setVisibility(View.VISIBLE);
+											videosurface2.setVisibility(View.GONE);
+											videosurface3.setVisibility(View.GONE);
+										} else if (size == 2) {
+											videosurface.setVisibility(View.VISIBLE);
+											videosurface2.setVisibility(View.VISIBLE);
+											videosurface3.setVisibility(View.GONE);
+										} else if (size == 3) {
+											videosurface.setVisibility(View.VISIBLE);
+											videosurface2.setVisibility(View.VISIBLE);
+											videosurface3.setVisibility(View.VISIBLE);
+										}
+										String mem_name = "";
+										if(WebServiceReferences.videoSSRC_total.containsKey((int) (long) ssrc)){
+											mem_name = WebServiceReferences.videoSSRC_total.get((int) (long) ssrc);
+										}
+										if (WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc) == 0) {
+											participant_name1.setText(mem_name);
+											if (buddyTimerTask1 != null) {
+												Log.i("OnOff", "VideoOnOffTimerTask != null : " + ssrc);
+												buddyTimerTask1.cancel();
+												buddyTimerTask1 = null;
+												if (buddytimer1 != null) {
+													buddytimer1.cancel();
+													buddytimer1 = null;
+												}
+											}
+										} if (WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc) == 1) {
+											participant_name2.setText(mem_name);
+										} if (WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc) == 2) {
+											participant_name3.setText(mem_name);
+										}
+									}
+								} catch (Exception e) {
+									// TODO: handle exception
+									e.printStackTrace();
+								}
+							}
+						});
+
+						VideoThreadBean videoThreadBean = new VideoThreadBean();
+						videoThreadBean.setData(data);
+						videoThreadBean.setWindow(WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc));
+						if(WebServiceReferences.videoSSRC_total.containsKey((int) (long) ssrc)){
+							videoThreadBean.setMember_name(WebServiceReferences.videoSSRC_total.get((int) (long) ssrc));
+						} else {
+							videoThreadBean.setMember_name("");
+						}
+						videoThreadBean.setVideoSssrc((int) (long) ssrc);
+						videoQueue.addMsg(videoThreadBean);
 				} else {
 
 					// System.out.println("SKIPPED");
@@ -1992,7 +2542,7 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 
 			final CharSequence[] choiceList = returnBuddies();
 			if (choiceList != null && choiceList.length > 0) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				AlertDialog.Builder builder = new AlertDialog.Builder(context);
 				builder.create();
 				// builder.setTitle("Conference People");
 				builder.setTitle(title);
@@ -2020,56 +2570,56 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 									// New Implement
 									// Log.d("NDVC1",
 									// "Video on Switch "+ismediaNotified);
-									try {
-										if (!ismediaNotified) {
-											isSwitched = true;
-											videosurface
-													.removeView(glSurfaceView);
-											layout = getCallConnectingView();
-											if (timer != null) {
-												// timer.schedule(;, when)
-												AnimationThread animationThread = new AnimationThread(
-														VideoCallScreen.this);
-												timer.schedule(animationThread,
-														500, 500);
-											}
-
-											// getGLSurfaceView(context);
-											if (layout != null) {
-												// Log.d("NDVC1",
-												// "Video on Switch not null if");
-												videosurface.addView(layout,
-														layoutParamsf);
-											}
-										} else {
-											// isSwitched=true;
-											videosurface.removeView(layout);
-											isShowingMediaFailureIcon = false;
-											layout = getCallConnectingView();
-											if (timer != null) {
-												// timer.schedule(;, when)
-												AnimationThread animationThread = new AnimationThread(
-														VideoCallScreen.this);
-												timer.schedule(animationThread,
-														500, 500);
-											}
-											// getGLSurfaceView(context);
-											if (layout != null) {
-												videosurface.addView(layout,
-														layoutParamsf);
-												// Log.d("NDVC1",
-												// "Video on Switch not null else");
-											}
-
-										}
-									} catch (Exception e) {
-										// TODO: handle exception
-										e.printStackTrace();
-
-										// Log.d("EXC",
-										// "Exception on switch Video");
-
-									}
+//									try {
+//										if (!ismediaNotified) {
+//											isSwitched = true;
+//											videosurface
+//													.removeView(glSurfaceView);
+//											layout = getCallConnectingView();
+//											if (timer != null) {
+//												// timer.schedule(;, when)
+//												AnimationThread animationThread = new AnimationThread(
+//														VideoCallScreen.this);
+//												timer.schedule(animationThread,
+//														500, 500);
+//											}
+//
+//											// getGLSurfaceView(context);
+//											if (layout != null) {
+//												// Log.d("NDVC1",
+//												// "Video on Switch not null if");
+//												videosurface.addView(layout,
+//														layoutParamsf);
+//											}
+//										} else {
+//											// isSwitched=true;
+//											videosurface.removeView(layout);
+//											isShowingMediaFailureIcon = false;
+//											layout = getCallConnectingView();
+//											if (timer != null) {
+//												// timer.schedule(;, when)
+//												AnimationThread animationThread = new AnimationThread(
+//														VideoCallScreen.this);
+//												timer.schedule(animationThread,
+//														500, 500);
+//											}
+//											// getGLSurfaceView(context);
+//											if (layout != null) {
+//												videosurface.addView(layout,
+//														layoutParamsf);
+//												// Log.d("NDVC1",
+//												// "Video on Switch not null else");
+//											}
+//
+//										}
+//									} catch (Exception e) {
+//										// TODO: handle exception
+//										e.printStackTrace();
+//
+//										// Log.d("EXC",
+//										// "Exception on switch Video");
+//
+//									}
 
 									//
 
@@ -2152,6 +2702,27 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 			// Log.d("test", "From " + from + " b " + b);
 			if (!b) {
 
+				if(WebServiceReferences.videoSSRC_total.containsValue(from)){
+
+//					for ( int key : WebServiceReferences.videoSSRC_total.entrySet() ) {
+//						Log.i("Join"," key : "+ key );
+//						if(from.equalsIgnoreCase(key))
+//					}
+
+					Set set = WebServiceReferences.videoSSRC_total.entrySet();
+					Iterator i = set.iterator();
+					// Display elements
+					while(i.hasNext()) {
+						Map.Entry me = (Map.Entry)i.next();
+						Log.i("Join", " key :" + me.getKey() + ": ");
+						Log.i("Join", " value :" + me.getValue());
+						if(from.equalsIgnoreCase(me.getValue().toString())){
+							if(WebServiceReferences.videoSSRC_total_list.contains(me.getKey())){
+								WebServiceReferences.videoSSRC_total_list.remove(me.getKey());
+							}
+						}
+					}
+				}
 				Message messagex = new Message();
 				Bundle bunndle = new Bundle();
 				bunndle.putString("bye", from);
@@ -2302,10 +2873,11 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 	// }
 
 	public RelativeLayout getCallConnectingView() {
+		RelativeLayout	relativeLayout = new RelativeLayout(context);
 		try {
 			timer = new Timer();
 			handler = new Handler();
-			relativeLayout = new RelativeLayout(this);
+
 			// relativeLayout.setBackgroundColor(Color.BLUE);
 
 			relativeLayout.setLayoutParams(new LayoutParams(
@@ -2328,11 +2900,11 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 			layoutParams3.addRule(RelativeLayout.LEFT_OF, 2);
 			layoutParams3.addRule(RelativeLayout.CENTER_VERTICAL);
 
-			LinearLayout lf = new LinearLayout(this);
+			LinearLayout lf = new LinearLayout(context);
 			lf.setOrientation(LinearLayout.VERTICAL);
 			lf.setGravity(Gravity.CENTER);
 
-			ImageView leftImage = new ImageView(this);
+			ImageView leftImage = new ImageView(context);
 			leftImage.setLayoutParams(new LayoutParams(100, 300));
 			leftImage.setImageResource(R.drawable.videocall);
 			lf.setId(1);
@@ -2343,7 +2915,7 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 			 */
 			relativeLayout.addView(lf, layoutParams1);
 
-			LinearLayout lc = new LinearLayout(this);
+			LinearLayout lc = new LinearLayout(context);
 
 			LayoutParams lcp = new LayoutParams(LayoutParams.FILL_PARENT,
 					LayoutParams.FILL_PARENT);
@@ -2356,11 +2928,11 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 
 			relativeLayout.addView(lc, layoutParams3);
 
-			LinearLayout lr = new LinearLayout(this);
+			LinearLayout lr = new LinearLayout(context);
 			lr.setOrientation(LinearLayout.VERTICAL);
 			lr.setGravity(Gravity.CENTER);
 
-			ImageView rightImage = new ImageView(this);
+			ImageView rightImage = new ImageView(context);
 			// rightImage.setPadding(0, 100, 0, 0);
 			rightImage.setLayoutParams(new LayoutParams(100, 300));
 			rightImage.setImageResource(R.drawable.videocall);
@@ -2382,7 +2954,7 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 
 	public ImageView getDots() {
 
-		ImageView circleImage = new ImageView(this);
+		ImageView circleImage = new ImageView(context);
 		try {
 			LinearLayout.LayoutParams lcp = new LinearLayout.LayoutParams(
 					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -2397,32 +2969,40 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 	}
 
 	@Override
-	protected void onPause() {
-
+	public void onPause() {
+		Log.i("NotesVideo","onPause");
 		if (AppMainActivity.commEngine != null) {
 			AppMainActivity.commEngine.setmDecodeFrame(false);
 		}
 
 		onIsOnpause = true;
 
-		if (glSurfaceView != null) {
-			glSurfaceView.onPause();
-		}
+//		if (glSurfaceView != null) {
+//			glSurfaceView.onPause();
+//		}
+//
+//		if (glSurfaceView2 != null) {
+//			glSurfaceView2.onPause();
+//		}
+//
+//		if(glSurfaceView3 != null){
+//			glSurfaceView3.onPause();
+//		}
 		super.onPause();
 	}
 
 	boolean onIsOnpause = false;
 
 	//
-	protected void onResume() {
-		// Log.d("NDVC1", "On Resume....");
+	public void onResume() {
+		Log.i("NotesVideo","onResume");
 		// if(ApplicationState.getApplicationCurrentState()!=ApplicationState.APPLICATION_STATE_ONLINE)
 		// {
 		// Toast.makeText(VideoCallScreen.this,getResources().getString(R.string.error),5000).show();
 		//
 		// }
 		// else{
-			AppMainActivity.inActivity = this;
+			AppMainActivity.inActivity = context;
 		if (AppMainActivity.commEngine != null) {
 			AppMainActivity.commEngine.setmDecodeFrame(true);
 		}
@@ -2437,7 +3017,9 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 			// used to remove Yellow icon...
 			try {
 				if (ismediaNotified) {
-					videosurface.removeView(layout);
+//					videosurface.removeView(layout);
+//					videosurface2.removeView(relative_layout2);
+//					videosurface3.removeView(relative_layout3);
 					isShowingMediaFailureIcon = false;
 				}
 			} catch (Exception e) {
@@ -2455,9 +3037,15 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 			CallDispatcher.videoSpeakerMute(false);
 			try {
 				videopreview.removeView(pv);
-				videosurface.removeView(glSurfaceView);
-				glSurfaceView.destroyDrawingCache();
-				// Log.d("NDVC1", "glSurfaceView.destroyDrawingCache();");
+//				videosurface.removeView(glSurfaceView);
+//				videosurface2.removeView(glSurfaceView2);
+//				videosurface3.removeView(glSurfaceView3);
+
+//				glSurfaceView.destroyDrawingCache();
+//				// Log.d("NDVC1", "glSurfaceView.destroyDrawingCache();");
+//				glSurfaceView2.destroyDrawingCache();
+//				// Log.d("NDVC1", "glSurfaceView2.destroyDrawingCache();");
+//				glSurfaceView3.destroyDrawingCache();
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();
@@ -2465,7 +3053,7 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 			}
 			try {
 				pv.stopPreview();
-				pv = AppMainActivity.commEngine.getVideoPreview(this);
+				pv = AppMainActivity.commEngine.getVideoPreview(context);
 				videopreview.addView(pv, 0);
 				handler.postDelayed(new Runnable() {
 
@@ -2480,20 +3068,33 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 						// Toast.LENGTH_LONG).show();
 					}
 				}, 1000);
-				getGLSurfaceView(context);
+//				glSurfaceView =
+// 				getGLSurfaceView(context);
 				// videosurface.addView(glSurfaceView, layoutParamsf);
-				glSurfaceView.onResume();
+//				glSurfaceView.onResume();
+
+//				glSurfaceView2 =
+//						getGLSurfaceView2(context);
+//				glSurfaceView2.onResume();
+
+//				glSurfaceView3 =
+//						getGLSurfaceView3(context);
+//				glSurfaceView3.onResume();
+
 				if (timer != null) {
 					// Log.d("NDVC1", "On Resume....TIMER not null");
 					timer.cancel();
 					layout = getCallConnectingView();
-					videosurface.addView(layout, layoutParamsf);
+//					videosurface.addView(layout, layoutParamsf);
+//					videosurface2.addView(relative_layout2, layoutParamsf2);
+//					videosurface3.addView(relative_layout3, layoutParamsf3);
 					// Log.d("NDVC1", "Added call connecting view..");
 					AnimationThread animationThread = new AnimationThread(
 							VideoCallScreen.this);
 					timer.schedule(animationThread, 500, 500);
 
 					mReceiveVideo = false;
+					mReceiveVideo2= false;
 					// Log.d("NDVC1", "scheduled");
 				}
 
@@ -2560,9 +3161,16 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 					isShowingMediaFailureIcon = true;
 					isSwitched = true;
 					ismediaNotified = true;
-					videosurface.removeView(glSurfaceView);
-					layout = showVideoFailure();
-					videosurface.addView(layout, layoutParamsf);
+//					videosurface.removeView(glSurfaceView);
+//					videosurface2.removeView(glSurfaceView2);
+//					videosurface3.removeView(glSurfaceView3);
+
+//					layout = showVideoFailure();
+//					videosurface.addView(layout, layoutParamsf);
+//					relative_layout2 = showVideoFailure();
+//					videosurface2.addView(relative_layout2, layoutParamsf2);
+//					relative_layout3 = showVideoFailure();
+//					videosurface3.addView(relative_layout3, layoutParamsf3);
 					isShowingMediaFailureIcon = true;
 
 					if (timer != null) {
@@ -2580,8 +3188,9 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 	}
 
 	private RelativeLayout showVideoFailure() {
+		RelativeLayout	relativeLayout = new RelativeLayout(context);
 		try {
-			relativeLayout = new RelativeLayout(this);
+//			relativeLayout = new RelativeLayout(this);
 			// relativeLayout.setBackgroundColor(Color.BLUE);
 
 			relativeLayout.setLayoutParams(new LayoutParams(
@@ -2598,10 +3207,10 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 			ll.addView(img);
 
 			// Log.d("NN", "height width " + c1);
-			layoutParamsf = new FrameLayout.LayoutParams(c1,
+			FrameLayout.LayoutParams layoutParamsf_temp = new FrameLayout.LayoutParams(c1,
 					LayoutParams.FILL_PARENT);
 
-			relativeLayout.addView(ll, layoutParamsf);
+			relativeLayout.addView(ll, layoutParamsf_temp);
 
 			// relativeLayout.setPadding(0, 100, 0, 0);
 		} catch (Exception e) {
@@ -2626,7 +3235,7 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 
 		try {
 			if (choiceList != null && choiceList.length > 0) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				AlertDialog.Builder builder = new AlertDialog.Builder(context);
 				builder.create();
 				builder.setTitle(SingleInstance.mainContext.getResources()
 						.getString(R.string.near_loc_buddies));
@@ -2660,7 +3269,7 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 				Toast.makeText(
 						context,
 						SingleInstance.mainContext.getResources().getString(
-								R.string.no_near_contacts), 2000).show();
+								R.string.no_near_contacts), Toast.LENGTH_LONG).show();
 			}
 
 		} catch (Exception e) {
@@ -2676,7 +3285,7 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 		String ask = SingleInstance.mainContext.getResources().getString(
 				R.string.need_call_hangup);
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setMessage(ask)
 				.setCancelable(false)
 				.setPositiveButton(
@@ -2711,6 +3320,44 @@ public class VideoCallScreen extends Activity implements VideoCallback,
 		} else {
 			xmlmap.put(key, obj);
 		}
+	}
+
+
+	public void notifyVideoSSRC(String buddy, int ssrc){
+		Log.i("NotesVideo","came to notifyVideoSSRC : buddy => "+buddy+" ssrc => "+ssrc);
+		if(videoSSRC.containsKey(buddy)){
+			Log.i("NotesVideo","inside if");
+			videoSSRC.put(buddy, ssrc);
+			Log.i("NotesVideo", "videoSSRC size : "+videoSSRC.size());
+		}
+	}
+
+	public class VideoOnOffTimerTask extends TimerTask {
+
+		private String buddy_name;
+		private boolean onoff;
+		public VideoOnOffTimerTask(String buddy_name, boolean on_off) {
+			this.buddy_name = buddy_name;
+			this.onoff = on_off;
+		}
+
+		@Override
+		public void run() {
+			Log.i("OnOff","VideoOnOffTimerTask run : "+buddy_name);
+			onOffVideo(buddy_name,onoff);
+		}
+	}
+
+	public void finishVideocallScreen()
+	{
+		FragmentManager fm =
+				AppReference.mainContext.getSupportFragmentManager();
+		FragmentTransaction ft = fm.beginTransaction();
+		ContactsFragment contactsFragment = ContactsFragment
+				.getInstance(context);
+		ft.replace(R.id.activity_main_content_fragment,
+				contactsFragment);
+		ft.commitAllowingStateLoss();
 	}
 
 }

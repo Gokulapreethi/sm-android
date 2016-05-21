@@ -184,6 +184,7 @@ import org.lib.model.KeepAliveBean;
 import org.lib.model.OfflineRequestConfigBean;
 import org.lib.model.PermissionBean;
 import org.lib.model.ProfileTemplateBean;
+import org.lib.model.RecordTransactionBean;
 import org.lib.model.ShareReminder;
 import org.lib.model.ShareSendBean;
 import org.lib.model.SiginBean;
@@ -196,6 +197,7 @@ import org.lib.webservice.Servicebean;
 import org.lib.webservice.WebServiceCallback;
 import org.lib.webservice.WebServiceClient;
 import org.net.rtp.RtpPacket;
+import org.tcp.TCPEngine;
 import org.util.Queue;
 import org.util.Utility;
 import org.wifi.NetworkBroadcastReceiver;
@@ -1928,16 +1930,28 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				break;
 			case 16:
 				version = "4.1";
+				break;
 			case 17:
 				version = "4.2";
+				break;
 			case 18:
 				version = "4.3";
+				break;
 			case 19:
 				version = "4.4";
+				break;
 			case 20:
 				version = "4.4W";
+				break;
 			case 21:
 				version = "5.0";
+				break;
+			case 22:
+				version = "5.1";
+				break;
+			case 23:
+				version = "6.0";
+				break;
 			default:
 				break;
 			}
@@ -2191,13 +2205,27 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					}
 
 					else {
-						final Object objCallScreen = WebServiceReferences.contextTable
+						final Object objCallScreen = SingleInstance.instanceTable
 								.get("callscreen");
 						if (objCallScreen == null) {
 							if (currentSessionid == null) {
-								currentSessionid = sb.getSessionid();
-								isCallInitiate = true;
-								String buddy = getUser(sb.getFrom(), sb.getTo());
+
+								String old_sessionid = null;
+								if(sb.getJoincall() != null && sb.getJoincall().equalsIgnoreCase("yes")) {
+									rejectInComingCall(sb);
+//									String query = "select * from recordtransactiondetails ORDER BY id DESC";
+//									ArrayList<RecordTransactionBean> mlist = DBAccess.getdbHeler().getcallhistorydetails(query);
+//									for (RecordTransactionBean transactionBean : mlist) {
+//										if (transactionBean.getSessionid().equalsIgnoreCase(sb.getSessionid())) {
+//											old_sessionid = transactionBean.getSessionid();
+//											break;
+//										}
+//									}
+								} else
+								if(old_sessionid == null) {
+									currentSessionid = sb.getSessionid();
+									isCallInitiate = true;
+									String buddy = getUser(sb.getFrom(), sb.getTo());
 
 								if (!conferenceMembers.contains(sb.getFrom())) {
 									CallDispatcher.conferenceMembers.add(sb
@@ -2227,8 +2255,11 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									notifyIncomingCall(sb);
 								} else {
 
+									}
+								} else {
+									Log.i("Join","reject Call");
+									rejectInComingCall(sb);
 								}
-
 							} else {
 								if (sb.getCallType().equalsIgnoreCase("AP")
 										|| sb.getCallType().equalsIgnoreCase(
@@ -2335,7 +2366,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 										context,
 										"Unable to Receive Media from "
 												+ sb.getFrom(), 3000).show();
-								final Object objCallScreen = WebServiceReferences.contextTable
+								final Object objCallScreen = SingleInstance.instanceTable
 										.get("callscreen");
 								if (objCallScreen != null) {
 									if (objCallScreen instanceof VideoCallScreen) {
@@ -2361,7 +2392,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 					// if (CallDispatcher.sb.getBs_parentid() != null) {
 					CallDispatcher.sb.setEndTime(getCurrentDateandTime());
-					Object objCallScreen = WebServiceReferences.contextTable
+					Object objCallScreen = SingleInstance.instanceTable
 							.get("callscreen");
 					if (objCallScreen == null) {
 						CallDispatcher.sb.setCallDuration("0:0:0");
@@ -2400,12 +2431,12 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					
 					context.startActivity(intentComponent);
 					}
-					if (WebServiceReferences.contextTable
+					if (SingleInstance.instanceTable
 							.containsKey("callscreen")
 							|| WebServiceReferences.contextTable
 									.containsKey("connection")
 							|| isIncomingAlert) {
-						Object objCallScreen1 = WebServiceReferences.contextTable
+						Object objCallScreen1 = SingleInstance.instanceTable
 								.get("callscreen");
 
 						stopRingTone();
@@ -2595,7 +2626,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								public void run() {
 									try {
 
-										Toast.makeText(context, "Call Dropped",
+										Toast.makeText(context, sb.getFrom()+" Call Dropped",
 												3000).show();
 									} catch (Exception e) {
 										// TODO: handle exception
@@ -2626,7 +2657,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						public void run() {
 							// TODO Auto-generated method stub
 							try {
-								Object objCallScreen = WebServiceReferences.contextTable
+								Object objCallScreen = SingleInstance.instanceTable
 										.get("callscreen");
 								if (conferenceRequest.containsKey(sb.getFrom())) {
 									conferenceRequest.remove(sb.getFrom());
@@ -2653,15 +2684,41 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									if (sb.getCallType().equals("AC")) {
 										isCalledAudiocallScreen = true;
 										isHangUpReceived = false;
-										Intent i = new Intent(context
-												.getApplicationContext(),
-												AudioCallScreen.class);
+//										Intent i = new Intent(context
+//												.getApplicationContext(),
+//												AudioCallScreen.class);
+//										Bundle bundle = new Bundle();
+//										bundle.putSerializable("signal", sb);
+//										i.putExtra("signal", bundle);
+//										i.putExtra("buddy", from);
+//										i.putExtra("receive", "false");
+//										context.startActivity(i);
+
+										if (SingleInstance.contextTable.containsKey("groupchat"))
+										{
+										GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
+											groupChatActivity.finish();
+										}
+
+										if (WebServiceReferences.contextTable.containsKey("connection")) {
+											CallConnectingScreen connectingScreen = (CallConnectingScreen)WebServiceReferences.contextTable.get("connection");
+											connectingScreen.finish();
+										}
+
+										FragmentManager fm =
+												AppReference.mainContext.getSupportFragmentManager();
+										FragmentTransaction ft = fm.beginTransaction();
+										AudioCallScreen  audioCallScreen = AudioCallScreen
+												.getInstance(context);
 										Bundle bundle = new Bundle();
 										bundle.putSerializable("signal", sb);
-										i.putExtra("signal", bundle);
-										i.putExtra("buddy", from);
-										i.putExtra("receive", "false");
-										context.startActivity(i);
+//										i.putExtra("signal", bundle);
+										bundle.putString("buddy", from);
+										bundle.putString("receive", "false");
+										audioCallScreen.setArguments(bundle);
+										ft.replace(R.id.activity_main_content_fragment,
+												audioCallScreen);
+										ft.commitAllowingStateLoss();
 									} else if (sb.getCallType().equals("VBC")
 											|| sb.getCallType().equals("VP")) {
 										isHangUpReceived = false;
@@ -2682,17 +2739,45 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 												"Comes to Accept call Open new Video broad cast sender window");
 									} else if (sb.getCallType().equals("VC")) {
 										isHangUpReceived = false;
-										Intent i = new Intent(context
-												.getApplicationContext(),
-												VideoCallScreen.class);
+//										Intent i = new Intent(context
+//												.getApplicationContext(),
+//												VideoCallScreen.class);
+//										Bundle bundle = new Bundle();
+//										bundle.putString("sessionid",
+//												sb.getSessionid());
+//										bundle.putString("buddyName", from);
+//										bundle.putString("receive", "false");
+//										i.putExtras(bundle);
+//										i.putExtra("buddy", from);
+//										context.startActivity(i);
+
+										if (SingleInstance.contextTable.containsKey("groupchat"))
+										{
+											GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
+											groupChatActivity.finish();
+										}
+
+										if (WebServiceReferences.contextTable.containsKey("connection")) {
+											CallConnectingScreen connectingScreen = (CallConnectingScreen)WebServiceReferences.contextTable.get("connection");
+											connectingScreen.finish();
+										}
+
+										FragmentManager fm =
+												AppReference.mainContext.getSupportFragmentManager();
+										FragmentTransaction ft = fm.beginTransaction();
+										VideoCallScreen videoCallScreen = VideoCallScreen
+												.getInstance(context);
 										Bundle bundle = new Bundle();
 										bundle.putString("sessionid",
 												sb.getSessionid());
 										bundle.putString("buddyName", from);
 										bundle.putString("receive", "false");
-										i.putExtras(bundle);
-										i.putExtra("buddy", from);
-										context.startActivity(i);
+//										i.putExtras(bundle);
+									//	bundle.putString("buddy", from);
+										videoCallScreen.setArguments(bundle);
+										ft.replace(R.id.activity_main_content_fragment,
+												videoCallScreen);
+										ft.commitAllowingStateLoss();
 									}
 
 									else if (sb.getCallType().equals("ABC")
@@ -2908,7 +2993,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					}
 					if (conferenceRequest.size() == 0
 							&& conferenceMembers.size() == 0) {
-						Object objCallScreen = WebServiceReferences.contextTable
+						Object objCallScreen =SingleInstance.instanceTable
 								.get("callscreen");
 
 						if (objCallScreen != null) {
@@ -2930,19 +3015,44 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 						}
 					}
-						Object objCallScreen = WebServiceReferences.contextTable
+						Object objCallScreen = SingleInstance.instanceTable
 								.get("callscreen");
 							Log.d("ZZZ", "----->callscreenactivity destroy objCallScreen<-----");
-
+					Log.i("call", " sb.getFrom() : " + sb.getFrom());
+					Log.i("call","start "+AppMainActivity.connectedbuddies);
+					if(AppMainActivity.connectedbuddies != null) {
+						String[] totUsers=null;
+						if(AppMainActivity.connectedbuddies.contains(",")) {
+							totUsers = AppMainActivity.connectedbuddies.split(",");
+						} else {
+							totUsers = new String[1];
+							totUsers[0] = AppMainActivity.connectedbuddies;
+						}
+						AppMainActivity.connectedbuddies = null;
+						for (String touser : totUsers) {
+							if (!touser.trim().equalsIgnoreCase(sb.getFrom())) {
+								if (AppMainActivity.connectedbuddies == null) {
+									AppMainActivity.connectedbuddies = touser;
+								} else {
+									AppMainActivity.connectedbuddies = AppMainActivity.connectedbuddies + "," + touser;
+								}
+							}
+						}
+					}
+					Log.i("call","end "+AppMainActivity.connectedbuddies);
+					if (AppMainActivity.connectedbuddies == null) {
+						if(WebServiceReferences.contextTable.containsKey("connection")) {
 							CallConnectingScreen screen = (CallConnectingScreen) WebServiceReferences.contextTable
 									.get("connection");
 							screen.finish();
+						}
+					}
 
 
 				} else if (sb.getType().equals("1")
 						&& sb.getResult().equals("2")) {
 
-					Object objCallScreen = WebServiceReferences.contextTable
+					Object objCallScreen = SingleInstance.instanceTable
 							.get("callscreen");
 					if (objCallScreen == null) {
 						startCallRingTone();
@@ -2973,7 +3083,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						CallDispatcher.conferenceMembersTime.put(buddyx,
 								getCurrentDateTime());
 
-						Object objCallScreen = WebServiceReferences.contextTable
+						Object objCallScreen = SingleInstance.instanceTable
 								.get("callscreen");
 						if (objCallScreen != null
 								&& objCallScreen instanceof VideoCallScreen) {
@@ -3037,7 +3147,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					}
 					if (conferenceRequest.size() == 0
 							&& conferenceMembers.size() == 0) {
-						Object objCallScreen = WebServiceReferences.contextTable
+						Object objCallScreen = SingleInstance.instanceTable
 								.get("callscreen");
 						handlerForCall.post(new Runnable() {
 
@@ -3094,7 +3204,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					}
 					if (conferenceRequest.size() == 0
 							&& conferenceMembers.size() == 0) {
-						Object objCallScreen = WebServiceReferences.contextTable
+						Object objCallScreen = SingleInstance.instanceTable
 								.get("callscreen");
 						handlerForCall.post(new Runnable() {
 
@@ -3635,12 +3745,13 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									.getText()
 									.equalsIgnoreCase(
 											"Some other user with same user name has logged in")) {
+//                                TCPEngine.getTCPClient().stopClient();
 								isAnotherUserLogedIn = true;
 								SingleInstance.mainContext.notifySigninError(
 										"Duplicate Login", message.getText());
 							}
 							else if (message
-									.getText()
+									.getText().trim()
 									.equalsIgnoreCase(
 											"Session Invalid")) {
 								isAnotherUserLogedIn = true;
@@ -9684,14 +9795,14 @@ private TrustManager[] get_trust_mgr() {
 				// TODO Auto-generated method stub
 				Log.d("AAAA", "notifytype2Sent  ==> " );
 				CallDispatcher.sb.setStartTime(getCurrentDateandTime());
-				Object objCallScreen = WebServiceReferences.contextTable
+				Object objCallScreen = SingleInstance.instanceTable
 						.get("callscreen");
 				if (objCallScreen != null) {
 					if (objCallScreen instanceof AudioCallScreen)
-						((AudioCallScreen) WebServiceReferences.contextTable
+						((AudioCallScreen) SingleInstance.instanceTable
 								.get("callscreen")).notifyType2Received();
 					if (objCallScreen instanceof AudioPagingSRWindow)
-						((AudioPagingSRWindow) WebServiceReferences.contextTable
+						((AudioPagingSRWindow) SingleInstance.instanceTable
 								.get("callscreen")).notifyType2Received();
 
 				} else {
@@ -9700,15 +9811,15 @@ private TrustManager[] get_trust_mgr() {
 						@Override
 						public void run() {
 							// TODO Auto-generated method stub
-							Object objCallScreen = WebServiceReferences.contextTable
+							Object objCallScreen = SingleInstance.instanceTable
 									.get("callscreen");
 							if (objCallScreen != null) {
 								if (objCallScreen instanceof AudioCallScreen)
-									((AudioCallScreen) WebServiceReferences.contextTable
+									((AudioCallScreen) SingleInstance.instanceTable
 											.get("callscreen"))
 											.notifyType2Received();
 								if (objCallScreen instanceof AudioPagingSRWindow)
-									((AudioPagingSRWindow) WebServiceReferences.contextTable
+									((AudioPagingSRWindow) SingleInstance.instanceTable
 											.get("callscreen"))
 											.notifyType2Received();
 
@@ -9785,7 +9896,7 @@ private TrustManager[] get_trust_mgr() {
 					new AppMainActivity().setfooterVisiblity(false);
 					SingleInstance.mainContext.chageMyStatus();
 
-					Object objCallScreen = WebServiceReferences.contextTable
+					Object objCallScreen = SingleInstance.instanceTable
 							.get("callscreen");
 
 					if (objCallScreen != null) {
@@ -10532,7 +10643,7 @@ private TrustManager[] get_trust_mgr() {
 		// if (WebServiceReferences.contextTable.containsKey("videoplayer"))
 		// ((VideoPlayer) WebServiceReferences.contextTable.get("videoplayer"))
 		// .notifyGSMCallAccepted();
-		Object objCallScreen = WebServiceReferences.contextTable
+		Object objCallScreen = SingleInstance.instanceTable
 				.get("callscreen");
 
 		if (objCallScreen != null) {
@@ -11382,7 +11493,7 @@ private TrustManager[] get_trust_mgr() {
 
 	private void updatecallDuration() {
 		try {
-			Object objCallScreen = WebServiceReferences.contextTable
+			Object objCallScreen = SingleInstance.instanceTable
 					.get("callscreen");
 			if (objCallScreen instanceof AudioCallScreen) {
 				AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
@@ -11496,7 +11607,7 @@ private TrustManager[] get_trust_mgr() {
 
 					CallDispatcher.conferenceMembersTime.put(buddyx,
 							getCurrentDateTime());
-					Object objCallScreen = WebServiceReferences.contextTable
+					Object objCallScreen = SingleInstance.instanceTable
 							.get("callscreen");
 					if (objCallScreen != null
 							&& objCallScreen instanceof VideoCallScreen) {
@@ -12957,6 +13068,18 @@ private TrustManager[] get_trust_mgr() {
 
 		}
 		if (CallDispatcher.conConference.size() != 0) {
+
+			String total_participants = null;
+			for(String par_name : CallDispatcher.conConference) {
+				if(par_name != null && par_name.length() > 0) {
+					if(total_participants == null){
+						total_participants = par_name;
+					} else {
+						total_participants = total_participants+","+par_name;
+					}
+				}
+			}
+
 			String username = CallDispatcher.conConference.get(0);
 			CallDispatcher.conConference.remove(0);
 
@@ -12992,6 +13115,10 @@ private TrustManager[] get_trust_mgr() {
 				CallDispatcher.sb.setTolocalip(bib1.getLocalipaddress());
 				CallDispatcher.sb.setToSignalPort(bib1.getSignalingPort());
 				CallDispatcher.sb.setCallType(calltype);
+				if(calltype.equalsIgnoreCase("VC") || calltype.equalsIgnoreCase("AC")) {
+					CallDispatcher.sb.setHost(CallDispatcher.LoginUser);
+					CallDispatcher.sb.setParticipants(total_participants);
+				}
 
 				CallDispatcher.dialChecker = true;
 				CallDispatcher.isCallInitiate = true;
@@ -13043,6 +13170,10 @@ private TrustManager[] get_trust_mgr() {
 								CallDispatcher.sb
 										.setSessionid(sessionIdGenerated);
 
+								if(calltype.equalsIgnoreCase("VC") || calltype.equalsIgnoreCase("AC")) {
+									CallDispatcher.sb.setHost(CallDispatcher.LoginUser);
+									CallDispatcher.sb.setParticipants(total_participants);
+								}
 								// SignalingBean sb1 = (SignalingBean)
 								// CallDispatcher.sb.clone();
 								AppMainActivity.commEngine
@@ -13151,7 +13282,7 @@ private TrustManager[] get_trust_mgr() {
 											"answering machine", null);
 
 								}
-								if (!WebServiceReferences.contextTable
+								if (!SingleInstance.instanceTable
 										.containsKey("callscreen")) {
 									Intent intent = new Intent(context,
 											AnsweringMachineActivity.class);
@@ -13179,7 +13310,7 @@ private TrustManager[] get_trust_mgr() {
 
 	private void getofflineCallResponse(String selectedBuddy, String reason) {
 		try {
-			Object objCallScreen = WebServiceReferences.contextTable
+			Object objCallScreen = SingleInstance.instanceTable
 					.get("callscreen");
 			Log.d("Avataar", "----->getofflineCallResponse<-----"
 					+ objCallScreen + selectedBuddy + LoginUser);
@@ -13679,7 +13810,7 @@ private TrustManager[] get_trust_mgr() {
 				sendquickaction(from, to, ftppath, content, action);
 			} else if (action.equalsIgnoreCase("AC")) {
 				Log.i("Action", action);
-				if (!WebServiceReferences.contextTable
+				if (!SingleInstance.instanceTable
 						.containsKey("callscreen")
 						&& !WebServiceReferences.contextTable
 								.containsKey("alertscreen")
@@ -13690,7 +13821,7 @@ private TrustManager[] get_trust_mgr() {
 					callDisp.MakeCall(1, to,
 							SipNotificationListener.getCurrentContext());
 			} else if (action.equalsIgnoreCase("VC")) {
-				if (!WebServiceReferences.contextTable
+				if (!SingleInstance.instanceTable
 						.containsKey("callscreen")
 						&& !WebServiceReferences.contextTable
 								.containsKey("alertscreen")
@@ -13707,7 +13838,7 @@ private TrustManager[] get_trust_mgr() {
 			} else if (action.equalsIgnoreCase("ACF")) {
 				requestAudioConference(to);
 			} else if (action.equalsIgnoreCase("VCF")) {
-				if (!WebServiceReferences.contextTable
+				if (!SingleInstance.instanceTable
 						.containsKey("callscreen")
 						&& !WebServiceReferences.contextTable
 								.containsKey("alertscreen")
@@ -13865,7 +13996,7 @@ private TrustManager[] get_trust_mgr() {
 	public void requestAudioConference(String to) {
 		Log.d("Test","audioconf inside requestAudioConference calldisp");
 
-		if (!WebServiceReferences.contextTable.containsKey("callscreen")
+		if (!SingleInstance.instanceTable.containsKey("callscreen")
 				&& !WebServiceReferences.contextTable
 						.containsKey("alertscreen")
 				&& !WebServiceReferences.contextTable
@@ -13943,7 +14074,7 @@ private TrustManager[] get_trust_mgr() {
 
 	public void requestVideoConference(String to) {
 
-		if (!WebServiceReferences.contextTable.containsKey("callscreen")
+		if (!SingleInstance.instanceTable.containsKey("callscreen")
 				&& !WebServiceReferences.contextTable
 						.containsKey("alertscreen")
 				&& !WebServiceReferences.contextTable
@@ -14003,7 +14134,7 @@ private TrustManager[] get_trust_mgr() {
 	}
 
 	public void requestVideoBroadCast(String to) {
-		if (!WebServiceReferences.contextTable.containsKey("callscreen")
+		if (!SingleInstance.instanceTable.containsKey("callscreen")
 				&& !WebServiceReferences.contextTable
 						.containsKey("alertscreen")
 				&& !WebServiceReferences.contextTable
@@ -14153,6 +14284,120 @@ private TrustManager[] get_trust_mgr() {
 				CallDispatcher.dialChecker = true;
 				SignalingBean vbcsb = (SignalingBean) CallDispatcher.sb.clone();
 				ShowConnectionScreen(vbcsb, username, context, false);
+				CallDispatcher.isCallInitiate = true;
+				SingleInstance.parentId = null;
+				AppMainActivity.commEngine.makeCall(CallDispatcher.sb);
+			}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void MakeCallFromCallHistory(int operation, String username, Context context, RecordTransactionBean transaction_Bean, int con_scr_opened) {
+		try {
+			BuddyInformationBean bib = null;
+
+			for (BuddyInformationBean temp : ContactsFragment.getBuddyList()) {
+				if (!temp.isTitle()) {
+					if (temp.getName().equalsIgnoreCase(username)) {
+						bib = temp;
+						break;
+					}
+				}
+			}
+
+			// bib = WebServiceReferences.buddyList.get(username);
+			if (bib != null) {
+				CallDispatcher.sb = new SignalingBean();
+				CallDispatcher.sb.setFrom(CallDispatcher.LoginUser);
+				CallDispatcher.sb.setTo(username);
+				CallDispatcher.sb.setType("0");
+				CallDispatcher.sb.setToSignalPort(bib.getSignalingPort());
+				CallDispatcher.sb.setResult("0");
+				CallDispatcher.sb.setTopublicip(bib.getExternalipaddress());
+				CallDispatcher.sb.setTolocalip(bib.getLocalipaddress());
+				CallDispatcher.sb.setToSignalPort(bib.getSignalingPort());
+				CallDispatcher.sb.setSessionid(transaction_Bean.getSessionid());
+				CallDispatcher.sb.setHost(transaction_Bean.getHost());
+				CallDispatcher.sb.setParticipants(transaction_Bean.getParticipants());
+				CallDispatcher.sb.setJoincall("yes");
+
+				switch (operation) {
+					case 1:
+						CallDispatcher.sb.setCallType("AC");
+						break;
+					case 2:
+						CallDispatcher.sb.setCallType("VC");
+						break;
+					case 3:
+						CallDispatcher.sb.setCallType("AP");
+						break;
+					case 4:
+						CallDispatcher.sb.setCallType("VP");
+						break;
+					case 5:
+						CallDispatcher.sb.setCallType("ABC");
+						break;
+					case 6:
+						CallDispatcher.sb.setCallType("VBC");
+						break;
+					case 7:
+						CallDispatcher.sb.setCallType("SS");
+					default:
+						break;
+				}
+
+				if (CallDispatcher.sb.getCallType().equals("AC")
+						|| CallDispatcher.sb.getCallType().equals("VC")) {
+					if (SingleInstance.ContactSharng
+							|| SingleInstance.parentId != null) {
+						CallDispatcher.sb.setBs_calltype("1"); // "1" in "2" out
+						CallDispatcher.sb.setBs_callCategory("1"); // "1" order,
+						// "2"
+						// feedback,
+						// "3"
+						// service
+						CallDispatcher.sb.setBs_callstatus(""); // "1" received,
+						// "2" accept,
+						// "3" reject
+						// "4"
+						// delivered,
+						// "5" invoice
+						if (SingleInstance.parentId != null) {
+
+							CallDispatcher.sb
+									.setBs_parentid(SingleInstance.parentId);
+
+						} else {
+							CallDispatcher.sb.setBs_parentid(Utility
+									.getSessionID());
+						}
+//						CallDispatcher.sb.setStartTime(getCurrentDateandTime());
+						SignalingBean temp = (SignalingBean) CallDispatcher.sb
+								.clone();
+						temp.setBs_calltype("2");
+//						DBAccess.getdbHeler()
+//								.saveOrUpdateRecordtransactiondetails(
+//										CallDispatcher.sb);
+						SingleInstance.ContactSharng = false;
+
+					} else {
+//						CallDispatcher.sb.setStartTime(getCurrentDateandTime());
+//						DBAccess.getdbHeler()
+//								.saveOrUpdateRecordtransactiondetails(
+//										CallDispatcher.sb);
+					}
+				} else {
+//					CallDispatcher.sb.setStartTime(getCurrentDateandTime());
+
+				}
+				CallDispatcher.dialChecker = true;
+				SignalingBean vbcsb = (SignalingBean) CallDispatcher.sb.clone();
+				if(con_scr_opened == 0) {
+					ShowConnectionScreen(vbcsb, username, context, false);
+				}
 				CallDispatcher.isCallInitiate = true;
 				SingleInstance.parentId = null;
 				AppMainActivity.commEngine.makeCall(CallDispatcher.sb);
@@ -16017,7 +16262,7 @@ private TrustManager[] get_trust_mgr() {
 
 	public void requestAudioBroadCast(String to) {
 
-		if (!WebServiceReferences.contextTable.containsKey("callscreen")
+		if (!SingleInstance.instanceTable.containsKey("callscreen")
 				&& !WebServiceReferences.contextTable
 						.containsKey("alertscreen")
 				&& !WebServiceReferences.contextTable

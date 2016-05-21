@@ -36,6 +36,9 @@ public class SignalingBean implements Serializable, Cloneable {
 	private String netWork = null;
 	private String deviceOs = null;
 	private String callDuration = null;
+		private String host;
+	private String participants;
+	private String joincall;
 	public String getNetWork() {
 		return netWork;
 	}
@@ -525,6 +528,30 @@ public class SignalingBean implements Serializable, Cloneable {
 
 	public void setCallDuration(String callDuration) {
 		this.callDuration = callDuration;
+	}
+
+	public String getHost() {
+		return host;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	public String getParticipants() {
+		return participants;
+	}
+
+	public void setParticipants(String participants) {
+		this.participants = participants;
+	}
+
+	public String getJoincall() {
+		return joincall;
+	}
+
+	public void setJoincall(String joincall) {
+		this.joincall = joincall;
 	}
 
 	public Object clone() {

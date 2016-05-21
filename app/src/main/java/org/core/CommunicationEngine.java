@@ -46,7 +46,9 @@ import android.opengl.GLSurfaceView;
 import android.os.Environment;
 import android.util.Log;
 
+import com.cg.callservices.VideoCallScreen;
 import com.cg.commonclass.CallDispatcher;
+import com.cg.commonclass.WebServiceReferences;
 
 /**
  * 
@@ -219,6 +221,7 @@ public class CommunicationEngine implements AudioRecorderListener,
 	 * Used to Capture Video Frame From the Camera.
 	 */
 	private Preview preview = null;
+	public boolean video_preview = true;
 	/**
 	 * Check whether the Video is Encode or not.
 	 */
@@ -815,10 +818,15 @@ public class CommunicationEngine implements AudioRecorderListener,
 			sb.setFrom(sb.getFrom().toLowerCase());
 
 			if (!sb.getType().equals("9")) {
-				if (!sb.getCallType().equals("ABC")
-						&& !sb.getCallType().equals("VBC")
-						&& !sb.getCallType().equals("SS")) {
-					sb.setSessionid(utility.getSessionID(getDeviceId()));
+				if(sb.getType().equals("0") && (sb.getCallType().equalsIgnoreCase("VC") || sb.getCallType().equalsIgnoreCase("AC"))
+						&& sb.getSessionid() != null && sb.getSessionid().length() >0) {
+					Log.i("NOTES","Session id :" +sb.getSessionid());
+				} else {
+					if (!sb.getCallType().equals("ABC")
+							&& !sb.getCallType().equals("VBC")
+							&& !sb.getCallType().equals("SS")) {
+						sb.setSessionid(utility.getSessionID(getDeviceId()));
+					}
 				}
 			}
 			sb.setSignalid(Long.toString(utility.getRandomMediaID()));
@@ -935,8 +943,127 @@ public class CommunicationEngine implements AudioRecorderListener,
 									.get(sb.getSessionid());
 							if (relayNew != null) {
 								relayNew.setVideoSsrc(decodessrc);
-								// relayNew.setBuddyName(obj.getBuddyName());
+								 relayNew.setBuddyName(obj.getBuddyName());
 								Log.d("999", "relay client does not matches");
+//								relayNew.sendVideoStopMessage(
+//										getLoginUsername(), obj.getSessionid(),
+//										obj.getBuddyName());
+								relayNew.sendRelayVideoReceiveMessage(
+										 obj.getSessionid(),getLoginUsername(),
+										obj.getBuddyName());
+
+							}
+						}
+
+					}
+
+				}
+
+				// }
+
+			}
+		}
+	}
+
+	public void turnOnOffVideo(SignalingBean sb){
+		if (proprietarySignalling != null) {
+
+			sb.setFrom(sb.getFrom().toLowerCase());
+
+			sb.setSignalid(Long.toString(utility.getRandomMediaID()));
+			sb.setPublicip(publicInetaddress);
+			sb.setLocalip(localInetaddress);
+			Log.d("OnOff",
+					"ToUser " + sb.getTo() + ", TR " + sb.getType()
+							+ sb.getResult() + " ,Signalid " + sb.getSignalid());
+
+				proprietarySignalling.sendMessage(sb);
+				if (!sb.getType().equals("9")) {
+
+					proprietarySignalling.startRingTimer(sb);
+				}
+
+			if (sb.getType().equals("9")) {
+
+				Log.d("OnOff",
+						"sending type 9 from doaddconference "
+								+ sb.getGmember() + " TO " + sb.getTo());
+				CallsOverInternet callsOverInternet = (CallsOverInternet) callTable
+						.get(sb.getSessionid() + sb.getGmember());
+				if (callsOverInternet != null) {
+					decodessrc = callsOverInternet.getBuddyVideoSSRC();
+					Log.d("OnOff", "Decode ssrc" + decodessrc);
+				}
+
+				if (sb.getTo().equals(sb.getGmember())) {
+					try {
+						Log.d("OnOff",
+								"True" + " sb.getGmember() " + sb.getGmember()
+										+ " To " + sb.getTo());
+
+						CallsOverInternet c1 = (CallsOverInternet) callTable
+								.get(sb.getSessionid() + sb.getTo());
+						if (c1 != null) {
+							c1.getRtpEngine().resetRetransmision(true);
+						}
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+
+				} else {
+
+					try {
+
+						CallsOverInternet c1 = (CallsOverInternet) callTable
+								.get(sb.getSessionid() + sb.getTo());
+						if (c1 != null) {
+							c1.getRtpEngine().resetRetransmision(false);
+//							c1.getRtpEngine().resetRetransmision(true);
+						}
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+					// engine.resetRetransmision(false);
+				}
+
+				// CallsOverInternet obj=(CallsOverInternet)
+				// callTable.get(sb.getSessionid()+sb.getTo());
+
+				if (sb.getTo().equals(sb.getGmember())) {
+					CallsOverInternet obj = (CallsOverInternet) callTable
+							.get(sb.getSessionid() + sb.getTo());
+					Log.d("OnOff", "sb.getTo().equals(sb.getGmember())" );
+					if (obj != null) {
+						Log.d("OnOff", "obj != null" );
+						if (obj.isJoinedRelay()) {
+							Log.d("OnOff", "obj.isJoinedRelay()" );
+							RelayClientNew relayNew = (RelayClientNew) callTable
+									.get(sb.getSessionid());
+							if (relayNew != null) {
+								Log.d("OnOff", "relayNew != null" );
+								relayNew.setVideoSsrc(decodessrc);
+								relayNew.setBuddyName(obj.getBuddyName());
+								relayNew.sendRelayVideoReceiveMessage(
+										obj.getSessionid(), getLoginUsername(),
+										obj.getBuddyName());
+
+							}
+						}
+
+					}
+				} else {
+					CallsOverInternet obj = (CallsOverInternet) callTable
+							.get(sb.getSessionid() + sb.getTo());
+					if (obj != null) {
+
+						if (obj.isJoinedRelay()) {
+
+							RelayClientNew relayNew = (RelayClientNew) callTable
+									.get(sb.getSessionid());
+							if (relayNew != null) {
+								relayNew.setVideoSsrc(decodessrc);
+								relayNew.setBuddyName(obj.getBuddyName());
+								Log.d("OnOff", "relay client does not matches");
 								relayNew.sendVideoStopMessage(
 										getLoginUsername(), obj.getSessionid(),
 										obj.getBuddyName());
@@ -1674,6 +1801,20 @@ public class CommunicationEngine implements AudioRecorderListener,
 					callsOverInternet.setVideoQueue(videoQueue);
 					callTable.put(sb.getSessionid() + sb.getTo(),
 							callsOverInternet);
+
+					if(sb.getVideossrc() != null) {
+						Log.i("NotesVideo", "on CommunucationEngine : " + sb.getTo() + "  :  " + Integer.parseInt(sb.getVideossrc()));
+
+						if(!WebServiceReferences.videoSSRC_total_list.contains(Integer.parseInt(sb.getVideossrc()))){
+//							WebServiceReferences.videoSSRC_total_list.add(Integer.parseInt(sb.getVideossrc()));
+						}
+
+						if (!WebServiceReferences.videoSSRC_total.containsKey(Integer.parseInt(sb.getVideossrc()))) {
+							Log.i("NotesVideo", "inside if");
+							WebServiceReferences.videoSSRC_total.put(Integer.parseInt(sb.getVideossrc()), sb.getTo());
+							Log.i("NotesVideo", "videoSSRC size : " + WebServiceReferences.videoSSRC_total.size());
+						}
+					}
 
 					mediaKey.add(sb.getSessionid() + sb.getTo());
 					conferenceMembers(sb);
@@ -2475,11 +2616,14 @@ public class CommunicationEngine implements AudioRecorderListener,
 			// arrayList.size() );
 			Log.d("call", new Date() + "sending type744444 " + arrayList.size());
 			if (arrayList.size() > 1) {
+				SignalingBean new_user_sb = null;
 				for (int i = 0; i < arrayList.size(); i++) {
 					Log.d("call", new Date() + "sending type7 of to name");
 					SignalingBean sb = (SignalingBean) arrayList.get(i);
 					// System.out.println("sb.getTo():"+sb.getTo());
 					// System.out.println("toname :"+toname);
+					Log.i("Join"," sb.getTo() : "+sb.getTo()+" toname :"+toname);
+
 					if (!sb.getTo().equals(toname)) {
 
 						sb.setPunchingmode("0");
@@ -2501,15 +2645,56 @@ public class CommunicationEngine implements AudioRecorderListener,
 							Log.d("999", "sending type 9 from doaddconference "
 									+ toname);
 							sb.setType("9");
-							sb.setGmember(toname);
+							sb.setGmember(sb.getTo());
 							makeCall(sb);
 						}
 
 					} else {
+						new_user_sb = sb;
 						// System.out.println("********** new user only allowed here"+toname);
 
 					}
 				}
+
+//				if(new_user_sb!= null) {
+//					for (int i = 0; i < arrayList.size(); i++) {
+//						Log.d("call", new Date() + "sending type7 of to name 1");
+//						SignalingBean sb = (SignalingBean) arrayList.get(i);
+//						// System.out.println("sb.getTo():"+sb.getTo());
+//						// System.out.println("toname :"+toname);
+//						Log.i("Join", " sb.getTo() : " + sb.getTo() + " toname :" + toname + " new_user_sb : " + new_user_sb.getTo());
+//
+//						if (!sb.getTo().equals(toname)) {
+//
+//							new_user_sb.setPunchingmode("0");
+//							new_user_sb.setBuddyConnectip("0");
+//							new_user_sb.setBuddyConnectport("0");
+//
+//							new_user_sb.setConferencemember(sb.getTo() + "," + localip + ","
+//									+ publicip + "," + signalingport);
+//							new_user_sb.setType("7");
+//							Log.d("call", new Date() + "sended type7 of to name");
+//							// System.out.println("################################## MAKE TYPE 7");
+//							if (new_user_sb.getCallType().equals("AC")
+//									|| new_user_sb.getCallType().equals("VC")) {
+//								makeConferenceCall(new_user_sb);
+//							}
+//
+//							if (new_user_sb.getCallType().equals("VC")) {
+//
+//								Log.d("999", "sending type 9 from doaddconference "
+//										+ toname);
+//								new_user_sb.setType("9");
+//								new_user_sb.setGmember(new_user_sb.getTo());
+//								makeCall(new_user_sb);
+//							}
+//
+//						} else {
+//							// System.out.println("********** new user only allowed here"+toname);
+//
+//						}
+//					}
+//				}
 			}
 		} else {
 			Log.d("testx", " not sending type7");
@@ -2545,18 +2730,78 @@ public class CommunicationEngine implements AudioRecorderListener,
 	 * @param decIndex
 	 *            DecoderIndex.
 	 */
-	public void decodeVideoFrame(byte[] frame, long ssrc, int decIndex) {
+	public synchronized void decodeVideoFrame(byte[] frame, long ssrc, int decIndex) {
 
 		// System.out.println("decodessrc : "+decodessrc+" ssrc: "+ssrc);
 		Log.d("VIDEOP", "" + "decodessrc : " + decodessrc + " ssrc: " + ssrc);
 		byte[] yuvdata = null;
 		byte[] rgbdata = null;
 		try {
-			// System.out.println("decodessrc :"+decodessrc+" videocodec :"+videoCodec);
-			if (videoCodec != null && mDecodeFrame) {
-				System.out.println("decodessrc :" + decodessrc
-						+ " videocodec :" + videoCodec);
-				if (decodessrc == ssrc) {
+				if(WebServiceReferences.videoSSRC_total_list != null ) {
+
+					if (WebServiceReferences.videoSSRC_total_list.contains((int) (long) ssrc)) {
+
+					} else {
+						WebServiceReferences.videoSSRC_total_list.add((int) (long) ssrc);
+//						if(WebServiceReferences.videoSSRC_total.containsKey((int) (long) ssrc)){
+//
+//						}
+					}
+				}
+				if (frame != null) {
+					Log.d("VIDEOP12345", "frame != null");
+					// System.out.println("decodessrc :"+decodessrc+" videocodec :"+videoCodec);
+					if (videoCodec != null && mDecodeFrame) {
+						System.out.println("decodessrc :" + decodessrc
+								+ " videocodec :" + videoCodec);
+//				if (decodessrc == ssrc) {
+
+						int result = 0;
+
+						yuvdata = new byte[mPreviewWidth * mPreviewHeight
+								+ (mPreviewWidth * mPreviewHeight) / 2];
+						rgbdata = new byte[mPreviewWidth * mPreviewHeight * 3];
+						EnumVideoCodec enumVideoCodec = videoCodec
+								.getEnumVideoCodec();
+//					if (WebServiceReferences.videoSSRC_total_list.size() > 0 && WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc) == 0) {
+						switch (enumVideoCodec) {
+							case H264:
+								Log.i("amu2", "H264");
+								if (WebServiceReferences.videoSSRC_total_list.size() > 0 ) {
+								result = videoCodec.DecodeH264(frame, yuvdata,WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc) );
+								}
+								break;
+							case VP8:
+								Log.i("amu2", "VP8");
+								result = videoCodec.decodeVPX(frame, yuvdata,
+										frame.length, decIndex);
+								break;
+							default:
+								break;
+						}
+//					}
+						// System.out.println("RESULT :"+result);
+
+						if (result > 3) {
+
+
+							if (videoCallback != null) {
+								// System.out.println("Engine Comm rgb");
+								Log.d("VDO", "going to notify decoded video frame");
+								videoCodec.convertYUV4202RGB24(yuvdata, rgbdata,
+										mPreviewWidth, mPreviewHeight);
+								videoCallback.notifyDecodedVideoCallback(rgbdata,
+										ssrc);
+
+							}
+						}
+
+						rgbdata = null;
+						yuvdata = null;
+						frame = null;
+
+			/*	} else {
+
 					int result = 0;
 					yuvdata = new byte[mPreviewWidth * mPreviewHeight
 							+ (mPreviewWidth * mPreviewHeight) / 2];
@@ -2564,15 +2809,15 @@ public class CommunicationEngine implements AudioRecorderListener,
 					EnumVideoCodec enumVideoCodec = videoCodec
 							.getEnumVideoCodec();
 					switch (enumVideoCodec) {
-					case H264:
-						result = videoCodec.DecodeH264(frame, yuvdata);
-						break;
-					case VP8:
-						result = videoCodec.decodeVPX(frame, yuvdata,
-								frame.length, decIndex);
-						break;
-					default:
-						break;
+						case H264:
+							result = videoCodec.DecodeH264(frame, yuvdata);
+							break;
+						case VP8:
+							result = videoCodec.decodeVPX(frame, yuvdata,
+									frame.length, decIndex);
+							break;
+						default:
+							break;
 					}
 					// System.out.println("RESULT :"+result);
 
@@ -2582,25 +2827,81 @@ public class CommunicationEngine implements AudioRecorderListener,
 						if (videoCallback != null) {
 							// System.out.println("Engine Comm rgb");
 							Log.d("VDO", "going to notify decoded video frame");
-							videoCallback.notifyDecodedVideoCallback(rgbdata,
+							videoCallback.notifyDecodedVideoCallback2(rgbdata,
 									ssrc);
 						}
 					}
-					rgbdata = null;
-					yuvdata = null;
-					frame = null;
-
+				}*/
+					}
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		rgbdata = null;
 		yuvdata = null;
 		frame = null;
 
 	}
+
+	public class VideoBean
+	{
+		private long ssrc;
+		private byte[] frame;
+		private VideoCallback videoCallback;
+		private int width;
+		private int height;
+		private VideoCodec videoCodec;
+
+		public long getSsrc() {
+			return ssrc;
+		}
+
+		public void setSsrc(long ssrc) {
+			this.ssrc = ssrc;
+		}
+
+		public byte[] getFrame() {
+			return frame;
+		}
+
+		public void setFrame(byte[] frame) {
+			this.frame = frame;
+		}
+
+		public VideoCallback getVideoCallback() {
+			return videoCallback;
+		}
+
+		public void setVideoCallback(VideoCallback videoCallback) {
+			this.videoCallback = videoCallback;
+		}
+
+		public int getWidth() {
+			return width;
+		}
+
+		public void setWidth(int width) {
+			this.width = width;
+		}
+
+		public int getHeight() {
+			return height;
+		}
+
+		public void setHeight(int height) {
+			this.height = height;
+		}
+
+		public VideoCodec getVideoCodec() {
+			return videoCodec;
+		}
+
+		public void setVideoCodec(VideoCodec videoCodec) {
+			this.videoCodec = videoCodec;
+		}
+	}
+
 
 	/**
 	 * Used to Stop AudioCapture from AudioRecorder.Also stop the AudioRecorder.
@@ -3000,7 +3301,7 @@ public class CommunicationEngine implements AudioRecorderListener,
 		if (!screenSharing) {
 			try {
 				// Log.d("call",new Date()+"Video......");
-				if (videoCodec != null) {
+				if (videoCodec != null && video_preview) {
 					if (encodeVideo) {
 						byte[] yuvdata = new byte[width * height
 								+ (width * height) / 2];
@@ -3121,6 +3422,12 @@ public class CommunicationEngine implements AudioRecorderListener,
 		}
 
 	}
+
+	public void enable_disable_VideoPreview(boolean enable_video){
+		this.video_preview = enable_video;
+	}
+
+	private byte[] data_tmp = null;
 
 	public void videoFragment(byte[] data, boolean keyframe) {
 

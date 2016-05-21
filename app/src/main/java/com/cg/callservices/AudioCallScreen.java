@@ -7,8 +7,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Vector;
 
 import org.audio.AudioProperties;
+import org.lib.model.BuddyInformationBean;
 import org.lib.model.SignalingBean;
 
 import android.app.Activity;
@@ -16,20 +18,28 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.Chronometer.OnChronometerTickListener;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,13 +47,16 @@ import android.widget.Toast;
 import com.bean.ProfileBean;
 import com.callHistory.CallHistoryActivity;
 import com.cg.DB.DBAccess;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
+import com.main.ContactsFragment;
 import com.util.SingleInstance;
 
-public class AudioCallScreen extends Activity {
+public class AudioCallScreen extends Fragment {
 
 	private TextView tvBuddies,tv_name,tv_status;
 
@@ -97,7 +110,7 @@ public class AudioCallScreen extends Activity {
 
 	private AudioProperties audioProperties = null;
 
-	private Context context = null;
+	public static Context context = null;
 
 	private CallDispatcher objCallDispatcher = null;
 
@@ -108,6 +121,14 @@ public class AudioCallScreen extends Activity {
 	private boolean selfHangup = false;
 	
 	private boolean isBuddyinCall=false;
+
+	//For this is used to profilepictures for owner and buddies
+	private Vector<BuddyInformationBean> buddyList;
+	ImageLoader imageLoader;
+	ImageView iv_owner,iv_buddy;
+	String buddyimage;
+	String ownerimage;
+	private Button minimize;
 
 	Runnable runnable = new Runnable() {
 
@@ -131,36 +152,60 @@ public class AudioCallScreen extends Activity {
 		}
 	};
 
+	private static AudioCallScreen audioCallScreen;
+	public View rootView;
+	Bundle bundlevalues;
+	RelativeLayout mainHeader;
+
+	public static AudioCallScreen getInstance(Context maincontext) {
+		try {
+			if (audioCallScreen == null) {
+
+				context = maincontext;
+				audioCallScreen = new AudioCallScreen();
+
+			}
+
+			return audioCallScreen;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return audioCallScreen;
+		}
+	}
+
+
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+							 Bundle savedInstanceState) {
+//		super.onCreate(savedInstanceState);
 
 		try {
-			requestWindowFeature(Window.FEATURE_NO_TITLE);
-			if (SingleInstance.mainContext
-					.getResources()
-					.getString(R.string.screenshot)
-					.equalsIgnoreCase(
-							SingleInstance.mainContext.getResources()
-									.getString(R.string.yes))) {
-				getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,
-						WindowManager.LayoutParams.FLAG_SECURE);
-			}
-			final Window win = getWindow();
-			win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-					| WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-			win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-					| WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-
-			bun = getIntent().getBundleExtra("signal");
-			receiver = getIntent().getStringExtra("receive");
-			callerName = getIntent().getStringExtra("buddy");
-			isReceiver = getIntent().getBooleanExtra("isreceiver", false);
+//			requestWindowFeature(Window.FEATURE_NO_TITLE);
+//			if (SingleInstance.mainContext
+//					.getResources()
+//					.getString(R.string.screenshot)
+//					.equalsIgnoreCase(
+//							SingleInstance.mainContext.getResources()
+//									.getString(R.string.yes))) {
+//				getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,
+//						WindowManager.LayoutParams.FLAG_SECURE);
+//			}
+//			final Window win = getWindow();
+//			win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+//					| WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+//			win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+//					| WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+            bundlevalues=getArguments();
+//			bun = getIntent().getBundleExtra("signal");
+			receiver = bundlevalues.getString("receive");
+			callerName = bundlevalues.getString("buddy");
+			isReceiver = bundlevalues.getBoolean("isreceiver", false);
 			Log.d("Audio", "Is receiver --->" + isReceiver);
 
-			context = this;
+//			context = this;
 			DisplayMetrics displaymetrics = new DisplayMetrics();
-			getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+			getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 			int noScrHeight = displaymetrics.heightPixels;
 			int noScrWidth = displaymetrics.widthPixels;
 
@@ -169,6 +214,8 @@ public class AudioCallScreen extends Activity {
 						.get("calldisp");
 			else
 				objCallDispatcher = new CallDispatcher(context);
+			mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
+			mainHeader.setVisibility(View.GONE);
 
 			objCallDispatcher.setNoScrHeight(noScrHeight);
 			objCallDispatcher.setNoScrWidth(noScrWidth);
@@ -176,7 +223,7 @@ public class AudioCallScreen extends Activity {
 			CallDispatcher.networkState = objCallDispatcher.connectivityType();
 			objCallDispatcher.isCalledAudiocallScreen = false;
 
-			WebServiceReferences.contextTable.put("callscreen", this);
+			SingleInstance.instanceTable.put("callscreen", audioCallScreen);
 			objCallDispatcher.startPlayer(context);
 			if (objCallDispatcher.isHangUpReceived)
 				receivedHangUp();
@@ -185,12 +232,13 @@ public class AudioCallScreen extends Activity {
 					&& CallDispatcher.conferenceMembers.size() == 0)
 				receivedHangUp();
 
-			audioProperties = new AudioProperties(this);
-			setContentView(ShowaudioCallScreen());
+			audioProperties = new AudioProperties(context);
+//			setContentView(ShowaudioCallScreen());
+			rootView=ShowaudioCallScreen(inflater);
 			strStartTime = objCallDispatcher.getCurrentDateTime();
-			signBean = (SignalingBean) bun.getSerializable("signal");
+			signBean = (SignalingBean) bundlevalues.getSerializable("signal");
 			strSessionId = signBean.getSessionid();
-
+			CallDispatcher.currentSessionid =strSessionId;
 			handler = new Handler() {
 				@Override
 				public void handleMessage(Message msg) {
@@ -317,7 +365,8 @@ public class AudioCallScreen extends Activity {
 									// TODO: handle exception
 								}
 
-								finish();
+//								finish();
+								finishAudiocallScreen();
 							} else {
 
 								try {
@@ -328,7 +377,8 @@ public class AudioCallScreen extends Activity {
 									// TODO: handle exception
 								}
 
-								finish();
+//								finish();
+								finishAudiocallScreen();
 
 							}
 
@@ -405,12 +455,14 @@ public class AudioCallScreen extends Activity {
 			Log.d("test", "Audio call error " + e);
 		}
 
+		return rootView;
+
 	}
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-        AppMainActivity.inActivity = this;
+        AppMainActivity.inActivity = context;
     }
 
     public String getCurrentDateandTime() {
@@ -431,192 +483,217 @@ public class AudioCallScreen extends Activity {
 		}
 	}
 
-	public RelativeLayout ShowaudioCallScreen() {
+	public View ShowaudioCallScreen(LayoutInflater inflater) {
+		View llayAudioCall = null;
 
-		final RelativeLayout  llayAudioCall = ( RelativeLayout ) View.inflate(
-				this, R.layout.call_connecting, null);
-		TextView tv = (TextView) llayAudioCall.findViewById(R.id.status);
-		tv.setText(SingleInstance.mainContext.getResources().getString(
-				R.string.auconnected));
-		tvBuddies = (TextView) llayAudioCall.findViewById(R.id.my_userinfo_tv);
-		ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(getNames());
-		String Callee=pBean.getFirstname()+" "+pBean.getLastname();
-		tvBuddies.setText(Callee);
+		try {
+//		final RelativeLayout  llayAudioCall = ( RelativeLayout ) View.inflate(
+//				context, R.layout.call_connecting, null);
+			llayAudioCall = inflater.inflate(R.layout.call_connecting, null);
+			final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
+			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+//		getActivity().getWindow().setSoftInputMode(
+//				WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+			TextView tv = (TextView) llayAudioCall.findViewById(R.id.status);
+			ImageView profilePic=(ImageView)llayAudioCall.findViewById(R.id.profilePic);
+			Button members=(Button)llayAudioCall.findViewById(R.id.members);
+			Button btn_video=(Button)llayAudioCall.findViewById(R.id.btn_video);
+			 minimize=(Button)llayAudioCall.findViewById(R.id.minimize_btn);
+			members.setVisibility(View.VISIBLE);
+			btn_video.setVisibility(View.VISIBLE);
+			tv.setText(SingleInstance.mainContext.getResources().getString(
+                    R.string.auconnected));
+			tv.setVisibility(View.GONE);
+			profilePic.setVisibility(View.GONE);
+			tvBuddies = (TextView) llayAudioCall.findViewById(R.id.my_userinfo_tv);
+			ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(getNames());
+			String Callee=pBean.getFirstname()+" "+pBean.getLastname();
+			tvBuddies.setText(Callee);
 //		tvBuddies.setText(getNames());
-		tvCallTime = (TextView) llayAudioCall.findViewById(R.id.datetime);
-		tvCallTime.setVisibility(View.VISIBLE);
-		final String strCallDate = objCallDispatcher.getCurrentDateTime();
-		tvCallTime.setText(strCallDate);
+			tvBuddies.setVisibility(View.GONE);
+			tvCallTime = (TextView) llayAudioCall.findViewById(R.id.datetime);
+			tvCallTime.setVisibility(View.VISIBLE);
+			final String strCallDate = objCallDispatcher.getCurrentDateTime();
+			tvCallTime.setText(strCallDate);
+			tvCallTime.setVisibility(View.GONE);
 
-		btnMic = (Button) llayAudioCall.findViewById(R.id.mic);
-	
-		
-		
-		//tvCallTime.setVisibility(View.VISIBLE);
-		
-		btnMic.setVisibility(View.VISIBLE);
-		
-		btnMic.setOnClickListener(new OnClickListener() {
+			btnMic = (Button) llayAudioCall.findViewById(R.id.mic);
 
-			@Override
-			public void onClick(View v) {
 
-				try {
-					if (!micmute) {
-						micmute = true;
-						btnMic.setBackgroundResource(R.drawable.mic_mutex);
+			//tvCallTime.setVisibility(View.VISIBLE);
 
-					} else if (micmute) {
-						micmute = false;
-						btnMic.setBackgroundResource(R.drawable.mic);
-
-					}
-
-					AppMainActivity.commEngine.micMute(micmute);
-				} catch (Exception e) {
-					// TODO: handle exception
+			btnMic.setVisibility(View.VISIBLE);
+			minimize.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					finishAudiocallScreen();
 				}
+			});
 
-			}
-		});
-		btnSpeaker = (Button) llayAudioCall.findViewById(R.id.loudspeaker);
-		btnSpeaker.setVisibility(View.VISIBLE);
-		if (SingleInstance.mainContext.isAutoAcceptEnabled(
-				CallDispatcher.LoginUser, callerName)) {
-			speaker = true;
-			btnSpeaker.setBackgroundResource(R.drawable.loudspeakerr);
+			btnMic.setOnClickListener(new OnClickListener() {
 
-		} else {
-			speaker = false;
-			btnSpeaker.setBackgroundResource(R.drawable.headphonee);
-		}
-		btnSpeaker.setVisibility(View.VISIBLE);
-		audioProperties.setSpeakerphoneOn(speaker);
-		btnSpeaker.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-			@Override
-			public void onClick(View v) {
-				Log.i("thread", "################## speaker" + speaker);
-				if (!speaker) {
-					speaker = true;
-					btnSpeaker.setBackgroundResource(R.drawable.loudspeakerr);
-				} else if (speaker) {
-					btnSpeaker.setBackgroundResource(R.drawable.headphonee);
-					speaker = false;
+                    try {
+                        if (!micmute) {
+                            micmute = true;
+                            btnMic.setBackgroundResource(R.drawable.call_mic_active);
 
-				}
-				audioProperties.setSpeakerphoneOn(speaker);
-			}
-		});
+                        } else if (micmute) {
+                            micmute = false;
+                            btnMic.setBackgroundResource(R.drawable.call_mic);
 
-		chTimer = (Chronometer) llayAudioCall.findViewById(R.id.call_timer);
-		chTimer.setVisibility(View.VISIBLE);
-		if (isReceiver) {
-			chTimer.start();
-			isTimer_running = true;
-		}
-		chTimer.setOnChronometerTickListener(new OnChronometerTickListener() {
-			@Override
-			public void onChronometerTick(Chronometer arg0) {
+                        }
 
-				CharSequence text = chTimer.getText();
-				if (text.length() == 5) {
-					chTimer.setText("00:" + text);
-				} else if (text.length() == 7) {
+                        AppMainActivity.commEngine.micMute(micmute);
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                    }
 
-					chTimer.setText("0" + text);
-				}
+                }
+            });
+			btnSpeaker = (Button) llayAudioCall.findViewById(R.id.loudspeaker);
+			btnSpeaker.setVisibility(View.VISIBLE);
+			if (SingleInstance.mainContext.isAutoAcceptEnabled(
+                    CallDispatcher.LoginUser, callerName)) {
+                speaker = true;
+                btnSpeaker.setBackgroundResource(R.drawable.call_speaker_active);
 
-			}
-		});
-		btnHangup = (Button) llayAudioCall.findViewById(R.id.btn_han);
-		btnemergency = (Button) llayAudioCall
-				.findViewById(R.id.btn_emergencybuddy);
-		btnemergency.setBackgroundResource(R.drawable.loc_pin);
+            } else {
+                speaker = false;
+                btnSpeaker.setBackgroundResource(R.drawable.call_speaker);
+            }
+			btnSpeaker.setVisibility(View.VISIBLE);
+			audioProperties.setSpeakerphoneOn(speaker);
+			btnSpeaker.setOnClickListener(new OnClickListener() {
 
-		if (!receiver.equalsIgnoreCase("true")) {
+                @Override
+                public void onClick(View v) {
+                    Log.i("thread", "################## speaker" + speaker);
+                    if (!speaker) {
+                        speaker = true;
+                        btnSpeaker.setBackgroundResource(R.drawable.call_speaker_active);
+                    } else if (speaker) {
+                        btnSpeaker.setBackgroundResource(R.drawable.call_speaker);
+                        speaker = false;
+
+                    }
+                    audioProperties.setSpeakerphoneOn(speaker);
+                }
+            });
+
+			chTimer = (Chronometer) llayAudioCall.findViewById(R.id.call_timer);
+			chTimer.setVisibility(View.VISIBLE);
+			if (isReceiver) {
+                chTimer.start();
+                isTimer_running = true;
+            }
+			chTimer.setOnChronometerTickListener(new OnChronometerTickListener() {
+                @Override
+                public void onChronometerTick(Chronometer arg0) {
+
+                    CharSequence text = chTimer.getText();
+                    if (text.length() == 5) {
+                        chTimer.setText("00:" + text);
+                    } else if (text.length() == 7) {
+
+                        chTimer.setText("0" + text);
+                    }
+
+                }
+            });
+			btnHangup = (Button) llayAudioCall.findViewById(R.id.btn_han);
+			btnemergency = (Button) llayAudioCall
+                    .findViewById(R.id.btn_emergencybuddy);
+			btnemergency.setBackgroundResource(R.drawable.loc_pin);
+
+			if (!receiver.equalsIgnoreCase("true")) {
+                btnemergency.setVisibility(View.GONE);
+            }
 			btnemergency.setVisibility(View.GONE);
+			btnemergency.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    try {
+                        Log.i("thread", "on click of btn_loc");
+                        ArrayList<String> close_buddies = objCallDispatcher
+                                .calculateNearestLocations(callerName.trim());
+
+                        if (CallDispatcher.conferenceMembers.size() < 3) {
+                            if (alert == null) {
+
+                                makeEmergencyCall("AC", close_buddies);
+                            } else if (!alert.isShowing()) {
+                                makeEmergencyCall("AC", close_buddies);
+                            }
+                        } else {
+
+                            Toast.makeText(
+                                    context,
+                                    SingleInstance.mainContext.getResources()
+                                            .getString(R.string.max_conf_members),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        e.printStackTrace();
+                        Log.i("thread",
+                                "::::::::::::::::::: exception" + e.toString());
+                    }
+
+                }
+            });
+
+			btnHangup.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+
+                    // Log.d("WIFI",
+                    // "size btnHangup  "+CallDispatcher.conferenceRequest.size());
+
+                    if (alert == null) {
+
+                        showHangUpAlert();
+
+                    } else if (!alert.isShowing()) {
+                        showHangUpAlert();
+                    }
+
+                }
+            });
+
+			Button btn_con = (Button) llayAudioCall
+                    .findViewById(R.id.btn_connectedbuddies);
+
+			Button btn_onlineb = (Button) llayAudioCall
+                    .findViewById(R.id.btn_addbuddy1);
+			btn_onlineb.setVisibility(View.VISIBLE);
+
+			btn_con.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    showConnectedBuddies();
+
+                }
+            });
+
+			btn_onlineb.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    ShowOnlineBuddies("AC");
+                }
+            });
+		} catch (Resources.NotFoundException e) {
+			e.printStackTrace();
 		}
-		btnemergency.setVisibility(View.GONE);
-		btnemergency.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				try {
-					Log.i("thread", "on click of btn_loc");
-					ArrayList<String> close_buddies = objCallDispatcher
-							.calculateNearestLocations(callerName.trim());
-
-					if (CallDispatcher.conferenceMembers.size() < 3) {
-						if (alert == null) {
-
-							makeEmergencyCall("AC", close_buddies);
-						} else if (!alert.isShowing()) {
-							makeEmergencyCall("AC", close_buddies);
-						}
-					} else {
-
-						Toast.makeText(
-								context,
-								SingleInstance.mainContext.getResources()
-										.getString(R.string.max_conf_members),
-								Toast.LENGTH_SHORT).show();
-					}
-				} catch (Exception e) {
-					// TODO: handle exception
-					e.printStackTrace();
-					Log.i("thread",
-							"::::::::::::::::::: exception" + e.toString());
-				}
-
-			}
-		});
-
-		btnHangup.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-
-				// Log.d("WIFI",
-				// "size btnHangup  "+CallDispatcher.conferenceRequest.size());
-
-				if (alert == null) {
-
-					showHangUpAlert();
-
-				} else if (!alert.isShowing()) {
-					showHangUpAlert();
-				}
-
-			}
-		});
-
-		Button btn_con = (Button) llayAudioCall
-				.findViewById(R.id.btn_connectedbuddies);
-
-		Button btn_onlineb = (Button) llayAudioCall
-				.findViewById(R.id.btn_addbuddy1);
-		btn_onlineb.setVisibility(View.VISIBLE);
-		
-		btn_con.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				showConnectedBuddies();
-
-			}
-		});
-
-		btn_onlineb.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				ShowOnlineBuddies("AC");
-			}
-		});
 
 		return llayAudioCall;
 	}
@@ -643,7 +720,7 @@ public class AudioCallScreen extends Activity {
 			// alert = builder.create();
 			// alert.show();
 
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			AlertDialog.Builder builder = new AlertDialog.Builder(context);
 			builder.create();
 			builder.setTitle(SingleInstance.mainContext.getResources()
 					.getString(R.string.connected_buddies));
@@ -677,7 +754,7 @@ public class AudioCallScreen extends Activity {
 	}
 
 	public void showDialog(String msg) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setMessage(msg)
 				.setCancelable(false)
 				.setPositiveButton(
@@ -685,7 +762,8 @@ public class AudioCallScreen extends Activity {
 								R.string.ok),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								finish();
+//								finish();
+								finishAudiocallScreen();
 								return;
 							}
 						});
@@ -703,75 +781,81 @@ public class AudioCallScreen extends Activity {
 			// TODO: handle exception
 		}
 		objCallDispatcher.isHangUpReceived = false;
-		finish();
+//		finish();
+		finishAudiocallScreen();
 
 	}
 
 	// make the AlertDialog.Builder as private and make it null before Create
 	// it...
 	void showHangUpAlert() {
+		handler.post(new Runnable() {
+			@Override
+			public void run() {
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		String ask = SingleInstance.mainContext.getResources().getString(
-				R.string.need_call_hangup);
 
-		builder.setMessage(ask)
-				.setCancelable(false)
-				.setPositiveButton(
-						SingleInstance.mainContext.getResources().getString(
-								R.string.yes),
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(AppReference.mainContext);
+				String ask = SingleInstance.mainContext.getResources().getString(
+						R.string.need_call_hangup);
 
-								Message msg = new Message();
-								Bundle bun = new Bundle();
-								bun.putString("action", "leave");
-								msg.obj = bun;
-								selfHangup = true;
-								if (selfHangup) {
-									CallDispatcher.sb
-									.setEndTime(getCurrentDateandTime());
-							CallDispatcher.sb
-									.setCallDuration(SingleInstance.mainContext
-											.getCallDuration(CallDispatcher.sb
-													.getStartTime(),
-													CallDispatcher.sb
-															.getEndTime()));
-									DBAccess.getdbHeler()
-											.saveOrUpdateRecordtransactiondetails(
-													CallDispatcher.sb);
-								
-									Intent intentComponent = new Intent(context,
-											CallHistoryActivity.class);
-									intentComponent.putExtra("buddyname",
-											CallDispatcher.sb.getFrom());
-									intentComponent.putExtra("individual", true);
-									intentComponent.putExtra("sessionid",
-											CallDispatcher.sb.getSessionid());
-									context.startActivity(intentComponent);
-								
-									
-								}
-								final String[] choiceList = returnBuddies();
-								if(choiceList.length!=0){
-								isBuddyinCall=true;
-								selfHangup=false;
-								}
-								handler.sendMessage(msg);
-							}
-						})
-				.setNegativeButton(
-						SingleInstance.mainContext.getResources().getString(
-								R.string.no),
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								dialog.cancel();
-							}
-						});
-		alert = builder.create();
-		alert.show();
+				builder.setMessage(ask)
+						.setCancelable(false)
+						.setPositiveButton(
+								SingleInstance.mainContext.getResources().getString(
+										R.string.yes),
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog, int id) {
 
-		//
+										Message msg = new Message();
+										Bundle bun = new Bundle();
+										bun.putString("action", "leave");
+										msg.obj = bun;
+										selfHangup = true;
+										if (selfHangup) {
+											CallDispatcher.sb
+													.setEndTime(getCurrentDateandTime());
+											CallDispatcher.sb
+													.setCallDuration(SingleInstance.mainContext
+															.getCallDuration(CallDispatcher.sb
+																			.getStartTime(),
+																	CallDispatcher.sb
+																			.getEndTime()));
+											DBAccess.getdbHeler()
+													.saveOrUpdateRecordtransactiondetails(
+															CallDispatcher.sb);
+
+											Intent intentComponent = new Intent(context,
+													CallHistoryActivity.class);
+											intentComponent.putExtra("buddyname",
+													CallDispatcher.sb.getFrom());
+											intentComponent.putExtra("individual", true);
+											intentComponent.putExtra("sessionid",
+													CallDispatcher.sb.getSessionid());
+											context.startActivity(intentComponent);
+
+
+										}
+										final String[] choiceList = returnBuddies();
+										if (choiceList.length != 0) {
+											isBuddyinCall = true;
+											selfHangup = false;
+										}
+										handler.sendMessage(msg);
+									}
+								})
+						.setNegativeButton(
+								SingleInstance.mainContext.getResources().getString(
+										R.string.no),
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog, int id) {
+										dialog.cancel();
+									}
+								});
+				alert = builder.create();
+				alert.show();
+
+			}
+		});
 
 	}
 
@@ -809,7 +893,8 @@ public class AudioCallScreen extends Activity {
 						// TODO: handle exception
 					}
 
-					finish();
+//					finish();
+					finishAudiocallScreen();
 					// Log.e("test", "size Zero");
 
 				}
@@ -947,7 +1032,7 @@ public class AudioCallScreen extends Activity {
 
 	private void showToast(String msg) {
 		if (msg != null) {
-			Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -1012,7 +1097,7 @@ public class AudioCallScreen extends Activity {
 			}
 
 			if (membersList.size() > 0) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				AlertDialog.Builder builder = new AlertDialog.Builder(AppReference.mainContext);
 				builder.create();
 				builder.setTitle(SingleInstance.mainContext.getResources()
 						.getString(R.string.add_people));
@@ -1086,27 +1171,30 @@ public class AudioCallScreen extends Activity {
 	// Have to remove the references associated with the Activity and also
 	// Activity...
 	// Also have to remove the Handler references too...
-	protected void onDestroy() {
+	public void onDestroy() {
 		// HomeTabViewScreen home =null;
 		try {
 			Log.d("ZZZ", "----->callscreenactivity destroy<-----");
 			if (handler != null)
 				handler.removeCallbacks(runnable);
 
+			mainHeader.setVisibility(View.VISIBLE);
+			final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
+			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
 			objCallDispatcher.stopRingTone();
 			CallDispatcher.currentSessionid = null;
 			objCallDispatcher.alConferenceRequest.clear();
 			CallDispatcher.conferenceMembersTime.clear();
 			CallDispatcher.isCallInitiate = false;
-			if (WebServiceReferences.contextTable.containsKey("callscreen")) {
-				WebServiceReferences.contextTable.remove("callscreen");
+			if (SingleInstance.instanceTable.containsKey("callscreen")) {
+				SingleInstance.instanceTable.remove("callscreen");
 			}
 
 			CallDispatcher.conConference.clear();
 			CallDispatcher.issecMadeConference = false;
 
-			if (WebServiceReferences.contextTable.containsKey("callscreen")) {
-				WebServiceReferences.contextTable.remove("callscreen");
+			if (SingleInstance.instanceTable.containsKey("callscreen")) {
+				SingleInstance.instanceTable.remove("callscreen");
 				Log.e("note", "Call screen instance removed ACS!!");
 			}
 
@@ -1277,7 +1365,7 @@ public class AudioCallScreen extends Activity {
 		String ask = SingleInstance.mainContext.getResources().getString(
 				R.string.reminder_hangup);
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setMessage(ask)
 				.setCancelable(false)
 				.setPositiveButton(
@@ -1305,23 +1393,23 @@ public class AudioCallScreen extends Activity {
 
 	}
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-
-		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-
-			if (alert == null) {
-
-				showHangUpAlert();
-
-			} else if (!alert.isShowing()) {
-				showHangUpAlert();
-			}
-
-		}
-
-		return super.onKeyDown(keyCode, event);
-	}
+//	@Override
+//	public boolean onKeyDown(int keyCode, KeyEvent event) {
+//
+//		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+//
+//			if (alert == null) {
+//
+//				showHangUpAlert();
+//
+//			} else if (!alert.isShowing()) {
+//				showHangUpAlert();
+//			}
+//
+//		}
+//
+//		return super.onKeyDown(keyCode, event);
+//	}
 
 	private void makeEmergencyCall(final String callType, ArrayList<String> list) {
 
@@ -1329,7 +1417,7 @@ public class AudioCallScreen extends Activity {
 
 		try {
 			if (choiceList != null && choiceList.length > 0) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				AlertDialog.Builder builder = new AlertDialog.Builder(context);
 				builder.create();
 				builder.setTitle(SingleInstance.mainContext.getResources()
 						.getString(R.string.near_loc_buddies));
@@ -1403,6 +1491,18 @@ public class AudioCallScreen extends Activity {
 		} else {
 			xmlmap.put(key, obj);
 		}
+	}
+
+	public void finishAudiocallScreen()
+	{
+		FragmentManager fm =
+				AppReference.mainContext.getSupportFragmentManager();
+		FragmentTransaction ft = fm.beginTransaction();
+		ContactsFragment contactsFragment = ContactsFragment
+				.getInstance(context);
+		ft.replace(R.id.activity_main_content_fragment,
+				contactsFragment);
+		ft.commitAllowingStateLoss();
 	}
 
 }

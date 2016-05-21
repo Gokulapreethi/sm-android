@@ -5060,7 +5060,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				try {
 					// TODO Auto-generated method stub
 
-					Object objCallScreen = WebServiceReferences.contextTable
+					Object objCallScreen = SingleInstance.instanceTable
 							.get("callscreen");
 
 					if (objCallScreen != null) {

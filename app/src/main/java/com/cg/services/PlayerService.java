@@ -66,8 +66,8 @@ public class PlayerService extends Service {
 
 		Intent i = null;
 
-		if (WebServiceReferences.contextTable.containsKey("callscreen")) {
-			final Object screenInst = WebServiceReferences.contextTable
+		if (SingleInstance.instanceTable.containsKey("callscreen")) {
+			final Object screenInst = SingleInstance.instanceTable
 					.get("callscreen");
 
 			if (screenInst instanceof AudioCallScreen) {

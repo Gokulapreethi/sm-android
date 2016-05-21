@@ -1707,7 +1707,7 @@ public class buddiesList extends Activity implements
 								}
 
 							}
-							if (!WebServiceReferences.contextTable
+							if (!SingleInstance.instanceTable
 									.containsKey("callscreen")) {
 								Intent intent = new Intent(context,
 										AnsweringMachineActivity.class);

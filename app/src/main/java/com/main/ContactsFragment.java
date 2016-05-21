@@ -2042,7 +2042,7 @@ public class ContactsFragment extends Fragment {
 									}
 
 								}
-								if (!WebServiceReferences.contextTable
+								if (!SingleInstance.instanceTable
 										.containsKey("callscreen")) {
 									Intent intent = new Intent(getActivity()
 											.getApplicationContext(),

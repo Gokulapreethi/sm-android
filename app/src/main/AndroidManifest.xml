@@ -255,10 +255,10 @@
             android:name="com.cg.forms.HardCodeQuery"
             android:screenOrientation="portrait" >
         </activity>
-        <activity
-            android:name="com.cg.callservices.VideoCallScreen"
-            android:screenOrientation="landscape" >
-        </activity>
+        <!--<activity-->
+            <!--android:name="com.cg.callservices.VideoCallScreen"-->
+            <!--android:screenOrientation="landscape" >-->
+        <!--</activity>-->
         <activity
             android:name="com.cg.callservices.VideoPagingSRWindow"
             android:screenOrientation="landscape" >
@@ -509,10 +509,10 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|adjustPan" >
         </activity>
-        <activity
-            android:name="com.cg.callservices.AudioCallScreen"
-            android:screenOrientation="portrait" >
-        </activity>
+        <!--<activity-->
+            <!--android:name="com.cg.callservices.AudioCallScreen"-->
+            <!--android:screenOrientation="portrait" >-->
+        <!--</activity>-->
         <activity
             android:name="com.cg.callservices.inCommingCallAlert"
             android:screenOrientation="portrait" >

@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_centerInParent="true"
-    android:alpha="0.5"
+    android:id="@+id/callalert_lay"
     android:orientation="horizontal" >
 
     <RelativeLayout
@@ -27,7 +27,8 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
             android:textColor="#fff"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:visibility="gone"/>
 
         <View
             android:layout_width="match_parent"
@@ -52,8 +53,18 @@
             android:layout_below="@+id/profile_pic"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
-            android:text="aaaaa"
+            android:text="Caller Name"
+            android:textSize="18sp"
             android:textColor="#fff" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_below="@+id/caller_name"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="calling ..."
+            android:textSize="16sp"
+            android:textColor="@color/blue2" />
 
         <LinearLayout
             android:id="@+id/call_images"
