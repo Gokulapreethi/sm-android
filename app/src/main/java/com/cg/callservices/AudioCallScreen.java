@@ -16,6 +16,7 @@ import org.lib.model.SignalingBean;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -45,12 +46,14 @@ import android.widget.Chronometer;
 import android.widget.Chronometer.OnChronometerTickListener;
 import android.widget.Filter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.adapter.ContactAdapter;
 import com.bean.ProfileBean;
+import com.bean.UserBean;
 import com.callHistory.CallHistoryActivity;
 import com.cg.DB.DBAccess;
 import com.cg.account.AMAVerification;
@@ -58,6 +61,7 @@ import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.group.AddGroupMembers;
 import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
@@ -130,6 +134,7 @@ public class AudioCallScreen extends Fragment {
 	private boolean selfHangup = false;
 	
 	private boolean isBuddyinCall=false;
+	private Vector<UserBean> membersList=new Vector<UserBean>();
 
 	public static synchronized ContactAdapter getContactAdapter() {
 
@@ -285,14 +290,7 @@ public class AudioCallScreen extends Fragment {
 										.saveOrUpdateRecordtransactiondetails(
 												CallDispatcher.sb);
 							
-								Intent intentComponent = new Intent(context,
-										CallHistoryActivity.class);
-								intentComponent.putExtra("buddyname",
-										CallDispatcher.sb.getFrom());
-								intentComponent.putExtra("individual", true);
-								intentComponent.putExtra("sessionid",
-										CallDispatcher.sb.getSessionid());
-								context.startActivity(intentComponent);
+								showCallHistory();
 							
 								
 							}
@@ -510,10 +508,14 @@ public class AudioCallScreen extends Fragment {
 //				WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 			TextView tv = (TextView) llayAudioCall.findViewById(R.id.status);
 			ImageView profilePic=(ImageView)llayAudioCall.findViewById(R.id.profilePic);
+			LinearLayout member_lay=(LinearLayout)llayAudioCall.findViewById(R.id.member_lay);
+			TextView member_count=(TextView)llayAudioCall.findViewById(R.id.members_count);
 			Button members=(Button)llayAudioCall.findViewById(R.id.members);
 			Button btn_video=(Button)llayAudioCall.findViewById(R.id.btn_video);
 			 minimize=(Button)llayAudioCall.findViewById(R.id.minimize_btn);
 			members.setVisibility(View.VISIBLE);
+			member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()));
+			member_lay.setVisibility(View.VISIBLE);
 			btn_video.setVisibility(View.VISIBLE);
 			tv.setText(SingleInstance.mainContext.getResources().getString(
                     R.string.auconnected));
@@ -549,6 +551,7 @@ public class AudioCallScreen extends Fragment {
 				@Override
 				public void onClick(View v) {
 					Intent i = new Intent(AppReference.mainContext, CallActiveMembersList.class);
+					i.putExtra("sessionId",strSessionId);
 					AppReference.mainContext.startActivity(i);
 
 				}
@@ -712,11 +715,9 @@ public class AudioCallScreen extends Fragment {
                 @Override
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
-//                    ShowOnlineBuddies("AC");
+                    ShowOnlineBuddies("AC");
 //					if(isContact) {
-						Intent i = new Intent(getActivity(), AMAVerification.class);
-					i.putExtra("fromcall",true);
-						startActivity(i);
+
 //					}
                 }
             });
@@ -871,14 +872,7 @@ public class AudioCallScreen extends Fragment {
 													.saveOrUpdateRecordtransactiondetails(
 															CallDispatcher.sb);
 
-											Intent intentComponent = new Intent(context,
-													CallHistoryActivity.class);
-											intentComponent.putExtra("buddyname",
-													CallDispatcher.sb.getFrom());
-											intentComponent.putExtra("individual", true);
-											intentComponent.putExtra("sessionid",
-													CallDispatcher.sb.getSessionid());
-											context.startActivity(intentComponent);
+											showCallHistory();
 
 
 										}
@@ -1136,58 +1130,39 @@ public class AudioCallScreen extends Fragment {
 
 		try {
 			String[] members = objCallDispatcher.getOnlineBuddys();
-			ArrayList<String> membersList = new ArrayList<String>();
+			ArrayList<String> memberslist = new ArrayList<String>();
 			for (int i = 0; i < members.length; i++) {
 				if (!CallDispatcher.conferenceMembers.contains(members[i])) {
-					membersList.add(members[i]);
+					memberslist.add(members[i]);
 				}
 			}
 
-			if (membersList.size() > 0) {
+			if (memberslist.size() > 0) {
+				Intent intent = new Intent(context,
+						AddGroupMembers.class);
+				intent.putExtra("fromcall",true);
+				intent.putStringArrayListExtra("buddylist", memberslist);
+				startActivityForResult(intent, 3);
 //				Intent i = new Intent(getActivity(), CallAddMemberslist.class);
 //				i.putStringArrayListExtra("list", membersList);
 //				startActivity(i);
 
-				AlertDialog.Builder builder = new AlertDialog.Builder(AppReference.mainContext);
-				builder.create();
-				builder.setTitle(SingleInstance.mainContext.getResources()
-						.getString(R.string.add_people));
-				final String[] choiceList = membersList
-						.toArray(new String[membersList.size()]);
-				for (int i = 0; i < choiceList.length; i++)
-					// Log.i("buddy", "Name :" + choiceList[i]);
+//				AlertDialog.Builder builder = new AlertDialog.Builder(AppReference.mainContext);
+//				builder.create();
+//				builder.setTitle(SingleInstance.mainContext.getResources()
+//						.getString(R.string.add_people));
+//				final String[] choiceList = membersList
+//						.toArray(new String[membersList.size()]);
+//				for (int i = 0; i < choiceList.length; i++)
+//					// Log.i("buddy", "Name :" + choiceList[i]);
+//
+//					builder.setItems(choiceList,
+//							new DialogInterface.OnClickListener() {
+//								@Override
+//								public void onClick(DialogInterface dialog,
+//										int which) {
+//
 
-					builder.setItems(choiceList,
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-
-									if (CallDispatcher.conferenceMembers.size() < 3) {
-
-										if (objCallDispatcher != null) {
-											SignalingBean sb = objCallDispatcher.callconfernceUpdate(
-													choiceList[which]
-															.toString(),
-													callType, strSessionId);
-											// june04-Implementation
-											CallDispatcher.conferenceRequest
-													.put(choiceList[which]
-															.toString(), sb);
-											alert.dismiss();
-										}
-									} else
-										Toast.makeText(
-												context,
-												SingleInstance.mainContext
-														.getResources()
-														.getString(
-																R.string.max_conf_members),
-												Toast.LENGTH_SHORT).show();
-								}
-							});
-				alert = builder.create();
-				alert.show();
 			} else {
 				Toast.makeText(
 						context,
@@ -1557,6 +1532,99 @@ public class AudioCallScreen extends Fragment {
 	}
 
 
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		try {
+			super.onActivityResult(requestCode, resultCode, data);
+
+			// check if the request code is same as what is passed here it is 2
+			if (requestCode == 3) {
+				if (data != null) {
+					Bundle bundle = data.getExtras();
+					ArrayList<UserBean> list = (ArrayList<UserBean>) bundle
+							.get("list");
+					HashMap<String, UserBean> membersMap = new HashMap<String, UserBean>();
+					for (UserBean userBean : membersList) {
+						membersMap.put(userBean.getBuddyName(), userBean);
+					}
+					for (UserBean userBean : list) {
+						if (!membersMap.containsKey(userBean.getBuddyName())) {
+							membersList.add(userBean);
+						}
+					}
+					for(UserBean bib:membersList){
+						if (CallDispatcher.conferenceMembers.size() < 3) {
+
+							if (objCallDispatcher != null) {
+								SignalingBean sb = objCallDispatcher.callconfernceUpdate(
+										bib.getBuddyName(),
+										"AC", strSessionId);
+								// june04-Implementation
+								CallDispatcher.conferenceRequest
+										.put(bib.getBuddyName(), sb);
+							}
+						} else
+							Toast.makeText(
+									context,
+									SingleInstance.mainContext
+											.getResources()
+											.getString(
+													R.string.max_conf_members),
+									Toast.LENGTH_SHORT).show();
+					}
+				}
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+	private void showCallHistory()
+	{
+		try {
+			final Dialog dialog = new Dialog(context);
+			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+			dialog.setContentView(R.layout.call_record_dialog);
+			dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+			dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
+			dialog.show();
+			Button save = (Button) dialog.findViewById(R.id.save);
+			Button delete = (Button) dialog.findViewById(R.id.delete);
+
+			save.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					dialog.dismiss();
+					Intent intentComponent = new Intent(context,
+							CallHistoryActivity.class);
+					intentComponent.putExtra("buddyname",
+							CallDispatcher.sb.getFrom());
+					intentComponent.putExtra("individual", true);
+					intentComponent.putExtra("isDelete", false);
+					intentComponent.putExtra("sessionid",
+							CallDispatcher.sb.getSessionid());
+					context.startActivity(intentComponent);
+				}
+			});
+			delete.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					dialog.dismiss();
+					Intent intentComponent = new Intent(context,
+							CallHistoryActivity.class);
+					intentComponent.putExtra("buddyname",
+							CallDispatcher.sb.getFrom());
+					intentComponent.putExtra("isDelete", true);
+					intentComponent.putExtra("individual", true);
+					intentComponent.putExtra("sessionid",
+							CallDispatcher.sb.getSessionid());
+					context.startActivity(intentComponent);
+				}
+			});
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+
+	}
 
 }
 

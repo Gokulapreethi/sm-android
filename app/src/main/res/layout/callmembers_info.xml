@@ -48,6 +48,33 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/header"
         android:layout_above="@+id/RelativeLayout2"/>
+    <RelativeLayout
+        android:id="@+id/linear3"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@android:color/transparent"
+        android:layout_alignParentBottom="true">
+
+        <ImageView
+            android:id="@+id/hangupBtn"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/call_reject" />
+        <ImageView
+            android:id="@+id/addmembersBtn"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/call_add" />
+
+
+
+    </RelativeLayout>
 
 
     </RelativeLayout>

@@ -90,7 +90,7 @@
     <LinearLayout
         android:id="@+id/linear3"
         android:layout_width="fill_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="10dp">
@@ -104,28 +104,38 @@
             <Button
                 android:id="@+id/btn_unassign"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="40dp"
                 android:background="@color/pink"
                 android:text="INVITE MEMBERS TO GROUP"
                 android:textColor="@color/white"
                 android:textSize="17dp"/>
 
         </LinearLayout>
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:id="@+id/assign_lay">
 
+        <TextView
+            android:id="@+id/text_memeberscount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=" "
+            android:gravity="center"
+            android:visibility="gone"
+            />
+
         <Button
             android:id="@+id/btn_done"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_below="@+id/text_memeberscount"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
             android:background="@color/blue2"
             android:text="INVITE MEMBERS TO GROUP"
             android:textColor="@color/white"
             android:textSize="17dp"/>
-        </LinearLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 

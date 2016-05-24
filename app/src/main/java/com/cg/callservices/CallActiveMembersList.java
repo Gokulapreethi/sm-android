@@ -1,14 +1,22 @@
 package com.cg.callservices;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.telecom.Call;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -19,18 +27,30 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bean.ProfileBean;
+import com.bean.UserBean;
+import com.callHistory.CallHistoryActivity;
+import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
+import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
+import com.group.AddGroupMembers;
 import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
 import com.main.ContactsFragment;
 import com.util.SingleInstance;
 
 import org.lib.model.BuddyInformationBean;
+import org.lib.model.SignalingBean;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Vector;
 
 /**
@@ -47,6 +67,13 @@ public class CallActiveMembersList extends Activity {
     private Button search, cancel;
     private RelativeLayout RelativeLayout2;
     Vector<BuddyInformationBean> result;
+    private CallDispatcher objCallDispatcher;
+    private Vector<UserBean> membersList=new Vector<UserBean>();
+    private String strSessionId;
+    private Handler handler=new Handler();
+    private boolean selfHangup = false;
+    private boolean isBuddyinCall=false;
+    private AlertDialog alert = null;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +86,29 @@ public class CallActiveMembersList extends Activity {
 
 
             ListView searchResult = (ListView)findViewById(R.id.searchResult);
+            ImageView hangupBtn=(ImageView)findViewById(R.id.hangupBtn);
+            ImageView addMembers=(ImageView)findViewById(R.id.addmembersBtn);
+            strSessionId=getIntent().getStringExtra("sessionId");
+
+            if (WebServiceReferences.callDispatch.containsKey("calldisp"))
+                objCallDispatcher = (CallDispatcher) WebServiceReferences.callDispatch
+                        .get("calldisp");
+            else
+                objCallDispatcher = new CallDispatcher(context);
+
+            addMembers.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ShowOnlineBuddies();
+                }
+            });
+
+            hangupBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    showHangUpAlert();
+                }
+            });
 
             Vector<BuddyInformationBean> objects = new Vector<BuddyInformationBean>();
 
@@ -67,6 +117,8 @@ public class CallActiveMembersList extends Activity {
 
             BuddyInformationBean ownbean = new BuddyInformationBean();
             ownbean.setFirstname(user_name);
+            ownbean.setStatus(CallDispatcher.myStatus);
+            ownbean.setMode("connected");
             ownbean.setProfile_picpath(bean.getPhoto());
             objects.add(ownbean);
 
@@ -74,6 +126,15 @@ public class CallActiveMembersList extends Activity {
             for(String user : CallDispatcher.conferenceMembers){
                 for (BuddyInformationBean buddyInformationBean : ContactsFragment.getBuddyList()){
                     if(user.equalsIgnoreCase(buddyInformationBean.getEmailid())){
+                        SignalingBean sb=CallDispatcher.buddySignall.get(buddyInformationBean.getEmailid());
+                        if(sb.getType().equalsIgnoreCase("2"))
+                            buddyInformationBean.setMode("connected");
+                        else if(sb.getType().equalsIgnoreCase("1") && sb.getResult().equalsIgnoreCase("1"))
+                            buddyInformationBean.setMode("connecting...");
+                        else if(sb.getType().equalsIgnoreCase("1") && sb.getResult().equalsIgnoreCase("0"))
+                            buddyInformationBean.setMode("connecting...");
+                        else
+                            buddyInformationBean.setMode("connecting...");
                         objects.add(buddyInformationBean);
                     }
                 }
@@ -138,20 +199,15 @@ public class CallActiveMembersList extends Activity {
                         }
                     }
                     holder.header_title.setVisibility(View.VISIBLE);
-                    String cname1, cname2;
-                    cname1 = String.valueOf(bib.getFirstname().charAt(0));
                     if(i == 0) {
                         holder.header_title.setText("From");
                     } else if (i == 1){
                         holder.header_title.setText("To");
+                    }else{
+                        holder.header_title.setVisibility(View.VISIBLE);
                     }
+                    holder.statusIcon.setVisibility(View.VISIBLE);
 
-
-                    if (bib.isSelected()) {
-                        holder.selectUser.setChecked(true);
-                    } else {
-                        holder.selectUser.setChecked(false);
-                    }
                     if (bib.getStatus() != null) {
                         if (bib.getStatus().equalsIgnoreCase("offline") || bib.getStatus().equalsIgnoreCase("stealth")) {
                             holder.statusIcon.setBackgroundResource(R.drawable.offline_icon);
@@ -170,7 +226,13 @@ public class CallActiveMembersList extends Activity {
                     } else {
                         holder.buddyName.setText(bib.getFirstname() + " " + bib.getLastname());
                     }
-                    holder.occupation.setText(bib.getOccupation());
+                    if(bib.getMode()!=null) {
+                        holder.occupation.setText(bib.getMode());
+                        if (bib.getMode().equalsIgnoreCase("connected"))
+                            holder.occupation.setTextColor(getResources().getColor(R.color.blue2));
+                        else
+                            holder.occupation.setTextColor(getResources().getColor(R.color.yellow));
+                    }
                 }
             }catch(Exception e){
                 e.printStackTrace();
@@ -239,5 +301,200 @@ public class CallActiveMembersList extends Activity {
         TextView buddyName;
         TextView occupation;
         TextView header_title;
+    }
+    public void ShowOnlineBuddies() {
+
+        try {
+            String[] members = objCallDispatcher.getOnlineBuddys();
+            ArrayList<String> memberslist = new ArrayList<String>();
+            for (int i = 0; i < members.length; i++) {
+                if (!CallDispatcher.conferenceMembers.contains(members[i])) {
+                    memberslist.add(members[i]);
+                }
+            }
+
+            if (memberslist.size() > 0) {
+                Intent intent = new Intent(context,
+                        AddGroupMembers.class);
+                intent.putExtra("fromcall",true);
+                intent.putStringArrayListExtra("buddylist", memberslist);
+                startActivityForResult(intent, 3);
+//
+
+            } else {
+                Toast.makeText(
+                        context,
+                        SingleInstance.mainContext.getResources().getString(
+                                R.string.sorry_no_online_users), Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
+            super.onActivityResult(requestCode, resultCode, data);
+
+            // check if the request code is same as what is passed here it is 2
+            if (requestCode == 3) {
+                if (data != null) {
+                    Bundle bundle = data.getExtras();
+                    ArrayList<UserBean> list = (ArrayList<UserBean>) bundle
+                            .get("list");
+                    HashMap<String, UserBean> membersMap = new HashMap<String, UserBean>();
+                    for (UserBean userBean : membersList) {
+                        membersMap.put(userBean.getBuddyName(), userBean);
+                    }
+                    for (UserBean userBean : list) {
+                        if (!membersMap.containsKey(userBean.getBuddyName())) {
+                            membersList.add(userBean);
+                        }
+                    }
+                    for(UserBean bib:membersList){
+                        if (CallDispatcher.conferenceMembers.size() < 3) {
+
+                            if (objCallDispatcher != null) {
+                                SignalingBean sb = objCallDispatcher.callconfernceUpdate(
+                                        bib.getBuddyName(),
+                                        "AC", strSessionId);
+                                // june04-Implementation
+                                CallDispatcher.conferenceRequest
+                                        .put(bib.getBuddyName(), sb);
+                            }
+                        } else
+                            Toast.makeText(
+                                    context,
+                                    SingleInstance.mainContext
+                                            .getResources()
+                                            .getString(
+                                                    R.string.max_conf_members),
+                                    Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    void showHangUpAlert() {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(CallActiveMembersList.this);
+                String ask = SingleInstance.mainContext.getResources().getString(
+                        R.string.need_call_hangup);
+
+                builder.setMessage(ask)
+                        .setCancelable(false)
+                        .setPositiveButton(
+                                SingleInstance.mainContext.getResources().getString(
+                                        R.string.yes),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+
+                                        Message msg = new Message();
+                                        Bundle bun = new Bundle();
+                                        bun.putString("action", "leave");
+                                        msg.obj = bun;
+                                        selfHangup = true;
+                                        if (selfHangup) {
+                                            CallDispatcher.sb
+                                                    .setEndTime(getCurrentDateandTime());
+                                            CallDispatcher.sb
+                                                    .setCallDuration(SingleInstance.mainContext
+                                                            .getCallDuration(CallDispatcher.sb
+                                                                            .getStartTime(),
+                                                                    CallDispatcher.sb
+                                                                            .getEndTime()));
+                                            DBAccess.getdbHeler()
+                                                    .saveOrUpdateRecordtransactiondetails(
+                                                            CallDispatcher.sb);
+                                            showCallHistory();
+                                        }
+                                        final String[] choiceList = returnBuddies();
+                                        if (choiceList.length != 0) {
+                                            isBuddyinCall = true;
+                                            selfHangup = false;
+                                        }
+                                        handler.sendMessage(msg);
+                                    }
+                                })
+                        .setNegativeButton(
+                                SingleInstance.mainContext.getResources().getString(
+                                        R.string.no),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+                alert = builder.create();
+                alert.show();
+
+            }
+        });
+
+    }
+    private String[] returnBuddies() {
+
+        String arr[] = CallDispatcher.conferenceMembers
+                .toArray(new String[CallDispatcher.conferenceMembers.size()]);
+        return arr;
+    }
+    public String getCurrentDateandTime() {
+        try {
+            Date curDate = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat(
+                    "yyyy-MM-dd HH:mm:ss ");
+            return sdf.format(curDate).toString();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
+        }
+    }
+    private void showCallHistory()
+    {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.call_record_dialog);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
+        dialog.show();
+        Button save = (Button) dialog.findViewById(R.id.save);
+        Button delete = (Button) dialog.findViewById(R.id.delete);
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent intentComponent = new Intent(context,
+                        CallHistoryActivity.class);
+                intentComponent.putExtra("buddyname",
+                        CallDispatcher.sb.getFrom());
+                intentComponent.putExtra("individual", true);
+                intentComponent.putExtra("isDelete",false);
+                intentComponent.putExtra("sessionid",
+                        CallDispatcher.sb.getSessionid());
+                context.startActivity(intentComponent);
+            }
+        });
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent intentComponent = new Intent(context,
+                        CallHistoryActivity.class);
+                intentComponent.putExtra("buddyname",
+                        CallDispatcher.sb.getFrom());
+                intentComponent.putExtra("isDelete",true);
+                intentComponent.putExtra("individual", true);
+                intentComponent.putExtra("sessionid",
+                        CallDispatcher.sb.getSessionid());
+                context.startActivity(intentComponent);
+            }
+        });
+
     }
 }

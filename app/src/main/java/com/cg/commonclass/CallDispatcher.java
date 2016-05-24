@@ -2710,6 +2710,11 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 											callHistoryActivity.finish();
 										}
 
+										if (SingleInstance.contextTable.containsKey("groupchat")) {
+											GroupChatActivity groupChatActivity = (GroupChatActivity) SingleInstance.contextTable.get("groupchat");
+											groupChatActivity.finish();
+										}
+
 										FragmentManager fm =
 												AppReference.mainContext.getSupportFragmentManager();
 										FragmentTransaction ft = fm.beginTransaction();
@@ -8294,13 +8299,13 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 		List<String> buddies = new ArrayList<String>();
 		for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
-			if (!bib.isTitle()) {
+//			if (!bib.isTitle()) {
 				if (bib.getStatus().equalsIgnoreCase("online")) {
 					if (!bib.getName().equalsIgnoreCase(
 							CallDispatcher.LoginUser)) {
 						buddies.add(bib.getName());
 					}
-				}
+//				}
 			}
 		}
 

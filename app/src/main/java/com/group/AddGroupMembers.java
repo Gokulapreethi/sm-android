@@ -58,6 +58,7 @@ public class AddGroupMembers extends Activity {
    private  boolean isUserSelected = true;
 
 	private  int presentbuddiescount=0;
+	private TextView text_memeberscount;
 
     Vector<UserBean> contactList = new Vector<UserBean>();
 	Boolean invite;
@@ -78,7 +79,7 @@ public class AddGroupMembers extends Activity {
 			}
 
 			WebServiceReferences.contextTable.put("groupcontact", context);
-			invite=getIntent().getBooleanExtra("invite", false);
+			invite=getIntent().getBooleanExtra("fromcall", false);
 			groupid=getIntent().getStringExtra("groupid");
 			back = (Button) findViewById(R.id.btn_backaddcontact);
 			search = (Button) findViewById(R.id.search);
@@ -89,6 +90,14 @@ public class AddGroupMembers extends Activity {
 			selectAll = (CheckBox) findViewById(R.id.btn_selectall);
 			final TextView txtView01 = (TextView) findViewById(R.id.tx_headingaddcontact);
 			final TextView ed_search = (TextView) findViewById(R.id.searchet);
+			text_memeberscount = (TextView)findViewById(R.id.text_memeberscount);
+
+			if(invite){
+				txtView01.setText("ADD MEMBERS");
+				done.setText("ADD");
+				text_memeberscount.setVisibility(View.VISIBLE);
+
+			}
 			search.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View view) {
@@ -124,18 +133,33 @@ public class AddGroupMembers extends Activity {
 					.getBuddyList();
 			
 			HashMap<String, BuddyInformationBean> bMap = new HashMap<String, BuddyInformationBean>();
-			if (cList != null) {
-				for (BuddyInformationBean bib : cList) {
-					if (!bib.isTitle()) {
-						if (!bib.getName().equalsIgnoreCase(
-								CallDispatcher.LoginUser)) {
-							if (!bib.getStatus().equalsIgnoreCase("pending")
-									&& !bib.getStatus().equalsIgnoreCase("new")) {
-								bMap.put(bib.getName(), bib);
+			if(!invite) {
+				if (cList != null) {
+					for (BuddyInformationBean bib : cList) {
+						if (!bib.isTitle()) {
+							if (!bib.getName().equalsIgnoreCase(
+									CallDispatcher.LoginUser)) {
+								if (!bib.getStatus().equalsIgnoreCase("pending")
+										&& !bib.getStatus().equalsIgnoreCase("new")) {
+									bMap.put(bib.getName(), bib);
+								}
 							}
 						}
 					}
 				}
+			}else {
+				Log.d("Onlinemembers","buddyslist");
+					for (BuddyInformationBean bib : cList) {
+						Log.d("Onlinemembers","buddyslist clist");
+						for(String temp:buddylist){
+							Log.d("Onlinemembers","buddyslist templist");
+							if(temp.equalsIgnoreCase(bib.getName())) {
+								Log.d("Onlinemembers","buddyslist if");
+								bMap.put(bib.getName(), bib);
+							}
+
+						}
+					}
 			}
 		
 
@@ -149,9 +173,31 @@ public class AddGroupMembers extends Activity {
 			presentbuddiescount=0;
 			Log.i("AAAA","loop before"+buddies.size());
 
-			for (String tmp : buddies) {
-				if (!buddylist.contains(tmp)) {
-					UserBean userBean = new UserBean();
+				if(!invite) {
+					for (String tmp : buddies) {
+
+						if (!buddylist.contains(tmp)) {
+							UserBean userBean = new UserBean();
+							presentbuddiescount++;
+							Log.i("asdf", "presentbuddiescount" + presentbuddiescount);
+							for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
+								if (bib.getName().equalsIgnoreCase(tmp)) {
+									userBean.setStatus(bib.getStatus());
+									ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(tmp);
+									userBean.setProfilePic(pbean.getPhoto());
+									userBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
+									break;
+								}
+							}
+							userBean.setBuddyName(tmp);
+							contactList.add(userBean);
+							Log.i("AAAA", "loop" + contactList.size());
+
+						}
+					}
+				}else {
+					for (String tmp : buddies) {
+						UserBean userBean = new UserBean();
 					presentbuddiescount++;
 					Log.i("asdf", "presentbuddiescount" + presentbuddiescount);
 					for(BuddyInformationBean bib:ContactsFragment.getBuddyList()){
@@ -165,8 +211,6 @@ public class AddGroupMembers extends Activity {
 					}
 					userBean.setBuddyName(tmp);
 					contactList.add(userBean);
-					Log.i("AAAA","loop"+contactList.size());
-
 				}
 			}
 			Collections.sort(contactList, new UserNameComparator());
@@ -261,6 +305,8 @@ public class AddGroupMembers extends Activity {
 	{
 		Log.i("asdf","count"+count);
 		countofselection.setText(Integer.toString(count) + " selected");
+		text_memeberscount.setText( "add " + Integer.toString(count) + "members to call");
+
 	}
     public void showAlert1(String title,String message) {
 

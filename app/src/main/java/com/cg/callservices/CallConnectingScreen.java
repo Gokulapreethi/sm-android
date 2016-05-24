@@ -36,6 +36,7 @@ import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
 import com.util.SingleInstance;
@@ -458,6 +459,11 @@ public class CallConnectingScreen extends Activity {
 			if (WebServiceReferences.contextTable.containsKey("ordermenuactivity")) {
 				CallHistoryActivity callHistoryActivity = (CallHistoryActivity) WebServiceReferences.contextTable.get("ordermenuactivity");
 				callHistoryActivity.finish();
+			}
+
+			if (SingleInstance.contextTable.containsKey("groupchat")) {
+				GroupChatActivity groupChatActivity = (GroupChatActivity) SingleInstance.contextTable.get("groupchat");
+				groupChatActivity.finish();
 			}
 			finish();
 			FragmentManager fm =

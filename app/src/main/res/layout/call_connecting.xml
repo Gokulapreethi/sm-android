@@ -17,16 +17,32 @@
           android:layout_marginTop="10dp"
           android:background="@drawable/minimize_back"
           android:visibility="visible" />
-      <Button
-          android:id="@+id/members"
+      <LinearLayout
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:orientation="horizontal"
           android:layout_marginLeft="15dp"
           android:layout_marginTop="10dp"
           android:layout_alignParentRight="true"
-          android:layout_marginRight="10dp"
-          android:background="@drawable/tab_members_white"
-          android:visibility="gone" />
+          android:id="@+id/member_lay"
+          android:visibility="gone">
+
+          <Button
+              android:id="@+id/members"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginRight="10dp"
+              android:background="@drawable/tab_members_white" />
+          <TextView
+              android:id="@+id/members_count"
+              android:layout_toRightOf="@+id/members"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="1"
+              android:textColor="@color/white"
+              android:layout_marginRight="10dp" />
+      </LinearLayout>
+
 
         <TextView
             android:id="@+id/callscreen"

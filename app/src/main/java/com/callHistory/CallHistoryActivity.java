@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import org.lib.model.RecordTransactionBean;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -44,21 +45,24 @@ public class CallHistoryActivity extends Activity {
 	Handler handler = new Handler();
 	private String centername = null;
 	String product = null;
+	private double timeElapsed = 0;
 	private CallHistoryAdapter callHistoryAdapter;
 	private ArrayList<RecordTransactionBean> mlist;
 	public static boolean isEdit = false;
-
+	Handler history_handler;
 	public static String selectedBuddy;
 	private String sessionId = "";
 	private int position;
 	private CallDispatcher callDisp;
 	private Boolean isViewed=false;
-	private MediaPlayer mPlayer = null;
+	private MediaPlayer mPlayer = new MediaPlayer();
 	private SeekBar seekProgress;
 	private TextView tvTimer;
 	private ImageView btnPause;
+	int finalTime, startTime;
 	private String player = "";
 	private Handler durationHandler = new Handler();
+	private Boolean isDelete=false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +92,7 @@ public class CallHistoryActivity extends Activity {
 			TextView to = (TextView) findViewById(R.id.touser_title);
 			TextView date = (TextView) findViewById(R.id.date_title);
 			TextView duration = (TextView) findViewById(R.id.duration_title);
+			isDelete=getIntent().getBooleanExtra("isDelete",false);
 
 			TextView callstate = (TextView) findViewById(R.id.cstate_title);
 			final ImageView preview = (ImageView) findViewById(R.id.play_button);
@@ -99,13 +104,40 @@ public class CallHistoryActivity extends Activity {
 			final TextView text_recording = (TextView)findViewById(R.id.text_recording);
 			btnPause = (ImageView)findViewById(R.id.btn_pause);
 			final RelativeLayout recoding_layout = (RelativeLayout)findViewById(R.id.recoding_layout);
+			if(isDelete){
+				text_recording.setVisibility(View.GONE);
+				recoding_layout.setVisibility(View.GONE);
+			}
 
 			delete_icon.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View arg0) {
-					text_recording.setVisibility(View.GONE);
-					recoding_layout.setVisibility(View.GONE);
+
+					final Dialog dialog = new Dialog(context);
+					dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+					dialog.setContentView(R.layout.callrecord_delete_dialog);
+					dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+					dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
+					dialog.show();
+					Button cancel = (Button) dialog.findViewById(R.id.save);
+					Button delete = (Button) dialog.findViewById(R.id.delete);
+					cancel.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							dialog.dismiss();
+						}
+					});
+					delete.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							text_recording.setVisibility(View.GONE);
+							recoding_layout.setVisibility(View.GONE);
+							dialog.dismiss();
+						}
+					});
+
+
 
 
 				}
@@ -207,18 +239,21 @@ public class CallHistoryActivity extends Activity {
 //									preview.setVisibility(View.GONE);
 //									btnPause.setVisibility(View.VISIBLE);
 
-									File file = new File(Environment
+									String file = Environment
 											.getExternalStorageDirectory()
 											+ "/COMMedia/CallRecording/"
-											+ v.getTag().toString() + ".wav");
+											+ v.getTag().toString() + ".wav";
+
+
 									Log.d("Stringpath", "mediapath--->"+file);
 //									File path = new File(file);
 //									mPlayer.setDataSource(file.getPath());
 									int CountFiles = new File(Environment
 											.getExternalStorageDirectory()
 											+ "/COMMedia/CallRecording/").listFiles().length;
-									Log.d("Test", "Length of the files@@@----->"
-											+ CountFiles);
+									Log.d("Test", "Length of the files@@@----->");
+
+									playAudio(file, 0);
 
 
 
@@ -226,19 +261,20 @@ public class CallHistoryActivity extends Activity {
 
 
 
-									if (file.exists()) {
-										Intent intent = new Intent(context,
-												MultimediaUtils.class);
-										intent.putExtra("filePath", file.getPath());
-										intent.putExtra("requestCode", 4);
-										intent.putExtra("action", "audio");
-										intent.putExtra("createOrOpen", "open");
-										context.startActivity(intent);
-									} else {
-										// Toast.makeText(context,
-										// "Sorry file not available",
-										// Toast.LENGTH_LONG).show();
-									}
+
+//									if (file.exists()) {
+//										Intent intent = new Intent(context,
+//												MultimediaUtils.class);
+//										intent.putExtra("filePath", file.getPath());
+//										intent.putExtra("requestCode", 4);
+//										intent.putExtra("action", "audio");
+//										intent.putExtra("createOrOpen", "open");
+//										context.startActivity(intent);
+//									} else {
+//										// Toast.makeText(context,
+//										// "Sorry file not available",
+//										// Toast.LENGTH_LONG).show();
+//									}
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
@@ -262,8 +298,8 @@ public class CallHistoryActivity extends Activity {
 
 			}
 
-//	private final MediaPlayer mPlayer = new MediaPlayer();
-	private int mPlayingPosition = -1;
+
+	private int mPlayingPosition = 0;
 	private Handler mHandler = new Handler();
 
 	private PlaybackUpdater mProgressUpdater = new PlaybackUpdater();
@@ -274,7 +310,7 @@ public class CallHistoryActivity extends Activity {
 
 		@Override
 		public void run() {
-			if ((mPlayingPosition != -1) && (null != mBarToUpdate)) {
+			if ((mPlayingPosition != 0) && (null != mBarToUpdate)) {
 				double tElapsed = mPlayer.getCurrentPosition();
 				int fTime = mPlayer.getDuration();
 				double timeRemaining = fTime - tElapsed;
@@ -306,14 +342,14 @@ public class CallHistoryActivity extends Activity {
 	}
 
 	private void stopPlayback() {
-		mPlayingPosition = -1;
+		mPlayingPosition = 0;
 		mProgressUpdater.mBarToUpdate = null;
 		mProgressUpdater.tvToUpdate = null;
 		if (mPlayer != null && mPlayer.isPlaying())
 			mPlayer.stop();
 	}
 
-	private void playAudio(String fname, int position) {
+	public void playAudio(String fname,  int position) {
 		try {
 			mPlayer.reset();
 			mPlayer.setDataSource(fname);
@@ -332,105 +368,49 @@ public class CallHistoryActivity extends Activity {
 		}
 	}
 
-//	if (position == mPlayingPosition) {
-		//pb.setVisibility(View.VISIBLE);
-//		mProgressUpdater.mBarToUpdate = seekProgress;
-//		mProgressUpdater.tvToUpdate = tvTimer;
-//		mHandler.postDelayed(mProgressUpdater, 100);
-//	} else {
-		//pb.setVisibility(View.GONE);
-//		if (gcBean.getMimetype().equals("audio")) {
-//			try {
-//				seekProgress.setProgress(0);
-//				MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-//				mmr.setDataSource();
-//				String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-//				mmr.release();
-//				String min, sec;
-//				min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration)));
-//				sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(Long.parseLong(duration)) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration))));
-//				if (Integer.parseInt(min) < 10) {
-//					min = 0 + String.valueOf(min);
-//				}
-//				if (Integer.parseInt(sec) < 10) {
-//					sec = 0 + String.valueOf(sec);
-//				}
-//				tvTimer.setText(min + ":" + sec);
-////                            audio_tv.setText(duration);
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//
-//			seekProgress.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
-//			seekProgress.setProgress(0);
-//			if (mProgressUpdater.mBarToUpdate == seekProgress) {
-//				//this progress would be updated, but this is the wrong position
-//				mProgressUpdater.mBarToUpdate = null;
-//			}
-//		}
-////	}
-//
-//	if(gcBean.isPlaying())
-//	{
-//		audio_play.setBackgroundResource(R.drawable.audiopause);
-//	}else
-//	{
-//		audio_play.setBackgroundResource(R.drawable.play);
-//	}
-//	audio_play.setOnClickListener(new OnClickListener() {
-//		@Override
-//		public void onClick(View view) {
-//			if(finalPlayBean == null)
-//			{
-//				.setBackgroundResource(R.drawable.audiopause);
-//				playAudio(gcBean.getMediaName(), position);
-//				gcBean.setPlaying(true);
-//				finalPlayBean = gcBean;
-//			}else if(finalPlayBean == gcBean)
-//			{
-//				if(mPlayer.isPlaying())
-//				{
-//					mPlayer.pause();
-//					audio_play.setBackgroundResource(R.drawable.play);
-//					gcBean.setPlaying(false);
-//				}else
-//				{
-//					gcBean.setPlaying(true);
-//					audio_play.setBackgroundResource(R.drawable.audiopause);
-//					mPlayer.start();
-//
-//				}
-//			}else
-//			{
-//				finalPlayBean.setPlaying(false);
-//				finalPlayBean = gcBean;
-//				finalPlayBean.setPlaying(true);
-//				audio_play.setBackgroundResource(R.drawable.audiopause);
-//				playAudio(gcBean.getMediaName(), position);
-//
-//			}
-//	public void play(View view) {
-//		mPlayer.start();
-////		timeElapsed =
-//		seekProgress.setProgress(mPlayer.getCurrentPosition());
-//		durationHandler.postDelayed(updateSeekBarTime, 100);
-//	}
-//
-//
-//	private Runnable updateSeekBarTime = new Runnable() {
-//		public void run() {
-//			//get current position
-////			timeElapsed = ;
-//			//set seekbar progress
-//			seekProgress.setProgress(mPlayer.getCurrentPosition());
-//			//set time remaing
-////			double timeRemaining = finalTime - timeElapsed;
-////			tvTimer.setText(String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes((long) timeRemaining), TimeUnit.MILLISECONDS.toSeconds((long) timeRemaining) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) timeRemaining))));
-//
-//			//repeat yourself that again in 100 miliseconds
-//			durationHandler.postDelayed(this, 100);
-//		}
-//	};
+
+
+private Runnable UpdateSongTime = new Runnable() {
+	public void run() {
+		startTime = mPlayer.getCurrentPosition();
+//            seekBar.setProgress((int) startTime);
+		new Handler().postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				startPlayProgressUpdater();
+
+			}
+		}, 100);
+
+		history_handler.postDelayed(this, 100);
+	}
+};
+
+
+	private void startPlayProgressUpdater() {
+		if (mPlayer != null) {
+			if (mPlayer.isPlaying()) {
+				Log.d("lg", "play progress().....");
+				long milliseconds = mPlayer.getCurrentPosition();
+				timeElapsed = mPlayer.getCurrentPosition();
+
+				double timeRemaining = finalTime - timeElapsed;
+				String min, sec;
+				min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes((long) timeRemaining));
+				sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds((long) timeRemaining) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) timeRemaining)));
+
+				if (Integer.parseInt(min) < 10) {
+					min = 0 + String.valueOf(min);
+				}
+				if (Integer.parseInt(sec) < 10) {
+					sec = 0 + String.valueOf(sec);
+				}
+//                txt_time.setText(min + ":" + sec);
+			}
+		}
+	}
 
 
 
