@@ -30,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bean.ProfileBean;
+import com.callHistory.CallHistoryActivity;
 import com.cg.DB.DBAccess;
 import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
@@ -453,6 +454,11 @@ public class CallConnectingScreen extends Activity {
 //			i.putExtra("signal", bun);
 //			i.putExtra("isreceiver", true);
 //			startActivity(i);
+
+			if (WebServiceReferences.contextTable.containsKey("ordermenuactivity")) {
+				CallHistoryActivity callHistoryActivity = (CallHistoryActivity) WebServiceReferences.contextTable.get("ordermenuactivity");
+				callHistoryActivity.finish();
+			}
 			finish();
 			FragmentManager fm =
 					AppReference.mainContext.getSupportFragmentManager();

@@ -2705,6 +2705,11 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 											connectingScreen.finish();
 										}
 
+										if (WebServiceReferences.contextTable.containsKey("ordermenuactivity")) {
+											CallHistoryActivity callHistoryActivity = (CallHistoryActivity) WebServiceReferences.contextTable.get("ordermenuactivity");
+											callHistoryActivity.finish();
+										}
+
 										FragmentManager fm =
 												AppReference.mainContext.getSupportFragmentManager();
 										FragmentTransaction ft = fm.beginTransaction();

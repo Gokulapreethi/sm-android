@@ -330,6 +330,7 @@ public class ContactsFragment extends Fragment {
 					public void onClick(View view) {
 						if(isContact) {
 							Intent i = new Intent(getActivity(), AMAVerification.class);
+							i.putExtra("fromcall",false);
 							startActivity(i);
 						}
 					}

@@ -1,5 +1,6 @@
 package com.cg.callservices;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +21,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
@@ -36,21 +38,27 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Chronometer;
 import android.widget.Chronometer.OnChronometerTickListener;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.adapter.ContactAdapter;
 import com.bean.ProfileBean;
 import com.callHistory.CallHistoryActivity;
 import com.cg.DB.DBAccess;
+import com.cg.account.AMAVerification;
 import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
 import com.main.ContactsFragment;
@@ -113,6 +121,7 @@ public class AudioCallScreen extends Fragment {
 	public static Context context = null;
 
 	private CallDispatcher objCallDispatcher = null;
+	private static ContactAdapter contactAdapter;
 
 	private Bundle bun = null;
 
@@ -121,6 +130,11 @@ public class AudioCallScreen extends Fragment {
 	private boolean selfHangup = false;
 	
 	private boolean isBuddyinCall=false;
+
+	public static synchronized ContactAdapter getContactAdapter() {
+
+		return contactAdapter;
+	}
 
 	//For this is used to profilepictures for owner and buddies
 	private Vector<BuddyInformationBean> buddyList;
@@ -517,6 +531,7 @@ public class AudioCallScreen extends Fragment {
 			tvCallTime.setText(strCallDate);
 			tvCallTime.setVisibility(View.GONE);
 
+
 			btnMic = (Button) llayAudioCall.findViewById(R.id.mic);
 
 
@@ -527,6 +542,15 @@ public class AudioCallScreen extends Fragment {
 				@Override
 				public void onClick(View v) {
 					finishAudiocallScreen();
+				}
+			});
+
+			members.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View v) {
+					Intent i = new Intent(AppReference.mainContext, CallActiveMembersList.class);
+					AppReference.mainContext.startActivity(i);
+
 				}
 			});
 
@@ -585,10 +609,10 @@ public class AudioCallScreen extends Fragment {
 
 			chTimer = (Chronometer) llayAudioCall.findViewById(R.id.call_timer);
 			chTimer.setVisibility(View.VISIBLE);
-			if (isReceiver) {
+//			if (isReceiver) {
                 chTimer.start();
                 isTimer_running = true;
-            }
+//            }
 			chTimer.setOnChronometerTickListener(new OnChronometerTickListener() {
                 @Override
                 public void onChronometerTick(Chronometer arg0) {
@@ -688,7 +712,12 @@ public class AudioCallScreen extends Fragment {
                 @Override
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
-                    ShowOnlineBuddies("AC");
+//                    ShowOnlineBuddies("AC");
+//					if(isContact) {
+						Intent i = new Intent(getActivity(), AMAVerification.class);
+					i.putExtra("fromcall",true);
+						startActivity(i);
+//					}
                 }
             });
 		} catch (Resources.NotFoundException e) {
@@ -697,6 +726,24 @@ public class AudioCallScreen extends Fragment {
 
 		return llayAudioCall;
 	}
+
+//	public void SortList() {
+//		try {
+//			Log.d("AAA", "Shortlist loaded.");
+//			handler.post(new Runnable() {
+//				@Override
+//				public void run() {
+//					contactAdapter = new ContactAdapter(mainContext, GroupChatActivity.getAdapterList(ContactsFragment.getBuddyList()));
+//					lv.setAdapter(null);
+//					lv.setAdapter(contactAdapter);
+//					ContactsFragment.contactAdapter.notifyDataSetChanged();
+//				}
+//			});
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 
 	private void showConnectedBuddies() {
 
@@ -1097,6 +1144,10 @@ public class AudioCallScreen extends Fragment {
 			}
 
 			if (membersList.size() > 0) {
+//				Intent i = new Intent(getActivity(), CallAddMemberslist.class);
+//				i.putStringArrayListExtra("list", membersList);
+//				startActivity(i);
+
 				AlertDialog.Builder builder = new AlertDialog.Builder(AppReference.mainContext);
 				builder.create();
 				builder.setTitle(SingleInstance.mainContext.getResources()
@@ -1505,4 +1556,7 @@ public class AudioCallScreen extends Fragment {
 		ft.commitAllowingStateLoss();
 	}
 
+
+
 }
+

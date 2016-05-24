@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.cg.DB.DBAccess;
 import com.cg.commonclass.BuddyListComparator;
 import com.cg.commonclass.CallDispatcher;
+import com.cg.commonclass.WebServiceReferences;
 import com.cg.snazmed.R;
 import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
@@ -34,6 +35,7 @@ import com.main.ContactsFragment;
 
 import org.lib.model.BuddyInformationBean;
 import org.lib.model.GroupBean;
+import org.lib.model.SignalingBean;
 
 import java.io.File;
 import java.util.Collections;
@@ -44,20 +46,35 @@ public class AMAVerification extends Activity {
     public AMAAdapter adapter;
     private CheckBox selectAll_buddy;
     private TextView selected;
-    private TextView txtView01;
+    private TextView txtView01, addmembers_text;
     private ListView searchResult;
     private EditText btn_1;
     private Button search, cancel;
-    private RelativeLayout RelativeLayout2;
+    private RelativeLayout RelativeLayout2, RelativeLayout3;
     Vector<BuddyInformationBean> result;
+    private CallDispatcher objCallDispatcher = null;
+
+    boolean from_callscreen = false;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.ama_verification);
+
+        from_callscreen =  getIntent().getBooleanExtra("fromcall",false);
+        if (WebServiceReferences.callDispatch.containsKey("calldisp"))
+            objCallDispatcher = (CallDispatcher) WebServiceReferences.callDispatch
+                    .get("calldisp");
+        else
+            objCallDispatcher = new CallDispatcher(context);
         RelativeLayout2 = (RelativeLayout) findViewById(R.id.RelativeLayout2);
+        addmembers_text = (TextView)findViewById(R.id.addmembers_text);
+        RelativeLayout3 = (RelativeLayout) findViewById(R.id.RelativeLayout3);
         selectAll_buddy = (CheckBox) findViewById(R.id.selectAll_buddy);
         selected = (TextView) findViewById(R.id.selected);
         txtView01 = (TextView) findViewById(R.id.txtView01);
+        if(from_callscreen){
+            txtView01.setText("ADD MEMBERS");
+        }
         searchResult = (ListView) findViewById(R.id.searchResult);
         final LinearLayout groupbtn = (LinearLayout) findViewById(R.id.groupbtn);
         btn_1 = (EditText) findViewById(R.id.searchet);
@@ -83,9 +100,28 @@ public class AMAVerification extends Activity {
                 finish();
             }
         });
+        addmembers_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                for (BuddyInformationBean bib : result) {
+                    if (bib.isSelected()) {
+                        SignalingBean sb = objCallDispatcher.callconfernceUpdate(
+                                bib.getFirstname()+" "+bib.getLastname(),
+                                "AC", CallDispatcher.currentSessionid);
+                        // june04-Implementation
+                        CallDispatcher.conferenceRequest
+                                .put(bib.getFirstname()+" "+bib.getLastname()
+                                        , sb);
+                    }
+                }
+
+            }
+        });
         context = this;
         result = new Vector<BuddyInformationBean>();
         result.addAll(getList(ContactsFragment.getBuddyList()));
+        Collections.sort(result, new BuddyListComparator());
         adapter = new AMAAdapter(context, R.layout.find_people_item, result);
         searchResult.setAdapter(adapter);
         final LinearLayout dialogue = (LinearLayout) findViewById(R.id.dialogue);
@@ -134,10 +170,15 @@ public class AMAVerification extends Activity {
                     }
                 }
                 if(count==0){
+                    RelativeLayout3.setVisibility(View.GONE);
                     RelativeLayout2.setVisibility(View.GONE);
                     dialogue.setVisibility(View.GONE);
                 }else{
-                    RelativeLayout2.setVisibility(View.VISIBLE);
+                    if(from_callscreen){
+                        RelativeLayout3.setVisibility(View.VISIBLE);
+                    } else {
+                        RelativeLayout2.setVisibility(View.VISIBLE);
+                    }
                 }
                 selected.setText(count + " selected");
             }
@@ -164,10 +205,15 @@ public class AMAVerification extends Activity {
                     }
                 }
                 if(count==0){
+                    RelativeLayout3.setVisibility(View.GONE);
                     RelativeLayout2.setVisibility(View.GONE);
                     dialogue.setVisibility(View.GONE);
                 }else{
-                    RelativeLayout2.setVisibility(View.VISIBLE);
+                    if(from_callscreen){
+                        RelativeLayout3.setVisibility(View.VISIBLE);
+                    }else{
+                        RelativeLayout2.setVisibility(View.VISIBLE);
+                    }
                 }
                 selected.setText(count + " selected");
                 if (count == result.size()) {
@@ -490,6 +536,7 @@ public class AMAVerification extends Activity {
                 }else
                     holder = (ViewHolder) convertView.getTag();
                 final BuddyInformationBean bib = result.get(i);
+
                 if(bib!=null) {
                     if (bib.getProfile_picpath() != null) {
                         String pic_Path = Environment.getExternalStorageDirectory().getAbsolutePath()
@@ -499,12 +546,38 @@ public class AMAVerification extends Activity {
                             imageLoader.DisplayImage(pic_Path, holder.buddyicon, R.drawable.img_user);
                         }
                     }
-                    if(bib.isTitle()){
-                        holder.header_title.setVisibility(View.VISIBLE);
-                        holder.header_title.setText(bib.getHeader());
-                    }else{
-                        holder.header_title.setVisibility(View.GONE);
+                    holder.header_title.setVisibility(View.VISIBLE);
+                    String cname1, cname2;
+                    cname1 = String.valueOf(bib.getFirstname().charAt(0));
+
+                    holder.header_title.setText(cname1.toUpperCase());
+
+                    if (i > 0) {
+                        final  BuddyInformationBean bbean1 = result.get(i - 1);
+                        cname2 = String.valueOf(bbean1.getFirstname().charAt(0));
+                        if (cname1.equalsIgnoreCase(cname2)) {
+                            Log.d("Headervalue","title-->");
+                            holder.header_title.setVisibility(View.GONE);
+                        } else {
+                            Log.d("Headervalue","title--> else");
+                            holder.header_title.setVisibility(View.VISIBLE);
+                        }
+
                     }
+//                    if (result.size() > 0) {
+//                        final BuddyInformationBean buddyInformationBean = (BuddyInformationBean) result.get(i);
+//                        if (bib.isTitle()) {
+//                            if (!buddyInformationBean.getHeader().equalsIgnoreCase("null")) {
+//                                holder.header_title.setVisibility(View.VISIBLE);
+//                                holder.header_title.setText(bib.getHeader());
+//                                Log.d("titlte", "header---->");
+//                            }
+//
+//                        } else {
+//                            holder.header_title.setVisibility(View.GONE);
+//                            Log.d("titlte111", "header---->");
+//                        }
+//                    }
                     if (bib.isSelected()) {
                         holder.selectUser.setChecked(true);
                     } else {
@@ -595,4 +668,7 @@ public class AMAVerification extends Activity {
         TextView occupation;
         TextView header_title;
     }
+
+
+
 }

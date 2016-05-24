@@ -52,7 +52,8 @@
                 android:id="@+id/statusIcon"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:background="@drawable/checkbox_default"/>
+                android:background="@drawable/checkbox_default"
+                android:visibility="gone"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"

@@ -285,4 +285,34 @@
 
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/memebers_count"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:text=""
+        android:textColor="@color/snazlgray"/>
+
+    <RelativeLayout
+        android:id="@+id/RelativeLayout3"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/lblack"
+        android:visibility="visible" >
+        
+
+
+        <TextView
+            android:id="@+id/addmembers_text"
+            android:layout_below="@+id/members_count"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="ADD"
+            android:background="@color/blue2"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:gravity="center"
+            />
+        </RelativeLayout>
+
 </RelativeLayout>

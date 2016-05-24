@@ -138,9 +138,9 @@
     <RelativeLayout
         android:id="@+id/selectAll_container"
         android:layout_width="fill_parent"
-        android:layout_height="50dp"
+        android:layout_height="52dp"
         android:layout_alignParentTop="true"
-        android:background="@color/lblack"
+        android:background="@color/grey1"
         android:gravity="center">
 
         <CheckBox

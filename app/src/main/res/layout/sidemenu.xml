@@ -140,7 +140,6 @@
             android:layout_height="match_parent"
             android:textSize="15sp"
             android:textColor="@color/grey3"
-            android:gravity="center_vertical"
             android:layout_weight="1"
             android:text="CALENDAR"
             android:drawableLeft="@drawable/menu_calendar"
@@ -181,7 +180,7 @@
             android:gravity="center_vertical"
             android:layout_weight="1"
             android:text="INVITE USERS"
-            android:drawableLeft="@drawable/dashboard_invite_blue"
+            android:drawableLeft="@drawable/dashboard_invite_blue_3"
             android:drawablePadding="15dp"/>
 
     </LinearLayout>

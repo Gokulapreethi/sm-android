@@ -220,7 +220,7 @@ public class SideMenu extends Fragment{
         ll_invite_users.setBackgroundColor(mainContext.getResources().getColor(R.color.black2));
         ll_myacc.setBackgroundColor(mainContext.getResources().getColor(R.color.black3));
         ll_settings.setBackgroundColor(mainContext.getResources().getColor(R.color.black3));
-        ll_rounding.setBackgroundColor(mainContext.getResources().getColor(R.color.black3));
+        ll_rounding.setBackgroundColor(mainContext.getResources().getColor(R.color.black2));
         ll_logout.setBackgroundColor(mainContext.getResources().getColor(R.color.black3));
         tv_dash.setTextColor(mainContext.getResources().getColor(R.color.grey3));
         tv_cont.setTextColor(mainContext.getResources().getColor(R.color.grey3));
@@ -229,6 +229,7 @@ public class SideMenu extends Fragment{
         tv_myacc.setTextColor(mainContext.getResources().getColor(R.color.grey3));
         tv_settings.setTextColor(mainContext.getResources().getColor(R.color.grey3));
         tv_rounding.setTextColor(mainContext.getResources().getColor(R.color.grey3));
+        tv_invite_user.setTextColor(mainContext.getResources().getColor(R.color.grey3));
     }
 
     protected void ShowView() {
