@@ -1316,7 +1316,7 @@ public class PatientRoundingFragment extends Fragment {
         dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog1.setContentView(R.layout.task_status);
         dialog1.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-        dialog1.getWindow().setBackgroundDrawableResource(R.color.trans_black2);
+        dialog1.getWindow().setBackgroundDrawableResource(R.color.transparent);
         final RadioButton showall = (RadioButton) dialog1.findViewById(R.id.showall);
         final RadioButton active = (RadioButton)dialog1. findViewById(R.id.active);
         final RadioButton completed = (RadioButton)dialog1. findViewById(R.id.completed);
@@ -1380,7 +1380,7 @@ public class PatientRoundingFragment extends Fragment {
         dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog1.setContentView(R.layout.task_assigned);
         dialog1.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-        dialog1.getWindow().setBackgroundDrawableResource(R.color.trans_black2);
+        dialog1.getWindow().setBackgroundDrawableResource(R.color.transparent);
         final RadioButton showall = (RadioButton) dialog1.findViewById(R.id.showall);
         final RadioButton assignedtome = (RadioButton)dialog1. findViewById(R.id.assignedtome);
         final RadioButton assignedbyme = (RadioButton)dialog1. findViewById(R.id.assignedbyme);

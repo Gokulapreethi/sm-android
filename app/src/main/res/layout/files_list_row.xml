@@ -86,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/file_name"
-            android:textColor="#808080"
+            android:textColor="@color/grey2"
             android:textStyle="bold"
             android:text=" Date Modified:"/>
 
@@ -95,7 +95,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/file_name"
-            android:textColor="@color/white"
+            android:textColor="@color/snazlgray"
+            android:text="ffd"
             android:layout_marginLeft="10dp"/>
         </LinearLayout>
         <LinearLayout
@@ -109,13 +110,13 @@
                 android:layout_below="@+id/file_name"
                 android:text="Size:"
                 android:textStyle="bold"
-                android:textColor="#808080" />
+                android:textColor="@color/grey2" />
             <TextView
                 android:id="@+id/size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/file_name"
-                android:textColor="@color/white"
+                android:textColor="@color/snazlgray"
                 android:layout_marginLeft="10dp"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -123,7 +124,7 @@
                 android:layout_below="@+id/file_name"
                 android:text="Type:"
                 android:textStyle="bold"
-                android:textColor="#808080"
+                android:textColor="@color/grey2"
                 android:layout_marginLeft="10dp" />
             <TextView
                 android:id="@+id/type"
@@ -131,7 +132,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_below="@+id/file_name"
-                android:textColor="@color/white" />
+                android:textColor="@color/snazlgray" />
         </LinearLayout>
 
         <TextView

@@ -170,7 +170,7 @@ public class RoundingPatientAdapter extends ArrayAdapter<PatientDetailsBean> {
                     holder.headertext.setText(floor1.toUpperCase());
                 }else if(GroupChatActivity.patientType.equalsIgnoreCase("loc")) {
                     floor1 = String.valueOf(pBean.getFloor());
-                    holder.headertext.setText("Floor: "+floor1.toUpperCase());
+                    holder.headertext.setText("Floor "+floor1.toUpperCase());
                 }else {
                     floor1 = String.valueOf(pBean.getStatus());
                     if(floor1.equalsIgnoreCase("") || floor1.equalsIgnoreCase("null"))

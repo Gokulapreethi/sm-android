@@ -1581,7 +1581,7 @@ public class AudioCallScreen extends Fragment {
 	private void showCallHistory()
 	{
 		try {
-			final Dialog dialog = new Dialog(context);
+			final Dialog dialog = new Dialog(SingleInstance.mainContext);
 			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 			dialog.setContentView(R.layout.call_record_dialog);
 			dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);

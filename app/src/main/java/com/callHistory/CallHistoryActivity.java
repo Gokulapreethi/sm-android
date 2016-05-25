@@ -63,11 +63,14 @@ public class CallHistoryActivity extends Activity {
 	private String player = "";
 	private Handler durationHandler = new Handler();
 	private Boolean isDelete=false;
+	private int mPlayingPosition = 0;
+	private Handler mHandler = new Handler();
+	private PlaybackUpdater mProgressUpdater = new PlaybackUpdater();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		try {
+
 			Log.i("Test", "CallHistoryActivity>>>>>>>>>>");
 			context = this;
 			this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -159,7 +162,6 @@ public class CallHistoryActivity extends Activity {
 
 					position = 0;
 
-					try {
 						String query = "";
 
 						query = "select * from recordtransactiondetails where sessionid='"
@@ -228,16 +230,14 @@ public class CallHistoryActivity extends Activity {
 						}
 
 
-
 						preview.setOnClickListener(new OnClickListener() {
 
 							@Override
 							public void onClick(View v) {
 								// TODO Auto-generated method stub
 								try {
-//									preview.setBackgroundResource(R.drawable.audiopause);
-//									preview.setVisibility(View.GONE);
-//									btnPause.setVisibility(View.VISIBLE);
+									preview.setBackgroundResource(R.drawable.audiopause);
+//
 
 									String file = Environment
 											.getExternalStorageDirectory()
@@ -245,7 +245,7 @@ public class CallHistoryActivity extends Activity {
 											+ v.getTag().toString() + ".wav";
 
 
-									Log.d("Stringpath", "mediapath--->"+file);
+
 //									File path = new File(file);
 //									mPlayer.setDataSource(file.getPath());
 									int CountFiles = new File(Environment
@@ -255,8 +255,59 @@ public class CallHistoryActivity extends Activity {
 
 									playAudio(file, 0);
 
+									if (position != mPlayingPosition) {
+										mProgressUpdater.mBarToUpdate = seekProgress;
+										mProgressUpdater.tvToUpdate = tvTimer;
+										mHandler.postDelayed(mProgressUpdater, 100);
+									} else {
+
+										try {
+											Log.d("Stringpath", "mediapath--->");
+											seekProgress.setProgress(0);
+											MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+											mmr.setDataSource(file);
+											String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+											mmr.release();
+											String min, sec;
+											min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration)));
+											sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(Long.parseLong(duration)) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration))));
+											if (Integer.parseInt(min) < 10) {
+												min = 0 + String.valueOf(min);
+											}
+											if (Integer.parseInt(sec) < 10) {
+												sec = 0 + String.valueOf(sec);
+											}
+											tvTimer.setText(min + ":" + sec);
+//                            audio_tv.setText(duration);
+										} catch (Exception e) {
+											e.printStackTrace();
+										}
+
+										seekProgress.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+										seekProgress.setProgress(0);
+										if (mProgressUpdater.mBarToUpdate == seekProgress) {
+											//this progress would be updated, but this is the wrong position
+											mProgressUpdater.mBarToUpdate = null;
+										}
+									}
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
 
 
+							}
+						});
+
+		if(mPlayer.isPlaying())
+		{
+			preview.setBackgroundResource(R.drawable.audiopause);
+		}else
+		{
+			preview.setBackgroundResource(R.drawable.play);
+		}
+
+
+					}
 
 
 
@@ -275,34 +326,11 @@ public class CallHistoryActivity extends Activity {
 //										// "Sorry file not available",
 //										// Toast.LENGTH_LONG).show();
 //									}
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-							}
-						});
-
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-
-					}
-				}
-
-				catch(
-				Exception e
-				)
-
-				{
-					e.printStackTrace();
-				}
-
-			}
 
 
-	private int mPlayingPosition = 0;
-	private Handler mHandler = new Handler();
 
-	private PlaybackUpdater mProgressUpdater = new PlaybackUpdater();
+
+
 
 	private class PlaybackUpdater implements Runnable {
 		public SeekBar mBarToUpdate = null;
@@ -359,8 +387,6 @@ public class CallHistoryActivity extends Activity {
 
 			mHandler.postDelayed(mProgressUpdater, 500);
 
-			//trigger list refresh, this will make progressbar start updating if visible
-//			adapter.notifyDataSetChanged();
 		} catch (IOException e) {
 
 			e.printStackTrace();

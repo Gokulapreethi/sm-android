@@ -64,18 +64,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Age: "
-            android:textColor="@color/white"
+            android:textColor="@color/snazlgray"
             android:layout="@+id/age"
             android:layout_weight="0.5"
-            android:layout_marginLeft="30dp"/>
+            android:layout_marginLeft="50dp"/>
         <TextView
             android:id="@+id/floor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Floor:"
-            android:textColor="@color/white"
+            android:textColor="@color/snazlgray"
             android:layout="@+id/Floor"
-            android:layout_weight="0.5" />
+            android:layout_weight="0.5"
+            android:layout_marginLeft="10dp"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -88,17 +89,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sex: "
-            android:textColor="@color/white"
+            android:textColor="@color/snazlgray"
             android:layout="@+id/age"
             android:layout_weight="0.5"
-            android:layout_marginLeft="30dp"/>
+            android:layout_marginLeft="50dp"/>
         <TextView
             android:id="@+id/ward"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Ward: "
-            android:textColor="@color/white"
+            android:textColor="@color/snazlgray"
             android:layout="@+id/Floor"
+            android:layout_marginLeft="10dp"
             android:layout_weight="0.5" />
     </LinearLayout>
     <LinearLayout
@@ -112,17 +114,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="MRN: "
-            android:textColor="@color/white"
+            android:textColor="@color/snazlgray"
             android:layout="@+id/age"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="50dp"
             android:layout_weight="0.5"/>
         <TextView
             android:id="@+id/room"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Room :"
-            android:textColor="@color/white"
+            android:textColor="@color/snazlgray"
             android:layout="@+id/Floor"
+            android:layout_marginLeft="10dp"
             android:layout_weight="0.5" />
     </LinearLayout>
     <LinearLayout
@@ -136,17 +139,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="LOS:"
-            android:textColor="@color/snazash"
+            android:textColor="@color/snazlgray"
             android:layout="@+id/age"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="50dp"
             android:layout_weight="0.5"/>
         <TextView
             android:id="@+id/bed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Bed :"
-            android:textColor="@color/snazash"
+            android:textColor="@color/snazlgray"
             android:layout="@+id/Floor"
+            android:layout_marginLeft="10dp"
             android:layout_weight="0.5" />
     </LinearLayout>
     <LinearLayout

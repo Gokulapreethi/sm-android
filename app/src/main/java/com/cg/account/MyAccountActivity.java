@@ -165,7 +165,7 @@ public class MyAccountActivity extends Activity {
                     lp.width = WindowManager.LayoutParams.MATCH_PARENT;
                     lp.height = WindowManager.LayoutParams.MATCH_PARENT;
                     Window window = dialog.getWindow();
-                    dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
+                    dialog.getWindow().setBackgroundDrawableResource(R.color.transparent);
                     window.setAttributes(lp);
                     dialog.show();
                     final EditText citation_info = (EditText)dialog.findViewById(R.id.Edit_text1);
@@ -207,7 +207,7 @@ public class MyAccountActivity extends Activity {
                     lp.width = WindowManager.LayoutParams.MATCH_PARENT;
                     lp.height = WindowManager.LayoutParams.MATCH_PARENT;
                     Window window = dialog1.getWindow();
-                    dialog1.getWindow().setBackgroundDrawableResource(R.color.black2);
+                    dialog1.getWindow().setBackgroundDrawableResource(R.color.transparent);
                     window.setAttributes(lp);
                     dialog1.show();
 
