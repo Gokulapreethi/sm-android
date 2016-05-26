@@ -3,13 +3,12 @@
     android:layout_height="wrap_content"
     android:background="#000000">
 
+
+
     <LinearLayout
         android:id="@+id/LinearLayout01"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="10dp"
-        android:layout_toLeftOf="@+id/buttton_controls"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -30,65 +29,129 @@
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1">
-
                     <FrameLayout
                         android:id="@+id/VideoView01"
                         android:layout_width="fill_parent"
-                        android:layout_height="match_parent"
-                        android:padding="5dp"></FrameLayout>
+                        android:layout_height="match_parent"></FrameLayout>
 
+                        <org.cryse.android.controls.RoundedImageView
+                        android:id="@+id/own_image"
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
+                        android:padding="10dp"
+                        android:layout_gravity="center"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true" />
                     <TextView
-                        android:id="@+id/onoffpreview"
+                        android:id="@+id/name1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/own_image"
+                        android:text=""
+                        android:layout_marginTop="10dp"
+                        android:visibility="gone"
+                        android:gravity="center"
+                        android:textSize="15dp" />
+
+                        <TextView
+                                android:id="@+id/onoffpreview"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                            android:background="@drawable/call_close_video"
+                                android:textSize="20dp"
+                                android:layout_gravity="right|center_vertical"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
+                        <Button
+                            android:id="@+id/minimize_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/minimize_back"
+                            android:visibility="visible" />
+                    <Button
+                        android:id="@+id/flipcamera"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginTop="5dp"
-                        android:text="Close"
-                        android:textSize="20dp" />
+                        android:background="@drawable/call_flip_camera"
+                        android:layout_alignTop="@+id/onoffpreview"
+                        android:layout_alignRight="@+id/minimize_btn"
+                        android:layout_alignEnd="@+id/minimize_btn" />
 
-                    <ImageView
-                        android:id="@+id/own_image"
-                        android:layout_width="fill_parent"
-                        android:layout_height="match_parent"
-                        android:padding="10dp" />
                 </RelativeLayout>
 
                 <FrameLayout
                     android:id="@+id/VideoView02"
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:padding="5dp">
+                    android:layout_weight="1">
 
                     <android.opengl.GLSurfaceView
                         android:id="@+id/surfaceview02"
                         android:layout_width="fill_parent"
                         android:layout_height="match_parent"
-                        android:padding="5dp"></android.opengl.GLSurfaceView>
+                        android:padding="5dp"
+                        android:visibility="visible"></android.opengl.GLSurfaceView>
 
-                    <TextView
-                        android:id="@+id/name2"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="top|start"
-                        android:text=""
-                        android:textSize="20dp" />
+                        android:orientation="horizontal"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_gravity="end"
+                        android:layout_alignParentRight="true"
+                        android:id="@+id/member_lay"
+                        android:visibility="visible">
+
+                        <Button
+                            android:id="@+id/members"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:background="@drawable/tab_members_white" />
+                        <TextView
+                            android:id="@+id/members_count"
+                            android:layout_toRightOf="@+id/members"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="1"
+                            android:textColor="@color/white"
+                            android:layout_marginRight="10dp" />
+                    </LinearLayout>
+
 
                     <TextView
                         android:id="@+id/onoff2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="top|end"
-                        android:text="Close"
+                        android:layout_gravity="center|right|end"
+                        android:background="@drawable/call_close_video"
                         android:textColor="@color/red_color"
                         android:textSize="20dp" />
+                    <RelativeLayout
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center">
 
-                    <ImageView
+                    <org.cryse.android.controls.RoundedImageView
                         android:id="@+id/user_image2"
-                        android:layout_width="fill_parent"
-                        android:layout_height="match_parent"
-                        android:padding="10dp" />
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
+                        android:padding="10dp"
+                        android:layout_gravity="center"/>
+                    <TextView
+                        android:id="@+id/name2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/user_image2"
+                        android:text=""
+                        android:layout_marginTop="10dp"
+                        android:visibility="gone"
+                        android:gravity="center"
+                        android:textSize="15dp" />
+                    </RelativeLayout>
                 </FrameLayout>
             </LinearLayout>
 
@@ -104,7 +167,6 @@
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:padding="5dp"
                     android:visibility="gone">
 
                     <android.opengl.GLSurfaceView
@@ -113,28 +175,38 @@
                         android:layout_height="match_parent"
                         android:padding="5dp"></android.opengl.GLSurfaceView>
 
-                    <TextView
-                        android:id="@+id/name3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="top|start"
-                        android:text=""
-                        android:textSize="20dp" />
+
 
                     <TextView
                         android:id="@+id/onoff3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="top|end"
-                        android:text="Close"
+                        android:layout_gravity="center|end"
                         android:textColor="@color/red_color"
+                        android:background="@drawable/call_close_video"
                         android:textSize="20dp" />
 
-                    <ImageView
+                    <RelativeLayout
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center">
+                    <org.cryse.android.controls.RoundedImageView
                         android:id="@+id/user_image3"
-                        android:layout_width="fill_parent"
-                        android:layout_height="match_parent"
-                        android:padding="10dp" />
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
+                        android:padding="10dp"
+                        android:layout_gravity="center"/>
+                        <TextView
+                            android:id="@+id/name3"
+                            android:layout_below="@+id/user_image3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center|bottom"
+                            android:text=""
+                            android:layout_marginTop="10dp"
+                            android:visibility="gone"
+                            android:textSize="15dp" />
+                    </RelativeLayout>
                 </FrameLayout>
 
                 <RelativeLayout
@@ -146,7 +218,6 @@
                         android:id="@+id/VideoView04"
                         android:layout_width="fill_parent"
                         android:layout_height="match_parent"
-                        android:padding="5dp"
                         android:visibility="gone">
 
                         <android.opengl.GLSurfaceView
@@ -155,28 +226,37 @@
                             android:layout_height="match_parent"
                             android:padding="5dp"></android.opengl.GLSurfaceView>
 
-                        <TextView
-                            android:id="@+id/name4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="top|start"
-                            android:text=""
-                            android:textSize="20dp" />
+
 
                         <TextView
                             android:id="@+id/onoff4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="top|end"
-                            android:text="Close"
+                            android:layout_gravity="center|end"
+                            android:background="@drawable/call_close_video"
                             android:textColor="@color/red_color"
                             android:textSize="20dp" />
+                        <RelativeLayout
+                            android:layout_width="130dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center">
 
-                        <ImageView
+                        <org.cryse.android.controls.RoundedImageView
                             android:id="@+id/user_image4"
-                            android:layout_width="fill_parent"
-                            android:layout_height="match_parent"
-                            android:padding="10dp" />
+                            android:layout_width="130dp"
+                            android:layout_height="130dp"
+                            android:padding="10dp"
+                            android:layout_gravity="center"/>
+                            <TextView
+                                android:id="@+id/name4"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/user_image4"
+                                android:layout_gravity="center|bottom"
+                                android:text=""
+                                android:visibility="gone"
+                                android:textSize="15dp" />
+                        </RelativeLayout>
                     </FrameLayout>
                 </RelativeLayout>
             </LinearLayout>
@@ -185,61 +265,69 @@
 
     </LinearLayout>
 
-    <ScrollView
-        android:id="@id/buttton_controls"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
+
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical"
-            android:padding="5dp">
-
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:gravity="center"
+            android:weightSum="5"
+            android:layout_alignParentBottom="true">
             <ImageView
-                android:id="@+id/add"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/hang"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_marginTop="5dp"
-                android:src="@drawable/add_icon_video" />
-
-            <ImageView
-                android:id="@+id/speaker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:src="@drawable/mic_video" />
-
+                android:src="@drawable/call_reject"
+                android:layout_weight="1"/>
             <ImageView
                 android:id="@+id/loudspeaker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:src="@drawable/headphone_video" />
-
+                android:src="@drawable/call_speaker"
+                android:layout_weight="1" />
             <ImageView
-                android:id="@+id/hang"
+                android:id="@+id/speaker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:src="@drawable/hang" />
+                android:src="@drawable/call_mic"
+                android:layout_weight="1" />
+
+
+            <Button
+                android:id="@+id/btn_video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/btn_han"
+                android:layout_weight="1"
+                android:background="@drawable/call_video"
+                android:visibility="visible" />
+            <ImageView
+                android:id="@+id/add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:src="@drawable/call_add"
+                android:layout_weight="1"/>
 
             <ImageView
                 android:id="@+id/switchuser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:src="@drawable/buddies_video" />
+                android:src="@drawable/buddies_video"
+                android:visibility="gone"/>
 
             <ImageView
                 android:id="@+id/location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:src="@drawable/loc_pin" />
+                android:src="@drawable/loc_pin"
+                android:visibility="gone"/>
         </LinearLayout>
-    </ScrollView>
 </RelativeLayout>

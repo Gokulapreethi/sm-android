@@ -134,7 +134,9 @@ public class CallActiveMembersList extends Activity {
                         else if(sb.getType().equalsIgnoreCase("1") && sb.getResult().equalsIgnoreCase("0"))
                             buddyInformationBean.setMode("connecting...");
                         else
-                            buddyInformationBean.setMode("connecting...");
+                            buddyInformationBean.setMode("connected");
+                        ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(user);
+                        buddyInformationBean.setProfile_picpath(pBean.getPhoto());
                         objects.add(buddyInformationBean);
                     }
                 }

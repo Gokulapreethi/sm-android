@@ -1,6 +1,7 @@
 package com.cg.callservices;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
@@ -26,6 +27,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -65,10 +67,15 @@ public class CallConnectingScreen extends Activity {
 
 	private Context context;
 
+	private FrameLayout frameLayout;
+
+	private ImageView profilePic1,profilePic2,profilePic3;
+
 	private boolean isBConf = false;
 	private String callerName;
 	private ImageLoader imageLoader;
 	private ImageView profilePicture;
+	private ArrayList<String> confMembers=new ArrayList<String>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +119,10 @@ public class CallConnectingScreen extends Activity {
 		tv_name = (TextView) findViewById(R.id.my_userinfo_tv);
 		tv_status = (TextView) findViewById(R.id.status);
 		btn_hangup = (Button) findViewById(R.id.btn_han);
+		frameLayout=(FrameLayout)findViewById(R.id.frame_lay);
+		profilePic1=(ImageView)findViewById(R.id.profilePic1);
+		profilePic2=(ImageView)findViewById(R.id.profilePic2);
+		profilePic3=(ImageView)findViewById(R.id.profilePic3);
 
 		DisplayMetrics displaymetrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
@@ -127,6 +138,42 @@ public class CallConnectingScreen extends Activity {
 		callDisp.setNoScrHeight(noScrHeight);
 		callDisp.setNoScrWidth(noScrWidth);
 		displaymetrics = null;
+
+		if(isBConf && calltype.equalsIgnoreCase("VC")){
+			setTitle();
+			frameLayout.setVisibility(View.VISIBLE);
+			profilePicture.setVisibility(View.GONE);
+			int i=0;
+			Log.i("onlineuser","confereence  "+confMembers.size());
+			for(String user:confMembers){
+				Log.i("onlineuser","confereence members "+user);
+				ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(user);
+				if(bean.getPhoto()!=null){
+					Log.i("onlineuser","confereence members profile ");
+					String profilePic=bean.getPhoto();
+						if (!profilePic.contains("COMMedia")) {
+							profilePic = Environment.getExternalStorageDirectory()
+									+ "/COMMedia/" + profilePic;
+						}
+					if(i==0) {
+						profilePic3.setVisibility(View.VISIBLE);
+						imageLoader.DisplayImage(profilePic, profilePic3,
+								R.drawable.img_user);
+					}else if(i==1) {
+						profilePic2.setVisibility(View.VISIBLE);
+						imageLoader.DisplayImage(profilePic, profilePic2,
+								R.drawable.img_user);
+					}else {
+						profilePic1.setVisibility(View.VISIBLE);
+						imageLoader.DisplayImage(profilePic, profilePic1,
+								R.drawable.img_user);
+					}
+				}
+				i++;
+			}
+			CallDispatcher.conConference.clear();
+
+		}
 
 		WebServiceReferences.contextTable.put("connection", this);
 		btn_hangup.setOnClickListener(new OnClickListener() {
@@ -144,6 +191,8 @@ public class CallConnectingScreen extends Activity {
 			}
 		});
 		setNameandTitle();
+		if(isBConf)
+		setTitle();
 	}
 
     @Override
@@ -212,9 +261,6 @@ public class CallConnectingScreen extends Activity {
 //			tv_name.setText(UserId);
 			tv_name.setText(callerName);
 			Log.i("AAAA", "CallConnectingScreen 1: " + UserId);
-			if (isBConf) {
-				setTitle();
-			}
 
 			if (iscoonecting) {
 				tv_status.setText(SingleInstance.mainContext.getResources()
@@ -244,15 +290,17 @@ public class CallConnectingScreen extends Activity {
 			Key = iterator.next();
 			if (i == (CallDispatcher.contConferencemembers.size() - 1)) {
 				strReturnText += Key;
+				confMembers.add(Key);
 			} else {
 				strReturnText += Key + ",";
+				confMembers.add(Key);
 			}
 			i++;
 
 		}
 
-//		tv_name.setText(strReturnText);
-		tv_name.setText(AppMainActivity.connectedbuddies);
+		tv_name.setText(strReturnText);
+//		tv_name.setText(AppMainActivity.connectedbuddies);
 		if(Temp!=null){
 			tv_name.setText(Temp);
 		}
@@ -441,6 +489,10 @@ public class CallConnectingScreen extends Activity {
 
 	private void OpenCallscreen(final SignalingBean sbean) {
 		final String from = sbean.getTo();
+		if (SingleInstance.contextTable.containsKey("groupchat")) {
+			GroupChatActivity groupChatActivity = (GroupChatActivity) SingleInstance.contextTable.get("groupchat");
+			groupChatActivity.finish();
+		}
 		if (sbean.getCallType().equals("AC")) {
 
 			CallDispatcher.isAudioCallWindowOpened = true;
@@ -461,10 +513,7 @@ public class CallConnectingScreen extends Activity {
 				callHistoryActivity.finish();
 			}
 
-			if (SingleInstance.contextTable.containsKey("groupchat")) {
-				GroupChatActivity groupChatActivity = (GroupChatActivity) SingleInstance.contextTable.get("groupchat");
-				groupChatActivity.finish();
-			}
+
 			finish();
 			FragmentManager fm =
 					AppReference.mainContext.getSupportFragmentManager();
