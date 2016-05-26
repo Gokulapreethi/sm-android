@@ -41,6 +41,117 @@
             android:layout_marginTop="15dp"
             android:textColor="@color/snazlgray"
             android:text="Would you like to save a copy for yourself?"/>
+
+        <RelativeLayout
+            android:id="@+id/video_relay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            >
+
+        <FrameLayout
+            android:id="@+id/VideoView01"
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:padding="10dp"
+            >
+
+            <ImageView
+                android:id="@+id/own_image"
+                android:layout_width="fill_parent"
+                android:layout_height="200dp"
+                android:padding="30dp"
+                android:background="@color/blue2"
+                />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="100dp"
+                >
+
+                <RelativeLayout
+                    android:layout_width="300dp"
+                    android:layout_height="42dp"
+                    android:layout_below="@+id/msg_container_receiver"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginTop="10dp"
+                    android:visibility="visible"
+                    android:id="@+id/ad_play1"
+                    android:background="@drawable/bg_bluecolr"
+                    >
+
+                    <ImageView
+                        android:id="@+id/play_button1"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/play" />
+                    <ImageView
+                        android:id="@+id/btn_pause1"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/audiopause"
+                        android:visibility="gone"/>
+
+
+
+                    <SeekBar
+                        android:id="@+id/seekBar11"
+                        android:thumb="@drawable/seek_handler"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="5dp"
+                        android:layout_toRightOf="@+id/play_button1"
+                        android:progressDrawable="@drawable/progress"
+                        />
+                    <Chronometer
+                        android:id="@+id/chronometer11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chronometer"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        android:visibility="gone"/>
+                    <TextView
+                        android:id="@+id/txt_time1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="18dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_toRightOf="@+id/seekBar11"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="20dp"
+                        android:text="00:00:00"
+                        android:textColor="@color/white" />
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    >
+
+                    <ImageView
+                        android:id="@+id/delete_icon1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/ic_action_delete"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </FrameLayout>
+
+        </RelativeLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="42dp"

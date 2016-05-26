@@ -660,7 +660,7 @@ public class RoundNewPatientActivity extends Activity {
                     if(bib.getBuddyName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
 
                         holder.rights.setVisibility(View.VISIBLE);
-                        holder.rights.setText("Creator");
+                        holder.rights.setText("creator");
                         holder.rights.setTextColor(getResources().getColor(R.color.green));
                     }else{
 

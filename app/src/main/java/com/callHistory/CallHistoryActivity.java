@@ -26,6 +26,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -65,6 +66,8 @@ public class CallHistoryActivity extends Activity {
 	private Boolean isDelete=false;
 	private int mPlayingPosition = 0;
 	private Handler mHandler = new Handler();
+	private boolean mediaplay = false;
+	private boolean isfromaudio = true;
 	private PlaybackUpdater mProgressUpdater = new PlaybackUpdater();
 
 	@Override
@@ -96,18 +99,26 @@ public class CallHistoryActivity extends Activity {
 			TextView date = (TextView) findViewById(R.id.date_title);
 			TextView duration = (TextView) findViewById(R.id.duration_title);
 			isDelete=getIntent().getBooleanExtra("isDelete",false);
+		    isfromaudio=getIntent().getBooleanExtra("audiocall",true);
 
 			TextView callstate = (TextView) findViewById(R.id.cstate_title);
 			final ImageView preview = (ImageView) findViewById(R.id.play_button);
 			seekProgress = (SeekBar) findViewById(R.id.seekBar1);
 			seekProgress.setClickable(false);
-			Chronometer chronometer = (Chronometer) findViewById(R.id.chronometer1);
 			tvTimer = (TextView) findViewById(R.id.txt_time);
 			final ImageView delete_icon = (ImageView) findViewById(R.id.delete_icon);
 			final TextView text_recording = (TextView)findViewById(R.id.text_recording);
 			btnPause = (ImageView)findViewById(R.id.btn_pause);
 			final RelativeLayout recoding_layout = (RelativeLayout)findViewById(R.id.recoding_layout);
-			if(isDelete){
+		final FrameLayout VideoView01 = (FrameLayout)findViewById(R.id.VideoView01);
+		if(!isfromaudio){
+			recoding_layout.setVisibility(View.GONE);
+			VideoView01.setVisibility(View.VISIBLE);
+		}else{
+			recoding_layout.setVisibility(View.VISIBLE);
+			VideoView01.setVisibility(View.GONE);
+		}
+		if(isDelete){
 				text_recording.setVisibility(View.GONE);
 				recoding_layout.setVisibility(View.GONE);
 			}
@@ -210,8 +221,8 @@ public class CallHistoryActivity extends Activity {
 						if (recordTransactionBean.getCallDuration() != null) {
 							duration.setText(recordTransactionBean
 									.getCallDuration());
-							tvTimer.setText(recordTransactionBean
-									.getCallDuration());
+//							tvTimer.setText(recordTransactionBean
+//									.getCallDuration());
 
 
 						}
@@ -230,20 +241,20 @@ public class CallHistoryActivity extends Activity {
 						}
 
 
+
 						preview.setOnClickListener(new OnClickListener() {
 
 							@Override
 							public void onClick(View v) {
 								// TODO Auto-generated method stub
 								try {
-									preview.setBackgroundResource(R.drawable.audiopause);
-//
+
 
 									String file = Environment
 											.getExternalStorageDirectory()
 											+ "/COMMedia/CallRecording/"
 											+ v.getTag().toString() + ".wav";
-
+									Log.d("Stringpath", "mediapath--->"+file);
 
 
 //									File path = new File(file);
@@ -253,9 +264,19 @@ public class CallHistoryActivity extends Activity {
 											+ "/COMMedia/CallRecording/").listFiles().length;
 									Log.d("Test", "Length of the files@@@----->");
 
-									playAudio(file, 0);
 
-									if (position != mPlayingPosition) {
+									if(mPlayer.isPlaying())
+									{
+										mPlayer.pause();
+										preview.setBackgroundResource(R.drawable.play);
+									}else
+									{
+										preview.setBackgroundResource(R.drawable.audiopause);
+										playAudio(file, 0);
+
+									}
+
+									if (position == mPlayingPosition) {
 										mProgressUpdater.mBarToUpdate = seekProgress;
 										mProgressUpdater.tvToUpdate = tvTimer;
 										mHandler.postDelayed(mProgressUpdater, 100);
@@ -298,13 +319,7 @@ public class CallHistoryActivity extends Activity {
 							}
 						});
 
-		if(mPlayer.isPlaying())
-		{
-			preview.setBackgroundResource(R.drawable.audiopause);
-		}else
-		{
-			preview.setBackgroundResource(R.drawable.play);
-		}
+
 
 
 					}
@@ -338,7 +353,8 @@ public class CallHistoryActivity extends Activity {
 
 		@Override
 		public void run() {
-			if ((mPlayingPosition != 0) && (null != mBarToUpdate)) {
+			if ((mPlayingPosition != -1) && (null != mBarToUpdate)) {
+				Log.d("Mposition","seekbar---->");
 				double tElapsed = mPlayer.getCurrentPosition();
 				int fTime = mPlayer.getDuration();
 				double timeRemaining = fTime - tElapsed;

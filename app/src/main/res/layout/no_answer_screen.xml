@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="2">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:id="@+id/relative1">
+
+            <org.cryse.android.controls.RoundedImageView
+                android:id="@+id/riv1"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:background="@drawable/userphoto"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="User Name"
+            android:textColor="@color/white"
+            android:textSize="25dp"
+            android:gravity="center"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="3dp"/>
+
+        <TextView
+            android:id="@+id/profession"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No Answer"
+            android:textColor="@color/pink"
+            android:textSize="14dp"
+            android:gravity="center" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
+            >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="18dp"
+            android:layout_alignParentBottom="true"
+            >
+
+
+
+        <TextView
+            android:id="@+id/send_messagelay"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:visibility="visible"
+            android:background="@color/blue2"
+            android:text="Send Message"
+            />
+
+            <TextView
+                android:id="@+id/send_audio_messagelay"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginTop="3dp"
+                android:layout_below="@+id/send_messagelay"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:visibility="visible"
+                android:background="@color/blue2"
+                android:text="Send Audio Message"/>
+
+            <TextView
+                android:id="@+id/send_video_messagelay"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginTop="3dp"
+                android:layout_below="@+id/send_audio_messagelay"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:visibility="visible"
+                android:background="@color/blue2"
+                android:text="Send Video Message"/>
+
+            <TextView
+                android:id="@+id/callback_messagelay"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginTop="3dp"
+                android:layout_below="@+id/send_video_messagelay"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:visibility="visible"
+                android:background="@color/blue2"
+                android:text="Callback"/>
+
+            <TextView
+                android:id="@+id/do_lay"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginTop="15dp"
+                android:layout_below="@+id/callback_messagelay"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:visibility="visible"
+                android:background="@color/snazlgray"
+                android:text="Do Nothing"/>
+
+
+        </RelativeLayout>
+        </LinearLayout>
+
+
+
+</LinearLayout>

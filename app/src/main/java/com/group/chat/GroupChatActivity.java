@@ -9853,6 +9853,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             UserBean userBean = new UserBean();
                             ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(tmp);
                             userBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
+                            userBean.setProfilePic(pbean.getPhoto());
                             userBean.setBuddyName(tmp);
                             userBean.setSelected(false);
                             membersList.add(userBean);

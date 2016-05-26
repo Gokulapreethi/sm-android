@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -62,6 +63,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -75,6 +78,7 @@ import android.widget.Toast;
 import com.bean.ConnectionBrokerServerBean;
 import com.bean.FormFieldSettingDeleteBean;
 import com.bean.GroupChatBean;
+import com.bean.ProfileBean;
 import com.callHistory.CallHistoryActivity;
 import com.cg.DB.DBAccess;
 import com.cg.SlideMenu.SlideMenuInterface;
@@ -148,6 +152,7 @@ import com.group.ViewGroups;
 import com.group.chat.GroupChatActivity;
 import com.im.xml.TextChatBean;
 import com.im.xml.XMLComposer;
+import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
 import com.main.AvatarFragment;
 import com.main.ContactsFragment;
@@ -497,6 +502,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	private Handler netWorkStatusHandler;
 
+
 	private WifiManager wifiManager = null;
 
 	private static String ssid = null;
@@ -631,6 +637,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	// public static CountryArrayAdapter pendingToShow;
 
 	private ProgressDialog progressDialog = null;
+	private Handler noanswerhandler = new Handler();
 
 	// public HeartbeatTimer HBT = null;
 
@@ -2484,10 +2491,13 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									if (LoginUser.equals(callinitiator)) {
 										getofflineCallResponse(sb.getFrom(),
 												"No Answer");
-										closeDialWindow(
-												"No Answer from "
-														+ sb.getFrom(), "0",
-												"3");
+
+
+										NoAnswer(sb.getFrom());
+//										closeDialWindow(
+//												"No Answer from "
+//														+ sb.getFrom(), "0",
+//												"3");
 									}
 
 									// have to call no Answer avatar here
@@ -3139,8 +3149,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 											CallDispatcher.sb.getEndTime()));
 					DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
 							CallDispatcher.sb);
+					NoAnswer(sb.getTo());
 
-					closeDialWindow("No Answer from " + sb.getTo(), "", "");
+//					closeDialWindow("No Answer from " + sb.getTo(), "", "");
 					accepted_users.add(sb.getTo());
 					if (isCallInitiate) {
 						notifyCallHistoryToServer(sb.getFrom(), sb.getTo(),
@@ -3590,6 +3601,56 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 			}
 		}
 
+	}
+	private void NoAnswer(final String Username){
+
+
+		noanswerhandler.post(new Runnable() {
+
+			@Override
+			public void run() {
+				Context context = null;
+				if (SingleInstance.contextTable.get("groupchat") != null) {
+					context = SingleInstance.contextTable.get("groupchat");
+				} else {
+					context = SingleInstance.mainContext;
+				}
+				final Dialog dialog = new Dialog(context);
+				final ImageLoader imageLoader = new ImageLoader(context);
+				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+				dialog.setContentView(R.layout.no_answer_screen);
+				dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+				dialog.getWindow().setBackgroundDrawableResource(R.color.transparent);
+				dialog.show();
+				TextView do_lay = (TextView) dialog.findViewById(R.id.do_lay);
+				TextView username = (TextView)dialog.findViewById(R.id.username);
+				ImageView profile_pic = (ImageView)dialog. findViewById(R.id.riv1);
+				ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(Username);
+				if(bean.getFirstname()!= null && bean.getLastname()!= null){
+					username.setText(bean.getFirstname()+ " "+bean.getLastname());
+
+				}
+				String Profilephoto = bean.getPhoto();
+				if(Profilephoto!= null&& Profilephoto.length() > 0){
+					String pic_Path = Environment.getExternalStorageDirectory().getAbsolutePath()
+							+ "/COMMedia/" + bean.getPhoto();
+					File pic = new File(pic_Path);
+					if (pic.exists()) {
+						imageLoader.DisplayImage(pic_Path, profile_pic , R.drawable.img_user);
+					}
+
+				}
+
+
+
+				do_lay.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						dialog.dismiss();
+					}
+				});
+			}
+		});
 	}
 
 	private ChatBean getChatBean(SignalingBean sb) {

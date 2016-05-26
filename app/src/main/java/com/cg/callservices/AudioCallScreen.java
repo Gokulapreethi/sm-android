@@ -1,6 +1,7 @@
 package com.cg.callservices;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,6 +10,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 
 import org.audio.AudioProperties;
 import org.lib.model.BuddyInformationBean;
@@ -21,6 +23,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -48,6 +54,7 @@ import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,6 +80,8 @@ public class AudioCallScreen extends Fragment {
 	private TextView tvBuddies,tv_name,tv_status;
 
 	private TextView tvCallTime;
+	private double timeElapsed = 0;
+	Handler history_handler;
 
 	private Chronometer chTimer;
 
@@ -103,8 +112,12 @@ public class AudioCallScreen extends Fragment {
 	private Handler handler;
 
 	private SignalingBean signBean;
+	private int mPlayingPosition = 0;
+	private PlaybackUpdater mProgressUpdater = new PlaybackUpdater();
+	private MediaPlayer mPlayer = new MediaPlayer();
 
 	public String strSessionId;
+	int finalTime, startTime;
 
 	private boolean micmute, speaker = false;
 
@@ -117,6 +130,7 @@ public class AudioCallScreen extends Fragment {
 	private HashSet<String> hsCallMembers = new HashSet<String>();
 
 	private String strStartTime;
+	private Handler mHandler = new Handler();
 
 	public String failedUser = null;
 
@@ -133,7 +147,9 @@ public class AudioCallScreen extends Fragment {
 
 	private boolean selfHangup = false;
 	
-	private boolean isBuddyinCall=false;
+	private boolean isbuddyaudio=false;
+	private boolean isBuddyinCall = false;
+	private int position;
 	private Vector<UserBean> membersList=new Vector<UserBean>();
 
 	public static synchronized ContactAdapter getContactAdapter() {
@@ -532,7 +548,6 @@ public class AudioCallScreen extends Fragment {
 			final String strCallDate = objCallDispatcher.getCurrentDateTime();
 			tvCallTime.setText(strCallDate);
 			tvCallTime.setVisibility(View.GONE);
-
 
 			btnMic = (Button) llayAudioCall.findViewById(R.id.mic);
 
@@ -1578,8 +1593,10 @@ public class AudioCallScreen extends Fragment {
 			e.printStackTrace();
 		}
 	}
+	String file = "";
 	private void showCallHistory()
 	{
+
 		try {
 			final Dialog dialog = new Dialog(SingleInstance.mainContext);
 			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -1589,6 +1606,70 @@ public class AudioCallScreen extends Fragment {
 			dialog.show();
 			Button save = (Button) dialog.findViewById(R.id.save);
 			Button delete = (Button) dialog.findViewById(R.id.delete);
+			final ImageView play_button = (ImageView) dialog.findViewById(R.id.play_button);
+			final SeekBar seekBar1 = (SeekBar) dialog.findViewById(R.id.seekBar1);
+			final TextView txt_time= (TextView)dialog.findViewById(R.id.txt_time);
+			play_button.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					file = Environment
+							.getExternalStorageDirectory()
+							+ "/COMMedia/CallRecording/"
+							+ strSessionId + ".wav";
+					Log.d("Stringpath", "mediapath--->" + file);
+
+					if (mPlayer.isPlaying()) {
+						mPlayer.pause();
+						play_button.setBackgroundResource(R.drawable.play);
+					} else {
+						play_button.setBackgroundResource(R.drawable.audiopause);
+						playAudio(file, 0);
+
+					}
+
+
+
+
+				}
+
+			});
+		if (position == mPlayingPosition) {
+			mProgressUpdater.mBarToUpdate = seekBar1;
+			mProgressUpdater.tvToUpdate = txt_time;
+			mHandler.postDelayed(mProgressUpdater, 100);
+		} else {
+
+			try {
+				Log.d("Stringpath", "mediapath--->");
+				seekBar1.setProgress(0);
+				MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+				mmr.setDataSource(file);
+				String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+				mmr.release();
+				String min, sec;
+				min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration)));
+				sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(Long.parseLong(duration)) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration))));
+				if (Integer.parseInt(min) < 10) {
+					min = 0 + String.valueOf(min);
+				}
+				if (Integer.parseInt(sec) < 10) {
+					sec = 0 + String.valueOf(sec);
+				}
+				txt_time.setText(min + ":" + sec);
+//                            audio_tv.setText(duration);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			seekBar1.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+			seekBar1.setProgress(0);
+			if (mProgressUpdater.mBarToUpdate == seekBar1) {
+				//this progress would be updated, but this is the wrong position
+				mProgressUpdater.mBarToUpdate = null;
+			}
+		}
+
+
 
 			save.setOnClickListener(new View.OnClickListener() {
 				@Override
@@ -1625,6 +1706,113 @@ public class AudioCallScreen extends Fragment {
 		}
 
 	}
+	private class PlaybackUpdater implements Runnable {
+		public SeekBar mBarToUpdate = null;
+		public TextView tvToUpdate = null;
+
+		@Override
+		public void run() {
+			if ((mPlayingPosition != -1) && (null != mBarToUpdate)) {
+				Log.d("Mposition","seekbar---->");
+				double tElapsed = mPlayer.getCurrentPosition();
+				int fTime = mPlayer.getDuration();
+				double timeRemaining = fTime - tElapsed;
+				double sTime = mPlayer.getCurrentPosition();
+
+				String min, sec;
+				//for decreasing
+//                min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes((long) timeRemaining));
+//                sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds((long) timeRemaining) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) timeRemaining)));
+
+				//for increasing
+				min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes((long) sTime));
+				sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds((long) sTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) sTime)));
+				if (Integer.parseInt(min) < 10) {
+					min = 0 + String.valueOf(min);
+				}
+				if (Integer.parseInt(sec) < 10) {
+					sec = 0 + String.valueOf(sec);
+				}
+				tvToUpdate.setText(min + ":" + sec);
+				mBarToUpdate.setProgress((100 * mPlayer.getCurrentPosition() / mPlayer.getDuration()));
+//                tvToUpdate.setText(String.format("%d:%d ",TimeUnit.MILLISECONDS.toMinutes((long) fTime),TimeUnit.MILLISECONDS.toSeconds((long) fTime) -TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) fTime))));
+				mHandler.postDelayed(this, 500);
+
+			} else {
+				//not playing so stop updating
+			}
+		}
+	}
+
+	private void stopPlayback() {
+		mPlayingPosition = 0;
+		mProgressUpdater.mBarToUpdate = null;
+		mProgressUpdater.tvToUpdate = null;
+		if (mPlayer != null && mPlayer.isPlaying())
+			mPlayer.stop();
+	}
+
+	public void playAudio(String fname,  int position) {
+		try {
+			mPlayer.reset();
+			mPlayer.setDataSource(fname);
+			mPlayer.prepare();
+			mPlayer.start();
+			mPlayingPosition = position;
+
+			mHandler.postDelayed(mProgressUpdater, 500);
+
+		} catch (IOException e) {
+
+			e.printStackTrace();
+			stopPlayback();
+		}
+	}
+
+
+
+	private Runnable UpdateSongTime = new Runnable() {
+		public void run() {
+			startTime = mPlayer.getCurrentPosition();
+//            seekBar.setProgress((int) startTime);
+			new Handler().postDelayed(new Runnable() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					startPlayProgressUpdater();
+
+				}
+			}, 100);
+
+			history_handler.postDelayed(this, 100);
+		}
+	};
+
+
+	private void startPlayProgressUpdater() {
+		if (mPlayer != null) {
+			if (mPlayer.isPlaying()) {
+				Log.d("lg", "play progress().....");
+				long milliseconds = mPlayer.getCurrentPosition();
+				timeElapsed = mPlayer.getCurrentPosition();
+
+				double timeRemaining = finalTime - timeElapsed;
+				String min, sec;
+				min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes((long) timeRemaining));
+				sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds((long) timeRemaining) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) timeRemaining)));
+
+				if (Integer.parseInt(min) < 10) {
+					min = 0 + String.valueOf(min);
+				}
+				if (Integer.parseInt(sec) < 10) {
+					sec = 0 + String.valueOf(sec);
+				}
+//                txt_time.setText(min + ":" + sec);
+			}
+		}
+	}
+
 
 }
 
