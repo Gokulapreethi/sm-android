@@ -2416,27 +2416,12 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							CallDispatcher.sb);
 					// }
 					if (conferenceMembers.size() == 1) {
-					Intent intentComponent = new Intent(context,
-							CallHistoryActivity.class);
-					intentComponent.putExtra("buddyname",
-							CallDispatcher.sb.getFrom());
-					intentComponent.putExtra("individual", true);
-					if (CallDispatcher.sb.getCallType().equalsIgnoreCase("ABC")
-							|| CallDispatcher.sb.getCallType()
-									.equalsIgnoreCase("VBC")
-							|| CallDispatcher.sb.getCallType()
-									.equalsIgnoreCase("AP")
-							|| CallDispatcher.sb.getCallType()
-									.equalsIgnoreCase("VP")) {
-						intentComponent.putExtra("sessionid",
-								CallDispatcher.sb.getSignalid());
-						
-					} else {
-						intentComponent.putExtra("sessionid",
-								CallDispatcher.sb.getSessionid());
-					}
-					
-					context.startActivity(intentComponent);
+						handlerForCall.post(new Runnable() {
+							@Override
+							public void run() {
+								showCallHistory();
+							}
+						});
 					}
 					if (SingleInstance.instanceTable
 							.containsKey("callscreen")
@@ -2989,24 +2974,12 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					// }
 					// DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
 					// CallDispatcher.sb);
-					Intent intentComponent = new Intent(context,
-							CallHistoryActivity.class);
-					intentComponent.putExtra("buddyname", sb.getFrom());
-					intentComponent.putExtra("individual", true);
-					if (CallDispatcher.sb.getCallType().equalsIgnoreCase("ABC")
-							|| CallDispatcher.sb.getCallType()
-									.equalsIgnoreCase("VBC")
-							|| CallDispatcher.sb.getCallType()
-									.equalsIgnoreCase("AP")
-							|| CallDispatcher.sb.getCallType()
-									.equalsIgnoreCase("VP")) {
-						intentComponent.putExtra("sessionid",
-								CallDispatcher.sb.getSignalid());
-					} else {
-						intentComponent.putExtra("sessionid",
-								CallDispatcher.sb.getSessionid());
-					}
-					context.startActivity(intentComponent);
+					handlerForCall.post(new Runnable() {
+						@Override
+						public void run() {
+							showCallHistory();
+						}
+					});
 
 					if (conferenceRequest.containsKey(sb.getFrom())) {
 						conferenceRequest.remove(sb.getFrom());
@@ -16125,52 +16098,52 @@ private TrustManager[] get_trust_mgr() {
 		Log.i("appver", "dialog type :: " + type);
 		handlerForCall.post(new Runnable() {
 
-            @Override
-            public void run() {
-                // TODO Auto-generated method stub
-                Log.i("appver", "Before create dialog");
-                Log.i("appver", "dialog title :: " + title);
-                Log.i("appver", "dialog message :: " + message);
-                Log.i("appver", "dialog type :: " + type);
-                final AlertDialog myAlertDialog = new AlertDialog.Builder(
-                        context).create();
-                Log.i("appver", "After create dialog");
-                Log.i("appver", "dialog title :: " + title);
-                Log.i("appver", "dialog message :: " + message);
-                Log.i("appver", "dialog type :: " + type);
-                myAlertDialog.setTitle(title);
-                myAlertDialog.setMessage(message);
-                myAlertDialog.setButton("OK",
-                        new DialogInterface.OnClickListener() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				Log.i("appver", "Before create dialog");
+				Log.i("appver", "dialog title :: " + title);
+				Log.i("appver", "dialog message :: " + message);
+				Log.i("appver", "dialog type :: " + type);
+				final AlertDialog myAlertDialog = new AlertDialog.Builder(
+						context).create();
+				Log.i("appver", "After create dialog");
+				Log.i("appver", "dialog title :: " + title);
+				Log.i("appver", "dialog message :: " + message);
+				Log.i("appver", "dialog type :: " + type);
+				myAlertDialog.setTitle(title);
+				myAlertDialog.setMessage(message);
+				myAlertDialog.setButton("OK",
+						new DialogInterface.OnClickListener() {
 
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                // TODO Auto-generated method stub
-                                if (type == 2) {
-                                    try {
-                                        Intent i = new Intent(context,
-                                                TestHTML5WebView.class);
-                                        Bundle bundle = new Bundle();
-                                        bundle.putString("url", url);
-                                        i.putExtras(bundle);
-                                        context.startActivity(i);
-                                        p = PreferenceManager
-                                                .getDefaultSharedPreferences(context);
-                                        boolean autologinstate = p.getBoolean(
-                                                "autologin", false);
-                                        // logout(autologinstate);
+							@Override
+							public void onClick(DialogInterface dialog,
+												int which) {
+								// TODO Auto-generated method stub
+								if (type == 2) {
+									try {
+										Intent i = new Intent(context,
+												TestHTML5WebView.class);
+										Bundle bundle = new Bundle();
+										bundle.putString("url", url);
+										i.putExtras(bundle);
+										context.startActivity(i);
+										p = PreferenceManager
+												.getDefaultSharedPreferences(context);
+										boolean autologinstate = p.getBoolean(
+												"autologin", false);
+										// logout(autologinstate);
 
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                myAlertDialog.dismiss();
-                            }
-                        });
-                myAlertDialog.show();
-            }
-        });
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+								}
+								myAlertDialog.dismiss();
+							}
+						});
+				myAlertDialog.show();
+			}
+		});
 
 	}
 
@@ -16390,4 +16363,53 @@ private TrustManager[] get_trust_mgr() {
 
 	}
 
+	private void showCallHistory()
+	{
+		try {
+			final Dialog dialog = new Dialog(SingleInstance.mainContext);
+			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+			dialog.setContentView(R.layout.call_record_dialog);
+			dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+			dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
+			dialog.show();
+			Button save = (Button) dialog.findViewById(R.id.save);
+			Button delete = (Button) dialog.findViewById(R.id.delete);
+
+			save.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					dialog.dismiss();
+					Intent intentComponent = new Intent(context,
+							CallHistoryActivity.class);
+					intentComponent.putExtra("buddyname",
+							CallDispatcher.sb.getFrom());
+					intentComponent.putExtra("individual", true);
+					intentComponent.putExtra("audiocall",false);
+					intentComponent.putExtra("isDelete", false);
+					intentComponent.putExtra("sessionid",
+							CallDispatcher.sb.getSessionid());
+					context.startActivity(intentComponent);
+				}
+			});
+			delete.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					dialog.dismiss();
+					Intent intentComponent = new Intent(context,
+							CallHistoryActivity.class);
+					intentComponent.putExtra("buddyname",
+							CallDispatcher.sb.getFrom());
+					intentComponent.putExtra("isDelete", true);
+					intentComponent.putExtra("audiocall",false);
+					intentComponent.putExtra("individual", true);
+					intentComponent.putExtra("sessionid",
+							CallDispatcher.sb.getSessionid());
+					context.startActivity(intentComponent);
+				}
+			});
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+
+	}
 }

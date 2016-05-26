@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:weightSum="2">
+    android:layout_height="match_parent">
+
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_weight="1">
-
-
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:id="@+id/relative1">
 
@@ -47,20 +45,13 @@
             android:textSize="14dp"
             android:gravity="center" />
         </LinearLayout>
+
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-
-            >
-
-        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="18dp"
-            android:layout_alignParentBottom="true"
-            >
-
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true">
 
 
         <TextView
@@ -129,9 +120,6 @@
                 android:text="Do Nothing"/>
 
 
-        </RelativeLayout>
         </LinearLayout>
 
-
-
-</LinearLayout>
+</RelativeLayout>

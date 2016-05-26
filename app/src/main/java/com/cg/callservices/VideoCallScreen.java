@@ -3465,7 +3465,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	private void showCallHistory()
 	{
 		try {
-			final Dialog dialog = new Dialog(context);
+			final Dialog dialog = new Dialog(SingleInstance.mainContext);
 			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 			dialog.setContentView(R.layout.call_record_dialog);
 			dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
@@ -3473,6 +3473,10 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			dialog.show();
 			Button save = (Button) dialog.findViewById(R.id.save);
 			Button delete = (Button) dialog.findViewById(R.id.delete);
+			RelativeLayout video_lay=(RelativeLayout)dialog.findViewById(R.id.video_relay);
+			video_lay.setVisibility(View.VISIBLE);
+			RelativeLayout ad_play=(RelativeLayout)dialog.findViewById(R.id.ad_play);
+			ad_play.setVisibility(View.GONE);
 
 			save.setOnClickListener(new View.OnClickListener() {
 				@Override

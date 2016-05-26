@@ -110,18 +110,22 @@ public class CallHistoryActivity extends Activity {
 			final TextView text_recording = (TextView)findViewById(R.id.text_recording);
 			btnPause = (ImageView)findViewById(R.id.btn_pause);
 			final RelativeLayout recoding_layout = (RelativeLayout)findViewById(R.id.recoding_layout);
-		final FrameLayout VideoView01 = (FrameLayout)findViewById(R.id.VideoView01);
+		final FrameLayout frameLayout = (FrameLayout)findViewById(R.id.frame_lay);
 		if(!isfromaudio){
 			recoding_layout.setVisibility(View.GONE);
-			VideoView01.setVisibility(View.VISIBLE);
+			frameLayout.setVisibility(View.VISIBLE);
 		}else{
 			recoding_layout.setVisibility(View.VISIBLE);
-			VideoView01.setVisibility(View.GONE);
+			frameLayout.setVisibility(View.GONE);
 		}
 		if(isDelete){
+			if(isfromaudio) {
 				text_recording.setVisibility(View.GONE);
 				recoding_layout.setVisibility(View.GONE);
+			}else
+				frameLayout.setVisibility(View.GONE);
 			}
+
 
 			delete_icon.setOnClickListener(new OnClickListener() {
 

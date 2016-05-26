@@ -110,7 +110,7 @@ public class FeedbackFragment extends Fragment {
                             istoggleOff = true;
                         } else {
                             Log.d("hhhhhi", "jjjj");
-                            toggle_off.setBackgroundDrawable(getResources().getDrawable(R.drawable.toogle_button_off));
+                            toggle_off.setBackgroundDrawable(getResources().getDrawable(R.drawable.touch_toogle));
                             right_arrow.setClickable(false);
                             text_feedback.setTextColor(getResources().getColor(R.color.grey));
                             istoggleOff = false;

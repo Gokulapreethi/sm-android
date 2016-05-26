@@ -249,7 +249,7 @@
        >
 
         <FrameLayout
-            android:id="@+id/VideoView01"
+            android:id="@+id/frame_lay"
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:padding="10dp"
@@ -274,7 +274,7 @@
                 android:layout_width="300dp"
                 android:layout_height="42dp"
                 android:layout_below="@+id/msg_container_receiver"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:visibility="visible"
                 android:id="@+id/ad_play1"
@@ -343,6 +343,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+
                     android:background="@drawable/ic_action_delete"/>
             </RelativeLayout>
 

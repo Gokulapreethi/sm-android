@@ -97,7 +97,7 @@
     android:layout_height="wrap_content"
     android:padding="2dp"
     android:gravity="center"
-    android:layout_centerVertical="true">
+    android:layout_marginTop="80dp">
     <org.cryse.android.controls.RoundedImageView
         android:id="@+id/profilePic"
         android:layout_width="200dp"
@@ -213,6 +213,7 @@
      android:layout_alignParentBottom="true"
      android:layout_marginRight="20dp"
      android:layout_marginTop="50dp"
+     android:layout_marginBottom="30dp"
      android:gravity="center"
      android:weightSum="5" >
 
@@ -232,7 +233,7 @@
          android:layout_alignBaseline="@+id/btn_addbuddy1"
          android:layout_alignBottom="@+id/btn_addbuddy1"
          android:layout_marginLeft="15dp"
-         android:layout_weight="1"
+         android:layout_weight="0.5"
          android:background="@drawable/call_reject"
          android:visibility="visible" />
 
@@ -252,7 +253,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/mic"
-            android:layout_weight="1"
+            android:layout_weight="0.5"
             android:background="@drawable/call_speaker"
             android:visibility="gone" />
      <Button
@@ -261,7 +262,7 @@
          android:layout_height="wrap_content"
          android:layout_alignParentLeft="true"
          android:layout_alignParentTop="true"
-         android:layout_weight="1"
+         android:layout_weight="0.5"
          android:background="@drawable/call_mic"
          android:visibility="gone" />
      <Button
@@ -270,7 +271,7 @@
          android:layout_height="wrap_content"
          android:layout_alignParentTop="true"
          android:layout_toRightOf="@+id/btn_han"
-         android:layout_weight="1"
+         android:layout_weight="0.5"
          android:background="@drawable/call_video"
          android:visibility="gone" />
      <Button
@@ -279,7 +280,7 @@
          android:layout_height="wrap_content"
          android:layout_alignParentTop="true"
          android:layout_toRightOf="@+id/btn_han"
-         android:layout_weight="1"
+         android:layout_weight="0.5"
          android:background="@drawable/call_add"
          android:visibility="gone" />
 

@@ -321,6 +321,7 @@ public class ContactsFragment extends Fragment {
 				lv.setDivider(null);
 
 				final LinearLayout sort_lay = (LinearLayout) _rootView.findViewById(R.id.sort_lay);
+				final LinearLayout group_sort = (LinearLayout) _rootView.findViewById(R.id.group_sort);
 				final LinearLayout main_search = (LinearLayout) _rootView.findViewById(R.id.main_search);
 				final Button online_sort = (Button) _rootView.findViewById(R.id.online_sort);
 				final Button alph_sort = (Button) _rootView.findViewById(R.id.alpha_sort);
@@ -407,6 +408,7 @@ public class ContactsFragment extends Fragment {
 							view_mygroup.setVisibility(View.GONE);
 							plusBtn.setVisibility(View.VISIBLE);
 							sort_lay.setVisibility(View.VISIBLE);
+							group_sort.setVisibility(View.GONE);
 							plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_add_contact));
 							search.setVisibility(View.VISIBLE);
 						} catch (Exception e) {
@@ -434,6 +436,7 @@ public class ContactsFragment extends Fragment {
 							view_mygroup.setVisibility(View.VISIBLE);
 							plusBtn.setVisibility(View.VISIBLE);
 							sort_lay.setVisibility(View.GONE);
+							group_sort.setVisibility(View.VISIBLE);
 							main_search.setVisibility(View.GONE);
 							search.setVisibility(View.VISIBLE);
 						} catch (Exception e) {

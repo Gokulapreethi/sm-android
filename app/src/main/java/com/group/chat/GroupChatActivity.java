@@ -3241,15 +3241,19 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 if (resultCode == RESULT_OK) {
                     String members = data.getStringExtra("SELECTED_MEMBERS");
                     String groupmembers = data.getStringExtra("SELECTED_GROUPS");
-                    Log.i("AAAA", "forawrd user " + groupmembers);
-                    String[] buddies=members.split(",");
-                    String[] groupMembers=groupmembers.split(",");
-                    for(String temp:buddies) {
-                        forwardChat(temp, false);
+                    Log.i("AAAA", "forawrd user " + groupmembers+members);
+                    if(members!=null) {
+                        String[] buddies = members.split(",");
+                        for(String temp:buddies) {
+                            forwardChat(temp, false);
+                        }
+                    }if(groupmembers!=null) {
+                        String[] groupMembers = groupmembers.split(",");
+                        for(String temp:groupMembers) {
+                            forwardChat(temp, true);
+                        }
                     }
-                    for(String temp:groupMembers) {
-                        forwardChat(temp, true);
-                    }
+
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
