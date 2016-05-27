@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:background="@color/blue2" >
-      
+
         <ImageView
             android:id="@+id/back_button"
             android:layout_width="40dp"
@@ -30,9 +30,9 @@
             android:text="CALL HISTORY"
             android:textColor="#FFFFFF"
             android:textSize="20dp" />
-            
-       
-        
+
+
+
     </RelativeLayout>
 
     <LinearLayout
@@ -205,8 +205,8 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"       
-        android:orientation="horizontal" 
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:visibility="gone">
 
         <TextView
@@ -246,7 +246,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-       >
+        >
 
         <FrameLayout
             android:id="@+id/frame_lay"
@@ -270,19 +270,106 @@
                 android:layout_marginTop="100dp"
                 >
 
+                <RelativeLayout
+                    android:layout_width="300dp"
+                    android:layout_height="42dp"
+                    android:layout_below="@+id/msg_container_receiver"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:visibility="visible"
+                    android:id="@+id/ad_play1"
+                    android:background="@drawable/bg_bluecolr"
+                    >
+
+                    <ImageView
+                        android:id="@+id/play_button1"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/play" />
+                    <ImageView
+                        android:id="@+id/btn_pause1"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/audiopause"
+                        android:visibility="gone"/>
+
+
+
+                    <SeekBar
+                        android:id="@+id/seekBar11"
+                        android:thumb="@drawable/seek_handler"
+                        android:layout_width="170dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="13dp"
+                        android:layout_toRightOf="@+id/play_button1"
+                        android:progressDrawable="@drawable/progress"
+                        />
+                    <Chronometer
+                        android:id="@+id/chronometer11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chronometer"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        android:visibility="gone"/>
+                    <TextView
+                        android:id="@+id/txt_time1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="18dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_toRightOf="@+id/seekBar11"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="20dp"
+                        android:text="00:00:00"
+                        android:textColor="@color/white" />
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    >
+
+                    <ImageView
+                        android:id="@+id/delete_icon1"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="4dp"
+
+                        android:background="@drawable/icon_delete"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </FrameLayout>
+        <RelativeLayout
+            android:id="@+id/recoding_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible">
+
+
             <RelativeLayout
                 android:layout_width="300dp"
                 android:layout_height="42dp"
                 android:layout_below="@+id/msg_container_receiver"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="20dp"
                 android:layout_marginTop="10dp"
                 android:visibility="visible"
-                android:id="@+id/ad_play1"
+                android:id="@+id/ad_play"
                 android:background="@drawable/bg_bluecolr"
                 >
 
                 <ImageView
-                    android:id="@+id/play_button1"
+                    android:id="@+id/play_button"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_alignParentLeft="true"
@@ -290,7 +377,7 @@
                     android:layout_centerInParent="true"
                     android:background="@drawable/play" />
                 <ImageView
-                    android:id="@+id/btn_pause1"
+                    android:id="@+id/btn_pause"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_alignParentLeft="true"
@@ -302,17 +389,17 @@
 
 
                 <SeekBar
-                    android:id="@+id/seekBar11"
+                    android:id="@+id/seekBar1"
                     android:thumb="@drawable/seek_handler"
                     android:layout_width="170dp"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_marginLeft="13dp"
-                    android:layout_toRightOf="@+id/play_button1"
+                    android:layout_toRightOf="@+id/play_button"
                     android:progressDrawable="@drawable/progress"
                     />
                 <Chronometer
-                    android:id="@+id/chronometer11"
+                    android:id="@+id/chronometer1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Chronometer"
@@ -320,12 +407,12 @@
                     android:textSize="20dp"
                     android:visibility="gone"/>
                 <TextView
-                    android:id="@+id/txt_time1"
+                    android:id="@+id/txt_time"
                     android:layout_width="wrap_content"
                     android:layout_height="18dp"
                     android:layout_marginLeft="10dp"
                     android:layout_alignParentRight="true"
-                    android:layout_toRightOf="@+id/seekBar11"
+                    android:layout_toRightOf="@+id/seekBar1"
                     android:layout_centerInParent="true"
                     android:layout_marginRight="20dp"
                     android:text="00:00:00"
@@ -339,100 +426,14 @@
                 >
 
                 <ImageView
-                    android:id="@+id/delete_icon1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/ic_action_delete"/>
+                    android:id="@+id/delete_icon"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/icon_delete"/>
             </RelativeLayout>
 
-            </RelativeLayout>
-
-        </FrameLayout>
-    <RelativeLayout
-        android:id="@+id/recoding_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible">
-
-
-    <RelativeLayout
-        android:layout_width="300dp"
-        android:layout_height="42dp"
-        android:layout_below="@+id/msg_container_receiver"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:visibility="visible"
-        android:id="@+id/ad_play"
-        android:background="@drawable/bg_bluecolr"
-        >
-
-        <ImageView
-            android:id="@+id/play_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
-            android:layout_centerInParent="true"
-            android:background="@drawable/play" />
-        <ImageView
-            android:id="@+id/btn_pause"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
-            android:layout_centerInParent="true"
-            android:background="@drawable/audiopause"
-            android:visibility="gone"/>
-
-
-
-        <SeekBar
-            android:id="@+id/seekBar1"
-            android:thumb="@drawable/seek_handler"
-            android:layout_width="170dp"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="13dp"
-            android:layout_toRightOf="@+id/play_button"
-            android:progressDrawable="@drawable/progress"
-            />
-        <Chronometer
-            android:id="@+id/chronometer1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Chronometer"
-            android:textColor="@color/white"
-            android:textSize="20dp"
-            android:visibility="gone"/>
-        <TextView
-            android:id="@+id/txt_time"
-            android:layout_width="wrap_content"
-            android:layout_height="18dp"
-            android:layout_marginLeft="10dp"
-            android:layout_alignParentRight="true"
-            android:layout_toRightOf="@+id/seekBar1"
-            android:layout_centerInParent="true"
-            android:layout_marginRight="20dp"
-            android:text="00:00:00"
-            android:textColor="@color/white" />
-
-    </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            >
-
-            <ImageView
-                android:id="@+id/delete_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/ic_action_delete"/>
         </RelativeLayout>
-
-</RelativeLayout>
     </RelativeLayout>
 
     <LinearLayout

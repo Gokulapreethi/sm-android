@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
@@ -56,6 +58,7 @@ import com.bean.ProfileBean;
 import com.bean.UserBean;
 import com.cg.DB.DBAccess;
 import com.cg.callservices.MyAbsoluteLayout;
+import com.cg.commonclass.GroupListComparator;
 import com.cg.rounding.RoundingFragment;
 import com.cg.snazmed.R;
 import com.cg.account.ShareByProfile;
@@ -1175,6 +1178,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 			}
 		}
 		tempList.addAll(requestList);
+		Collections.sort(acceptedList, new GroupListComparator());
 		tempList.addAll(acceptedList);
 		return tempList;
 
@@ -1381,4 +1385,5 @@ public class GroupActivity extends Activity implements OnClickListener {
 		TextView occupation;
 		TextView header_title;
 	}
+
 }

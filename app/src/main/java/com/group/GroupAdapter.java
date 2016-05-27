@@ -65,6 +65,7 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 				holder.listContainer = (LinearLayout) row
 						.findViewById(R.id.list_container);
 				holder.grouplist = (TextView) row.findViewById(R.id.group_name);
+				holder.header_title = (TextView) row.findViewById(R.id.header_title);
 				holder.members = (TextView) row.findViewById(R.id.members);
 				holder.contact_history = (LinearLayout) row.findViewById(R.id.contact_history);
 				holder.inreq = (LinearLayout) row.findViewById(R.id.inreq);
@@ -81,6 +82,26 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 					holder.listContainer.setVisibility(View.GONE);
 				}
 				tv_groupName.setTypeface(tf_regular);
+			holder.header_title.setVisibility(View.VISIBLE);
+			String name="";
+			if(groupBean.getStatus().equalsIgnoreCase("request"))
+				holder.header_title.setText("REQUEST");
+			else {
+				name=String.valueOf(groupBean.getGroupName().charAt(0));
+				holder.header_title.setText(name.toUpperCase());
+			}
+			if(position>0){
+				GroupBean gBean=(GroupBean) ContactsFragment.getGroupList().get(position-1);
+				if(gBean.getStatus().equalsIgnoreCase("request"))
+					holder.header_title.setVisibility(View.GONE);
+				else {
+					String name2=String.valueOf(gBean.getGroupName().charAt(0));
+					if(name.equalsIgnoreCase(name2))
+						holder.header_title.setVisibility(View.GONE);
+					else
+						holder.header_title.setVisibility(View.VISIBLE);
+				}
+			}
 
 			CallDispatcher callDisp=new CallDispatcher(SingleInstance.mainContext);
 			final GroupBean gBean = callDisp.getdbHeler(context) .getGroupAndMembers(
@@ -152,7 +173,7 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 
 	public static class ViewHolder {
 		LinearLayout listContainer;
-		TextView grouplist,members;
+		TextView grouplist,members,header_title;
 		LinearLayout contact_history;
 		LinearLayout inreq;
 		ImageView buddy_icon;

@@ -15,6 +15,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
@@ -241,6 +242,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     private Button video_call;
     private int progressStates;
     private int presentbuddiescount = 0;
+    SwipeMenuListView listView = null;
     // start 07-10-15 changes
 
     ImageViewer imageViewer;
@@ -288,6 +290,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     String strQuery = null;
     TextView tv_status, tv_assigned;
     ImageView img_status;
+    private LinearLayout header;
     private String signalid="";
     private static int membercount = 0;
     private static int checkBoxCounter = 0;
@@ -334,7 +337,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         view_info = (View) findViewById(R.id.view_info);
         view_snazbox = (View) findViewById(R.id.view_snazbox);
         view_links = (View) findViewById(R.id.view_links);
-        LinearLayout header = (LinearLayout) findViewById(R.id.header1);
+        header = (LinearLayout) findViewById(R.id.header1);
         LinearLayout info_lay = (LinearLayout) findViewById(R.id.info);
         tv_info = (TextView) findViewById(R.id.tv_info);
         tv_file = (TextView) findViewById(R.id.tv_file);
@@ -722,19 +725,16 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         snazbox_chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setDefault();
                 if (isRounding) {
                     PatientDetails();
-                    setDefault();
-                }
-                if (isRounding) {
-                    setDefault();
                     file_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_patients_white));
-//                }
-//                else {
-//                    file_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_snazbox_white));
-                    tv_file.setTextColor(getResources().getColor(R.color.white));
-                    view_snazbox.setVisibility(View.VISIBLE);
+                } else {
+                    FilesProcess();
+                    file_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_snazbox_white));
                 }
+                tv_file.setTextColor(getResources().getColor(R.color.white));
+                view_snazbox.setVisibility(View.VISIBLE);
                 isChat = false;
             }
         });
@@ -1430,6 +1430,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                         settingnotifications.getLayoutParams().height = 100;
                                         selectAll_container.setVisibility(View.VISIBLE);
                                         sendLay.setVisibility(View.GONE);
+                                        header.setVisibility(View.GONE);
+
                                     }
                                 });
 
@@ -1460,6 +1462,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                                 settingnotifications.getLayoutParams().height = 100;
                                                 selectAll_container.setVisibility(View.VISIBLE);
                                                 sendLay.setVisibility(View.GONE);
+                                                header.setVisibility(View.GONE);
                                             }
                                         });
 
@@ -10350,5 +10353,194 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         pId = null;
         privateMembers = null;
         isReplyBack = false;
+    }
+    String sortorder="";
+    private void FilesProcess()
+    {
+
+        final LinearLayout content = (LinearLayout) findViewById(R.id.content);
+        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        content.removeAllViews();
+        final View view = layoutInflater.inflate(R.layout.files_list, content);
+        try {
+//            LinearLayout content1 = (LinearLayout)v1. findViewById(R.id.i1);
+//            content1.removeAllViews();
+//            ImageView plusBtn=(ImageView)v1.findViewById(R.id.plusBtn);
+//
+//            plusBtn.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    try {
+//                        final Dialog dialog = new Dialog(context);
+//                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//                        dialog.setContentView(R.layout.dialog_myacc_menu);
+//                        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+//                        lp.copyFrom(dialog.getWindow().getAttributes());
+//                        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+//                        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+//                        lp.horizontalMargin = 15;
+//                        Window window = dialog.getWindow();
+//                        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//                        window.setAttributes(lp);
+//                        window.setGravity(Gravity.BOTTOM);
+//                        dialog.show();
+//                        TextView newfile = (TextView) dialog.findViewById(R.id.delete_acc);
+//                        newfile.setText("New File");
+//                        newfile.setBackgroundColor(context.getResources().getColor(R.color.green));
+//                        TextView newfolder = (TextView) dialog.findViewById(R.id.log_out);
+//                        newfolder.setText("New Folder");
+//                        newfolder.setVisibility(View.GONE);
+//                        newfolder.setBackgroundColor(context.getResources().getColor(R.color.green));
+//                        TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
+//                        cancel.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View arg0) {
+//                                dialog.dismiss();
+//                            }
+//                        });
+//                        newfile.setOnClickListener(new OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                Intent intentComponent = new Intent(context,
+//                                        ComponentCreator.class);
+//                                Bundle bndl = new Bundle();
+//                                bndl.putString("type", "note");
+//                                bndl.putBoolean("action", true);
+//                                bndl.putBoolean("fromNew",true);
+//                                intentComponent.putExtras(bndl);
+//                                context.startActivity(intentComponent);
+//                                dialog.dismiss();
+//                            }
+//                        });
+//                    } catch (Exception e) {
+//                        // TODO Auto-generated catch block
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//            View view = layoutInflater.inflate(R.layout.files_list, content1);
+            final RelativeLayout rl_file=(RelativeLayout)view.findViewById(R.id.rl_file);
+            final TextView tv_file=(TextView)view.findViewById(R.id.tv_file);
+            final TextView alpha_sort=(TextView)view.findViewById(R.id.alpha_sort);
+            final TextView date_sort=(TextView)view.findViewById(R.id.date_sort);
+            final TextView type_sort=(TextView)view.findViewById(R.id.type_sort);
+            date_sort.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    sortorder="date";
+                    date_sort.setTextColor(getResources().getColor(R.color.white));
+                    alpha_sort.setTextColor(getResources().getColor(R.color.snazlgray));
+                    type_sort.setTextColor(getResources().getColor(R.color.snazlgray));
+                    filesList.clear();
+                    filesList = loadFiles(CallDispatcher.LoginUser);
+                    Log.i("files123", "fileslist : " + filesList.size());
+                    filesAdapter = new FilesAdapter(context, filesList);
+                    listView.setAdapter(filesAdapter);
+                    filesAdapter.notifyDataSetChanged();
+                }
+            });
+            alpha_sort.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    sortorder="alpha";
+                    date_sort.setTextColor(getResources().getColor(R.color.snazlgray));
+                    alpha_sort.setTextColor(getResources().getColor(R.color.white));
+                    type_sort.setTextColor(getResources().getColor(R.color.snazlgray));
+                    filesList.clear();
+                    filesList = loadFiles(CallDispatcher.LoginUser);
+                    Collections.sort(filesList,new FilesListComparator());
+                    Log.i("files123", "fileslist : " + filesList.size());
+                    filesAdapter = new FilesAdapter(context, filesList);
+                    listView.setAdapter(filesAdapter);
+                    filesAdapter.notifyDataSetChanged();
+                }
+            });
+            type_sort.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    sortorder = "type";
+                    date_sort.setTextColor(getResources().getColor(R.color.snazlgray));
+                    alpha_sort.setTextColor(getResources().getColor(R.color.snazlgray));
+                    type_sort.setTextColor(getResources().getColor(R.color.white));
+                    filesList.clear();
+                    filesList = loadFiles(CallDispatcher.LoginUser);
+                    Log.i("files123", "fileslist : " + filesList.size());
+                    filesAdapter = new FilesAdapter(context, getSortType(filesList));
+                    listView.setAdapter(filesAdapter);
+                    filesAdapter.notifyDataSetChanged();
+                }
+            });
+
+
+            listView = (SwipeMenuListView) view.findViewById(R.id.filesList);
+            listView.setTextFilterEnabled(true);
+            listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+            filesList = loadFiles(CallDispatcher.LoginUser);
+            Log.i("files123", "fileslist : " + filesList.size());
+            filesAdapter = new FilesAdapter(context, filesList);
+            listView.setAdapter(filesAdapter);
+            filesAdapter.notifyDataSetChanged();
+
+            // isSelectall = false;
+            listView.setOnSwipeListener(new SwipeMenuListView.OnSwipeListener() {
+                @Override
+                public void onSwipeStart(int position) {
+                    Log.d("Swiselect", "onSwipeStart : " + position);
+                }
+
+                @Override
+                public void onSwipeEnd(int position) {
+
+                }
+            });
+            SwipeMenuCreator creator = new SwipeMenuCreator() {
+
+                @Override
+                public void create(SwipeMenu menu) {
+                    // Create different menus depending on the view type
+                    createMenu(menu);
+
+                }
+                private void createMenu(SwipeMenu menu) {
+                    SwipeMenuItem forwared = new SwipeMenuItem(context);
+                    forwared.setBackground(R.color.blue2);
+                    forwared.setWidth(dp2px(90));
+                    forwared.setIcon(R.drawable.withdraw_line_white);
+                    forwared.setTitleSize(10);
+                    forwared.setTitle("DELETE");
+                    forwared.setTitleColor(Color.WHITE);
+                    menu.addMenuItem(forwared);
+                }
+            };
+            listView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(int position,
+                                               SwipeMenu menu, int index) {
+
+                    try {
+                        CompleteListBean cBean = filesAdapter
+                                .getItem(position);
+//                        deleteNote(cBean, context);
+                        return false;
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                        return false;
+                    }
+                }
+            });
+            listView.setMenuCreator(creator);
+
+
+            if (filesAdapter.getCount() > 0 || filesList.size() > 0) {
+                Log.i("files123", "fileslist 2 : " + filesList.size());
+                listView.setVisibility(View.VISIBLE);
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
     }
 }
