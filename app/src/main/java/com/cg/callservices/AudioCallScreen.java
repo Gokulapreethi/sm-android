@@ -75,6 +75,7 @@ import com.main.AppMainActivity;
 import com.main.ContactsFragment;
 import com.util.SingleInstance;
 
+@SuppressWarnings("ALL")
 public class AudioCallScreen extends Fragment {
 
 	private TextView tvBuddies,tv_name,tv_status;
@@ -190,7 +191,7 @@ public class AudioCallScreen extends Fragment {
 	private static AudioCallScreen audioCallScreen;
 	public View rootView;
 	Bundle bundlevalues;
-	RelativeLayout mainHeader;
+	RelativeLayout mainHeader,audio_minimize;
 
 	public static AudioCallScreen getInstance(Context maincontext) {
 		try {
@@ -251,6 +252,8 @@ public class AudioCallScreen extends Fragment {
 				objCallDispatcher = new CallDispatcher(context);
 			mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
 			mainHeader.setVisibility(View.GONE);
+			audio_minimize = (RelativeLayout) getActivity().findViewById(R.id.audio_minimize);
+			audio_minimize.setVisibility(View.GONE);
 
 			objCallDispatcher.setNoScrHeight(noScrHeight);
 			objCallDispatcher.setNoScrWidth(noScrWidth);
@@ -558,7 +561,7 @@ public class AudioCallScreen extends Fragment {
 			minimize.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					finishAudiocallScreen();
+					addShowHideListener(audioCallScreen);
 				}
 			});
 
@@ -868,7 +871,6 @@ public class AudioCallScreen extends Fragment {
 										R.string.yes),
 								new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog, int id) {
-
 										Message msg = new Message();
 										Bundle bun = new Bundle();
 										bun.putString("action", "leave");
@@ -1221,7 +1223,7 @@ public class AudioCallScreen extends Fragment {
 
 			mainHeader.setVisibility(View.VISIBLE);
 			final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
-			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 			objCallDispatcher.stopRingTone();
 			CallDispatcher.currentSessionid = null;
 			objCallDispatcher.alConferenceRequest.clear();
@@ -1544,6 +1546,7 @@ public class AudioCallScreen extends Fragment {
 		ft.replace(R.id.activity_main_content_fragment,
 				contactsFragment);
 		ft.commitAllowingStateLoss();
+		audio_minimize.setVisibility(View.GONE);
 	}
 
 
@@ -1811,6 +1814,17 @@ public class AudioCallScreen extends Fragment {
 //                txt_time.setText(min + ":" + sec);
 			}
 		}
+	}
+	void addShowHideListener( final Fragment fragment) {
+				FragmentTransaction ft = getFragmentManager().beginTransaction();
+				if (fragment.isHidden()) {
+					ft.show(fragment);
+				} else {
+					ft.hide(fragment);
+				}
+				ft.commit();
+		audio_minimize.setVisibility(View.VISIBLE);
+		mainHeader.setVisibility(View.VISIBLE);
 	}
 
 

@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -31,10 +32,13 @@ import com.adapter.NotifyListAdapter;
 import com.bean.NotifyListBean;
 import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
+import com.cg.callservices.AudioCallScreen;
+import com.cg.callservices.VideoCallScreen;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.DateComparator;
 import com.cg.files.CompleteListBean;
 import com.cg.files.ComponentCreator;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
@@ -114,7 +118,7 @@ public class DashBoardFragment extends Fragment {
             Button imVw = (Button) getActivity().findViewById(R.id.im_view);
             imVw.setVisibility(View.GONE);
 
-            RelativeLayout mainHeader = (RelativeLayout) getActivity().findViewById(R.id.mainheader);
+            final RelativeLayout mainHeader = (RelativeLayout) getActivity().findViewById(R.id.mainheader);
             mainHeader.setVisibility(View.VISIBLE);
             LinearLayout contact_layout = (LinearLayout) getActivity()
                     .findViewById(R.id.contact_layout);
@@ -159,6 +163,22 @@ public class DashBoardFragment extends Fragment {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                }
+            });
+            RelativeLayout audio_minimize = (RelativeLayout)getActivity().findViewById(R.id.audio_minimize);
+            RelativeLayout video_minimize = (RelativeLayout)getActivity().findViewById(R.id.video_minimize);
+            audio_minimize.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mainHeader.setVisibility(View.GONE);
+                    addShowHideListener(AudioCallScreen.getInstance(SingleInstance.mainContext));
+                }
+            });
+            video_minimize.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mainHeader.setVisibility(View.GONE);
+                    addShowHideListener(VideoCallScreen.getInstance(SingleInstance.mainContext));
                 }
             });
             final AppMainActivity appMainActivity = (AppMainActivity) SingleInstance.contextTable
@@ -880,5 +900,15 @@ public class DashBoardFragment extends Fragment {
         } else {
             return bytes + " B";
         }
+    }
+    void addShowHideListener( final Fragment fragment) {
+        FragmentManager fm = AppReference.mainContext.getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        if (fragment.isHidden()) {
+            ft.show(fragment);
+        } else {
+            ft.hide(fragment);
+        }
+        ft.commit();
     }
 }

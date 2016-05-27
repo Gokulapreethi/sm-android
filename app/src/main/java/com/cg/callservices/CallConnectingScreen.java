@@ -527,7 +527,7 @@ public class CallConnectingScreen extends Activity {
 			AudioCallScreen audioCallScreen = AudioCallScreen
 					.getInstance(context);
 			audioCallScreen.setArguments(bun);
-			ft.replace(R.id.activity_main_content_fragment,
+			ft.add(R.id.activity_main_content_fragment,
 					audioCallScreen);
 			ft.commitAllowingStateLoss();
 
@@ -705,7 +705,7 @@ public class CallConnectingScreen extends Activity {
 				VideoCallScreen videoCallScreen = VideoCallScreen
 						.getInstance(context);
 				videoCallScreen.setArguments(bundle);
-				ft.replace(R.id.activity_main_content_fragment,
+				ft.add(R.id.activity_main_content_fragment,
 						videoCallScreen);
 				ft.commitAllowingStateLoss();
 				Log.d("test", "open VC ***** "

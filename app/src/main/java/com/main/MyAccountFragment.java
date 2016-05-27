@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
@@ -32,8 +34,11 @@ import android.widget.Toast;
 import com.bean.ProfileBean;
 import com.cg.account.MyAccountActivity;
 import com.cg.account.TermsAndAgreement;
+import com.cg.callservices.AudioCallScreen;
+import com.cg.callservices.VideoCallScreen;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.image.utils.ImageLoader;
 import com.util.SingleInstance;
@@ -121,12 +126,12 @@ public class MyAccountFragment extends Fragment {
                 public void onClick(View view) {
                     Intent intent = new Intent(getActivity()
                             .getApplicationContext(), MyAccountActivity.class);
-                    intent.putExtra("status",status);
+                    intent.putExtra("status", status);
                     getActivity().startActivity(intent);
 
                 }
             });
-            RelativeLayout mainHeader = (RelativeLayout) getActivity().findViewById(R.id.mainheader);
+            final RelativeLayout mainHeader = (RelativeLayout) getActivity().findViewById(R.id.mainheader);
             mainHeader.setVisibility(View.VISIBLE);
             LinearLayout contact_layout = (LinearLayout) getActivity()
                     .findViewById(R.id.contact_layout);
@@ -136,6 +141,22 @@ public class MyAccountFragment extends Fragment {
             plusBtn.setVisibility(View.VISIBLE);
             plusBtn.setText("");
             plusBtn.setBackgroundResource(R.drawable.dot);
+            RelativeLayout audio_minimize = (RelativeLayout)getActivity().findViewById(R.id.audio_minimize);
+            RelativeLayout video_minimize = (RelativeLayout)getActivity().findViewById(R.id.video_minimize);
+            audio_minimize.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mainHeader.setVisibility(View.GONE);
+                    addShowHideListener(AudioCallScreen.getInstance(SingleInstance.mainContext));
+                }
+            });
+            video_minimize.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mainHeader.setVisibility(View.GONE);
+                    addShowHideListener(VideoCallScreen.getInstance(SingleInstance.mainContext));
+                }
+            });
             plusBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -656,5 +677,15 @@ public class MyAccountFragment extends Fragment {
     }
     public void setContext(Context cxt) {
         this.mainContext = cxt;
+    }
+    void addShowHideListener( final Fragment fragment) {
+        FragmentManager fm = AppReference.mainContext.getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        if (fragment.isHidden()) {
+            ft.show(fragment);
+        } else {
+            ft.hide(fragment);
+        }
+        ft.commit();
     }
 }

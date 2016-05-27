@@ -660,8 +660,10 @@ public class PatientRoundingFragment extends Fragment {
                             } else if(split[i].equalsIgnoreCase("sick")) {
                                 dynamicTextView.setTextColor(getResources().getColor(R.color.yellow));
                             }
-                            dynamicTextView.setText(split[i]);
-                            currentstatus_lay.addView(dynamicTextView);
+                                if(!split[i].equalsIgnoreCase("") && split.length>0) {
+                                    dynamicTextView.setText(split[i]);
+                                    currentstatus_lay.addView(dynamicTextView);
+                                }
                         }else if(i>5){
                                 TextView dynamicTextView = new TextView(mainContext);
                                 LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 60);
@@ -819,8 +821,10 @@ public class PatientRoundingFragment extends Fragment {
                             } else if(split[i].equalsIgnoreCase("sick")) {
                                 dynamicTextView.setTextColor(getResources().getColor(R.color.yellow));
                             }
-                            dynamicTextView.setText(split[i]);
-                            currentstatus_lay.addView(dynamicTextView);
+                            if(!split[i].equalsIgnoreCase("") && split.length>0) {
+                                dynamicTextView.setText(split[i]);
+                                currentstatus_lay.addView(dynamicTextView);
+                            }
                         } else if (i > 5) {
                             TextView dynamicTextView = new TextView(mainContext);
                             LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 60);
@@ -952,8 +956,10 @@ public class PatientRoundingFragment extends Fragment {
                                             } else if(split[i].equalsIgnoreCase("sick")) {
                                                 dynamicTextView.setTextColor(getResources().getColor(R.color.yellow));
                                             }
-                                            dynamicTextView.setText(split[i]);
-                                            currentstatus_lay.addView(dynamicTextView);
+                                            if(!split[i].equalsIgnoreCase("") && split.length>0) {
+                                                dynamicTextView.setText(split[i]);
+                                                currentstatus_lay.addView(dynamicTextView);
+                                            }
                                         } else if (i > 5) {
                                             TextView dynamicTextView = new TextView(mainContext);
                                             LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 60);

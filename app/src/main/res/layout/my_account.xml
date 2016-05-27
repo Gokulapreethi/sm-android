@@ -55,9 +55,9 @@
                     android:id="@+id/profession"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Professional Designation"
+                    android:text="professional designation"
                     android:textColor="@color/white"
-                    android:textSize="20dp"
+                    android:textSize="15dp"
                     android:layout_marginLeft="5dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"/>

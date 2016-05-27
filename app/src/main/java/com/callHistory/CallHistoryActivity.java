@@ -152,6 +152,7 @@ public class CallHistoryActivity extends Activity {
 							text_recording.setVisibility(View.GONE);
 							recoding_layout.setVisibility(View.GONE);
 							dialog.dismiss();
+							mPlayer.pause();
 						}
 					});
 

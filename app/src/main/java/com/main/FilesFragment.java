@@ -21,6 +21,7 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -48,6 +49,8 @@ import android.widget.Toast;
 
 import com.adapter.NotifyListAdapter;
 import com.cg.DB.DBAccess;
+import com.cg.callservices.AudioCallScreen;
+import com.cg.callservices.VideoCallScreen;
 import com.cg.commongui.WebView_doc;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.TextNoteDatas;
@@ -204,7 +207,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 		Button imVw = (Button) getActivity().findViewById(R.id.im_view);
 		imVw.setVisibility(View.GONE);
 
-		RelativeLayout mainHeader = (RelativeLayout) getActivity().findViewById(R.id.mainheader);
+		final RelativeLayout mainHeader = (RelativeLayout) getActivity().findViewById(R.id.mainheader);
 		mainHeader.setVisibility(View.VISIBLE);
 		LinearLayout contact_layout = (LinearLayout) getActivity()
 				.findViewById(R.id.contact_layout);
@@ -353,6 +356,22 @@ public class FilesFragment extends Fragment implements OnClickListener {
 				text_show.setTextSize(15);
 				text_show.setGravity(Gravity.CENTER_HORIZONTAL);
 				text_show.setTextColor(R.color.black);
+				RelativeLayout audio_minimize = (RelativeLayout)getActivity().findViewById(R.id.audio_minimize);
+				RelativeLayout video_minimize = (RelativeLayout)getActivity().findViewById(R.id.video_minimize);
+				audio_minimize.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						mainHeader.setVisibility(View.GONE);
+						addShowHideListener(AudioCallScreen.getInstance(SingleInstance.mainContext));
+					}
+				});
+				video_minimize.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						mainHeader.setVisibility(View.GONE);
+						addShowHideListener(VideoCallScreen.getInstance(SingleInstance.mainContext));
+					}
+				});
 
 				isEdit = false;
 				// isSelectall = false;
@@ -2190,6 +2209,16 @@ public class FilesFragment extends Fragment implements OnClickListener {
 	private int dp2px(int dp) {
 		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
 				getResources().getDisplayMetrics());
+	}
+	void addShowHideListener( final Fragment fragment) {
+		FragmentManager fm = AppReference.mainContext.getSupportFragmentManager();
+		FragmentTransaction ft = fm.beginTransaction();
+		if (fragment.isHidden()) {
+			ft.show(fragment);
+		} else {
+			ft.hide(fragment);
+		}
+		ft.commit();
 	}
 
 }

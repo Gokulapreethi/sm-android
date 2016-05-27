@@ -204,7 +204,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	private static VideoCallScreen videoCallScreen;
 	public View rootView;
 	Bundle bundlevalues;
-	RelativeLayout mainHeader;
+	RelativeLayout mainHeader,video_minimize;
 
 	public static VideoCallScreen getInstance(Context maincontext) {
 		try {
@@ -258,6 +258,9 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			CallDispatcher.networkState = objCallDispatcher.connectivityType();
 			mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
 			mainHeader.setVisibility(View.GONE);
+
+			video_minimize = (RelativeLayout) getActivity().findViewById(R.id.video_minimize);
+			video_minimize.setVisibility(View.GONE);
 
 			keyguardManager = (KeyguardManager) context.getSystemService(Activity.KEYGUARD_SERVICE);
 			lock = keyguardManager.newKeyguardLock(context.KEYGUARD_SERVICE);
@@ -683,6 +686,9 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			audioProperties = new AudioProperties(context);
 			LayoutInflater inflateLayout = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			rootView = inflater.inflate(R.layout.videocall, null);
+			Button minimize_btn = (Button)rootView.findViewById(R.id.minimize_btn);
+
+
 
 //			Animation rotation = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_xml);
 //			rotation.setRepeatCount(Animation.INFINITE);
@@ -757,6 +763,15 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 			add.setImageResource(R.drawable.call_add);
 			add.setPadding(0, 20, 0, 0);
+
+			minimize_btn.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					addShowHideListener(videoCallScreen);
+
+				}
+			});
+
 			add.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -3461,6 +3476,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		ft.replace(R.id.activity_main_content_fragment,
 				contactsFragment);
 		ft.commitAllowingStateLoss();
+		video_minimize.setVisibility(View.GONE);
 	}
 	private void showCallHistory()
 	{
@@ -3514,6 +3530,17 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			e.printStackTrace();
 		}
 
+	}
+	void addShowHideListener( final Fragment fragment) {
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
+		if (fragment.isHidden()) {
+			ft.show(fragment);
+		} else {
+			ft.hide(fragment);
+		}
+		ft.commit();
+		video_minimize.setVisibility(View.VISIBLE);
+		mainHeader.setVisibility(View.VISIBLE);
 	}
 
 }

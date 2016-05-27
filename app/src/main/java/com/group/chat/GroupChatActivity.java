@@ -1078,7 +1078,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     public void onClick(View view) {
                         if (isGroup || isRounding) {
                             Log.d("Test", "Inside Group VideoConference onclick");
-                                groupCallMenu(2);
+                            groupCallMenu(2);
                         } else {
                             individualCallMenu(1);
                         }
@@ -4402,14 +4402,14 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             Log.d("selecteduser", "---->checking the values" + isChecked);
                             gcBean.setSelect(true);
                             checkBoxCounter++;
-                                countofcheckbox(checkBoxCounter);
+                            countofcheckbox(checkBoxCounter);
 
                         } else {
                             gcBean.setSelect(false);
                             checkBoxCounter--;
 
-                               countofcheckbox(checkBoxCounter);
-                            }
+                            countofcheckbox(checkBoxCounter);
+                        }
                     }
 
                 });
@@ -4916,37 +4916,37 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     audio_play.setBackgroundResource(R.drawable.play);
                 }
                 audio_play.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if(finalPlayBean == null)
+                    @Override
+                    public void onClick(View view) {
+                        if(finalPlayBean == null)
+                        {
+                            audio_play.setBackgroundResource(R.drawable.audiopause);
+                            playAudio(gcBean.getMediaName(), position);
+                            gcBean.setPlaying(true);
+                            finalPlayBean = gcBean;
+                        }else if(finalPlayBean == gcBean)
+                        {
+                            if(mPlayer.isPlaying())
                             {
-                                audio_play.setBackgroundResource(R.drawable.audiopause);
-                                playAudio(gcBean.getMediaName(), position);
-                                gcBean.setPlaying(true);
-                                finalPlayBean = gcBean;
-                            }else if(finalPlayBean == gcBean)
-                            {
-                                if(mPlayer.isPlaying())
-                                {
-                                    mPlayer.pause();
-                                    audio_play.setBackgroundResource(R.drawable.play);
-                                    gcBean.setPlaying(false);
-                                }else
-                                {
-                                    gcBean.setPlaying(true);
-                                    audio_play.setBackgroundResource(R.drawable.audiopause);
-                                    mPlayer.start();
-
-                                }
+                                mPlayer.pause();
+                                audio_play.setBackgroundResource(R.drawable.play);
+                                gcBean.setPlaying(false);
                             }else
                             {
-                                finalPlayBean.setPlaying(false);
-                                finalPlayBean = gcBean;
-                                finalPlayBean.setPlaying(true);
+                                gcBean.setPlaying(true);
                                 audio_play.setBackgroundResource(R.drawable.audiopause);
-                                playAudio(gcBean.getMediaName(), position);
+                                mPlayer.start();
 
                             }
+                        }else
+                        {
+                            finalPlayBean.setPlaying(false);
+                            finalPlayBean = gcBean;
+                            finalPlayBean.setPlaying(true);
+                            audio_play.setBackgroundResource(R.drawable.audiopause);
+                            playAudio(gcBean.getMediaName(), position);
+
+                        }
 
 //                        if (mPlayer.isPlaying()) {
 //                            if (signalid.equalsIgnoreCase(gcBean.getSignalid())) {
@@ -8604,7 +8604,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(tmp);
                     if (pBean != null)
                         if (pBean.getTitle()!=null &&pBean.getTitle().equalsIgnoreCase("Dr.")
-                            || pBean.getTitle().equalsIgnoreCase("Prof."))
+                                || pBean.getTitle().equalsIgnoreCase("Prof."))
                             uBean.setFirstname(pBean.getTitle() + pBean.getFirstname());
                         else
                             uBean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname());
@@ -9814,7 +9814,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         } else if (isprivateclicked) {
             isprivateclicked = false;
             if(members!=null)
-            sendSpecialMessage("gp", members);
+                sendSpecialMessage("gp", members);
             else
                 showToast("Please select members to send");
 
@@ -9910,36 +9910,36 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     public static Vector<BuddyInformationBean> getOnlineList(Vector<BuddyInformationBean> vectorBean) {
         String status = null;
         Vector<BuddyInformationBean> tempList = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> onlinelist = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> offlinelist = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> airplanelist = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> awaylist = new Vector<BuddyInformationBean>();
-            tempList.clear();
-            for (BuddyInformationBean sortlistbean : vectorBean) {
-                status = sortlistbean.getStatus();
-                Log.i("AAAA","online list "+status);
-                    if (status.equalsIgnoreCase("Online")) {
-                        onlinelist.add(sortlistbean);
-                    } else if (status.equalsIgnoreCase("Offline") || status.equalsIgnoreCase("Stealth")) {
-                        offlinelist.add(sortlistbean);
-                    } else if (status.equalsIgnoreCase("Airport")|| status.equalsIgnoreCase("busy")) {
-                        airplanelist.add(sortlistbean);
-                    } else if (status.equalsIgnoreCase("Away")) {
-                        awaylist.add(sortlistbean);
-                    }
+        Vector<BuddyInformationBean> onlinelist = new Vector<BuddyInformationBean>();
+        Vector<BuddyInformationBean> offlinelist = new Vector<BuddyInformationBean>();
+        Vector<BuddyInformationBean> airplanelist = new Vector<BuddyInformationBean>();
+        Vector<BuddyInformationBean> awaylist = new Vector<BuddyInformationBean>();
+        tempList.clear();
+        for (BuddyInformationBean sortlistbean : vectorBean) {
+            status = sortlistbean.getStatus();
+            Log.i("AAAA","online list "+status);
+            if (status.equalsIgnoreCase("Online")) {
+                onlinelist.add(sortlistbean);
+            } else if (status.equalsIgnoreCase("Offline") || status.equalsIgnoreCase("Stealth")) {
+                offlinelist.add(sortlistbean);
+            } else if (status.equalsIgnoreCase("Airport")|| status.equalsIgnoreCase("busy")) {
+                airplanelist.add(sortlistbean);
+            } else if (status.equalsIgnoreCase("Away")) {
+                awaylist.add(sortlistbean);
             }
-            if(onlinelist.size()>0)
+        }
+        if(onlinelist.size()>0)
             tempList.addAll(onlinelist);
-           if(airplanelist.size()>0)
+        if(airplanelist.size()>0)
             tempList.addAll(airplanelist);
-           if(awaylist.size()>0)
+        if(awaylist.size()>0)
             tempList.addAll(awaylist);
-           if(offlinelist.size()>0)
+        if(offlinelist.size()>0)
             tempList.addAll(offlinelist);
 
         return tempList;
 
-     }
+    }
     private void linkProcess()
     {
         final LinearLayout content = (LinearLayout) findViewById(R.id.content);
@@ -10086,7 +10086,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 
     }
     public void sendForwardMsg(String message, String localpath, String type,
-                        SpecialMessageBean spBean,String member,Boolean fromgroup) {
+                               SpecialMessageBean spBean,String member,Boolean fromgroup) {
 
         try {
             msgoptionview.setVisibility(View.GONE);

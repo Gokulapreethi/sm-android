@@ -176,34 +176,80 @@
             android:background="@color/black2" >
 
             </FrameLayout>
+
+            <RelativeLayout
+                android:id="@+id/audio_minimize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="65dp"
+                android:visibility="gone"
+                android:background="@drawable/minimize_lay"
+                >
+
+                <ImageView
+                    android:id="@+id/audio_button"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/ic_action_call"
+
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:layout_marginTop="6dp"
+                    android:layout_toRightOf="@+id/audio_button"
+                    android:textColor="@color/white"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/video_minimize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="110dp"
+                android:visibility="gone"
+                android:background="@drawable/minimize_lay"
+                >
+
+                <ImageView
+                    android:id="@+id/video_button"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/ic_action_video_white"
+
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:layout_marginTop="6dp"
+                    android:layout_toRightOf="@+id/video_button"
+                    android:textColor="@color/white"
+                    />
+
+            </RelativeLayout>
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="60dp"
                 android:layout_gravity="end"
                 android:layout_weight="1"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/audio_info"/>
+                android:layout_marginTop="140dp"
+                android:visibility="gone"
+                android:background="@drawable/min_in_call"/>
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="60dp"
                 android:layout_gravity="end"
                 android:layout_weight="1"
-                android:layout_marginTop="70dp"
-                android:background="@drawable/video_info"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_gravity="end"
-                android:layout_weight="1"
-                android:layout_marginTop="120dp"
-                android:background="@drawable/audio_miss"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_gravity="end"
-                android:layout_weight="1"
-                android:layout_marginTop="170dp"
-                android:background="@drawable/audio_miss"/>
+                android:layout_marginTop="180dp"
+                android:visibility="gone"
+                android:background="@drawable/min_out_call"/>
         </FrameLayout>
 
     </LinearLayout>

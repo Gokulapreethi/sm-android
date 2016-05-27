@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,8 +27,11 @@ import android.widget.Toast;
 
 import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
+import com.cg.callservices.AudioCallScreen;
+import com.cg.callservices.VideoCallScreen;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.group.GroupActivity;
 import com.group.chat.GroupChatActivity;
@@ -79,7 +83,7 @@ public class RoundingFragment extends Fragment {
                              Bundle savedInstanceState) {
         Button select = (Button) getActivity().findViewById(R.id.btn_brg);
         select.setVisibility(View.GONE);
-        RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
+        final RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
         mainHeader.setVisibility(View.VISIBLE);
         LinearLayout contact_layout=(LinearLayout) getActivity().findViewById(R.id.contact_layout);
         contact_layout.setVisibility(View.GONE);
@@ -101,6 +105,22 @@ public class RoundingFragment extends Fragment {
                 R.id.activity_main_content_title);
         title.setVisibility(View.VISIBLE);
         title.setText("ROUNDING");
+        RelativeLayout audio_minimize = (RelativeLayout)getActivity().findViewById(R.id.audio_minimize);
+        RelativeLayout video_minimize = (RelativeLayout)getActivity().findViewById(R.id.video_minimize);
+        audio_minimize.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainHeader.setVisibility(View.GONE);
+                addShowHideListener(AudioCallScreen.getInstance(SingleInstance.mainContext));
+            }
+        });
+        video_minimize.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainHeader.setVisibility(View.GONE);
+                addShowHideListener(VideoCallScreen.getInstance(SingleInstance.mainContext));
+            }
+        });
 
         Button backBtn = (Button) getActivity().findViewById(R.id.backbtn);
         backBtn.setVisibility(View.GONE);
@@ -293,5 +313,15 @@ public class RoundingFragment extends Fragment {
             e.printStackTrace();
         }
 
+    }
+    void addShowHideListener( final Fragment fragment) {
+        FragmentManager fm = AppReference.mainContext.getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        if (fragment.isHidden()) {
+            ft.show(fragment);
+        } else {
+            ft.hide(fragment);
+        }
+        ft.commit();
     }
 }

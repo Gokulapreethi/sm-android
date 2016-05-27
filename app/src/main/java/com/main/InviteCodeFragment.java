@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.cg.callservices.AudioCallScreen;
+import com.cg.callservices.VideoCallScreen;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.util.SingleInstance;
 
@@ -65,6 +69,22 @@ public class InviteCodeFragment extends Fragment {
             title.setText("INVITE");
             appMainActivity = (AppMainActivity) SingleInstance.contextTable
                     .get("MAIN");
+            RelativeLayout audio_minimize = (RelativeLayout)getActivity().findViewById(R.id.audio_minimize);
+            RelativeLayout video_minimize = (RelativeLayout)getActivity().findViewById(R.id.video_minimize);
+            audio_minimize.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mainHeader.setVisibility(View.GONE);
+                    addShowHideListener(AudioCallScreen.getInstance(SingleInstance.mainContext));
+                }
+            });
+            video_minimize.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mainHeader.setVisibility(View.GONE);
+                    addShowHideListener(VideoCallScreen.getInstance(SingleInstance.mainContext));
+                }
+            });
             Button backBtn = (Button) getActivity().findViewById(R.id.backbtn);
             backBtn.setVisibility(View.VISIBLE);
             backBtn.setOnClickListener(new View.OnClickListener() {
@@ -120,5 +140,15 @@ public class InviteCodeFragment extends Fragment {
             e.printStackTrace();
         }
         return view;
+    }
+    void addShowHideListener( final Fragment fragment) {
+        FragmentManager fm = AppReference.mainContext.getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        if (fragment.isHidden()) {
+            ft.show(fragment);
+        } else {
+            ft.hide(fragment);
+        }
+        ft.commit();
     }
 }

@@ -28,6 +28,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,7 +48,10 @@ import com.cg.account.ChangePassword;
 import com.cg.account.GenerateInviteCode;
 import com.cg.account.PinAndTouchId;
 import com.cg.account.SecurityQuestions;
+import com.cg.callservices.AudioCallScreen;
+import com.cg.callservices.VideoCallScreen;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.files.CompleteListView;
@@ -146,7 +150,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		try {
 			Button select = (Button) getActivity().findViewById(R.id.btn_brg);
 			select.setVisibility(View.GONE);
-			RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
+			final RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
 			mainHeader.setVisibility(View.VISIBLE);
 			LinearLayout contact_layout=(LinearLayout) getActivity().findViewById(R.id.contact_layout);
 			contact_layout.setVisibility(View.GONE);
@@ -168,6 +172,22 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 			Button backBtn = (Button) getActivity().findViewById(R.id.backbtn);
 			backBtn.setVisibility(View.GONE);
 			imageLoader = new ImageLoader(mainContext);
+			RelativeLayout audio_minimize = (RelativeLayout)getActivity().findViewById(R.id.audio_minimize);
+			RelativeLayout video_minimize = (RelativeLayout)getActivity().findViewById(R.id.video_minimize);
+			audio_minimize.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					mainHeader.setVisibility(View.GONE);
+					addShowHideListener(AudioCallScreen.getInstance(SingleInstance.mainContext));
+				}
+			});
+			video_minimize.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					mainHeader.setVisibility(View.GONE);
+					addShowHideListener(VideoCallScreen.getInstance(SingleInstance.mainContext));
+				}
+			});
 			view = null;
 			if (view == null) {
 				view = inflater.inflate(R.layout.settings_new, null);
@@ -690,5 +710,15 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 			e.printStackTrace();
 		}
 
+	}
+	void addShowHideListener( final Fragment fragment) {
+		FragmentManager fm = AppReference.mainContext.getSupportFragmentManager();
+		FragmentTransaction ft = fm.beginTransaction();
+		if (fragment.isHidden()) {
+			ft.show(fragment);
+		} else {
+			ft.hide(fragment);
+		}
+		ft.commit();
 	}
 }

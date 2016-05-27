@@ -42,8 +42,10 @@ import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
 import com.cg.account.AMAVerification;
 import com.cg.avatar.AnsweringMachineActivity;
+import com.cg.callservices.AudioCallScreen;
 import com.cg.callservices.CallConnectingScreen;
 import com.cg.callservices.SipCallConnectingScreen;
+import com.cg.callservices.VideoCallScreen;
 import com.cg.commonclass.BuddyListComparator;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
@@ -245,7 +247,7 @@ public class ContactsFragment extends Fragment {
 		SingleInstance.instanceTable.put("contactspage", contactsFragment);
 		Button select = (Button) getActivity().findViewById(R.id.btn_brg);
 		select.setVisibility(View.GONE);
-		RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
+		final RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
 		mainHeader.setVisibility(View.VISIBLE);
 		LinearLayout contact_layout=(LinearLayout) getActivity().findViewById(R.id.contact_layout);
 		contact_layout.setVisibility(View.GONE);
@@ -274,6 +276,22 @@ public class ContactsFragment extends Fragment {
 		title.setTextSize(20);
 //		title.setTypeface(tf_regular);
 		loadCurrentStatus();
+		RelativeLayout audio_minimize = (RelativeLayout)getActivity().findViewById(R.id.audio_minimize);
+		RelativeLayout video_minimize = (RelativeLayout)getActivity().findViewById(R.id.video_minimize);
+		audio_minimize.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mainHeader.setVisibility(View.GONE);
+				addShowHideListener(AudioCallScreen.getInstance(SingleInstance.mainContext));
+			}
+		});
+		video_minimize.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mainHeader.setVisibility(View.GONE);
+				addShowHideListener(VideoCallScreen.getInstance(SingleInstance.mainContext));
+			}
+		});
 
 		_rootView = null;
 		if (_rootView == null) {
@@ -3656,5 +3674,15 @@ public class ContactsFragment extends Fragment {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	void addShowHideListener( final Fragment fragment) {
+		FragmentManager fm = AppReference.mainContext.getSupportFragmentManager();
+		FragmentTransaction ft = fm.beginTransaction();
+		if (fragment.isHidden()) {
+			ft.show(fragment);
+		} else {
+			ft.hide(fragment);
+		}
+		ft.commit();
 	}
 }
