@@ -2721,7 +2721,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 										bundle.putString("buddy", from);
 										bundle.putString("receive", "false");
 										audioCallScreen.setArguments(bundle);
-										ft.add(R.id.activity_main_content_fragment,
+										ft.replace(R.id.activity_main_content_fragment,
 												audioCallScreen);
 										ft.commitAllowingStateLoss();
 									} else if (sb.getCallType().equals("VBC")
@@ -2780,7 +2780,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 //										i.putExtras(bundle);
 									//	bundle.putString("buddy", from);
 										videoCallScreen.setArguments(bundle);
-										ft.add(R.id.activity_main_content_fragment,
+										ft.replace(R.id.activity_main_content_fragment,
 												videoCallScreen);
 										ft.commitAllowingStateLoss();
 									}

@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -62,7 +63,7 @@ public class AddGroupMembers extends Activity {
 
     Vector<UserBean> contactList = new Vector<UserBean>();
 	Boolean invite;
-	String groupid;
+	String groupid,calltype;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +92,7 @@ public class AddGroupMembers extends Activity {
 			final TextView txtView01 = (TextView) findViewById(R.id.tx_headingaddcontact);
 			final TextView ed_search = (TextView) findViewById(R.id.searchet);
 			text_memeberscount = (TextView)findViewById(R.id.text_memeberscount);
+			calltype=getIntent().getStringExtra("calltype");
 
 			if(invite){
 				txtView01.setText("ADD MEMBERS");
@@ -233,7 +235,10 @@ public class AddGroupMembers extends Activity {
                             showToast("Buddy not selected");
 
                         } else {
-                            setResult(RESULT_OK, getIntent().putExtra("list", users));
+							Intent intent=getIntent();
+							intent.putExtra("calltype", calltype);
+							intent.putExtra("list", users);
+                            setResult(RESULT_OK, intent);
                             finish();
                         }
                     } else {

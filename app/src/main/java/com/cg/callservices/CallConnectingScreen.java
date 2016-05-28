@@ -142,7 +142,7 @@ public class CallConnectingScreen extends Activity {
 		if(isBConf && calltype.equalsIgnoreCase("VC")){
 			setTitle();
 			frameLayout.setVisibility(View.VISIBLE);
-			profilePicture.setVisibility(View.GONE);
+			profilePicture.setVisibility(View.INVISIBLE);
 			int i=0;
 			Log.i("onlineuser","confereence  "+confMembers.size());
 			for(String user:confMembers){
@@ -527,7 +527,7 @@ public class CallConnectingScreen extends Activity {
 			AudioCallScreen audioCallScreen = AudioCallScreen
 					.getInstance(context);
 			audioCallScreen.setArguments(bun);
-			ft.add(R.id.activity_main_content_fragment,
+			ft.replace(R.id.activity_main_content_fragment,
 					audioCallScreen);
 			ft.commitAllowingStateLoss();
 
@@ -705,7 +705,7 @@ public class CallConnectingScreen extends Activity {
 				VideoCallScreen videoCallScreen = VideoCallScreen
 						.getInstance(context);
 				videoCallScreen.setArguments(bundle);
-				ft.add(R.id.activity_main_content_fragment,
+				ft.replace(R.id.activity_main_content_fragment,
 						videoCallScreen);
 				ft.commitAllowingStateLoss();
 				Log.d("test", "open VC ***** "

@@ -249,15 +249,16 @@
                     </RelativeLayout>
                 </FrameLayout>
 
-                <RelativeLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="fill_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="1">-->
 
                     <FrameLayout
                         android:id="@+id/VideoView04"
                         android:layout_width="fill_parent"
                         android:layout_height="match_parent"
+                        android:layout_weight="1"
                         android:visibility="gone">
 
                         <android.opengl.GLSurfaceView
@@ -298,7 +299,7 @@
                                 android:textSize="15dp" />
                         </RelativeLayout>
                     </FrameLayout>
-                </RelativeLayout>
+                <!--</RelativeLayout>-->
             </LinearLayout>
 
         </LinearLayout>
@@ -338,13 +339,13 @@
                 android:layout_weight="1" />
 
 
-            <Button
+            <ImageView
                 android:id="@+id/btn_video"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/btn_han"
                 android:layout_weight="1"
-                android:background="@drawable/call_video"
+                android:layout_marginTop="5dp"
+                android:src="@drawable/call_video_active"
                 android:visibility="visible" />
             <ImageView
                 android:id="@+id/add"

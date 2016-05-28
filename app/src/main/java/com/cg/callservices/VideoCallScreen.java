@@ -5,11 +5,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.KeyguardManager;
 import android.app.KeyguardManager.KeyguardLock;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.Camera;
@@ -62,6 +64,7 @@ import com.util.SingleInstance;
 import org.audio.AudioProperties;
 import org.core.VideoCallback;
 import org.lib.model.BuddyInformationBean;
+import org.lib.model.RecordTransactionBean;
 import org.lib.model.SignalingBean;
 import org.util.GraphicsUtil;
 import org.util.Queue;
@@ -88,7 +91,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	private boolean isShowingMediaFailureIcon = false;
 	Timer timer = null;
 	Handler handler = null;
-	LinearLayout linearLayout;
+	LinearLayout bottom_videowindows , top_videoWindows;
 //	RelativeLayout relativeLayout;
 	int orientation = 0;
 	int i = 0;
@@ -128,7 +131,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	boolean mReceiveVideo = false;
 	boolean mReceiveVideo2 = false;
 	// private AudioProperties audioProperties=null;
-	RelativeLayout layout;
+	RelativeLayout layout , own_video_layout;
 	RelativeLayout relative_layout2 , relative_layout3;
 	//
 	int obtainWidth = 0;
@@ -142,18 +145,19 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 //	GLSurfaceView gls = null;
 	private static GLSurfaceView glSurfaceView = null;
+	private static GLSurfaceView glSurfaceView12 = null;
 	private static GLSurfaceView glSurfaceView2 = null;
 	private static GLSurfaceView glSurfaceView3 = null;
 
-	TextView on_off1,on_off2,on_off3,onoff_preview,participant_name1,participant_name2,participant_name3,ownername;
-	ImageView buddyimageview1, buddyimageview2, buddyimageview3, ownimageview;
+	TextView on_off1,on_off12,on_off2,on_off3,onoff_preview,participant_name1,participant_name12,participant_name2,participant_name3,ownername;
+	ImageView buddyimageview1, buddyimageview12, buddyimageview2, buddyimageview3, ownimageview;
 	Timer buddytimer1 = null, buddytimer2 = null, buddyTimer3 = null;
 	VideoOnOffTimerTask buddyTimerTask1 = null, buddyTimerTask2 = null, buddyTimerTask3 = null;
 //	private VideoFrameRenderer frameRenderer = null;
-	private PreviewFrameSink frameSink = null, frameSink2 = null, frameSink3 = null;
+	private PreviewFrameSink frameSink = null, frameSink12 = null, frameSink2 = null, frameSink3 = null;
 
 //	private byte[] frame = null;
-	private ByteBuffer frameBuffer = null, frameBuffer2 = null, frameBuffer3 = null;
+	private ByteBuffer frameBuffer = null, frameBuffer12 = null, frameBuffer2 = null, frameBuffer3 = null;
 
 
 	// public ImageAdapter ad = null;
@@ -169,7 +173,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 	private String strCallStartTime = "";
 
-	private FrameLayout videosurface, videosurface2, videosurface3;
+	private FrameLayout videosurface, videosurface12, videosurface2, videosurface3;
 
 //	private GLSurfaceView glSurfaceView2;
 
@@ -222,7 +226,14 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			return videoCallScreen;
 		}
 	}
+	private int activityOrientation;
+	@Override
+	public void onAttach(Activity arg0) {
+		super.onAttach(arg0);
+		activityOrientation = arg0.getRequestedOrientation();
 
+		arg0.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+	}
 
 	/**
 	 * Called when the activity is starting. Also used to Initialize the members
@@ -449,6 +460,14 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 								glSurfaceView.requestRender();
 
 //							}
+							} else if(bundle.getInt("windowid") == 12) {
+								frameSink12.getFrameLock().lock();
+								frameBuffer12.position(0);
+								frameBuffer12.put(bundle.getByteArray("img"));
+								frameBuffer12.position(0);
+								frameSink12.setNextFrame(frameBuffer12);
+								frameSink12.getFrameLock().unlock();
+								glSurfaceView12.requestRender();
 							} else if(bundle.getInt("windowid") == 1) {
 //							if(video_2_shown) {
 								Log.i("NotesVideo","video_2_shown");
@@ -685,175 +704,185 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 			audioProperties = new AudioProperties(context);
 			LayoutInflater inflateLayout = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			rootView = inflater.inflate(R.layout.videocall, null);
-			Button minimize_btn = (Button)rootView.findViewById(R.id.minimize_btn);
-
+			if(rootView==null) {
+				rootView = inflater.inflate(R.layout.videocall, null);
+				Button minimize_btn = (Button) rootView.findViewById(R.id.minimize_btn);
 
 
 //			Animation rotation = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_xml);
 //			rotation.setRepeatCount(Animation.INFINITE);
 //			rootView.startAnimation(rotation);
 //
-			LinearLayout callControls = (LinearLayout) rootView.findViewById
-					(R.id.LinearLayout01);
-			videopreview = (FrameLayout) rootView
-					.findViewById(R.id.VideoView01);
-			flipcamera=(Button)rootView.findViewById(R.id.flipcamera);
+				LinearLayout callControls = (LinearLayout) rootView.findViewById
+						(R.id.LinearLayout01);
+				videopreview = (FrameLayout) rootView
+						.findViewById(R.id.VideoView01);
+				flipcamera = (Button) rootView.findViewById(R.id.flipcamera);
 
 //			RotateAnimation rotate= (RotateAnimation)AnimationUtils.loadAnimation(context,R.anim.rotate_xml);
 //			callControls.setAnimation(rotate);
 
-			videosurface = (FrameLayout) rootView
-					.findViewById(R.id.VideoView02);
-			videosurface2 = (FrameLayout) rootView
-					.findViewById(R.id.VideoView03);
+				videosurface = (FrameLayout) rootView
+						.findViewById(R.id.VideoView02);
+				videosurface12 = (FrameLayout) rootView
+						.findViewById(R.id.VideoView0203);
+				videosurface2 = (FrameLayout) rootView
+						.findViewById(R.id.VideoView03);
 
-			videosurface3 = (FrameLayout) rootView
-					.findViewById(R.id.VideoView04);
+				videosurface3 = (FrameLayout) rootView
+						.findViewById(R.id.VideoView04);
 
-			glSurfaceView = (GLSurfaceView)rootView.findViewById(R.id.surfaceview02);
-			glSurfaceView2 = (GLSurfaceView)rootView.findViewById(R.id.surfaceview03);
-			glSurfaceView3 = (GLSurfaceView)rootView.findViewById(R.id.surfaceview04);
+				final ImageView btn_video = (ImageView) rootView.findViewById(R.id.btn_video);
 
-			onoff_preview = (TextView)rootView.findViewById(R.id.onoffpreview);
-			onoff_preview.setTag(true);
-			on_off1 = (TextView)rootView.findViewById(R.id.onoff2);
-			on_off1.setTag(true);
-//			RotateAnimation rotate1= (RotateAnimation)AnimationUtils.loadAnimation(context,R.anim.rotate_xml);
-//			on_off1.setAnimation(rotate1);
-			on_off2 = (TextView)rootView.findViewById(R.id.onoff3);
-			on_off2.setTag(true);
-			on_off3 = (TextView)rootView.findViewById(R.id.onoff4);
-			on_off3.setTag(true);
+				glSurfaceView = (GLSurfaceView) rootView.findViewById(R.id.surfaceview02);
+				glSurfaceView12 = (GLSurfaceView) rootView.findViewById(R.id.surfaceview0203);
+				glSurfaceView2 = (GLSurfaceView) rootView.findViewById(R.id.surfaceview03);
+				glSurfaceView3 = (GLSurfaceView) rootView.findViewById(R.id.surfaceview04);
 
-			ownername = (TextView)rootView.findViewById(R.id.name1);
-			participant_name1 = (TextView)rootView.findViewById(R.id.name2);
-			participant_name2 = (TextView)rootView.findViewById(R.id.name3);
-			participant_name3 = (TextView)rootView.findViewById(R.id.name4);
+				onoff_preview = (TextView) rootView.findViewById(R.id.onoffpreview);
+				btn_video.setTag(true);
+				on_off1 = (TextView) rootView.findViewById(R.id.onoff2);
+				on_off1.setTag(true);
+				on_off12 = (TextView) rootView.findViewById(R.id.onoff23);
+				on_off12.setTag(true);
+				on_off2 = (TextView) rootView.findViewById(R.id.onoff3);
+				on_off2.setTag(true);
+				on_off3 = (TextView) rootView.findViewById(R.id.onoff4);
+				on_off3.setTag(true);
 
-			ownimageview = (ImageView)rootView.findViewById(R.id.own_image);
-			buddyimageview1 = (ImageView)rootView.findViewById(R.id.user_image2);
-			buddyimageview2 = (ImageView)rootView.findViewById(R.id.user_image3);
-			buddyimageview3 = (ImageView)rootView.findViewById(R.id.user_image4);
+				ownername = (TextView) rootView.findViewById(R.id.name1);
+				own_video_layout = (RelativeLayout) rootView.findViewById(R.id.ownvideolayout);
+				top_videoWindows = (LinearLayout) rootView.findViewById(R.id.top_videowindowlayouts);
+				bottom_videowindows = (LinearLayout) rootView.findViewById(R.id.bottom_videowindowlayout);
+				participant_name1 = (TextView) rootView.findViewById(R.id.name2);
+				participant_name12 = (TextView) rootView.findViewById(R.id.name23);
+				participant_name2 = (TextView) rootView.findViewById(R.id.name3);
+				participant_name3 = (TextView) rootView.findViewById(R.id.name4);
 
-			total_buddyList = ContactsFragment.getBuddyList();
-			imageLoader = new ImageLoader(context);
+				ownimageview = (ImageView) rootView.findViewById(R.id.own_image);
+				buddyimageview1 = (ImageView) rootView.findViewById(R.id.user_image2);
+				buddyimageview12 = (ImageView) rootView.findViewById(R.id.user_image23);
+				buddyimageview2 = (ImageView) rootView.findViewById(R.id.user_image3);
+				buddyimageview3 = (ImageView) rootView.findViewById(R.id.user_image4);
 
-			numOfCam = Camera.getNumberOfCameras();
+				total_buddyList = ContactsFragment.getBuddyList();
+				imageLoader = new ImageLoader(context);
 
-			LinearLayout llCallControl = (LinearLayout) rootView
-					.findViewById(R.id.LinearLayout01);
+				numOfCam = Camera.getNumberOfCameras();
 
-			CallDispatcher.videoScreenVisibleState = true;
-			ScrollView llControlss = new ScrollView(context);
-			llControlss.setLayoutParams(new LayoutParams(
-					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-			llControlss.setVerticalScrollBarEnabled(false);
+				LinearLayout llCallControl = (LinearLayout) rootView
+						.findViewById(R.id.LinearLayout01);
+
+				CallDispatcher.videoScreenVisibleState = true;
+				ScrollView llControlss = new ScrollView(context);
+				llControlss.setLayoutParams(new LayoutParams(
+						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+				llControlss.setVerticalScrollBarEnabled(false);
 //			LinearLayout llControls = new LinearLayout(context);
 //			llControls.setLayoutParams(new LayoutParams(
 //					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 //			llControls.setOrientation(LinearLayout.VERTICAL);
 
-			ImageView add = (ImageView) rootView.findViewById(R.id.add);
+				ImageView add = (ImageView) rootView.findViewById(R.id.add);
 
-			TextView member_count=(TextView)rootView.findViewById(R.id.members_count);
-			Button members=(Button)rootView.findViewById(R.id.members);
-			add.setKeepScreenOn(true);
-			// add.setText("ADD");
+				TextView member_count = (TextView) rootView.findViewById(R.id.members_count);
+				Button members = (Button) rootView.findViewById(R.id.members);
+				add.setKeepScreenOn(true);
+				// add.setText("ADD");
 
-			add.setImageResource(R.drawable.call_add);
-			add.setPadding(0, 20, 0, 0);
+				add.setImageResource(R.drawable.call_add);
+				add.setPadding(0, 20, 0, 0);
 
-			minimize_btn.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					addShowHideListener(videoCallScreen);
+				minimize_btn.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						addShowHideListener();
 
-				}
-			});
+					}
+				});
 
-			add.setOnClickListener(new OnClickListener() {
+				add.setOnClickListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					try {
+					@Override
+					public void onClick(View v) {
+						try {
 
-						if (CallDispatcher.conferenceMembers.size() < 3) {
-							if (alert == null) {
+							if (CallDispatcher.conferenceMembers.size() < 3) {
+								if (alert == null) {
 
-								ShowOnlineBuddies("VC");
-							} else if (!alert.isShowing()) {
-								ShowOnlineBuddies("VC");
+									ShowOnlineBuddies("VC");
+								} else if (!alert.isShowing()) {
+									ShowOnlineBuddies("VC");
+								}
+
+							} else {
+
+								Toast.makeText(
+										context,
+										SingleInstance.mainContext.getResources()
+												.getString(
+														R.string.max_conf_members),
+										Toast.LENGTH_SHORT).show();
 							}
-
-						} else {
-
-							Toast.makeText(
-									context,
-									SingleInstance.mainContext.getResources()
-											.getString(
-													R.string.max_conf_members),
-									Toast.LENGTH_SHORT).show();
+						} catch (Exception e) {
+							// TODO: handle exception
+							e.printStackTrace();
 						}
-					} catch (Exception e) {
-						// TODO: handle exception
-						e.printStackTrace();
+
 					}
-
-				}
-			});
-			member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()));
-			members.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent i = new Intent(AppReference.mainContext, CallActiveMembersList.class);
-					i.putExtra("sessionId",sessionid);
-					AppReference.mainContext.startActivity(i);
-				}
-			});
-			ImageView hangup = (ImageView) rootView.findViewById(R.id.hang);
-
-			hangup.setImageResource(R.drawable.call_reject);
-
-			hangup.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-
-					if (alert == null) {
-
-						showHangUpAlert();
-					} else if (!alert.isShowing()) {
-						showHangUpAlert();
+				});
+				member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()));
+				members.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Intent i = new Intent(AppReference.mainContext, CallActiveMembersList.class);
+						i.putExtra("sessionId", sessionid);
+						AppReference.mainContext.startActivity(i);
 					}
+				});
+				ImageView hangup = (ImageView) rootView.findViewById(R.id.hang);
 
-				}
-			});
+				hangup.setImageResource(R.drawable.call_reject);
 
-			loudSpeaker  = (ImageView) rootView.findViewById(R.id.loudspeaker);
+				hangup.setOnClickListener(new OnClickListener() {
 
-			loudSpeaker.setImageResource(R.drawable.call_speaker);
-			mic = (ImageView) rootView.findViewById(R.id.speaker);
+					@Override
+					public void onClick(View v) {
 
-			// mic.setBackgroundDrawable(micUnmuteState());
-			mic.setImageResource(R.drawable.call_mic);
-			speaker = false;
+						if (alert == null) {
 
-			if (SingleInstance.mainContext.isAutoAcceptEnabled(
-					CallDispatcher.LoginUser, buddyName)) {
-				speaker = true;
-				loudSpeaker.setImageResource(R.drawable.call_speaker_active);
+							showHangUpAlert();
+						} else if (!alert.isShowing()) {
+							showHangUpAlert();
+						}
 
-			} else {
-				speaker = false;
+					}
+				});
+
+				loudSpeaker = (ImageView) rootView.findViewById(R.id.loudspeaker);
+
 				loudSpeaker.setImageResource(R.drawable.call_speaker);
-			}
-			audioProperties.setSpeakerphoneOn(speaker);
-			loudSpeaker.setOnClickListener(new OnClickListener() {
+				mic = (ImageView) rootView.findViewById(R.id.speaker);
 
-				@Override
-				public void onClick(View v) {
-					try {
+				// mic.setBackgroundDrawable(micUnmuteState());
+				mic.setImageResource(R.drawable.call_mic);
+				speaker = false;
+
+				if (SingleInstance.mainContext.isAutoAcceptEnabled(
+						CallDispatcher.LoginUser, buddyName)) {
+					speaker = true;
+					loudSpeaker.setImageResource(R.drawable.call_speaker_active);
+
+				} else {
+					speaker = false;
+					loudSpeaker.setImageResource(R.drawable.call_speaker);
+				}
+				audioProperties.setSpeakerphoneOn(speaker);
+				loudSpeaker.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						try {
 						/*
 						 * if (!speaker) { speaker = true; //
 						 * loudSpeaker.setHint("off"); loudSpeaker
@@ -865,116 +894,116 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 						 * audioProperties.setSpeakerphoneOn(speaker);
 						 */
 
-						if (!speaker) {
-							speaker = true;
-							// loudSpeaker.setHint("off");
-							loudSpeaker
-									.setImageResource(R.drawable.call_speaker_active);
-						} else if (speaker) {
-							loudSpeaker
-									.setImageResource(R.drawable.call_speaker);
-							speaker = false;
-							// loudSpeaker.setHint("on");
+							if (!speaker) {
+								speaker = true;
+								// loudSpeaker.setHint("off");
+								loudSpeaker
+										.setImageResource(R.drawable.call_speaker_active);
+							} else if (speaker) {
+								loudSpeaker
+										.setImageResource(R.drawable.call_speaker);
+								speaker = false;
+								// loudSpeaker.setHint("on");
+							}
+							audioProperties.setSpeakerphoneOn(speaker);
+						} catch (Exception e) {
+							// TODO: handle exception
+							e.printStackTrace();
 						}
-						audioProperties.setSpeakerphoneOn(speaker);
-					} catch (Exception e) {
-						// TODO: handle exception
-						e.printStackTrace();
 					}
-				}
-			});
+				});
 
-			mic.setOnClickListener(new OnClickListener() {
+				mic.setOnClickListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					try {
-						if (micmute) {
-							micmute = false;
-							// mic.setBackgroundResource(R.drawable.mic_unmute);
-							mic.setImageResource(R.drawable.call_mic);
-						} else if (!micmute) {
-							micmute = true;
-							// mic.setBackgroundResource(R.drawable.mic_mute);
-							mic.setImageResource(R.drawable.call_mic_active);
-						}
-
-						AppMainActivity.commEngine.micMute(micmute);
-					} catch (Exception e) {
-						// TODO: handle exception
-						e.printStackTrace();
-					}
-
-				}
-			});
-
-//			final Button buddies = new Button(this);
-			ImageView	buddies  = (ImageView) rootView.findViewById(R.id.switchuser);
-			// buddies.setHint("off");
-			buddies.setImageResource(R.drawable.buddies_video);
-			buddies.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-
-					// if (alertForConnectedBuddies == null) {
-					// Log.d("Add", "call show buddies on null");
-					try {
-
-						// if (alert == null) {
-						showConnectedBuddies();
-						// } else if (!alert.isShowing()) {
-						// showConnectedBuddies();
-						// }
-					} catch (Exception e) {
-						// TODO: handle exception
-						e.printStackTrace();
-					}
-
-				}
-			});
-			ImageView btn_loc  = (ImageView) rootView.findViewById(R.id.location);
-			btn_loc.setImageResource(R.drawable.loc_pin);
-
-			if (!receiver.equalsIgnoreCase("true")) {
-				btn_loc.setVisibility(View.GONE);
-			}
-
-			btn_loc.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					try {
-						Log.i("thread", "on click of btn_loc");
-						ArrayList<String> close_buddies = objCallDispatcher
-								.calculateNearestLocations(buddyName.trim());
-
-						if (CallDispatcher.conferenceMembers.size() < 3) {
-							if (alert == null) {
-
-								makeEmergencyCall("VC", close_buddies);
-							} else if (!alert.isShowing()) {
-								makeEmergencyCall("VC", close_buddies);
+					@Override
+					public void onClick(View v) {
+						try {
+							if (micmute) {
+								micmute = false;
+								// mic.setBackgroundResource(R.drawable.mic_unmute);
+								mic.setImageResource(R.drawable.call_mic);
+							} else if (!micmute) {
+								micmute = true;
+								// mic.setBackgroundResource(R.drawable.mic_mute);
+								mic.setImageResource(R.drawable.call_mic_active);
 							}
 
-						} else {
-
-							Toast.makeText(
-									context,
-									SingleInstance.mainContext.getResources()
-											.getString(
-													R.string.max_conf_members),
-									Toast.LENGTH_SHORT).show();
+							AppMainActivity.commEngine.micMute(micmute);
+						} catch (Exception e) {
+							// TODO: handle exception
+							e.printStackTrace();
 						}
-					} catch (Exception e) {
-						// TODO: handle exception
-						e.printStackTrace();
 
 					}
+				});
 
+//			final Button buddies = new Button(this);
+				ImageView buddies = (ImageView) rootView.findViewById(R.id.switchuser);
+				// buddies.setHint("off");
+				buddies.setImageResource(R.drawable.buddies_video);
+				buddies.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+
+						// if (alertForConnectedBuddies == null) {
+						// Log.d("Add", "call show buddies on null");
+						try {
+
+							// if (alert == null) {
+							showConnectedBuddies();
+							// } else if (!alert.isShowing()) {
+							// showConnectedBuddies();
+							// }
+						} catch (Exception e) {
+							// TODO: handle exception
+							e.printStackTrace();
+						}
+
+					}
+				});
+				ImageView btn_loc = (ImageView) rootView.findViewById(R.id.location);
+				btn_loc.setImageResource(R.drawable.loc_pin);
+
+				if (!receiver.equalsIgnoreCase("true")) {
+					btn_loc.setVisibility(View.GONE);
 				}
-			});
+
+				btn_loc.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						try {
+							Log.i("thread", "on click of btn_loc");
+							ArrayList<String> close_buddies = objCallDispatcher
+									.calculateNearestLocations(buddyName.trim());
+
+							if (CallDispatcher.conferenceMembers.size() < 3) {
+								if (alert == null) {
+
+									makeEmergencyCall("VC", close_buddies);
+								} else if (!alert.isShowing()) {
+									makeEmergencyCall("VC", close_buddies);
+								}
+
+							} else {
+
+								Toast.makeText(
+										context,
+										SingleInstance.mainContext.getResources()
+												.getString(
+														R.string.max_conf_members),
+										Toast.LENGTH_SHORT).show();
+							}
+						} catch (Exception e) {
+							// TODO: handle exception
+							e.printStackTrace();
+
+						}
+
+					}
+				});
 
 //			llControls.addView(add, layoutParams);
 //			llControls.addView(mic, layoutParams);
@@ -984,136 +1013,140 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 //			llControls.addView(btn_loc, layoutParams);
 //			llControlss.addView(llControls);
 
-			RelativeLayout rlForAlignment = new RelativeLayout(context);
-			rlForAlignment.setLayoutParams(new LayoutParams(
-					RelativeLayout.LayoutParams.FILL_PARENT,
-					RelativeLayout.LayoutParams.FILL_PARENT));
+				RelativeLayout rlForAlignment = new RelativeLayout(context);
+				rlForAlignment.setLayoutParams(new LayoutParams(
+						RelativeLayout.LayoutParams.FILL_PARENT,
+						RelativeLayout.LayoutParams.FILL_PARENT));
 
-			RelativeLayout.LayoutParams lpAlignCenter = new RelativeLayout.LayoutParams(
-					RelativeLayout.LayoutParams.WRAP_CONTENT,
-					RelativeLayout.LayoutParams.WRAP_CONTENT);
-			lpAlignCenter.addRule(RelativeLayout.CENTER_IN_PARENT);
+				RelativeLayout.LayoutParams lpAlignCenter = new RelativeLayout.LayoutParams(
+						RelativeLayout.LayoutParams.WRAP_CONTENT,
+						RelativeLayout.LayoutParams.WRAP_CONTENT);
+				lpAlignCenter.addRule(RelativeLayout.CENTER_IN_PARENT);
 
-			rlForAlignment.addView(llControlss, lpAlignCenter);
+				rlForAlignment.addView(llControlss, lpAlignCenter);
 
-			llCallControl.addView(rlForAlignment);
-			// 2222222222
+//			llCallControl.addView(rlForAlignment);
+				// 2222222222
 
-			final LinearLayout showBuddies = new LinearLayout(context);
-			showBuddies.setBackgroundColor(Color.TRANSPARENT);
+				final LinearLayout showBuddies = new LinearLayout(context);
+				showBuddies.setBackgroundColor(Color.TRANSPARENT);
 			/* Code Clean up */
-			showBuddies.setOrientation(LinearLayout.VERTICAL);
-			showBuddies.setGravity(Gravity.CENTER);
-			showBuddies.setLayoutParams(new LayoutParams(
-					LayoutParams.FILL_PARENT, 50));
-			MyAbsoluteLayout mal = new MyAbsoluteLayout(context);
+				showBuddies.setOrientation(LinearLayout.VERTICAL);
+				showBuddies.setGravity(Gravity.CENTER);
+				showBuddies.setLayoutParams(new LayoutParams(
+						LayoutParams.FILL_PARENT, 50));
+				MyAbsoluteLayout mal = new MyAbsoluteLayout(context);
 
-			TextView tv = new TextView(context);
-			tv.setText("Test");
-			tv.setTextSize(20);
-			tv.setGravity(Gravity.CENTER);
-			// showBuddies.addView(tv);
-			showBuddies.setVisibility(View.VISIBLE);
-			// showBuddies.setVisibility(View.INVISIBLE);
+				TextView tv = new TextView(context);
+				tv.setText("Test");
+				tv.setTextSize(20);
+				tv.setGravity(Gravity.CENTER);
+				// showBuddies.addView(tv);
+				showBuddies.setVisibility(View.VISIBLE);
+				// showBuddies.setVisibility(View.INVISIBLE);
 
-			videoQueue = new Queue();
+				videoQueue = new Queue();
 
-			AppMainActivity.commEngine.setVideoCallback(this);
-			 getGLSurfaceView(context);
+				AppMainActivity.commEngine.setVideoCallback(this);
+				getGLSurfaceView(context);
+				getGLSurfaceView12(context);
 //			glSurfaceView2 =
-					getGLSurfaceView2(context);
+				getGLSurfaceView2(context);
 //			glSurfaceView3 =
-					getGLSurfaceView3(context);
+				getGLSurfaceView3(context);
 
 
-			boolean hasFrontCamera = context.getPackageManager()
-					.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT);
-			if (Integer.parseInt(Build.VERSION.SDK) > 8) {
-				WebServiceReferences.CAMERA_ID = 1;
-				if (!hasFrontCamera) {
-					WebServiceReferences.CAMERA_ID = 0;
+				boolean hasFrontCamera = context.getPackageManager()
+						.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT);
+				if (Integer.parseInt(Build.VERSION.SDK) > 8) {
+					WebServiceReferences.CAMERA_ID = 1;
+					if (!hasFrontCamera) {
+						WebServiceReferences.CAMERA_ID = 0;
+					}
+
+				} else {
+
+					WebServiceReferences.CAMERA_ID = 2;
+
 				}
 
-			} else {
+				AppMainActivity.commEngine.setVideoParameters(
+						WebServiceReferences.VIDEO_WIDTH,
+						WebServiceReferences.VIDEO_HEIGHT,
+						WebServiceReferences.CAMERA_ID);
 
-				WebServiceReferences.CAMERA_ID = 2;
+				pv = AppMainActivity.commEngine.getVideoPreview(context);
 
-			}
+				pv.setZOrderOnTop(false);
 
-					AppMainActivity.commEngine.setVideoParameters(
-							WebServiceReferences.VIDEO_WIDTH,
-							WebServiceReferences.VIDEO_HEIGHT,
-							WebServiceReferences.CAMERA_ID);
+				videopreview.addView(pv);
+				// ......
 
-			pv = AppMainActivity.commEngine.getVideoPreview(context);
+				glSurfaceView.setZOrderOnTop(false);
+				glSurfaceView.setZOrderMediaOverlay(true);
+				glSurfaceView2.setZOrderOnTop(false);
+//			glSurfaceView2.setZOrderMediaOverlay(true);
+				glSurfaceView12.setZOrderOnTop(false);
+				glSurfaceView12.setZOrderMediaOverlay(true);
+				glSurfaceView3.setZOrderOnTop(false);
+				glSurfaceView3.setZOrderMediaOverlay(true);
 
-			pv.setZOrderOnTop(false);
+				double c = nosHeight * 1.1;
+				c1 = (int) c;
 
-			videopreview.addView(pv);
-			// ......
+				int percentage;
+				int remSizeforButton;
 
-			glSurfaceView.setZOrderOnTop(false);
-			glSurfaceView2.setZOrderOnTop(false);
-//			glSurfaceView2.setZOrderMediaOverlay(false);
-			glSurfaceView3.setZOrderOnTop(false);
-//			glSurfaceView3.setZOrderMediaOverlay(true);
+				if (nosHeight > nosWidth) {
 
-			double c = nosHeight * 1.1;
-			c1 = (int) c;
+					remSizeforButton = nosHeight - (144 + c1);
+					percentage = (int) (nosHeight * 0.15);
 
-			int percentage;
-			int remSizeforButton;
+				} else {
+					remSizeforButton = nosWidth - (144 + c1);
+					percentage = (int) (nosWidth * 0.15);
+				}
 
-			if (nosHeight > nosWidth) {
-
-				remSizeforButton = nosHeight - (144 + c1);
-				percentage = (int) (nosHeight * 0.15);
-
-			} else {
-				remSizeforButton = nosWidth - (144 + c1);
-				percentage = (int) (nosWidth * 0.15);
-			}
-
-			if (percentage > remSizeforButton) {
+				if (percentage > remSizeforButton) {
 //				llControls.setVisibility(View.GONE);
-			}
+				}
 
-			// Log.d("NN", "height width " + c1);
-			layoutParamsf = new FrameLayout.LayoutParams(c1,
-					LayoutParams.FILL_PARENT);
-			layout = getCallConnectingView();
+				// Log.d("NN", "height width " + c1);
+				layoutParamsf = new FrameLayout.LayoutParams(c1,
+						LayoutParams.FILL_PARENT);
+				layout = getCallConnectingView();
 
-			layoutParamsf2 = new FrameLayout.LayoutParams(c1,
-					LayoutParams.FILL_PARENT);
-			relative_layout2 = getCallConnectingView();
+				layoutParamsf2 = new FrameLayout.LayoutParams(c1,
+						LayoutParams.FILL_PARENT);
+				relative_layout2 = getCallConnectingView();
 
-			layoutParamsf3 = new FrameLayout.LayoutParams(c1,
-					LayoutParams.FILL_PARENT);
-			relative_layout3 = getCallConnectingView();
+				layoutParamsf3 = new FrameLayout.LayoutParams(c1,
+						LayoutParams.FILL_PARENT);
+				relative_layout3 = getCallConnectingView();
 
-			// layout.setLayoutParams(new
-			// LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT));
+				// layout.setLayoutParams(new
+				// LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT));
 
-			// videosurface.addView(glSurfaceView, layoutParamsf);
+				// videosurface.addView(glSurfaceView, layoutParamsf);
 
 //			videosurface.addView(layout, layoutParamsf);
 //			videosurface2.addView(relative_layout2, layoutParamsf2);
 //			videosurface3.addView(relative_layout3,layoutParamsf3);
 
-			AnimationThread animationThread = new AnimationThread(
-					VideoCallScreen.this);
-			timer.schedule(animationThread, 500, 500);
+				AnimationThread animationThread = new AnimationThread(
+						VideoCallScreen.this);
+				timer.schedule(animationThread, 500, 500);
 
-			// videosurface.addView(layout, layoutParamsf);
+				// videosurface.addView(layout, layoutParamsf);
 
-			final Runnable runnable = new Runnable() {
+				final Runnable runnable = new Runnable() {
 
-				@Override
-				public void run() {
+					@Override
+					public void run() {
 
-					// showBuddies.setVisibility(View.INVISIBLE);
-				}
-			};
+						// showBuddies.setVisibility(View.INVISIBLE);
+					}
+				};
 
 //			glSurfaceView.setOnTouchListener(new OnTouchListener() {
 //
@@ -1144,13 +1177,13 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 //			mal.addView(callControls, new MyAbsoluteLayout.LayoutParams(
 //					LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 0, 0));
 
-			mal.addView(showBuddies, new MyAbsoluteLayout.LayoutParams(
-					LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 0,
-					nosHeight - 200));
+				mal.addView(showBuddies, new MyAbsoluteLayout.LayoutParams(
+						LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 0,
+						nosHeight - 200));
 
-			videoThread = new VideoThreadMultiWindow(videoQueue);
-			videoThread.setHandler(videoHandler);
-			videoThread.start();
+				videoThread = new VideoThreadMultiWindow(videoQueue);
+				videoThread.setHandler(videoHandler);
+				videoThread.start();
 
 //			textView1 = new TextView(context);
 //			textView1.setText("one");
@@ -1204,176 +1237,201 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 //				}
 //			});
 
-			flipcamera.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					if (numOfCam > 1) {
-						if (Integer.parseInt(Build.VERSION.SDK) > 8) {
+				flipcamera.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						if (numOfCam > 1) {
+							if (Integer.parseInt(Build.VERSION.SDK) > 8) {
 
-							if (WebServiceReferences.CAMERA_ID == 1) {
-								WebServiceReferences.CAMERA_ID = 0;
-							} else if (WebServiceReferences.CAMERA_ID == 0) {
-								WebServiceReferences.CAMERA_ID = 1;
-							}
+								if (WebServiceReferences.CAMERA_ID == 1) {
+									WebServiceReferences.CAMERA_ID = 0;
+								} else if (WebServiceReferences.CAMERA_ID == 0) {
+									WebServiceReferences.CAMERA_ID = 1;
+								}
 
-							if (pv != null) {
-								pv.stopPreview();
-								videopreview.removeView(pv);
-								pv = null;
-								AppMainActivity.commEngine.setVideoParameters(
-										WebServiceReferences.VIDEO_WIDTH,
-										WebServiceReferences.VIDEO_HEIGHT,
-										WebServiceReferences.CAMERA_ID);
-								pv = AppMainActivity.commEngine.getVideoPreview(context);
+								if (pv != null) {
+									pv.stopPreview();
+									videopreview.removeView(pv);
+									pv = null;
+									AppMainActivity.commEngine.setVideoParameters(
+											WebServiceReferences.VIDEO_WIDTH,
+											WebServiceReferences.VIDEO_HEIGHT,
+											WebServiceReferences.CAMERA_ID);
+									pv = AppMainActivity.commEngine.getVideoPreview(context);
 
 //								pv.setZOrderOnTop(false);
 
 //							videopreview.addView(pv);
 
-								videopreview.addView(pv, 0);
+									videopreview.addView(pv, 0);
+								}
 							}
 						}
+
 					}
+				});
 
-				}
-			});
+				AppMainActivity.commEngine.enable_disable_VideoPreview(true);
 
-			AppMainActivity.commEngine.enable_disable_VideoPreview(true);
+				btn_video.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						boolean shown = (boolean) btn_video.getTag();
+						AppMainActivity.commEngine.enable_disable_VideoPreview(!shown);
 
-			onoff_preview.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					boolean shown = (boolean) onoff_preview.getTag();
-					AppMainActivity.commEngine.enable_disable_VideoPreview(!shown);
+						if (shown) {
+							RecordTransactionBean transactionBean = new RecordTransactionBean();
+							transactionBean.setSessionid(sessionid);
+							transactionBean.setHost(CallDispatcher.LoginUser);
+							transactionBean.setParticipants("");
+							transactionBean.setDisableVideo("yes");
+							processCallRequest(2, transactionBean, "disablevideo");
+							btn_video.setImageResource(R.drawable.call_video);
 
-					if (shown) {
-						ownimageview.setVisibility(View.VISIBLE);
-						ownername.setVisibility(View.VISIBLE);
-						flipcamera.setVisibility(View.GONE);
-						videopreview.setVisibility(View.GONE);
-						boolean have_image = false;
-						ProfileBean bean=SingleInstance.myAccountBean;
-						String name;
-						if(bean.getFirstname()!=null && bean.getLastname()!=null)
-						 	name=bean.getFirstname()+" "+bean.getLastname();
-						else
-							name=CallDispatcher.LoginUser;
-						ownername.setText(name);
-								String pic_path = bean.getPhoto();
-								if (pic_path != null) {
-									if (!pic_path.contains("COMMedia")) {
-										pic_path = Environment
-												.getExternalStorageDirectory()
-												+ "/COMMedia/" + pic_path;
-									}
-									have_image = true;
-									imageLoader.DisplayImage(pic_path, ownimageview, R.drawable.icon_buddy_aoffline);
+							ownimageview.setVisibility(View.VISIBLE);
+							ownername.setVisibility(View.VISIBLE);
+							flipcamera.setVisibility(View.GONE);
+							videopreview.setVisibility(View.GONE);
+							boolean have_image = false;
+							ProfileBean bean = SingleInstance.myAccountBean;
+							String name;
+							if (bean.getFirstname() != null && bean.getLastname() != null)
+								name = bean.getFirstname() + " " + bean.getLastname();
+							else
+								name = CallDispatcher.LoginUser;
+							ownername.setText(name);
+							String pic_path = bean.getPhoto();
+							if (pic_path != null) {
+								if (!pic_path.contains("COMMedia")) {
+									pic_path = Environment
+											.getExternalStorageDirectory()
+											+ "/COMMedia/" + pic_path;
 								}
-						if (!have_image) {
-							imageLoader.DisplayImage("", ownimageview, R.drawable.icon_buddy_aoffline);
-						}
-					} else {
-						ownername.setVisibility(View.GONE);
-						ownimageview.setVisibility(View.GONE);
-						videopreview.setVisibility(View.VISIBLE);
-						flipcamera.setVisibility(View.VISIBLE);
-					}
-					onoff_preview.setTag(!shown);
-				}
-			});
-
-			on_off1.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					boolean shown = (boolean) on_off1.getTag();
-
-					onOffVideoForSelectedUser(0, !shown);
-					on_off1.setTag(!shown);
-				}
-			});
-
-			on_off2.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					boolean shown = (boolean) on_off2.getTag();
-					onOffVideoForSelectedUser(1,!shown);
-					on_off2.setTag(!shown);
-				}
-			});
-
-			on_off3.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					boolean shown = (boolean) on_off3.getTag();
-					onOffVideoForSelectedUser(2,!shown);
-					on_off3.setTag(!shown);
-				}
-			});
-
-			final PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-			this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
-					"My Tag");
-			this.mWakeLock.acquire();
-
-			//
-			videoHandler.postDelayed(new Runnable() {
-
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					try {
-
-						if (pv != null) {
-							Log.d("video", "Preview width---->" + pv.getWidth());
-							Log.d("video",
-									"Preview height---->" + pv.getHeight());
-
-							if (!pv.getPreviewStatus()) {
-								// Log.d("CAM", "close call");
-								Toast.makeText(
-										context,
-										SingleInstance.mainContext
-												.getResources()
-												.getString(
-														R.string.unable_send_video),
-										Toast.LENGTH_LONG).show();
-								//
-								Message message = new Message();
-								Bundle bundle = new Bundle();
-								bundle.putString("hangupfullscreen",
-										"hangupfullscreen");
-								message.obj = bundle;
-								// Log.e("h_bye", "570");
-								videoHandler.sendMessage(message);
-								//
-							} else {
-								// Log.d("CAM", "Donot call");
+								have_image = true;
+								imageLoader.DisplayImage(pic_path, ownimageview, R.drawable.icon_buddy_aoffline);
+							}
+							if (!have_image) {
+								imageLoader.DisplayImage("", ownimageview, R.drawable.icon_buddy_aoffline);
 							}
 						} else {
-							// Log.d("CAM", "preview is null");
+							btn_video.setImageResource(R.drawable.call_video_active);
+							RecordTransactionBean transactionBean = new RecordTransactionBean();
+							transactionBean.setSessionid(sessionid);
+							transactionBean.setHost(CallDispatcher.LoginUser);
+							transactionBean.setParticipants("");
+							transactionBean.setDisableVideo("no");
+							processCallRequest(2, transactionBean, "disablevideo");
+							ownername.setVisibility(View.GONE);
+							ownimageview.setVisibility(View.GONE);
+							videopreview.setVisibility(View.VISIBLE);
+							flipcamera.setVisibility(View.VISIBLE);
 						}
-					} catch (Exception e) {
-						// TODO: handle exception
-						e.printStackTrace();
+						btn_video.setTag(!shown);
 					}
+				});
 
+				on_off1.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						boolean shown = (boolean) on_off1.getTag();
+
+						onOffVideoForSelectedUser(0, !shown);
+						on_off1.setTag(!shown);
+					}
+				});
+
+				on_off12.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						boolean shown = (boolean) on_off12.getTag();
+						onOffVideoForSelectedUser(1, !shown);
+						on_off12.setTag(!shown);
+					}
+				});
+
+				on_off2.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						boolean shown = (boolean) on_off2.getTag();
+						onOffVideoForSelectedUser(1, !shown);
+						on_off2.setTag(!shown);
+					}
+				});
+
+				on_off3.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						boolean shown = (boolean) on_off3.getTag();
+						onOffVideoForSelectedUser(2, !shown);
+						on_off3.setTag(!shown);
+					}
+				});
+
+				final PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+				this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
+						"My Tag");
+				this.mWakeLock.acquire();
+
+				//
+				videoHandler.postDelayed(new Runnable() {
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						try {
+
+							if (pv != null) {
+								Log.d("video", "Preview width---->" + pv.getWidth());
+								Log.d("video",
+										"Preview height---->" + pv.getHeight());
+
+								if (!pv.getPreviewStatus()) {
+									// Log.d("CAM", "close call");
+									Toast.makeText(
+											context,
+											SingleInstance.mainContext
+													.getResources()
+													.getString(
+															R.string.unable_send_video),
+											Toast.LENGTH_LONG).show();
+									//
+									Message message = new Message();
+									Bundle bundle = new Bundle();
+									bundle.putString("hangupfullscreen",
+											"hangupfullscreen");
+									message.obj = bundle;
+									// Log.e("h_bye", "570");
+									videoHandler.sendMessage(message);
+									//
+								} else {
+									// Log.d("CAM", "Donot call");
+								}
+							} else {
+								// Log.d("CAM", "preview is null");
+							}
+						} catch (Exception e) {
+							// TODO: handle exception
+							e.printStackTrace();
+						}
+
+					}
+				}, 5000);
+
+				// Race case
+				// Log.d("RACE", " Race CAse.. on Activity "
+				// + objCallDispatcher.isHangUpReceived);
+				// Log.d("RACE", " Race CAse.. on Activity "
+				// + CallDispatcher.conferenceMembers.size());
+
+				if (objCallDispatcher.isHangUpReceived) {
+					receivedHangUp();
+					// finish();
+
+				} else if (receiver.equalsIgnoreCase("true")
+						&& CallDispatcher.conferenceMembers.size() == 0) {
+					// Log.d("RACE", " Race CAse.. new concept Execcuted,.,....");
+					receivedHangUp();
 				}
-			}, 5000);
-
-			// Race case
-			// Log.d("RACE", " Race CAse.. on Activity "
-			// + objCallDispatcher.isHangUpReceived);
-			// Log.d("RACE", " Race CAse.. on Activity "
-			// + CallDispatcher.conferenceMembers.size());
-
-			if (objCallDispatcher.isHangUpReceived) {
-				receivedHangUp();
-				// finish();
-
-			} else if (receiver.equalsIgnoreCase("true")
-					&& CallDispatcher.conferenceMembers.size() == 0) {
-				// Log.d("RACE", " Race CAse.. new concept Execcuted,.,....");
-				receivedHangUp();
 			}
 
 		} catch (Exception e) {
@@ -1388,8 +1446,9 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 	private void onOffVideoForSelectedUser(final int selectedposition, final boolean onoff){
 		if(WebServiceReferences.videoSSRC_total_list != null && WebServiceReferences.videoSSRC_total_list.size() > selectedposition){
+			final int size = WebServiceReferences.videoSSRC_total_list.size();
 			int turn_ssrc =	WebServiceReferences.videoSSRC_total_list.get(selectedposition);
-			final String buddy_name = WebServiceReferences.videoSSRC_total.get(turn_ssrc);
+			final String buddy_name = (WebServiceReferences.videoSSRC_total.get(turn_ssrc)).getMember_name();
 			onOffVideo(buddy_name,onoff);
 			handler.post(new Runnable() {
 				@Override
@@ -1398,56 +1457,44 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 						if(selectedposition == 0) {
 							buddyimageview1.setVisibility(View.GONE);
 							glSurfaceView.setVisibility(View.VISIBLE);
-							participant_name1.setVisibility(View.GONE);
+
 							buddyTimerTask1 = new VideoOnOffTimerTask(buddy_name,onoff);
 							buddytimer1 = new Timer();
 							buddytimer1.schedule(buddyTimerTask1,2000,2000);
 
 						} else if(selectedposition == 1) {
-							participant_name2.setVisibility(View.GONE);
-							buddyimageview2.setVisibility(View.GONE);
-							glSurfaceView2.setVisibility(View.VISIBLE);
+							if(size == 2) {
+								buddyimageview12.setVisibility(View.GONE);
+								glSurfaceView12.setVisibility(View.VISIBLE);
+							} else {
+								buddyimageview2.setVisibility(View.GONE);
+								glSurfaceView2.setVisibility(View.VISIBLE);
+							}
 						} else if(selectedposition == 2) {
-							participant_name3.setVisibility(View.GONE);
 							buddyimageview3.setVisibility(View.GONE);
 							glSurfaceView3.setVisibility(View.VISIBLE);
 						}
 					} else {
 						boolean have_image = false;
-						ProfileBean bean=DBAccess.getdbHeler().getProfileDetails(buddy_name);
-								String pic_path = bean.getPhoto();
-						if(pic_path!=null && pic_path.length()>0)
-						if (!pic_path.contains("COMMedia")) {
-							pic_path = Environment
-									.getExternalStorageDirectory()
-									+ "/COMMedia/" + pic_path;
-							have_image = true;
-						}
+						for (BuddyInformationBean buddyInformationBean : total_buddyList) {
+							if (buddyInformationBean.getName().equalsIgnoreCase(buddy_name)) {
+								String pic_path = buddyInformationBean.getProfile_picpath();
+								if (pic_path != null) {
+									have_image = true;
 									if(selectedposition == 0) {
-										if(bean.getFirstname()!=null && bean.getLastname()!=null)
-											participant_name1.setText(bean.getFirstname()+" "+bean.getLastname());
-										else
-											participant_name1.setText(buddy_name);
-										participant_name1.setVisibility(View.VISIBLE);
-										if (pic_path != null)
 										imageLoader.DisplayImage(pic_path, buddyimageview1, R.drawable.icon_buddy_aoffline);
 									} else if(selectedposition == 1) {
-										if(bean.getFirstname()!=null && bean.getLastname()!=null)
-											participant_name2.setText(bean.getFirstname()+" "+bean.getLastname());
-										else
-											participant_name2.setText(buddy_name);
-										participant_name2.setVisibility(View.VISIBLE);
-										if (pic_path != null)
-										imageLoader.DisplayImage(pic_path, buddyimageview2, R.drawable.icon_buddy_aoffline);
+										if(size == 2) {
+											imageLoader.DisplayImage(pic_path, buddyimageview12, R.drawable.icon_buddy_aoffline);
+										} else {
+											imageLoader.DisplayImage(pic_path, buddyimageview2, R.drawable.icon_buddy_aoffline);
+										}
 									} else if(selectedposition == 2) {
-										if(bean.getFirstname()!=null && bean.getLastname()!=null)
-											participant_name3.setText(bean.getFirstname()+" "+bean.getLastname());
-										else
-											participant_name3.setText(buddy_name);
-										participant_name3.setVisibility(View.VISIBLE);
-										if (pic_path != null)
 										imageLoader.DisplayImage(pic_path, buddyimageview3, R.drawable.icon_buddy_aoffline);
 									}
+								}
+							}
+						}
 						if(selectedposition == 0) {
 							if (!have_image) {
 								imageLoader.DisplayImage("", buddyimageview1, R.drawable.icon_buddy_aoffline);
@@ -1455,11 +1502,19 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							buddyimageview1.setVisibility(View.VISIBLE);
 							glSurfaceView.setVisibility(View.GONE);
 						} else if(selectedposition == 1) {
-							if (!have_image) {
-								imageLoader.DisplayImage("", buddyimageview2, R.drawable.icon_buddy_aoffline);
+							if(size == 2) {
+								if (!have_image) {
+									imageLoader.DisplayImage("", buddyimageview12, R.drawable.icon_buddy_aoffline);
+								}
+								buddyimageview12.setVisibility(View.VISIBLE);
+								glSurfaceView12.setVisibility(View.GONE);
+							} else {
+								if (!have_image) {
+									imageLoader.DisplayImage("", buddyimageview2, R.drawable.icon_buddy_aoffline);
+								}
+								buddyimageview2.setVisibility(View.VISIBLE);
+								glSurfaceView2.setVisibility(View.GONE);
 							}
-							buddyimageview2.setVisibility(View.VISIBLE);
-							glSurfaceView2.setVisibility(View.GONE);
 						} else if(selectedposition == 2) {
 							if (!have_image) {
 								imageLoader.DisplayImage("", buddyimageview3, R.drawable.icon_buddy_aoffline);
@@ -1489,6 +1544,90 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	public void notifyVideoStoped(final SignalingBean vidsignBean){
+		if(vidsignBean != null && WebServiceReferences.videoSSRC_total != null && WebServiceReferences.videoSSRC_total.size()>0){
+
+			int requiredKey = 0;
+			Set set = WebServiceReferences.videoSSRC_total.entrySet();
+			Iterator i = set.iterator();
+
+			while(i.hasNext()) {
+				Map.Entry me = (Map.Entry)i.next();
+				Log.i("Join", " key :" + me.getKey() + ": ");
+				Log.i("Join", " value :" + me.getValue());
+				VideoThreadBean value = (VideoThreadBean) me.getValue();
+				Log.i("Join", " name :" + value.getMember_name()+ " vidsignBean.getFrom()  : "+vidsignBean.getFrom());
+				if(vidsignBean.getFrom().equalsIgnoreCase(value.getMember_name())){
+					requiredKey = (int) me.getKey();
+				}
+			}
+
+			if(requiredKey != 0){
+				VideoThreadBean threadBean = WebServiceReferences.videoSSRC_total.get(requiredKey);
+				threadBean.setVideoDisabled(true);
+
+				if(WebServiceReferences.videoSSRC_total_list != null && WebServiceReferences.videoSSRC_total_list.contains(requiredKey)){
+					final int selectedposition =	WebServiceReferences.videoSSRC_total_list.indexOf(requiredKey);
+//					final String buddy_name = (WebServiceReferences.videoSSRC_total.get(turn_ssrc)).getMember_name();
+					handler.post(new Runnable() {
+						@Override
+						public void run() {
+							if (vidsignBean.getVideoStoped() == null || vidsignBean.getVideoStoped().equalsIgnoreCase("no")) {
+								if(selectedposition == 0) {
+									buddyimageview1.setVisibility(View.GONE);
+									glSurfaceView.setVisibility(View.VISIBLE);
+
+								} else if(selectedposition == 1) {
+									buddyimageview2.setVisibility(View.GONE);
+									glSurfaceView2.setVisibility(View.VISIBLE);
+								} else if(selectedposition == 2) {
+									buddyimageview3.setVisibility(View.GONE);
+									glSurfaceView3.setVisibility(View.VISIBLE);
+								}
+							} else {
+								boolean have_image = false;
+								for (BuddyInformationBean buddyInformationBean : total_buddyList) {
+									if (buddyInformationBean.getName().equalsIgnoreCase(vidsignBean.getFrom())) {
+										String pic_path = buddyInformationBean.getProfile_picpath();
+										if (pic_path != null) {
+											have_image = true;
+											if(selectedposition == 0) {
+												imageLoader.DisplayImage(pic_path, buddyimageview1, R.drawable.icon_buddy_aoffline);
+											} else if(selectedposition == 1) {
+												imageLoader.DisplayImage(pic_path, buddyimageview2, R.drawable.icon_buddy_aoffline);
+											} else if(selectedposition == 2) {
+												imageLoader.DisplayImage(pic_path, buddyimageview3, R.drawable.icon_buddy_aoffline);
+											}
+										}
+									}
+								}
+								if(selectedposition == 0) {
+									if (!have_image) {
+										imageLoader.DisplayImage("", buddyimageview1, R.drawable.icon_buddy_aoffline);
+									}
+									buddyimageview1.setVisibility(View.VISIBLE);
+									glSurfaceView.setVisibility(View.GONE);
+								} else if(selectedposition == 1) {
+									if (!have_image) {
+										imageLoader.DisplayImage("", buddyimageview2, R.drawable.icon_buddy_aoffline);
+									}
+									buddyimageview2.setVisibility(View.VISIBLE);
+									glSurfaceView2.setVisibility(View.GONE);
+								} else if(selectedposition == 2) {
+									if (!have_image) {
+										imageLoader.DisplayImage("", buddyimageview3, R.drawable.icon_buddy_aoffline);
+									}
+									buddyimageview3.setVisibility(View.VISIBLE);
+									glSurfaceView3.setVisibility(View.GONE);
+								}
+							}
+						}
+					});
+				}
+			}
 		}
 	}
 
@@ -1998,7 +2137,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 				Toast.makeText(
 						context,
 						SingleInstance.mainContext.getResources().getString(
-								R.string.sorry_no_online_users), 2000).show();
+								R.string.sorry_no_online_users), Toast.LENGTH_SHORT).show();
 			}
 
 		} catch (Exception e) {
@@ -2257,6 +2396,10 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		// RenderBitmap.count=0;
 		// HomeTabViewScreen home =null;
 		try {
+			Activity parent = getActivity();
+			if(parent != null) {
+				getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			}
 			AppMainActivity.commEngine.enable_disable_VideoPreview(true);
 			WebServiceReferences.videoSSRC_total.clear();
 			WebServiceReferences.videoSSRC_total_list.clear();
@@ -2345,6 +2488,25 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			e.printStackTrace();
 		}
 		return glSurfaceView;
+	}
+
+	public GLSurfaceView getGLSurfaceView12(Context context) {
+//		GLSurfaceView glSurfaceView_temp = new GLSurfaceView(context);
+		try {
+			VideoFrameRenderer frameRenderer = new VideoFrameRenderer();
+			frameRenderer.setPreviewFrameSize(512,
+					WebServiceReferences.VIDEO_WIDTH,
+					WebServiceReferences.VIDEO_HEIGHT);
+			glSurfaceView12.setRenderer(frameRenderer);
+			frameSink12 = frameRenderer;
+			byte[] frame = new byte[WebServiceReferences.VIDEO_WIDTH
+					* WebServiceReferences.VIDEO_WIDTH * 3];
+			frameBuffer12 = GraphicsUtil.makeByteBuffer(frame.length);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return glSurfaceView12;
 	}
 
 	public GLSurfaceView getGLSurfaceView2(Context context) {
@@ -2546,21 +2708,38 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 									if (WebServiceReferences.videoSSRC_total_list.size() > 0) {
 										int size = WebServiceReferences.videoSSRC_total_list.size();
 										if (size == 1) {
+											bottom_videowindows.setVisibility(View.GONE);
 											videosurface.setVisibility(View.VISIBLE);
+											glSurfaceView12.setVisibility(View.GONE);
+											videosurface12.setVisibility(View.GONE);
 											videosurface2.setVisibility(View.GONE);
 											videosurface3.setVisibility(View.GONE);
+											videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
+											own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
 										} else if (size == 2) {
+											bottom_videowindows.setVisibility(View.GONE);
 											videosurface.setVisibility(View.VISIBLE);
-											videosurface2.setVisibility(View.VISIBLE);
+											glSurfaceView12.setVisibility(View.VISIBLE);
+											videosurface12.setVisibility(View.VISIBLE);
+											videosurface2.setVisibility(View.GONE);
 											videosurface3.setVisibility(View.GONE);
+											videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1f));
+											own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1f));
 										} else if (size == 3) {
+
+											videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
+											own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT,1.5f));
+											videosurface3.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1f));
+											glSurfaceView12.setVisibility(View.GONE);
+											bottom_videowindows.setVisibility(View.VISIBLE);
 											videosurface.setVisibility(View.VISIBLE);
-											videosurface2.setVisibility(View.VISIBLE);
+											videosurface12.setVisibility(View.GONE);
 											videosurface3.setVisibility(View.VISIBLE);
+											videosurface2.setVisibility(View.VISIBLE);
 										}
 										String mem_name = "";
 										if(WebServiceReferences.videoSSRC_total.containsKey((int) (long) ssrc)){
-											mem_name = WebServiceReferences.videoSSRC_total.get((int) (long) ssrc);
+											mem_name = (WebServiceReferences.videoSSRC_total.get((int) (long) ssrc)).getMember_name();
 										}
 										if (WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc) == 0) {
 //											participant_name1.setText(mem_name);
@@ -2586,11 +2765,17 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							}
 						});
 
+						int size = WebServiceReferences.videoSSRC_total_list.size();
 						VideoThreadBean videoThreadBean = new VideoThreadBean();
 						videoThreadBean.setData(data);
-						videoThreadBean.setWindow(WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc));
+
+						if ((size == 2) && (WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc) == 1)) {
+							videoThreadBean.setWindow(12);
+						} else {
+							videoThreadBean.setWindow(WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc));
+						}
 						if(WebServiceReferences.videoSSRC_total.containsKey((int) (long) ssrc)){
-							videoThreadBean.setMember_name(WebServiceReferences.videoSSRC_total.get((int) (long) ssrc));
+							videoThreadBean.setMember_name((WebServiceReferences.videoSSRC_total.get((int) (long) ssrc)).getMember_name());
 						} else {
 							videoThreadBean.setMember_name("");
 						}
@@ -2820,7 +3005,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			// Log.d("test", "From " + from + " b " + b);
 			if (!b) {
 
-				if(WebServiceReferences.videoSSRC_total.containsValue(from)){
+				if(WebServiceReferences.videoSSRC_total != null && WebServiceReferences.videoSSRC_total.size() > 0){
 
 //					for ( int key : WebServiceReferences.videoSSRC_total.entrySet() ) {
 //						Log.i("Join"," key : "+ key );
@@ -2834,7 +3019,8 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 						Map.Entry me = (Map.Entry)i.next();
 						Log.i("Join", " key :" + me.getKey() + ": ");
 						Log.i("Join", " value :" + me.getValue());
-						if(from.equalsIgnoreCase(me.getValue().toString())){
+						VideoThreadBean value = (VideoThreadBean) me.getValue();
+						if(from.equalsIgnoreCase(value.getMember_name())){
 							if(WebServiceReferences.videoSSRC_total_list.contains(me.getKey())){
 								WebServiceReferences.videoSSRC_total_list.remove(me.getKey());
 							}
@@ -3173,19 +3359,19 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 				pv.stopPreview();
 				pv = AppMainActivity.commEngine.getVideoPreview(context);
 				videopreview.addView(pv, 0);
-				handler.postDelayed(new Runnable() {
-
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						// Toast.makeText(
-						// context,
-						// "Preview Width :" + pv.getPreviewWidth()
-						// + " Preview Height :"
-						// + pv.getPreviewHeight(),
-						// Toast.LENGTH_LONG).show();
-					}
-				}, 1000);
+//				handler.postDelayed(new Runnable() {
+//
+//					@Override
+//					public void run() {
+//						// TODO Auto-generated method stub
+//						// Toast.makeText(
+//						// context,
+//						// "Preview Width :" + pv.getPreviewWidth()
+//						// + " Preview Height :"
+//						// + pv.getPreviewHeight(),
+//						// Toast.LENGTH_LONG).show();
+//					}
+//				}, 1000);
 //				glSurfaceView =
 // 				getGLSurfaceView(context);
 				// videosurface.addView(glSurfaceView, layoutParamsf);
@@ -3202,14 +3388,14 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 				if (timer != null) {
 					// Log.d("NDVC1", "On Resume....TIMER not null");
 					timer.cancel();
-					layout = getCallConnectingView();
+//					layout = getCallConnectingView();
 //					videosurface.addView(layout, layoutParamsf);
 //					videosurface2.addView(relative_layout2, layoutParamsf2);
 //					videosurface3.addView(relative_layout3, layoutParamsf3);
 					// Log.d("NDVC1", "Added call connecting view..");
-					AnimationThread animationThread = new AnimationThread(
-							VideoCallScreen.this);
-					timer.schedule(animationThread, 500, 500);
+//					AnimationThread animationThread = new AnimationThread(
+//							VideoCallScreen.this);
+//					timer.schedule(animationThread, 500, 500);
 
 					mReceiveVideo = false;
 					mReceiveVideo2= false;
@@ -3466,8 +3652,79 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		}
 	}
 
+	public void processCallRequest(int caseid, RecordTransactionBean record_TransactionBean, String feature) {
+		try {
+//			String user = "amuthan2";
+			for (int i = 0; i < CallDispatcher.conferenceMembers.size(); i++) {
+				String user = CallDispatcher.conferenceMembers.get(i);
+				String state = null;
+				BuddyInformationBean oldBuddyBean = null;
+
+				int con_scr_opened = 0;
+
+				if (user != null && !user.equalsIgnoreCase(CallDispatcher.LoginUser)) {
+					Log.i("Join", " call initiate user : " + user);
+
+					for (BuddyInformationBean temp : total_buddyList) {
+						if (!temp.isTitle()) {
+							if (temp.getName().equalsIgnoreCase(
+									user)) {
+								oldBuddyBean = temp;
+								state = oldBuddyBean.getStatus();
+								break;
+							}
+						}
+					}
+
+
+					Log.d("Join", "call status--->" + state);
+
+					if (state != null && state.equalsIgnoreCase("Offline")
+							|| state.equals("Stealth")
+							|| state.equalsIgnoreCase("pending")
+							|| state.equalsIgnoreCase("Virtual")
+							|| state.equalsIgnoreCase("airport")) {
+						if (WebServiceReferences.running) {
+							CallDispatcher.pdialog = new ProgressDialog(context);
+							objCallDispatcher.showprogress(CallDispatcher.pdialog, context);
+
+							String[] res_info = new String[3];
+							res_info[0] = CallDispatcher.LoginUser;
+							res_info[1] = user;
+							if (state.equals("Offline") || state.equals("Stealth"))
+								res_info[2] = objCallDispatcher
+										.getdbHeler(context)
+										.getwheninfo(
+												"select cid from clonemaster where cdescription='Offline'");
+							else
+								res_info[2] = "";
+
+							WebServiceReferences.webServiceClient
+									.OfflineCallResponse(res_info);
+						}
+
+					} else {
+						if (state != null && !state.equalsIgnoreCase("pending")) {
+//							SingleInstance.parentId = record_TransactionBean.getParentID();
+							objCallDispatcher.MakeCallFromCallHistory(caseid,
+									user, context, record_TransactionBean, 2, feature);
+							con_scr_opened = con_scr_opened + 1;
+						}
+
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
 	public void finishVideocallScreen()
 	{
+		rootView=null;
 		FragmentManager fm =
 				AppReference.mainContext.getSupportFragmentManager();
 		FragmentTransaction ft = fm.beginTransaction();
@@ -3531,14 +3788,15 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		}
 
 	}
-	void addShowHideListener( final Fragment fragment) {
-		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		if (fragment.isHidden()) {
-			ft.show(fragment);
-		} else {
-			ft.hide(fragment);
-		}
-		ft.commit();
+	void addShowHideListener() {
+		FragmentManager fm =
+				AppReference.mainContext.getSupportFragmentManager();
+		FragmentTransaction ft = fm.beginTransaction();
+		ContactsFragment contactsFragment = ContactsFragment
+				.getInstance(context);
+		ft.replace(R.id.activity_main_content_fragment,
+				contactsFragment);
+		ft.commitAllowingStateLoss();
 		video_minimize.setVisibility(View.VISIBLE);
 		mainHeader.setVisibility(View.VISIBLE);
 	}

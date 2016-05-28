@@ -937,23 +937,14 @@ public class ProprietarySignalling implements UDPDataListener {
                     KeepAliveReceiver.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
                     SingleInstance.mainContext, 222, intent, 0);
-//			alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-//					System.currentTimeMillis(), PORT_REFERSH_INTERVAL,
-//					pendingIntent);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()
-                        + 15000,pendingIntent);
-            }else
-            {
-                alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                        System.currentTimeMillis(), PORT_REFERSH_INTERVAL,
-                        pendingIntent);
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-
-                // startRepeatingTask();
-
-            }
+			alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+					System.currentTimeMillis(), PORT_REFERSH_INTERVAL,
+					pendingIntent);
+//			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+//
+//				startRepeatingTask();
+//
+//			}
 
 			// PortRefereshTask task = new PortRefereshTask(mKeyZero, mKeyOne,
 			// udpEngine, this);

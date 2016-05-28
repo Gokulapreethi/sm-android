@@ -3668,6 +3668,7 @@ public class ContactsFragment extends Fragment {
 			FragmentManager fragmentManager = SingleInstance.mainContext
 					.getSupportFragmentManager();
 			fragmentManager.beginTransaction().replace(
+
 					R.id.activity_main_content_fragment, requestFragment)
 					.commitAllowingStateLoss();
 		} catch (Exception e) {

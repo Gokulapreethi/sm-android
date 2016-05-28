@@ -148,6 +148,7 @@
     android:layout_width="fill_parent"
     android:layout_height="65dp"
     android:layout_alignParentLeft="true"
+    android:layout_marginTop="10dp"
     android:layout_below="@+id/myrelative_layout1"
     android:padding="2dp"
     android:visibility="visible" >
@@ -160,7 +161,6 @@
         android:visibility="gone" />
 
     <ImageView
-        android:id="@+id/my_broadcast_ibtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -215,7 +215,6 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:layout_toLeftOf="@+id/buttoncontrols"
             android:orientation="vertical"
             android:visibility="visible"
             android:weightSum="2">
@@ -428,58 +427,6 @@
                 </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
-
-        <ScrollView
-            android:id="@+id/buttoncontrols"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:orientation="vertical"
-                android:padding="5dp">
-
-                <ImageView
-                    android:id="@+id/add_videousers"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/add_icon" />
-
-                <ImageView
-                    android:id="@+id/speaker_video"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/mic" />
-
-                <ImageView
-                    android:id="@+id/loudspeaker_video"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/headphonee" />
-
-                <ImageView
-                    android:id="@+id/hang_video"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:src="@drawable/hang" />
-
-                <ImageView
-                    android:id="@+id/promotecall_video"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:src="@drawable/video_call" />
-            </LinearLayout>
-        </ScrollView>
-
     </RelativeLayout>
  <LinearLayout
      android:id="@+id/call_controls"
@@ -560,6 +507,55 @@
          android:background="@drawable/call_add"
          android:visibility="gone" />
 
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/video_lay"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        android:gravity="center"
+        android:weightSum="5"
+        android:padding="5dp">
+        <ImageView
+            android:id="@+id/hang_video"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/call_reject"
+            android:layout_weight="1"/>
+        <ImageView
+            android:id="@+id/loudspeaker_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/call_speaker"
+            android:layout_weight="1" />
+
+
+        <ImageView
+            android:id="@+id/speaker_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/call_mic"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/promotecall_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/call_video_active"
+            android:layout_weight="1" />
+        <ImageView
+            android:id="@+id/add_videousers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/call_add"
+            android:layout_weight="1" />
     </LinearLayout>
 
 </RelativeLayout>
