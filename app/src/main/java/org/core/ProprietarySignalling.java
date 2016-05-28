@@ -18,6 +18,7 @@ import org.net.rtp.RtpEngine;
 import org.net.rtp.RtpPacket;
 import org.net.udp.UDPDataListener;
 import org.net.udp.UDPEngine;
+import org.tcp.TCPEngine;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -25,11 +26,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.bean.GroupChatBean;
+import com.cg.callservices.AudioCallScreen;
+import com.cg.callservices.VideoCallScreen;
+import com.cg.callservices.VideoThreadBean;
 import com.cg.commonclass.CallDispatcher;
+import com.cg.commonclass.WebServiceReferences;
 import com.cg.hostedconf.AppReference;
 import com.cg.timer.KeepAliveReceiver;
 import com.group.chat.GroupChatActivity;
@@ -434,21 +440,31 @@ public class ProprietarySignalling implements UDPDataListener {
 				xml = xmlComposer.composeSignalXML(sb);
 				xml = xmlComposer.getMessagewithRoot(xml, "0", sb.getType());
 				Log.i("signal12345", " while reply type =1 r = 0");
+				if ((sb.getType().equals("1") && sb.getResult().equals("0"))
+						|| sb.getType().equals("2")) {
+					AppMainActivity.tcpEngine.sendMessage(xml);
+					return;
+				}
 			} else if ((sb.getType().equals("1") && sb.getResult().equals("-1"))) {
 				xml = xmlComposer.composeSignalXML(sb);
 				xml = xmlComposer.getMessagewithRoot(xml, "-1", sb.getType());
-			}
-
-			else if (sb.getType().equals("1") && sb.getResult().equals("1")) {
+				AppMainActivity.tcpEngine.sendMessage(xml);
+				return;
+			} else if (sb.getType().equals("1") && sb.getResult().equals("1")) {
 				xml = xmlComposer.composeSignalXML(sb);
 				xml = xmlComposer.getMessagewithRoot(xml, "1", sb.getType());
+				AppMainActivity.tcpEngine.sendMessage(xml);
+				return;
 			} else if (sb.getType().equals("1") && sb.getResult().equals("2")) {
 				xml = xmlComposer.composeSignalXML(sb);
 				xml = xmlComposer.getMessagewithRoot(xml, "2", sb.getType());
-
+				AppMainActivity.tcpEngine.sendMessage(xml);
+				return;
 			} else if (sb.getType().equals("3")) {
 				xml = xmlComposer.composeInviteXML(sb);
 				xml = xmlComposer.getMessagewithRoot(xml, "0", "3");
+				AppMainActivity.tcpEngine.sendMessage(xml);
+				return;
 			} else if (sb.getType().equals("6") || sb.getType().equals("9")) {
 				xml = xmlComposer.composeInviteXML(sb);
 				xml = xmlComposer.getMessagewithRoot(xml, "0", sb.getType());
@@ -647,7 +663,23 @@ public class ProprietarySignalling implements UDPDataListener {
 				Log.d("CHK1",
 						"From " + sb.getFrom() + "  to " + sb.getTo()
 								+ " Type " + sb.getType() + " signalid "
-								+ sb.getSignalid());
+								+ sb.getSignalid()+ " vidssrc : "+sb.getVideossrc());
+
+				if(sb.getCallType()!=null && sb.getCallType().equalsIgnoreCase("VC") && sb.getVideossrc() != null && !sb.getVideossrc().equalsIgnoreCase("null") && sb.getVideossrc().length() > 0){
+
+					if(!WebServiceReferences.videoSSRC_total_list.contains(Integer.parseInt(sb.getVideossrc()))){
+//						WebServiceReferences.videoSSRC_total_list.add(Integer.parseInt(sb.getVideossrc()));
+					}
+
+					if(!WebServiceReferences.videoSSRC_total.containsKey(Integer.parseInt(sb.getVideossrc()))){
+						VideoThreadBean videoThreadBean = new VideoThreadBean();
+						videoThreadBean.setMember_name(sb.getFrom());
+						videoThreadBean.setVideoDisabled(false);
+
+						WebServiceReferences.videoSSRC_total.put((Integer.parseInt(sb.getVideossrc())),videoThreadBean);
+					}
+				}
+
 				if (messageSessionTable.containsKey(signalid)) {
 					Log.d("CHK1", "Already contains " + sb.getFrom() + "  to "
 							+ sb.getTo() + " Type " + sb.getType()
@@ -751,9 +783,12 @@ public class ProprietarySignalling implements UDPDataListener {
 						messageSessionTable.put(signalid, timerBean);
 						// used to process Type 0 and Result 2
 						if (type.equals("0") && sb.getResult().equals("0")) {
+							if((sb.getVideopromote() != null && sb.getVideopromote().equalsIgnoreCase("yes"))
+								||	(sb.getVideoStoped() != null && (sb.getVideoStoped().equalsIgnoreCase("yes") || sb.getVideoStoped().equalsIgnoreCase("no")) )){
 
-							sendAck(sb);
-
+							} else {
+								sendAck(sb);
+							}
 						}
 
 					} else {
@@ -896,20 +931,29 @@ public class ProprietarySignalling implements UDPDataListener {
 			String mKeyOne = xmlComposer.getWellFormedXml(null, username, "20",
 					"1");
 
-			AlarmManager alarmManager = (AlarmManager) SingleInstance.mainContext
-					.getSystemService(Context.ALARM_SERVICE);
-			Intent intent = new Intent(SingleInstance.mainContext,
-					KeepAliveReceiver.class);
-			PendingIntent pendingIntent = PendingIntent.getBroadcast(
-					SingleInstance.mainContext, 222, intent, 0);
-			alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-					System.currentTimeMillis(), PORT_REFERSH_INTERVAL,
-					pendingIntent);
-//			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-//
-//				startRepeatingTask();
-//
-//			}
+            AlarmManager alarmManager = (AlarmManager) SingleInstance.mainContext
+                    .getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(SingleInstance.mainContext,
+                    KeepAliveReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    SingleInstance.mainContext, 222, intent, 0);
+//			alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+//					System.currentTimeMillis(), PORT_REFERSH_INTERVAL,
+//					pendingIntent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()
+                        + 15000,pendingIntent);
+            }else
+            {
+                alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                        System.currentTimeMillis(), PORT_REFERSH_INTERVAL,
+                        pendingIntent);
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+
+                // startRepeatingTask();
+
+            }
 
 			// PortRefereshTask task = new PortRefereshTask(mKeyZero, mKeyOne,
 			// udpEngine, this);
@@ -1787,6 +1831,136 @@ public class ProprietarySignalling implements UDPDataListener {
 
 				if (cancelRetransmission(sb.getSignalid(), sb.getType(),
 						sb.getSessionid(), sb.getCallType(), sb)) {
+
+					if(sb.getType().equals("0") && sb.getVideopromote() != null && sb.getVideopromote().equalsIgnoreCase("yes")){
+
+						Object objCallScreen = SingleInstance.instanceTable
+								.get("callscreen");
+
+						if (objCallScreen != null) {
+
+							if (objCallScreen instanceof AudioCallScreen) {
+								AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
+								acalObj.notifyCallvIDEOPromotionRequest(sb);
+							}
+						}
+
+						if (callTable.containsKey(sb.getSessionid()
+								+ sb.getFrom())) {
+
+							CallsOverInternet callsOverInternet = (CallsOverInternet) callTable
+									.get(sb.getSessionid() + sb.getFrom());
+							RtpEngine engine = callsOverInternet
+									.getRtpEngine();
+							// Log.d("REP", "from prop1");
+//							engine.addRemoteEndpoint(callsOverInternet
+//											.getAudiossrc(),
+//									sb.getBuddyConnectip(), Integer
+//											.parseInt(sb
+//													.getBuddyConnectport()));
+
+//							if (sb.getCallType().equals("VC")) {
+//								engine.addRemoteEndpoint(callsOverInternet
+//										.getVideossrc(), sb
+//										.getBuddyConnectip(), Integer
+//										.parseInt(sb.getBuddyConnectport()));
+//								// Log.d("REP", "from prop2");
+//
+//								communicationEngine.showBuddyVideo(
+//										sb.getFrom(), sb.getSessionid());
+//
+//								engine.setBuddyVideoSsrc(Integer
+//										.parseInt(sb.getVideossrc()));
+//
+//								engine.setMyVideoSsrc(callsOverInternet
+//										.getVideossrc());
+//
+//							}
+//							// communicationEngine.startAudioCapture();
+//							if (!sb.getCallType().equals("ABC")
+//									&& !sb.getCallType().equals("VBC")
+//									&& !sb.getCallType().equals("VP")
+//									&& !sb.getCallType().equals("AP")) {
+//								if (!sb.getCallType().equals("MTP")
+//										&& !sb.getCallType().equals("MPP")
+//										&& !sb.getCallType().equals("MAP")
+//										&& !sb.getCallType().equals("MVP")
+//										&& !sb.getCallType().equals("MHP")) {
+//									if (sb.getCallType().equals("ABC")
+//											|| CallDispatcher.sb
+//											.getCallType()
+//											.equalsIgnoreCase("VBC")
+//											|| CallDispatcher.sb
+//											.getCallType()
+//											.equalsIgnoreCase("AP")
+//											|| CallDispatcher.sb
+//											.getCallType()
+//											.equalsIgnoreCase("VP")) {
+//										communicationEngine
+//												.startAudioCapture(
+//														sb.getSignalid(),
+//														sb.getStorageWarningLevel());
+//									} else {
+//										communicationEngine
+//												.startAudioCapture(
+//														sb.getFrom()
+//																+ "_"
+//																+ sb.getSessionid(),
+//														sb.getStorageWarningLevel());
+//									}
+//								}
+//							} else {
+//								// Log.d("SDPP",
+//								// "Started sending dummy packets");
+//								engine.sendDummyPackets(
+//										sb.getBuddyConnectip(),
+//										callsOverInternet.getAudiossrc());
+//							}
+//							stopCallTimer(sb.getSignalid());
+							callsOverInternet.startTimer();
+
+							// Implemented for port acanning.....
+//							if (sb.getPunchingmode().equals("0")) {
+//
+//							} else if (sb.getPunchingmode().equals("3")) {
+//								// Tring to do port logic prediction.....
+//								callsOverInternet.setSymmetric(true);
+//								// callsOverInternet.se
+//								engine.setSymmetric(true);
+//								engine.setHaveToSetPort(true);
+//								// s
+//								// Log.d("PORTSCAN",
+//								// "processing port scanning...&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+//								communicationEngine.doPortScanning(
+//										callsOverInternet,
+//										callsOverInternet
+//												.getBuddyConnectip(),
+//										callsOverInternet
+//												.getBuddyConnectPort());
+//
+//							}
+							// /
+
+						}
+
+						return;
+					} else if(sb.getType().equals("0") && sb.getVideoStoped() != null && (sb.getVideoStoped().equalsIgnoreCase("yes") || sb.getVideoStoped().equalsIgnoreCase("no"))){
+						Object objCallScreen = SingleInstance.instanceTable
+								.get("callscreen");
+
+						if (objCallScreen != null) {
+
+							if (objCallScreen instanceof AudioCallScreen) {
+								AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
+								acalObj.notifyVideoStoped(sb);
+							} else if (objCallScreen instanceof VideoCallScreen) {
+								VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
+								acalObj.notifyVideoStoped(sb);
+							}
+						}
+						return;
+					}
+
 					if (sb.getType().equals("4")) {
 						if (sb.getCallType() == null) {
 							sb.setCallType("");

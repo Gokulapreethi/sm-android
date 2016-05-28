@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.cg.callservices.VideoThreadBean;
 import com.cg.files.Components;
 import com.cg.hostedconf.AppReference;
 import com.cg.instancemessage.MMBean;
@@ -168,7 +169,7 @@ public class WebServiceReferences {
 	public static LinkedList<Components> llAutoPlayContent = new LinkedList<Components>();
 
 
-	public static LinkedHashMap<Integer, String> videoSSRC_total = new LinkedHashMap<Integer, String>();
+	public static LinkedHashMap<Integer, VideoThreadBean> videoSSRC_total = new LinkedHashMap<Integer, VideoThreadBean>();
 
 	public static ArrayList<Integer> videoSSRC_total_list = new ArrayList<>();
 

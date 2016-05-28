@@ -484,6 +484,32 @@ public class XmlComposer {
 			buffer.append(" conferencemember=" + quotes
 					+ sb.getConferencemember() + quotes);
 		}
+
+		if(sb.getType() != null && sb.getType().equals("0") && sb.getHost() != null
+				&& sb.getHost().length() > 0 && sb.getParticipants() != null && sb.getParticipants().length()>0){
+			buffer.append(" host=" + quotes
+					+ sb.getHost() + quotes);
+			buffer.append(" participants=" + quotes
+					+ sb.getParticipants() + quotes);
+			if(sb.getJoincall() != null && sb.getJoincall().equalsIgnoreCase("yes")) {
+				buffer.append(" joincall=" + quotes
+						+ "yes" + quotes);
+			} else {
+				buffer.append(" joincall=" + quotes
+						+ "no" + quotes);
+			}
+		}
+
+		if(sb.getVideopromote() != null && sb.getVideopromote().equalsIgnoreCase("yes")){
+			buffer.append(" videoPromotion=" + quotes
+					+ "yes" + quotes);
+		}
+
+		if(sb.getVideoStoped() != null){
+			buffer.append(" myVideoStoped=" + quotes
+					+ sb.getVideoStoped() + quotes);
+		}
+
 		if (sb.getCallType().equals("MTP")) {
 			Log.d("log", "################# condition satisfied");
 			buffer.append(" message=" + quotes + sb.getMessage() + quotes);

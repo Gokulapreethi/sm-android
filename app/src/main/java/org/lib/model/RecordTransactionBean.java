@@ -24,6 +24,7 @@ public class RecordTransactionBean {
 	private int status=0;
    private String host;
     private String participants;
+    private String disableVideo;
 
 	public String getFromName() {
 		return fromName;
@@ -174,5 +175,13 @@ public class RecordTransactionBean {
 
     public void setParticipants(String participants) {
         this.participants = participants;
+    }
+
+    public String getDisableVideo() {
+        return disableVideo;
+    }
+
+    public void setDisableVideo(String disableVideo) {
+        this.disableVideo = disableVideo;
     }
 }

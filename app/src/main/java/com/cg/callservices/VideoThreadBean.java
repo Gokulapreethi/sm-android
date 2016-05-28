@@ -9,6 +9,7 @@ public class VideoThreadBean {
     private int window;
     private int videoSssrc;
     private String member_name;
+    private boolean videoDisabled;
 
     public byte[] getData() {
         return data;
@@ -40,5 +41,13 @@ public class VideoThreadBean {
 
     public void setMember_name(String member_name) {
         this.member_name = member_name;
+    }
+
+    public boolean isVideoDisabled() {
+        return videoDisabled;
+    }
+
+    public void setVideoDisabled(boolean videoDisabled) {
+        this.videoDisabled = videoDisabled;
     }
 }

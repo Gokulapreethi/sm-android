@@ -14339,7 +14339,7 @@ private TrustManager[] get_trust_mgr() {
 		}
 	}
 
-	public void MakeCallFromCallHistory(int operation, String username, Context context, RecordTransactionBean transaction_Bean, int con_scr_opened) {
+	public void MakeCallFromCallHistory(int operation, String username, Context context, RecordTransactionBean transaction_Bean, int con_scr_opened, String promote_feature) {
 		try {
 			BuddyInformationBean bib = null;
 
@@ -14366,7 +14366,15 @@ private TrustManager[] get_trust_mgr() {
 				CallDispatcher.sb.setSessionid(transaction_Bean.getSessionid());
 				CallDispatcher.sb.setHost(transaction_Bean.getHost());
 				CallDispatcher.sb.setParticipants(transaction_Bean.getParticipants());
-				CallDispatcher.sb.setJoincall("yes");
+
+				if(promote_feature.equalsIgnoreCase("promote")) {
+					CallDispatcher.sb.setVideopromote("yes");
+				} else if(promote_feature.equalsIgnoreCase("disablevideo")){
+					CallDispatcher.sb.setVideoStoped(transaction_Bean.getDisableVideo());
+				} else {
+					CallDispatcher.sb.setVideopromote("no");
+					CallDispatcher.sb.setJoincall("yes");
+				}
 
 				switch (operation) {
 					case 1:
@@ -14444,7 +14452,12 @@ private TrustManager[] get_trust_mgr() {
 				}
 				CallDispatcher.isCallInitiate = true;
 				SingleInstance.parentId = null;
-				AppMainActivity.commEngine.makeCall(CallDispatcher.sb);
+				if(promote_feature.equalsIgnoreCase("promote") || promote_feature.equalsIgnoreCase("disablevideo")){
+					AppMainActivity.commEngine.makeCallPromotion(CallDispatcher.sb);
+				} else {
+					AppMainActivity.commEngine.makeCall(CallDispatcher.sb);
+				}
+
 			}
 
 		} catch (Exception e) {

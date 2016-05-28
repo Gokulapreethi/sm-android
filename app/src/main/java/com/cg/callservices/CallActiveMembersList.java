@@ -74,6 +74,7 @@ public class CallActiveMembersList extends Activity {
     private boolean selfHangup = false;
     private boolean isBuddyinCall=false;
     private AlertDialog alert = null;
+    private String timer;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +90,7 @@ public class CallActiveMembersList extends Activity {
             ImageView hangupBtn=(ImageView)findViewById(R.id.hangupBtn);
             ImageView addMembers=(ImageView)findViewById(R.id.addmembersBtn);
             strSessionId=getIntent().getStringExtra("sessionId");
+            timer=getIntent().getStringExtra("timer");
 
             if (WebServiceReferences.callDispatch.containsKey("calldisp"))
                 objCallDispatcher = (CallDispatcher) WebServiceReferences.callDispatch
@@ -178,12 +180,15 @@ public class CallActiveMembersList extends Activity {
                 holder = new ViewHolder();
                 if(convertView == null) {
                     inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.find_people_item, null);
+                    convertView = inflater.inflate(R.layout.rounding_member_row, null);
                     holder.selectUser = (CheckBox) convertView.findViewById(R.id.sel_buddy);
                     holder.selectUser.setVisibility(View.GONE);
                     holder.buddyicon = (ImageView) convertView.findViewById(R.id.buddyicon);
+                    holder.edit = (ImageView) convertView.findViewById(R.id.edit);
                     holder.statusIcon = (ImageView) convertView.findViewById(R.id.statusIcon);
                     holder.buddyName = (TextView) convertView.findViewById(R.id.buddyName);
+                    holder.timer = (TextView) convertView.findViewById(R.id.rights);
+                    holder.position = (TextView) convertView.findViewById(R.id.position);
                     holder.occupation = (TextView) convertView.findViewById(R.id.occupation);
                     holder.header_title = (TextView) convertView.findViewById(R.id.header_title);
                     convertView.setTag(holder);
@@ -201,6 +206,13 @@ public class CallActiveMembersList extends Activity {
                         }
                     }
                     holder.header_title.setVisibility(View.VISIBLE);
+                    holder.position.setVisibility(View.GONE);
+                    holder.edit.setVisibility(View.GONE);
+                    if(timer!=null)
+                        holder.timer.setText(timer);
+                    else
+                        holder.timer.setText("");
+                    holder.timer.setTextColor(getResources().getColor(R.color.snazash));
                     if(i == 0) {
                         holder.header_title.setText("From");
                     } else if (i == 1){
@@ -298,9 +310,9 @@ public class CallActiveMembersList extends Activity {
     }
     public static class ViewHolder {
         CheckBox selectUser;
-        ImageView buddyicon;
+        ImageView buddyicon,edit;
         ImageView statusIcon;
-        TextView buddyName;
+        TextView buddyName,timer,position;
         TextView occupation;
         TextView header_title;
     }

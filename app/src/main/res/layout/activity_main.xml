@@ -195,10 +195,10 @@
 
                     />
 
-                <TextView
+                <Chronometer
+                    android:id="@+id/audio_timer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="00:00"
                     android:layout_marginTop="6dp"
                     android:layout_toRightOf="@+id/audio_button"
                     android:textColor="@color/white"
@@ -213,25 +213,21 @@
                 android:layout_gravity="end"
                 android:layout_marginTop="110dp"
                 android:visibility="gone"
-                android:background="@drawable/minimize_lay"
-                >
+                android:background="@drawable/minimize_lay">
 
                 <ImageView
                     android:id="@+id/video_button"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:background="@drawable/ic_action_video_white"
+                    android:background="@drawable/ic_action_video_white" />
 
-                    />
-
-                <TextView
+                <Chronometer
+                    android:id="@+id/video_timer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="00:00"
                     android:layout_marginTop="6dp"
                     android:layout_toRightOf="@+id/video_button"
-                    android:textColor="@color/white"
-                    />
+                    android:textColor="@color/white" />
 
             </RelativeLayout>
             <ImageView
@@ -240,16 +236,14 @@
                 android:layout_gravity="end"
                 android:layout_weight="1"
                 android:layout_marginTop="140dp"
-                android:visibility="gone"
-                android:background="@drawable/min_in_call"/>
+                android:visibility="gone"/>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
                 android:layout_gravity="end"
                 android:layout_weight="1"
                 android:layout_marginTop="180dp"
-                android:visibility="gone"
-                android:background="@drawable/min_out_call"/>
+                android:visibility="gone"/>
         </FrameLayout>
 
     </LinearLayout>

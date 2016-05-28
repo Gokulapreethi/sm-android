@@ -19,13 +19,15 @@
             android:weightSum="2">
 
             <LinearLayout
+                android:id="@+id/top_videowindowlayouts"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="horizontal"
-                android:weightSum="2">
+                android:weightSum="3">
 
                 <RelativeLayout
+                    android:id="@+id/ownvideolayout"
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1">
@@ -153,9 +155,47 @@
                         android:textSize="15dp" />
                     </RelativeLayout>
                 </FrameLayout>
+		<FrameLayout
+                    android:id="@+id/VideoView0203"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    android:layout_weight="1"
+                    android:padding="5dp">
+
+                    <android.opengl.GLSurfaceView
+                        android:id="@+id/surfaceview0203"
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:padding="5dp"></android.opengl.GLSurfaceView>
+
+                    <TextView
+                        android:id="@+id/name23"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|start"
+                        android:text=""
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:id="@+id/onoff23"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|end"
+                        android:text="Close"
+                        android:textColor="@color/red_color"
+                        android:textSize="20dp" />
+
+                    <ImageView
+                        android:id="@+id/user_image23"
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:padding="10dp" />
+                </FrameLayout>
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/bottom_videowindowlayout"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

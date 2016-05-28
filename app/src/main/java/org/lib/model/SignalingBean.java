@@ -39,6 +39,7 @@ public class SignalingBean implements Serializable, Cloneable {
 		private String host;
 	private String participants;
 	private String joincall;
+		private String videopromote = "no";
 	public String getNetWork() {
 		return netWork;
 	}
@@ -56,6 +57,7 @@ public class SignalingBean implements Serializable, Cloneable {
 	}
 
 	private String punchingmode = null;
+	private String videoStoped;
 	private String buddyConnectip = null;
 	private String buddyConnectport = null;
 	private String message = null;
@@ -552,6 +554,22 @@ public class SignalingBean implements Serializable, Cloneable {
 
 	public void setJoincall(String joincall) {
 		this.joincall = joincall;
+	}
+
+	public String getVideopromote() {
+		return videopromote;
+	}
+
+	public void setVideopromote(String videopromote) {
+		this.videopromote = videopromote;
+	}
+
+	public String getVideoStoped() {
+		return videoStoped;
+	}
+
+	public void setVideoStoped(String videoStoped) {
+		this.videoStoped = videoStoped;
 	}
 
 	public Object clone() {

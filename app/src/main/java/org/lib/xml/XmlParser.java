@@ -216,6 +216,32 @@ public class XmlParser {
 				Log.d("Conf",
 						"##################not null" + sb.getConferencemember());
 			}
+
+			if (nodeMap.getNamedItem("host") != null) {
+				sb.setHost(nodeMap.getNamedItem("host")
+						.getNodeValue());
+			}
+
+			if (nodeMap.getNamedItem("participants") != null) {
+				sb.setParticipants(nodeMap.getNamedItem("participants")
+						.getNodeValue());
+			}
+
+			if (nodeMap.getNamedItem("joincall") != null) {
+				sb.setJoincall(nodeMap.getNamedItem("joincall")
+						.getNodeValue());
+			}
+
+			if(nodeMap.getNamedItem("videoPromotion") != null) {
+				sb.setVideopromote(nodeMap.getNamedItem("videoPromotion")
+						.getNodeValue());
+			}
+
+			if(nodeMap.getNamedItem("myVideoStoped") != null) {
+				sb.setVideoStoped(nodeMap.getNamedItem("myVideoStoped")
+						.getNodeValue());
+			}
+
 			if (nodeMap.getNamedItem("signalport") != null) {
 				sb.setSignalport(nodeMap.getNamedItem("signalport")
 						.getNodeValue());

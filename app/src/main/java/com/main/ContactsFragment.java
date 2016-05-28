@@ -3676,13 +3676,11 @@ public class ContactsFragment extends Fragment {
 		}
 	}
 	void addShowHideListener( final Fragment fragment) {
-		FragmentManager fm = AppReference.mainContext.getSupportFragmentManager();
-		FragmentTransaction ft = fm.beginTransaction();
-		if (fragment.isHidden()) {
-			ft.show(fragment);
-		} else {
-			ft.hide(fragment);
-		}
-		ft.commit();
+		AudioCallScreen requestFragment = AudioCallScreen.getInstance(SingleInstance.mainContext);
+		FragmentManager fragmentManager = SingleInstance.mainContext
+				.getSupportFragmentManager();
+		fragmentManager.beginTransaction().replace(
+				R.id.activity_main_content_fragment, requestFragment)
+				.commitAllowingStateLoss();
 	}
 }

@@ -84,6 +84,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -321,6 +322,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	public String seccreatedDate="";
 	private int count=0;
 	public String EidforGroup;
+	public static Chronometer ctimer,cvtimer;
 
 
 	@Override
@@ -363,6 +365,26 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
             final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             final LinearLayout menu_side = (LinearLayout) findViewById(R.id.menu_side);
+			ctimer=(Chronometer)findViewById(R.id.audio_timer);
+			cvtimer=(Chronometer)findViewById(R.id.video_timer);
+			ctimer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+				@Override
+				public void onChronometerTick(Chronometer arg0) {
+
+					CharSequence text = ctimer.getText();
+						ctimer.setText("0" + text);
+
+				}
+			});
+			cvtimer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+				@Override
+				public void onChronometerTick(Chronometer arg0) {
+
+					CharSequence text = cvtimer.getText();
+					cvtimer.setText("0" + text);
+
+				}
+			});
             btMenu.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

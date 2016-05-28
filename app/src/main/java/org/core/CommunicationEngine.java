@@ -47,6 +47,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.cg.callservices.VideoCallScreen;
+import com.cg.callservices.VideoThreadBean;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 
@@ -965,6 +966,28 @@ public class CommunicationEngine implements AudioRecorderListener,
 		}
 	}
 
+	public void makeCallPromotion(SignalingBean sb){
+		if (proprietarySignalling != null) {
+
+			sb.setSignalid(Long.toString(utility.getRandomMediaID()));
+			sb.setPublicip(publicInetaddress);
+			sb.setLocalip(localInetaddress);
+			Log.d("CallPromote",
+					"ToUser " + sb.getTo() + ", TR " + sb.getType()
+							+ sb.getResult() + " ,Signalid " + sb.getSignalid());
+			// New Implementation added on June12 for Deny call or conference
+			// request for More than one Time...
+			if (sb.getType().equals("0")) {
+
+				sb.setCallSubType(getCallSubtype(sb.getCallType()));
+
+
+					proprietarySignalling.sendMessage(sb);
+
+			}
+		}
+	}
+
 	public void turnOnOffVideo(SignalingBean sb){
 		if (proprietarySignalling != null) {
 
@@ -1811,7 +1834,11 @@ public class CommunicationEngine implements AudioRecorderListener,
 
 						if (!WebServiceReferences.videoSSRC_total.containsKey(Integer.parseInt(sb.getVideossrc()))) {
 							Log.i("NotesVideo", "inside if");
-							WebServiceReferences.videoSSRC_total.put(Integer.parseInt(sb.getVideossrc()), sb.getTo());
+							VideoThreadBean videoThreadBean = new VideoThreadBean();
+							videoThreadBean.setMember_name(sb.getTo());
+							videoThreadBean.setVideoDisabled(false);
+
+							WebServiceReferences.videoSSRC_total.put(Integer.parseInt(sb.getVideossrc()), videoThreadBean);
 							Log.i("NotesVideo", "videoSSRC size : " + WebServiceReferences.videoSSRC_total.size());
 						}
 					}
@@ -2033,6 +2060,185 @@ public class CommunicationEngine implements AudioRecorderListener,
 						// }
 
 					}
+
+				} else if(sb.getVideopromote() != null && sb.getVideopromote().equalsIgnoreCase("yes")){
+					Log.i("CallPromote"," sb.getVideopromote().equalsIgnoreCase(yes) : "+maintainSignallingOnTime.containsKey(sb
+							.getSessionid() + sb.getTo()));
+
+					CallsOverInternet callsOverInternet = (CallsOverInternet) callTable.get(sb.getSessionid() + sb.getTo());
+
+					if (sb.getType().equals("1")) {
+						// Log.d("test", "accept call from UI alert 5");
+
+						callsOverInternet.sendRequestToServerOne(isRelay);
+
+					} else if (sb.getType().equals("2")) {
+						if (maintainSignallingOnTime.containsKey(sb
+								.getSessionid() + sb.getTo())) {
+
+
+							Log.i("CallPromote", " isRelay : " + isRelay);
+							if (!isRelay) {
+								RtpEngine engine = callsOverInternet
+										.getRtpEngine();
+								// Log.d("REP", "from comm1");
+								Log.i("call",
+										"going to call remote addremoteendpoint1 .........."
+												+ sb.getBuddyConnectip()
+												+ "......"
+												+ sb.getBuddyConnectport());
+								engine.addRemoteEndpoint(callsOverInternet
+												.getAudiossrc(),
+										sb.getBuddyConnectip(), Integer
+												.parseInt(sb
+														.getBuddyConnectport()));
+								// Log.d("REP", "from comm1");
+								callsOverInternet.setBuddyConnectip(sb
+										.getBuddyConnectip());
+								callsOverInternet.setBuddyConnectPort(Integer
+										.parseInt(sb.getBuddyConnectport()));
+								callsOverInternet.setBuddyAudioSSRC(Integer
+										.parseInt(sb.getAudiossrc()));
+								callsOverInternet.setBuddyVideoSSRC(Integer
+										.parseInt(sb.getVideossrc()));
+								// decodessrc=Integer.parseInt(sb.getVideossrc());
+
+								// used to set audioSsrc and Video Ssrc on Rtp
+								// engine...
+								engine.setBuddyAudioSsrc(Integer.parseInt(sb
+										.getAudiossrc()));
+								engine.setBuddyVideoSsrc(Integer.parseInt(sb
+										.getVideossrc()));
+
+								engine.setMyVideoSsrc(callsOverInternet
+										.getVideossrc());
+								engine.setMyAudioSsrc(callsOverInternet
+										.getAudiossrc());
+
+								if (sb.getCallType().equals("VC")
+										|| sb.getCallType().equals("VBC")
+										|| sb.getCallType().equals("VP")
+										|| sb.getCallType().equals("SS")) {
+									// Log.d("REP", "from comm2");
+									Log.i("call",
+											"going to call remote addremoteendpoint .........."
+													+ sb.getBuddyConnectip()
+													+ "......"
+													+ sb.getBuddyConnectport());
+									engine.addRemoteEndpoint(callsOverInternet
+											.getVideossrc(), sb
+											.getBuddyConnectip(), Integer
+											.parseInt(sb.getBuddyConnectport()));
+									// showBuddyVideo(buddy, sessionid)
+									// Log.d("REP", "from comm2");
+									decodessrc = Integer.parseInt(sb
+											.getVideossrc());
+
+								}
+
+								if (sb.getPunchingmode().equals("0")) {
+
+								} else if (sb.getPunchingmode().equals("3")) {
+									// Tring to do port logic prediction.....
+									callsOverInternet.setSymmetric(true);
+									// callsOverInternet.se
+									engine.setSymmetric(true);
+									engine.setHaveToSetPort(true);
+									// s
+									// Log.d("PORTSCAN",
+									// "processing port scanning... ******************************");
+
+									doPortScanning(callsOverInternet,
+											callsOverInternet
+													.getBuddyConnectip(),
+											callsOverInternet
+													.getBuddyConnectPort());
+
+								} else {
+
+									// do port prediction logic here
+								}
+								callsOverInternet
+										.sendRequestToServerOne(isRelay);
+							} else {
+								// Log.d("SM","Type2 Relay");
+								// used to Initiate Relay code.....
+								// joinRelaynew(sb.getSessionid(), sb.getTo(),
+								// Long.valueOf(sb.getAudiossrc()),
+								// Long.valueOf(sb.getVideossrc()),
+								// sb.getSessionid()+sb.getTo(),sb.getCallType(),
+								// true);
+
+								callsOverInternet.setBuddyConnectip(sb
+										.getBuddyConnectip());
+								callsOverInternet.setBuddyConnectPort(Integer
+										.parseInt(sb.getBuddyConnectport()));
+								callsOverInternet.setBuddyAudioSSRC(Integer
+										.parseInt(sb.getAudiossrc()));
+								callsOverInternet.setBuddyVideoSSRC(Integer
+										.parseInt(sb.getVideossrc()));
+								callsOverInternet.setJoinedRelay(true);
+								// Log.d("SIGNAL",
+								// "on Relayyyyyyyyyyyyyyyy ****************");
+								// decodessrc=Integer.parseInt(sb.getVideossrc());
+
+								// used to set audioSsrc and Video Ssrc on Rtp
+								// engine...
+
+								if (sb.getCallType().equals("VC")
+										|| sb.getCallType().equals("VBC")
+										|| sb.getCallType().equals("VP")
+										|| sb.getCallType().equals("SS")) {
+									// engine.addRemoteEndpoint(callsOverInternet.getVideossrc(),sb.getBuddyConnectip(),Integer.parseInt(sb.getBuddyConnectport()));
+									// showBuddyVideo(buddy, sessionid)
+									decodessrc = Integer.parseInt(sb
+											.getVideossrc());
+
+								}
+
+								// callsOverInternet.sendSignalAfterJoin();
+								callsOverInternet
+										.sendRequestToServerOne(isRelay);
+							}
+
+							// Added on may25 Frame Timer
+							if (!sb.getCallType().equals("AP")
+									&& !sb.getCallType().equals("VP")
+									&& !sb.getCallType().equals("ABC")
+									&& !sb.getCallType().equals("VBC")
+									&& !sb.getCallType().equals("SS")) {
+								// callsOverInternet.stopMediaReceiveTimer();
+								callsOverInternet.startTimer();
+							}
+							//
+
+						}
+					}
+
+//					if (sb.getType().equals("2")) {
+//
+//						Log.i("call",
+//								"Checking call gettype2 call doadd conf .........."
+//										+ isRelay);
+//
+//						// send
+//
+//						doAddConference(sb.getTo(), sb.getTolocalip(),
+//								sb.getTopublicip(), sb.getSessionid(),
+//								sb.getToSignalPort());
+//
+//						// send
+//						if (callTable.containsKey(sb.getSessionid())) {
+//							Object object = callTable.get(sb.getSessionid());
+//							if (object instanceof RelayClientNew) {
+//								// Log.d("TYPE6", "sending Type6");
+//								// Log.d("SM"," Type6");
+//								sendType6ForExsistingUser();
+//							}
+//						}
+//
+//					}
+				} else if(sb.getVideoStoped() != null && (sb.getVideoStoped().equalsIgnoreCase("yes") || sb.getVideoStoped().equalsIgnoreCase("no"))) {
 
 				}
 
