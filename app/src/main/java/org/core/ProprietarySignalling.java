@@ -431,6 +431,8 @@ public class ProprietarySignalling implements UDPDataListener {
 
 				timerBean.setCallStatus(CallStatus.CALL_RINGING);
 				xmlComposer.composeInviteXML(sb);
+				AppMainActivity.tcpEngine.sendMessage(xml);
+				return;
 			} else if (sb.getType().equals("11") || sb.getType().equals("12")) {
 
 				xml = xmlComposer.composeInviteXML(sb);

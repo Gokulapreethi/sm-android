@@ -18,6 +18,7 @@ import com.cg.account.forgotPassword;
 import com.cg.avatar.AvatarActivity;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.files.FileInfoFragment;
 import com.cg.files.sendershare;
 import com.cg.forms.AccessAndSync;
 import com.cg.forms.AddNewForm;
@@ -493,8 +494,13 @@ public class WSRunner implements Runnable {
 							Log.d("XP WSD", "file" + mChk);
 							SingleInstance.mainContext.showToast("File upload suucessfully");
 							if (mServicebean.getCallBack() != null) {
-								((sendershare) mServicebean.getCallBack())
-										.sendFile();
+								if (mServicebean.getCallBack() instanceof sendershare) {
+									((sendershare) mServicebean.getCallBack())
+											.sendFile();
+								} else if (mServicebean.getCallBack()instanceof FileInfoFragment) {
+									((FileInfoFragment) mServicebean.getCallBack())
+											.sendFile();
+								}
 							}
 						}else
 							SingleInstance.mainContext.showToast(upload_result);

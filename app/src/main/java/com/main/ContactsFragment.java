@@ -110,6 +110,7 @@ public class ContactsFragment extends Fragment {
 	public boolean isPendingshowing = false;
 	public boolean groupstatus = false;
 	public boolean contactrecent = false;
+	private boolean grouprecent = false;
 
 	private AlertDialog alert = null;
 	private ImageLoader imageLoader;
@@ -185,6 +186,8 @@ public class ContactsFragment extends Fragment {
 	private static ContactAdapter contactAdapter;
 	public NotifyListAdapter notifyAdapter;
 	public Vector<NotifyListBean> tempnotifylist = new Vector<NotifyListBean>();
+	public Vector<NotifyListBean> contactrecentlist = new Vector<NotifyListBean>();
+	public Vector<NotifyListBean> grouprecentlist = new Vector<NotifyListBean>();
 
 
 	private Vector<FieldTemplateBean> OtherDetails = new Vector<FieldTemplateBean>();
@@ -411,6 +414,14 @@ public class ContactsFragment extends Fragment {
 				final View view_mygroup = (View) _rootView.findViewById(R.id.view_mygroup);
 
 
+				tempnotifylist = DashBoardFragment.newInstance(mainContext).LoadFilesList(CallDispatcher.LoginUser);
+				for(NotifyListBean bean:tempnotifylist){
+					if(isNumeric(bean.getFileid()))
+						grouprecentlist.add(bean);
+					else
+						contactrecentlist.add(bean);
+				}
+
 
 				//On Click Listeners
 				tv11.setOnClickListener(new View.OnClickListener() {
@@ -421,6 +432,7 @@ public class ContactsFragment extends Fragment {
 								if(contactrecent) {
 								isContact = true;
 								contactrecent = false;
+									grouprecent = true;
 								if (buddyList == null || buddyList.size() == 0)
 									showToast("No Contacts");
 								lv.setAdapter(null);
@@ -443,20 +455,21 @@ public class ContactsFragment extends Fragment {
 								plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_add_contact));
 								search.setVisibility(View.VISIBLE);
 								}else{
+
 									contactrecent = true;
+									grouprecent = true;
 									lv2.setVisibility(View.GONE);
 									lv.setVisibility(View.VISIBLE);
 									EditText myFilter = (EditText) _rootView.findViewById(R.id.searchtext);
 									myFilter.setText("");
 
 									lv.setAdapter(null);
-									tempnotifylist = DashBoardFragment.newInstance(mainContext).LoadFilesList(CallDispatcher.LoginUser);
-									notifyAdapter = new NotifyListAdapter(mainContext, tempnotifylist);
+									notifyAdapter = new NotifyListAdapter(mainContext, contactrecentlist);
 									notifyAdapter.isFromOther(true);
 									lv.setAdapter(notifyAdapter);
-									Log.d("Stringadapter","values"+notifyAdapter);
+									Log.d("Stringadapter", "values" + notifyAdapter);
 									notifyAdapter.notifyDataSetChanged();
-									contacts.setTextColor(getResources().getColor(R.color.white));
+									contacts.setTextColor(getResources().getColor(R.color.pale_white));
 									list_1.setText("RECENT");
 									list_1.setTextColor(getResources().getColor(R.color.snazgray));
 									groups.setTextColor(getResources().getColor(R.color.black));
@@ -468,6 +481,7 @@ public class ContactsFragment extends Fragment {
 									plusBtn.setVisibility(View.VISIBLE);
 									plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_add_contact));
 									search.setVisibility(View.VISIBLE);
+
 								}
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -480,25 +494,56 @@ public class ContactsFragment extends Fragment {
 					@Override
 					public void onClick(View v) {
 						try {
-							isContact = false;
-							contactrecent = true;
-							lv2.setAdapter(null);
-							lv2.setAdapter(GroupActivity.groupAdapter);
-							lv.setVisibility(View.GONE);
-							lv2.setVisibility(View.VISIBLE);
-							GroupActivity.groupAdapter.notifyDataSetChanged();
-							groups.setTextColor(getResources().getColor(R.color.white));
-							plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_pluswhite));
-							list_2.setTextColor(getResources().getColor(R.color.white));
-							contacts.setTextColor(getResources().getColor(R.color.black));
-							list_1.setTextColor(getResources().getColor(R.color.black));
-							view_mycontact.setVisibility(View.GONE);
-							view_mygroup.setVisibility(View.VISIBLE);
-							plusBtn.setVisibility(View.VISIBLE);
-							sort_lay.setVisibility(View.GONE);
-							group_sort.setVisibility(View.VISIBLE);
-							main_search.setVisibility(View.GONE);
-							search.setVisibility(View.VISIBLE);
+							if(grouprecent) {
+								isContact = false;
+								contactrecent = true;
+								grouprecent = false;
+								lv2.setAdapter(null);
+								lv2.setAdapter(GroupActivity.groupAdapter);
+								lv.setVisibility(View.GONE);
+								lv2.setVisibility(View.VISIBLE);
+								GroupActivity.groupAdapter.notifyDataSetChanged();
+								groups.setTextColor(getResources().getColor(R.color.white));
+								plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_pluswhite));
+								list_2.setTextColor(getResources().getColor(R.color.white));
+								list_2.setText("List");
+								contacts.setTextColor(getResources().getColor(R.color.black));
+								list_1.setTextColor(getResources().getColor(R.color.black));
+								view_mycontact.setVisibility(View.GONE);
+								view_mygroup.setVisibility(View.VISIBLE);
+								plusBtn.setVisibility(View.VISIBLE);
+								sort_lay.setVisibility(View.GONE);
+								group_sort.setVisibility(View.VISIBLE);
+								main_search.setVisibility(View.GONE);
+								search.setVisibility(View.VISIBLE);
+							}else{
+								isContact = false;
+								contactrecent = true;
+								grouprecent = true;
+								lv2.setAdapter(null);
+								lv.setVisibility(View.GONE);
+								lv2.setVisibility(View.VISIBLE);
+
+								notifyAdapter = new NotifyListAdapter(mainContext, grouprecentlist);
+								notifyAdapter.isFromOther(true);
+								lv2.setAdapter(notifyAdapter);
+								Log.d("Stringadapter", "values" + notifyAdapter);
+								notifyAdapter.notifyDataSetChanged();
+
+								groups.setTextColor(getResources().getColor(R.color.white));
+								plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_pluswhite));
+								list_2.setTextColor(getResources().getColor(R.color.pale_white));
+								list_2.setText("RECENT");
+								contacts.setTextColor(getResources().getColor(R.color.black));
+								list_1.setTextColor(getResources().getColor(R.color.black));
+								view_mycontact.setVisibility(View.GONE);
+								view_mygroup.setVisibility(View.GONE);
+								plusBtn.setVisibility(View.VISIBLE);
+								sort_lay.setVisibility(View.GONE);
+								group_sort.setVisibility(View.GONE);
+								main_search.setVisibility(View.GONE);
+								search.setVisibility(View.VISIBLE);
+							}
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -3382,6 +3427,15 @@ public class ContactsFragment extends Fragment {
 		} catch (Exception e) {
 			SingleInstance.printLog(null, e.getMessage(), null, e);
 		}
+	}
+
+	public static boolean isNumeric(String str) {
+		try {
+			Double.parseDouble(str);
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
+		return true;
 	}
 
 	protected void ShowView(final View v) {

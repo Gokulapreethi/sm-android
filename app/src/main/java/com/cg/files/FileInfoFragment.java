@@ -1,10 +1,14 @@
 package com.cg.files;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +18,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.cg.commonclass.CallDispatcher;
+import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.group.chat.ForwardUserSelect;
 import com.image.utils.FileImageLoader;
@@ -22,7 +30,13 @@ import com.main.AppMainActivity;
 import com.main.FilesFragment;
 import com.util.SingleInstance;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Vector;
 
 /**
  * Created by Rajalakshmi gurunath on 06-05-2016.
@@ -37,6 +51,10 @@ public class FileInfoFragment extends Fragment {
     CompleteListBean cbean;
     private FileImageLoader fileImageLoader = null;
     private TextView tv_send;
+    private String componenttype;
+    private ArrayList<String> uploadFilesList = null;
+    private String filename1;
+    CallDispatcher calldisp = new CallDispatcher(SingleInstance.mainContext);
     public static FileInfoFragment newInstance(Context context) {
         try {
             if (fileInfoFragment == null) {
@@ -122,14 +140,15 @@ public class FileInfoFragment extends Fragment {
                     TextView filename=(TextView)v1.findViewById(R.id.filename);
                     TextView filedesc=(TextView)v1.findViewById(R.id.filedesc);
                     ImageView fileIcon=(ImageView)v1.findViewById(R.id.newfile);
-                    TextView tv_share = (TextView)v1.findViewById(R.id.tv_share);
-                    tv_send = (TextView)v1.findViewById(R.id.tv_send);
+                    TextView tv_share = (TextView)view.findViewById(R.id.tv_share);
+                    tv_send = (TextView)view.findViewById(R.id.tv_send);
 
 
                     fileImageLoader = new FileImageLoader(mainContext);
                     if(cbean!=null){
                         if(cbean.getContentName()!=null) {
 
+                            componenttype = cbean.getcomponentType();
 
                             String fileName = null;
                             if (cbean.getcomponentType().equalsIgnoreCase("hand sketch")) {
@@ -197,6 +216,7 @@ public class FileInfoFragment extends Fragment {
 //                                        + cbean.getFromUser());
 //                            }
                         }
+                        filename1 = cbean.getContentpath();
                         tv_send.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -248,4 +268,148 @@ public class FileInfoFragment extends Fragment {
             return bytes + " B";
         }
     }
+    private ArrayList<String> SendbuddyList = new ArrayList<String>();
+    public ArrayList<String> uploadDatas = new ArrayList<String>();
+
+    private void shareMultipleFiles() {
+
+        try {{
+
+
+            if (SendbuddyList.size() > 0) {
+
+                        if (WebServiceReferences.running) {
+                            uploadDatas.add(cbean.getcomponentType());
+                            uploadDatas.add("false");
+                            uploadDatas.add("");
+                            uploadDatas.add("");
+                            uploadDatas.add("auto");
+                            Log.d("sendershare", "" + uploadDatas);
+                            sendshare(true);
+                        }
+
+
+
+
+
+            } else {
+                Toast.makeText(mainContext,
+                        SingleInstance.mainContext.getResources().getString(R.string.kindly_select_any_buddies),
+                        Toast.LENGTH_LONG).show();
+
+            }
+
+            // sendShare(spinner1.getSelectedItem().toString());
+
+        }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            if (AppReference.isWriteInFile)
+                AppReference.logger.error(e.getMessage(), e);
+            else
+                e.printStackTrace();
+        }
+
+    }
+
+    private void sendshare(boolean flag) {
+        try {
+            String username = CallDispatcher.LoginUser;
+            String password = CallDispatcher.Password;
+            ArrayList<String> b_list = new ArrayList<String>();
+            b_list.addAll(SendbuddyList);
+            Collections.sort(b_list);
+            ArrayList<String> u_list = new ArrayList<String>();
+            u_list.addAll(uploadDatas);
+            calldisp.uploadData.add(filename1);
+            uploadFilesList.add(filename1);
+
+			/*
+			 * To upload files using webservice
+			 */
+            String path = filename1;
+
+
+            if(componenttype.equalsIgnoreCase("photo")||componenttype.equalsIgnoreCase("handsketch")) {
+                Log.i("FileUpload", "IF PHOTO||Handsketch--->");
+
+                Bitmap bitmap = BitmapFactory.decodeFile(path);
+                String base64 = encodeTobase64(bitmap);
+                String fname = filename1.split("/")[5];
+                Log.i("FileUpload", "fname--->" + fname);
+                Log.i("FileUpload", "uname--->" + username);
+                Log.i("FileUpload", "password--->" + password);
+                Log.i("FileUpload", "type--->" + componenttype);
+                Log.i("FileUpload", "base64--->" + base64);
+                calldisp.uploadFile(username, password, componenttype, fname, base64, filename1, mainContext);
+
+
+            }else if(componenttype.equalsIgnoreCase("audio")||componenttype.equalsIgnoreCase("video"))
+            {
+
+                Log.i("FileUpload", "ELSE IF AUDIO||Video--->" );
+                Log.i("FileUploadIM", "path" +filename1);
+                String base64 = encodeAudioVideoToBase64(path);
+                if(componenttype.equalsIgnoreCase("video"))
+                    base64 = encodeAudioVideoToBase64(path+".mp4");
+
+                String fname = filename1.split("/")[3];
+                Log.i("FileUpload", "fname--->" + fname);
+                Log.i("FileUpload", "uname--->" + username);
+                Log.i("FileUpload", "password--->" + password);
+                Log.i("FileUpload", "type--->" + componenttype);
+                Log.i("FileUpload", "base64--->" + base64);
+                if(componenttype.equalsIgnoreCase("video"))
+                    calldisp.uploadFile(username, password, componenttype, fname+".mp4", base64,filename1,mainContext);
+                else
+                    calldisp.uploadFile(username, password, componenttype, fname, base64,filename1,mainContext);
+            }
+            ProgressDialog dialog = new ProgressDialog(mainContext);
+            calldisp.showprogress(dialog, mainContext);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void sendFile(){
+        calldisp.cancelDialog();
+        ArrayList<String> b_list = new ArrayList<String>();
+        b_list.addAll(SendbuddyList);
+        Collections.sort(b_list);
+        ArrayList<String> u_list = new ArrayList<String>();
+        u_list.addAll(uploadDatas);
+        calldisp.uploadData.add(filename1);
+        uploadFilesList.add(filename1);
+//        calldisp.sendshare(true, username, CallDispatcher.Password, buddieslist.getText()
+//                        .toString(), b_list, u_list, componenttype, comments,
+//                filename, "sendFiles", by_time, time_spinner, ttl_result,
+//                ttl_value, time_input, stream_toggle.isChecked(), cbean);
+    }
+
+    private String encodeAudioVideoToBase64(String path){
+        String strFile=null;
+        File file=new File(path);
+        try {
+            FileInputStream file1=new FileInputStream(file);
+            byte[] Bytearray=new byte[(int)file.length()];
+            file1.read(Bytearray);
+            strFile = Base64.encodeToString(Bytearray, Base64.NO_WRAP);//Convert byte array into string
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.i("FileUpload", "audioVideoEncode========" + strFile);
+        return strFile;
+    }
+    private String encodeTobase64(Bitmap image) {
+        Bitmap immagex = image;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        immagex.compress(Bitmap.CompressFormat.JPEG, 75, baos);
+        byte[] b = baos.toByteArray();
+        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
+
+        return imageEncoded;
+    }
+
+
 }

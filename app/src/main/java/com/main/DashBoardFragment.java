@@ -596,7 +596,7 @@ public class DashBoardFragment extends Fragment {
                                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                                         NotifyListBean notifyBean = (NotifyListBean) notifyAdapter
                                                 .getItem(position);
-                                        Log.i("AAAA", "NOTIFY LIST from user " + notifyBean.getFileid());
+                                        Log.i("AAAA", "NOTIFY LIST from user1 " + notifyBean.getFileid());
                                         if (notifyBean.getNotifttype().equalsIgnoreCase("C")) {
 //                                            appMainActivity.historyfragment();
                                         } else if (notifyBean.getNotifttype().equalsIgnoreCase("I")) {
@@ -728,6 +728,7 @@ public class DashBoardFragment extends Fragment {
             if (setType.equals("ll_warn")) {
                 for(NotifyListBean nBean:notifyList) {
                     Log.i("AAAA","NOTIFY LIST from user "+nBean.getNotifttype()+" , "+nBean.getSortdate()+" , "+nBean.getFrom());
+                    Log.d("AAAA", "Notifyid"+nBean.getFileid());
                     if(nBean.getViewed()==0 && nBean.getNotifttype().equals("F")) {
                         ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
                         nBean.setProfilePic(pBean.getPhoto());
@@ -740,6 +741,7 @@ public class DashBoardFragment extends Fragment {
             } else if (setType.equals("ll_msg")) {
                 for(NotifyListBean nBean:notifyList) {
                     Log.i("AAAA","NOTIFY LIST from user "+nBean.getNotifttype()+" , "+nBean.getSortdate()+" , "+nBean.getFrom());
+                    Log.d("AAAA", "Notifyid" + nBean.getFileid());
                     if(nBean.getViewed()==0 && nBean.getNotifttype().equals("I")) {
                         ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
                         nBean.setProfilePic(pBean.getPhoto());
@@ -752,6 +754,7 @@ public class DashBoardFragment extends Fragment {
             } else if (setType.equals("ll_call")) {
                 for(NotifyListBean nBean:notifyList) {
                     Log.i("AAAA","NOTIFY LIST from user "+nBean.getNotifttype()+" , "+nBean.getSortdate()+" , "+nBean.getFrom());
+                    Log.d("AAAA", "Notifyid" + nBean.getFileid());
                     if(nBean.getViewed()==0 && nBean.getNotifttype().equals("C")) {
                         ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getTo());
                         nBean.setProfilePic(pBean.getPhoto());
@@ -764,6 +767,7 @@ public class DashBoardFragment extends Fragment {
             } else if (setType.equals("ll_file")) {
                 for(NotifyListBean nBean:notifyList) {
                     Log.i("AAAA","NOTIFY LIST from user "+nBean.getNotifttype()+" , "+nBean.getSortdate()+" , "+nBean.getFrom());
+                    Log.d("AAAA", "Notifyid" + nBean.getFileid());
                     if(nBean.getViewed()==0 && nBean.getNotifttype().equals("F")) {
                         ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
                         nBean.setProfilePic(pBean.getPhoto());
@@ -776,6 +780,7 @@ public class DashBoardFragment extends Fragment {
             } else {
                 for(NotifyListBean nBean:notifyList) {
                     Log.i("AAAA","NOTIFY LIST from user "+nBean.getNotifttype()+" , "+nBean.getSortdate()+" , "+nBean.getFrom());
+                    Log.d("AAAA", "Notifyid" + nBean.getFileid());
                     if(nBean.getViewed()==0) {
                         ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
                         nBean.setProfilePic(pBean.getPhoto());
