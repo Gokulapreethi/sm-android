@@ -2,7 +2,27 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="#000000">
-
+    <RelativeLayout
+        android:id="@+id/myrelative_layout1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:gravity="center"
+        android:layout_marginTop="80dp">
+        <Chronometer
+            android:id="@+id/call_timer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/chronometer"
+            android:layout_marginTop="40dp"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:textColor="#fff"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            android:visibility="gone" >
+        </Chronometer>
+        </RelativeLayout>
 
 
     <LinearLayout
@@ -66,20 +86,12 @@
                             android:layout_centerVertical="true"
                             android:layout_alignParentRight="true"
                             android:layout_alignParentEnd="true" />
-                        <Button
-                            android:id="@+id/minimize_btn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/minimize_back"
-                            android:visibility="visible" />
                     <Button
                         android:id="@+id/flipcamera"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/call_flip_camera"
-                        android:layout_alignTop="@+id/onoffpreview"
-                        android:layout_alignRight="@+id/minimize_btn"
-                        android:layout_alignEnd="@+id/minimize_btn" />
+                        android:layout_alignTop="@+id/onoffpreview" />
 
                 </RelativeLayout>
 
@@ -95,34 +107,6 @@
                         android:layout_height="match_parent"
                         android:padding="5dp"
                         android:visibility="visible"></android.opengl.GLSurfaceView>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_gravity="end"
-                        android:layout_alignParentRight="true"
-                        android:id="@+id/member_lay"
-                        android:visibility="visible">
-
-                        <Button
-                            android:id="@+id/members"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="10dp"
-                            android:background="@drawable/tab_members_white" />
-                        <TextView
-                            android:id="@+id/members_count"
-                            android:layout_toRightOf="@+id/members"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="1"
-                            android:textColor="@color/white"
-                            android:layout_marginRight="10dp" />
-                    </LinearLayout>
-
 
                     <TextView
                         android:id="@+id/onoff2"
@@ -169,28 +153,36 @@
                         android:layout_height="match_parent"
                         android:padding="5dp"></android.opengl.GLSurfaceView>
 
-                    <TextView
-                        android:id="@+id/name23"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="top|start"
-                        android:text=""
-                        android:textSize="20dp" />
+            <TextView
+                android:id="@+id/onoff23"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|right|end"
+                android:background="@drawable/call_close_video"
+                android:textColor="@color/red_color"
+                android:textSize="20dp" />
+            <RelativeLayout
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
 
-                    <TextView
-                        android:id="@+id/onoff23"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="top|end"
-                        android:text="Close"
-                        android:textColor="@color/red_color"
-                        android:textSize="20dp" />
-
-                    <ImageView
-                        android:id="@+id/user_image23"
-                        android:layout_width="fill_parent"
-                        android:layout_height="match_parent"
-                        android:padding="10dp" />
+            <org.cryse.android.controls.RoundedImageView
+                android:id="@+id/user_image23"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:padding="10dp"
+                android:layout_gravity="center"/>
+            <TextView
+                android:id="@+id/name23"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/user_image23"
+                android:text=""
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
+                android:gravity="center"
+                android:textSize="15dp" />
+            </RelativeLayout>
                 </FrameLayout>
             </LinearLayout>
 
@@ -371,4 +363,44 @@
                 android:src="@drawable/loc_pin"
                 android:visibility="gone"/>
         </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/RelativeLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" >
+        <Button
+            android:id="@+id/minimize_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/minimize_back"
+            android:visibility="visible" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentRight="true"
+            android:id="@+id/member_lay"
+            android:visibility="visible">
+
+            <Button
+                android:id="@+id/members"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/tab_members_white" />
+            <TextView
+                android:id="@+id/members_count"
+                android:layout_toRightOf="@+id/members"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:textColor="@color/white"
+                android:layout_marginRight="10dp" />
+        </LinearLayout>
+        </RelativeLayout>
 </RelativeLayout>

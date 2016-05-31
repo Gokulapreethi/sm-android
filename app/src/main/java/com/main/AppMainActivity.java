@@ -2077,11 +2077,11 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						callDisp.gpsloc.Stop();
 					}
 
-					if (WebServiceReferences.contextTable
-							.containsKey("alertscreen")) {
-						((inCommingCallAlert) WebServiceReferences.contextTable
-								.get("alertscreen")).finish();
-					}
+//					if (WebServiceReferences.contextTable
+//							.containsKey("alertscreen")) {
+//						((inCommingCallAlert) SingleInstance.contextTable
+//								.get("alertscreen")).finish();
+//					}
 					WebServiceReferences.missedcallCount.clear();
 					callDisp.destroySIPStack();
 					callDisp.profilePicturepath = "";

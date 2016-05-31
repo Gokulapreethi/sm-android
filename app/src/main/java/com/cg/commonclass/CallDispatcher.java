@@ -2478,11 +2478,11 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 												"No Answer");
 
 
-										NoAnswer(sb.getFrom());
-//										closeDialWindow(
-//												"No Answer from "
-//														+ sb.getFrom(), "0",
-//												"3");
+//										NoAnswer(sb.getFrom());
+										closeDialWindow(
+												"No Answer from "
+														+ sb.getFrom(), "0",
+												"3");
 									}
 
 									// have to call no Answer avatar here
@@ -11379,10 +11379,21 @@ private TrustManager[] get_trust_mgr() {
 							// signBean);
 							// }
 							//
-							Intent intent = new Intent(context,
-									inCommingCallAlert.class);
-							intent.putExtra("bean", signBean);
-							context.startActivity(intent);
+							FragmentManager fm =
+									AppReference.mainContext.getSupportFragmentManager();
+							FragmentTransaction ft = fm.beginTransaction();
+							inCommingCallAlert incommingCallAlert = inCommingCallAlert
+									.getInstance(context);
+							Bundle bundle = new Bundle();
+							bundle.putSerializable("bean", signBean);
+							incommingCallAlert.setArguments(bundle);
+							ft.replace(R.id.activity_main_content_fragment, incommingCallAlert);
+							ft.commitAllowingStateLoss();
+
+//							Intent intent = new Intent(context,
+//									inCommingCallAlert.class);
+//							intent.putExtra("bean", signBean);
+//							context.startActivity(intent);
 							Log.i("call123", "incoming call3");
 						}
 						Log.i("call123", "incoming call");
@@ -11404,7 +11415,7 @@ private TrustManager[] get_trust_mgr() {
 				public void run() {
 					// TODO Auto-generated method stub
 
-					if (WebServiceReferences.contextTable
+					if (SingleInstance.contextTable
 							.containsKey("IncomingCallAlert")) {
 
 						isCallInitiate = false;
@@ -11414,9 +11425,17 @@ private TrustManager[] get_trust_mgr() {
 						rejectInComingCall(signBean);
 						stopRingTone();
 						currentSessionid = null;
-						inCommingCallAlert ICA = (inCommingCallAlert) WebServiceReferences.contextTable
-								.get("IncomingCallAlert");
-						ICA.finish();
+//						inCommingCallAlert ICA = (inCommingCallAlert) SingleInstance.contextTable
+//								.get("IncomingCallAlert");
+//						ICA.finish();
+						FragmentManager fm =
+								AppReference.mainContext.getSupportFragmentManager();
+						FragmentTransaction ft = fm.beginTransaction();
+						ContactsFragment contactsFragment = ContactsFragment
+								.getInstance(context);
+						ft.replace(R.id.activity_main_content_fragment,
+								contactsFragment);
+						ft.commitAllowingStateLoss();
 						CallDispatcher.conferenceMembers.clear();
 						CallDispatcher.buddySignall.clear();
 					}
@@ -11453,9 +11472,17 @@ private TrustManager[] get_trust_mgr() {
 				try {
 					if (WebServiceReferences.contextTable
 							.containsKey("alertscreen")) {
-						inCommingCallAlert alert = (inCommingCallAlert) WebServiceReferences.contextTable
-								.get("alertscreen");
-						alert.finishactivity();
+//						inCommingCallAlert alert = (inCommingCallAlert) SingleInstance.contextTable
+//								.get("alertscreen");
+//						alert.finishactivity();
+						FragmentManager fm =
+								AppReference.mainContext.getSupportFragmentManager();
+						FragmentTransaction ft = fm.beginTransaction();
+						ContactsFragment contactsFragment = ContactsFragment
+								.getInstance(context);
+						ft.replace(R.id.activity_main_content_fragment,
+								contactsFragment);
+						ft.commitAllowingStateLoss();
 
 					}
 					if (mdialog != null) {

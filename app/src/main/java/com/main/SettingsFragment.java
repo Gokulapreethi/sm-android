@@ -178,14 +178,14 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 				@Override
 				public void onClick(View v) {
 					mainHeader.setVisibility(View.GONE);
-					addShowHideListener(AudioCallScreen.getInstance(SingleInstance.mainContext));
+					addShowHideListener(true);
 				}
 			});
 			video_minimize.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					mainHeader.setVisibility(View.GONE);
-					addShowHideListener(VideoCallScreen.getInstance(SingleInstance.mainContext));
+					addShowHideListener(false);
 				}
 			});
 			view = null;
@@ -711,14 +711,21 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		}
 
 	}
-	void addShowHideListener( final Fragment fragment) {
-		FragmentManager fm = AppReference.mainContext.getSupportFragmentManager();
-		FragmentTransaction ft = fm.beginTransaction();
-		if (fragment.isHidden()) {
-			ft.show(fragment);
-		} else {
-			ft.hide(fragment);
+	void addShowHideListener( final Boolean isAudio) {
+		if(isAudio) {
+			AudioCallScreen audioCallScreen = AudioCallScreen.getInstance(SingleInstance.mainContext);
+			FragmentManager fragmentManager = SingleInstance.mainContext
+					.getSupportFragmentManager();
+			fragmentManager.beginTransaction().replace(
+					R.id.activity_main_content_fragment, audioCallScreen)
+					.commitAllowingStateLoss();
+		}else {
+			VideoCallScreen videoCallScreen = VideoCallScreen.getInstance(SingleInstance.mainContext);
+			FragmentManager fragmentManager = SingleInstance.mainContext
+					.getSupportFragmentManager();
+			fragmentManager.beginTransaction().replace(
+					R.id.activity_main_content_fragment, videoCallScreen)
+					.commitAllowingStateLoss();
 		}
-		ft.commit();
 	}
 }

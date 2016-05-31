@@ -594,7 +594,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
             }
 
 			if(currentcall_type.equalsIgnoreCase("VC")){
-
+				getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 preview_frameLayout.removeView(pv);
                 pv.stopPreview();
                 pv = AppMainActivity.commEngine.getVideoPreview(context);
@@ -832,11 +832,11 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
                     try {
                         if (!micmute) {
                             micmute = true;
-                            btnMic_video.setBackgroundResource(R.drawable.call_mic_active);
+                            btnMic_video.setImageResource(R.drawable.call_mic_active);
 
                         } else if (micmute) {
                             micmute = false;
-                            btnMic_video.setBackgroundResource(R.drawable.call_mic);
+                            btnMic_video.setImageResource(R.drawable.call_mic);
 
                         }
 
@@ -855,9 +855,9 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
                     Log.i("thread", "################## speaker" + speaker);
                     if (!speaker) {
                         speaker = true;
-                        btnSpeaker_video.setBackgroundResource(R.drawable.call_video_active);
+                        btnSpeaker_video.setImageResource(R.drawable.call_video_active);
                     } else if (speaker) {
-                        btnSpeaker_video.setBackgroundResource(R.drawable.call_speaker);
+                        btnSpeaker_video.setImageResource(R.drawable.call_speaker);
                         speaker = false;
 
                     }
@@ -989,8 +989,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 						video_layouts.setVisibility(View.VISIBLE);
 						video_lay.setVisibility(View.VISIBLE);
 						audio_button_layouts.setVisibility(View.GONE);
-						audio_host_layout.setVisibility(View.GONE);
-						audio_participant_layout.setVisibility(View.GONE);
+//						audio_host_layout.setVisibility(View.GONE);
+//						audio_participant_layout.setVisibility(View.GONE);
 //						initializevideoIntent();
 						getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 						currentcall_type = "VC";
@@ -1062,6 +1062,12 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
                     videoEnableBtn.setTag(!shown);
                 }
             });
+			onoff_preview.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					own_video_layout.setVisibility(View.GONE);
+				}
+			});
 
 			on_off1.setOnClickListener(new OnClickListener() {
                 @Override
@@ -1228,59 +1234,63 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			handler.post(new Runnable() {
 				@Override
 				public void run() {
-					if (onoff) {
+//					if (onoff) {
 						if(selectedposition == 0) {
-							buddyimageview1.setVisibility(View.GONE);
-							buddysurfaceview_01.setVisibility(View.VISIBLE);
+
+							buddyframelayout01.setVisibility(View.GONE);
+//							buddyimageview1.setVisibility(View.GONE);
+//							buddysurfaceview_01.setVisibility(View.GONE);
 
 //							buddyTimerTask1 = new VideoOnOffTimerTask(buddy_name,onoff);
 //							buddytimer1 = new Timer();
 //							buddytimer1.schedule(buddyTimerTask1,2000,2000);
 
 						} else if(selectedposition == 1) {
-							buddyimageview2.setVisibility(View.GONE);
-							buddysurfaceview_02.setVisibility(View.VISIBLE);
+							buddyframelayout02.setVisibility(View.GONE);
+//							buddyimageview2.setVisibility(View.GONE);
+//							buddysurfaceview_02.setVisibility(View.GONE);
 						} else if(selectedposition == 2) {
-							buddyimageview3.setVisibility(View.GONE);
-							buddysurfaceview_03.setVisibility(View.VISIBLE);
+							buddyframelayout03.setVisibility(View.GONE);
+//							buddyimageview3.setVisibility(View.GONE);
+//							buddysurfaceview_03.setVisibility(View.GONE);
 						}
-					} else {
-						boolean have_image = false;
-						for (BuddyInformationBean buddyInformationBean : buddyList) {
-							if (buddyInformationBean.getName().equalsIgnoreCase(buddy_name)) {
-								String pic_path = buddyInformationBean.getProfile_picpath();
-								if (pic_path != null) {
-									have_image = true;
-									if(selectedposition == 0) {
-										imageLoader.DisplayImage(pic_path, buddyimageview1, R.drawable.icon_buddy_aoffline);
-									} else if(selectedposition == 1) {
-										imageLoader.DisplayImage(pic_path, buddyimageview2, R.drawable.icon_buddy_aoffline);
-									} else if(selectedposition == 2) {
-										imageLoader.DisplayImage(pic_path, buddyimageview3, R.drawable.icon_buddy_aoffline);
-									}
-								}
-							}
-						}
-						if(selectedposition == 0) {
-							if (!have_image) {
-								imageLoader.DisplayImage("", buddyimageview1, R.drawable.icon_buddy_aoffline);
-							}
-							buddyimageview1.setVisibility(View.VISIBLE);
-							buddysurfaceview_01.setVisibility(View.GONE);
-						} else if(selectedposition == 1) {
-							if (!have_image) {
-								imageLoader.DisplayImage("", buddyimageview2, R.drawable.icon_buddy_aoffline);
-							}
-							buddyimageview2.setVisibility(View.VISIBLE);
-							buddysurfaceview_02.setVisibility(View.GONE);
-						} else if(selectedposition == 2) {
-							if (!have_image) {
-								imageLoader.DisplayImage("", buddyimageview3, R.drawable.icon_buddy_aoffline);
-							}
-							buddyimageview3.setVisibility(View.VISIBLE);
-							buddysurfaceview_03.setVisibility(View.GONE);
-						}
-					}
+//					} else {
+//						boolean have_image = false;
+//						for (BuddyInformationBean buddyInformationBean : buddyList) {
+//							if (buddyInformationBean.getName().equalsIgnoreCase(buddy_name)) {
+//								String pic_path = buddyInformationBean.getProfile_picpath();
+//								if (pic_path != null) {
+//									have_image = true;
+//									if(selectedposition == 0) {
+//										imageLoader.DisplayImage(pic_path, buddyimageview1, R.drawable.icon_buddy_aoffline);
+//									} else if(selectedposition == 1) {
+//										imageLoader.DisplayImage(pic_path, buddyimageview2, R.drawable.icon_buddy_aoffline);
+//									} else if(selectedposition == 2) {
+//										imageLoader.DisplayImage(pic_path, buddyimageview3, R.drawable.icon_buddy_aoffline);
+//									}
+//								}
+//							}
+//						}
+//						if(selectedposition == 0) {
+//							if (!have_image) {
+//								imageLoader.DisplayImage("", buddyimageview1, R.drawable.icon_buddy_aoffline);
+//							}
+//							buddyimageview1.setVisibility(View.VISIBLE);
+//							buddysurfaceview_01.setVisibility(View.GONE);
+//						} else if(selectedposition == 1) {
+//							if (!have_image) {
+//								imageLoader.DisplayImage("", buddyimageview2, R.drawable.icon_buddy_aoffline);
+//							}
+//							buddyimageview2.setVisibility(View.VISIBLE);
+//							buddysurfaceview_02.setVisibility(View.GONE);
+//						} else if(selectedposition == 2) {
+//							if (!have_image) {
+//								imageLoader.DisplayImage("", buddyimageview3, R.drawable.icon_buddy_aoffline);
+//							}
+//							buddyimageview3.setVisibility(View.VISIBLE);
+//							buddysurfaceview_03.setVisibility(View.GONE);
+//						}
+//					}
 				}
 			});
 		}
@@ -1330,6 +1340,19 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 										buddysurfaceview_0102.setVisibility(View.GONE);
 										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
 										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+									}
+									if(on_off1.getTag()==false) {
+										buddyframelayout01.setVisibility(View.GONE);
+										buddysurfaceview_01.setVisibility(View.GONE);
+									}if(on_off2.getTag()==false) {
+										buddyframelayout02.setVisibility(View.GONE);
+										buddysurfaceview_02.setVisibility(View.GONE);
+									}if(on_off3.getTag()==false) {
+										buddyframelayout03.setVisibility(View.GONE);
+										buddysurfaceview_03.setVisibility(View.GONE);
+									}if(on_off12.getTag()==false) {
+										buddyframelayout0102.setVisibility(View.GONE);
+										buddysurfaceview_0102.setVisibility(View.GONE);
 									}
 									String mem_name = "";
 									if (WebServiceReferences.videoSSRC_total.containsKey((int) (long) ssrc)) {
@@ -1405,8 +1428,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 					video_layouts.setVisibility(View.VISIBLE);
 					video_lay.setVisibility(View.VISIBLE);
 					audio_button_layouts.setVisibility(View.GONE);
-					audio_host_layout.setVisibility(View.GONE);
-					audio_participant_layout.setVisibility(View.GONE);
+//					audio_host_layout.setVisibility(View.GONE);
+//					audio_participant_layout.setVisibility(View.GONE);
 //					initializevideoIntent();
 					pv = AppMainActivity.commEngine.getVideoPreview(context);
 					pv.setZOrderOnTop(false);

@@ -20,12 +20,18 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -33,15 +39,17 @@ import android.widget.TextView;
 
 import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.commongui.MultimediaUtils;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
+import com.main.ContactsFragment;
 import com.util.SingleInstance;
 
-public class inCommingCallAlert extends Activity {
+public class inCommingCallAlert extends Fragment {
 
 	private ImageView accept = null;
 
@@ -63,35 +71,59 @@ public class inCommingCallAlert extends Activity {
 
 	private SignalingBean sbaen = null;
 
-	private Context context = null;
+	private static Context context = null;
 
 	private KeyguardManager keyguardManager;
+	RelativeLayout mainHeader;
+	ImageView min_incall;
 
 	private KeyguardLock lock;
+	private static inCommingCallAlert incommingCallAlert;
 
 	private HashMap<String, Object> xmlmap = new HashMap<String, Object>();
 	private ImageLoader imageLoader;
 	private ProfileBean bean;
+	public View rootView;
+	Bundle bundlevalues;
+
+	public static inCommingCallAlert getInstance(Context maincontext) {
+		try {
+			if (incommingCallAlert == null) {
+
+				context = maincontext;
+				incommingCallAlert = new inCommingCallAlert();
+
+			}
+
+			return incommingCallAlert;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return incommingCallAlert;
+		}
+	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+							 Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.callalertscreen);
-		keyguardManager = (KeyguardManager) getSystemService(Activity.KEYGUARD_SERVICE);
-		lock = keyguardManager.newKeyguardLock(KEYGUARD_SERVICE);
+//		super.onCreate(savedInstanceState);
+//		requestWindowFeature(Window.FEATURE_NO_TITLE);
+//		setContentView(R.layout.callalertscreen);
+		SingleInstance.instanceTable.put("alertscreen",incommingCallAlert);
+		keyguardManager = (KeyguardManager) getActivity().getSystemService(Activity.KEYGUARD_SERVICE);
+		lock = keyguardManager.newKeyguardLock(context.KEYGUARD_SERVICE);
 		lock.disableKeyguard();
-		context = this;
+//		context = this;
 
-		DisplayMetrics displaymetrics = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-		int noScrHeight = displaymetrics.heightPixels;
-		int noScrWidth = displaymetrics.widthPixels;
-		this.setFinishOnTouchOutside(false);
-		RelativeLayout ll = (RelativeLayout) findViewById(R.id.callalert_lay);
-		Window window=getWindow();
-		getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//		DisplayMetrics displaymetrics = new DisplayMetrics();
+//		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+//		int noScrHeight = displaymetrics.heightPixels;
+//		int noScrWidth = displaymetrics.widthPixels;
+//		this.setFinishOnTouchOutside(false);
+//		RelativeLayout ll = (RelativeLayout) findViewById(R.id.callalert_lay);
+//		Window window=getWindow();
+//		getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
 		if (WebServiceReferences.callDispatch.containsKey("calldisp"))
 			callDisp = (CallDispatcher) WebServiceReferences.callDispatch
@@ -99,123 +131,146 @@ public class inCommingCallAlert extends Activity {
 		else
 		callDisp = new CallDispatcher(context);
 
-		callDisp.setNoScrHeight(noScrHeight);
-		callDisp.setNoScrWidth(noScrWidth);
-		displaymetrics = null;
+//		callDisp.setNoScrHeight(noScrHeight);
+//		callDisp.setNoScrWidth(noScrWidth);
+//		displaymetrics = null;
+		bundlevalues=getArguments();
+		mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
+		mainHeader.setVisibility(View.GONE);
+		min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
+		min_incall.setVisibility(View.GONE);
+		if(rootView==null) {
+			rootView = inflater.inflate(R.layout.callalertscreen, null);
 
-		accept = (ImageView) findViewById(R.id.tv_accept);
-		reject = (ImageView) findViewById(R.id.tv_decline);
-		ignore = (ImageView) findViewById(R.id.tv_ignore);
+			accept = (ImageView) rootView.findViewById(R.id.tv_accept);
+			reject = (ImageView) rootView.findViewById(R.id.tv_decline);
+			ignore = (ImageView) rootView.findViewById(R.id.tv_ignore);
+			Button minimize=(Button)rootView.findViewById(R.id.minimize_btn);
 
-		tv_title = (TextView) findViewById(R.id.caller_name);
-		call_type = (TextView) findViewById(R.id.call_type);
-		profilePicture = (ImageView) findViewById(R.id.profile_pic);
-		sbaen = (SignalingBean) getIntent().getSerializableExtra("bean");
-		CallDispatcher.sb = sbaen;
-		CallDispatcher.notify_sb = sbaen;
-		bean = DBAccess.getdbHeler().getProfileDetails(sbaen.getFrom());
-		changeTextalert();
-		Log.i("thread", ">>>>>>>>>>>> incoming call on create");
-		imageLoader = new ImageLoader(SingleInstance.mainContext);
-		if(bean.getPhoto()!=null){
-			String profilePic=bean.getPhoto();
-			Log.i("AAAA", "MYACCOUNT "+profilePic);
-			if (profilePic != null && profilePic.length() > 0) {
-				if (!profilePic.contains("COMMedia")) {
-					profilePic = Environment
-							.getExternalStorageDirectory()
-							+ "/COMMedia/" + profilePic;
-				}
-				Log.i("AAAA","MYACCOUNT "+profilePic);
-				imageLoader.DisplayImage(profilePic, profilePicture,
-						R.drawable.img_user);
-			}
-		}
-		if (WebServiceReferences.contextTable
-				.containsKey("multimediautils"))
-			((MultimediaUtils) WebServiceReferences.contextTable
-					.get("multimediautils")).StopAudioPlay();
-		accept.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				if (WebServiceReferences.missedcallCount.containsKey(sbaen
-						.getFrom()))
-					WebServiceReferences.missedcallCount.remove(sbaen.getFrom());
-
-				if (CallDispatcher.LoginUser != null) {
-					acceptCall(sbaen.getFrom());
-				} else {
-					callDisp.hangUpCall();
+			tv_title = (TextView) rootView.findViewById(R.id.caller_name);
+			call_type = (TextView) rootView.findViewById(R.id.call_type);
+			profilePicture = (ImageView) rootView.findViewById(R.id.profile_pic);
+			sbaen = (SignalingBean) bundlevalues.getSerializable("bean");
+			CallDispatcher.sb = sbaen;
+			CallDispatcher.notify_sb = sbaen;
+			bean = DBAccess.getdbHeler().getProfileDetails(sbaen.getFrom());
+			changeTextalert();
+			Log.i("thread", ">>>>>>>>>>>> incoming call on create");
+			imageLoader = new ImageLoader(SingleInstance.mainContext);
+			if (bean.getPhoto() != null) {
+				String profilePic = bean.getPhoto();
+				Log.i("AAAA", "MYACCOUNT " + profilePic);
+				if (profilePic != null && profilePic.length() > 0) {
+					if (!profilePic.contains("COMMedia")) {
+						profilePic = Environment
+								.getExternalStorageDirectory()
+								+ "/COMMedia/" + profilePic;
+					}
+					Log.i("AAAA", "MYACCOUNT " + profilePic);
+					imageLoader.DisplayImage(profilePic, profilePicture,
+							R.drawable.img_user);
 				}
 			}
-		});
+			minimize.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					FragmentManager fm =
+							AppReference.mainContext.getSupportFragmentManager();
+					FragmentTransaction ft = fm.beginTransaction();
+					ContactsFragment contactsFragment = ContactsFragment
+							.getInstance(context);
+					ft.replace(R.id.activity_main_content_fragment,
+							contactsFragment);
+					ft.commitAllowingStateLoss();
+					min_incall.setVisibility(View.VISIBLE);
+				}
+			});
+			if (WebServiceReferences.contextTable
+					.containsKey("multimediautils"))
+				((MultimediaUtils) WebServiceReferences.contextTable
+						.get("multimediautils")).StopAudioPlay();
+			accept.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					if (WebServiceReferences.missedcallCount.containsKey(sbaen
+							.getFrom()))
+						WebServiceReferences.missedcallCount.remove(sbaen.getFrom());
 
-		reject.setOnClickListener(new OnClickListener() {
+					if (CallDispatcher.LoginUser != null) {
+						acceptCall(sbaen.getFrom());
+					} else {
+						callDisp.hangUpCall();
+					}
+				}
+			});
 
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
+			reject.setOnClickListener(new OnClickListener() {
 
-				if (WebServiceReferences.missedcallCount.containsKey(sbaen
-						.getFrom()))
-					WebServiceReferences.missedcallCount.remove(sbaen.getFrom());
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
 
-				rejectCall();
-			}
-		});
+					if (WebServiceReferences.missedcallCount.containsKey(sbaen
+							.getFrom()))
+						WebServiceReferences.missedcallCount.remove(sbaen.getFrom());
 
-		ignore.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				callDisp.stopRingTone();
+					rejectCall();
+				}
+			});
+
+			ignore.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					callDisp.stopRingTone();
+					finishactivity();
+				}
+			});
+
+			SharedPreferences sPreferences = PreferenceManager
+					.getDefaultSharedPreferences(SingleInstance.mainContext
+							.getApplicationContext());
+			boolean isAutoAccept = sPreferences.getBoolean("autoaccept", false);
+			if (isAutoAccept
+					&& SingleInstance.mainContext.isAutoAcceptEnabled(
+					CallDispatcher.LoginUser,
+					CallDispatcher.getUser(sbaen.getFrom(), sbaen.getTo()))) {
+				acceptCall(sbaen.getFrom());
 				finishactivity();
 			}
-		});
-
-		SharedPreferences sPreferences = PreferenceManager
-				.getDefaultSharedPreferences(SingleInstance.mainContext
-						.getApplicationContext());
-		boolean isAutoAccept = sPreferences.getBoolean("autoaccept", false);
-		if (isAutoAccept
-				&& SingleInstance.mainContext.isAutoAcceptEnabled(
-						CallDispatcher.LoginUser,
-						CallDispatcher.getUser(sbaen.getFrom(), sbaen.getTo()))) {
-			acceptCall(sbaen.getFrom());
-			finish();
 		}
 
+		return rootView;
 	}
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-        AppMainActivity.inActivity = this;
     }
 
 	public void changeTextalert() {
 		CallDispatcher.isCallAcceptRejectOpened = true;
 		CallDispatcher.isIncomingAlert = true;
-		WebServiceReferences.contextTable.put("alertscreen", this);
+		SingleInstance.instanceTable.put("alertscreen", incommingCallAlert);
 
 		Log.i("ACal", "showIncomingAlert will be viewed");
 		from = sbaen.getFrom();
 		to = sbaen.getTo();
 
-		DisplayMetrics displaymetrics = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-		int noScrHeight = displaymetrics.heightPixels;
-		int noScrWidth = displaymetrics.widthPixels;
-
-		if (WebServiceReferences.callDispatch.containsKey("calldisp"))
-			callDisp = (CallDispatcher) WebServiceReferences.callDispatch
-					.get("calldisp");
-		else
-			callDisp = new CallDispatcher(context);
-
-		callDisp.setNoScrHeight(noScrHeight);
-		callDisp.setNoScrWidth(noScrWidth);
-		displaymetrics = null;
+//		DisplayMetrics displaymetrics = new DisplayMetrics();
+//		context.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+//		int noScrHeight = displaymetrics.heightPixels;
+//		int noScrWidth = displaymetrics.widthPixels;
+//
+//		if (WebServiceReferences.callDispatch.containsKey("calldisp"))
+//			callDisp = (CallDispatcher) WebServiceReferences.callDispatch
+//					.get("calldisp");
+//		else
+//			callDisp = new CallDispatcher(context);
+//
+//		callDisp.setNoScrHeight(noScrHeight);
+//		callDisp.setNoScrWidth(noScrWidth);
+//		displaymetrics = null;
 		String CallerName=bean.getFirstname()+" "+bean.getLastname();
 
 		if (sbaen.getCallType().equals("AC")) {
@@ -435,7 +490,7 @@ public class inCommingCallAlert extends Activity {
 					}
 					if (CallDispatcher.audioProperties == null) {
 						CallDispatcher.audioProperties = new AudioProperties(
-								this);
+								context);
 					}
 					SignalingBean sb = (SignalingBean) sbaen.clone();
 					ShowConnectionScreen(sb);
@@ -545,7 +600,7 @@ public class inCommingCallAlert extends Activity {
 					}
 					if (CallDispatcher.audioProperties == null) {
 						CallDispatcher.audioProperties = new AudioProperties(
-								this);
+								context);
 					}
 					SignalingBean sb = (SignalingBean) sbaen.clone();
 					ShowConnectionScreen(sb);
@@ -564,19 +619,20 @@ public class inCommingCallAlert extends Activity {
 	}
 
 	public void finishactivity() {
-		this.finish();
-	}
-
-	public void openAudiocallScreen() {
-		Intent aintent = new Intent(this, AudioCallScreen.class);
-		aintent.putExtra("buddy", to);
-		aintent.putExtra("buddyname", from);
-		aintent.putExtra("isreceiver", true);
-		startActivity(aintent);
-	}
+		rootView=null;
+		FragmentManager fm =
+				AppReference.mainContext.getSupportFragmentManager();
+		FragmentTransaction ft = fm.beginTransaction();
+		ContactsFragment contactsFragment = ContactsFragment
+				.getInstance(context);
+		ft.replace(R.id.activity_main_content_fragment,
+				contactsFragment);
+		ft.commitAllowingStateLoss();
+		mainHeader.setVisibility(View.VISIBLE);
+		min_incall.setVisibility(View.GONE);}
 
 	@Override
-	protected void onDestroy() {
+	public void onDestroy() {
 		// TODO Auto-generated method stub
 		if (WebServiceReferences.contextTable.containsKey("alertscreen")) {
 			WebServiceReferences.contextTable.remove("alertscreen");
@@ -610,7 +666,7 @@ public class inCommingCallAlert extends Activity {
 		}).start();
 
 		try {
-			Intent intent = new Intent(this, CallConnectingScreen.class);
+			Intent intent = new Intent(context, CallConnectingScreen.class);
 			Bundle bundle = new Bundle();
 			bundle.putString("name", from);
 			bundle.putString("type", sbean.getCallType());
@@ -625,43 +681,43 @@ public class inCommingCallAlert extends Activity {
 
 	}
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// TODO Auto-generated method stub
-		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-
-			AlertDialog alert = null;
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			String ask = SingleInstance.mainContext.getResources().getString(
-					R.string.need_call_hangup);
-
-			builder.setMessage(ask)
-					.setCancelable(false)
-					.setPositiveButton(
-							SingleInstance.mainContext.getResources()
-									.getString(R.string.yes),
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-
-									rejectCall();
-								}
-							})
-					.setNegativeButton(
-							SingleInstance.mainContext.getResources()
-									.getString(R.string.no),
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									dialog.cancel();
-								}
-							});
-			alert = builder.create();
-			alert.show();
-
-		}
-		return super.onKeyDown(keyCode, event);
-	}
+//	@Override
+//	public boolean onKeyDown(int keyCode, KeyEvent event) {
+//		// TODO Auto-generated method stub
+//		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+//
+//			AlertDialog alert = null;
+//			AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//			String ask = SingleInstance.mainContext.getResources().getString(
+//					R.string.need_call_hangup);
+//
+//			builder.setMessage(ask)
+//					.setCancelable(false)
+//					.setPositiveButton(
+//							SingleInstance.mainContext.getResources()
+//									.getString(R.string.yes),
+//							new DialogInterface.OnClickListener() {
+//								public void onClick(DialogInterface dialog,
+//										int id) {
+//
+//									rejectCall();
+//								}
+//							})
+//					.setNegativeButton(
+//							SingleInstance.mainContext.getResources()
+//									.getString(R.string.no),
+//							new DialogInterface.OnClickListener() {
+//								public void onClick(DialogInterface dialog,
+//										int id) {
+//									dialog.cancel();
+//								}
+//							});
+//			alert = builder.create();
+//			alert.show();
+//
+//		}
+//		return super.onKeyDown(keyCode, event);
+//	}
 
 	public void putxmlobj(String key, Object obj) {
 		if (xmlmap.containsKey(key)) {

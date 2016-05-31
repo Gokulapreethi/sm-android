@@ -231,17 +231,21 @@
 
             </RelativeLayout>
             <ImageView
+                android:id="@+id/min_outcall"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
                 android:layout_gravity="end"
                 android:layout_weight="1"
+                android:background="@drawable/min_out_call"
                 android:layout_marginTop="140dp"
                 android:visibility="gone"/>
             <ImageView
+                android:id="@+id/min_incall"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
                 android:layout_gravity="end"
                 android:layout_weight="1"
+                android:background="@drawable/min_in_call"
                 android:layout_marginTop="180dp"
                 android:visibility="gone"/>
         </FrameLayout>
