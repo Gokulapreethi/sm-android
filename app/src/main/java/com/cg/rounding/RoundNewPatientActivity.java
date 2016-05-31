@@ -96,6 +96,7 @@ public class RoundNewPatientActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.createorexistingpatient);
         context = this;
+        WebServiceReferences.contextTable.put("roundnewpatient", this);
         Button back=(Button)findViewById(R.id.cancel);
         Button save=(Button)findViewById(R.id.save_new_patient);
         Button assibnBtn=(Button)findViewById(R.id.assibnBtn);

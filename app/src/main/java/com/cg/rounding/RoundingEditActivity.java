@@ -48,7 +48,7 @@ public class RoundingEditActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.roun_edit_role);
         context=this;
-        SingleInstance.contextTable.put("roundingEdit", context);
+        WebServiceReferences.contextTable.put("roundingEdit", context);
         final Spinner rights = (Spinner) findViewById(R.id.rights);
         Button cancel=(Button)findViewById(R.id.cancel);
         Button save=(Button)findViewById(R.id.save);

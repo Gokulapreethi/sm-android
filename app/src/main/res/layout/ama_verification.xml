@@ -56,7 +56,7 @@
         android:layout_height="50dp"
         android:layout_below="@+id/header"
         android:gravity="center"
-        android:background="@color/lblack">
+        android:background="#272829">
 
         <CheckBox
             android:id="@+id/selectAll_buddy"
@@ -276,10 +276,12 @@
             android:gravity="center">
 
             <ImageView
+                android:id="@+id/grid_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/grid_grid"
                 android:layout_margin="5dp" />
+
 
         </LinearLayout>
 

@@ -49,6 +49,7 @@ public class AMAVerification extends Activity {
     private TextView txtView01, addmembers_text;
     private ListView searchResult;
     private EditText btn_1;
+    private ImageView grid_icon;
     private Button search, cancel;
     private RelativeLayout RelativeLayout2, RelativeLayout3;
     Vector<BuddyInformationBean> result;
@@ -72,6 +73,7 @@ public class AMAVerification extends Activity {
         selectAll_buddy = (CheckBox) findViewById(R.id.selectAll_buddy);
         selected = (TextView) findViewById(R.id.selected);
         txtView01 = (TextView) findViewById(R.id.txtView01);
+        grid_icon = (ImageView)findViewById(R.id.grid_icon);
         if(from_callscreen){
             txtView01.setText("ADD MEMBERS");
         }
@@ -128,10 +130,14 @@ public class AMAVerification extends Activity {
         groupbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if(dialogue.getVisibility()==View.VISIBLE){
                     dialogue.setVisibility(View.GONE);
+                    grid_icon.setBackgroundDrawable(getResources().getDrawable(R.drawable.grid_grid));
+
                 }else{
                     dialogue.setVisibility(View.VISIBLE);
+                    grid_icon.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_close));
                 }
             }
         });
@@ -532,6 +538,7 @@ public class AMAVerification extends Activity {
                     holder.buddyName = (TextView) convertView.findViewById(R.id.buddyName);
                     holder.occupation = (TextView) convertView.findViewById(R.id.occupation);
                     holder.header_title = (TextView) convertView.findViewById(R.id.header_title);
+
                     convertView.setTag(holder);
                 }else
                     holder = (ViewHolder) convertView.getTag();
@@ -667,6 +674,7 @@ public class AMAVerification extends Activity {
         TextView buddyName;
         TextView occupation;
         TextView header_title;
+
     }
 
 

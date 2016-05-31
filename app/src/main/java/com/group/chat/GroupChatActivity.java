@@ -296,6 +296,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     private static int checkBoxCounter = 0;
     public static Vector<CompleteListBean> filesList = new Vector<CompleteListBean>();
     FilesAdapter filesAdapter = null;
+    Button cancel_button, cancel;
+    ImageView sidemenu;
+    Button dot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -307,13 +310,14 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         final EditText searchet = (EditText) findViewById(R.id.searchet);
         final LinearLayout chat = (LinearLayout) findViewById(R.id.chat);
         final LinearLayout profilechat = (LinearLayout) findViewById(R.id.profilechat);
-        final Button dot = (Button) findViewById(R.id.dot);
+        dot = (Button) findViewById(R.id.dot);
         final Button search = (Button) findViewById(R.id.search);
         search.setVisibility(View.VISIBLE);
         LinearLayout snazbox_chat = (LinearLayout) findViewById(R.id.snazbox_chat);
         LinearLayout link_chat = (LinearLayout) findViewById(R.id.link_chat);
         final LinearLayout content = (LinearLayout) findViewById(R.id.content);
-        final Button cancel = (Button) findViewById(R.id.cancel);
+        cancel = (Button) findViewById(R.id.cancel);
+
         cancel.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -349,7 +353,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             isOpen = getIntent().getStringExtra("isReq");
         appMainActivity = (AppMainActivity) SingleInstance.contextTable
                 .get("MAIN");
-        ImageView sidemenu = (ImageView) findViewById(R.id.side_menu);
+        sidemenu = (ImageView) findViewById(R.id.side_menu);
         mediaPlayer = new MediaPlayer();
 
         history_handler = new Handler();
@@ -1186,7 +1190,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     dashboard.LoadFilesList(CallDispatcher.LoginUser);
                     dashboard.notifyAdapter = new NotifyListAdapter(context, dashboard.tempnotifylist);
                     dashboard.notifylistview.setAdapter(dashboard.notifyAdapter);
+                    int i =  dashboard.notifylistview.getAdapter().getCount();
+                    Log.d("Valueofcount", "listvalue"+i);
                     dashboard.notifyAdapter.notifyDataSetChanged();
+                    dashboard.tempnotifylist.size();
+                    Log.d("listsize","value------->"+dashboard.tempnotifylist.size());
                 }
 
                 ExchangesFragment exchanges = ExchangesFragment
@@ -1408,6 +1416,22 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 
                     }
                 });
+
+                sidemenu.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        forward = false;
+                        adapter.notifyDataSetChanged();
+                        selectAll_container.setVisibility(View.GONE);
+                        sendLay.setVisibility(View.VISIBLE);
+                        header.setVisibility(View.VISIBLE);
+                        sidemenu.setBackgroundResource(R.drawable.navigation_menu);
+                        cancel.setVisibility(View.VISIBLE);
+                        dot.setVisibility(View.VISIBLE);
+                        forwardlay.setVisibility(View.GONE);
+
+                    }
+                });
                 // set creator
                 lv.setMenuCreator(creator);
 
@@ -1431,7 +1455,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                         selectAll_container.setVisibility(View.VISIBLE);
                                         sendLay.setVisibility(View.GONE);
                                         header.setVisibility(View.GONE);
-
+                                        sidemenu.setBackgroundResource(R.drawable.navigation_close);
+                                        cancel.setVisibility(View.GONE);
+                                        dot.setVisibility(View.INVISIBLE);
                                     }
                                 });
 
@@ -1463,6 +1489,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                                 selectAll_container.setVisibility(View.VISIBLE);
                                                 sendLay.setVisibility(View.GONE);
                                                 header.setVisibility(View.GONE);
+                                                sidemenu.setBackgroundResource(R.drawable.navigation_close);
+                                                cancel.setVisibility(View.GONE);
+                                                dot.setVisibility(View.INVISIBLE);
                                             }
                                         });
 
@@ -3268,6 +3297,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             settingnotifications.getLayoutParams().height = 20;
                             selectAll_container.setVisibility(View.GONE);
                             sendLay.setVisibility(View.VISIBLE);
+                            header.setVisibility(View.VISIBLE);
+                            sidemenu.setBackgroundResource(R.drawable.navigation_menu);
+                            cancel.setVisibility(View.VISIBLE);
+                            dot.setVisibility(View.VISIBLE);
+                            forwardlay.setVisibility(View.GONE);
+
                         }
                     });
                 }

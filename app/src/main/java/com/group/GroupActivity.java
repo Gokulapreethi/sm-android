@@ -145,6 +145,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 						.getString(R.string.yes))){
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
 		}
+		WebServiceReferences.contextTable.put("groupactivity", context);
 
 		context = this;
 		tf_regular = Typeface.createFromAsset(context.getAssets(),

@@ -197,7 +197,10 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 			e.printStackTrace();
 			return null;
 		}
+
+
 	}
+
 	class ViewHolder {
 		CheckBox selectUser;
 		ImageView buddyicon;

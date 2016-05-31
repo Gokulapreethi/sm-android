@@ -95,6 +95,7 @@ public class MyAccountActivity extends Activity {
 
         setContentView(R.layout.my_account_1);
         context = this;
+        WebServiceReferences.contextTable.put("myaccountactivity", this);
         String status=getIntent().getStringExtra("status");
         imageLoader = new ImageLoader(context);
           nickname=(TextView)findViewById(R.id.tv_nickname);
@@ -210,6 +211,7 @@ public class MyAccountActivity extends Activity {
                     dialog1.getWindow().setBackgroundDrawableResource(R.color.transparent);
                     window.setAttributes(lp);
                     dialog1.show();
+
 
                    final EditText Address1 = (EditText)dialog1.findViewById(R.id.address_edit1);
                     final EditText address2 = (EditText)dialog1.findViewById(R.id.address_edit2);

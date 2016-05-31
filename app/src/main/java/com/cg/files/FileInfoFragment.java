@@ -1,6 +1,7 @@
 package com.cg.files;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cg.snazmed.R;
+import com.group.chat.ForwardUserSelect;
 import com.image.utils.FileImageLoader;
 import com.main.AppMainActivity;
 import com.main.FilesFragment;
@@ -34,6 +36,7 @@ public class FileInfoFragment extends Fragment {
     AppMainActivity appMainActivity;
     CompleteListBean cbean;
     private FileImageLoader fileImageLoader = null;
+    private TextView tv_send;
     public static FileInfoFragment newInstance(Context context) {
         try {
             if (fileInfoFragment == null) {
@@ -119,6 +122,9 @@ public class FileInfoFragment extends Fragment {
                     TextView filename=(TextView)v1.findViewById(R.id.filename);
                     TextView filedesc=(TextView)v1.findViewById(R.id.filedesc);
                     ImageView fileIcon=(ImageView)v1.findViewById(R.id.newfile);
+                    TextView tv_share = (TextView)v1.findViewById(R.id.tv_share);
+                    tv_send = (TextView)v1.findViewById(R.id.tv_send);
+
 
                     fileImageLoader = new FileImageLoader(mainContext);
                     if(cbean!=null){
@@ -140,6 +146,9 @@ public class FileInfoFragment extends Fragment {
                             }
                             filename.setText(fileName);
                         }
+
+
+
 
                         if(cbean.getContent()!=null)
                             filedesc.setText(cbean.getContent());
@@ -188,6 +197,14 @@ public class FileInfoFragment extends Fragment {
 //                                        + cbean.getFromUser());
 //                            }
                         }
+                        tv_send.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(SingleInstance.mainContext, ForwardUserSelect.class);
+                                SingleInstance.mainContext.startActivity(intent);
+
+                            }
+                        });
                     }
                 } catch (Exception e) {
                     // TODO Auto-generated catch block

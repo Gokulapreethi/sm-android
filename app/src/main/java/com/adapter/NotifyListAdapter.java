@@ -1,6 +1,7 @@
 package com.adapter;
 
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +13,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bean.NotifyListBean;
+import com.bean.ProfileBean;
+import com.bean.UserBean;
+import com.cg.DB.DBAccess;
 import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.hostedconf.AppReference;
+import com.image.utils.ImageLoader;
+import com.main.ContactsFragment;
 import com.main.DashBoardFragment;
+
+import org.lib.model.BuddyInformationBean;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -38,7 +46,10 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
     DashBoardFragment dashBoardFragment = null;
     private Boolean isEntered=false;
     private Boolean isEnter=false;
+    private ImageLoader imageLoader;
     private ArrayList<String> datelist= new ArrayList<String>();
+    Vector<BuddyInformationBean> buddylist = new Vector<BuddyInformationBean>();
+    private  boolean iscontact = false;
 
     public NotifyListAdapter(Context context, Vector<NotifyListBean> notifyList) {
 
@@ -48,6 +59,7 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
         inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         dashBoardFragment = DashBoardFragment.newInstance(context);
+        imageLoader = new ImageLoader(context);
     }
     public View getView(final int position, View convertView, ViewGroup parent) {
 
@@ -62,8 +74,11 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                         .findViewById(R.id.file_type);
                 holder.fileName = (TextView) view
                         .findViewById(R.id.file_txt);
-                holder.fileIcon = (ImageView) view
-                        .findViewById(R.id.file_icon);
+                holder.buddyicon = (ImageView) view
+                        .findViewById(R.id.buddyicon);
+                holder.fileIcon = (ImageView)view.findViewById(R.id.file_icon);
+                holder.imagestatus = (ImageView) view
+                        .findViewById(R.id.imgstatus);
                 holder.header = (TextView) view
                         .findViewById(R.id.file_header);
                 holder.time = (TextView) view
@@ -77,6 +92,39 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
             }
 
             NotifyListBean notifyBean = fileList.get(position);
+
+            if(notifyBean!=null) {
+                if (notifyBean.getProfilePic() != null && notifyBean.getProfilePic().length()>0) {
+                    String pic_Path = Environment.getExternalStorageDirectory() + "/COMMedia/" + notifyBean.getProfilePic();
+                    Log.d("picpath","value---->"+pic_Path);
+                    File pic = new File(pic_Path);
+                    if (pic.exists()) {
+                        imageLoader.DisplayImage(pic_Path, holder.buddyicon, R.drawable.img_user);
+                    }
+                }
+                if (notifyBean.getSetStatus() != null) {
+                    Log.i("AAAA", "Buddy adapter status " + notifyBean.getSetStatus());
+                    if (notifyBean.getSetStatus().equalsIgnoreCase("offline") || notifyBean.getSetStatus().equalsIgnoreCase("stealth")) {
+                        holder.imagestatus.setBackgroundResource(R.drawable.offline_icon);
+                    } else if (notifyBean.getSetStatus().equalsIgnoreCase("online")) {
+                        holder.imagestatus.setBackgroundResource(R.drawable.online_icon);
+                    } else if (notifyBean.getSetStatus().equalsIgnoreCase("busy") || notifyBean.getSetStatus().equalsIgnoreCase("airport")) {
+                        holder.imagestatus.setBackgroundResource(R.drawable.busy_icon);
+                    } else if (notifyBean.getSetStatus().equalsIgnoreCase("away")) {
+                        holder.imagestatus.setBackgroundResource(R.drawable.invisibleicon);
+                    } else {
+                        holder.imagestatus.setBackgroundResource(R.drawable.offline_icon);
+                    }
+                }
+            }
+
+            if(iscontact){
+                holder.buddyicon.setVisibility(View.GONE);
+               holder.fileIcon.setVisibility(View.VISIBLE);
+            }else {
+                holder.buddyicon.setVisibility(View.VISIBLE);
+                holder.fileIcon.setVisibility(View.GONE);
+            }
             if(notifyBean!=null) {
                 Log.i("dateformat", "Format" + CallDispatcher.dateFormat);
                 SimpleDateFormat df = new SimpleDateFormat(CallDispatcher.dateFormat + " hh:mm aa");
@@ -193,7 +241,14 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                 if (notifyBean.getNotifttype() != null) {
                     Log.i("AAAA","NOTIFYLIST ADAPTER type "+notifyBean.getNotifttype());
                     if (notifyBean.getNotifttype().trim().equalsIgnoreCase("F")) {
-                        holder.fileIcon.setBackgroundResource(R.drawable.recent_files);
+                        if(iscontact){
+                            holder.buddyicon.setVisibility(View.GONE);
+                            holder.fileIcon.setBackgroundResource(R.drawable.recent_files);
+                        }else {
+                            holder.buddyicon.setVisibility(View.VISIBLE);
+                            holder.fileIcon.setVisibility(View.GONE);
+                        }
+
                         if (notifyBean.getType().trim().equalsIgnoreCase("audio"))
                             holder.fileName.setText("Audio file received");
                         else if (notifyBean.getType().trim().equalsIgnoreCase("video"))
@@ -210,7 +265,14 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                             holder.fileType.setText(notifyBean.getUsername()+" shared new file");
                     }
                     else if (notifyBean.getNotifttype().trim().equalsIgnoreCase("C")) {
-                        holder.fileIcon.setBackgroundResource(R.drawable.recent_calls);
+                        if(iscontact){
+                            holder.buddyicon.setVisibility(View.GONE);
+                            holder.fileIcon.setBackgroundResource(R.drawable.recent_calls);
+                        }else {
+                            holder.buddyicon.setVisibility(View.VISIBLE);
+                            holder.fileIcon.setVisibility(View.GONE);
+                        }
+
                         if (notifyBean.getType().trim().equalsIgnoreCase("AC"))
                             holder.fileType.setText(notifyBean.getUsername() +": AudioCall received");
                         else if (notifyBean.getType().trim().equalsIgnoreCase("VC"))
@@ -227,7 +289,14 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                             holder.fileName.setText(notifyBean.getContent());
                     }
                     else if (notifyBean.getNotifttype().trim().equalsIgnoreCase("I")) {
-                        holder.fileIcon.setBackgroundResource(R.drawable.recent_message);
+                        if(iscontact){
+                            holder.buddyicon.setVisibility(View.GONE);
+                            holder.fileIcon.setBackgroundResource(R.drawable.recent_message);
+                        }else {
+                            holder.buddyicon.setVisibility(View.VISIBLE);
+                            holder.fileIcon.setVisibility(View.GONE);
+                        }
+
                         if(notifyBean.getType().trim().equalsIgnoreCase("image"))
                             holder.fileType.setText(notifyBean.getUsername() +": Image msg received");
                         else if(notifyBean.getType().trim().equalsIgnoreCase("text"))
@@ -266,6 +335,8 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
         TextView header,time;
         LinearLayout list_container;
         RelativeLayout header_container;
+        ImageView imagestatus;
+        ImageView buddyicon;
 
     }
     public void filter(String charText) {
@@ -320,6 +391,9 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
     private void dateConversion()
     {
 
+    }
+    public void isFromOther(Boolean isOther){
+        iscontact=isOther;
     }
 
     }

@@ -96,6 +96,8 @@ public class TaskCreationActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.create_task);
         context=this;
+
+        WebServiceReferences.contextTable.put("taskcreation", context);
         Button cancel=(Button)findViewById(R.id.cancel);
         Button save_task=(Button)findViewById(R.id.save_task);
         member_lv=(LinearLayout)findViewById(R.id.list_members);

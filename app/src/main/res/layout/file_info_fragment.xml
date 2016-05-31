@@ -159,7 +159,7 @@
         android:layout_alignParentBottom="true"
         android:weightSum="2">
             <TextView
-                android:id="@+id/tv_accept"
+                android:id="@+id/tv_share"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="12sp"
@@ -171,7 +171,7 @@
 
             <TextView
                 android:layout_marginLeft="1dp"
-                android:id="@+id/tv_reject"
+                android:id="@+id/tv_send"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="12sp"

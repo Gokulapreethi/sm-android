@@ -138,10 +138,12 @@ public class CallAddMemberslist extends Activity {
                 holder.buddyName = (TextView) convertView.findViewById(R.id.buddyName);
                 holder.occupation = (TextView) convertView.findViewById(R.id.occupation);
                 holder.header_title = (TextView) convertView.findViewById(R.id.header_title);
+                holder.statusIcon = (ImageView)convertView.findViewById(R.id.imgstatus);
                 convertView.setTag(holder);
             } else
                 holder = (ViewHolder) convertView.getTag();
             final BuddyInformationBean bib = result.get(position);
+            holder.statusIcon.setVisibility(View.GONE);
             if (memberslist != null) {
                 if (bib.getProfile_picpath() != null) {
                     String pic_Path = Environment.getExternalStorageDirectory().getAbsolutePath()

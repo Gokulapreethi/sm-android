@@ -104,9 +104,11 @@ import com.bean.IndividualPermission;
 import com.bean.ProfileBean;
 import com.bean.SpecialMessageBean;
 import com.bean.UploadDownloadStatusBean;
+import com.callHistory.CallHistoryActivity;
 import com.cg.DB.DBAccess;
 import com.cg.account.ChangePassword;
 import com.cg.account.FindPeople;
+import com.cg.account.MyAccountActivity;
 import com.cg.account.PinAndTouchId;
 import com.cg.account.PinSecurity;
 import com.cg.account.SecurityQuestions;
@@ -140,9 +142,11 @@ import com.cg.ftpprocessor.FTPQueue;
 import com.cg.hostedconf.AppReference;
 import com.cg.profiles.ViewProfiles;
 import com.cg.rounding.NotificationReceiver;
+import com.cg.rounding.RoundNewPatientActivity;
 import com.cg.rounding.RoundingEditActivity;
 import com.cg.rounding.RoundingFragment;
 import com.cg.rounding.RoundingGroupActivity;
+import com.cg.rounding.TaskCreationActivity;
 import com.cg.settings.UserSettingsBean;
 import com.cg.snazmed.R;
 import com.cg.snazmed.R.drawable;
@@ -156,6 +160,7 @@ import com.ftp.FTPPoolManager;
 import com.group.GroupActivity;
 import com.group.GroupAdapter1;
 import com.group.GroupRequestFragment;
+import com.group.chat.ForwardUserSelect;
 import com.group.chat.GroupChatActivity;
 import com.group.chat.GroupChatBroadCastReceiver;
 import com.image.utils.ImageLoader;
@@ -7884,6 +7889,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 //			}
 //		}
 	}
+
     public  void notifySentreceived(GroupChatBean gcBean)
     {
         final GroupChatActivity groupChatActivity = (GroupChatActivity) SingleInstance.contextTable
@@ -8092,7 +8098,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			ArrayList<String[]> medicalSocietiesList = (ArrayList<String[]>) obj;
 			Log.i("AAAA", "notifyMedicalSocietiesWebServiceResponse " + medicalSocietiesList.size());
 			for (String[] medicalSociety : medicalSocietiesList) {
-				DBAccess.getdbHeler().insertorUpdateMedicalSocieties(medicalSociety[1],medicalSociety[0]);
+				DBAccess.getdbHeler().insertorUpdateMedicalSocieties(medicalSociety[1], medicalSociety[0]);
 			}
 		} else if (obj instanceof WebServiceBean) {
 			showToast(((WebServiceBean) obj).getText());
@@ -8114,7 +8120,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			ArrayList<String[]> specialitList = (ArrayList<String[]>) obj;
 			Log.i("AAAA", "notifySpecialiesRresponse " + specialitList.size());
 			for (String[] specialities : specialitList) {
-				DBAccess.getdbHeler().insertorUpdateSpecialityDetails(specialities[0],specialities[1]);
+				DBAccess.getdbHeler().insertorUpdateSpecialityDetails(specialities[0], specialities[1]);
 			}
 		} else if (obj instanceof WebServiceBean) {
 			showToast(((WebServiceBean) obj).getText());
@@ -8148,5 +8154,68 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		} else if (obj instanceof WebServiceBean) {
 			showToast(((WebServiceBean) obj).getText());
 		}
+	}
+
+	public void closingActivity(){
+
+		if (SingleInstance.contextTable.containsKey("groupchat"))
+		{
+			GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
+			groupChatActivity.finish();
+		}
+
+		if (WebServiceReferences.contextTable.containsKey("connection")) {
+			CallConnectingScreen connectingScreen = (CallConnectingScreen)WebServiceReferences.contextTable.get("connection");
+			connectingScreen.finish();
+		}
+
+		if (WebServiceReferences.contextTable.containsKey("ordermenuactivity")) {
+			CallHistoryActivity callHistoryActivity = (CallHistoryActivity) WebServiceReferences.contextTable.get("ordermenuactivity");
+			callHistoryActivity.finish();
+		}
+
+		if (WebServiceReferences.contextTable.containsKey("myaccountactivity")) {
+
+			MyAccountActivity myaccount_activity = (MyAccountActivity) WebServiceReferences.contextTable.get("myaccountactivity");
+			myaccount_activity.finish();
+		}
+		if (WebServiceReferences.contextTable.containsKey("roundnewpatient")) {
+
+			RoundNewPatientActivity roundnewpatient = (RoundNewPatientActivity) WebServiceReferences.contextTable.get("roundnewpatient");
+			roundnewpatient.finish();
+
+		}
+		if (WebServiceReferences.contextTable.containsKey("roundingEdit")) {
+
+			RoundingEditActivity roundingEdit = (RoundingEditActivity) WebServiceReferences.contextTable.get("roundingEdit");
+			roundingEdit.finish();
+		}
+		if (WebServiceReferences.contextTable.containsKey("roundingGroup")) {
+
+			RoundingGroupActivity roundingGroup = (RoundingGroupActivity) WebServiceReferences.contextTable.get("roundingGroup");
+			roundingGroup.finish();
+		}
+
+		if (WebServiceReferences.contextTable.containsKey("taskcreation")) {
+
+			TaskCreationActivity taskcreation = (TaskCreationActivity) WebServiceReferences.contextTable.get("taskcreation");
+			taskcreation.finish();
+		}
+		if (WebServiceReferences.contextTable.containsKey("forwarduser")) {
+
+			ForwardUserSelect forwarduser = (ForwardUserSelect) WebServiceReferences.contextTable.get("forwarduser");
+			forwarduser.finish();
+		}
+		if (WebServiceReferences.contextTable.containsKey("groupactivity")) {
+
+			ForwardUserSelect forwarduser = (ForwardUserSelect) WebServiceReferences.contextTable.get("groupactivity");
+			forwarduser.finish();
+		}
+
+
+
+
+
+
 	}
 }

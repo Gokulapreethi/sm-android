@@ -5,21 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/relayLay1"
-    android:background="@color/transparent">
+    android:background="@color/transparent"
+    >
 
     <ScrollView
         android:id="@+id/Scroll_address"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="#272829"
         android:scrollbars="none"
-        android:layout_above="@+id/relay_bottom1"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        android:layout_above="@+id/relay_bottom1">
 
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@color/transparent"
         >
 

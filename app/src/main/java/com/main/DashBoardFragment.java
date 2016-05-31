@@ -45,6 +45,7 @@ import com.image.utils.ImageLoader;
 import com.util.PieChart;
 import com.util.SingleInstance;
 
+import org.lib.model.BuddyInformationBean;
 import org.lib.model.FileDetailsBean;
 
 import java.io.File;
@@ -89,6 +90,7 @@ public class DashBoardFragment extends Fragment {
     public static CallDispatcher callDisp;
     int audio=0, videos=0,other=0,image=0,chat=0;
     Vector<FileDetailsBean> fBeanList;
+    RelativeLayout mainHeader;
     public static DashBoardFragment newInstance(Context context) {
         try {
             if (dashBoardFragment == null) {
@@ -118,7 +120,7 @@ public class DashBoardFragment extends Fragment {
             Button imVw = (Button) getActivity().findViewById(R.id.im_view);
             imVw.setVisibility(View.GONE);
 
-            final RelativeLayout mainHeader = (RelativeLayout) getActivity().findViewById(R.id.mainheader);
+            mainHeader = (RelativeLayout) getActivity().findViewById(R.id.mainheader);
             mainHeader.setVisibility(View.VISIBLE);
             LinearLayout contact_layout = (LinearLayout) getActivity()
                     .findViewById(R.id.contact_layout);
@@ -522,6 +524,7 @@ public class DashBoardFragment extends Fragment {
                                 }
                                 notifyAdapter = new NotifyListAdapter(mainContext, tempnotifylist);
                                 notifylistview.setAdapter(notifyAdapter);
+                                notifyAdapter.isFromOther(false);
                                 notifyAdapter.notifyDataSetChanged();
                                 clearAllBtn.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -715,7 +718,7 @@ public class DashBoardFragment extends Fragment {
         return resultBuffer.toString();
     }
 
-    public void LoadFilesList(String username)
+    public Vector<NotifyListBean> LoadFilesList(String username)
     {
         tempnotifylist.clear();
         seacrhnotifylist.clear();
@@ -727,6 +730,7 @@ public class DashBoardFragment extends Fragment {
                     Log.i("AAAA","NOTIFY LIST from user "+nBean.getNotifttype()+" , "+nBean.getSortdate()+" , "+nBean.getFrom());
                     if(nBean.getViewed()==0 && nBean.getNotifttype().equals("F")) {
                         ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+                        nBean.setProfilePic(pBean.getPhoto());
                         if(pBean!=null)
                             nBean.setUsername(pBean.getFirstname()+" "+pBean.getLastname());
                         tempnotifylist.add(nBean);
@@ -738,6 +742,7 @@ public class DashBoardFragment extends Fragment {
                     Log.i("AAAA","NOTIFY LIST from user "+nBean.getNotifttype()+" , "+nBean.getSortdate()+" , "+nBean.getFrom());
                     if(nBean.getViewed()==0 && nBean.getNotifttype().equals("I")) {
                         ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+                        nBean.setProfilePic(pBean.getPhoto());
                         if(pBean!=null)
                             nBean.setUsername(pBean.getFirstname()+" "+pBean.getLastname());
                         tempnotifylist.add(nBean);
@@ -749,6 +754,7 @@ public class DashBoardFragment extends Fragment {
                     Log.i("AAAA","NOTIFY LIST from user "+nBean.getNotifttype()+" , "+nBean.getSortdate()+" , "+nBean.getFrom());
                     if(nBean.getViewed()==0 && nBean.getNotifttype().equals("C")) {
                         ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getTo());
+                        nBean.setProfilePic(pBean.getPhoto());
                         if(pBean!=null)
                             nBean.setUsername(pBean.getFirstname()+" "+pBean.getLastname());
                         tempnotifylist.add(nBean);
@@ -760,6 +766,7 @@ public class DashBoardFragment extends Fragment {
                     Log.i("AAAA","NOTIFY LIST from user "+nBean.getNotifttype()+" , "+nBean.getSortdate()+" , "+nBean.getFrom());
                     if(nBean.getViewed()==0 && nBean.getNotifttype().equals("F")) {
                         ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+                        nBean.setProfilePic(pBean.getPhoto());
                         if(pBean!=null)
                             nBean.setUsername(pBean.getFirstname()+" "+pBean.getLastname());
                         tempnotifylist.add(nBean);
@@ -771,6 +778,7 @@ public class DashBoardFragment extends Fragment {
                     Log.i("AAAA","NOTIFY LIST from user "+nBean.getNotifttype()+" , "+nBean.getSortdate()+" , "+nBean.getFrom());
                     if(nBean.getViewed()==0) {
                         ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+                        nBean.setProfilePic(pBean.getPhoto());
                         if(pBean!=null)
                         nBean.setUsername(pBean.getFirstname()+" "+pBean.getLastname());
                         tempnotifylist.add(nBean);
@@ -781,7 +789,7 @@ public class DashBoardFragment extends Fragment {
         }
         Collections.sort(tempnotifylist, new DateComparator());
         Collections.sort(seacrhnotifylist, new DateComparator());
-
+      return tempnotifylist;
     }
 
     private void viewFileInfo(CompleteListBean cBean, int position) {
@@ -910,5 +918,6 @@ public class DashBoardFragment extends Fragment {
             ft.hide(fragment);
         }
         ft.commit();
+        mainHeader.setVisibility(View.GONE);
     }
 }

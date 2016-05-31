@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -90,7 +91,7 @@ public class AddGroupMembers extends Activity {
 			countofselection=(TextView) findViewById(R.id.selected);
 			selectAll = (CheckBox) findViewById(R.id.btn_selectall);
 			final TextView txtView01 = (TextView) findViewById(R.id.tx_headingaddcontact);
-			final TextView ed_search = (TextView) findViewById(R.id.searchet);
+			final EditText ed_search = (EditText) findViewById(R.id.searchet);
 			text_memeberscount = (TextView)findViewById(R.id.text_memeberscount);
 			calltype=getIntent().getStringExtra("calltype");
 
@@ -114,17 +115,7 @@ public class AddGroupMembers extends Activity {
 					}
 				}
 			});
-			search.addTextChangedListener(new TextWatcher() {
 
-				public void afterTextChanged(Editable s) {
-				}
-				public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-				}
-				public void onTextChanged(CharSequence s, int start, int before, int count) {
-					if (s != null && s != "")
-						adapter.filter(s.toString());
-				}
-			});
 
 			ArrayList<String> buddylist = getIntent().getStringArrayListExtra(
 					"buddylist");
@@ -218,6 +209,22 @@ public class AddGroupMembers extends Activity {
 			Collections.sort(contactList, new UserNameComparator());
 			adapter = new BuddyAdapter(this, contactList);
 			lv_addcontact.setAdapter(adapter);
+
+			ed_search.addTextChangedListener(new TextWatcher() {
+
+				public void afterTextChanged(Editable s) {
+				}
+
+				public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+				}
+
+				public void onTextChanged(CharSequence s, int start, int before, int count) {
+					if (s != null && s != "")
+						adapter.filter(s.toString());
+				}
+			});
+
+
 			done.setOnClickListener(new OnClickListener() {
                 boolean isSelectContact = false;
 

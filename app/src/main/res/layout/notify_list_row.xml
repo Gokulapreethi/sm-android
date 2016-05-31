@@ -27,19 +27,44 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_gravity="center_vertical"
         android:weightSum="1"
         android:background="#272829">
 
-    <ImageView
-        android:id="@+id/file_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/file_icon"/>
+
+
+
+        <org.cryse.android.controls.RoundedImageView
+            android:id="@+id/buddyicon"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:scaleType="center"
+            android:layout_margin="10dp"
+            android:focusable="false"
+            android:background="@drawable/user_default"
+            android:visibility="visible"/>
+
+        <ImageView
+            android:id="@+id/file_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone"
+            android:background="@drawable/file_icon" />
+
+
+
+
+        <ImageView
+            android:id="@+id/imgstatus"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/checkbox_default"/>
 
 
 
@@ -50,6 +75,7 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/file_icon"
             android:layout_marginBottom="10dp"
             android:layout_alignBottom="@+id/time">
 
@@ -57,7 +83,7 @@
                 android:id="@+id/file_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/file_icon"
+                android:layout_marginLeft="5dp"
                 android:text="Files Type"
                 android:textColor="@color/white"
                 android:textStyle="bold"/>
@@ -69,8 +95,86 @@
                 android:layout_alignParentLeft="true"
                 android:text="@string/name"
                 android:textColor="#7E8080"
+                android:layout_marginTop="5dp"
                 android:textSize="17dp"
                 android:textStyle="bold" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+
+
+            <RelativeLayout
+                android:id="@+id/relay_chat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/recent_chat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:background="@drawable/recent_message"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:layout_toRightOf="@+id/recent_chat"
+                android:layout_marginTop="2dp"
+                />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relay_file"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_toRightOf="@+id/relay_chat">
+
+                <ImageView
+                    android:id="@+id/recent_file"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/recent_files"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:layout_toRightOf="@+id/recent_file"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginLeft="3dp"
+                    />
+            </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relay_call"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@+id/relay_file">
+
+                    <ImageView
+                        android:id="@+id/recent_call"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="2dp"
+                        android:background="@drawable/recent_calls"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1"
+                        android:layout_toRightOf="@+id/recent_call"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginLeft="3dp"
+                        />
+                </RelativeLayout>
+
+            </RelativeLayout>
+
 
 
         </LinearLayout>
@@ -80,6 +184,7 @@
             android:layout_height="wrap_content"
             android:text="time"
             android:textSize="15sp"
+            android:layout_marginTop="30dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:layout_alignTop="@+id/linear"

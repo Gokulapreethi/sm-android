@@ -17,6 +17,36 @@ public class NotifyListBean{
     private String fileid =null;
     private String username="";
 
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
+    }
+
+    private String profilePic = "";
+
+    public String getFristname() {
+        return Fristname;
+    }
+
+    public void setFristname(String fristname) {
+        Fristname = fristname;
+    }
+
+    private String Fristname = "";
+
+    public String getSetStatus() {
+        return setStatus;
+    }
+
+    public void setSetStatus(String setStatus) {
+        this.setStatus = setStatus;
+    }
+
+    private String setStatus = "";
+
     public String getFrom() {
         return from;
     }

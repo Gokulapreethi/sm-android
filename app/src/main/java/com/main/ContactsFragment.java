@@ -37,7 +37,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.adapter.ContactAdapter;
+import com.adapter.NotifyListAdapter;
 import com.bean.GroupChatPermissionBean;
+import com.bean.NotifyListBean;
 import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
 import com.cg.account.AMAVerification;
@@ -107,6 +109,7 @@ public class ContactsFragment extends Fragment {
 
 	public boolean isPendingshowing = false;
 	public boolean groupstatus = false;
+	public boolean contactrecent = false;
 
 	private AlertDialog alert = null;
 	private ImageLoader imageLoader;
@@ -130,6 +133,7 @@ public class ContactsFragment extends Fragment {
 	public ListView lv,lv2 = null;
 
 	private ArrayList<UtilityBean> mlist = new ArrayList<UtilityBean>();
+	public Vector<NotifyListBean> seacrhnotifylist = new Vector<NotifyListBean>();
 	private TextView tvRequest;
 
 	private TextView SwipeRequest;
@@ -167,6 +171,7 @@ public class ContactsFragment extends Fragment {
 	boolean searchClick = false;
 
 
+
 	// public ArrayList<Databean> contactList = new ArrayList<Databean>();
 
 	private static ProgressDialog pDialog;
@@ -178,6 +183,8 @@ public class ContactsFragment extends Fragment {
 	private static Vector<BuddyInformationBean> buddyList = new Vector<BuddyInformationBean>();
 
 	private static ContactAdapter contactAdapter;
+	public NotifyListAdapter notifyAdapter;
+	public Vector<NotifyListBean> tempnotifylist = new Vector<NotifyListBean>();
 
 
 	private Vector<FieldTemplateBean> OtherDetails = new Vector<FieldTemplateBean>();
@@ -403,35 +410,69 @@ public class ContactsFragment extends Fragment {
 				final View view_mycontact = (View) _rootView.findViewById(R.id.view_mycontact);
 				final View view_mygroup = (View) _rootView.findViewById(R.id.view_mygroup);
 
+
+
 				//On Click Listeners
-				tv11.setOnClickListener(new OnClickListener() {
+				tv11.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						try {
-							isContact = true;
-							if(buddyList== null || buddyList.size()==0)
-								showToast("No Contacts");
-							lv.setAdapter(null);
-							lv.setAdapter(contactAdapter);
-							lv2.setVisibility(View.GONE);
-							lv.setVisibility(View.VISIBLE);
-							contactAdapter.notifyDataSetChanged();
-							EditText myFilter = (EditText)_rootView.findViewById(R.id.searchtext);
-							myFilter.setText("");
-							contacts.setTextColor(getResources().getColor(R.color.white));
-							list_1.setTextColor(getResources().getColor(R.color.white));
-							groups.setTextColor(getResources().getColor(R.color.black));
-							list_2.setTextColor(getResources().getColor(R.color.black));
-							view_mycontact.setVisibility(View.VISIBLE);
-							view_mygroup.setVisibility(View.GONE);
-							plusBtn.setVisibility(View.VISIBLE);
-							sort_lay.setVisibility(View.VISIBLE);
-							group_sort.setVisibility(View.GONE);
-							plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_add_contact));
-							search.setVisibility(View.VISIBLE);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+
+							try {
+								if(contactrecent) {
+								isContact = true;
+								contactrecent = false;
+								if (buddyList == null || buddyList.size() == 0)
+									showToast("No Contacts");
+								lv.setAdapter(null);
+								lv.setAdapter(contactAdapter);
+								lv2.setVisibility(View.GONE);
+								lv.setVisibility(View.VISIBLE);
+								contactAdapter.notifyDataSetChanged();
+								EditText myFilter = (EditText) _rootView.findViewById(R.id.searchtext);
+								myFilter.setText("");
+								contacts.setTextColor(getResources().getColor(R.color.white));
+									list_1.setText("LIST");
+								list_1.setTextColor(getResources().getColor(R.color.white));
+								groups.setTextColor(getResources().getColor(R.color.black));
+								list_2.setTextColor(getResources().getColor(R.color.black));
+								view_mycontact.setVisibility(View.VISIBLE);
+								view_mygroup.setVisibility(View.GONE);
+								plusBtn.setVisibility(View.VISIBLE);
+								sort_lay.setVisibility(View.VISIBLE);
+								group_sort.setVisibility(View.GONE);
+								plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_add_contact));
+								search.setVisibility(View.VISIBLE);
+								}else{
+									contactrecent = true;
+									lv2.setVisibility(View.GONE);
+									lv.setVisibility(View.VISIBLE);
+									EditText myFilter = (EditText) _rootView.findViewById(R.id.searchtext);
+									myFilter.setText("");
+
+									lv.setAdapter(null);
+									tempnotifylist = DashBoardFragment.newInstance(mainContext).LoadFilesList(CallDispatcher.LoginUser);
+									notifyAdapter = new NotifyListAdapter(mainContext, tempnotifylist);
+									notifyAdapter.isFromOther(true);
+									lv.setAdapter(notifyAdapter);
+									Log.d("Stringadapter","values"+notifyAdapter);
+									notifyAdapter.notifyDataSetChanged();
+									contacts.setTextColor(getResources().getColor(R.color.white));
+									list_1.setText("RECENT");
+									list_1.setTextColor(getResources().getColor(R.color.snazgray));
+									groups.setTextColor(getResources().getColor(R.color.black));
+									list_2.setTextColor(getResources().getColor(R.color.black));
+									view_mycontact.setVisibility(View.VISIBLE);
+									sort_lay.setVisibility(View.GONE);
+									group_sort.setVisibility(View.GONE);
+									view_mygroup.setVisibility(View.GONE);
+									plusBtn.setVisibility(View.VISIBLE);
+									plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_add_contact));
+									search.setVisibility(View.VISIBLE);
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+
 					}
 				});
 
@@ -440,6 +481,7 @@ public class ContactsFragment extends Fragment {
 					public void onClick(View v) {
 						try {
 							isContact = false;
+							contactrecent = true;
 							lv2.setAdapter(null);
 							lv2.setAdapter(GroupActivity.groupAdapter);
 							lv.setVisibility(View.GONE);
