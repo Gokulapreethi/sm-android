@@ -111,7 +111,7 @@ public class ContactsFragment extends Fragment {
 	public boolean isPendingshowing = false;
 	public boolean groupstatus = false;
 	public boolean contactrecent = false;
-	private boolean grouprecent = false;
+	private boolean grouprecent = true;
 
 	private AlertDialog alert = null;
 	private ImageLoader imageLoader;

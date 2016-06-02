@@ -31,7 +31,7 @@
         android:layout_below="@+id/viewtoday"
         android:layout_toRightOf="@+id/selectInvidual_buddy"
         android:layout_height="wrap_content"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <RelativeLayout
             android:id="@+id/sender_view"
@@ -866,7 +866,7 @@
         android:layout_below="@+id/normalcontainer"
         android:layout_gravity="center"
         android:gravity="center"
-        android:visibility="visible"
+        android:visibility="gone"
         android:background="@color/darkpink">
         <ImageView
             android:id="@+id/call_img"

@@ -281,8 +281,8 @@ public class XmlParser {
 				sb.setCallSubType(nodeMap.getNamedItem("callsubtype")
 						.getNodeValue());
 			}
-			if (nodeMap.getNamedItem("chatid") != null) {
-				sb.setChatid(nodeMap.getNamedItem("chatid")
+			if (nodeMap.getNamedItem("callChatId") != null) {
+				sb.setChatid(nodeMap.getNamedItem("callChatId")
 						.getNodeValue());
 			}
 			/*

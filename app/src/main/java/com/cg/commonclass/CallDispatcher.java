@@ -3577,6 +3577,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 			@Override
 			public void run() {
+				ImageView min_outcall=(ImageView)SingleInstance.mainContext.findViewById(R.id.min_incall);
+				min_outcall.setVisibility(View.GONE);
 				Context context = null;
 				if (SingleInstance.contextTable.get("groupchat") != null) {
 					context = SingleInstance.contextTable.get("groupchat");

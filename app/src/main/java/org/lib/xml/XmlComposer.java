@@ -477,7 +477,7 @@ public class XmlComposer {
 		}
 
 		if(sb.getChatid() != null){
-			buffer.append(" chatid=" + quotes + sb.getChatid()
+			buffer.append(" callChatId=" + quotes + sb.getChatid()
 					+ quotes);
 		}
 		if (sb.getGmember() != null) {
