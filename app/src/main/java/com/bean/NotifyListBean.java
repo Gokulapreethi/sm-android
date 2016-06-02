@@ -17,6 +17,25 @@ public class NotifyListBean{
     private String fileid =null;
     private String username="";
 
+    public String getIndinvite() {
+        return Indinvite;
+    }
+
+    public void setIndinvite(String indinvite) {
+        Indinvite = indinvite;
+    }
+
+    public String getGroupinvite() {
+        return Groupinvite;
+    }
+
+    public void setGroupinvite(String groupinvite) {
+        Groupinvite = groupinvite;
+    }
+
+    private String Indinvite = "";
+    private String Groupinvite = "";
+
     public String getProfilePic() {
         return profilePic;
     }

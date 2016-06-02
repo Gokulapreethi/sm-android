@@ -422,6 +422,26 @@ public class ContactsFragment extends Fragment {
 						contactrecentlist.add(bean);
 				}
 
+				for(BuddyInformationBean bean:ContactsFragment.getBuddyList() ){
+					if(bean.getStatus().equalsIgnoreCase("new")) {
+						NotifyListBean nBean=new NotifyListBean();
+						nBean.setUsername(bean.getFirstname()+" "+bean.getLastname());
+						nBean.setNotifttype("Invite");
+						nBean.setType("contact");
+						contactrecentlist.add(nBean);
+					}
+				}
+				for(GroupBean gbean: GroupActivity.groupList){
+					if(gbean.getStatus().equalsIgnoreCase("request")){
+						NotifyListBean nbean = new NotifyListBean();
+						nbean.setUsername(gbean.getOwnerName());
+						nbean.setNotifttype("Invite");
+						nbean.setType("group");
+						grouprecentlist.add(nbean);
+					}
+				}
+
+
 
 				//On Click Listeners
 				tv11.setOnClickListener(new View.OnClickListener() {
@@ -537,7 +557,7 @@ public class ContactsFragment extends Fragment {
 								contacts.setTextColor(getResources().getColor(R.color.black));
 								list_1.setTextColor(getResources().getColor(R.color.black));
 								view_mycontact.setVisibility(View.GONE);
-								view_mygroup.setVisibility(View.GONE);
+								view_mygroup.setVisibility(View.VISIBLE);
 								plusBtn.setVisibility(View.VISIBLE);
 								sort_lay.setVisibility(View.GONE);
 								group_sort.setVisibility(View.GONE);

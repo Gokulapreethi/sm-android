@@ -178,24 +178,32 @@
 
 
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/linear3"
         android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:orientation="vertical"
+        android:layout_height="45dp"
+        android:orientation="horizontal"
+        android:background="@color/blue2"
         android:layout_alignParentBottom="true"
+        android:gravity="center"
         android:layout_marginTop="10dp">
 
         <Button
             android:id="@+id/Sendbtn"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:background="@color/blue2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="SEND"
+            android:background="@color/blue2"
             android:textColor="@color/white"
             android:textSize="17dp"/>
+        <ImageView
+            android:id="@+id/tick_mark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/navigation_check"
+            android:visibility="gone"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 
 

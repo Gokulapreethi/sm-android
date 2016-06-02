@@ -965,6 +965,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         if (selectmembers) {
                             Intent intent = new Intent(context,
                                     ForwardUserSelect.class);
+                            intent.putExtra("fromfile",false);
                             startActivityForResult(intent, 112);
                         } else {
                             showToast("Please select one chat to forward");

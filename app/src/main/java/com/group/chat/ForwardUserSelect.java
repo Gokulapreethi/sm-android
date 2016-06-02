@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -74,6 +75,8 @@ public class ForwardUserSelect extends Activity {
     private  GroupBean groupManagementBean;
     private int total_groupcount = 0,count=0;
     private boolean contact=true;
+    private boolean fromfiles = true;
+
 
     Vector<BuddyInformationBean> buddylist = new Vector<BuddyInformationBean>();
     Vector<GroupBean> buddygroupList = new Vector<GroupBean>();
@@ -87,11 +90,28 @@ public class ForwardUserSelect extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.fwd_user_select);
         context = this;
+        final Bundle bndl = getIntent().getExtras();
+        fromfiles = bndl.getBoolean("fromfiles");
+
 
         final Button search = (Button) findViewById(R.id.btnRegisterOk);
         final EditText searchet = (EditText) findViewById(R.id.searchet);
         selectAll = (CheckBox) findViewById(R.id.btn_selectall);
         final TextView txtView01 = (TextView) findViewById(R.id.txtView01);
+        Button send = (Button) findViewById(R.id.Sendbtn);
+        ImageView tick_mark = (ImageView)findViewById(R.id.tick_mark);
+
+
+        if(fromfiles){
+            txtView01.setText("SHARE WITH");
+            send.setText("DONE");
+            tick_mark.setVisibility(View.VISIBLE);
+
+        }else{
+            txtView01.setText("FORWARD TO");
+            send.setText("SEND");
+            tick_mark.setVisibility(View.GONE);
+        }
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,23 +129,9 @@ public class ForwardUserSelect extends Activity {
         });
 
 
-        searchet.addTextChangedListener(new TextWatcher() {
-
-            public void afterTextChanged(Editable s) {
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s != null && s != "")
-                    adapter.getFilter().filter(s);
-                forwardGroupAdapter.getFilter().filter(s);
-            }
-        });
 
 
-        Button send = (Button) findViewById(R.id.Sendbtn);
+
         Button close = (Button) findViewById(R.id.cancel);
         LinearLayout Mycontact_forward = (LinearLayout) findViewById(R.id.Mycontact_forward);
         LinearLayout Mygroups_forward = (LinearLayout) findViewById(R.id.Mygroups_forward);
@@ -236,6 +242,7 @@ public class ForwardUserSelect extends Activity {
 
 
 
+
         selectAll.setTag(true);
         selectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -287,8 +294,6 @@ public class ForwardUserSelect extends Activity {
                     forwardGroupAdapter.notifyDataSetChanged();
 
 
-
-
                 }
             }
 
@@ -333,7 +338,7 @@ public class ForwardUserSelect extends Activity {
                     contact = false;
                     selectAll.setChecked(false);
                     count = 0;
-                    for(GroupBean groupBean : buddygroupList) {
+                    for (GroupBean groupBean : buddygroupList) {
                         if (groupBean != null) {
                             count++;
                         }
@@ -352,9 +357,29 @@ public class ForwardUserSelect extends Activity {
 
                 }
             });
+        searchet.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s != null && s != "")
+                    if(contact == true) {
+                        adapter.getFilter().filter(s);
+                    }
+                else if(contact==false){
+                        forwardGroupAdapter.getFilter().filter(s);
+                    }
+            }
+
+        });
 
 //        }
     }
+
 
 
     private void showToast(final String message) {
@@ -393,7 +418,9 @@ public class ForwardUserSelect extends Activity {
         private Typeface tf_bold = null;
         ImageLoader imageLoader;
         private int checkBoxCounter = 0;
+        private  ForwardFilter filter;
         Vector<GroupBean> grouplist = new Vector<GroupBean>();
+        Vector<GroupBean> originallist;
 
         public ForwardGroupAdapter(Context context, int textViewResourceId,
                             Vector<GroupBean> groupList) {
@@ -401,7 +428,9 @@ public class ForwardUserSelect extends Activity {
             super(context, R.layout.grouplist, groupList);
             this.context = context;
             imageLoader=new ImageLoader(SingleInstance.mainContext);
-            grouplist = groupList;
+            grouplist.addAll(groupList);
+            originallist = new Vector<GroupBean>();
+            originallist.addAll(groupList);
 
         }
 
@@ -522,6 +551,61 @@ public class ForwardUserSelect extends Activity {
             }
             return row;
         }
+        @Override
+        public Filter getFilter() {
+            if (filter == null){
+                filter  = new ForwardFilter();
+            }
+            return filter;
+        }
+
+        private class ForwardFilter extends Filter
+        {
+
+            @Override
+            protected Filter.FilterResults performFiltering(CharSequence constraint) {
+
+                constraint = constraint.toString().toLowerCase();
+
+                Filter.FilterResults result = new Filter.FilterResults();
+                if (constraint != null && constraint.toString().length() > 0) {
+                    Vector<GroupBean> gBeans = new Vector<GroupBean>();
+                    for(int i = 0, l = originallist.size(); i < l; i++)
+                    {
+                        GroupBean gBean = originallist.get(i);
+                        if(gBean.getGroupName().toLowerCase().startsWith(String.valueOf(constraint)))
+                            gBeans.add(gBean);
+                    }
+                    gBeans =GroupActivity.getGroupList(gBeans);
+                    result.count = gBeans.size();
+                    result.values = gBeans;
+                } else {
+                    synchronized (this) {
+                        originallist = GroupActivity.getGroupList(originallist);
+                        result.values = originallist;
+                        result.count = originallist.size();
+                    }
+                }
+                return result;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint,
+                                          Filter.FilterResults results) {
+
+                grouplist= (Vector<GroupBean>)results.values;
+                notifyDataSetChanged();
+                clear();
+                grouplist = GroupActivity.getGroupList(grouplist);
+                for(int i = 0, l = grouplist.size(); i < l; i++)
+                    add(grouplist.get(i));
+                notifyDataSetInvalidated();
+
+            }
+
+        }
+
 
         private class ViewHolder {
             LinearLayout listContainer;

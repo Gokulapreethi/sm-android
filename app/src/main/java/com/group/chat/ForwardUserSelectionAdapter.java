@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -38,9 +39,11 @@ public class ForwardUserSelectionAdapter extends ArrayAdapter<BuddyInformationBe
     /*********** Declare Used Variables *********/
     private Context context;
     private Vector<BuddyInformationBean> userList;
+    private Vector<BuddyInformationBean> originallist;
     private LayoutInflater inflater = null;
     private static int checkBoxCounter = 0;
     private int checkboxcount;
+    private  ForwardFilter filter;
 
 
     /************* CustomAdapter Constructor *****************/
@@ -49,7 +52,10 @@ public class ForwardUserSelectionAdapter extends ArrayAdapter<BuddyInformationBe
         super(context, R.layout.fwd_user_selectrow, userList);
         /********** Take passed values **********/
         this.context = context;
-        this.userList = userList;
+        this.userList = new Vector<BuddyInformationBean>();
+        this.userList.addAll(userList);
+        originallist = new Vector<BuddyInformationBean>();
+        this.originallist.addAll(userList);
         inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -183,6 +189,61 @@ public class ForwardUserSelectionAdapter extends ArrayAdapter<BuddyInformationBe
             return null;
         }
     }
+    @Override
+    public Filter getFilter() {
+        if (filter == null){
+            filter  = new ForwardFilter();
+        }
+        return filter;
+    }
+
+    private class ForwardFilter extends Filter
+    {
+
+        @Override
+        protected Filter.FilterResults performFiltering(CharSequence constraint) {
+
+            constraint = constraint.toString().toLowerCase();
+
+            Filter.FilterResults result = new Filter.FilterResults();
+            if (constraint != null && constraint.toString().length() > 0) {
+                Vector<BuddyInformationBean> buddyInformationBeans = new Vector<BuddyInformationBean>();
+                for(int i = 0, l = originallist.size(); i < l; i++)
+                {
+                    BuddyInformationBean buddyInformationBean = originallist.get(i);
+                    if(buddyInformationBean.getName().toLowerCase().startsWith(String.valueOf(constraint)))
+                        buddyInformationBeans.add(buddyInformationBean);
+                }
+                buddyInformationBeans = GroupChatActivity.getAdapterList(buddyInformationBeans);
+                result.count = buddyInformationBeans.size();
+                result.values = buddyInformationBeans;
+            } else {
+                synchronized (this) {
+                    originallist = GroupChatActivity.getAdapterList(originallist);
+                    result.values = originallist;
+                    result.count = originallist.size();
+                }
+            }
+            return result;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void publishResults(CharSequence constraint,
+                                      Filter.FilterResults results) {
+
+            userList= (Vector<BuddyInformationBean>)results.values;
+            notifyDataSetChanged();
+            clear();
+            userList = GroupChatActivity.getAdapterList(userList);
+            for(int i = 0, l = userList.size(); i < l; i++)
+                add(userList.get(i));
+            notifyDataSetInvalidated();
+
+        }
+
+    }
+
     class ViewHolder {
         CheckBox selectUser;
         ImageView buddyicon;

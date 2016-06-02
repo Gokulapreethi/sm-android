@@ -80,7 +80,7 @@ public class FileInfoFragment extends Fragment {
             LinearLayout contact_layout=(LinearLayout) getActivity().findViewById(R.id.contact_layout);
             contact_layout.setVisibility(View.GONE);
 
-            Button imVw = (Button) getActivity().findViewById(R.id.im_view);
+            final Button imVw = (Button) getActivity().findViewById(R.id.im_view);
             imVw.setVisibility(View.GONE);
 
             final Button edit = (Button) getActivity().findViewById(R.id.btn_settings);
@@ -220,7 +220,9 @@ public class FileInfoFragment extends Fragment {
                         tv_send.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+
                                 Intent intent = new Intent(SingleInstance.mainContext, ForwardUserSelect.class);
+                                intent.putExtra("fromfiles",true);
                                 SingleInstance.mainContext.startActivity(intent);
 
                             }
