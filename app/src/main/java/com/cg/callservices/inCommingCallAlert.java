@@ -23,6 +23,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.telecom.Call;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -135,6 +137,8 @@ public class inCommingCallAlert extends Fragment {
 //		callDisp.setNoScrWidth(noScrWidth);
 //		displaymetrics = null;
 		bundlevalues=getArguments();
+		final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
+		mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 		mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
 		mainHeader.setVisibility(View.GONE);
 		min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
@@ -331,7 +335,7 @@ public class inCommingCallAlert extends Fragment {
 											CallDispatcher.sb.getEndTime()));
 				Log.d("Test","TimeDuration inside callDispatcher"+CallDispatcher.sb.getStartTime()+""+CallDispatcher.sb.getEndTime());
 
-
+				DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 				DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
 						CallDispatcher.sb);
 			}
@@ -355,7 +359,6 @@ public class inCommingCallAlert extends Fragment {
 
 	public void acceptCall(String strBuddyName) {
 		try {
-			CallDispatcher.isCallInitiate = false;
 			callDisp.isHangUpReceived = false;
 			callDisp.stopRingTone();
 			if (CallDispatcher.LoginUser != null) {
@@ -388,7 +391,7 @@ public class inCommingCallAlert extends Fragment {
 					SignalingBean sb = (SignalingBean) CallDispatcher.sb
 							.clone();
 					ShowConnectionScreen(sb);
-					finishactivity();
+//					finishactivity();
 
 				} else if (sbaen.getCallType().equals("VC")) {
 					Log.d("call", "start alert");
@@ -421,7 +424,7 @@ public class inCommingCallAlert extends Fragment {
 					SignalingBean sb = (SignalingBean) CallDispatcher.sb
 							.clone();
 					ShowConnectionScreen(sb);
-					finishactivity();
+//					finishactivity();
 
 				}
 
@@ -454,7 +457,7 @@ public class inCommingCallAlert extends Fragment {
 
 					SignalingBean sb = (SignalingBean) sbaen.clone();
 					ShowConnectionScreen(sb);
-					finishactivity();
+//					finishactivity();
 				} else if (sbaen.getCallType().equals("VBC")) {
 					CallDispatcher.sb.setFrom(to);
 					CallDispatcher.sb.setTo(from);
@@ -494,12 +497,11 @@ public class inCommingCallAlert extends Fragment {
 					}
 					SignalingBean sb = (SignalingBean) sbaen.clone();
 					ShowConnectionScreen(sb);
-					finishactivity();
+//					finishactivity();
 				} else if (sbaen.getCallType().equalsIgnoreCase("AP")) {
 
 					//
 					CallDispatcher.sb = sbaen;
-					CallDispatcher.isCallInitiate = false;
 
 					Log.d("call", "start alert");
 					CallDispatcher.sb.setFrom(to);
@@ -527,7 +529,7 @@ public class inCommingCallAlert extends Fragment {
 					SignalingBean sb = (SignalingBean) CallDispatcher.sb
 							.clone();
 					ShowConnectionScreen(sb);
-					finishactivity();
+//					finishactivity();
 					//
 
 				} else if (sbaen.getCallType().equalsIgnoreCase("VP")) {
@@ -535,7 +537,6 @@ public class inCommingCallAlert extends Fragment {
 					Log.i("thread", "came to listall notification.....");
 
 					CallDispatcher.sb = sbaen;
-					CallDispatcher.isCallInitiate = false;
 					callDisp.isHangUpReceived = false;
 
 					Log.d("call", "start alert");
@@ -564,7 +565,7 @@ public class inCommingCallAlert extends Fragment {
 					SignalingBean sb = (SignalingBean) CallDispatcher.sb
 							.clone();
 					ShowConnectionScreen(sb);
-					finishactivity();
+//					finishactivity();
 				} else if (sbaen.getCallType().equals("SS")) {
 					CallDispatcher.sb.setFrom(to);
 					CallDispatcher.sb.setTo(from);
@@ -604,7 +605,7 @@ public class inCommingCallAlert extends Fragment {
 					}
 					SignalingBean sb = (SignalingBean) sbaen.clone();
 					ShowConnectionScreen(sb);
-					finishactivity();
+//					finishactivity();
 				}
 
 			} else {
@@ -619,6 +620,7 @@ public class inCommingCallAlert extends Fragment {
 	}
 
 	public void finishactivity() {
+		CallDispatcher.isCallInitiate = false;
 		rootView=null;
 		FragmentManager fm =
 				AppReference.mainContext.getSupportFragmentManager();
@@ -634,10 +636,12 @@ public class inCommingCallAlert extends Fragment {
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
-		if (WebServiceReferences.contextTable.containsKey("alertscreen")) {
-			WebServiceReferences.contextTable.remove("alertscreen");
+		if (SingleInstance.instanceTable.containsKey("alertscreen")) {
+			SingleInstance.instanceTable.remove("alertscreen");
 		}
 		/* lock.reenableKeyguard(); */
+		final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
+		mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 		if (callDisp.wl != null) {
 			Log.v("a", "Releasing wakelock");
 			try {
@@ -655,6 +659,7 @@ public class inCommingCallAlert extends Fragment {
 	}
 
 	private void ShowConnectionScreen(final SignalingBean sbean) {
+		min_incall.setVisibility(View.GONE);
 		final String from = sbean.getTo();
 		new Thread(new Runnable() {
 			@Override
@@ -666,14 +671,28 @@ public class inCommingCallAlert extends Fragment {
 		}).start();
 
 		try {
-			Intent intent = new Intent(context, CallConnectingScreen.class);
+			FragmentManager fm =
+					AppReference.mainContext.getSupportFragmentManager();
 			Bundle bundle = new Bundle();
 			bundle.putString("name", from);
 			bundle.putString("type", sbean.getCallType());
 			bundle.putBoolean("status", true);
 			bundle.putSerializable("bean", sbean);
-			intent.putExtras(bundle);
-			startActivity(intent);
+			FragmentTransaction ft = fm.beginTransaction();
+			CallConnectingScreen callConnectingScreen = CallConnectingScreen
+					.getInstance(context);
+			callConnectingScreen.setArguments(bundle);
+			ft.replace(R.id.activity_main_content_fragment,
+					callConnectingScreen);
+			ft.commitAllowingStateLoss();
+//			Intent intent = new Intent(context, CallConnectingScreen.class);
+//			Bundle bundle = new Bundle();
+//			bundle.putString("name", from);
+//			bundle.putString("type", sbean.getCallType());
+//			bundle.putBoolean("status", true);
+//			bundle.putSerializable("bean", sbean);
+//			intent.putExtras(bundle);
+//			startActivity(intent);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

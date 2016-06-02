@@ -362,6 +362,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	public static boolean clearAll = false;
 
+	public  static String chatId;
+
 	public static String checkMyLocation = null;
 
 	public static HashMap<Integer, ArrayList<String>> uploadDatasList = new HashMap<Integer, ArrayList<String>>();
@@ -2403,15 +2405,18 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							.get("callscreen");
 					if (objCallScreen == null) {
 						CallDispatcher.sb.setCallDuration("0:0:0");
+						CallDispatcher.sb.setCallstatus("missedcall");
 					}else
+						CallDispatcher.sb.setCallstatus("callattended");
 					CallDispatcher.sb
 							.setCallDuration(SingleInstance.mainContext
 									.getCallDuration(
 											CallDispatcher.sb.getStartTime(),
 											CallDispatcher.sb.getEndTime()));
-					Log.d("Test","TimeDuration inside callDispatcher"+CallDispatcher.sb.getStartTime()+""+CallDispatcher.sb.getEndTime());
-					
+					Log.d("Test", "TimeDuration inside callDispatcher" + CallDispatcher.sb.getStartTime() + "" + CallDispatcher.sb.getEndTime());
 
+
+					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 					DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
 							CallDispatcher.sb);
 					// }
@@ -2578,17 +2583,14 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							acalObj.UpdateConferenceMembers(from, false);
 						}
 
-						handlerForCall.post(new Runnable() {
-
-							@Override
-							public void run() {
-								// TODO Auto-generated method stub
-								if (WebServiceReferences.contextTable
-										.containsKey("connection"))
-									((CallConnectingScreen) WebServiceReferences.contextTable
-											.get("connection")).finish();
-							}
-						});
+						FragmentManager fm =
+								AppReference.mainContext.getSupportFragmentManager();
+						FragmentTransaction ft = fm.beginTransaction();
+						ContactsFragment contactsFragment = ContactsFragment
+								.getInstance(context);
+						ft.replace(R.id.activity_main_content_fragment,
+								contactsFragment);
+						ft.commitAllowingStateLoss();
 						try {
 
 							final String signalId = sb.getSignalid();
@@ -2667,9 +2669,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									@Override
 									public void run() {
 										// TODO Auto-generated method stub
-										if (WebServiceReferences.contextTable
+										if (SingleInstance.instanceTable
 												.containsKey("connection"))
-											((CallConnectingScreen) WebServiceReferences.contextTable
+											((CallConnectingScreen) SingleInstance.instanceTable
 													.get("connection"))
 													.notifyState("Connecting");
 									}
@@ -2695,20 +2697,14 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 											groupChatActivity.finish();
 										}
 
-										if (WebServiceReferences.contextTable.containsKey("connection")) {
-											CallConnectingScreen connectingScreen = (CallConnectingScreen)WebServiceReferences.contextTable.get("connection");
-											connectingScreen.finish();
-										}
-
 										if (WebServiceReferences.contextTable.containsKey("ordermenuactivity")) {
 											CallHistoryActivity callHistoryActivity = (CallHistoryActivity) WebServiceReferences.contextTable.get("ordermenuactivity");
 											callHistoryActivity.finish();
 										}
 
-										if (SingleInstance.contextTable.containsKey("groupchat")) {
-											GroupChatActivity groupChatActivity = (GroupChatActivity) SingleInstance.contextTable.get("groupchat");
-											groupChatActivity.finish();
-										}
+										AppMainActivity appMainActivity = (AppMainActivity) SingleInstance.contextTable
+												.get("MAIN");
+										appMainActivity.closingActivity();
 
 										FragmentManager fm =
 												AppReference.mainContext.getSupportFragmentManager();
@@ -2756,17 +2752,14 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 //										i.putExtra("buddy", from);
 //										context.startActivity(i);
 
+										AppMainActivity appMainActivity = (AppMainActivity) SingleInstance.contextTable
+												.get("MAIN");
+										appMainActivity.closingActivity();
 										if (SingleInstance.contextTable.containsKey("groupchat"))
 										{
 											GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
 											groupChatActivity.finish();
 										}
-
-										if (WebServiceReferences.contextTable.containsKey("connection")) {
-											CallConnectingScreen connectingScreen = (CallConnectingScreen)WebServiceReferences.contextTable.get("connection");
-											connectingScreen.finish();
-										}
-
 										FragmentManager fm =
 												AppReference.mainContext.getSupportFragmentManager();
 										FragmentTransaction ft = fm.beginTransaction();
@@ -2807,11 +2800,6 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 										ScreenSharingFragment ssFragment = ScreenSharingFragment
 												.newInstance(context);
 										ssFragment.startProjection();
-										if (WebServiceReferences.contextTable
-												.containsKey("connection"))
-											((CallConnectingScreen) WebServiceReferences.contextTable
-													.get("connection"))
-													.finish();
 
 										Log.i("ssharing123",
 												"sender view commited");
@@ -2969,6 +2957,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									.getCallDuration(
 											CallDispatcher.sb.getStartTime(),
 											CallDispatcher.sb.getEndTime()));
+					CallDispatcher.sb.setCallstatus("callattended");
+					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 					DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
 							CallDispatcher.sb);
 					// }
@@ -3034,11 +3024,15 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					}
 					Log.i("call","end "+AppMainActivity.connectedbuddies);
 					if (AppMainActivity.connectedbuddies == null) {
-						if(WebServiceReferences.contextTable.containsKey("connection")) {
-							CallConnectingScreen screen = (CallConnectingScreen) WebServiceReferences.contextTable
-									.get("connection");
-							screen.finish();
-						}
+
+						FragmentManager fm =
+								AppReference.mainContext.getSupportFragmentManager();
+						FragmentTransaction ft = fm.beginTransaction();
+						ContactsFragment contactsFragment = ContactsFragment
+								.getInstance(context);
+						ft.replace(R.id.activity_main_content_fragment,
+								contactsFragment);
+						ft.commitAllowingStateLoss();
 					}
 
 
@@ -3054,9 +3048,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						@Override
 						public void run() {
 							// TODO Auto-generated method stub
-							if (WebServiceReferences.contextTable
+							if (SingleInstance.instanceTable
 									.containsKey("connection"))
-								((CallConnectingScreen) WebServiceReferences.contextTable
+								((CallConnectingScreen) SingleInstance.instanceTable
 										.get("connection"))
 										.notifyState("Ringing");
 						}
@@ -3067,9 +3061,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				else if (sb.getType().equals("2")) {
 					Log.d("test",
 							"type 2 conf size " + conferenceMembers.size());
-					if (WebServiceReferences.contextTable
+					if (SingleInstance.instanceTable
 							.containsKey("connection")) {
-						((CallConnectingScreen) WebServiceReferences.contextTable
+						((CallConnectingScreen) SingleInstance.instanceTable
 								.get("connection")).notifyType2Received();
 					} else {
 						String buddyx = getUser(sb.getFrom(), sb.getTo());
@@ -3120,6 +3114,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									.getCallDuration(
 											CallDispatcher.sb.getStartTime(),
 											CallDispatcher.sb.getEndTime()));
+					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 					DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
 							CallDispatcher.sb);
 					NoAnswer(sb.getTo());
@@ -3681,19 +3676,16 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					// TODO Auto-generated method stub
 
 					showAlert("", ErrMsg);
-					if (WebServiceReferences.contextTable
+					if (SingleInstance.instanceTable
 							.containsKey("connection")) {
-						if (!issecMadeConference) {
-							CallConnectingScreen connect = (CallConnectingScreen) WebServiceReferences.contextTable
-									.get("connection");
-							connect.finish();
+						if (!issecMadeConference)
+								((CallConnectingScreen) SingleInstance.instanceTable
+										.get("connection")).finishConnectingScreen();
 						} else if (issecMadeConference
 								&& CallDispatcher.contConferencemembers
 										.size() == 0) {
-							CallConnectingScreen connect = (CallConnectingScreen) WebServiceReferences.contextTable
-									.get("connection");
-							connect.finish();
-						}
+						((CallConnectingScreen) SingleInstance.instanceTable
+								.get("connection")).finishConnectingScreen();
 					}
 
 					// ShowToast("User Busy", 1);
@@ -10009,9 +10001,9 @@ private TrustManager[] get_trust_mgr() {
 						quickActionFragment.cancelDialog();
 						quickActionFragment.showToast();
 					}
-					if (WebServiceReferences.contextTable
+					if (SingleInstance.instanceTable
 							.containsKey("connection"))
-						((CallConnectingScreen) WebServiceReferences.contextTable
+						((CallConnectingScreen) SingleInstance.instanceTable
 								.get("connection"))
 								.showWifiStateChangedAlert("Internet Connection lost,can not continue this call");
 					// if (WebServiceReferences.contextTable
@@ -10712,8 +10704,8 @@ private TrustManager[] get_trust_mgr() {
 
 			}
 		}
-		if (WebServiceReferences.contextTable.containsKey("connection"))
-			((CallConnectingScreen) WebServiceReferences.contextTable
+		if (SingleInstance.instanceTable.containsKey("connection"))
+			((CallConnectingScreen) SingleInstance.instanceTable
 					.get("connection")).HangupCall();
 
 		// if (WebServiceReferences.contextTable.containsKey("sipcallscreen")) {
@@ -11237,7 +11229,16 @@ private TrustManager[] get_trust_mgr() {
 			sbConf.setTopublicip(bib.getExternalipaddress());
 			sbConf.setTolocalip(bib.getLocalipaddress());
 			sbConf.setToSignalPort(bib.getSignalingPort());
-
+			sbConf.setChatid(CallDispatcher.LoginUser);
+			sbConf.setHost(CallDispatcher.LoginUser);
+			String participant=null;
+			for(String temp:CallDispatcher.conferenceMembers){
+				if(participant==null)
+					participant=temp;
+				else
+					participant=participant+","+temp;
+			}
+			sbConf.setParticipants(participant+","+selectedBuddy);
 			AppMainActivity.commEngine.makeConferenceCall(sbConf);
 
 		} catch (Exception e) {
@@ -11379,6 +11380,9 @@ private TrustManager[] get_trust_mgr() {
 							// signBean);
 							// }
 							//
+							AppMainActivity appMainActivity=(AppMainActivity) SingleInstance.contextTable
+									.get("MAIN");
+							appMainActivity.closingActivity();
 							FragmentManager fm =
 									AppReference.mainContext.getSupportFragmentManager();
 							FragmentTransaction ft = fm.beginTransaction();
@@ -11470,7 +11474,7 @@ private TrustManager[] get_trust_mgr() {
 			public void run() {
 				// TODO Auto-generated method stub
 				try {
-					if (WebServiceReferences.contextTable
+					if (SingleInstance.instanceTable
 							.containsKey("alertscreen")) {
 //						inCommingCallAlert alert = (inCommingCallAlert) SingleInstance.contextTable
 //								.get("alertscreen");
@@ -11668,9 +11672,9 @@ private TrustManager[] get_trust_mgr() {
 			public void run() {
 				// TODO Auto-generated method stub
 				Log.d("AAAA", "notifyType2Received  ==> " );
-				if (WebServiceReferences.contextTable.containsKey("connection")) {
+				if (SingleInstance.instanceTable.containsKey("connection")) {
 					Log.d("AAAA", "notifyType2Received ifpart ==> " );
-					((CallConnectingScreen) WebServiceReferences.contextTable
+					((CallConnectingScreen) SingleInstance.instanceTable
 							.get("connection")).notifyType2Received();
 				} else {
 					Log.d("AAAA", "notifyType2Received elsepart ==> " );
@@ -13190,7 +13194,7 @@ private TrustManager[] get_trust_mgr() {
 					CallDispatcher.sb.setHost(CallDispatcher.LoginUser);
 					CallDispatcher.sb.setParticipants(total_participants);
 				}
-
+				CallDispatcher.sb.setChatid(CallDispatcher.chatId);
 				CallDispatcher.dialChecker = true;
 				CallDispatcher.isCallInitiate = true;
 				SignalingBean sb = (SignalingBean) CallDispatcher.sb.clone();
@@ -13245,6 +13249,7 @@ private TrustManager[] get_trust_mgr() {
 									CallDispatcher.sb.setHost(CallDispatcher.LoginUser);
 									CallDispatcher.sb.setParticipants(total_participants);
 								}
+								CallDispatcher.sb.setChatid(CallDispatcher.chatId);
 								// SignalingBean sb1 = (SignalingBean)
 								// CallDispatcher.sb.clone();
 								AppMainActivity.commEngine
@@ -13278,15 +13283,31 @@ private TrustManager[] get_trust_mgr() {
 			Context context, boolean isconf) {
 		try {
 			if (!WebServiceReferences.contextTable.containsKey("connection")) {
-				Intent intent = new Intent(context, CallConnectingScreen.class);
+				appMainActivity.closingActivity();
+				FragmentManager fm =
+						AppReference.mainContext.getSupportFragmentManager();
 				Bundle bundle = new Bundle();
 				bundle.putString("name", username);
 				bundle.putString("type", sbean.getCallType());
 				bundle.putBoolean("status", false);
 				bundle.putSerializable("bean", sbean);
 				bundle.putBoolean("bconf", isconf);
-				intent.putExtras(bundle);
-				context.startActivity(intent);
+				FragmentTransaction ft = fm.beginTransaction();
+				CallConnectingScreen callConnectingScreen = CallConnectingScreen
+						.getInstance(context);
+				callConnectingScreen.setArguments(bundle);
+				ft.replace(R.id.activity_main_content_fragment,
+						callConnectingScreen);
+				ft.commitAllowingStateLoss();
+//				Intent intent = new Intent(context, CallConnectingScreen.class);
+//				Bundle bundle = new Bundle();
+//				bundle.putString("name", username);
+//				bundle.putString("type", sbean.getCallType());
+//				bundle.putBoolean("status", false);
+//				bundle.putSerializable("bean", sbean);
+//				bundle.putBoolean("bconf", isconf);
+//				intent.putExtras(bundle);
+//				context.startActivity(intent);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -13883,7 +13904,7 @@ private TrustManager[] get_trust_mgr() {
 				Log.i("Action", action);
 				if (!SingleInstance.instanceTable
 						.containsKey("callscreen")
-						&& !WebServiceReferences.contextTable
+						&& !SingleInstance.instanceTable
 								.containsKey("alertscreen")
 						&& !WebServiceReferences.contextTable
 								.containsKey("sicallalert")
@@ -13911,7 +13932,7 @@ private TrustManager[] get_trust_mgr() {
 			} else if (action.equalsIgnoreCase("VCF")) {
 				if (!SingleInstance.instanceTable
 						.containsKey("callscreen")
-						&& !WebServiceReferences.contextTable
+						&& !SingleInstance.instanceTable
 								.containsKey("alertscreen")
 						&& !WebServiceReferences.contextTable
 								.containsKey("sicallalert")
@@ -14068,7 +14089,7 @@ private TrustManager[] get_trust_mgr() {
 		Log.d("Test","audioconf inside requestAudioConference calldisp");
 
 		if (!SingleInstance.instanceTable.containsKey("callscreen")
-				&& !WebServiceReferences.contextTable
+				&& !SingleInstance.instanceTable
 						.containsKey("alertscreen")
 				&& !WebServiceReferences.contextTable
 						.containsKey("sicallalert")
@@ -14136,8 +14157,9 @@ private TrustManager[] get_trust_mgr() {
 				Toast.makeText(context, offlinenames + " is Offline", 2).show();
 			}
 			if (online != null) {
-				CallConnectingScreen cc = new CallConnectingScreen();
-				cc.setTitle(online);
+					Log.d("AAAA", "notifyType2Received ifpart ==> ");
+					((CallConnectingScreen) SingleInstance.instanceTable
+							.get("connection")).setTitle(online);
 			}
 		}
 
@@ -14146,7 +14168,7 @@ private TrustManager[] get_trust_mgr() {
 	public void requestVideoConference(String to) {
 
 		if (!SingleInstance.instanceTable.containsKey("callscreen")
-				&& !WebServiceReferences.contextTable
+				&& !SingleInstance.instanceTable
 						.containsKey("alertscreen")
 				&& !WebServiceReferences.contextTable
 						.containsKey("sicallalert")
@@ -14206,7 +14228,7 @@ private TrustManager[] get_trust_mgr() {
 
 	public void requestVideoBroadCast(String to) {
 		if (!SingleInstance.instanceTable.containsKey("callscreen")
-				&& !WebServiceReferences.contextTable
+				&& !SingleInstance.instanceTable
 						.containsKey("alertscreen")
 				&& !WebServiceReferences.contextTable
 						.containsKey("sicallalert")
@@ -14283,6 +14305,7 @@ private TrustManager[] get_trust_mgr() {
 				CallDispatcher.sb.setTopublicip(bib.getExternalipaddress());
 				CallDispatcher.sb.setTolocalip(bib.getLocalipaddress());
 				CallDispatcher.sb.setToSignalPort(bib.getSignalingPort());
+				CallDispatcher.sb.setChatid(CallDispatcher.LoginUser);
 				switch (operation) {
 				case 1:
 					CallDispatcher.sb.setCallType("AC");
@@ -14393,6 +14416,9 @@ private TrustManager[] get_trust_mgr() {
 				CallDispatcher.sb.setSessionid(transaction_Bean.getSessionid());
 				CallDispatcher.sb.setHost(transaction_Bean.getHost());
 				CallDispatcher.sb.setParticipants(transaction_Bean.getParticipants());
+
+				if(transaction_Bean.getChatid()!=null)
+					CallDispatcher.sb.setChatid(transaction_Bean.getChatid());
 
 				if(promote_feature.equalsIgnoreCase("promote")) {
 					CallDispatcher.sb.setVideopromote("yes");
@@ -16347,7 +16373,7 @@ private TrustManager[] get_trust_mgr() {
 	public void requestAudioBroadCast(String to) {
 
 		if (!SingleInstance.instanceTable.containsKey("callscreen")
-				&& !WebServiceReferences.contextTable
+				&& !SingleInstance.instanceTable
 						.containsKey("alertscreen")
 				&& !WebServiceReferences.contextTable
 						.containsKey("sicallalert")

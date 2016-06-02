@@ -174,7 +174,7 @@
         android:cacheColorHint="@color/gchat_bg"
         android:divider="@null"
         android:listSelector="@android:color/transparent"
-        android:padding="5dp" />
+        android:padding="2dp" />
 
 
     <LinearLayout
@@ -376,7 +376,6 @@
             </RelativeLayout>
 
         </RelativeLayout>
-
 
         <RelativeLayout
             android:id="@+id/relative_send_layout"

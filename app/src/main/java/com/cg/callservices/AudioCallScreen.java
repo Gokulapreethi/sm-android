@@ -133,6 +133,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 	private SignalingBean signBean;
 	private int mPlayingPosition = 0;
+	String calltype="AC";
 	private PlaybackUpdater mProgressUpdater = new PlaybackUpdater();
 	private MediaPlayer mPlayer = new MediaPlayer();
 
@@ -313,6 +314,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 				receivedHangUp();
 
 			audioProperties = new AudioProperties(context);
+			ImageView min_outcall=(ImageView)getActivity().findViewById(R.id.min_incall);
+			min_outcall.setVisibility(View.GONE);
 //			setContentView(ShowaudioCallScreen());
 			if(rootView==null)
 			rootView=ShowaudioCallScreen(inflater);
@@ -335,6 +338,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 							objCallDispatcher.accepted_users.clear();
 							chTimer.stop();
 							AppMainActivity.ctimer.stop();
+							audio_minimize.setVisibility(View.GONE);
 							//
 							isHangedUp = true;
 
@@ -345,10 +349,12 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 							CallDispatcher.sb
 									.setCallDuration(SingleInstance.mainContext
 											.getCallDuration(CallDispatcher.sb
-													.getStartTime(),
+															.getStartTime(),
 													CallDispatcher.sb
 															.getEndTime()));
+							CallDispatcher.sb.setCallstatus("callattended");
 							if (selfHangup) {
+								DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 								DBAccess.getdbHeler()
 										.saveOrUpdateRecordtransactiondetails(
 												CallDispatcher.sb);
@@ -734,6 +740,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 				public void onClick(View v) {
 					Intent i = new Intent(AppReference.mainContext, CallActiveMembersList.class);
 					i.putExtra("timer", chTimer.getText().toString());
+					i.putExtra("calltype",calltype);
 					i.putExtra("sessionId", strSessionId);
 					AppReference.mainContext.startActivity(i);
 
@@ -1653,6 +1660,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 																			.getStartTime(),
 																	CallDispatcher.sb
 																			.getEndTime()));
+											CallDispatcher.sb.setCallstatus("callattended");
+											DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 											DBAccess.getdbHeler()
 													.saveOrUpdateRecordtransactiondetails(
 															CallDispatcher.sb);
@@ -1705,6 +1714,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 						chTimer.stop();
 						AppMainActivity.ctimer.stop();
+						audio_minimize.setVisibility(View.GONE);
 
 						if (!isHangedUp) {
 
@@ -1922,6 +1932,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 					memberslist.add(members[i]);
 				}
 			}
+			calltype=callType;
 
 			if (memberslist.size() > 0) {
 				Intent intent = new Intent(context,
@@ -2034,7 +2045,6 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			CallDispatcher.currentSessionid = null;
 			objCallDispatcher.alConferenceRequest.clear();
 			CallDispatcher.conferenceMembersTime.clear();
-			CallDispatcher.isCallInitiate = false;
 			if (SingleInstance.instanceTable.containsKey("callscreen")) {
 				SingleInstance.instanceTable.remove("callscreen");
 			}
@@ -2055,12 +2065,6 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			}
 
 			objCallDispatcher.whenCallHangedUp();
-
-			if (WebServiceReferences.contextTable.containsKey("connection")) {
-				CallConnectingScreen screen = (CallConnectingScreen) WebServiceReferences.contextTable
-						.get("connection");
-				screen.finish();
-			}
 
 			if(videoQueue != null){
 				videoQueue.clear();
@@ -2353,6 +2357,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	public void finishAudiocallScreen()
 	{
 		rootView=null;
+		CallDispatcher.isCallInitiate = false;
 		FragmentManager fm =
 				AppReference.mainContext.getSupportFragmentManager();
 		FragmentTransaction ft = fm.beginTransaction();

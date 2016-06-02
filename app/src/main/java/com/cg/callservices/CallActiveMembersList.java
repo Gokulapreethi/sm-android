@@ -75,6 +75,7 @@ public class CallActiveMembersList extends Activity {
     private boolean isBuddyinCall=false;
     private AlertDialog alert = null;
     private String timer;
+    String calltype="";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +92,7 @@ public class CallActiveMembersList extends Activity {
             ImageView addMembers=(ImageView)findViewById(R.id.addmembersBtn);
             strSessionId=getIntent().getStringExtra("sessionId");
             timer=getIntent().getStringExtra("timer");
+            calltype=getIntent().getStringExtra("calltype");
 
             if (WebServiceReferences.callDispatch.containsKey("calldisp"))
                 objCallDispatcher = (CallDispatcher) WebServiceReferences.callDispatch
@@ -372,7 +374,7 @@ public class CallActiveMembersList extends Activity {
                             if (objCallDispatcher != null) {
                                 SignalingBean sb = objCallDispatcher.callconfernceUpdate(
                                         bib.getBuddyName(),
-                                        "AC", strSessionId);
+                                        calltype, strSessionId);
                                 // june04-Implementation
                                 CallDispatcher.conferenceRequest
                                         .put(bib.getBuddyName(), sb);
@@ -422,6 +424,8 @@ public class CallActiveMembersList extends Activity {
                                                                             .getStartTime(),
                                                                     CallDispatcher.sb
                                                                             .getEndTime()));
+                                            CallDispatcher.sb.setCallstatus("callattended");
+                                            DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
                                             DBAccess.getdbHeler()
                                                     .saveOrUpdateRecordtransactiondetails(
                                                             CallDispatcher.sb);

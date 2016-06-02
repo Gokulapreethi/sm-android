@@ -48,6 +48,7 @@ import com.cg.callservices.AudioCallScreen;
 import com.cg.callservices.CallConnectingScreen;
 import com.cg.callservices.SipCallConnectingScreen;
 import com.cg.callservices.VideoCallScreen;
+import com.cg.callservices.inCommingCallAlert;
 import com.cg.commonclass.BuddyListComparator;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
@@ -302,6 +303,32 @@ public class ContactsFragment extends Fragment {
 				addShowHideListener(false);
 			}
 		});
+		ImageView min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
+		ImageView min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
+		min_incall.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mainHeader.setVisibility(View.GONE);
+				inCommingCallAlert incommingCallAlert = inCommingCallAlert.getInstance(SingleInstance.mainContext);
+				FragmentManager fragmentManager = SingleInstance.mainContext
+						.getSupportFragmentManager();
+				fragmentManager.beginTransaction().replace(
+						R.id.activity_main_content_fragment, incommingCallAlert)
+						.commitAllowingStateLoss();
+			}
+		});
+		min_outcall.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mainHeader.setVisibility(View.GONE);
+				CallConnectingScreen callConnectingScreen = CallConnectingScreen.getInstance(SingleInstance.mainContext);
+				FragmentManager fragmentManager = SingleInstance.mainContext
+						.getSupportFragmentManager();
+				fragmentManager.beginTransaction().replace(
+						R.id.activity_main_content_fragment, callConnectingScreen)
+						.commitAllowingStateLoss();
+			}
+		});
 
 		_rootView = null;
 		if (_rootView == null) {
@@ -416,10 +443,19 @@ public class ContactsFragment extends Fragment {
 
 				tempnotifylist = DashBoardFragment.newInstance(mainContext).LoadFilesList(CallDispatcher.LoginUser);
 				for(NotifyListBean bean:tempnotifylist){
-					if(isNumeric(bean.getFileid()))
-						grouprecentlist.add(bean);
-					else
+					if(bean.getNotifttype().equalsIgnoreCase("F"))
 						contactrecentlist.add(bean);
+					else if(bean.getNotifttype().equalsIgnoreCase("C")){
+						if(isNumeric(bean.getFileid()))
+							grouprecentlist.add(bean);
+						else
+							contactrecentlist.add(bean);
+					}else if(bean.getNotifttype().equalsIgnoreCase("I")) {
+						if (bean.getCategory().equalsIgnoreCase("G"))
+							grouprecentlist.add(bean);
+						else if(bean.getCategory().equalsIgnoreCase("I"))
+							contactrecentlist.add(bean);
+					}
 				}
 
 				for(BuddyInformationBean bean:ContactsFragment.getBuddyList() ){
@@ -712,6 +748,7 @@ public class ContactsFragment extends Fragment {
 			Button search = (Button) getActivity().findViewById(R.id.btn_settings);
 			search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
 			search.setVisibility(View.GONE);
+			SingleInstance.instanceTable.remove("contactspage");
 			// MemoryProcessor.getInstance().unbindDrawables(_rootView);
 			// _rootView = null;
 		} catch (Exception e) {

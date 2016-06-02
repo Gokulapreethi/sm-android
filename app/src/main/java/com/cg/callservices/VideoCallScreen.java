@@ -200,6 +200,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	private PowerManager.WakeLock mWakeLock;
 
 	private boolean selfHangup = false;
+	private boolean isMinimize=false;
 
 //	TextView textView1;
 //	TextView textView2;
@@ -273,6 +274,8 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			CallDispatcher.networkState = objCallDispatcher.connectivityType();
 			mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
 			mainHeader.setVisibility(View.GONE);
+			ImageView min_outcall=(ImageView)getActivity().findViewById(R.id.min_incall);
+			min_outcall.setVisibility(View.GONE);
 
 			video_minimize = (RelativeLayout) getActivity().findViewById(R.id.video_minimize);
 			video_minimize.setVisibility(View.GONE);
@@ -318,14 +321,17 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							// if (CallDispatcher.sb.getBs_parentid() != null) {
 							chTimer.stop();
 							AppMainActivity.cvtimer.stop();
+							video_minimize.setVisibility(View.GONE);
 							CallDispatcher.sb
 									.setEndTime(getCurrentDateandTime());
 							CallDispatcher.sb
 									.setCallDuration(SingleInstance.mainContext
 											.getCallDuration(CallDispatcher.sb
-													.getStartTime(),
+															.getStartTime(),
 													CallDispatcher.sb
 															.getEndTime()));
+							CallDispatcher.sb.setCallstatus("callattended");
+							DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 							DBAccess.getdbHeler()
 									.saveOrUpdateRecordtransactiondetails(
 											CallDispatcher.sb);
@@ -519,6 +525,8 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 														.getStartTime(),
 												CallDispatcher.sb
 														.getEndTime()));
+								CallDispatcher.sb.setCallstatus("callattended");
+								DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 								DBAccess.getdbHeler()
 										.saveOrUpdateRecordtransactiondetails(
 												CallDispatcher.sb);
@@ -1844,6 +1852,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 						objCallDispatcher.currentSessionid = null;
 						chTimer.stop();
 						AppMainActivity.cvtimer.stop();
+						video_minimize.setVisibility(View.GONE);
 						if (CallDispatcher.videoScreenVisibleState) {
 							//
 
@@ -2472,11 +2481,6 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		}
 
 		try {
-			if (WebServiceReferences.contextTable.containsKey("connection")) {
-				CallConnectingScreen screen = (CallConnectingScreen) WebServiceReferences.contextTable
-						.get("connection");
-				screen.finish();
-			}
 
 			if (SingleInstance.instanceTable.containsKey("callscreen")) {
 				SingleInstance.instanceTable.remove("callscreen");
@@ -3387,13 +3391,6 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 				// TODO: handle exception
 
 			}
-			//
-
-			if (WebServiceReferences.contextTable.containsKey("connection")) {
-				CallConnectingScreen screen = (CallConnectingScreen) WebServiceReferences.contextTable
-						.get("connection");
-				screen.finish();
-			}
 
 			CallDispatcher.videoSpeakerMute(false);
 			try {
@@ -3792,13 +3789,13 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		if (videoQueue != null) {
 			videoQueue.clear();
 		}
+		CallDispatcher.isCallInitiate = false;
 		CallDispatcher.videoScreenVisibleState = false;
 		AppMainActivity.commEngine.enable_disable_VideoPreview(true);
 		WebServiceReferences.videoSSRC_total.clear();
 		WebServiceReferences.videoSSRC_total_list.clear();
 		CallDispatcher.conConference.clear();
 		CallDispatcher.issecMadeConference = false;
-		CallDispatcher.isCallInitiate = false;
 		rootView=null;
 		FragmentManager fm =
 				AppReference.mainContext.getSupportFragmentManager();
@@ -3864,6 +3861,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 	}
 	void addShowHideListener() {
+		isMinimize=true;
 		FragmentManager fm =
 				AppReference.mainContext.getSupportFragmentManager();
 		FragmentTransaction ft = fm.beginTransaction();

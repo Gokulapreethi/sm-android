@@ -150,6 +150,7 @@ import org.lib.model.BuddyInformationBean;
 import org.lib.model.GroupBean;
 import org.lib.model.GroupMemberBean;
 import org.lib.model.PermissionBean;
+import org.lib.model.RecordTransactionBean;
 import org.lib.model.TaskDetailsBean;
 import org.lib.model.UdpMessageBean;
 import org.lib.model.WebServiceBean;
@@ -299,6 +300,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     Button cancel_button, cancel;
     ImageView sidemenu;
     Button dot;
+    private RecordTransactionBean rBean=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -366,6 +368,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             this.calldisp = new CallDispatcher(context);
         groupBean = DBAccess.getdbHeler().getGroup(
                 "select * from grouplist where groupid='" + groupId + "'");
+
         dot.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1014,7 +1017,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 btn_image.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if(!CallDispatcher.isCallInitiate)
                         photochat();
+                        else
+                            showToast("Please try...Call is in progress");
                     }
                 });
 //
@@ -1060,22 +1066,30 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     @Override
                     public void onClick(View view) {
 //                        showAudioMessageDialog();
-
-                        atachlay.setVisibility(View.GONE);
-                        audio_layout.setVisibility(View.VISIBLE);
+                        if(!CallDispatcher.isCallInitiate) {
+                            atachlay.setVisibility(View.GONE);
+                            audio_layout.setVisibility(View.VISIBLE);
+                        }else
+                            showToast("Please try...Call is in progress");
 //                        animation.start();
                     }
                 });
                 btn_video.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if(!CallDispatcher.isCallInitiate)
                         showVideoMessageDialog();
+                        else
+                            showToast("Please try...Call is in progress");
                     }
                 });
                 btn_sketch.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if(!CallDispatcher.isCallInitiate)
                         handsketch();
+                        else
+                        showToast("Please try...Call is in progress");
                     }
                 });
                 btn_videocall.setOnClickListener(new OnClickListener() {
@@ -1083,9 +1097,15 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     public void onClick(View view) {
                         if (isGroup || isRounding) {
                             Log.d("Test", "Inside Group VideoConference onclick");
+                            if(!CallDispatcher.isCallInitiate)
                             groupCallMenu(2);
+                            else
+                            showToast("Please try...Call is in progress");
                         } else {
+                            if(!CallDispatcher.isCallInitiate)
                             individualCallMenu(1);
+                            else
+                                showToast("Please try...Call is in progress");
                         }
                     }
                 });
@@ -2447,7 +2467,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             groupId = buddy;
                         }
                         for (GroupChatBean gcBeanTemp : chatList) {
-                            if (gcBeanTemp.getSignalid().equals(gcBean.getSignalid()))
+                            if (gcBeanTemp.getSignalid()!=null&&gcBeanTemp.getSignalid().equals(gcBean.getSignalid()))
                                 return;
                         }
                         Log.i("groupchat123",
@@ -2624,7 +2644,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         Log.d("abcdef", "IN 101 signal " + sid);
         DBAccess.getdbHeler().updateThumbs(sid);
         for (GroupChatBean gcb : chatList) {
-            if (gcb.getSignalid().equalsIgnoreCase(sid)) {
+            if (gcb.getSignalid()!=null&&gcb.getSignalid().equalsIgnoreCase(sid)) {
                 gcb.setThumb(1);
             }
         }
@@ -2853,6 +2873,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     + gBean.getActiveGroupMembers());
             Log.i("group123", "members " + members);
             Log.i("group123", "members " + members);
+            CallDispatcher.chatId=groupBean.getGroupId();
 
             if (pos == 0) {
                 if (members != null && members.length() > 0) {
@@ -3855,14 +3876,16 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             if (gcpBean.getAudioConference().equalsIgnoreCase("1")) {
                                 if(!CallDispatcher.isCallInitiate) {
                                     groupCallMenu(0);
-                                }
+                                }else
+                                    showToast("Please try..Call is in progress");
                             } else {
                                 showToast("Sorry you dont have permission");
                             }
                         } else {
                             if(!CallDispatcher.isCallInitiate) {
                                 individualCallMenu(0);
-                            }
+                            }else
+                                showToast("Please try..Call is in progress");
 //                            ContactsFragment.getInstance(context).sipprocessCallRequest(buddy);
                         }
                     }
@@ -4377,15 +4400,26 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 final GroupChatBean gcBean = chatList.get(position);
 
                 TextView tv_user, message, dateTime, deadlineReplyText, tv_urgent;
-                RelativeLayout senderLayout = null;
+                RelativeLayout senderLayout = null,normalcontainer,join_lay;
+                TextView tv_username,tv_missed;
+                Button joinBtn;
+                ImageView call_img;
                 RelativeLayout receiverLayout = null;
                 // ImageView buddyIcon;
                 ProgressBar progress, intermediateProgress;
                 final ImageView multimediaIcon, locationIcon, saveMsg, scheduleMsg, retryIcon, img_status1, audio_play;
                 final SeekBar audio_seekbar;
                 final RelativeLayout iconContainer, audioLayout, mainlayout;
+                normalcontainer = (RelativeLayout) convertView
+                        .findViewById(R.id.normalcontainer);
+                join_lay = (RelativeLayout) convertView
+                        .findViewById(R.id.join_lay);
                 senderLayout = (RelativeLayout) convertView
                         .findViewById(R.id.sender_view);
+                tv_username=(TextView)convertView.findViewById(R.id.tv_user);
+                tv_missed=(TextView)convertView.findViewById(R.id.tv_missed);
+                joinBtn=(Button)convertView.findViewById(R.id.joinBtn);
+                call_img=(ImageView)convertView.findViewById(R.id.call_img);
                 Button btn_reply = (Button) convertView
                         .findViewById(R.id.btn_reply);
                 Button btn_private = (Button) convertView
@@ -4425,104 +4459,170 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 selectInvidual_buddy.setTag(gcBean);
                 LinearLayout chat_view = null;
 //                    selectAll_buddy.setSelected(gcBean.getSelect());
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                Calendar cal = Calendar.getInstance();
+                String todayDate = format.format(cal.getTime());
+                if (todayDate.equals(gcBean.getSenttime().split(" ")[0])) {
+                    tv_today.setText("Today");
+                } else if (getYesterdayDateString(format).equals(gcBean.getSenttime().split(" ")[0])) {
+                    tv_today.setText("Yesterday");
+                } else {
+                    tv_today.setText(gcBean.getSenttime().split(" ")[0]);
+                }
+                tv_today.setVisibility(View.VISIBLE);
+                if (position > 0) {
+                    final GroupChatBean gcbn = chatList.get(position - 1);
+                    if (gcbn.getSenttime().split(" ")[0].equals(gcBean.getSenttime().split(" ")[0])) {
+                        tv_today.setVisibility(View.GONE);
+                    } else {
+                        tv_today.setVisibility(View.VISIBLE);
+                    }
+                }
 
                 Log.i("selectAll_buddy", "selectAll_buddy contains status : " + gcBean.isSelect());
-
-                if (forward) {
-                    selectInvidual_buddy.setVisibility(View.VISIBLE);
-                    selectInvidual_buddy.setChecked(gcBean.isSelect());
-                } else {
-                    selectInvidual_buddy.setVisibility(View.GONE);
-                }
-                selectInvidual_buddy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                        if (isChecked) {
-                            Log.d("selecteduser", "---->checking the values" + isChecked);
-                            gcBean.setSelect(true);
-                            checkBoxCounter++;
-                            countofcheckbox(checkBoxCounter);
-
-                        } else {
-                            gcBean.setSelect(false);
-                            checkBoxCounter--;
-
-                            countofcheckbox(checkBoxCounter);
+                if(gcBean.getCategory()!=null&&gcBean.getCategory().equalsIgnoreCase("call")) {
+                    normalcontainer.setVisibility(View.GONE);
+                    join_lay.setVisibility(View.VISIBLE);
+                    if(gcBean.getSubCategory()!=null &&gcBean.getSubCategory().equalsIgnoreCase("missedcall")){
+                        tv_username.setText(gcBean.getFrom());
+                    if(gcBean.getFtpPassword()!=null){
+                        String[] mlist = (gcBean.getFtpPassword()).split(",");
+                        if(mlist.length>1){
+                        joinBtn.setVisibility(View.VISIBLE);
+                        join_lay.setBackgroundColor(getResources().getColor(R.color.blue1));
+                        call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_incoming_call));
+                        tv_missed.setVisibility(View.GONE);
+                        tv_username.setText(gcBean.getFtpPassword());
+                        }else {
+                            joinBtn.setVisibility(View.GONE);
+                            tv_missed.setVisibility(View.VISIBLE);
                         }
+                    }else {
+                        joinBtn.setVisibility(View.GONE);
+                        tv_missed.setVisibility(View.VISIBLE);
                     }
+                    }
+                    joinBtn.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            int caseid;
+                            if(gcBean.getMessage().equalsIgnoreCase("AC"))
+                                 caseid=1;
+                            else
+                                caseid=2;
+                            RecordTransactionBean transactionBean = new RecordTransactionBean();
+                            transactionBean.setSessionid(gcBean.getSessionid());
+                            transactionBean.setHost(CallDispatcher.LoginUser);
+                            transactionBean.setParticipants(gcBean.getFtpPassword());
+                            transactionBean.setChatid(gcBean.getGroupId());
+                            if(transactionBean.getParticipants()!=null) {
+                                String[] temp=transactionBean.getParticipants().split(",");
+                                for(String user:temp)
+                                calldisp.MakeCallFromCallHistory(caseid,
+                                        user, context, transactionBean, 0, "");
+                            }
 
-                });
+                        }
+                    });
+                }else {
+                    join_lay.setVisibility(View.GONE);
+                    normalcontainer.setVisibility(View.VISIBLE);
+
+                    if (forward) {
+                        selectInvidual_buddy.setVisibility(View.VISIBLE);
+                        selectInvidual_buddy.setChecked(gcBean.isSelect());
+                    } else {
+                        selectInvidual_buddy.setVisibility(View.GONE);
+                    }
+                    selectInvidual_buddy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                            if (isChecked) {
+                                Log.d("selecteduser", "---->checking the values" + isChecked);
+                                gcBean.setSelect(true);
+                                checkBoxCounter++;
+                                countofcheckbox(checkBoxCounter);
+
+                            } else {
+                                gcBean.setSelect(false);
+                                checkBoxCounter--;
+
+                                countofcheckbox(checkBoxCounter);
+                            }
+                        }
+
+                    });
 //				senderLayout.setBackgroundResource(R.color.gchat_bg);
 //				receiverLayout.setBackgroundResource(R.color.gchat_bg);
-                if (gcBean.getFrom().equals(CallDispatcher.LoginUser)) {
-                    swipeposition = 0;
-                    msgStatus = position;
-                    tv_urgent = (TextView) convertView
-                            .findViewById(R.id.tv_urgent);
-                    chat_view = (LinearLayout) convertView
-                            .findViewById(R.id.lintest);
-                    tv_user = (TextView) convertView
-                            .findViewById(R.id.receiver_user);
-                    message = (TextView) convertView
-                            .findViewById(R.id.receiver_text_msg);
-                    RelativeLayout listrel_quoted = (RelativeLayout) convertView
-                            .findViewById(R.id.rel_quoted);
+                    if (gcBean.getFrom().equals(CallDispatcher.LoginUser)) {
+                        swipeposition = 0;
+                        msgStatus = position;
+                        tv_urgent = (TextView) convertView
+                                .findViewById(R.id.tv_urgent);
+                        chat_view = (LinearLayout) convertView
+                                .findViewById(R.id.lintest);
+                        tv_user = (TextView) convertView
+                                .findViewById(R.id.receiver_user);
+                        message = (TextView) convertView
+                                .findViewById(R.id.receiver_text_msg);
+                        RelativeLayout listrel_quoted = (RelativeLayout) convertView
+                                .findViewById(R.id.rel_quoted);
 
-                    dateTime = (TextView) convertView
-                            .findViewById(R.id.receiver_datetime);
-                    multimediaIcon = (ImageView) convertView
-                            .findViewById(R.id.receiver_multi_msg);
-                    iconContainer = (RelativeLayout) convertView
-                            .findViewById(R.id.receiver_icon_container);
-                    locationIcon = (ImageView) convertView
-                            .findViewById(R.id.receiver_loc_icon);
-                    scheduleMsg = (ImageView) convertView
-                            .findViewById(R.id.receiver_schedule_icon);
-                    TextView lvquoted_msg = (TextView) convertView
-                            .findViewById(R.id.tvquoted_msg);
-                    senderLayout.setVisibility(View.GONE);
-                    receiverLayout.setVisibility(View.VISIBLE);
-                    scheduleMsg.setVisibility(View.GONE);
-                    saveMsg = (ImageView) convertView
-                            .findViewById(R.id.receiver_save_btn);
-                    progress = (ProgressBar) convertView
-                            .findViewById(R.id.up_progressBar);
-                    receiver_status = (TextView) convertView
-                            .findViewById(R.id.receiver_status);
-                    audioLayout = (RelativeLayout) convertView.findViewById(R.id.ad_play);
-                    audio_seekbar = (SeekBar) convertView.findViewById(R.id.seekBar1);
-                    audio_play = (ImageView) convertView.findViewById(R.id.play_button);
-                    audio_tv = (TextView) convertView.findViewById(R.id.txt_time);
-                    audio_tv.setTag(gcBean);
-                    tv_urgent.setTag(position);
-                    tv_urgent.setVisibility(View.GONE);
+                        dateTime = (TextView) convertView
+                                .findViewById(R.id.receiver_datetime);
+                        multimediaIcon = (ImageView) convertView
+                                .findViewById(R.id.receiver_multi_msg);
+                        iconContainer = (RelativeLayout) convertView
+                                .findViewById(R.id.receiver_icon_container);
+                        locationIcon = (ImageView) convertView
+                                .findViewById(R.id.receiver_loc_icon);
+                        scheduleMsg = (ImageView) convertView
+                                .findViewById(R.id.receiver_schedule_icon);
+                        TextView lvquoted_msg = (TextView) convertView
+                                .findViewById(R.id.tvquoted_msg);
+                        senderLayout.setVisibility(View.GONE);
+                        receiverLayout.setVisibility(View.VISIBLE);
+                        scheduleMsg.setVisibility(View.GONE);
+                        saveMsg = (ImageView) convertView
+                                .findViewById(R.id.receiver_save_btn);
+                        progress = (ProgressBar) convertView
+                                .findViewById(R.id.up_progressBar);
+                        receiver_status = (TextView) convertView
+                                .findViewById(R.id.receiver_status);
+                        audioLayout = (RelativeLayout) convertView.findViewById(R.id.ad_play);
+                        audio_seekbar = (SeekBar) convertView.findViewById(R.id.seekBar1);
+                        audio_play = (ImageView) convertView.findViewById(R.id.play_button);
+                        audio_tv = (TextView) convertView.findViewById(R.id.txt_time);
+                        audio_tv.setTag(gcBean);
+                        tv_urgent.setTag(position);
+                        tv_urgent.setVisibility(View.GONE);
 
-                    if (gcBean.getSent() != null && gcBean.getSent().equals("2")) {
-                        receiver_status.setText("Delivered");
-                    } else if (gcBean.getSent() != null && gcBean.getSent().equals("3")) {
-                        receiver_status.setText("Read");
-                    } else {
-                        receiver_status.setText("Sent");
-                    }
-                    receiver_status.setVisibility(View.GONE);
-                    if (chatList.size() == position + 1) {
-                        receiver_status.setVisibility(View.VISIBLE);
-                    }
-                    thumbsUp = (ImageView) convertView.findViewById(R.id.thumbs_up);
-                    thumbsDown = (ImageView) convertView.findViewById(R.id.thumbs_down);
-                    // retryIcon = null;
-                    // intermediateProgress = null;
-                    retryIcon = (ImageView) convertView
-                            .findViewById(R.id.up_retry);
-                    retryIcon.setVisibility(View.GONE);
-                    retryIcon.setTag(gcBean);
-                    intermediateProgress = (ProgressBar) convertView
-                            .findViewById(R.id.up_progressBar1);
-                    intermediateProgress.setVisibility(View.GONE);
-                    percentage = (TextView) convertView
-                            .findViewById(R.id.up_percentage);
-                    deadlineReplyText = (TextView) convertView
-                            .findViewById(R.id.receiver_deadline_reply_txt);
+                        if (gcBean.getSent() != null && gcBean.getSent().equals("2")) {
+                            receiver_status.setText("Delivered");
+                        } else if (gcBean.getSent() != null && gcBean.getSent().equals("3")) {
+                            receiver_status.setText("Read");
+                        } else {
+                            receiver_status.setText("Sent");
+                        }
+                        receiver_status.setVisibility(View.GONE);
+                        if (chatList.size() == position + 1) {
+                            receiver_status.setVisibility(View.VISIBLE);
+                        }
+                        thumbsUp = (ImageView) convertView.findViewById(R.id.thumbs_up);
+                        thumbsDown = (ImageView) convertView.findViewById(R.id.thumbs_down);
+                        // retryIcon = null;
+                        // intermediateProgress = null;
+                        retryIcon = (ImageView) convertView
+                                .findViewById(R.id.up_retry);
+                        retryIcon.setVisibility(View.GONE);
+                        retryIcon.setTag(gcBean);
+                        intermediateProgress = (ProgressBar) convertView
+                                .findViewById(R.id.up_progressBar1);
+                        intermediateProgress.setVisibility(View.GONE);
+                        percentage = (TextView) convertView
+                                .findViewById(R.id.up_percentage);
+                        deadlineReplyText = (TextView) convertView
+                                .findViewById(R.id.receiver_deadline_reply_txt);
 //                    Log.d("abcdef","Thumbs retrieved value for sid="+gcBean.getSignalid()+" is "+gcBean.getThumb());
 //                    if(gcBean.getThumb()==1){
 //                        thumbsUp.setVisibility(View.VISIBLE);
@@ -4531,461 +4631,454 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 //                        thumbsUp.setVisibility(View.GONE);
 //                        thumbsDown.setVisibility(View.VISIBLE);
 //                    }
-                    if (gcBean.getSubCategory() != null) {
-                        if (gcBean.getSubCategory().equalsIgnoreCase("gp")) {
+                        if (gcBean.getSubCategory() != null) {
+                            if (gcBean.getSubCategory().equalsIgnoreCase("gp")) {
 //							tv_user.setText(gcBean.getPrivateMembers());
-                            tvprivate.setVisibility(View.VISIBLE);
-                            convertView.setBackgroundResource(R.color.gchat_bg);
-                            deadlineReplyText.setVisibility(View.GONE);
+                                tvprivate.setVisibility(View.VISIBLE);
+                                convertView.setBackgroundResource(R.color.gchat_bg);
+                                deadlineReplyText.setVisibility(View.GONE);
 
-                            tvprivate.setText(Html.fromHtml("<font color=\"#06F235\">"
-                                    + "Private for: "
-                                    + "</font>"
-                                    + "  "
-                                    + "<font color=\"#FFFFFF\">"
-                                    + gcBean.getPrivateMembers()));
-                        } else if (gcBean.getSubCategory().equalsIgnoreCase(
-                                "gu")) {
-                            tv_urgent.setVisibility(View.VISIBLE);
-                            tv_urgent.setTextColor(Color.parseColor("#daa520"));
-                            tv_urgent.setText("  Urgent  !  ");
-                            tvprivate.setVisibility(View.GONE);
-                        } else if (gcBean.getSubCategory().equalsIgnoreCase(
-                                "gs")) {
-                            scheduleMsg.setVisibility(View.VISIBLE);
-                            tv_user.setText(SingleInstance.mainContext.getResources().getString(R.string.message_schedule_to)
-                                    + gcBean.getPrivateMembers());
-                            tv_user.setVisibility(View.VISIBLE);
-                            scheduleMsg
-                                    .setImageResource(R.drawable.icon_footer_reminder);
-                            scheduleMsg.setTag(gcBean);
-                            convertView.setBackgroundResource(R.color.gchat_bg);
-                            deadlineReplyText.setVisibility(View.GONE);
-                        } else if (gcBean.getSubCategory().equalsIgnoreCase(
-                                "gd")) {
-                            receiverLayout
-                                    .setBackgroundResource(R.color.deadlingclr);
-                            convertView
-                                    .setBackgroundResource(R.color.deadlingclr);
-                            scheduleMsg
-                                    .setImageResource(R.drawable.icon_footer_reminder);
-                            scheduleMsg.setVisibility(View.VISIBLE);
-                            // tv_user.setText("DeadLine message to : "
-                            // + gcBean.getPrivateMembers());
-                            // tv_user.setText("DeadLine set by : "
-                            // + gcBean.getFrom() + "\nAssigned to : "
-                            // + gcBean.getPrivateMembers() + "\nTime : "
-                            // + gcBean.getReminderTime() + "\n");
-                            tv_user.setText("TODO Assigned to : "
-                                    + gcBean.getPrivateMembers() + "\nAt : "
-                                    + gcBean.getReminderTime() + "\n");
-                            tv_user.setVisibility(View.VISIBLE);
-                            scheduleMsg.setTag(gcBean);
-                            if (gcBean.getMessage() != null) {
-                                String msg = gcBean.getMessage();
-                                if (gcBean.getMessage().contains("Status : ")) {
-                                    Log.i("msg123",
-                                            "message2 contains status : "
-                                                    + gcBean.getMessage());
-                                    String tempMsg = msg.substring(0,
-                                            msg.indexOf("Status"));
-                                    String originalMsg = msg.replace(tempMsg,
-                                            "");
-                                    deadlineReplyText.setText(originalMsg);
+                                tvprivate.setText(Html.fromHtml("<font color=\"#06F235\">"
+                                        + "Private for: "
+                                        + "</font>"
+                                        + "  "
+                                        + "<font color=\"#FFFFFF\">"
+                                        + gcBean.getPrivateMembers()));
+                            } else if (gcBean.getSubCategory().equalsIgnoreCase(
+                                    "gu")) {
+                                tv_urgent.setVisibility(View.VISIBLE);
+                                tv_urgent.setTextColor(Color.parseColor("#daa520"));
+                                tv_urgent.setText("  Urgent  !  ");
+                                tvprivate.setVisibility(View.GONE);
+                            } else if (gcBean.getSubCategory().equalsIgnoreCase(
+                                    "gs")) {
+                                scheduleMsg.setVisibility(View.VISIBLE);
+                                tv_user.setText(SingleInstance.mainContext.getResources().getString(R.string.message_schedule_to)
+                                        + gcBean.getPrivateMembers());
+                                tv_user.setVisibility(View.VISIBLE);
+                                scheduleMsg
+                                        .setImageResource(R.drawable.icon_footer_reminder);
+                                scheduleMsg.setTag(gcBean);
+                                convertView.setBackgroundResource(R.color.gchat_bg);
+                                deadlineReplyText.setVisibility(View.GONE);
+                            } else if (gcBean.getSubCategory().equalsIgnoreCase(
+                                    "gd")) {
+                                receiverLayout
+                                        .setBackgroundResource(R.color.deadlingclr);
+                                convertView
+                                        .setBackgroundResource(R.color.deadlingclr);
+                                scheduleMsg
+                                        .setImageResource(R.drawable.icon_footer_reminder);
+                                scheduleMsg.setVisibility(View.VISIBLE);
+                                // tv_user.setText("DeadLine message to : "
+                                // + gcBean.getPrivateMembers());
+                                // tv_user.setText("DeadLine set by : "
+                                // + gcBean.getFrom() + "\nAssigned to : "
+                                // + gcBean.getPrivateMembers() + "\nTime : "
+                                // + gcBean.getReminderTime() + "\n");
+                                tv_user.setText("TODO Assigned to : "
+                                        + gcBean.getPrivateMembers() + "\nAt : "
+                                        + gcBean.getReminderTime() + "\n");
+                                tv_user.setVisibility(View.VISIBLE);
+                                scheduleMsg.setTag(gcBean);
+                                if (gcBean.getMessage() != null) {
+                                    String msg = gcBean.getMessage();
+                                    if (gcBean.getMessage().contains("Status : ")) {
+                                        Log.i("msg123",
+                                                "message2 contains status : "
+                                                        + gcBean.getMessage());
+                                        String tempMsg = msg.substring(0,
+                                                msg.indexOf("Status"));
+                                        String originalMsg = msg.replace(tempMsg,
+                                                "");
+                                        deadlineReplyText.setText(originalMsg);
+                                    } else {
+                                        deadlineReplyText.setText("");
+                                    }
                                 } else {
                                     deadlineReplyText.setText("");
                                 }
-                            } else {
-                                deadlineReplyText.setText("");
-                            }
-                            deadlineReplyText.setVisibility(View.VISIBLE);
-                        } else if (gcBean.getSubCategory().equalsIgnoreCase(
-                                "grb") || gcBean.getSubCategory().equalsIgnoreCase(
-                                "GRB_R")) {
-                            receiverLayout
-                                    .setBackgroundResource(R.color.lgreen);
-                            convertView.setBackgroundResource(R.color.lgreen);
-                            scheduleMsg.setTag(gcBean);
+                                deadlineReplyText.setVisibility(View.VISIBLE);
+                            } else if (gcBean.getSubCategory().equalsIgnoreCase(
+                                    "grb") || gcBean.getSubCategory().equalsIgnoreCase(
+                                    "GRB_R")) {
+                                receiverLayout
+                                        .setBackgroundResource(R.color.lgreen);
+                                convertView.setBackgroundResource(R.color.lgreen);
+                                scheduleMsg.setTag(gcBean);
 //							scheduleMsg.setImageResource(R.drawable.replybg);
 //							scheduleMsg.setVisibility(View.VISIBLE);
-                            if (gcBean.getReply() != null && !gcBean.getReply().equals("") && gcBean.getReply().equalsIgnoreCase("GRB_R")) {
-                                if (gcBean.getSubCategory().equalsIgnoreCase(
-                                        "GRB_R")) {
-                                    if (position > 0) {
-                                        listrel_quoted.setVisibility(View.VISIBLE);
-                                        final GroupChatBean Bean = chatList.get(position - 1);
-                                        lvquoted_msg.setText(Bean.getMessage());
+                                if (gcBean.getReply() != null && !gcBean.getReply().equals("") && gcBean.getReply().equalsIgnoreCase("GRB_R")) {
+                                    if (gcBean.getSubCategory().equalsIgnoreCase(
+                                            "GRB_R")) {
+                                        if (position > 0) {
+                                            listrel_quoted.setVisibility(View.VISIBLE);
+                                            final GroupChatBean Bean = chatList.get(position - 1);
+                                            lvquoted_msg.setText(Bean.getMessage());
+                                        }
                                     }
+                                    waitforreply.setVisibility(View.GONE);
+                                } else {
+                                    listrel_quoted.setVisibility(View.GONE);
+                                    waitforreply.setVisibility(View.VISIBLE);
                                 }
-                                waitforreply.setVisibility(View.GONE);
+                                deadlineReplyText.setVisibility(View.GONE);
+                            } else if (gcBean.getSubCategory().equalsIgnoreCase(
+                                    "gc")) {
+                                if (gcBean.getReply() != null && !gcBean.getReply().equals("") && gcBean.getReply().equals("gc_ack")) {
+                                    waitforconfir.setVisibility(View.GONE);
+                                } else {
+                                    waitforconfir.setVisibility(View.VISIBLE);
+                                }
                             } else {
-                                listrel_quoted.setVisibility(View.GONE);
-                                waitforreply.setVisibility(View.VISIBLE);
-                            }
-                            deadlineReplyText.setVisibility(View.GONE);
-                        } else if (gcBean.getSubCategory().equalsIgnoreCase(
-                                "gc")) {
-                            if (gcBean.getReply() != null && !gcBean.getReply().equals("") && gcBean.getReply().equals("gc_ack")) {
-                                waitforconfir.setVisibility(View.GONE);
-                            } else {
-                                waitforconfir.setVisibility(View.VISIBLE);
+//							tv_user.setVisibility(View.GONE);
+                                scheduleMsg.setVisibility(View.GONE);
+//							convertView.setBackgroundResource(R.color.gchat_bg);
+                                deadlineReplyText.setVisibility(View.GONE);
                             }
                         } else {
-//							tv_user.setVisibility(View.GONE);
-                            scheduleMsg.setVisibility(View.GONE);
-//							convertView.setBackgroundResource(R.color.gchat_bg);
-                            deadlineReplyText.setVisibility(View.GONE);
-                        }
-                    } else {
                         /*tv user set gone*/
 //						tv_user.setVisibility(View.VISIBLE);
-                        tv_user.setText(CallDispatcher.LoginUser);
-                        scheduleMsg.setVisibility(View.GONE);
+                            tv_user.setText(CallDispatcher.LoginUser);
+                            scheduleMsg.setVisibility(View.GONE);
 //						convertView.setBackgroundResource(R.color.gchat_bg);
-                        deadlineReplyText.setVisibility(View.GONE);
-                    }
-                    saveMsg.setTag(gcBean);
-
-                } else {
-                    swipeposition = 1;
-                    chat_view = (LinearLayout) convertView
-                            .findViewById(R.id.sendlintest);
-                    tv_urgent = (TextView) convertView
-                            .findViewById(R.id.sendtv_urgent);
-                    tv_urgent.setTag(position);
-                    tv_urgent.setVisibility(View.GONE);
-                    Sender_img = (ImageView) convertView
-                            .findViewById(R.id.userDP);
-                    tv_user = (TextView) convertView
-                            .findViewById(R.id.sender_user_1);
-                    message = (TextView) convertView
-                            .findViewById(R.id.sender_text_msg);
-                    im_pin = (TextView) convertView
-                            .findViewById(R.id.sendtv_pathname);
-                    multimediaIcon = (ImageView) convertView
-                            .findViewById(R.id.sender_multi_msg);
-                    dateTime = (TextView) convertView
-                            .findViewById(R.id.sender_datetime);
-                    iconContainer = (RelativeLayout) convertView
-                            .findViewById(R.id.sender_icon_container);
-                    locationIcon = (ImageView) convertView
-                            .findViewById(R.id.sender_loc_icon);
-                    receiverLayout.setVisibility(View.GONE);
-                    senderLayout.setVisibility(View.VISIBLE);
-                    scheduleMsg = (ImageView) convertView
-                            .findViewById(R.id.sender_schedule_icon);
-                    scheduleMsg.setVisibility(View.GONE);
-                    audioLayout = (RelativeLayout) convertView.findViewById(R.id.sendad_play);
-                    progress = (ProgressBar) convertView
-                            .findViewById(R.id.down_progressBar);
-                    intermediateProgress = (ProgressBar) convertView
-                            .findViewById(R.id.progressBar2);
-                    intermediateProgress.setVisibility(View.GONE);
-                    percentage = (TextView) convertView
-                            .findViewById(R.id.down_percentage);
-                    saveMsg = (ImageView) convertView
-                            .findViewById(R.id.sender_save_btn);
-                    retryIcon = (ImageView) convertView
-                            .findViewById(R.id.sender_retry);
-                    img_status = (ImageView) convertView
-                            .findViewById(R.id.img_status);
-                    audio_seekbar = (SeekBar) convertView.findViewById(R.id.sendseekBar1);
-                    audio_play = (ImageView) convertView.findViewById(R.id.sendplay_button);
-                    audio_tv = (TextView) convertView.findViewById(R.id.sendtxt_time);
-                    audio_tv.setTag(gcBean);
-                    retryIcon.setVisibility(View.GONE);
-                    sender_status = (TextView) convertView
-                            .findViewById(R.id.sender_status);
-                    sender_status.setText("Received");
-                    sender_status.setVisibility(View.GONE);
-                    if (chatList.size() == position + 1) {
-                        sender_status.setVisibility(View.VISIBLE);
-                    }
-                    retryIcon.setTag(gcBean);
-                    String statusicon = null;
-                    if (buddyStatus != null && buddyStatus.containsKey(gcBean.getFrom())) {
-                        statusicon = buddyStatus.get(gcBean.getFrom());
-                    }
-                    if (gcBean.getUnreadStatus() == 0) {
-                        senderLayout.setBackgroundResource(R.color.greendark);
-                        UdpMessageBean bean = new UdpMessageBean();
-                        bean.setType("101");
-                        bean.setResponseObject(gcBean);
-                        SingleInstance.mainContext.ReadMessageAck(bean);
-                    }
-                    if (statusicon != null) {
-                        if (statusicon.equalsIgnoreCase("online")) {
-                            img_status.setBackgroundResource(R.drawable.online_icon);
-                        } else if (statusicon.equalsIgnoreCase("offline")) {
-                            img_status.setBackgroundResource(R.drawable.offline_icon);
-                        } else if (statusicon.equalsIgnoreCase("Away")) {
-                            img_status.setBackgroundResource(R.drawable.busy_icon);
-                        } else if (statusicon.equalsIgnoreCase("Stealth")) {
-                            img_status.setBackgroundResource(R.drawable.invisibleicon);
-                        } else if (statusicon.equalsIgnoreCase("Airport")) {
-                            img_status.setBackgroundResource(R.drawable.busy_icon);
-                        } else {
-                            img_status.setBackgroundResource(R.drawable.offline_icon);
+                            deadlineReplyText.setVisibility(View.GONE);
                         }
-                    }
+                        saveMsg.setTag(gcBean);
 
-                    // RadioGroup deadLineReply = (RadioGroup) convertView
-                    // .findViewById(R.id.deadlineOption);
-                    deadlineReplyText = (TextView) convertView
-                            .findViewById(R.id.sender_deadline_reply_txt);
-                    ProfileBean pb = DBAccess.getdbHeler().getProfileDetails(gcBean.getFrom());
-                    if (pb != null) {
-                        if (pb.getPhoto() != null)
-                            imageLoader.DisplayImage(
-                                    Environment.getExternalStorageDirectory().getAbsolutePath() + "/COMMedia/" +
-                                            pb.getPhoto(),
-                                    Sender_img, R.drawable.icon_buddy_aoffline);
-                    }
-                    if (gcBean.getSubCategory() != null) {
-                        if (gcBean.getSubCategory().equalsIgnoreCase("gp")) {
-                            // deadLineReply.setVisibility(View.GONE);
-                            tv_user.setText(gcBean.getFrom());
-                            if (gcBean.getReply() != null && gcBean.getReply().equals("private")) {
-                                btn_private.setVisibility(View.GONE);
-                                tv_replied.setText("Private Reply to :" + gcBean.getFrom());
+                    } else {
+                        swipeposition = 1;
+                        chat_view = (LinearLayout) convertView
+                                .findViewById(R.id.sendlintest);
+                        tv_urgent = (TextView) convertView
+                                .findViewById(R.id.sendtv_urgent);
+                        tv_urgent.setTag(position);
+                        tv_urgent.setVisibility(View.GONE);
+                        Sender_img = (ImageView) convertView
+                                .findViewById(R.id.userDP);
+                        tv_user = (TextView) convertView
+                                .findViewById(R.id.sender_user_1);
+                        message = (TextView) convertView
+                                .findViewById(R.id.sender_text_msg);
+                        im_pin = (TextView) convertView
+                                .findViewById(R.id.sendtv_pathname);
+                        multimediaIcon = (ImageView) convertView
+                                .findViewById(R.id.sender_multi_msg);
+                        dateTime = (TextView) convertView
+                                .findViewById(R.id.sender_datetime);
+                        iconContainer = (RelativeLayout) convertView
+                                .findViewById(R.id.sender_icon_container);
+                        locationIcon = (ImageView) convertView
+                                .findViewById(R.id.sender_loc_icon);
+                        receiverLayout.setVisibility(View.GONE);
+                        senderLayout.setVisibility(View.VISIBLE);
+                        scheduleMsg = (ImageView) convertView
+                                .findViewById(R.id.sender_schedule_icon);
+                        scheduleMsg.setVisibility(View.GONE);
+                        audioLayout = (RelativeLayout) convertView.findViewById(R.id.sendad_play);
+                        progress = (ProgressBar) convertView
+                                .findViewById(R.id.down_progressBar);
+                        intermediateProgress = (ProgressBar) convertView
+                                .findViewById(R.id.progressBar2);
+                        intermediateProgress.setVisibility(View.GONE);
+                        percentage = (TextView) convertView
+                                .findViewById(R.id.down_percentage);
+                        saveMsg = (ImageView) convertView
+                                .findViewById(R.id.sender_save_btn);
+                        retryIcon = (ImageView) convertView
+                                .findViewById(R.id.sender_retry);
+                        img_status = (ImageView) convertView
+                                .findViewById(R.id.img_status);
+                        audio_seekbar = (SeekBar) convertView.findViewById(R.id.sendseekBar1);
+                        audio_play = (ImageView) convertView.findViewById(R.id.sendplay_button);
+                        audio_tv = (TextView) convertView.findViewById(R.id.sendtxt_time);
+                        audio_tv.setTag(gcBean);
+                        retryIcon.setVisibility(View.GONE);
+                        sender_status = (TextView) convertView
+                                .findViewById(R.id.sender_status);
+                        sender_status.setText("Received");
+                        sender_status.setVisibility(View.GONE);
+                        if (chatList.size() == position + 1) {
+                            sender_status.setVisibility(View.VISIBLE);
+                        }
+                        retryIcon.setTag(gcBean);
+                        String statusicon = null;
+                        if (buddyStatus != null && buddyStatus.containsKey(gcBean.getFrom())) {
+                            statusicon = buddyStatus.get(gcBean.getFrom());
+                        }
+                        if (gcBean.getUnreadStatus() == 0) {
+                            senderLayout.setBackgroundResource(R.color.greendark);
+                            UdpMessageBean bean = new UdpMessageBean();
+                            bean.setType("101");
+                            bean.setResponseObject(gcBean);
+                            SingleInstance.mainContext.ReadMessageAck(bean);
+                        }
+                        if (statusicon != null) {
+                            if (statusicon.equalsIgnoreCase("online")) {
+                                img_status.setBackgroundResource(R.drawable.online_icon);
+                            } else if (statusicon.equalsIgnoreCase("offline")) {
+                                img_status.setBackgroundResource(R.drawable.offline_icon);
+                            } else if (statusicon.equalsIgnoreCase("Away")) {
+                                img_status.setBackgroundResource(R.drawable.busy_icon);
+                            } else if (statusicon.equalsIgnoreCase("Stealth")) {
+                                img_status.setBackgroundResource(R.drawable.invisibleicon);
+                            } else if (statusicon.equalsIgnoreCase("Airport")) {
+                                img_status.setBackgroundResource(R.drawable.busy_icon);
                             } else {
-                                btn_private.setVisibility(View.VISIBLE);
+                                img_status.setBackgroundResource(R.drawable.offline_icon);
                             }
-                            convertView.setBackgroundResource(R.color.gchat_bg);
-                            deadlineReplyText.setVisibility(View.GONE);
-                            btn_private.setTag(gcBean);
-                        } else if (gcBean.getSubCategory().equalsIgnoreCase(
-                                "gs")) {
-                            // deadLineReply.setVisibility(View.GONE);
-                            deadlineReplyText.setVisibility(View.GONE);
-                            convertView.setBackgroundResource(R.color.gchat_bg);
-                            senderLayout
-                                    .setBackgroundResource(R.color.gchat_bg);
-                            if (SingleInstance.scheduledMsg.containsKey(gcBean
-                                    .getSignalid())) {
-                                senderLayout.setVisibility(View.GONE);
-                            } else {
-                                senderLayout.setVisibility(View.VISIBLE);
+                        }
+
+                        // RadioGroup deadLineReply = (RadioGroup) convertView
+                        // .findViewById(R.id.deadlineOption);
+                        deadlineReplyText = (TextView) convertView
+                                .findViewById(R.id.sender_deadline_reply_txt);
+                        ProfileBean pb = DBAccess.getdbHeler().getProfileDetails(gcBean.getFrom());
+                        if (pb != null) {
+                            if (pb.getPhoto() != null)
+                                imageLoader.DisplayImage(
+                                        Environment.getExternalStorageDirectory().getAbsolutePath() + "/COMMedia/" +
+                                                pb.getPhoto(),
+                                        Sender_img, R.drawable.icon_buddy_aoffline);
+                        }
+                        if (gcBean.getSubCategory() != null) {
+                            if (gcBean.getSubCategory().equalsIgnoreCase("gp")) {
+                                // deadLineReply.setVisibility(View.GONE);
+                                tv_user.setText(gcBean.getFrom());
+                                if (gcBean.getReply() != null && gcBean.getReply().equals("private")) {
+                                    btn_private.setVisibility(View.GONE);
+                                    tv_replied.setText("Private Reply to :" + gcBean.getFrom());
+                                } else {
+                                    btn_private.setVisibility(View.VISIBLE);
+                                }
+                                convertView.setBackgroundResource(R.color.gchat_bg);
+                                deadlineReplyText.setVisibility(View.GONE);
+                                btn_private.setTag(gcBean);
+                            } else if (gcBean.getSubCategory().equalsIgnoreCase(
+                                    "gs")) {
+                                // deadLineReply.setVisibility(View.GONE);
+                                deadlineReplyText.setVisibility(View.GONE);
+                                convertView.setBackgroundResource(R.color.gchat_bg);
+                                senderLayout
+                                        .setBackgroundResource(R.color.gchat_bg);
+                                if (SingleInstance.scheduledMsg.containsKey(gcBean
+                                        .getSignalid())) {
+                                    senderLayout.setVisibility(View.GONE);
+                                } else {
+                                    senderLayout.setVisibility(View.VISIBLE);
+                                    scheduleMsg.setVisibility(View.VISIBLE);
+                                    scheduleMsg
+                                            .setImageResource(R.drawable.icon_footer_reminder);
+                                    scheduleMsg.setTag(gcBean);
+                                    tv_user.setText(SingleInstance.mainContext.getResources().getString(R.string.message_schedule_by)
+                                            + gcBean.getFrom());
+                                }
+                            } else if (gcBean.getSubCategory().equalsIgnoreCase(
+                                    "gd")) {
+                                senderLayout
+                                        .setBackgroundResource(R.color.deadlingclr);
+                                convertView
+                                        .setBackgroundResource(R.color.deadlingclr);
                                 scheduleMsg.setVisibility(View.VISIBLE);
                                 scheduleMsg
                                         .setImageResource(R.drawable.icon_footer_reminder);
                                 scheduleMsg.setTag(gcBean);
-                                tv_user.setText(SingleInstance.mainContext.getResources().getString(R.string.message_schedule_by)
-                                        + gcBean.getFrom());
-                            }
-                        } else if (gcBean.getSubCategory().equalsIgnoreCase(
-                                "gd")) {
-                            senderLayout
-                                    .setBackgroundResource(R.color.deadlingclr);
-                            convertView
-                                    .setBackgroundResource(R.color.deadlingclr);
-                            scheduleMsg.setVisibility(View.VISIBLE);
-                            scheduleMsg
-                                    .setImageResource(R.drawable.icon_footer_reminder);
-                            scheduleMsg.setTag(gcBean);
-                            // tv_user.setText("DeadLine set by : "
-                            // + gcBean.getFrom() + "\nAssigned to : "
-                            // + gcBean.getPrivateMembers() + "\nTime : "
-                            // + gcBean.getReminderTime() + "\n");
-                            tv_user.setText(SingleInstance.mainContext.getResources().getString(R.string.dead_line_assigned_to)
-                                    + gcBean.getPrivateMembers() + "\nAt : "
-                                    + gcBean.getReminderTime() + "\n");
-                            if (gcBean.getMessage() != null) {
-                                String msg = gcBean.getMessage();
-                                Log.i("msg123", "message1 contains status : "
-                                        + gcBean.getMessage());
-                                if (gcBean.getMessage().contains("Status : ")) {
-                                    Log.i("msg123",
-                                            "message2 contains status : "
-                                                    + gcBean.getMessage());
-                                    String tempMsg = msg.substring(0,
-                                            msg.indexOf("Status"));
-                                    String originalMsg = msg.replace(tempMsg,
-                                            "");
-                                    Log.i("msg123", "temp msg : " + tempMsg
-                                            + "original msg : " + originalMsg);
-                                    deadlineReplyText.setText(originalMsg);
+                                // tv_user.setText("DeadLine set by : "
+                                // + gcBean.getFrom() + "\nAssigned to : "
+                                // + gcBean.getPrivateMembers() + "\nTime : "
+                                // + gcBean.getReminderTime() + "\n");
+                                tv_user.setText(SingleInstance.mainContext.getResources().getString(R.string.dead_line_assigned_to)
+                                        + gcBean.getPrivateMembers() + "\nAt : "
+                                        + gcBean.getReminderTime() + "\n");
+                                if (gcBean.getMessage() != null) {
+                                    String msg = gcBean.getMessage();
+                                    Log.i("msg123", "message1 contains status : "
+                                            + gcBean.getMessage());
+                                    if (gcBean.getMessage().contains("Status : ")) {
+                                        Log.i("msg123",
+                                                "message2 contains status : "
+                                                        + gcBean.getMessage());
+                                        String tempMsg = msg.substring(0,
+                                                msg.indexOf("Status"));
+                                        String originalMsg = msg.replace(tempMsg,
+                                                "");
+                                        Log.i("msg123", "temp msg : " + tempMsg
+                                                + "original msg : " + originalMsg);
+                                        deadlineReplyText.setText(originalMsg);
+                                    } else {
+                                        deadlineReplyText.setText("");
+                                    }
                                 } else {
                                     deadlineReplyText.setText("");
                                 }
-                            } else {
-                                deadlineReplyText.setText("");
-                            }
-                            deadlineReplyText.setVisibility(View.VISIBLE);
+                                deadlineReplyText.setVisibility(View.VISIBLE);
 
-                            if (gcBean.getPrivateMembers() != null
-                                    && gcBean.getPrivateMembers().length() > 0) {
-                                String[] privateMembers = gcBean
-                                        .getPrivateMembers().split(",");
-                                for (String tmp : privateMembers) {
-                                    if (tmp.equalsIgnoreCase(CallDispatcher.LoginUser)) {
-                                        // deadLineReply
-                                        // .setVisibility(View.VISIBLE);
-                                        // deadLineReply(deadLineReply, gcBean);
-                                        break;
-                                    } else {
-                                        // deadLineReply.setVisibility(View.GONE);
+                                if (gcBean.getPrivateMembers() != null
+                                        && gcBean.getPrivateMembers().length() > 0) {
+                                    String[] privateMembers = gcBean
+                                            .getPrivateMembers().split(",");
+                                    for (String tmp : privateMembers) {
+                                        if (tmp.equalsIgnoreCase(CallDispatcher.LoginUser)) {
+                                            // deadLineReply
+                                            // .setVisibility(View.VISIBLE);
+                                            // deadLineReply(deadLineReply, gcBean);
+                                            break;
+                                        } else {
+                                            // deadLineReply.setVisibility(View.GONE);
+                                        }
                                     }
                                 }
-                            }
-                        } else if (gcBean.getSubCategory().equalsIgnoreCase(
-                                "gc") || gcBean.getSubCategory().equalsIgnoreCase(
-                                "gc_ack")) {
-                            tv_user.setText(gcBean.getFrom());
-                            if (gcBean.getReply() != null && gcBean.getReply().equals("gc_ack")) {
-                                btn_confrm.setVisibility(View.GONE);
-                                tv_replied.setVisibility(View.VISIBLE);
-                                tv_replied.setText("Confirmed" + Html.fromHtml(tick));
+                            } else if (gcBean.getSubCategory().equalsIgnoreCase(
+                                    "gc") || gcBean.getSubCategory().equalsIgnoreCase(
+                                    "gc_ack")) {
+                                tv_user.setText(gcBean.getFrom());
+                                if (gcBean.getReply() != null && gcBean.getReply().equals("gc_ack")) {
+                                    btn_confrm.setVisibility(View.GONE);
+                                    tv_replied.setVisibility(View.VISIBLE);
+                                    tv_replied.setText("Confirmed" + Html.fromHtml(tick));
 
-                            } else {
-                                btn_confrm.setVisibility(View.VISIBLE);
-                            }
-                        } else if (gcBean.getSubCategory().equalsIgnoreCase(
-                                "gu")) {
-                            tv_urgent.setVisibility(View.VISIBLE);
-                            tv_urgent.setTextColor(Color.parseColor("#daa520"));
-                            tv_urgent.setText("  Urgent  !  ");
-                        } else if (gcBean.getSubCategory().equalsIgnoreCase(
-                                "grb") || gcBean.getSubCategory().equalsIgnoreCase(
-                                "GRB_R")) {
-                            // deadLineReply.setVisibility(View.GONE);
-                            deadlineReplyText.setVisibility(View.GONE);
-                            if (gcBean.getPrivateMembers() != null
-                                    && gcBean.getPrivateMembers().length() > 0) {
-                                String[] privateMembers = gcBean
-                                        .getPrivateMembers().split(",");
-                                for (String tmp : privateMembers) {
-                                    if (tmp.equalsIgnoreCase(CallDispatcher.LoginUser)) {
+                                } else {
+                                    btn_confrm.setVisibility(View.VISIBLE);
+                                }
+                            } else if (gcBean.getSubCategory().equalsIgnoreCase(
+                                    "gu")) {
+                                tv_urgent.setVisibility(View.VISIBLE);
+                                tv_urgent.setTextColor(Color.parseColor("#daa520"));
+                                tv_urgent.setText("  Urgent  !  ");
+                            } else if (gcBean.getSubCategory().equalsIgnoreCase(
+                                    "grb") || gcBean.getSubCategory().equalsIgnoreCase(
+                                    "GRB_R")) {
+                                // deadLineReply.setVisibility(View.GONE);
+                                deadlineReplyText.setVisibility(View.GONE);
+                                if (gcBean.getPrivateMembers() != null
+                                        && gcBean.getPrivateMembers().length() > 0) {
+                                    String[] privateMembers = gcBean
+                                            .getPrivateMembers().split(",");
+                                    for (String tmp : privateMembers) {
+                                        if (tmp.equalsIgnoreCase(CallDispatcher.LoginUser)) {
 //										tv_user.setText(SingleInstance.mainContext.getResources().getString(R.string.reply_back_message_from)
 //												+ gcBean.getFrom()
 //										 + "\nTo : "
 //										 + gcBean.getPrivateMembers());
-                                        tv_user.setText(gcBean.getFrom());
-                                        senderLayout
-                                                .setBackgroundResource(R.color.lgreen);
-                                        convertView
-                                                .setBackgroundResource(R.color.lgreen);
-                                        scheduleMsg.setTag(gcBean);
-                                        btn_reply.setTag(gcBean);
-                                        scheduleMsg
-                                                .setImageResource(R.drawable.replybg);
-                                        scheduleMsg.setVisibility(View.VISIBLE);
-                                        if (gcBean.getReply() != null && !gcBean.getReply().equals("") && gcBean.getReply().equalsIgnoreCase("GRB_R")) {
-                                            btn_reply.setVisibility(View.GONE);
+                                            tv_user.setText(gcBean.getFrom());
+                                            senderLayout
+                                                    .setBackgroundResource(R.color.lgreen);
+                                            convertView
+                                                    .setBackgroundResource(R.color.lgreen);
+                                            scheduleMsg.setTag(gcBean);
+                                            btn_reply.setTag(gcBean);
+                                            scheduleMsg
+                                                    .setImageResource(R.drawable.replybg);
+                                            scheduleMsg.setVisibility(View.VISIBLE);
+                                            if (gcBean.getReply() != null && !gcBean.getReply().equals("") && gcBean.getReply().equalsIgnoreCase("GRB_R")) {
+                                                btn_reply.setVisibility(View.GONE);
+                                            } else {
+                                                btn_reply.setVisibility(View.VISIBLE);
+                                            }
+                                            if (gcBean.getReplied() != null && gcBean.getReplied().equals("reply")) {
+                                                tv_replied.setVisibility(View.VISIBLE);
+                                                tv_replied.setText("Replied " + Html.fromHtml(tick));
+                                            }
+                                            break;
                                         } else {
-                                            btn_reply.setVisibility(View.VISIBLE);
+                                            senderLayout
+                                                    .setBackgroundResource(R.color.lgreen);
+                                            scheduleMsg.setVisibility(View.GONE);
+                                            convertView
+                                                    .setBackgroundResource(R.color.lgreen);
                                         }
-                                        if (gcBean.getReplied() != null && gcBean.getReplied().equals("reply")) {
-                                            tv_replied.setVisibility(View.VISIBLE);
-                                            tv_replied.setText("Replied " + Html.fromHtml(tick));
-                                        }
-                                        break;
-                                    } else {
-                                        senderLayout
-                                                .setBackgroundResource(R.color.lgreen);
-                                        scheduleMsg.setVisibility(View.GONE);
-                                        convertView
-                                                .setBackgroundResource(R.color.lgreen);
                                     }
                                 }
-                            }
 
+                            } else {
+                                deadlineReplyText.setVisibility(View.GONE);
+                                tv_user.setText(gcBean.getFrom());
+                                scheduleMsg.setVisibility(View.GONE);
+                            }
                         } else {
                             deadlineReplyText.setVisibility(View.GONE);
                             tv_user.setText(gcBean.getFrom());
                             scheduleMsg.setVisibility(View.GONE);
                         }
-                    } else {
-                        deadlineReplyText.setVisibility(View.GONE);
-                        tv_user.setText(gcBean.getFrom());
-                        scheduleMsg.setVisibility(View.GONE);
+                        saveMsg.setTag(gcBean);
+                        if (Buddyname(gcBean.getFrom()) != null) {
+                            tv_user.setText(Buddyname(gcBean.getFrom()));
+                        }
                     }
-                    saveMsg.setTag(gcBean);
-                    if (Buddyname(gcBean.getFrom()) != null) {
-                        tv_user.setText(Buddyname(gcBean.getFrom()));
-                    }
-                }
 //                if(gcBean.isWithdraw())
 //                {
 //                    TextView listText = new TextView(MainActivity1.this);
 //                }
-                if (position == mPlayingPosition) {
-                    //pb.setVisibility(View.VISIBLE);
-                    mProgressUpdater.mBarToUpdate = audio_seekbar;
-                    mProgressUpdater.tvToUpdate = audio_tv;
-                    mHandler.postDelayed(mProgressUpdater, 100);
-                } else {
-                    //pb.setVisibility(View.GONE);
-                    if (gcBean.getMimetype().equals("audio")) {
-                        try {
-                            audio_seekbar.setProgress(0);
-                            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                            mmr.setDataSource(gcBean.getMediaName());
-                            String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-                            mmr.release();
-                            String min, sec;
-                            min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration)));
-                            sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(Long.parseLong(duration)) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration))));
-                            if (Integer.parseInt(min) < 10) {
-                                min = 0 + String.valueOf(min);
-                            }
-                            if (Integer.parseInt(sec) < 10) {
-                                sec = 0 + String.valueOf(sec);
-                            }
-                            audio_tv.setText(min + ":" + sec);
+                    if (position == mPlayingPosition) {
+                        //pb.setVisibility(View.VISIBLE);
+                        mProgressUpdater.mBarToUpdate = audio_seekbar;
+                        mProgressUpdater.tvToUpdate = audio_tv;
+                        mHandler.postDelayed(mProgressUpdater, 100);
+                    } else {
+                        //pb.setVisibility(View.GONE);
+                        if (gcBean.getMimetype() != null && gcBean.getMimetype().equals("audio")) {
+                            try {
+                                audio_seekbar.setProgress(0);
+                                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                                mmr.setDataSource(gcBean.getMediaName());
+                                String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                                mmr.release();
+                                String min, sec;
+                                min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration)));
+                                sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(Long.parseLong(duration)) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration))));
+                                if (Integer.parseInt(min) < 10) {
+                                    min = 0 + String.valueOf(min);
+                                }
+                                if (Integer.parseInt(sec) < 10) {
+                                    sec = 0 + String.valueOf(sec);
+                                }
+                                audio_tv.setText(min + ":" + sec);
 //                            audio_tv.setText(duration);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
 
-                        audio_seekbar.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
-                        audio_seekbar.setProgress(0);
-                        if (mProgressUpdater.mBarToUpdate == audio_seekbar) {
-                            //this progress would be updated, but this is the wrong position
-                            mProgressUpdater.mBarToUpdate = null;
+                            audio_seekbar.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+                            audio_seekbar.setProgress(0);
+                            if (mProgressUpdater.mBarToUpdate == audio_seekbar) {
+                                //this progress would be updated, but this is the wrong position
+                                mProgressUpdater.mBarToUpdate = null;
+                            }
                         }
                     }
-                }
 
-                if(gcBean.isPlaying())
-                {
-                    audio_play.setBackgroundResource(R.drawable.audiopause);
-                }else
-                {
-                    audio_play.setBackgroundResource(R.drawable.play);
-                }
-                audio_play.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(finalPlayBean == null)
-                        {
-                            audio_play.setBackgroundResource(R.drawable.audiopause);
-                            playAudio(gcBean.getMediaName(), position);
-                            gcBean.setPlaying(true);
-                            finalPlayBean = gcBean;
-                        }else if(finalPlayBean == gcBean)
-                        {
-                            if(mPlayer.isPlaying())
-                            {
-                                mPlayer.pause();
-                                audio_play.setBackgroundResource(R.drawable.play);
-                                gcBean.setPlaying(false);
-                            }else
-                            {
-                                gcBean.setPlaying(true);
+                    if (gcBean.isPlaying()) {
+                        audio_play.setBackgroundResource(R.drawable.audiopause);
+                    } else {
+                        audio_play.setBackgroundResource(R.drawable.play);
+                    }
+                    audio_play.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (finalPlayBean == null) {
                                 audio_play.setBackgroundResource(R.drawable.audiopause);
-                                mPlayer.start();
+                                playAudio(gcBean.getMediaName(), position);
+                                gcBean.setPlaying(true);
+                                finalPlayBean = gcBean;
+                            } else if (finalPlayBean == gcBean) {
+                                if (mPlayer.isPlaying()) {
+                                    mPlayer.pause();
+                                    audio_play.setBackgroundResource(R.drawable.play);
+                                    gcBean.setPlaying(false);
+                                } else {
+                                    gcBean.setPlaying(true);
+                                    audio_play.setBackgroundResource(R.drawable.audiopause);
+                                    mPlayer.start();
+
+                                }
+                            } else {
+                                finalPlayBean.setPlaying(false);
+                                finalPlayBean = gcBean;
+                                finalPlayBean.setPlaying(true);
+                                audio_play.setBackgroundResource(R.drawable.audiopause);
+                                playAudio(gcBean.getMediaName(), position);
 
                             }
-                        }else
-                        {
-                            finalPlayBean.setPlaying(false);
-                            finalPlayBean = gcBean;
-                            finalPlayBean.setPlaying(true);
-                            audio_play.setBackgroundResource(R.drawable.audiopause);
-                            playAudio(gcBean.getMediaName(), position);
-
-                        }
 
 //                        if (mPlayer.isPlaying()) {
 //                            if (signalid.equalsIgnoreCase(gcBean.getSignalid())) {
@@ -5006,241 +5099,241 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 //                                audio_play.setBackgroundResource(R.drawable.audiopause);
 //                            }
 //                        }
-                    }
+                        }
 
-                });
-                message.setText(gcBean.getMessage());
-                if (gcBean.getMimetype().equals("text")
-                        || gcBean.getMimetype().equals("location")|| gcBean.getMimetype().equals("link")) {
-                    message.setVisibility(View.VISIBLE);
-                    multimediaIcon.setVisibility(View.GONE);
-                    progress.setVisibility(View.GONE);
-                    percentage.setVisibility(View.GONE);
-                    iconContainer.setVisibility(View.GONE);
-                    audioLayout.setVisibility(View.GONE);
-                    if (gcBean.getSubCategory() != null
-                            && gcBean.getSubCategory().equalsIgnoreCase("GD")) {
-                        Log.i("msg123",
-                                "subcategory : " + gcBean.getSubCategory());
-                        if (gcBean.getMessage() != null) {
-                            Log.i("msg123", "message : " + gcBean.getMessage());
-                            String msg = gcBean.getMessage();
-                            if (gcBean.getMessage().contains("Status : ")) {
-                                Log.i("msg123", "message contains status : "
-                                        + gcBean.getMessage());
-                                String originalMsg = msg.substring(0,
-                                        msg.indexOf("Status"));
-                                Log.i("ABCD", "Original Message" + gcBean.getMessage());
-                                message.setText(originalMsg);
+                    });
+                    message.setText(gcBean.getMessage());
+                    if (gcBean.getMimetype() != null && gcBean.getMimetype().equals("text")
+                            || gcBean.getMimetype().equals("location") || gcBean.getMimetype().equals("link")) {
+                        message.setVisibility(View.VISIBLE);
+                        multimediaIcon.setVisibility(View.GONE);
+                        progress.setVisibility(View.GONE);
+                        percentage.setVisibility(View.GONE);
+                        iconContainer.setVisibility(View.GONE);
+                        audioLayout.setVisibility(View.GONE);
+                        if (gcBean.getSubCategory() != null
+                                && gcBean.getSubCategory().equalsIgnoreCase("GD")) {
+                            Log.i("msg123",
+                                    "subcategory : " + gcBean.getSubCategory());
+                            if (gcBean.getMessage() != null) {
+                                Log.i("msg123", "message : " + gcBean.getMessage());
+                                String msg = gcBean.getMessage();
+                                if (gcBean.getMessage().contains("Status : ")) {
+                                    Log.i("msg123", "message contains status : "
+                                            + gcBean.getMessage());
+                                    String originalMsg = msg.substring(0,
+                                            msg.indexOf("Status"));
+                                    Log.i("ABCD", "Original Message" + gcBean.getMessage());
+                                    message.setText(originalMsg);
+                                } else {
+                                    Log.i("ABCD", "else Original Message" + gcBean.getMessage());
+
+                                    message.setText(gcBean.getMessage());
+                                }
                             } else {
-                                Log.i("ABCD", "else Original Message" + gcBean.getMessage());
-
+                                Log.i("msg123",
+                                        "else received msg1 : "
+                                                + gcBean.getMessage());
                                 message.setText(gcBean.getMessage());
+                                Log.i("ABCD", "final else Original Message" + gcBean.getMessage());
+
+                                message.setVisibility(View.VISIBLE);
                             }
                         } else {
                             Log.i("msg123",
-                                    "else received msg1 : "
-                                            + gcBean.getMessage());
+                                    "else received msg2 : " + gcBean.getMessage());
                             message.setText(gcBean.getMessage());
-                            Log.i("ABCD", "final else Original Message" + gcBean.getMessage());
-
                             message.setVisibility(View.VISIBLE);
                         }
-                    } else {
-                        Log.i("msg123",
-                                "else received msg2 : " + gcBean.getMessage());
-                        message.setText(gcBean.getMessage());
-                        message.setVisibility(View.VISIBLE);
-                    }
 
-                    Log.d("GROUP_CHAT", "message :" + gcBean.getMessage());
-                    if (gcBean.getMimetype().equals("location")) {
-                        locationIcon.setVisibility(View.VISIBLE);
-                        locationIcon.setTag(gcBean.getMessage());
-                    } else {
-                        locationIcon.setVisibility(View.GONE);
-                    }
-
-                } else if (gcBean.getMimetype().equals("audio")) {
-//                    message.setVisibility(View.GONE);
-                    iconContainer.setVisibility(View.GONE);
-                    locationIcon.setVisibility(View.GONE);
-                    audioLayout.setVisibility(View.VISIBLE);
-                    if (!gcBean.getFrom().equals(CallDispatcher.LoginUser)) {
-                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                                ViewGroup.LayoutParams.WRAP_CONTENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT
-                        );
-                        params.setMargins(10, 250, 0, 4);
-                        splmsgview.setLayoutParams(params);
-                    }
-                    audio_play.setTag(gcBean);
-                } else {
-                    if (retryIcon != null) {
-                        if (gcBean.getStatus() == 1) {
-                            // retryIcon.setVisibility(View.VISIBLE);
-                            // downloadorUploadFile(gcBean);
-                            retryIcon.setVisibility(View.GONE);
-                            if (intermediateProgress != null)
-                                intermediateProgress
-                                        .setVisibility(View.VISIBLE);
-                            showIntermediateProgress(intermediateProgress);
+                        Log.d("GROUP_CHAT", "message :" + gcBean.getMessage());
+                        if (gcBean.getMimetype().equals("location")) {
+                            locationIcon.setVisibility(View.VISIBLE);
+                            locationIcon.setTag(gcBean.getMessage());
                         } else {
-                            if (intermediateProgress != null) {
-                                intermediateProgress.setVisibility(View.GONE);
-                                adapter.notifyDataSetChanged();
-                            }
-                            retryIcon.setVisibility(View.GONE);
+                            locationIcon.setVisibility(View.GONE);
                         }
-                    }
-//					message.setVisibility(View.GONE);
-                    audioLayout.setVisibility(View.GONE);
-                    iconContainer.setVisibility(View.VISIBLE);
-                    locationIcon.setVisibility(View.GONE);
-                    if (gcBean.getMediaName() != null) {
-                        File file = new File(gcBean.getMediaName());
-                        if (!file.exists()) {
-                            multimediaIcon.setImageResource(R.drawable.refresh);
-                            multimediaIcon.setVisibility(View.VISIBLE);
-                            if (retryIcon != null) {
-                                retryIcon.setVisibility(View.GONE);
+
+                    } else if (gcBean.getMimetype().equals("audio")) {
+//                    message.setVisibility(View.GONE);
+                        iconContainer.setVisibility(View.GONE);
+                        locationIcon.setVisibility(View.GONE);
+                        audioLayout.setVisibility(View.VISIBLE);
+                        if (!gcBean.getFrom().equals(CallDispatcher.LoginUser)) {
+                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT
+                            );
+                            params.setMargins(10, 250, 0, 4);
+                            splmsgview.setLayoutParams(params);
+                        }
+                        audio_play.setTag(gcBean);
+                    } else {
+                        if (retryIcon != null) {
+                            if (gcBean.getStatus() == 1) {
                                 // retryIcon.setVisibility(View.VISIBLE);
-                                // downloadorUploadFile((GroupChatBean)
-                                // retryIcon
-                                // .getTag());
+                                // downloadorUploadFile(gcBean);
+                                retryIcon.setVisibility(View.GONE);
+                                if (intermediateProgress != null)
+                                    intermediateProgress
+                                            .setVisibility(View.VISIBLE);
+                                showIntermediateProgress(intermediateProgress);
+                            } else {
+                                if (intermediateProgress != null) {
+                                    intermediateProgress.setVisibility(View.GONE);
+                                    adapter.notifyDataSetChanged();
+                                }
+                                retryIcon.setVisibility(View.GONE);
                             }
+                        }
+//					message.setVisibility(View.GONE);
+                        audioLayout.setVisibility(View.GONE);
+                        iconContainer.setVisibility(View.VISIBLE);
+                        locationIcon.setVisibility(View.GONE);
+                        if (gcBean.getMediaName() != null) {
+                            File file = new File(gcBean.getMediaName());
+                            if (!file.exists()) {
+                                multimediaIcon.setImageResource(R.drawable.refresh);
+                                multimediaIcon.setVisibility(View.VISIBLE);
+                                if (retryIcon != null) {
+                                    retryIcon.setVisibility(View.GONE);
+                                    // retryIcon.setVisibility(View.VISIBLE);
+                                    // downloadorUploadFile((GroupChatBean)
+                                    // retryIcon
+                                    // .getTag());
+                                }
+
+                            } else {
+                                if (retryIcon != null && gcBean.getStatus() == 0)
+                                    retryIcon.setVisibility(View.GONE);
+                                if (intermediateProgress != null
+                                        && gcBean.getStatus() == 2) {
+                                    intermediateProgress.setVisibility(View.GONE);
+                                    adapter.notifyDataSetChanged();
+                                }
+                                multimediaIcon.setVisibility(View.VISIBLE);
+                            }
+                        }
+                        if (gcBean.getProgress() > 0 && gcBean.getProgress() < 100) {
+                            // pre_progress.setVisibility(View.GONE);
+                            progress.setVisibility(View.VISIBLE);
+                            percentage.setVisibility(View.VISIBLE);
+                            progress.setProgress(gcBean.getProgress());
+                            percentage.setText(String.valueOf(gcBean.getProgress())
+                                    + "%");
+                            if (intermediateProgress != null)
+                                intermediateProgress.setVisibility(View.GONE);
+                            retryIcon.setVisibility(View.GONE);
 
                         } else {
-                            if (retryIcon != null && gcBean.getStatus() == 0)
-                                retryIcon.setVisibility(View.GONE);
+                            progress.setProgress(0);
+                            percentage.setText("");
+                            percentage.setVisibility(View.GONE);
+                            progress.setVisibility(View.GONE);
                             if (intermediateProgress != null
                                     && gcBean.getStatus() == 2) {
                                 intermediateProgress.setVisibility(View.GONE);
                                 adapter.notifyDataSetChanged();
                             }
-                            multimediaIcon.setVisibility(View.VISIBLE);
                         }
-                    }
-                    if (gcBean.getProgress() > 0 && gcBean.getProgress() < 100) {
-                        // pre_progress.setVisibility(View.GONE);
-                        progress.setVisibility(View.VISIBLE);
-                        percentage.setVisibility(View.VISIBLE);
-                        progress.setProgress(gcBean.getProgress());
-                        percentage.setText(String.valueOf(gcBean.getProgress())
-                                + "%");
-                        if (intermediateProgress != null)
-                            intermediateProgress.setVisibility(View.GONE);
-                        retryIcon.setVisibility(View.GONE);
 
-                    } else {
-                        progress.setProgress(0);
-                        percentage.setText("");
-                        percentage.setVisibility(View.GONE);
-                        progress.setVisibility(View.GONE);
-                        if (intermediateProgress != null
-                                && gcBean.getStatus() == 2) {
-                            intermediateProgress.setVisibility(View.GONE);
-                            adapter.notifyDataSetChanged();
-                        }
-                    }
-
-                    if (gcBean.getMediaName() != null) {
-                        File file = new File(gcBean.getMediaName());
-                        if (file.exists()) {
+                        if (gcBean.getMediaName() != null) {
+                            File file = new File(gcBean.getMediaName());
+                            if (file.exists()) {
 
 
-                            if (gcBean.getMimetype().equalsIgnoreCase("image")) {
+                                if (gcBean.getMimetype().equalsIgnoreCase("image")) {
 
-                                // start 07-10-15 changes
+                                    // start 07-10-15 changes
 
-                                im_pin.setText(gcBean.getMediaName().split("COMMedia/")[1]);
-                                imageViewer.display(gcBean.getMediaName(),
-                                        multimediaIcon, R.drawable.refresh);
-                                if (gcBean.getMessage() != null)
-                                    message.setVisibility(View.VISIBLE);
-
-                                // ended 07-10-15 changes
-
-                            } else if (gcBean.getMimetype().equalsIgnoreCase("sketch")) {
-
-                                // start 07-10-15 changes
-
-                                im_pin.setText(gcBean.getMediaName().split("COMMedia/")[1]);
-                                imageViewer.display(gcBean.getMediaName(),
-                                        multimediaIcon, R.drawable.refresh);
-                                if (gcBean.getMessage() != null)
-                                    message.setVisibility(View.VISIBLE);
-
-                                // ended 07-10-15 changes
-
-                            } else if (!gcBean.getMimetype().equals("audio")) {
-                                multimediaIcon.setVisibility(View.VISIBLE);
-                                im_pin.setVisibility(View.VISIBLE);
-                                im_pin.setText(gcBean.getMediaName().split("COMMedia/")[1]);
-                                multimediaIcon.setPadding(2, 2, 2, 2);
-                                if (gcBean.getMimetype().equalsIgnoreCase(
-                                        "video"))
-                                    multimediaIcon
-                                            .setImageResource(R.drawable.videoview1);
-                                else {
-                                    multimediaIcon.setVisibility(View.GONE);
-//                                 multimediaIcon
-//                                         .setImageResource(R.drawable.doc_chat);
+                                    im_pin.setText(gcBean.getMediaName().split("COMMedia/")[1]);
+                                    imageViewer.display(gcBean.getMediaName(),
+                                            multimediaIcon, R.drawable.refresh);
                                     if (gcBean.getMessage() != null)
                                         message.setVisibility(View.VISIBLE);
+
+                                    // ended 07-10-15 changes
+
+                                } else if (gcBean.getMimetype().equalsIgnoreCase("sketch")) {
+
+                                    // start 07-10-15 changes
+
+                                    im_pin.setText(gcBean.getMediaName().split("COMMedia/")[1]);
+                                    imageViewer.display(gcBean.getMediaName(),
+                                            multimediaIcon, R.drawable.refresh);
+                                    if (gcBean.getMessage() != null)
+                                        message.setVisibility(View.VISIBLE);
+
+                                    // ended 07-10-15 changes
+
+                                } else if (!gcBean.getMimetype().equals("audio")) {
+                                    multimediaIcon.setVisibility(View.VISIBLE);
+                                    im_pin.setVisibility(View.VISIBLE);
+                                    im_pin.setText(gcBean.getMediaName().split("COMMedia/")[1]);
+                                    multimediaIcon.setPadding(2, 2, 2, 2);
+                                    if (gcBean.getMimetype().equalsIgnoreCase(
+                                            "video"))
+                                        multimediaIcon
+                                                .setImageResource(R.drawable.videoview1);
+                                    else {
+                                        multimediaIcon.setVisibility(View.GONE);
+//                                 multimediaIcon
+//                                         .setImageResource(R.drawable.doc_chat);
+                                        if (gcBean.getMessage() != null)
+                                            message.setVisibility(View.VISIBLE);
+                                    }
                                 }
                             }
-                        }
-                        multimediaIcon.setTag(gcBean.getMediaName());
-                        multimediaIcon.setContentDescription(gcBean
-                                .getMimetype());
+                            multimediaIcon.setTag(gcBean.getMediaName());
+                            multimediaIcon.setContentDescription(gcBean
+                                    .getMimetype());
 
-                    } else {
-                        // notify_icon.setVisibility(View.VISIBLE);
+                        } else {
+                            // notify_icon.setVisibility(View.VISIBLE);
 
-                    }
-                }
-                im_pin.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (gcBean.getMimetype().equals("document")) {
-                            FilesFragment.openFilesinExternalApp(gcBean.getMediaName());
                         }
                     }
-                });
-                String dat, tim;
-                dat = gcBean.getSenttime().split(" ")[1].split(":")[0] + ":" + gcBean.getSenttime().split(" ")[1].split(":")[1];
-                tim = gcBean.getSenttime().split(" ")[2].toUpperCase();
+                    im_pin.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (gcBean.getMimetype().equals("document")) {
+                                FilesFragment.openFilesinExternalApp(gcBean.getMediaName());
+                            }
+                        }
+                    });
+                    String dat, tim;
+                    dat = gcBean.getSenttime().split(" ")[1].split(":")[0] + ":" + gcBean.getSenttime().split(" ")[1].split(":")[1];
+                    tim = gcBean.getSenttime().split(" ")[2].toUpperCase();
 
-                dateTime.setText(dat + " " + tim);
+                    dateTime.setText(dat + " " + tim);
 //				dateTime.setText(getCurrentDateandTime());
 
-                locationIcon.setOnClickListener(new OnClickListener() {
+                    locationIcon.setOnClickListener(new OnClickListener() {
 
-                    @Override
-                    public void onClick(View v) {
-                        // TODO Auto-generated method stub
-                        if (v.getTag().toString() != null) {
-                            showprogress();
-                            Intent intent = new Intent(context,
-                                    buddyLocation.class);
-                            String locs[] = ((CallDispatcher) WebServiceReferences.callDispatch
-                                    .get("calldisp")).getBuddyLocation(v
-                                    .getTag().toString());
-                            intent.putExtra("latitude", locs[0]);
-                            intent.putExtra("longitude", locs[1]);
-                            startActivity(intent);
+                        @Override
+                        public void onClick(View v) {
+                            // TODO Auto-generated method stub
+                            if (v.getTag().toString() != null) {
+                                showprogress();
+                                Intent intent = new Intent(context,
+                                        buddyLocation.class);
+                                String locs[] = ((CallDispatcher) WebServiceReferences.callDispatch
+                                        .get("calldisp")).getBuddyLocation(v
+                                        .getTag().toString());
+                                intent.putExtra("latitude", locs[0]);
+                                intent.putExtra("longitude", locs[1]);
+                                startActivity(intent);
+                            }
                         }
-                    }
-                });
+                    });
 
-                multimediaIcon.setOnClickListener(new OnClickListener() {
+                    multimediaIcon.setOnClickListener(new OnClickListener() {
 
-                    @Override
-                    public void onClick(View v) {
-                        playMultimedia(v);
-                    }
-                });
+                        @Override
+                        public void onClick(View v) {
+                            playMultimedia(v);
+                        }
+                    });
 //				receiverLayout.setOnClickListener(new OnClickListener() {
 //
 //					@Override
@@ -5249,403 +5342,386 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 //					}
 //				});
 
-                btn_confrm.setTag(gcBean);
-                btn_confrm.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        isconfirmBack = true;
-                        GroupChatBean gcBean1 = (GroupChatBean) view
-                                .getTag();
-                        privateMembers = gcBean1.getFrom();
-                        pId = gcBean1.getParentId();
-                        sendMsg("",
-                                null, "text", null);
-
-                    }
-                });
-                btn_private.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        GroupChatBean gcBean1 = (GroupChatBean) view
-                                .getTag();
-                        gcBean1.setReply("private");
-                        sendSpecialMessage("gp", gcBean1.getFrom());
-                        int row = DBAccess.getdbHeler(
-                                SipNotificationListener.getCurrentContext())
-                                .updateChatReply(gcBean1);
-
-                    }
-                });
-//scheduleMsg.
-                btn_reply.setOnClickListener(new OnClickListener() {
-
-                    @Override
-                    public void onClick(View view) {
-                        try {
-                            // TODO Auto-generated method stub
+                    btn_confrm.setTag(gcBean);
+                    btn_confrm.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            isconfirmBack = true;
                             GroupChatBean gcBean1 = (GroupChatBean) view
                                     .getTag();
-                            tvquoted_msg.setText(gcBean1.getMessage());
-                            rel_quoted.setVisibility(View.VISIBLE);
-                            if (gcBean1.getSubCategory() != null) {
-                                if (gcBean1.getSubCategory().equalsIgnoreCase(
-                                        "GD")) {
-                                    if (!gcBean1.getFrom().equalsIgnoreCase(
-                                            CallDispatcher.LoginUser)) {
-                                        deadLineMsgDialog(gcBean1);
-                                    } else {
-                                        deadLineMsgDialog(gcBean1);
-                                    }
-                                } else if (gcBean1.getSubCategory()
-                                        .equalsIgnoreCase("GRB")) {
-                                    if (CallDispatcher.LoginUser != null) {
-                                        isReplyBack = true;
-                                        // showReplyBackDialog(gcBean1);
+                            privateMembers = gcBean1.getFrom();
+                            pId = gcBean1.getParentId();
+                            sendMsg("",
+                                    null, "text", null);
+
+                        }
+                    });
+                    btn_private.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            GroupChatBean gcBean1 = (GroupChatBean) view
+                                    .getTag();
+                            gcBean1.setReply("private");
+                            sendSpecialMessage("gp", gcBean1.getFrom());
+                            int row = DBAccess.getdbHeler(
+                                    SipNotificationListener.getCurrentContext())
+                                    .updateChatReply(gcBean1);
+
+                        }
+                    });
+//scheduleMsg.
+                    btn_reply.setOnClickListener(new OnClickListener() {
+
+                        @Override
+                        public void onClick(View view) {
+                            try {
+                                // TODO Auto-generated method stub
+                                GroupChatBean gcBean1 = (GroupChatBean) view
+                                        .getTag();
+                                tvquoted_msg.setText(gcBean1.getMessage());
+                                rel_quoted.setVisibility(View.VISIBLE);
+                                if (gcBean1.getSubCategory() != null) {
+                                    if (gcBean1.getSubCategory().equalsIgnoreCase(
+                                            "GD")) {
+                                        if (!gcBean1.getFrom().equalsIgnoreCase(
+                                                CallDispatcher.LoginUser)) {
+                                            deadLineMsgDialog(gcBean1);
+                                        } else {
+                                            deadLineMsgDialog(gcBean1);
+                                        }
+                                    } else if (gcBean1.getSubCategory()
+                                            .equalsIgnoreCase("GRB")) {
+                                        if (CallDispatcher.LoginUser != null) {
+                                            isReplyBack = true;
+                                            // showReplyBackDialog(gcBean1);
 //										showToast(SingleInstance.mainContext.getResources().getString(R.string.pressed));
-                                        if (!gcBean1
-                                                .getFrom()
-                                                .equalsIgnoreCase(
-                                                        CallDispatcher.LoginUser)) {
-                                            privateMembers = gcBean1.getFrom();
-                                        } else {
-                                            privateMembers = gcBean1
-                                                    .getPrivateMembers();
+                                            if (!gcBean1
+                                                    .getFrom()
+                                                    .equalsIgnoreCase(
+                                                            CallDispatcher.LoginUser)) {
+                                                privateMembers = gcBean1.getFrom();
+                                            } else {
+                                                privateMembers = gcBean1
+                                                        .getPrivateMembers();
+                                            }
+                                            if (gcBean1.getParentId() != null
+                                                    && !gcBean1.getParentId()
+                                                    .equalsIgnoreCase(
+                                                            "null")) {
+                                                pId = gcBean1.getParentId();
+                                            } else {
+                                                pId = gcBean1.getSignalid();
+                                            }
                                         }
-                                        if (gcBean1.getParentId() != null
-                                                && !gcBean1.getParentId()
-                                                .equalsIgnoreCase(
-                                                        "null")) {
-                                            pId = gcBean1.getParentId();
+                                    } else if (gcBean1.getSubCategory()
+                                            .equalsIgnoreCase("gs")) {
+                                        if (!gcBean1.getFrom().equalsIgnoreCase(
+                                                CallDispatcher.LoginUser)) {
+                                            scheduleMessageDialog(gcBean1);
                                         } else {
-                                            pId = gcBean1.getSignalid();
+                                            scheduleMessageDialog(gcBean1);
                                         }
-                                    }
-                                } else if (gcBean1.getSubCategory()
-                                        .equalsIgnoreCase("gs")) {
-                                    if (!gcBean1.getFrom().equalsIgnoreCase(
-                                            CallDispatcher.LoginUser)) {
-                                        scheduleMessageDialog(gcBean1);
-                                    } else {
-                                        scheduleMessageDialog(gcBean1);
                                     }
                                 }
+                            } catch (Exception e) {
+                                // TODO Auto-generated catch block
+                                if (AppReference.isWriteInFile)
+                                    AppReference.logger.error(e.getMessage(), e);
+                                else
+                                    e.printStackTrace();
                             }
-                        } catch (Exception e) {
-                            // TODO Auto-generated catch block
-                            if (AppReference.isWriteInFile)
-                                AppReference.logger.error(e.getMessage(), e);
+                        }
+                    });
+
+                    saveMsg.setOnClickListener(new OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            GroupChatBean gcBean = (GroupChatBean) v.getTag();
+                            String ComponentPath = "";
+                            String title = "";
+                            int position = 0;
+                            if (gcBean.getMimetype().equalsIgnoreCase("text")
+                                    || gcBean.getMimetype().equalsIgnoreCase(
+                                    "location") || gcBean.getMimetype().equals("link")) {
+                                ComponentPath = createTextNote(gcBean.getMessage());
+                                if (gcBean.getMessage().length() >= 12) {
+                                    title = gcBean.getMessage().trim()
+                                            .substring(0, 11);
+
+                                } else if (gcBean.getMessage().length() < 12) {
+                                    title = gcBean
+                                            .getMessage()
+                                            .trim()
+                                            .substring(0,
+                                                    gcBean.getMessage().length());
+                                }
+                                position = 1;
+                            } else if (gcBean.getMimetype().equalsIgnoreCase(
+                                    "image")) {
+                                title = "Photo";
+                                ComponentPath = gcBean.getMediaName();
+                                position = 2;
+                            } else if (gcBean.getMimetype().equalsIgnoreCase(
+                                    "Audio")) {
+                                title = "Audio";
+                                ComponentPath = gcBean.getMediaName();
+                                position = 4;
+                            } else if (gcBean.getMimetype().equalsIgnoreCase(
+                                    "Video")) {
+                                title = "Video";
+                                ComponentPath = gcBean.getMediaName();
+                                position = 5;
+                            }
+                            DBAccess.getdbHeler().putDBEntry(
+                                    position,
+                                    ComponentPath,
+                                    WebServiceReferences
+                                            .getNoteCreateTimeForFiles(), title,
+                                    null, "");
+                            FilesFragment.newInstance(context).filesListRefresh();
+                            showToast("Saved successfully");
+
+                        }
+
+                    });
+
+                    retryIcon.setOnClickListener(new OnClickListener() {
+
+                        @Override
+                        public void onClick(View view) {
+                            // TODO Auto-generated method stub
+                            GroupChatBean gcBean = (GroupChatBean) view.getTag();
+                            Log.i("gchat123", "inside retry " + gcBean.getGroupId());
+                            // downloadorUploadFile(gcBean);
+
+                        }
+                    });
+
+                    withdraw.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            final GroupChatBean gBean = gcBean
+                                    .clone();
+                            gBean.setpSingnalId(gcBean
+                                    .getSignalid());
+                            gBean.setSignalid(Utility
+                                    .getSessionID());
+                            Log.i("group123",
+                                    "signalid :: "
+                                            + gcBean.getpSingnalId());
+                            gBean.setType("104");
+                            if (isGroup || isRounding)
+                                gBean.setTo(groupBean
+                                        .getGroupId());
                             else
-                                e.printStackTrace();
-                        }
-                    }
-                });
-
-                saveMsg.setOnClickListener(new OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        GroupChatBean gcBean = (GroupChatBean) v.getTag();
-                        String ComponentPath = "";
-                        String title = "";
-                        int position = 0;
-                        if (gcBean.getMimetype().equalsIgnoreCase("text")
-                                || gcBean.getMimetype().equalsIgnoreCase(
-                                "location")|| gcBean.getMimetype().equals("link")) {
-                            ComponentPath = createTextNote(gcBean.getMessage());
-                            if (gcBean.getMessage().length() >= 12) {
-                                title = gcBean.getMessage().trim()
-                                        .substring(0, 11);
-
-                            } else if (gcBean.getMessage().length() < 12) {
-                                title = gcBean
-                                        .getMessage()
-                                        .trim()
-                                        .substring(0,
-                                                gcBean.getMessage().length());
-                            }
-                            position = 1;
-                        } else if (gcBean.getMimetype().equalsIgnoreCase(
-                                "image")) {
-                            title = "Photo";
-                            ComponentPath = gcBean.getMediaName();
-                            position = 2;
-                        } else if (gcBean.getMimetype().equalsIgnoreCase(
-                                "Audio")) {
-                            title = "Audio";
-                            ComponentPath = gcBean.getMediaName();
-                            position = 4;
-                        } else if (gcBean.getMimetype().equalsIgnoreCase(
-                                "Video")) {
-                            title = "Video";
-                            ComponentPath = gcBean.getMediaName();
-                            position = 5;
-                        }
-                        DBAccess.getdbHeler().putDBEntry(
-                                position,
-                                ComponentPath,
-                                WebServiceReferences
-                                        .getNoteCreateTimeForFiles(), title,
-                                null,"");
-                        FilesFragment.newInstance(context).filesListRefresh();
-                        showToast("Saved successfully");
-
-                    }
-
-                });
-
-                retryIcon.setOnClickListener(new OnClickListener() {
-
-                    @Override
-                    public void onClick(View view) {
-                        // TODO Auto-generated method stub
-                        GroupChatBean gcBean = (GroupChatBean) view.getTag();
-                        Log.i("gchat123", "inside retry " + gcBean.getGroupId());
-                        // downloadorUploadFile(gcBean);
-
-                    }
-                });
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                Calendar cal = Calendar.getInstance();
-                String todayDate = format.format(cal.getTime());
-                if (todayDate.equals(gcBean.getSenttime().split(" ")[0])) {
-                    tv_today.setText("Today");
-                } else if (getYesterdayDateString(format).equals(gcBean.getSenttime().split(" ")[0])) {
-                    tv_today.setText("Yesterday");
-                } else {
-                    tv_today.setText(gcBean.getSenttime().split(" ")[0]);
-                }
-                tv_today.setVisibility(View.VISIBLE);
-                if (position > 0) {
-                    final GroupChatBean gcbn = chatList.get(position - 1);
-                    if (gcbn.getSenttime().split(" ")[0].equals(gcBean.getSenttime().split(" ")[0])) {
-                        tv_today.setVisibility(View.GONE);
-                    } else {
-                        tv_today.setVisibility(View.VISIBLE);
-                    }
-                }
-                withdraw.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        final GroupChatBean gBean = gcBean
-                                .clone();
-                        gBean.setpSingnalId(gcBean
-                                .getSignalid());
-                        gBean.setSignalid(Utility
-                                .getSessionID());
-                        Log.i("group123",
-                                "signalid :: "
-                                        + gcBean.getpSingnalId());
-                        gBean.setType("104");
-                        if (isGroup || isRounding)
-                            gBean.setTo(groupBean
-                                    .getGroupId());
-                        else
-                            gBean.setTo(buddy);
-                        GroupChatPermissionBean gcpBean = SingleInstance.mainContext
-                                .getGroupChatPermission(groupBean);
-                        if (isGroup || isRounding) {
-                            if (gcpBean
-                                    .getWithDrawn()
-                                    .equalsIgnoreCase(
-                                            "1")) {
+                                gBean.setTo(buddy);
+                            GroupChatPermissionBean gcpBean = SingleInstance.mainContext
+                                    .getGroupChatPermission(groupBean);
+                            if (isGroup || isRounding) {
+                                if (gcpBean
+                                        .getWithDrawn()
+                                        .equalsIgnoreCase(
+                                                "1")) {
+                                    SingleInstance
+                                            .getGroupChatProcesser()
+                                            .getQueue()
+                                            .addObject(
+                                                    gBean);
+                                    chatList.remove(gcBean);
+                                    adapter.notifyDataSetChanged();
+                                } else {
+                                    showToast("Sorry you dont have permission");
+                                }
+                            } else {
                                 SingleInstance
                                         .getGroupChatProcesser()
                                         .getQueue()
                                         .addObject(
                                                 gBean);
-                                chatList.remove(gcBean);
-                                adapter.notifyDataSetChanged();
-                            } else {
-                                showToast("Sorry you dont have permission");
-                            }
-                        } else {
-                            SingleInstance
-                                    .getGroupChatProcesser()
-                                    .getQueue()
-                                    .addObject(
-                                            gBean);
 //                            chatList.remove(gcBean);
-                            gcBean.setWithdrawn("1");
-                            gcBean.setMimetype("text");
-                            gcBean.setWithdraw(false);
+                                gcBean.setWithdrawn("1");
+                                gcBean.setMimetype("text");
+                                gcBean.setWithdraw(false);
 
-                            adapter.notifyDataSetChanged();
-                        }
-                        for (BuddyInformationBean bBean : ContactsFragment
-                                .getBuddyList()) {
-                            if (!bBean.isTitle()) {
-                                if (bBean.getName().equalsIgnoreCase(buddy)) {
-                                    bBean.setLastMessage(null);
-                                    ContactsFragment.getContactAdapter()
-                                            .notifyDataSetChanged();
-                                    break;
+                                adapter.notifyDataSetChanged();
+                            }
+                            for (BuddyInformationBean bBean : ContactsFragment
+                                    .getBuddyList()) {
+                                if (!bBean.isTitle()) {
+                                    if (bBean.getName().equalsIgnoreCase(buddy)) {
+                                        bBean.setLastMessage(null);
+                                        ContactsFragment.getContactAdapter()
+                                                .notifyDataSetChanged();
+                                        break;
+                                    }
                                 }
                             }
+
+
                         }
-
-
-                    }
-                });
-                xbutton.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                    });
+                    xbutton.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
 //                        GroupChatBean gcBean1=adapter.getItem(position);
-                        gcBean.setWithdraw(false);
-                        adapter.notifyDataSetChanged();
-
-                    }
-                });
-
-
-                if (gcBean.isWithdraw()) {
-                    withdraw.setVisibility(View.VISIBLE);
-                    xbutton.setVisibility(View.VISIBLE);
-                    mainlayout.setBackgroundColor(Color.parseColor("#3D2831"));
-                    withdraw.setTextColor(Color.parseColor("#99004c"));
-                    xbutton.setTextColor(Color.parseColor("#99004c"));
-                } else {
-                    if (gcBean.getWithdrawn() != null && gcBean.getWithdrawn().equals("1")) {
-                        message.setText("Message withdrawn");
-                    }
-                    withdraw.setVisibility(View.GONE);
-                    xbutton.setVisibility(View.GONE);
-                    mainlayout.setBackgroundColor(Color.parseColor("#3C3C3C"));
-                }
-//                Vector<BuddyInformationBean> getBuddyList=ContactsFragment.getBuddyList();
-                if (gcBean.getMimetype().equalsIgnoreCase("mixedfile")) {
-                    String[] fname = gcBean.getMediaName().split(",");
-                    chat_view.removeAllViews();
-                    View msg = inflater.inflate(R.layout.listaudiolayout, parent, false);
-//                    TextView tvview=new (TextView)msg.findViewById(R.id.sendtxt_time);
-                    message.setVisibility(View.GONE);
-                    TextView tv_prog = new TextView(GroupChatActivity.this);
-                    tv_prog.setText(gcBean.getMessage());
-                    chat_view.addView(tv_prog);
-                    for (int i = 0; i < fname.length; i++) {
-                        View holder;
-                        audioLayout.setVisibility(View.GONE);
-
-                        iconContainer.setVisibility(View.GONE);
-                        if (fname[i].split("COMMedia/")[1].endsWith("mp4")) {
-                            holder = inflater.inflate(R.layout.videochatlist, parent, false);
-                            ImageView receiver_multi_msg = (ImageView) holder.findViewById(R.id.receiver_multi_msg);
-                            TextView tv_pathname = (TextView) holder.findViewById(R.id.tv_pathname);
-                            tv_pathname.setText(fname[i].split("COMMedia/")[1]);
-                            receiver_multi_msg
-                                    .setImageResource(R.drawable.videoview1);
-                            final String path = fname[i];
-                            receiver_multi_msg.setOnClickListener(new OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    if (mPlayer != null && mPlayer.isPlaying())
-                                        mPlayer.stop();
-                                    Intent intent = new Intent(context, VideoPlayer.class);
-                                    intent.putExtra("video", path);
-                                    startActivity(intent);
-                                }
-                            });
-                        } else if (fname[i].split("COMMedia/")[1].endsWith("mp3")
-                                ||fname[i].split("COMMedia/")[1].endsWith("amr") ) {
-                            holder = inflater.inflate(R.layout.listaudiolayout, parent, false);
-                            SeekBar multiaudio_seekbar = (SeekBar) holder.findViewById(R.id.sendseekBar1);
-                            TextView tvview = (TextView) holder.findViewById(R.id.sendtxt_time);
-                            final ImageView multiplay_button = (ImageView) holder.findViewById(R.id.sendplay_button);
-                            View v = chat_view.getChildAt(i);
-                            multiplay_button.setTag(i);
-                            tvview.setTag(i);
-                            multiaudio_seekbar.setTag(i);
-                            final String path = fname[i];
-                            final int pos = i;
-                            Log.d("viwVlist", "count " + chat_view.getChildCount());
-
-                            multiplay_button.setOnClickListener(new OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    if (mPlayer.isPlaying()) {
-                                        mPlayer.pause();
-                                        multiplay_button.setBackgroundResource(R.drawable.audiopause);
-                                    } else {
-                                        multiplay_button.setBackgroundResource(R.drawable.play);
-                                        playAudio(path, position);
-                                    }
-                                    click = pos;
-
-                                }
-                            });
-                            if (click == i) {
-                                if (position == mPlayingPosition) {
-                                    int wantedPosition = position; // Whatever position you're looking for
-                                    int firstPosition = lv.getFirstVisiblePosition() - lv.getHeaderViewsCount(); // This is the same as child #0
-                                    int wantedChild = wantedPosition - firstPosition;
-                                    if (wantedChild < 0 || wantedChild >= lv.getChildCount()) {
-                                        Log.w("ddddd", "Unable to get view for desired position, because it's not being displayed on screen.");
-                                    }
-                                    View wantedView = chat_view.getChildAt(wantedChild);
-                                    Log.d("wantedview", "wantedChild  : " + wantedChild);
-                                    Log.d("wantedview", "on screen.  : " + wantedView);
-                                    //pb.setVisibility(View.VISIBLE);
-                                    mProgressUpdater.mBarToUpdate = multiaudio_seekbar;
-                                    mProgressUpdater.tvToUpdate = tvview;
-                                    mHandler.postDelayed(mProgressUpdater, 100);
-                                } else {
-
-                                }
-                            }
-                            try {
-                                multiaudio_seekbar.setProgress(0);
-                                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                                mmr.setDataSource(fname[i]);
-                                String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-                                mmr.release();
-                                String min, sec;
-                                min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration)));
-                                sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(Long.parseLong(duration)) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration))));
-                                if (Integer.parseInt(min) < 10) {
-                                    min = 0 + String.valueOf(min);
-                                }
-                                if (Integer.parseInt(sec) < 10) {
-                                    sec = 0 + String.valueOf(sec);
-                                }
-                                tvview.setText(min + ":" + sec);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
-                        } else if (fname[i].split("COMMedia/")[1].endsWith(".jpg")) {
-                            holder = inflater.inflate(R.layout.chatimagelistview, parent, false);
-                            ImageView receiver_multi_msg = (ImageView) holder.findViewById(R.id.receiver_multi_msg);
-                            TextView tv_pathname = (TextView) holder.findViewById(R.id.tv_pathname);
-                            tv_pathname.setText(fname[i].split("COMMedia/")[1]);
-                            imageViewer.display(fname[i],
-                                    receiver_multi_msg, R.drawable.refresh);
-                            final String path = fname[i];
-                            receiver_multi_msg.setOnClickListener(new OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    Intent intent = new Intent(context, FullScreenImage.class);
-                                    intent.putExtra("image", path);
-                                    startActivity(intent);
-                                }
-                            });
-                        } else {
-                            holder = inflater.inflate(R.layout.chatdocumentlistview, parent, false);
-                            TextView tv_pathname = (TextView) holder.findViewById(R.id.tv_pathname);
-                            tv_pathname.setText(fname[i].split("COMMedia/")[1]);
-                            final String path = fname[i];
-                            tv_pathname.setOnClickListener(new OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    FilesFragment.openFilesinExternalApp(path);
-                                }
-                            });
+                            gcBean.setWithdraw(false);
+                            adapter.notifyDataSetChanged();
 
                         }
-                        holder.setTag(gcBean);
-                        chat_view.addView(holder);
-                        chat_view.setVisibility(View.VISIBLE);
+                    });
+
+
+                    if (gcBean.isWithdraw()) {
+                        withdraw.setVisibility(View.VISIBLE);
+                        xbutton.setVisibility(View.VISIBLE);
+                        mainlayout.setBackgroundColor(Color.parseColor("#3D2831"));
+                        withdraw.setTextColor(Color.parseColor("#99004c"));
+                        xbutton.setTextColor(Color.parseColor("#99004c"));
+                    } else {
+                        if (gcBean.getWithdrawn() != null && gcBean.getWithdrawn().equals("1")) {
+                            message.setText("Message withdrawn");
+                        }
+                        withdraw.setVisibility(View.GONE);
+                        xbutton.setVisibility(View.GONE);
+                        mainlayout.setBackgroundColor(Color.parseColor("#3C3C3C"));
                     }
-                } else {
-                    chat_view.setVisibility(View.GONE);
+//                Vector<BuddyInformationBean> getBuddyList=ContactsFragment.getBuddyList();
+                    if (gcBean.getMimetype().equalsIgnoreCase("mixedfile")) {
+                        String[] fname = gcBean.getMediaName().split(",");
+                        chat_view.removeAllViews();
+                        View msg = inflater.inflate(R.layout.listaudiolayout, parent, false);
+//                    TextView tvview=new (TextView)msg.findViewById(R.id.sendtxt_time);
+                        message.setVisibility(View.GONE);
+                        TextView tv_prog = new TextView(GroupChatActivity.this);
+                        tv_prog.setText(gcBean.getMessage());
+                        chat_view.addView(tv_prog);
+                        for (int i = 0; i < fname.length; i++) {
+                            View holder;
+                            audioLayout.setVisibility(View.GONE);
+
+                            iconContainer.setVisibility(View.GONE);
+                            if (fname[i].split("COMMedia/")[1].endsWith("mp4")) {
+                                holder = inflater.inflate(R.layout.videochatlist, parent, false);
+                                ImageView receiver_multi_msg = (ImageView) holder.findViewById(R.id.receiver_multi_msg);
+                                TextView tv_pathname = (TextView) holder.findViewById(R.id.tv_pathname);
+                                tv_pathname.setText(fname[i].split("COMMedia/")[1]);
+                                receiver_multi_msg
+                                        .setImageResource(R.drawable.videoview1);
+                                final String path = fname[i];
+                                receiver_multi_msg.setOnClickListener(new OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        if (mPlayer != null && mPlayer.isPlaying())
+                                            mPlayer.stop();
+                                        Intent intent = new Intent(context, VideoPlayer.class);
+                                        intent.putExtra("video", path);
+                                        startActivity(intent);
+                                    }
+                                });
+                            } else if (fname[i].split("COMMedia/")[1].endsWith("mp3")
+                                    || fname[i].split("COMMedia/")[1].endsWith("amr")) {
+                                holder = inflater.inflate(R.layout.listaudiolayout, parent, false);
+                                SeekBar multiaudio_seekbar = (SeekBar) holder.findViewById(R.id.sendseekBar1);
+                                TextView tvview = (TextView) holder.findViewById(R.id.sendtxt_time);
+                                final ImageView multiplay_button = (ImageView) holder.findViewById(R.id.sendplay_button);
+                                View v = chat_view.getChildAt(i);
+                                multiplay_button.setTag(i);
+                                tvview.setTag(i);
+                                multiaudio_seekbar.setTag(i);
+                                final String path = fname[i];
+                                final int pos = i;
+                                Log.d("viwVlist", "count " + chat_view.getChildCount());
+
+                                multiplay_button.setOnClickListener(new OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        if (mPlayer.isPlaying()) {
+                                            mPlayer.pause();
+                                            multiplay_button.setBackgroundResource(R.drawable.audiopause);
+                                        } else {
+                                            multiplay_button.setBackgroundResource(R.drawable.play);
+                                            playAudio(path, position);
+                                        }
+                                        click = pos;
+
+                                    }
+                                });
+                                if (click == i) {
+                                    if (position == mPlayingPosition) {
+                                        int wantedPosition = position; // Whatever position you're looking for
+                                        int firstPosition = lv.getFirstVisiblePosition() - lv.getHeaderViewsCount(); // This is the same as child #0
+                                        int wantedChild = wantedPosition - firstPosition;
+                                        if (wantedChild < 0 || wantedChild >= lv.getChildCount()) {
+                                            Log.w("ddddd", "Unable to get view for desired position, because it's not being displayed on screen.");
+                                        }
+                                        View wantedView = chat_view.getChildAt(wantedChild);
+                                        Log.d("wantedview", "wantedChild  : " + wantedChild);
+                                        Log.d("wantedview", "on screen.  : " + wantedView);
+                                        //pb.setVisibility(View.VISIBLE);
+                                        mProgressUpdater.mBarToUpdate = multiaudio_seekbar;
+                                        mProgressUpdater.tvToUpdate = tvview;
+                                        mHandler.postDelayed(mProgressUpdater, 100);
+                                    } else {
+
+                                    }
+                                }
+                                try {
+                                    multiaudio_seekbar.setProgress(0);
+                                    MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                                    mmr.setDataSource(fname[i]);
+                                    String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                                    mmr.release();
+                                    String min, sec;
+                                    min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration)));
+                                    sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(Long.parseLong(duration)) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration))));
+                                    if (Integer.parseInt(min) < 10) {
+                                        min = 0 + String.valueOf(min);
+                                    }
+                                    if (Integer.parseInt(sec) < 10) {
+                                        sec = 0 + String.valueOf(sec);
+                                    }
+                                    tvview.setText(min + ":" + sec);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            } else if (fname[i].split("COMMedia/")[1].endsWith(".jpg")) {
+                                holder = inflater.inflate(R.layout.chatimagelistview, parent, false);
+                                ImageView receiver_multi_msg = (ImageView) holder.findViewById(R.id.receiver_multi_msg);
+                                TextView tv_pathname = (TextView) holder.findViewById(R.id.tv_pathname);
+                                tv_pathname.setText(fname[i].split("COMMedia/")[1]);
+                                imageViewer.display(fname[i],
+                                        receiver_multi_msg, R.drawable.refresh);
+                                final String path = fname[i];
+                                receiver_multi_msg.setOnClickListener(new OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent intent = new Intent(context, FullScreenImage.class);
+                                        intent.putExtra("image", path);
+                                        startActivity(intent);
+                                    }
+                                });
+                            } else {
+                                holder = inflater.inflate(R.layout.chatdocumentlistview, parent, false);
+                                TextView tv_pathname = (TextView) holder.findViewById(R.id.tv_pathname);
+                                tv_pathname.setText(fname[i].split("COMMedia/")[1]);
+                                final String path = fname[i];
+                                tv_pathname.setOnClickListener(new OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        FilesFragment.openFilesinExternalApp(path);
+                                    }
+                                });
+
+                            }
+                            holder.setTag(gcBean);
+                            chat_view.addView(holder);
+                            chat_view.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        chat_view.setVisibility(View.GONE);
+                    }
                 }
             } catch (Exception e) {
                 // TODO Auto-generated catch block

@@ -25,6 +25,8 @@ public class RecordTransactionBean {
    private String host;
     private String participants;
     private String disableVideo;
+	private String callstatus;
+	private String chatid;
 
 	public String getFromName() {
 		return fromName;
@@ -184,4 +186,20 @@ public class RecordTransactionBean {
     public void setDisableVideo(String disableVideo) {
         this.disableVideo = disableVideo;
     }
+
+	public String getChatid() {
+		return chatid;
+	}
+
+	public void setChatid(String chatid) {
+		this.chatid = chatid;
+	}
+
+	public String getCallstatus() {
+		return callstatus;
+	}
+
+	public void setCallstatus(String callstatus) {
+		this.callstatus = callstatus;
+	}
 }

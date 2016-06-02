@@ -16,6 +16,7 @@ public class NotifyListBean{
     private int viewed=0;
     private String fileid =null;
     private String username="";
+    private String category = "";
 
     public String getIndinvite() {
         return Indinvite;
@@ -46,15 +47,13 @@ public class NotifyListBean{
 
     private String profilePic = "";
 
-    public String getFristname() {
-        return Fristname;
+    public String getCategory() {
+        return category;
     }
 
-    public void setFristname(String fristname) {
-        Fristname = fristname;
+    public void setCategory(String category) {
+        this.category = category;
     }
-
-    private String Fristname = "";
 
     public String getSetStatus() {
         return setStatus;

@@ -33,7 +33,9 @@ import com.bean.NotifyListBean;
 import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
 import com.cg.callservices.AudioCallScreen;
+import com.cg.callservices.CallConnectingScreen;
 import com.cg.callservices.VideoCallScreen;
+import com.cg.callservices.inCommingCallAlert;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.DateComparator;
 import com.cg.files.CompleteListBean;
@@ -181,6 +183,32 @@ public class DashBoardFragment extends Fragment {
                 public void onClick(View v) {
                     mainHeader.setVisibility(View.GONE);
                     addShowHideListener(VideoCallScreen.getInstance(SingleInstance.mainContext));
+                }
+            });
+            ImageView min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
+            ImageView min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
+            min_incall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mainHeader.setVisibility(View.GONE);
+                    inCommingCallAlert incommingCallAlert = inCommingCallAlert.getInstance(SingleInstance.mainContext);
+                    FragmentManager fragmentManager = SingleInstance.mainContext
+                            .getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(
+                            R.id.activity_main_content_fragment, incommingCallAlert)
+                            .commitAllowingStateLoss();
+                }
+            });
+            min_outcall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mainHeader.setVisibility(View.GONE);
+                    CallConnectingScreen callConnectingScreen = CallConnectingScreen.getInstance(SingleInstance.mainContext);
+                    FragmentManager fragmentManager = SingleInstance.mainContext
+                            .getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(
+                            R.id.activity_main_content_fragment, callConnectingScreen)
+                            .commitAllowingStateLoss();
                 }
             });
             final AppMainActivity appMainActivity = (AppMainActivity) SingleInstance.contextTable
@@ -743,12 +771,14 @@ public class DashBoardFragment extends Fragment {
                     Log.i("AAAA","NOTIFY LIST from user "+nBean.getNotifttype()+" , "+nBean.getSortdate()+" , "+nBean.getFrom());
                     Log.d("AAAA", "Notifyid" + nBean.getFileid());
                     if(nBean.getViewed()==0 && nBean.getNotifttype().equals("I")) {
-                        ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
-                        nBean.setProfilePic(pBean.getPhoto());
-                        if(pBean!=null)
-                            nBean.setUsername(pBean.getFirstname()+" "+pBean.getLastname());
-                        tempnotifylist.add(nBean);
-                        seacrhnotifylist.add(nBean);
+                        if(!nBean.getCategory().equalsIgnoreCase("call")) {
+                            ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+                            nBean.setProfilePic(pBean.getPhoto());
+                            if (pBean != null)
+                                nBean.setUsername(pBean.getFirstname() + " " + pBean.getLastname());
+                            tempnotifylist.add(nBean);
+                            seacrhnotifylist.add(nBean);
+                        }
                     }
                 }
             } else if (setType.equals("ll_call")) {

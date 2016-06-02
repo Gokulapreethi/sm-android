@@ -281,6 +281,10 @@ public class XmlParser {
 				sb.setCallSubType(nodeMap.getNamedItem("callsubtype")
 						.getNodeValue());
 			}
+			if (nodeMap.getNamedItem("chatid") != null) {
+				sb.setChatid(nodeMap.getNamedItem("chatid")
+						.getNodeValue());
+			}
 			/*
 			 * 04-19 16:46:43.940: D/XML_PARSER(7285): SignalBean Parser : <?xml
 			 * version="1.0"?><com result="0" type="0"><tl from="amuthanind"

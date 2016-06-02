@@ -47,6 +47,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.telecom.Call;
 import android.util.Base64;
 import android.util.Log;
 
@@ -128,7 +129,7 @@ public class DBAccess extends SQLiteOpenHelper {
 	String user_services = "create table if not exists UserServices(Id INTEGER PRIMARY KEY AUTOINCREMENT,servicename nvarchar(30),serviceid nvarchar(30))";
 	String create_group = "create table if not exists grouplist(id INTEGER PRIMARY KEY AUTOINCREMENT, groupid int(100), groupname varchar(225),groupowner varchar(100), createddate varchar(45), modifieddate varchar(45),username varchar(45),lastmsg varchar(100),category varchar(25),recentdate varchar(100),groupdescription varchar(100),groupicon varchar(200),grouptype varchar(45),adminmembers varchar(255))";
 	String create_group_members = "create table if not exists groupdetails(id INTEGER PRIMARY KEY AUTOINCREMENT, groupid int(100), active_members varchar(255), inactive_members varchar(255), createddate varchar(45) NOT NULL, modifieddate varchar(45) NOT NULL,groupowner varchar(100) NOT NULL,username varchar(45) NOT NULL,groupdescription varchar(100),groupicon varchar(200),invitemembers varchar(100),grouptype varchar(45), adminmembers varchar(255))";
-	String chat = "create table if not exists chat(id INTEGER PRIMARY KEY AUTOINCREMENT, category varchar(20), subcategory varchar(45), groupid int(100), username varchar(100), mimetype varchar(45), fromuser varchar(100), touser varchar(100), message varchar(200), media varchar(200), ftpusername varchar(100), ftppassword varchar(100), sessionid varchar(200), signalid varchar(200) unique, senttime varchar(200), senttimezone varchar(200),privatemembers varchar(200),parentid varchar(200),remindertime varchar(200),status tinyint(1),unreadstatus tinyint(1), thumb tinyint(1) DEFAULT 0,reply varchar(20),replied varchar(20),confirm varchar(20),urgent varchar(20),unview varchar(20),withdrawn varchar(20))";
+	String chat = "create table if not exists chat(id INTEGER PRIMARY KEY AUTOINCREMENT, category varchar(20), subcategory varchar(45), groupid int(100), username varchar(100), mimetype varchar(45), fromuser varchar(100), touser varchar(100), message varchar(200), media varchar(200), ftpusername varchar(100), ftppassword varchar(200), sessionid varchar(200), signalid varchar(200) unique, senttime varchar(200), senttimezone varchar(200),privatemembers varchar(200),parentid varchar(200),remindertime varchar(200),status tinyint(1),unreadstatus tinyint(1), thumb tinyint(1) DEFAULT 0,reply varchar(20),replied varchar(20),confirm varchar(20),urgent varchar(20),unview varchar(20),withdrawn varchar(20))";
 	String imchat = "create table if not exists imchat(id INTEGER PRIMARY KEY AUTOINCREMENT, groupid int(100), groupname varchar(225),groupowner varchar(100), createddate varchar(45), modifieddate varchar(45),username varchar(45),lastmsg varchar(100),category varchar(25),recentdate varchar(100))";
 	String schedulemsg = "create table if not exists schedulemsg(id INTEGER PRIMARY KEY AUTOINCREMENT, category varchar(20), subcategory varchar(45), groupid int(100), username varchar(100), mimetype varchar(45), fromuser varchar(100), touser varchar(100), message varchar(200), media varchar(200), ftpusername varchar(100), ftppassword varchar(100), sessionid varchar(200), signalid varchar(200), senttime varchar(200), senttimezone varchar(200),privatemembers varchar(200))";
 	String uploaddownload = "create table if not exists uploaddownload(id INTEGER PRIMARY KEY AUTOINCREMENT, username varchar(100), media varchar(200), ftpusername varchar(100), ftppassword varchar(100), status tinyint(2), operations varchar(50),modules varchar(50),othervalues varchar(100))";
@@ -138,7 +139,7 @@ public class DBAccess extends SQLiteOpenHelper {
 	String autoacceptcalls = "create table if not exists autoacceptcalls(owner nvarchar(255), username nvarchar(255),flag nvarchar(25))";
 	String scheduleevent = "create table if not exists scheduleevent(owner nvarchar(255), title nvarchar(255), starttime nvarchar(225), endtime nvarchar(255), eventdate nvarchar(255))";
 	String securityquestions = "create table if not exists securityquestions(id tinyint(4), questions nvarchar(225), createddate nvarchar(255))";
-    String recordtransactiondetails = "create table if not exists recordtransactiondetails(id INTEGER PRIMARY KEY AUTOINCREMENT, fromname nvarchar(100), toname nvarchar(100),parentid nvarchar(250), sessionid nvarchar(250), type nvarchar(100), starttime nvarchar(100), endtime nvarchar(100), calltime nvarchar(100), userid nvarchar(100), network nvarchar(50), deviceos nvarchar(50),recordedfile nvarchar(100), calltype nvarchar(100),bs_calltype tinyint(4),bs_callstatus tinyint(4),bs_callcategory tinyint(4),sortdate nvarchar(100),status tinyint(4))";
+    String recordtransactiondetails = "create table if not exists recordtransactiondetails(id INTEGER PRIMARY KEY AUTOINCREMENT, fromname nvarchar(100), toname nvarchar(100),parentid nvarchar(250), sessionid nvarchar(250), type nvarchar(100), starttime nvarchar(100), endtime nvarchar(100), calltime nvarchar(100), userid nvarchar(100), network nvarchar(50), deviceos nvarchar(50),recordedfile nvarchar(100), calltype nvarchar(100),bs_calltype tinyint(4),bs_callstatus tinyint(4),bs_callcategory tinyint(4),sortdate nvarchar(100),status tinyint(4),activecallstatus nvarchar(100),chatid nvarchar(100),host varchar(100), participants varchar(256))";
 	String chattemplate = "create table if not exists chattemplate(id varchar(10), message nvarchar(225))";
 	String serverhelp = "create table if not exists serverhelp(method varchar(100), lastmodified nvarchar(225))";
 	String roundingmemberdetails = "create table if not exists roundingmemberdetails(groupid nvarchar(25),membername nvarchar(25),role nvarchar(25),admin nvarchar(25))";
@@ -7250,7 +7251,7 @@ public class DBAccess extends SQLiteOpenHelper {
 				openDatabase();
 			String query = "";
 			if (group)
-				query = "select * from chat where unview!='1' and groupid='" + groupid
+				query = "select * from chat where groupid='" + groupid
 						+ "' and username ='" + CallDispatcher.LoginUser + "'";
 			Log.i("group123", "query : " + query);
 			cur = db.rawQuery(query, null);
@@ -8560,9 +8561,6 @@ public class DBAccess extends SQLiteOpenHelper {
 			} else {
 				cv.put("parentid", "");
 			}
-			//if (sb.getSessionid() != null) {
-		//		cv.put("sessionid", sb.getSessionid());
-	//		}
 			if (sb.getType() != null) {
 				cv.put("type", sb.getType());
 			}
@@ -8601,7 +8599,12 @@ public class DBAccess extends SQLiteOpenHelper {
 			if (sb.getCallDuration() != null) {
 				cv.put("calltime", sb.getCallDuration());
 			}
-
+			if(sb.getChatid() !=null){
+				cv.put("chatid",sb.getChatid());
+			}
+			if(sb.getCallstatus() !=null){
+				cv.put("activecallstatus",sb.getCallstatus());
+			}
 			if (sb.getBs_calltype() != null) {
 				cv.put("bs_calltype", sb.getBs_calltype());
 			}
@@ -8614,7 +8617,17 @@ public class DBAccess extends SQLiteOpenHelper {
 			if (sb.getEndTime() != null) {
 				cv.put("sortdate", sb.getEndTime());
 			}
+			if(sb.getCallstatus().equalsIgnoreCase("missedcall"))
 				cv.put("status", "0");
+			else
+				cv.put("status", "1");
+            if(sb.getHost() != null){
+				cv.put("host", sb.getHost());
+			}
+
+			if(sb.getParticipants() != null){
+				cv.put("participants",sb.getParticipants());
+			}
 
 			if (isRecordExists("select * from recordtransactiondetails where parentid = '"
 					+ sb.getBs_parentid()
@@ -8861,6 +8874,12 @@ public class DBAccess extends SQLiteOpenHelper {
 				hDetails.setCalltype(cur.getString(13));
 				Log.i("CH", "CallType :" + cur.getString(13));
 				hDetails.setSessionid(cur.getString(4));
+				if(cur.getString(21) != null) {
+					hDetails.setHost(cur.getString(21));
+				}
+				if(cur.getString(22) != null) {
+					hDetails.setParticipants(cur.getString(22));
+				}
 
 				list.add(hDetails);
 				cur.moveToNext();
@@ -9285,11 +9304,11 @@ public class DBAccess extends SQLiteOpenHelper {
 		Cursor cur = null;
 		Vector<NotifyListBean> filesList = new Vector<NotifyListBean>();
 		try {
-			String strquery="SELECT fromuser as fromuser, touser as touser, owner as owner, componenttype as type, ftppath as content, reminderdateandtime as media, receiveddateandtime as sortdate, coalesce(null, 'F') as notifytype, viewmode as viewed, componentid as ID FROM component WHERE owner='"+username+"'\n" +
+			String strquery="SELECT fromuser as fromuser, touser as touser, owner as owner, componenttype as type, ftppath as content, reminderdateandtime as media, receiveddateandtime as sortdate, coalesce(null, 'F') as notifytype, viewmode as viewed, componentid as ID,comment as category FROM component WHERE owner='"+username+"'\n" +
 					"UNION ALL\n" +
-					"SELECT fromname as fromuser, toname as touser, userid as owner, calltype as type, calltime as content, recordedfile as media, sortdate as sortdate, coalesce(null, 'C') as notifytype, status as viewed, sessionid as ID FROM recordtransactiondetails WHERE userid='"+username+"'\n" +
+					"SELECT fromname as fromuser, toname as touser, userid as owner, calltype as type, calltime as content, recordedfile as media, sortdate as sortdate, coalesce(null, 'C') as notifytype, status as viewed, sessionid as ID,chatid as category FROM recordtransactiondetails WHERE userid='"+username+"'\n" +
 					"UNION ALL\n" +
-					"SELECT fromuser as fromuser, touser as touser, username as owner, mimetype as type, message as content, media as media, senttime as sortdate, coalesce(null, 'I') as notifytype, unreadstatus as viewed, groupid as ID FROM chat WHERE username='"+username+"';";
+					"SELECT fromuser as fromuser, touser as touser, username as owner, mimetype as type, message as content, media as media, senttime as sortdate, coalesce(null, 'I') as notifytype, unreadstatus as viewed, groupid as ID,category as category FROM chat WHERE username='"+username+"';";
 
 			if (!db.isOpen()) {
 				openDatabase();
@@ -9309,6 +9328,7 @@ public class DBAccess extends SQLiteOpenHelper {
 				nBean.setNotifttype(cur.getString(7));
 				nBean.setViewed(cur.getInt(8));
 				nBean.setFileid(cur.getString(9));
+				nBean.setCategory(cur.getString(10));
 
 				cur.moveToNext();
 				filesList.add(nBean);
@@ -10715,7 +10735,7 @@ public class DBAccess extends SQLiteOpenHelper {
 		try {
 			ContentValues cv = new ContentValues();
 
-			if (isRecordExists("select * from chatinfo where sid='"+ sid + "' and members='"+ members + "'")){
+			if (isRecordExists("select * from chatinfo where sid='" + sid + "' and members='" + members + "'")){
 				cv.put("members", members);
 				cv.put("status", status);
 				cv.put("datetime", date);
@@ -11035,6 +11055,50 @@ public class DBAccess extends SQLiteOpenHelper {
 				e.printStackTrace();
 		}
 		return groupChatList;
+	}
+	public void updateCallStatus(String signalID){
+		try {
+			String s = "update recordtransactiondetails set activecallstatus='callattended' where signalid='" + signalID + "'";
+			Log.d("abcdef","SQL => "+s);
+			db.execSQL(s);
+		}catch(Exception e){
+			Log.d("abcdef","novalue in DB for "+signalID+" returns with error "+e.toString());
+		}
+	}
+	public int insertGroupCallChat(SignalingBean groupChatBean) {
+		int row = 0;
+		try {
+			if (!db.isOpen())
+				openDatabase();
+			ContentValues cv = new ContentValues();
+			cv.put("category", "call");
+			cv.put("groupid", groupChatBean.getChatid());
+			cv.put("fromuser", groupChatBean.getFrom());
+			cv.put("touser", groupChatBean.getTo());
+			cv.put("message", groupChatBean.getCallType());
+			cv.put("ftpusername", groupChatBean.getHost());
+			cv.put("sessionid", groupChatBean.getSessionid());
+			cv.put("senttime", groupChatBean.getEndTime());
+			cv.put("username", CallDispatcher.LoginUser);
+			cv.put("ftppassword", groupChatBean.getParticipants());
+			cv.put("remindertime", groupChatBean.getCallDuration());
+			cv.put("subcategory", groupChatBean.getCallstatus());
+			if (isRecordExists("select * from chat where signalid='"
+					+ groupChatBean.getSessionid() + "'")) {
+				row = (int) db.update("chat", cv,
+						"signalid='" + groupChatBean.getSessionid() + "'", null);
+			} else {
+				row = (int) db.insert("chat", null, cv);
+			}
+			return row;
+		} catch (Exception e) {
+			if (AppReference.isWriteInFile)
+				AppReference.logger.error(e.getMessage(), e);
+			else
+				e.printStackTrace();
+			return 0;
+		}
+
 	}
 
 

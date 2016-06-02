@@ -183,10 +183,11 @@ public class CallHistoryActivity extends Activity {
 						query = "select * from recordtransactiondetails where sessionid='"
 								+ sessionId + "'";
 
+		                int pos=0;
 						Log.i("CH", "Query" + query);
 						mlist = DBAccess.getdbHeler().getcallhistorydetails(query);
 						RecordTransactionBean recordTransactionBean = mlist
-								.get(position);
+								.get(pos);
 
 						if (recordTransactionBean.getCalltype() != null) {
 							String callType = "";

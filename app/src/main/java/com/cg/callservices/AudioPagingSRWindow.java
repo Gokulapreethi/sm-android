@@ -380,6 +380,7 @@ public class AudioPagingSRWindow extends Activity {
 			CallDispatcher.conferenceMembers.clear();
 			objCallDispatcher.isHangUpReceived = false;
 			if (selfHangup) {
+				CallDispatcher.sb.setCallstatus("callattended");
 				DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
 						CallDispatcher.sb);
 				Intent intentComponent = new Intent(context,
@@ -407,12 +408,6 @@ public class AudioPagingSRWindow extends Activity {
 			objCallDispatcher.stopRingTone();
 
 			objCallDispatcher.startPlayer(context);
-
-			if (WebServiceReferences.contextTable.containsKey("connection")) {
-				CallConnectingScreen screen = (CallConnectingScreen) WebServiceReferences.contextTable
-						.get("connection");
-				screen.finish();
-			}
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -1183,9 +1178,9 @@ public class AudioPagingSRWindow extends Activity {
 													CallDispatcher.sb
 															.getEndTime()));
 									if (selfHangup) {
-										
-										
-										
+
+
+										CallDispatcher.sb.setCallstatus("callattended");
 										DBAccess.getdbHeler()
 												.saveOrUpdateRecordtransactiondetails(
 														(SignalingBean)CallDispatcher.sb.clone());

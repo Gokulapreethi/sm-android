@@ -2038,137 +2038,142 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			Log.d("Test", "Inside LogoutAppmain");
 			isPinEnable=false;
 			if (CallDispatcher.LoginUser != null) {
-                CommunicationBean bean = new CommunicationBean();
+				if(!CallDispatcher.isCallInitiate) {
+					AppMainActivity appMainActivity = (AppMainActivity) SingleInstance.contextTable
+							.get("MAIN");
+					appMainActivity.showprogress();
+					CommunicationBean bean = new CommunicationBean();
 //                bean.setOperationType(SipCommunicator.sip_operation_types.SIGNOUT_ACCOUNT);
 //                AppReference.sipQueue.addMsg(bean);
-                Log.d("droid123", "SF SIP Signout");
-				if (AppReference.isWriteInFile)
-					AppReference.logger.debug("LOGOUT : Inside LOGOUT TRUE");
-				stopHeartBeatTimer();
-				String username = CallDispatcher.LoginUser;
-				CallDispatcher.LoginUser = null;
-				changeLoginButton();
-                isLogin = false;
-				ChatFTPBean chatFTPBean = new ChatFTPBean();
-				chatFTPBean.setOperation("CANCELNOTIFY");
-				FTPPoolManager.processRequest(chatFTPBean);
-                FTPQueue obj =new FTPQueue();
-                if(obj.getSize()>0)
-                {
-                    Log.d("ABCD", "Queuw LogoutAppmain"+obj.getSize());
-                    obj.makeEmptyQueue();
-                    NotificationManager notifManager= (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                    notifManager.cancelAll();
-                }
-				if (status) {
-					SingleInstance.printLog("Signin", "SINOUT Respone send",
-							"INFO", null);
-					WebServiceReferences.webServiceClient.siginout(username);
-				} else {
-
+					Log.d("droid123", "SF SIP Signout");
 					if (AppReference.isWriteInFile)
-						AppReference.logger
-								.debug("LOGOUT : Inside LOGOUT FALSE");
-					cancelDialog();
-					callDisp.dissableUserSettings();
-					SingleInstance.printLog("Signin", "Inside else in logout",
-							"INFO", null);
-					if (callDisp.gpsloc != null) {
-						callDisp.gpsloc.Stop();
+						AppReference.logger.debug("LOGOUT : Inside LOGOUT TRUE");
+					stopHeartBeatTimer();
+					String username = CallDispatcher.LoginUser;
+					CallDispatcher.LoginUser = null;
+					changeLoginButton();
+					isLogin = false;
+					ChatFTPBean chatFTPBean = new ChatFTPBean();
+					chatFTPBean.setOperation("CANCELNOTIFY");
+					FTPPoolManager.processRequest(chatFTPBean);
+					FTPQueue obj = new FTPQueue();
+					if (obj.getSize() > 0) {
+						Log.d("ABCD", "Queuw LogoutAppmain" + obj.getSize());
+						obj.makeEmptyQueue();
+						NotificationManager notifManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+						notifManager.cancelAll();
 					}
+					if (status) {
+						SingleInstance.printLog("Signin", "SINOUT Respone send",
+								"INFO", null);
+						WebServiceReferences.webServiceClient.siginout(username);
+					} else {
+
+						if (AppReference.isWriteInFile)
+							AppReference.logger
+									.debug("LOGOUT : Inside LOGOUT FALSE");
+						cancelDialog();
+						callDisp.dissableUserSettings();
+						SingleInstance.printLog("Signin", "Inside else in logout",
+								"INFO", null);
+						if (callDisp.gpsloc != null) {
+							callDisp.gpsloc.Stop();
+						}
 
 //					if (WebServiceReferences.contextTable
 //							.containsKey("alertscreen")) {
 //						((inCommingCallAlert) SingleInstance.contextTable
 //								.get("alertscreen")).finish();
 //					}
-					WebServiceReferences.missedcallCount.clear();
-					callDisp.destroySIPStack();
-					callDisp.profilePicturepath = "";
-					if (CallDispatcher.isIncomingCall) {
-						CallDispatcher.isIncomingCall = false;
-					}
-					if (ftpNotifier != null)
-						ftpNotifier.shutDowntaskmanager();
-					ftpNotifier = null;
+						WebServiceReferences.missedcallCount.clear();
+						callDisp.destroySIPStack();
+						callDisp.profilePicturepath = "";
+						if (CallDispatcher.isIncomingCall) {
+							CallDispatcher.isIncomingCall = false;
+						}
+						if (ftpNotifier != null)
+							ftpNotifier.shutDowntaskmanager();
+						ftpNotifier = null;
 
-					callDisp.cancelDownloadSchedule();
-					callDisp.stopRingTone();
-					// if (WebServiceReferences.buddyList != null) {
-					// if (WebServiceReferences.buddyList.size() > 0) {
-					// WebServiceReferences.buddyList.clear();
-					// }
-					// }
-					// if (callDisp.mainbuddylist != null)
-					// callDisp.mainbuddylist.clear();
-					// CallDispatcher.adapterToShow.notifyDataSetChanged();
-					// if (callDisp.pendinglist != null)
-					// callDisp.pendinglist.clear();
+						callDisp.cancelDownloadSchedule();
+						callDisp.stopRingTone();
+						// if (WebServiceReferences.buddyList != null) {
+						// if (WebServiceReferences.buddyList.size() > 0) {
+						// WebServiceReferences.buddyList.clear();
+						// }
+						// }
+						// if (callDisp.mainbuddylist != null)
+						// callDisp.mainbuddylist.clear();
+						// CallDispatcher.adapterToShow.notifyDataSetChanged();
+						// if (callDisp.pendinglist != null)
+						// callDisp.pendinglist.clear();
 
-					// if (WebServiceReferences.tempBuddyList != null) {
-					// if (WebServiceReferences.tempBuddyList.size() > 0) {
-					// WebServiceReferences.tempBuddyList.clear();
-					// }
-					// }
-					if (!callDisp.isKeepAliveSendAfter6Sec) {
-						handler.removeCallbacks(callDisp.hb_runnable);
+						// if (WebServiceReferences.tempBuddyList != null) {
+						// if (WebServiceReferences.tempBuddyList.size() > 0) {
+						// WebServiceReferences.tempBuddyList.clear();
+						// }
+						// }
+						if (!callDisp.isKeepAliveSendAfter6Sec) {
+							handler.removeCallbacks(callDisp.hb_runnable);
+							callDisp.isKeepAliveSendAfter6Sec = false;
+						}
+						WebServiceReferences.webServiceClient.stop();
+						WebServiceReferences.running = false;
+						if (AppMainActivity.commEngine != null) {
+							AppMainActivity.commEngine.stop();
+						}
+						AppMainActivity.commEngine = null;
+						CallDispatcher.LoginUser = null;
+						callDisp.ipaddress = null;
+						// callDisp.mainbuddylist.clear();
+						CallDispatcher.members.clear();
+						CallDispatcher.reminderArrives = false;
 						callDisp.isKeepAliveSendAfter6Sec = false;
-					}
-					WebServiceReferences.webServiceClient.stop();
-					WebServiceReferences.running = false;
-					if (AppMainActivity.commEngine != null) {
-						AppMainActivity.commEngine.stop();
-					}
-					AppMainActivity.commEngine = null;
-					CallDispatcher.LoginUser = null;
-					callDisp.ipaddress = null;
-					// callDisp.mainbuddylist.clear();
-					CallDispatcher.members.clear();
-					CallDispatcher.reminderArrives = false;
-					callDisp.isKeepAliveSendAfter6Sec = false;
-					CallDispatcher.conferenceMembers.clear();
-					callDisp.bitmap_table.clear();
+						CallDispatcher.conferenceMembers.clear();
+						callDisp.bitmap_table.clear();
 
-					if (HBT != null) {
-						stopHeartBeatTimer();
-					}
-					// removeMemory();
-					LoginPageFragment loginPageFragment = LoginPageFragment
-							.newInstance(context);
-					loginPageFragment.setSilentLogin(false);
-					FragmentManager fragmentManager = getSupportFragmentManager();
-					FragmentTransaction fragmentTransaction = fragmentManager
-							.beginTransaction();
-					fragmentTransaction.replace(
-							R.id.activity_main_content_fragment,
-							loginPageFragment, "loginfragment");
-					fragmentTransaction.commit();
-					removeFragments(ContactsFragment.getInstance(context));
+						if (HBT != null) {
+							stopHeartBeatTimer();
+						}
+						// removeMemory();
+						LoginPageFragment loginPageFragment = LoginPageFragment
+								.newInstance(context);
+						loginPageFragment.setSilentLogin(false);
+						FragmentManager fragmentManager = getSupportFragmentManager();
+						FragmentTransaction fragmentTransaction = fragmentManager
+								.beginTransaction();
+						fragmentTransaction.replace(
+								R.id.activity_main_content_fragment,
+								loginPageFragment, "loginfragment");
+						fragmentTransaction.commit();
+						removeFragments(ContactsFragment.getInstance(context));
 
-					removeFragments(ExchangesFragment.newInstance(context));
-					removeFragments(CreateProfileFragment.newInstance(context));
-					removeFragments(ViewProfileFragment.newInstance(context));
-					removeFragments(UtilityFragment.newInstance(context));
-					removeFragments(FilesFragment.newInstance(context));
-					removeFragments(AppsViewFragment.newInstance(context));
-					removeFragments(AvatarFragment.newInstance(context));
-					removeFragments(QuickActionFragment.newInstance(context));
-					removeFragments(FormsFragment.newInstance(context));
-					removeFragments(MyAccountFragment.newInstance(context));
-					removeFragments(SearchPeopleFragment.newInstance(context));
-					removeFragments(DashBoardFragment.newInstance(context));
-					removeFragments(CallHistoryFragment.newInstance(context));
-					removeFragments(CalendarFragment.newInstance(context));
-					removeFragments(InviteUserFragment.newInstance(context));
-					removeFragments(FindPeople.newInstance(context));
-					removeFragments(SecurityQuestions.newInstance(context));
-					removeFragments(RequestFragment.newInstance(context));
-					removeFragments(PinAndTouchId.newInstance(context));
-					removeFragments(ChangePassword.newInstance(context));
-				}
-				FTPPoolManager.closeChatFTP();
+						removeFragments(ExchangesFragment.newInstance(context));
+						removeFragments(CreateProfileFragment.newInstance(context));
+						removeFragments(ViewProfileFragment.newInstance(context));
+						removeFragments(UtilityFragment.newInstance(context));
+						removeFragments(FilesFragment.newInstance(context));
+						removeFragments(AppsViewFragment.newInstance(context));
+						removeFragments(AvatarFragment.newInstance(context));
+						removeFragments(QuickActionFragment.newInstance(context));
+						removeFragments(FormsFragment.newInstance(context));
+						removeFragments(MyAccountFragment.newInstance(context));
+						removeFragments(SearchPeopleFragment.newInstance(context));
+						removeFragments(DashBoardFragment.newInstance(context));
+						removeFragments(CallHistoryFragment.newInstance(context));
+						removeFragments(CalendarFragment.newInstance(context));
+						removeFragments(InviteUserFragment.newInstance(context));
+						removeFragments(FindPeople.newInstance(context));
+						removeFragments(SecurityQuestions.newInstance(context));
+						removeFragments(RequestFragment.newInstance(context));
+						removeFragments(PinAndTouchId.newInstance(context));
+						removeFragments(ChangePassword.newInstance(context));
+					}
+					FTPPoolManager.closeChatFTP();
 //				imageLoader.DisplayImage("", profileImage,
 //						R.drawable.icon_buddy_aoffline);
+				}else
+				showToast("Please try..Call is in progress");
 
 			} else {
 
@@ -5112,9 +5117,8 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 						}
 					}
-					if (WebServiceReferences.contextTable
-							.containsKey("connection"))
-						((CallConnectingScreen) WebServiceReferences.contextTable
+					if (SingleInstance.instanceTable.containsKey("connection"))
+						((CallConnectingScreen) SingleInstance.instanceTable
 								.get("connection")).HangupCall();
 
 					showprogress();
@@ -7763,7 +7767,6 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
                         fragment = SettingsFragment.newInstance(context);
                         break;
                     case 7:
-                        appMainActivity.showprogress();
                         appMainActivity.logout(true);
                         break;
 					case 8:
@@ -8162,11 +8165,6 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		{
 			GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
 			groupChatActivity.finish();
-		}
-
-		if (WebServiceReferences.contextTable.containsKey("connection")) {
-			CallConnectingScreen connectingScreen = (CallConnectingScreen)WebServiceReferences.contextTable.get("connection");
-			connectingScreen.finish();
 		}
 
 		if (WebServiceReferences.contextTable.containsKey("ordermenuactivity")) {

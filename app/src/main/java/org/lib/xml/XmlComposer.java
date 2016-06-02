@@ -476,6 +476,10 @@ public class XmlComposer {
 					+ quotes);
 		}
 
+		if(sb.getChatid() != null){
+			buffer.append(" chatid=" + quotes + sb.getChatid()
+					+ quotes);
+		}
 		if (sb.getGmember() != null) {
 			buffer.append(" gmember=" + quotes + sb.getGmember() + quotes);
 		}

@@ -35,7 +35,9 @@ import com.bean.ProfileBean;
 import com.cg.account.MyAccountActivity;
 import com.cg.account.TermsAndAgreement;
 import com.cg.callservices.AudioCallScreen;
+import com.cg.callservices.CallConnectingScreen;
 import com.cg.callservices.VideoCallScreen;
+import com.cg.callservices.inCommingCallAlert;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.hostedconf.AppReference;
@@ -155,6 +157,32 @@ public class MyAccountFragment extends Fragment {
                 public void onClick(View v) {
                     mainHeader.setVisibility(View.GONE);
                     addShowHideListener(false);
+                }
+            });
+            ImageView min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
+            ImageView min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
+            min_incall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mainHeader.setVisibility(View.GONE);
+                    inCommingCallAlert incommingCallAlert = inCommingCallAlert.getInstance(SingleInstance.mainContext);
+                    FragmentManager fragmentManager = SingleInstance.mainContext
+                            .getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(
+                            R.id.activity_main_content_fragment, incommingCallAlert)
+                            .commitAllowingStateLoss();
+                }
+            });
+            min_outcall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mainHeader.setVisibility(View.GONE);
+                    CallConnectingScreen callConnectingScreen = CallConnectingScreen.getInstance(SingleInstance.mainContext);
+                    FragmentManager fragmentManager = SingleInstance.mainContext
+                            .getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(
+                            R.id.activity_main_content_fragment, callConnectingScreen)
+                            .commitAllowingStateLoss();
                 }
             });
             plusBtn.setOnClickListener(new View.OnClickListener() {

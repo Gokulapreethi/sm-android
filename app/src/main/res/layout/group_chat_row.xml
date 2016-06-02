@@ -30,7 +30,8 @@
         android:layout_width="wrap_content"
         android:layout_below="@+id/viewtoday"
         android:layout_toRightOf="@+id/selectInvidual_buddy"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:visibility="gone">
 
         <RelativeLayout
             android:id="@+id/sender_view"
@@ -857,6 +858,58 @@
             android:layout_alignParentBottom="true"
             android:textSize="18dp"
             android:visibility="visible"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/join_lay"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@+id/normalcontainer"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="visible"
+        android:background="@color/darkpink">
+        <ImageView
+            android:id="@+id/call_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/icon_missed_call"
+            />
+        <TextView
+            android:id="@+id/tv_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="username"
+            android:layout_marginTop="10dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:layout_toRightOf="@+id/call_img"
+            android:gravity="center"
+            android:textColor="@color/white"/>
+        <TextView
+            android:id="@+id/tv_missed"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/pink"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:text="missed"/>
+
+        <Button
+            android:id="@+id/joinBtn"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:background="@color/blue2"
+            android:text="JOIN"/>
     </RelativeLayout>
 
 </RelativeLayout>

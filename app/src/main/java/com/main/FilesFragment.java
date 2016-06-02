@@ -50,7 +50,9 @@ import android.widget.Toast;
 import com.adapter.NotifyListAdapter;
 import com.cg.DB.DBAccess;
 import com.cg.callservices.AudioCallScreen;
+import com.cg.callservices.CallConnectingScreen;
 import com.cg.callservices.VideoCallScreen;
+import com.cg.callservices.inCommingCallAlert;
 import com.cg.commongui.WebView_doc;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.TextNoteDatas;
@@ -370,6 +372,32 @@ public class FilesFragment extends Fragment implements OnClickListener {
 					public void onClick(View v) {
 						mainHeader.setVisibility(View.GONE);
 						addShowHideListener(false);
+					}
+				});
+				ImageView min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
+				ImageView min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
+				min_incall.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						mainHeader.setVisibility(View.GONE);
+						inCommingCallAlert incommingCallAlert = inCommingCallAlert.getInstance(SingleInstance.mainContext);
+						FragmentManager fragmentManager = SingleInstance.mainContext
+								.getSupportFragmentManager();
+						fragmentManager.beginTransaction().replace(
+								R.id.activity_main_content_fragment, incommingCallAlert)
+								.commitAllowingStateLoss();
+					}
+				});
+				min_outcall.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						mainHeader.setVisibility(View.GONE);
+						CallConnectingScreen callConnectingScreen = CallConnectingScreen.getInstance(SingleInstance.mainContext);
+						FragmentManager fragmentManager = SingleInstance.mainContext
+								.getSupportFragmentManager();
+						fragmentManager.beginTransaction().replace(
+								R.id.activity_main_content_fragment, callConnectingScreen)
+								.commitAllowingStateLoss();
 					}
 				});
 
