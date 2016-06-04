@@ -562,7 +562,7 @@ public class ContactsFragment extends Fragment {
 								groups.setTextColor(getResources().getColor(R.color.white));
 								plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_pluswhite));
 								list_2.setTextColor(getResources().getColor(R.color.white));
-								list_2.setText("List");
+								list_2.setText("LIST");
 								contacts.setTextColor(getResources().getColor(R.color.black));
 								list_1.setTextColor(getResources().getColor(R.color.black));
 								view_mycontact.setVisibility(View.GONE);

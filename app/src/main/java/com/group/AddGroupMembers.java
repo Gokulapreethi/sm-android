@@ -220,7 +220,7 @@ public class AddGroupMembers extends Activity {
 
 				public void onTextChanged(CharSequence s, int start, int before, int count) {
 					if (s != null && s != "")
-						adapter.filter(s.toString());
+						adapter.getFilter().filter(s);
 				}
 			});
 

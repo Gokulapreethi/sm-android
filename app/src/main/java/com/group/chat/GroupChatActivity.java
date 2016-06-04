@@ -1215,6 +1215,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     Log.d("Valueofcount", "listvalue"+i);
                     dashboard.notifyAdapter.notifyDataSetChanged();
                     dashboard.tempnotifylist.size();
+                    dashboard.updateCount();
                     Log.d("listsize","value------->"+dashboard.tempnotifylist.size());
                 }
 

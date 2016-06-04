@@ -68,6 +68,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/relative1"
                     android:layout_centerHorizontal="true"
+                    android:background="@color/black2"
                     android:layout_gravity="center">
 
                     <TextView
@@ -465,17 +466,26 @@
                     android:text="Citations/Publications"
                     android:textColor="#808080"
                     android:textSize="15dp" />
-                <TextView
-                    android:id="@+id/citations"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="1dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginLeft="15dp"
-                    android:paddingLeft="13dp"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:textColor="@color/white" />
+                <LinearLayout
+                    android:id="@+id/cite_lay1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:id="@+id/cite_lay"
+                        android:visibility="visible"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginLeft="15dp">
+
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="40dp"

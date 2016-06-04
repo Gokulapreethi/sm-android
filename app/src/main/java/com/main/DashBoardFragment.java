@@ -861,7 +861,7 @@ public class DashBoardFragment extends Fragment {
         return view;
     }
 
-    private void updateCount()
+    public void updateCount()
     {
         int count1=0, count2=0, count3=0;
         count1 = DBAccess.getdbHeler(mainContext)

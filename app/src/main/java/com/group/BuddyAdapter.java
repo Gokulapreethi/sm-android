@@ -39,6 +39,7 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 	/*********** Declare Used Variables *********/
 	private Context context;
 	private List<UserBean> userList;
+	private Vector<UserBean> originallist;
 	private LayoutInflater inflater = null;
 	private int checkBoxCounter = 0;
 	private int checkboxcount;
@@ -59,7 +60,10 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 		super(context, R.layout.find_people_item, userList);
 		/********** Take passed values **********/
 		this.context = context;
-		this.userList = userList;
+		this.userList = new Vector<UserBean>();
+		this.userList.addAll(userList);
+		this.originallist = new Vector<UserBean>();
+		this.originallist.addAll(userList);
 		inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		imageLoader=new ImageLoader(context);
@@ -210,21 +214,58 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 		TextView header_title;
 		LinearLayout cancel_lay;
 	}
-	public void filter(String charText) {
-		// TODO Auto-generated method stub
-		charText = charText.toLowerCase(Locale.getDefault());
-		if (charText.length() == 0) {
-			userList.addAll(userList);
-		} else {
-			for (UserBean storedData : userList) {
-				if (storedData.getBuddyName()
-						.toLowerCase(Locale.getDefault()).startsWith(charText)) {
-					userList.add(storedData);
+	private  GroupFilter filter;
+	@Override
+	public Filter getFilter() {
+		if (filter == null){
+			filter  = new GroupFilter();
+		}
+		return filter;
+	}
+
+	private class GroupFilter extends Filter
+	{
+
+		@Override
+		protected Filter.FilterResults performFiltering(CharSequence constraint) {
+
+			constraint = constraint.toString().toLowerCase();
+
+			Filter.FilterResults result = new Filter.FilterResults();
+			if (constraint != null && constraint.toString().length() > 0) {
+				Vector<UserBean> uBeans = new Vector<UserBean>();
+				for(int i = 0, l = originallist.size(); i < l; i++)
+				{
+					UserBean gBean = originallist.get(i);
+					if(gBean.getFirstname().toLowerCase().startsWith(String.valueOf(constraint)))
+						uBeans.add(gBean);
 				}
 
+				result.count = uBeans.size();
+				result.values = uBeans;
+			} else {
+				synchronized (this) {
+					result.values = originallist;
+					result.count = originallist.size();
+				}
 			}
+			return result;
 		}
-		notifyDataSetChanged();
+
+		@SuppressWarnings("unchecked")
+		@Override
+		protected void publishResults(CharSequence constraint,
+									  Filter.FilterResults results) {
+
+			userList= (Vector<UserBean>)results.values;
+			notifyDataSetChanged();
+			clear();
+			for(int i = 0, l = userList.size(); i < l; i++)
+				add(userList.get(i));
+			notifyDataSetInvalidated();
+
+		}
 
 	}
+
 }

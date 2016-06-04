@@ -64,11 +64,13 @@ public class MyAccountActivity extends Activity {
     RadioButton genderSelected;
     RadioGroup gender;
     ImageView profile_pic, edit_pic,status_icon;
+    Button img_cite;
     String strIPath;
      TextView nickname, fname,lname, offc ,edOffc,citations,statusTxt ,edcitations;
      EditText edNickname , edFname , edLname ,tv_cite ,tv_addr;
     private ImageLoader imageLoader;
     ArrayAdapter<String> stateAdapter;
+    private LinearLayout cite_lay, cite_lay1;
 
     private Handler handler = new Handler();
     private ProgressDialog progressDialog = null;
@@ -76,7 +78,7 @@ public class MyAccountActivity extends Activity {
     AutoCompleteTextView medical_schools ;
     AutoCompleteTextView association_membership;
     ArrayAdapter<String> hospitalDetailsAdapter;
-    private String add_citation, Addressline1,Addressline2, office_phone_no, office_fax, zip_code, city_value,office_address, state_value = "";
+    private String add_citation="", Addressline1,Addressline2, office_phone_no, office_fax, zip_code, city_value,office_address, state_value = "";
     ArrayAdapter<String> medicalDetailsAdapter;
     ArrayList<String> stateList = new ArrayList<String>();
     ArrayList<String> specialityList = new ArrayList<String>();
@@ -84,6 +86,7 @@ public class MyAccountActivity extends Activity {
     ArrayList<String> hospitalList = new ArrayList<String>();
     ArrayList<String> medicalSocietyList = new ArrayList<String>();
     ArrayList<String> states=new ArrayList<String>();
+    private String pastingContentCopy;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -104,7 +107,7 @@ public class MyAccountActivity extends Activity {
           lname=(TextView)findViewById(R.id.tv_lname);
           offc=(TextView)findViewById(R.id.tv_offc);
           citations=(TextView)findViewById(R.id.tv_citations);
-          tv_cite=(EditText)findViewById(R.id.tv_cite);
+//          tv_cite=(EditText)findViewById(R.id.tv_cite);
           tv_addr=(EditText)findViewById(R.id.tv_addr);
 
 
@@ -123,7 +126,9 @@ public class MyAccountActivity extends Activity {
         status_icon = (ImageView)findViewById(R.id.dot);
 
         final LinearLayout optional = (LinearLayout) findViewById(R.id.optional);
-        final LinearLayout cite_lay = (LinearLayout) findViewById(R.id.cite_lay);
+        cite_lay = (LinearLayout) findViewById(R.id.cite_lay);
+        cite_lay1 = (LinearLayout) findViewById(R.id.cite_lay1);
+//        img_cite = (Button)findViewById(R.id.img_cite);
         final LinearLayout addr_lay = (LinearLayout) findViewById(R.id.addr_lay);
         final LinearLayout advance_lay=(LinearLayout)findViewById(R.id.optional_lay);
         final Button arrow=(Button)findViewById(R.id.arrow);
@@ -169,7 +174,9 @@ public class MyAccountActivity extends Activity {
                     dialog.getWindow().setBackgroundDrawableResource(R.color.transparent);
                     window.setAttributes(lp);
                     dialog.show();
+
                     final EditText citation_info = (EditText)dialog.findViewById(R.id.Edit_text1);
+
 
                     Button save = (Button)dialog.findViewById(R.id.save_button1);
                     Button cancel = (Button)dialog.findViewById(R.id.cancel_button1);
@@ -183,8 +190,47 @@ public class MyAccountActivity extends Activity {
                     save.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            add_citation = citation_info.getText().toString().trim();
-                            tv_cite.setText(add_citation);
+                            if(add_citation==null) {
+                                if(SingleInstance.myAccountBean.getCitationpublications()!=null)
+                                add_citation = SingleInstance.myAccountBean.getCitationpublications();
+                            }else
+                                add_citation = add_citation+","+citation_info.getText().toString().trim();
+                            String[] split = add_citation.split(",");
+                            cite_lay.removeAllViews();
+                            cite_lay1.removeAllViews();
+                            for (int i = 0; i < split.length; i++) {
+                                LinearLayout llay = new LinearLayout(context);
+                                LinearLayout.LayoutParams dut = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                dut.leftMargin = 20;
+                                dut.rightMargin = 20;
+                                llay.setLayoutParams(dut);
+                                llay.setWeightSum(1);
+
+
+                                TextView dynamicText = new TextView(context);
+                                LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                dim.leftMargin = 30;
+                                dim.weight = 1;
+                                dim.topMargin = 5;
+                                dynamicText.setLayoutParams(dim);
+                                Button button = new Button(context);
+                                LinearLayout.LayoutParams but = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                button.setGravity(Gravity.END);
+                                but.rightMargin = 15;
+
+
+                                button.setLayoutParams(but);
+                                button.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_delete));
+
+
+                                if (!split[i].equalsIgnoreCase("") && split.length > 0) {
+                                    dynamicText.setText(split[i]);
+                                    llay.addView(dynamicText);
+                                    llay.addView(button);
+                                    cite_lay1.addView(llay);
+                                }
+                            }
+
                             dialog.dismiss();
 
                         }
@@ -553,11 +599,7 @@ public class MyAccountActivity extends Activity {
         Speciality.setAdapter(dataAdapter);
         Speciality.setThreshold(1);
 
-        final String[] param=new String[28];
-        param[0]="";param[2]="";param[3]="";param[4]="";param[5]="";param[6]="";param[7]="";param[8]="";
-        param[9]="";param[10]="";param[11]="";param[12]="";param[13]="";param[14]="";param[15]="";param[16]="";
-        param[17]="";param[18]="";param[19]="";param[20]="";param[21]="";param[22]="";param[23]="";param[24]="";
-        param[25]="";param[26]="";param[27]="";
+
         hospital.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -610,7 +652,7 @@ public class MyAccountActivity extends Activity {
                         ().toString().trim());
                 pBean.setOfficeaddress(tv_addr.getText().toString().trim());
                 pBean.setHospitalaffiliation(hospital.getText().toString().trim());
-                pBean.setCitationpublications(tv_cite.getText().toString());
+                pBean.setCitationpublications(add_citation);
                 pBean.setOrganizationmembership(association_membership.getText().toString());
                 pBean.setTos("1");
                 pBean.setBaa("1");
@@ -823,7 +865,42 @@ public class MyAccountActivity extends Activity {
                 hospital.setText(bean.getHospitalaffiliation());
             }
             if(bean.getCitationpublications()!= null){
-                tv_cite.setText(bean.getCitationpublications());
+//                tv_cite.setText(bean.getCitationpublications());
+                add_citation=bean.getCitationpublications();
+                String[] split = add_citation.split(",");
+                cite_lay.removeAllViews();
+                cite_lay1.removeAllViews();
+                for (int i = 0; i < split.length; i++) {
+                    LinearLayout llay = new LinearLayout(context);
+                    LinearLayout.LayoutParams dut = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    dut.leftMargin = 20;
+                    dut.rightMargin = 20;
+                    llay.setLayoutParams(dut);
+                    llay.setWeightSum(1);
+
+                    TextView dynamicText = new TextView(context);
+                    LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    dim.leftMargin = 30;
+                    dim.topMargin = 5;
+                    dim.weight = 1;
+                    dynamicText.setLayoutParams(dim);
+                    Button button = new Button(context);
+                    LinearLayout.LayoutParams but = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    button.setGravity(Gravity.END);
+
+                    but.rightMargin = 15;
+
+                    button.setLayoutParams(but);
+                    button.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_delete));
+
+
+                    if (!split[i].equalsIgnoreCase("") && split.length > 0) {
+                        dynamicText.setText(split[i]);
+                        llay.addView(dynamicText);
+                        llay.addView(button);
+                        cite_lay1.addView(llay);
+                    }
+                }
             }
             if(bean.getOrganizationmembership()!= null){
                 association_membership.setText(bean.getOrganizationmembership());

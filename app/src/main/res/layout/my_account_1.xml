@@ -110,6 +110,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/relative1"
                     android:layout_centerHorizontal="true"
+                    android:background="@color/black2"
                     android:layout_gravity="center">
 
                     <TextView
@@ -126,8 +127,8 @@
                         android:layout_marginBottom="10dp"/>
                     <ImageView
                         android:id="@+id/dot"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
                         android:layout_marginTop="10dp"
                         android:layout_toLeftOf="@+id/statusTxt1"
                         android:src="@drawable/checkbox_default"
@@ -740,6 +741,11 @@
                         android:textColor="#808080"
                         android:textSize="15dp" />
                     <LinearLayout
+                        android:id="@+id/cite_lay1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                    <LinearLayout
                         android:id="@+id/cite_lay"
                         android:visibility="visible"
                         android:layout_width="fill_parent"
@@ -748,28 +754,10 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginRight="15dp"
                         android:layout_marginLeft="15dp">
-                        <EditText
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="left"
-                            android:layout_weight="1"
-                            android:padding="7dp"
-                            android:inputType="text"
-                            android:hint="Carpathian mathematical Publications"
-                            android:textColor="@color/white"
-                            android:textSize="15dp"
-                            android:id="@+id/tv_cite"/>
-                        <Button
-                            android:gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="16sp"
-                            android:textColor="#909090"
-                            android:id="@+id/img_cite"
-                            android:layout_marginRight="15dp"
-                            android:background="@drawable/input_delete"
-                            android:layout_toRightOf="@id/tv_cite"
-                            />
+
+
+
+                    </LinearLayout>
 
                     </LinearLayout>
                     <LinearLayout
@@ -803,9 +791,17 @@
                             android:layout_marginRight="15dp"
                             android:id="@+id/cite_plus"
                             android:background="@drawable/input_plus"
-                            android:layout_toRightOf="@id/citation"
+                            android:layout_toRightOf="@+id/citation"
                             />
+
+
+
                         </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="5dp"
+                        android:background="#7E8080" />
                 </LinearLayout>
                 <TextView
                     android:layout_width="match_parent"

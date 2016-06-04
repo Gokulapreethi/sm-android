@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -49,7 +50,7 @@ public class RoundingEditActivity extends Activity {
         setContentView(R.layout.roun_edit_role);
         context=this;
         WebServiceReferences.contextTable.put("roundingEdit", context);
-        final Spinner rights = (Spinner) findViewById(R.id.rights);
+        final AutoCompleteTextView rights = (AutoCompleteTextView) findViewById(R.id.rights);
         Button cancel=(Button)findViewById(R.id.cancel);
         Button save=(Button)findViewById(R.id.save);
         TextView buddy=(TextView)findViewById(R.id.buddy);
@@ -104,7 +105,7 @@ public class RoundingEditActivity extends Activity {
             @Override
             public void onClick(View view) {
                 showprogress();
-               role= rights.getSelectedItem().toString();
+               role= rights.getText().toString();
                 WebServiceReferences.webServiceClient.SetMemberRights(buddyname, groupid, status,
                         role, context);
             }

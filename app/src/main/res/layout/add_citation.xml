@@ -32,6 +32,7 @@
         android:layout_below="@id/Text_view1"
         android:layout_marginLeft="30dp"
         android:textSize="20dp"
+        android:digits="@string/alphaNumeric"
         android:background="@color/black2"
         android:textColor="@color/white"/>
     <View
