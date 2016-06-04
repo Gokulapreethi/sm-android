@@ -1,5 +1,6 @@
 package org.lib.xml;
 
+import android.telecom.Call;
 import android.util.Base64;
 import android.util.Log;
 
@@ -282,8 +283,13 @@ public class XmlParser {
 						.getNodeValue());
 			}
 			if (nodeMap.getNamedItem("callChatId") != null) {
-				sb.setChatid(nodeMap.getNamedItem("callChatId")
-						.getNodeValue());
+				String chatid=nodeMap.getNamedItem("callChatId")
+						.getNodeValue();
+				if(chatid.contains(CallDispatcher.LoginUser)) {
+					String temp = chatid.replace(CallDispatcher.LoginUser, "");
+					sb.setChatid(temp);
+				}else
+					sb.setChatid(chatid);
 			}
 			/*
 			 * 04-19 16:46:43.940: D/XML_PARSER(7285): SignalBean Parser : <?xml

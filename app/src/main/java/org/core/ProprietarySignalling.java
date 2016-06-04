@@ -1967,6 +1967,7 @@ public class ProprietarySignalling implements UDPDataListener {
                         Log.d("abcdef","IN 101 signal "+sb.getSignalid());
                         GroupChatActivity gcActivity = (GroupChatActivity) SingleInstance.contextTable
                                 .get("groupchat");
+						if(sb.getSignalid()!=null)
                         gcActivity.updateThumbs(sb.getSignalid());
                     }
 

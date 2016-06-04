@@ -8145,11 +8145,15 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	}
 	public void notifyGetFileDetails(Object obj){
 		if(obj instanceof Vector){
-			Log.i("patientdetails","notifyGetFileDetails ");
 			Vector<FileDetailsBean>  fBeanList=(Vector<FileDetailsBean> )obj;
 			SingleInstance.fileDetails.clear();
 			SingleInstance.fileDetails=fBeanList;
-			DashBoardFragment.newInstance(SingleInstance.mainContext).showMemoryControl();
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					DashBoardFragment.newInstance(SingleInstance.mainContext).showMemoryControl();
+				}
+			});
 		}
 	}
 	public void notifyGetMemberRights(Object obj) {
