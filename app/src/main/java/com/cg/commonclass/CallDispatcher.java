@@ -14308,6 +14308,8 @@ private TrustManager[] get_trust_mgr() {
 				CallDispatcher.sb.setTolocalip(bib.getLocalipaddress());
 				CallDispatcher.sb.setToSignalPort(bib.getSignalingPort());
 				CallDispatcher.sb.setChatid(CallDispatcher.LoginUser);
+				CallDispatcher.sb.setHost(CallDispatcher.LoginUser);
+				CallDispatcher.sb.setParticipants(CallDispatcher.LoginUser);
 				switch (operation) {
 				case 1:
 					CallDispatcher.sb.setCallType("AC");

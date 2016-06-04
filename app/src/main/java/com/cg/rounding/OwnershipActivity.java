@@ -2,6 +2,7 @@ package com.cg.rounding;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,9 +15,11 @@ import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bean.ProfileBean;
 import com.bean.UserBean;
@@ -81,9 +84,19 @@ public class OwnershipActivity extends Activity {
         taransferBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                showprogress();
-//                WebServiceReferences.webServiceClient.SetMemberRights(buddyname, gBean.getGroupId(), status,
-//                        role, context);
+                showprogress();
+                String status,role="";
+                for(UserBean uBean:membersList){
+                    Log.i("AAAA", "Rounding status 1" + uBean.isSelected());
+                    if(uBean.isSelected())
+                        status="1";
+                    else
+                        status="0";
+                    if(uBean.getRole()!=null)
+                    role=uBean.getRole();
+                    WebServiceReferences.webServiceClient.SetMemberRights(uBean.getBuddyName(), gBean.getGroupId(), status,
+                            role, context);
+                }
             }
         });
     }
@@ -137,13 +150,24 @@ public class OwnershipActivity extends Activity {
                     holder.buddyName.setText(bib.getFirstname());
                     if(bib.getRole()!=null)
                     holder.position.setText(bib.getRole());
-                    if(bib.getAdmin()!=null) {
+                    Log.i("AAAA","admin "+bib.getAdmin());
+                    if(bib.getAdmin()!=null && bib.getAdmin().equalsIgnoreCase("1")) {
                         holder.sel_buddy.setChecked(true);
                         holder.ownsership.setVisibility(View.VISIBLE);
                     }else {
                         holder.sel_buddy.setChecked(false);
                         holder.ownsership.setVisibility(View.GONE);
                     }
+                    holder.sel_buddy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            if(isChecked)
+                                bib.setSelected(true);
+                            else
+                                bib.setSelected(false);
+
+                        }
+                    });
                 }
             }catch(Exception e){
                 e.printStackTrace();
@@ -197,5 +221,59 @@ public class OwnershipActivity extends Activity {
             e.printStackTrace();
         }
 
+    }
+    public void showToast(final String message) {
+        handler.post(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    Toast.makeText(getApplicationContext(), message,
+                            Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+    }
+    public void notifyOwnership(Object obj)
+    {
+        cancelDialog();
+        if (obj instanceof String) {
+            String result = (String) obj;
+            if (result.equalsIgnoreCase("updated")) {
+                showToast("Successfully  updated");
+                for(UserBean userBean:membersList) {
+                    if (userBean.getAdmin().equalsIgnoreCase("1")) {
+                        Log.i("AAAA", "Rounding status 1" + userBean.getBuddyName());
+                        ContentValues cv = new ContentValues();
+                        cv.put("adminmembers", userBean.getBuddyName());
+                        DBAccess.getdbHeler(getApplicationContext())
+                                .updateGroupMembers(cv, "groupid=" + userBean.getGroupid());
+                        GroupMemberBean bean = new GroupMemberBean();
+                        bean.setGroupid(userBean.getGroupid());
+                        bean.setMembername(userBean.getBuddyName());
+                        if(userBean.getRole()!=null)
+                        bean.setRole(userBean.getRole());
+                        bean.setAdmin("1");
+                        DBAccess.getdbHeler().insertorUpdateMemberDetails(bean);
+                    } else {
+                        Log.i("AAAA", "Rounding status 0 "+userBean.getBuddyName());
+                        GroupMemberBean bean = new GroupMemberBean();
+                        bean.setGroupid(userBean.getGroupid());
+                        bean.setMembername(userBean.getBuddyName());
+                        if(userBean.getRole()!=null)
+                        bean.setRole(userBean.getRole());
+                        bean.setAdmin("0");
+                        DBAccess.getdbHeler().insertorUpdateMemberDetails(bean);
+                    }
+                }
+                finish();
+            }else
+                showToast(result);
+
+        }
     }
 }

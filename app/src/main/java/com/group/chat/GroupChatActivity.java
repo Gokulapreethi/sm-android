@@ -4401,8 +4401,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 final GroupChatBean gcBean = chatList.get(position);
 
                 TextView tv_user, message, dateTime, deadlineReplyText, tv_urgent;
-                RelativeLayout senderLayout = null,normalcontainer,join_lay;
-                TextView tv_username,tv_missed;
+                RelativeLayout senderLayout = null,normalcontainer;
+                LinearLayout join_lay;
+                TextView tv_username,tv_missed,time;
                 Button joinBtn;
                 ImageView call_img;
                 RelativeLayout receiverLayout = null;
@@ -4413,12 +4414,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 final RelativeLayout iconContainer, audioLayout, mainlayout;
                 normalcontainer = (RelativeLayout) convertView
                         .findViewById(R.id.normalcontainer);
-                join_lay = (RelativeLayout) convertView
+                join_lay = (LinearLayout) convertView
                         .findViewById(R.id.join_lay);
                 senderLayout = (RelativeLayout) convertView
                         .findViewById(R.id.sender_view);
                 tv_username=(TextView)convertView.findViewById(R.id.tv_user);
                 tv_missed=(TextView)convertView.findViewById(R.id.tv_missed);
+                time=(TextView)convertView.findViewById(R.id.time);
                 joinBtn=(Button)convertView.findViewById(R.id.joinBtn);
                 call_img=(ImageView)convertView.findViewById(R.id.call_img);
                 Button btn_reply = (Button) convertView
@@ -4484,8 +4486,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 if(gcBean.getCategory()!=null&&gcBean.getCategory().equalsIgnoreCase("call")) {
                     normalcontainer.setVisibility(View.GONE);
                     join_lay.setVisibility(View.VISIBLE);
+                    tv_username.setText(gcBean.getFtpPassword());
                     if(gcBean.getSubCategory()!=null &&gcBean.getSubCategory().equalsIgnoreCase("missedcall")){
-                        tv_username.setText(gcBean.getFrom());
                     if(gcBean.getFtpPassword()!=null){
                         String[] mlist = (gcBean.getFtpPassword()).split(",");
                         if(mlist.length>1){
@@ -4502,6 +4504,18 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         joinBtn.setVisibility(View.GONE);
                         tv_missed.setVisibility(View.VISIBLE);
                     }
+                    }else {
+                        join_lay.setBackgroundColor(getResources().getColor(R.color.grey1));
+                        call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_incoming_call));
+                        if(gcBean.getReminderTime()!=null)
+                        tv_missed.setText(gcBean.getReminderTime());
+                        tv_missed.setTextColor(getResources().getColor(R.color.blue2));
+                        time.setVisibility(View.VISIBLE);
+                        String dat, tim;
+                        dat = gcBean.getSenttime().split(" ")[1].split(":")[0] + ":" + gcBean.getSenttime().split(" ")[1].split(":")[1];
+                        tim = gcBean.getSenttime().split(" ")[2].toUpperCase();
+
+                        time.setText(dat + " " + tim);
                     }
                     joinBtn.setOnClickListener(new OnClickListener() {
                         @Override
@@ -8228,12 +8242,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             }
             if (h.size() > 0) {
                 Collections.sort(h, new BuddyListComparator());
-                newlist.get(0).setHeader("H");
+                h.get(0).setHeader("H");
                 tempList.addAll(h);
             }
             if (i.size() > 0) {
                 Collections.sort(i, new BuddyListComparator());
-                h.get(0).setHeader("I");
+                i.get(0).setHeader("I");
                 tempList.addAll(i);
             }
             if (j.size() > 0) {
@@ -8702,6 +8716,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         bean.setFirstname(pbean.getTitle() + pbean.getFirstname());
                     else
                         bean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
+                bean.setSelected(true);
                 bean.setName(gBean.getOwnerName());
                 bean.setProfile_picpath(pbean.getPhoto());
                 if (gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser))
@@ -8837,7 +8852,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         holder.role.setText(bib.getRole());
                     else
                         holder.role.setVisibility(View.GONE);
-                    if (bib.getName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+                    if (bib.isSelected()) {
                         holder.rights.setText("Owner");
                         holder.rights.setTextColor(getResources().getColor(R.color.green));
                     } else {

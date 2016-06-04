@@ -175,14 +175,14 @@ public class DashBoardFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     mainHeader.setVisibility(View.GONE);
-                    addShowHideListener(AudioCallScreen.getInstance(SingleInstance.mainContext));
+                    addShowHideListener(true);
                 }
             });
             video_minimize.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mainHeader.setVisibility(View.GONE);
-                    addShowHideListener(VideoCallScreen.getInstance(SingleInstance.mainContext));
+                    addShowHideListener(false);
                 }
             });
             ImageView min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
@@ -248,21 +248,7 @@ public class DashBoardFragment extends Fragment {
                     piechart = (PieChart) v1.findViewById(R.id.piechart);
                     freeSpace= (TextView) v1.findViewById(R.id.freeSpace);
                     totalSize= (TextView) v1.findViewById(R.id.totalSize);
-                    if(externalMemoryAvailable()){
-                        float free = getAvailableExternalMemorySize();
-                        float total = getTotalExternalMemorySize();
-                        totalSize.setText(formatSize(total));
-                        freeSpace.setText(formatSize(free));
-                        float temp = free/total;
-                        piechart.setPercentage(temp*100);
-                    }else{
-                        float free = getAvailableInternalMemorySize();
-                        float total = getTotalInternalMemorySize();
-                        totalSize.setText(formatSize(total));
-                        freeSpace.setText(formatSize(free));
-                        float temp = free/total;
-                        piechart.setPercentage(temp*100);
-                    }
+                    showMemoryControl();
                     ll_warn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -395,21 +381,7 @@ public class DashBoardFragment extends Fragment {
                             piechart = (PieChart) v1.findViewById(R.id.piechart);
                             freeSpace= (TextView) v1.findViewById(R.id.freeSpace);
                             totalSize= (TextView) v1.findViewById(R.id.totalSize);
-                            if(externalMemoryAvailable()){
-                                float free = getAvailableExternalMemorySize();
-                                float total = getTotalExternalMemorySize();
-                                totalSize.setText(formatSize(total));
-                                freeSpace.setText(formatSize(free));
-                                float temp = free/total;
-                                piechart.setPercentage(temp*100);
-                            }else{
-                                float free = getAvailableInternalMemorySize();
-                                float total = getTotalInternalMemorySize();
-                                totalSize.setText(formatSize(total));
-                                freeSpace.setText(formatSize(free));
-                                float temp = free/total;
-                                piechart.setPercentage(temp*100);
-                            }
+                            showMemoryControl();
                             ll_warn.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -899,7 +871,6 @@ public class DashBoardFragment extends Fragment {
     {
         fBeanList=SingleInstance.fileDetails;
         for(FileDetailsBean fBean:fBeanList) {
-            Log.i("AAAA", "Omorycontrol &************ size " +fBean.getBranchtype());
             if (fBean.getBranchtype().equalsIgnoreCase("file")) {
                 if (fBean.getAudiofiles() != null)
                     audio = Integer.parseInt(fBean.getAudiofiles());
@@ -911,12 +882,12 @@ public class DashBoardFragment extends Fragment {
                 if (fBean.getTotalsize() != null)
                     chat = Integer.parseInt(fBean.getTotalsize());
             }else if(fBean.getBranchtype().equalsIgnoreCase("other")) {
-                Log.i("AAAA", "Omorycontrol &************ size ");
                 if (fBean.getTotalsize() != null)
                     other = Integer.parseInt(fBean.getTotalsize());
             }
         }
         int total=audio+videos+image+other+chat;
+        Log.i("AAAA", "Omorycontrol &************ size " + total);
         return total;
     }
     String bytesToSize(int bytes) {
@@ -944,15 +915,33 @@ public class DashBoardFragment extends Fragment {
             return bytes + " B";
         }
     }
-    void addShowHideListener( final Fragment fragment) {
-        FragmentManager fm = AppReference.mainContext.getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        if (fragment.isHidden()) {
-            ft.show(fragment);
-        } else {
-            ft.hide(fragment);
+    void addShowHideListener( Boolean isAudio ) {
+        if(isAudio) {
+            AudioCallScreen audioCallScreen = AudioCallScreen.getInstance(SingleInstance.mainContext);
+            FragmentManager fragmentManager = SingleInstance.mainContext
+                    .getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(
+                    R.id.activity_main_content_fragment, audioCallScreen)
+                    .commitAllowingStateLoss();
+        }else {
+            VideoCallScreen videoCallScreen = VideoCallScreen.getInstance(SingleInstance.mainContext);
+            FragmentManager fragmentManager = SingleInstance.mainContext
+                    .getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(
+                    R.id.activity_main_content_fragment, videoCallScreen)
+                    .commitAllowingStateLoss();
         }
-        ft.commit();
-        mainHeader.setVisibility(View.GONE);
+    }
+    public void showMemoryControl()
+    {
+        if(getMemorySize()>0) {
+            float free = getMemorySize();
+            float total = 5368709120L;
+            int num = (int) 5368709120L;
+            int temp1 = num - getMemorySize();
+            freeSpace.setText(bytesToSize(temp1));
+            float temp = free / total;
+            piechart.setPercentage(temp * 100);
+        }
     }
 }

@@ -135,11 +135,15 @@ public class MemoryControlFragment extends Fragment {
                     TextView tv_others=(TextView)view.findViewById(R.id.tv_others);
                     TextView tv_chat=(TextView)view.findViewById(R.id.tv_chat);
                     TextView tv_total=(TextView)view.findViewById(R.id.tv_total);
+                    TextView tv_free=(TextView)view.findViewById(R.id.tv_free);
                     tv_audio.setText(bytesToSize(audio));
                     tv_video.setText(bytesToSize(videos));
                     tv_photo.setText(bytesToSize(image));
                     int total=audio+videos+image+other+chat;
                     tv_total.setText(bytesToSize(total));
+                    int num = (int) 5368709120L;
+                    int temp1 = num - total;
+                    tv_free.setText(bytesToSize(temp1));
                     Log.i("AAAA", "Oncreate view of memorycontrol @@@@ size "+other);
                     tv_others.setText(bytesToSize(other));
                     tv_chat.setText(bytesToSize(chat));

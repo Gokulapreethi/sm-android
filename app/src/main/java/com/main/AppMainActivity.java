@@ -7576,7 +7576,8 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			}
 			else{
 				FTPBean ftpBean = new FTPBean();
-				ShareReminder shareReminder = AppReference.filedownload.get(filedetails[0]);
+				ShareReminder shareReminder=new ShareReminder();
+				shareReminder = AppReference.filedownload.get(filedetails[0]);
 				Log.d("false123", "false : " + getFileName());
 
 
@@ -7590,42 +7591,44 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					directory.mkdir();
 				directory = null;
 				String file_name = directory_path + filedetails[0];
-				Log.d("decode12", "decode12 : "+file_name );
-				if(file_name.split(".", 3).equals("jpg")) {
-					byte[] imageAsBytes = Base64.decode(filedetails[1], 0);
-					File img_file = new File(file_name);
-					img_file.createNewFile();
-					FileOutputStream image_writter = new FileOutputStream(
-							img_file);
-					image_writter.write(imageAsBytes);
-					image_writter.flush();
-					image_writter.close();
+				Log.d("decode12", "decode12 : " + file_name);
+				if(file_name!=null) {
+					if (file_name.split(".", 3).equals("jpg")) {
+						byte[] imageAsBytes = Base64.decode(filedetails[1], 0);
+						File img_file = new File(file_name);
+						img_file.createNewFile();
+						FileOutputStream image_writter = new FileOutputStream(
+								img_file);
+						image_writter.write(imageAsBytes);
+						image_writter.flush();
+						image_writter.close();
 
-					Bitmap bmp = AppMainActivity.this.ShrinkBitmap(
-							file_name, 150, 150);
-					image_writter = new FileOutputStream(img_file);
-					bmp.compress(CompressFormat.JPEG, 75, image_writter);
-					bmp.recycle();
-					bmp = null;
-					image_writter.flush();
-					image_writter.close();
+						Bitmap bmp = AppMainActivity.this.ShrinkBitmap(
+								file_name, 150, 150);
+						image_writter = new FileOutputStream(img_file);
+						bmp.compress(CompressFormat.JPEG, 75, image_writter);
+						bmp.recycle();
+						bmp = null;
+						image_writter.flush();
+						image_writter.close();
 
-					// img_file = null;
-					if (img_file.exists()) {
-						shareReminder.setFilepath(file_name);
-						ftpBean.setReq_object(shareReminder);
-						ftpBean.setFile_path(filedetails[0]);
-						notifyFileDownloaded("true", ftpBean);
+						// img_file = null;
+						if (img_file.exists()) {
+							shareReminder.setFilepath(file_name);
+							ftpBean.setReq_object(shareReminder);
+							ftpBean.setFile_path(filedetails[0]);
+							notifyFileDownloaded("true", ftpBean);
+						}
+					} else {
+						if (decodeAudioVideoToBase64(file_name, filedetails[1])) {
+							shareReminder.setFilepath(file_name);
+							ftpBean.setReq_object(shareReminder);
+							ftpBean.setFile_path(filedetails[0]);
+							notifyFileDownloaded("true", ftpBean);
+						}
 					}
-				}else{
-					if(decodeAudioVideoToBase64(file_name, filedetails[1])){
-						shareReminder.setFilepath(file_name);
-						ftpBean.setReq_object(shareReminder);
-						ftpBean.setFile_path(filedetails[0]);
-						notifyFileDownloaded("true",ftpBean);
-					}
+					showToast("file downloaded successfully");
 				}
-				showToast("file downloaded successfully");
 
 			}
 			ContactsFragment.getInstance(context).SortList();
@@ -8146,6 +8149,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			Vector<FileDetailsBean>  fBeanList=(Vector<FileDetailsBean> )obj;
 			SingleInstance.fileDetails.clear();
 			SingleInstance.fileDetails=fBeanList;
+			DashBoardFragment.newInstance(SingleInstance.mainContext).showMemoryControl();
 		}
 	}
 	public void notifyGetMemberRights(Object obj) {
