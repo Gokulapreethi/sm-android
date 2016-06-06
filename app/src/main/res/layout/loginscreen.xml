@@ -32,7 +32,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/img_logo"/>
+                        android:background="@drawable/img_logo1"/>
 
                 </LinearLayout>
 
@@ -211,7 +211,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:gravity="center">
+                    android:gravity="center"
+                    >
 
 
 
@@ -219,10 +220,10 @@
                         android:id="@+id/btnnewuser"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
-                        android:background="@color/black3"
-                        android:text="NEW USER"
+                        android:background="@color/green"
+                        android:text="SIGN UP"
                         android:textColor="@color/white"
-                        android:textSize="17sp" />
+                        android:textSize="19sp" />
 
                 </LinearLayout>
 

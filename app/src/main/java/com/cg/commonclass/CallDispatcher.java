@@ -2419,6 +2419,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 					DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
 							CallDispatcher.sb);
+					SingleInstance.mainContext.notifyUI();
 					// }
 					if (conferenceMembers.size() == 1) {
 						handlerForCall.post(new Runnable() {
@@ -3117,7 +3118,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 					DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
 							CallDispatcher.sb);
-					NoAnswer(sb.getTo());
+					NoAnswer(sb.getTo(),sb.getCallType());
 
 //					closeDialWindow("No Answer from " + sb.getTo(), "", "");
 					accepted_users.add(sb.getTo());
@@ -3570,7 +3571,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 		}
 
 	}
-	private void NoAnswer(final String Username){
+	private void NoAnswer(final String Username, final String Calltype){
 
 
 		noanswerhandler.post(new Runnable() {
@@ -3579,6 +3580,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 			public void run() {
 				ImageView min_outcall=(ImageView)SingleInstance.mainContext.findViewById(R.id.min_incall);
 				min_outcall.setVisibility(View.GONE);
+
 				Context context = null;
 				if (SingleInstance.contextTable.get("groupchat") != null) {
 					context = SingleInstance.contextTable.get("groupchat");
@@ -3595,6 +3597,34 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				TextView do_lay = (TextView) dialog.findViewById(R.id.do_lay);
 				TextView username = (TextView)dialog.findViewById(R.id.username);
 				ImageView profile_pic = (ImageView)dialog. findViewById(R.id.riv1);
+				TextView send_messagelay = (TextView)dialog.findViewById(R.id.send_messagelay);
+				TextView callback_messagelay = (TextView)dialog.findViewById(R.id.callback_messagelay);
+
+				callback_messagelay.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						if(Calltype.equalsIgnoreCase("AC")){
+							Log.d("string", "Calltype"+Calltype);
+							MakeCall(1, Username, SingleInstance.mainContext);
+						}
+						else if(Calltype.equalsIgnoreCase("VC")) {
+							MakeCall(2, Username,
+									SingleInstance.mainContext);
+						}
+						dialog.dismiss();
+
+					}
+				});
+
+				send_messagelay.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+
+
+					}
+				});
+
+
 				ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(Username);
 				if(bean.getFirstname()!= null && bean.getLastname()!= null){
 					username.setText(bean.getFirstname()+ " "+bean.getLastname());
@@ -3610,6 +3640,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					}
 
 				}
+
 
 
 

@@ -1212,7 +1212,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 				for (int i = 0; i < adapterCount; i++) {
 					View item = adapter.getView(i, null, null);
 					lv_buddylist.addView(item);
-				}
+			}
 				adapter.notifyDataSetChanged();
 				if(memberAdapter!=null)
 				memberAdapter.notifyDataSetChanged();

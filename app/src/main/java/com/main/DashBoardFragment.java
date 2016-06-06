@@ -502,6 +502,7 @@ public class DashBoardFragment extends Fragment {
                         public void onClick(View view) {
                             try {
                                 rl.removeAllViews();
+                                SingleInstance.mainContext.notifyUI();
                                 plusBtn.setVisibility(View.VISIBLE);
 //                                clearAllBtn.setVisibility(View.VISIBLE);
                                 im_summary.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_summary));
