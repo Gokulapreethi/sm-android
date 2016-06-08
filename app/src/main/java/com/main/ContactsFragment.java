@@ -19,9 +19,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.Touch;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -99,7 +101,7 @@ import java.util.Vector;
  *
  *
  */
-public class ContactsFragment extends Fragment {
+public class ContactsFragment extends Fragment{
 
 	// private Context context = null;
 
@@ -329,6 +331,11 @@ public class ContactsFragment extends Fragment {
 						.commitAllowingStateLoss();
 			}
 		});
+		min_incall.setOnTouchListener(new com.cg.commonclass.Touch());
+		video_minimize.setOnTouchListener(new com.cg.commonclass.Touch());
+		min_outcall.setOnTouchListener(new com.cg.commonclass.Touch());
+		audio_minimize.setOnTouchListener(new com.cg.commonclass.Touch());
+
 
 		_rootView = null;
 		if (_rootView == null) {
@@ -1750,7 +1757,7 @@ public class ContactsFragment extends Fragment {
 											getActivity().startActivity(intent);
 										} else {
 											Toast.makeText(mainContext,
-													"Sorry no online users", 1)
+													"Sorry no online users", Toast.LENGTH_SHORT)
 													.show();
 										}
 									} else

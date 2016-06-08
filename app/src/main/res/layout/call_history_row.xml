@@ -257,7 +257,6 @@
             >
 
             <ImageView
-                android:id="@+id/own_image"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:padding="10dp"
@@ -350,11 +349,22 @@
             </RelativeLayout>
 
         </FrameLayout>
+        <ImageView
+            android:id="@+id/own_image"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:visibility="gone"
+            android:background="@color/blue2"
+            />
         <RelativeLayout
             android:id="@+id/recoding_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible">
+            android:visibility="visible"
+            android:layout_alignBottom="@+id/own_image"
+            android:layout_alignBaseline="@+id/own_image">
+
 
 
             <RelativeLayout

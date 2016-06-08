@@ -75,7 +75,7 @@ public class ForwardUserSelect extends Activity {
     private  GroupBean groupManagementBean;
     private int total_groupcount = 0,count=0;
     private boolean contact=true;
-    private boolean fromfiles = true;
+    private boolean fromfiles = false;
 
 
     Vector<BuddyInformationBean> buddylist = new Vector<BuddyInformationBean>();
@@ -91,7 +91,7 @@ public class ForwardUserSelect extends Activity {
         setContentView(R.layout.fwd_user_select);
         context = this;
         final Bundle bndl = getIntent().getExtras();
-        fromfiles = bndl.getBoolean("fromfiles");
+        fromfiles = bndl.getBoolean("fromfile",false);
 
 
         final Button search = (Button) findViewById(R.id.btnRegisterOk);

@@ -132,7 +132,8 @@ public class SendChatListAdapter extends ArrayAdapter<SendListUIBean> {
                     if (position == mPlayingPosition) {
                         //pb.setVisibility(View.VISIBLE);
                         mProgressUpdater.mBarToUpdate = holder.seekBar;
-                        mProgressUpdater.tvToUpdate = holder.buddyName;
+                        mProgressUpdater.tvToUpdate = holder.
+                                buddyName;
                         mHandler.postDelayed(mProgressUpdater, 100);
                     } else {
                         //pb.setVisibility(View.GONE);

@@ -1363,6 +1363,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 Log.d("Swiselect", " case 1 : " + swipeposition);
                                 createMenu2(menu);
                                 break;
+                            case 2:
+                                Log.d("Swiselect", " case 1 : " + swipeposition);
+                                createMenu3(menu);
+                                break;
 
                         }
                     }
@@ -1406,6 +1410,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         forwared.setTitle("FORWARD");
                         forwared.setTitleColor(Color.WHITE);
                         menu.addMenuItem(forwared);
+                    }
+
+                    private void createMenu3(SwipeMenu menu) {
+                        SwipeMenuItem calllay = new SwipeMenuItem(context);
+                        menu.addMenuItem(calllay);
                     }
 
 
@@ -1803,75 +1812,75 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             // TODO Auto-generated method stub
 
 
-                            if (SendListUI.size() == 1) {
-                                Log.i("audioplay", "path--->" + strIPath);
-                                SendListUIBean bean = SendListUI.get(0);
-                                sendMsg(message.getText().toString().trim(),
-                                        bean.getPath(), bean.getType(), null);
-                                message.setVisibility(View.VISIBLE);
-                                SendListUI.remove(0);
-                                if (SendListUI.size() == 0) {
-                                    SendListUI.clear();
-                                }
-                                sendlistadapter.notifyDataSetChanged();
-                                list_all.removeAllViews();
-                                final int adapterCount = sendlistadapter.getCount();
-
-                                for (int i = 0; i < adapterCount; i++) {
-                                    View item = sendlistadapter.getView(i, null, null);
-                                    list_all.addView(item);
-                                }
-//                                relative_send_layout.getLayoutParams().height = 90;
-                            } else if (SendListUI.size() > 1) {
-                                String path = null;
-                                for (int i = 0; i < SendListUI.size(); i++) {
-                                    SendListUIBean bean = SendListUI.get(i);
-                                    if (path == null) {
-                                        path = bean.getPath();
-                                    } else {
-                                        path = path + "," + bean.getPath();
-                                    }
-                                }
-
-
-                                sendMsg(message.getText().toString().trim(),
-                                        path, "mixedfile", null);
-                                message.setVisibility(View.VISIBLE);
-                                SendListUI.remove(0);
-                                if (SendListUI.size() > 0) {
-                                    SendListUI.clear();
-                                }
-                                sendlistadapter.notifyDataSetChanged();
-                                list_all.removeAllViews();
-                                final int adapterCount = sendlistadapter.getCount();
-
-                                for (int i = 0; i < adapterCount; i++) {
-                                    View item = sendlistadapter.getView(i, null, null);
-                                    list_all.addView(item);
-                                }
-//                                relative_send_layout.getLayoutParams().height = 90;
-
-
-                            } else {
-                                if (message.getText().toString().trim().length() > 0) {
-                                    if (CallDispatcher.LoginUser != null) {
-
-                                        if (message.getText().toString().length() > 700) {
-                                            showToast("Text exceeds 700 characters");
-                                        } else {
-                                            sendMsg(message.getText().toString().trim(),
-                                                    null, "text", null);
-                                            message.setText("");
-                                        }
-
-                                    } else {
-                                        showAlert1("Info", "Check Internet Connection");
-                                        // Toast.makeText(getApplicationContext(),
-                                        // "Kindly login", Toast.LENGTH_LONG)
-                                        // .show();
-                                    }
-
-                                } else {
+//                            if (SendListUI.size() == 1) {
+//                                Log.i("audioplay", "path--->" + strIPath);
+//                                SendListUIBean bean = SendListUI.get(0);
+//                                sendMsg(message.getText().toString().trim(),
+//                                        bean.getPath(), bean.getType(), null);
+//                                message.setVisibility(View.VISIBLE);
+//                                SendListUI.remove(0);
+//                                if (SendListUI.size() == 0) {
+//                                    SendListUI.clear();
+//                                }
+//                                sendlistadapter.notifyDataSetChanged();
+//                                list_all.removeAllViews();
+//                                final int adapterCount = sendlistadapter.getCount();
+//
+//                                for (int i = 0; i < adapterCount; i++) {
+//                                    View item = sendlistadapter.getView(i, null, null);
+//                                    list_all.addView(item);
+//                                }
+////                                relative_send_layout.getLayoutParams().height = 90;
+//                            } else if (SendListUI.size() > 1) {
+//                                String path = null;
+//                                for (int i = 0; i < SendListUI.size(); i++) {
+//                                    SendListUIBean bean = SendListUI.get(i);
+//                                    if (path == null) {
+//                                        path = bean.getPath();
+//                                    } else {
+//                                        path = path + "," + bean.getPath();
+//                                    }
+//                                }
+//
+//
+//                                sendMsg(message.getText().toString().trim(),
+//                                        path, "mixedfile", null);
+//                                message.setVisibility(View.VISIBLE);
+//                                SendListUI.remove(0);
+//                                if (SendListUI.size() > 0) {
+//                                    SendListUI.clear();
+//                                }
+//                                sendlistadapter.notifyDataSetChanged();
+//                                list_all.removeAllViews();
+//                                final int adapterCount = sendlistadapter.getCount();
+//
+//                                for (int i = 0; i < adapterCount; i++) {
+//                                    View item = sendlistadapter.getView(i, null, null);
+//                                    list_all.addView(item);
+//                                }
+////                                relative_send_layout.getLayoutParams().height = 90;
+//
+//
+//                            } else {
+//                                if (message.getText().toString().trim().length() > 0) {
+//                                    if (CallDispatcher.LoginUser != null) {
+//
+//                                        if (message.getText().toString().length() > 700) {
+//                                            showToast("Text exceeds 700 characters");
+//                                        } else {
+//                                            sendMsg(message.getText().toString().trim(),
+//                                                    null, "text", null);
+//                                            message.setText("");
+//                                        }
+//
+//                                    } else {
+//                                        showAlert1("Info", "Check Internet Connection");
+//                                        // Toast.makeText(getApplicationContext(),
+//                                        // "Kindly login", Toast.LENGTH_LONG)
+//                                        // .show();
+//                                    }
+//
+//                                } else {
 
 //
                                     if (DBAccess.getdbHeler(context).getChatTemplates() != null) {
@@ -1882,8 +1891,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     }
 
                                     // showToast("Sorry, cant able to send empty message");
-                                }
-                            }
+//                                }
+//                            }
                         } catch (Exception e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
@@ -3853,21 +3862,79 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     startActivity(settingIntent);
                     break;
                 case R.id.btn_cancel:
-//				ContactsFragment contactsFragment = ContactsFragment
-//						.getInstance(context);
-//				FragmentManager fragmentManager = SingleInstance.mainContext
-//						.getSupportFragmentManager();
-//				FragmentTransaction fragmentTransaction = fragmentManager
-//						.beginTransaction();
-//				fragmentTransaction.replace(
-//						R.id.activity_main_content_fragment, contactsFragment);
-//				fragmentTransaction.commitAllowingStateLoss();
                     finish();
                     break;
                 case R.id.c_audio_call:
                     if (audio_call.getTag() == 1) {
-//                    msgoptionview.setVisibility(View.VISIBLE);
-                        sendSplMsg();
+                        msgoptionview.setVisibility(View.GONE);
+                        if(isprivateclicked || isReplyclicked || isurgentclicked || isconfirmclicked)
+                            sendSplMsg();
+                        else {
+
+                            if (SendListUI.size() == 1) {
+                                Log.i("audioplay", "path--->" + strIPath);
+                                SendListUIBean bean = SendListUI.get(0);
+                                sendMsg(message.getText().toString().trim(),
+                                        bean.getPath(), bean.getType(), null);
+                                message.setVisibility(View.VISIBLE);
+                                SendListUI.remove(0);
+                                if (SendListUI.size() == 0) {
+                                    SendListUI.clear();
+                                }
+                                sendlistadapter.notifyDataSetChanged();
+                                list_all.removeAllViews();
+                                final int adapterCount = sendlistadapter.getCount();
+
+                                for (int i = 0; i < adapterCount; i++) {
+                                    View item = sendlistadapter.getView(i, null, null);
+                                    list_all.addView(item);
+                                }
+//                                relative_send_layout.getLayoutParams().height = 90;
+                            } else if (SendListUI.size() > 1) {
+                                String path = null;
+                                for (int i = 0; i < SendListUI.size(); i++) {
+                                    SendListUIBean bean = SendListUI.get(i);
+                                    if (path == null) {
+                                        path = bean.getPath();
+                                    } else {
+                                        path = path + "," + bean.getPath();
+                                    }
+                                }
+
+
+                                sendMsg(message.getText().toString().trim(),
+                                        path, "mixedfile", null);
+                                message.setVisibility(View.VISIBLE);
+                                SendListUI.remove(0);
+                                if (SendListUI.size() > 0) {
+                                    SendListUI.clear();
+                                }
+                                sendlistadapter.notifyDataSetChanged();
+                                list_all.removeAllViews();
+                                final int adapterCount = sendlistadapter.getCount();
+
+                                for (int i = 0; i < adapterCount; i++) {
+                                    View item = sendlistadapter.getView(i, null, null);
+                                    list_all.addView(item);
+                                }
+
+
+                            } else {
+                                if (message.getText().toString().trim().length() > 0) {
+                                    if (CallDispatcher.LoginUser != null) {
+                                        if (message.getText().toString().length() > 700) {
+                                            showToast("Text exceeds 700 characters");
+                                        } else {
+                                            sendMsg(message.getText().toString().trim(),
+                                                    null, "text", null);
+                                            message.setText("");
+                                        }
+                                    } else {
+                                        showAlert1("Info", "Check Internet Connection");
+                                    }
+                                }
+                            }
+                        }
                     } else {
 
                         if (isGroup || isRounding) {
@@ -4484,6 +4551,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 
                 Log.i("selectAll_buddy", "selectAll_buddy contains status : " + gcBean.isSelect());
                 if(gcBean.getCategory()!=null&&gcBean.getCategory().equalsIgnoreCase("call")) {
+                    swipeposition = 2;
                     normalcontainer.setVisibility(View.GONE);
                     join_lay.setVisibility(View.VISIBLE);
                     tv_username.setText(gcBean.getFtpPassword());
@@ -8961,6 +9029,29 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 startActivity(intent);
             }
         });
+        Vector<TaskDetailsBean> tasklist = DBAccess.getdbHeler().getAllTaskDetails(strQuery);
+        Collections.sort(tasklist, new TaskDateComparator());
+        Vector<TaskDetailsBean> taskList = getdatelist(tasklist);
+        final RoundingTaskAdapter taskAdapter = new RoundingTaskAdapter(context, R.layout.round_task_row, taskList);
+        tasklistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                TaskDetailsBean tBean = (TaskDetailsBean) taskAdapter.getItem(i);
+                Intent intent = new Intent(context, TaskCreationActivity.class);
+                intent.putExtra("groupid", tBean.getGroupid());
+                intent.putExtra("taskid", tBean.getTaskId());
+                intent.putExtra("isEdit", true);
+                SingleInstance.mainContext.startActivity(intent);
+            }
+        });
+        tasklistView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                TaskDetailsBean tBean = (TaskDetailsBean) taskAdapter.getItem(i);
+                deleteTask(tBean.getTaskId(), tBean.getGroupid(), tBean.getTaskdesc());
+                return true;
+            }
+        });
         taskSorting(groupBean.getGroupId());
     }
     public void countofcheckbox(int count)
@@ -9692,29 +9783,31 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         handler.post(new Runnable() {
             @Override
             public void run() {
-                tasklistView.setAdapter(taskAdapter);
-                taskAdapter.notifyDataSetChanged();
+                if(tasklistView!=null) {
+                    tasklistView.setAdapter(taskAdapter);
+                    taskAdapter.notifyDataSetChanged();
+                }
             }
         });
-        tasklistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                TaskDetailsBean tBean = (TaskDetailsBean) taskAdapter.getItem(i);
-                Intent intent = new Intent(context, TaskCreationActivity.class);
-                intent.putExtra("groupid", tBean.getGroupid());
-                intent.putExtra("taskid", tBean.getTaskId());
-                intent.putExtra("isEdit", true);
-                SingleInstance.mainContext.startActivity(intent);
-            }
-        });
-        tasklistView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                TaskDetailsBean tBean = (TaskDetailsBean) taskAdapter.getItem(i);
-                deleteTask(tBean.getTaskId(), tBean.getGroupid(), tBean.getTaskdesc());
-                return true;
-            }
-        });
+//        tasklistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                TaskDetailsBean tBean = (TaskDetailsBean) taskAdapter.getItem(i);
+//                Intent intent = new Intent(context, TaskCreationActivity.class);
+//                intent.putExtra("groupid", tBean.getGroupid());
+//                intent.putExtra("taskid", tBean.getTaskId());
+//                intent.putExtra("isEdit", true);
+//                SingleInstance.mainContext.startActivity(intent);
+//            }
+//        });
+//        tasklistView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                TaskDetailsBean tBean = (TaskDetailsBean) taskAdapter.getItem(i);
+//                deleteTask(tBean.getTaskId(), tBean.getGroupid(), tBean.getTaskdesc());
+//                return true;
+//            }
+//        });
     }
 
     public class TeamMembersAdapter extends ArrayAdapter<UserBean> {

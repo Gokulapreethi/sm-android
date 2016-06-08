@@ -394,8 +394,8 @@ public class DashBoardFragment extends Fragment {
                                 public void onClick(View view) {
                                     setType = "ll_msg";
                                     notification.performClick();
-                                    DBAccess.getdbHeler(mainContext)
-                                            .setReadAllCount(CallDispatcher.LoginUser, "");
+//                                    DBAccess.getdbHeler(mainContext)
+//                                            .setReadAllCount(CallDispatcher.LoginUser, "");
                                 }
                             });
                             ll_call.setOnClickListener(new View.OnClickListener() {
@@ -785,12 +785,14 @@ public class DashBoardFragment extends Fragment {
                     Log.i("AAAA","NOTIFY LIST from user "+nBean.getNotifttype()+" , "+nBean.getSortdate()+" , "+nBean.getFrom());
                     Log.d("AAAA", "Notifyid" + nBean.getFileid());
                     if(nBean.getViewed()==0) {
-                        ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
-                        nBean.setProfilePic(pBean.getPhoto());
-                        if(pBean!=null)
-                        nBean.setUsername(pBean.getFirstname()+" "+pBean.getLastname());
-                        tempnotifylist.add(nBean);
-                        seacrhnotifylist.add(nBean);
+                        if(nBean.getCategory()!=null&&!nBean.getCategory().equalsIgnoreCase("call")) {
+                            ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+                            nBean.setProfilePic(pBean.getPhoto());
+                            if (pBean != null)
+                                nBean.setUsername(pBean.getFirstname() + " " + pBean.getLastname());
+                            tempnotifylist.add(nBean);
+                            seacrhnotifylist.add(nBean);
+                        }
                     }
                 }
             }

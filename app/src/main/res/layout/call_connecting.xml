@@ -232,7 +232,8 @@
                         android:id="@+id/buddyvideoview01"
                         android:layout_width="fill_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:visibility="gone">
 
                         <android.opengl.GLSurfaceView
                             android:id="@+id/buddysurfaceview01"
@@ -431,7 +432,6 @@
      android:layout_height="wrap_content"
      android:layout_alignBottom="@+id/myrelative_layout"
      android:layout_alignParentBottom="true"
-     android:layout_marginRight="20dp"
      android:layout_marginTop="50dp"
      android:layout_marginBottom="30dp"
      android:gravity="center"

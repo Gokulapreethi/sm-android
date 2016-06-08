@@ -52,7 +52,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:layout_weight="0.12">
+
 
         <ImageView
             android:id="@+id/newfile"
@@ -61,16 +64,28 @@
             android:layout_gravity="center"
             android:layout_below="@+id/tv"
             android:layout_marginTop="10dp"
-            android:background="@drawable/new_file"
+            android:background="@color/black3"
             android:layout_centerHorizontal="true" />
             <ImageView
-                android:layout_width="30dp"
+                android:id="@+id/file_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/new_file"
+                android:layout_toLeftOf="@+id/new_file_create"
+                android:layout_toStartOf="@+id/new_file_create"/>
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
-                android:layout_below="@+id/tv"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/new_file"
-                android:layout_centerHorizontal="true" />
+                android:text="New File"
+                android:gravity="center"
+                android:textColor="@color/snazlgray"
+                android:layout_alignTop="@+id/new_file_create"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/tv_file" />
 
         <ImageView
             android:layout_width="60dp"
@@ -79,8 +94,8 @@
             android:background="@drawable/button_add_photo"
             android:layout_gravity="center_horizontal"
             android:layout_alignBottom="@+id/newfile"
-            android:layout_alignRight="@+id/newfile"
-            android:layout_alignEnd="@+id/newfile" />
+            android:layout_toRightOf="@+id/tv_file"
+            android:layout_toEndOf="@+id/tv_file" />
         </RelativeLayout>
 
         <LinearLayout

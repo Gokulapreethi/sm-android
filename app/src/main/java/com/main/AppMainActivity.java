@@ -377,7 +377,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				public void onChronometerTick(Chronometer arg0) {
 
 					CharSequence text = ctimer.getText();
-						ctimer.setText("0" + text);
+						ctimer.setText(text);
 
 				}
 			});
@@ -386,7 +386,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				public void onChronometerTick(Chronometer arg0) {
 
 					CharSequence text = cvtimer.getText();
-					cvtimer.setText("0" + text);
+					cvtimer.setText(text);
 
 				}
 			});
@@ -6094,6 +6094,17 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						RoundingFragment.newInstance(context).getList();
 					}
 				});
+			}else if(obj instanceof WebServiceBean){
+				RoundingFragment.isEmptyList=true;
+				Log.d("AAA","Inside notifyRoundingGroupList webservice ");
+				handler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						RoundingFragment.newInstance(context).getList();
+					}
+				});
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -7472,6 +7483,10 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 							}
 						});
 					}
+					for(BuddyInformationBean bib:ContactsFragment.getBuddyList()){
+						if(bib.getName().equalsIgnoreCase(pBean.getUsername()))
+							bib.setProfile_picpath(pBean.getPhoto());
+					}
 					DBAccess.getdbHeler().insertorupdateProfileDetails(pBean);
 					if(!(pBean.getPhoto().equals(null) || pBean.getPhoto().equals(""))) {
 						String[] param = new String[3];
@@ -8214,8 +8229,8 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		}
 		if (WebServiceReferences.contextTable.containsKey("groupactivity")) {
 
-			ForwardUserSelect forwarduser = (ForwardUserSelect) WebServiceReferences.contextTable.get("groupactivity");
-			forwarduser.finish();
+			GroupActivity groupactivity = (GroupActivity) WebServiceReferences.contextTable.get("groupactivity");
+			groupactivity.finish();
 		}
 
 

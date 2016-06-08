@@ -489,6 +489,7 @@ public class RoundNewPatientActivity extends Activity {
                     buddylist.add(userBean.getBuddyName());
                 }
                 intent.putStringArrayListExtra("buddylist", buddylist);
+                intent.putExtra("invite", true);
                 Log.i("AAAA", "members list " + buddylist.size());
                 startActivityForResult(intent, 3);
             }

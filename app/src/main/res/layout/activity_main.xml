@@ -138,26 +138,26 @@
 
 
         <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:orientation="vertical">-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:orientation="vertical">-->
 
-            <!--<LinearLayout-->
-                <!--android:id="@+id/container_toolbar"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:orientation="vertical">-->
+        <!--<LinearLayout-->
+        <!--android:id="@+id/container_toolbar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical">-->
 
-                <!--<include-->
-                    <!--android:id="@+id/toolbar"-->
-                    <!--layout="@layout/toolbar" />-->
-            <!--</LinearLayout>-->
+        <!--<include-->
+        <!--android:id="@+id/toolbar"-->
+        <!--layout="@layout/toolbar" />-->
+        <!--</LinearLayout>-->
 
-            <!--<FrameLayout-->
-                <!--android:id="@+id/container_body"-->
-                <!--android:layout_width="fill_parent"-->
-                <!--android:layout_height="0dp"-->
-                <!--android:layout_weight="1" />-->
+        <!--<FrameLayout-->
+        <!--android:id="@+id/container_body"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="1" />-->
 
 
         <!--</LinearLayout>-->
@@ -169,19 +169,23 @@
             android:layout_height="match_parent"
             android:background="@color/black2" >
 
-        <FrameLayout
-            android:id="@+id/activity_main_content_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/black2" >
+            <FrameLayout
+                android:id="@+id/activity_main_content_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/black2" >
 
             </FrameLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end|right">
 
             <RelativeLayout
                 android:id="@+id/audio_minimize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                android:layout_gravity="end|right"
                 android:layout_marginTop="65dp"
                 android:visibility="gone"
                 android:background="@drawable/minimize_lay"
@@ -210,7 +214,7 @@
                 android:id="@+id/video_minimize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                android:layout_gravity="end|right"
                 android:layout_marginTop="110dp"
                 android:visibility="gone"
                 android:background="@drawable/minimize_lay">
@@ -234,7 +238,7 @@
                 android:id="@+id/min_outcall"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
-                android:layout_gravity="end"
+                android:layout_gravity="end|right"
                 android:layout_weight="1"
                 android:background="@drawable/min_out_call"
                 android:layout_marginTop="140dp"
@@ -243,11 +247,12 @@
                 android:id="@+id/min_incall"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
-                android:layout_gravity="end"
+                android:layout_gravity="end|right"
                 android:layout_weight="1"
                 android:background="@drawable/min_in_call"
                 android:layout_marginTop="180dp"
                 android:visibility="gone"/>
+            </RelativeLayout>
         </FrameLayout>
 
     </LinearLayout>

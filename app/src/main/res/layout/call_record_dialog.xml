@@ -57,7 +57,6 @@
             >
 
             <ImageView
-                android:id="@+id/own_image"
                 android:layout_width="fill_parent"
                 android:layout_height="200dp"
                 android:padding="30dp"
@@ -138,15 +137,23 @@
         </FrameLayout>
 
         </RelativeLayout>
+        <ImageView
+            android:id="@+id/own_image"
+            android:layout_width="fill_parent"
+            android:layout_height="180dp"
+            android:padding="30dp"
+            android:visibility="gone"
+            android:background="@color/blue2"
+            />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="42dp"
-            android:layout_below="@+id/msg_container_receiver"
-            android:layout_toLeftOf="@+id/settings_image"
             android:layout_marginTop="10dp"
             android:visibility="visible"
             android:id="@+id/ad_play"
+            android:layout_alignBottom="@+id/own_image"
+            android:layout_alignBaseline="@+id/own_image"
             android:background="@drawable/bg_bluecolr"
             >
 

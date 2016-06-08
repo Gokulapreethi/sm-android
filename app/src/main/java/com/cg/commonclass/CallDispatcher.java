@@ -5,6 +5,8 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -37,6 +39,7 @@ import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.media.AudioManager;
 import android.media.ExifInterface;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.net.ConnectivityManager;
@@ -71,6 +74,8 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -128,6 +133,7 @@ import com.cg.profiles.BusCard;
 import com.cg.profiles.ViewProfiles;
 import com.cg.quickaction.ContactLogics;
 import com.cg.quickaction.QuickActionSelectcalls;
+import com.cg.rounding.NotificationReceiver;
 import com.cg.services.PlayerService;
 import com.cg.settings.MenuPage;
 import com.cg.settings.UserSettingsBean;
@@ -157,6 +163,7 @@ import com.main.AppMainActivity;
 import com.main.AvatarFragment;
 import com.main.ContactsFragment;
 import com.main.CreateProfileFragment;
+import com.main.DashBoardFragment;
 import com.main.ExchangesFragment;
 import com.main.FilesFragment;
 import com.main.FormsFragment;
@@ -243,6 +250,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -388,6 +396,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	private static String localipaddsress;
 
 	private static String publicipaddress;
+	public static boolean isCallignored=false;
 
 	private String cbserver1 = null;
 
@@ -584,6 +593,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	public HashMap<String, Bitmap> bitmap_table = new HashMap<String, Bitmap>();
 
 	public BackgroundNotification notifier = null;
+	private Handler mHandler;
 
 	/**
 	 * When the user make a call from the conference screen add that name as a
@@ -644,6 +654,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	// public HeartbeatTimer HBT = null;
 
 	public boolean isAnotherUserLogedIn = false;
+	private PlaybackUpdater mProgressUpdater = new PlaybackUpdater();
 
 	private DBAccess dbhelper = null;
 
@@ -672,6 +683,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	public ArrayList<String> accepted_users = new ArrayList<String>();
 
 	public ArrayList<CompleteListBean> multiple_componentlist = new ArrayList<CompleteListBean>();
+
+	final MediaPlayer mPlayer = new MediaPlayer();
+	int mPlayingPosition = 0;
 
 	public static ArrayList<InputsFields> inputFieldList = new ArrayList<InputsFields>();
 
@@ -2184,7 +2198,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					// Incoming call
 					if (isCallInitiate
 							|| GSMCallisAccepted
-							|| WebServiceReferences.contextTable
+							|| SingleInstance.instanceTable
 									.containsKey("connection")) {
 						// rejectInComingCall(sb);
 						if (currentSessionid != null
@@ -2402,6 +2416,21 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					// Hang up
 
 					// if (CallDispatcher.sb.getBs_parentid() != null) {
+					SingleInstance.mainContext.runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							ImageView min_outcall = (ImageView) SingleInstance.mainContext.findViewById(R.id.min_outcall);
+							min_outcall.setVisibility(View.GONE);
+							ImageView min_incall = (ImageView) SingleInstance.mainContext.findViewById(R.id.min_incall);
+							min_incall.setVisibility(View.GONE);
+							RelativeLayout audio_minimize = (RelativeLayout) SingleInstance.mainContext.findViewById(R.id.audio_minimize);
+							audio_minimize.setVisibility(View.GONE);
+							RelativeLayout video_minimize = (RelativeLayout) SingleInstance.mainContext.findViewById(R.id.video_minimize);
+							video_minimize.setVisibility(View.GONE);
+						}
+					});
+
+
 					CallDispatcher.sb.setEndTime(getCurrentDateandTime());
 					Object objCallScreen = SingleInstance.instanceTable
 							.get("callscreen");
@@ -2424,16 +2453,26 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					SingleInstance.mainContext.notifyUI();
 					// }
 					if (conferenceMembers.size() == 1) {
+						isCallInitiate=false;
+						FragmentManager fm =
+								AppReference.mainContext.getSupportFragmentManager();
+						FragmentTransaction ft = fm.beginTransaction();
+						ContactsFragment contactsFragment = ContactsFragment
+								.getInstance(context);
+						ft.replace(R.id.activity_main_content_fragment,
+								contactsFragment);
+						ft.commitAllowingStateLoss();
+						if(!isCallignored)
 						handlerForCall.post(new Runnable() {
 							@Override
 							public void run() {
-								showCallHistory();
+								showCallHistory(CallDispatcher.sb.getSessionid(),CallDispatcher.sb.getCallType());
 							}
 						});
 					}
 					if (SingleInstance.instanceTable
 							.containsKey("callscreen")
-							|| WebServiceReferences.contextTable
+							|| SingleInstance.instanceTable
 									.containsKey("connection")
 							|| isIncomingAlert) {
 						Object objCallScreen1 = SingleInstance.instanceTable
@@ -2447,7 +2486,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						}
 
 						if (sb.getResult() != null) {
-							if (WebServiceReferences.contextTable
+							if (SingleInstance.instanceTable
 									.containsKey("connection")
 									&& LoginUser.equals(callinitiator)) {
 
@@ -2515,7 +2554,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									buddySignall.clear();
 									currentSessionid = null;
 									isCallInitiate = false;
-									if (!WebServiceReferences.contextTable
+									if (!SingleInstance.instanceTable
 											.containsKey("connection")) {
 										if (WebServiceReferences.missedcallCount
 												.containsKey(sb.getFrom())) {
@@ -2531,12 +2570,15 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 //										DBAccess.getdbHeler()
 //												.saveOrUpdateRecordtransactiondetails(
 //														sb);
-										showMissedcallAlert(
-												sb,
-												SipNotificationListener
-														.getCurrentContext(),
-												WebServiceReferences.missedcallCount
-														.get(sb.getFrom()));
+										if(!isCallignored) {
+											isCallignored=true;
+											showMissedcallAlert(
+													sb,
+													SipNotificationListener
+															.getCurrentContext(),
+													WebServiceReferences.missedcallCount
+															.get(sb.getFrom()));
+										}
 									}
 									isIncomingCall = false;
 								}
@@ -2586,14 +2628,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							acalObj.UpdateConferenceMembers(from, false);
 						}
 
-						FragmentManager fm =
-								AppReference.mainContext.getSupportFragmentManager();
-						FragmentTransaction ft = fm.beginTransaction();
-						ContactsFragment contactsFragment = ContactsFragment
-								.getInstance(context);
-						ft.replace(R.id.activity_main_content_fragment,
-								contactsFragment);
-						ft.commitAllowingStateLoss();
+
 						try {
 
 							final String signalId = sb.getSignalid();
@@ -2626,7 +2661,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								public void run() {
 									try {
 
-										Toast.makeText(context, sb.getFrom()+" Call Dropped",
+										Toast.makeText(context, sb.getFrom() + " Call Dropped",
 												3000).show();
 									} catch (Exception e) {
 										// TODO: handle exception
@@ -2970,7 +3005,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					handlerForCall.post(new Runnable() {
 						@Override
 						public void run() {
-							showCallHistory();
+							showCallHistory(CallDispatcher.sb.getSessionid(),CallDispatcher.sb.getCallType());
 						}
 					});
 
@@ -3580,8 +3615,6 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 			@Override
 			public void run() {
-				ImageView min_outcall=(ImageView)SingleInstance.mainContext.findViewById(R.id.min_incall);
-				min_outcall.setVisibility(View.GONE);
 
 				Context context = null;
 				if (SingleInstance.contextTable.get("groupchat") != null) {
@@ -11415,6 +11448,19 @@ private TrustManager[] get_trust_mgr() {
 							// signBean);
 							// }
 							//
+							Intent intent = new Intent(SingleInstance.mainContext, NotificationReceiver.class);
+							PendingIntent pIntent = PendingIntent.getActivity(SingleInstance.mainContext, (int) System.currentTimeMillis(), intent, 0);
+							Notification n  = new Notification.Builder(SingleInstance.mainContext)
+									.setContentTitle("New Message from " + signBean.getFrom())
+									.setSmallIcon(R.drawable.logo_snazmed)
+									.setContentIntent(pIntent)
+									.setAutoCancel(true).build();
+
+
+							NotificationManager notificationManager =
+									(NotificationManager) SingleInstance.mainContext.getSystemService(SingleInstance.mainContext.NOTIFICATION_SERVICE);
+
+							notificationManager.notify(0, n);
 							AppMainActivity appMainActivity=(AppMainActivity) SingleInstance.contextTable
 									.get("MAIN");
 							appMainActivity.closingActivity();
@@ -13317,7 +13363,7 @@ private TrustManager[] get_trust_mgr() {
 	public void ShowConnectionScreen(SignalingBean sbean, String username,
 			Context context, boolean isconf) {
 		try {
-			if (!WebServiceReferences.contextTable.containsKey("connection")) {
+			if (!SingleInstance.instanceTable.containsKey("connection")) {
 				appMainActivity.closingActivity();
 				FragmentManager fm =
 						AppReference.mainContext.getSupportFragmentManager();
@@ -16466,7 +16512,7 @@ private TrustManager[] get_trust_mgr() {
 
 	}
 
-	private void showCallHistory()
+	private void showCallHistory(final String strSessionId, final String callType)
 	{
 		try {
 			final Dialog dialog = new Dialog(SingleInstance.mainContext);
@@ -16475,8 +16521,74 @@ private TrustManager[] get_trust_mgr() {
 			dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 			dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
 			dialog.show();
+			mHandler=new Handler();
 			Button save = (Button) dialog.findViewById(R.id.save);
 			Button delete = (Button) dialog.findViewById(R.id.delete);
+			final ImageView play_button = (ImageView) dialog.findViewById(R.id.play_button);
+			final SeekBar seekBar1 = (SeekBar) dialog.findViewById(R.id.seekBar1);
+			final TextView txt_time= (TextView)dialog.findViewById(R.id.txt_time);
+			play_button.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					String file = Environment
+							.getExternalStorageDirectory()
+							+ "/COMMedia/CallRecording/"
+							+ strSessionId + ".wav";
+					Log.d("Stringpath", "mediapath--->" + file);
+					File newfile=new File(file);
+
+					if (mPlayer.isPlaying()) {
+						mPlayer.pause();
+						play_button.setBackgroundResource(R.drawable.play);
+					} else {
+						play_button.setBackgroundResource(R.drawable.audiopause);
+						if(newfile.exists())
+						playAudio(file, 0);
+
+					}
+					if(newfile.exists()) {
+
+						int position = 0;
+						if (position == mPlayingPosition) {
+							mProgressUpdater.mBarToUpdate = seekBar1;
+							mProgressUpdater.tvToUpdate = txt_time;
+							mHandler.postDelayed(mProgressUpdater, 100);
+						} else {
+
+							try {
+								Log.d("Stringpath", "mediapath--->");
+								seekBar1.setProgress(0);
+								MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+								mmr.setDataSource(file);
+								String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+								mmr.release();
+								String min, sec;
+								min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration)));
+								sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(Long.parseLong(duration)) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration))));
+								if (Integer.parseInt(min) < 10) {
+									min = 0 + String.valueOf(min);
+								}
+								if (Integer.parseInt(sec) < 10) {
+									sec = 0 + String.valueOf(sec);
+								}
+								txt_time.setText(min + ":" + sec);
+//                            audio_tv.setText(duration);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+
+							seekBar1.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+							seekBar1.setProgress(0);
+							if (mProgressUpdater.mBarToUpdate == seekBar1) {
+								//this progress would be updated, but this is the wrong position
+								mProgressUpdater.mBarToUpdate = null;
+							}
+						}
+					}
+				}
+
+			});
+
 
 			save.setOnClickListener(new View.OnClickListener() {
 				@Override
@@ -16487,11 +16599,13 @@ private TrustManager[] get_trust_mgr() {
 					intentComponent.putExtra("buddyname",
 							CallDispatcher.sb.getFrom());
 					intentComponent.putExtra("individual", true);
+					if(callType.equalsIgnoreCase("VC"))
 					intentComponent.putExtra("audiocall",false);
 					intentComponent.putExtra("isDelete", false);
 					intentComponent.putExtra("sessionid",
 							CallDispatcher.sb.getSessionid());
 					context.startActivity(intentComponent);
+					mPlayer.stop();
 				}
 			});
 			delete.setOnClickListener(new View.OnClickListener() {
@@ -16503,11 +16617,13 @@ private TrustManager[] get_trust_mgr() {
 					intentComponent.putExtra("buddyname",
 							CallDispatcher.sb.getFrom());
 					intentComponent.putExtra("isDelete", true);
-					intentComponent.putExtra("audiocall",false);
+					if(callType.equalsIgnoreCase("VC"))
+						intentComponent.putExtra("audiocall",false);
 					intentComponent.putExtra("individual", true);
 					intentComponent.putExtra("sessionid",
 							CallDispatcher.sb.getSessionid());
 					context.startActivity(intentComponent);
+					mPlayer.stop();
 				}
 			});
 		}catch (Exception e){
@@ -16515,4 +16631,62 @@ private TrustManager[] get_trust_mgr() {
 		}
 
 	}
+	private class PlaybackUpdater implements Runnable {
+		public SeekBar mBarToUpdate = null;
+		public TextView tvToUpdate = null;
+
+		@Override
+		public void run() {
+			if ((mPlayingPosition != -1) && (null != mBarToUpdate)) {
+				Log.d("Mposition","seekbar---->");
+				double tElapsed = mPlayer.getCurrentPosition();
+				int fTime = mPlayer.getDuration();
+				double timeRemaining = fTime - tElapsed;
+				double sTime = mPlayer.getCurrentPosition();
+
+				String min, sec;
+				min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes((long) sTime));
+				sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds((long) sTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) sTime)));
+				if (Integer.parseInt(min) < 10) {
+					min = 0 + String.valueOf(min);
+				}
+				if (Integer.parseInt(sec) < 10) {
+					sec = 0 + String.valueOf(sec);
+				}
+				tvToUpdate.setText(min + ":" + sec);
+				mBarToUpdate.setProgress((100 * mPlayer.getCurrentPosition() / mPlayer.getDuration()));
+//                tvToUpdate.setText(String.format("%d:%d ",TimeUnit.MILLISECONDS.toMinutes((long) fTime),TimeUnit.MILLISECONDS.toSeconds((long) fTime) -TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) fTime))));
+				mHandler.postDelayed(this, 500);
+
+			} else {
+				//not playing so stop updating
+			}
+		}
+	}
+
+	private void stopPlayback() {
+		mPlayingPosition = 0;
+		mProgressUpdater.mBarToUpdate = null;
+		mProgressUpdater.tvToUpdate = null;
+		if (mPlayer != null && mPlayer.isPlaying())
+			mPlayer.stop();
+	}
+
+	public void playAudio(String fname,  int position) {
+		try {
+			mPlayer.reset();
+			mPlayer.setDataSource(fname);
+			mPlayer.prepare();
+			mPlayer.start();
+			mPlayingPosition = position;
+
+			mHandler.postDelayed(mProgressUpdater, 500);
+
+		} catch (IOException e) {
+
+			e.printStackTrace();
+			stopPlayback();
+		}
+	}
+
 }

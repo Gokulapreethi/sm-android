@@ -243,6 +243,7 @@ public class AddGroupMembers extends Activity {
 
                         } else {
 							Intent intent=getIntent();
+							if(invite)
 							intent.putExtra("calltype", calltype);
 							intent.putExtra("list", users);
                             setResult(RESULT_OK, intent);

@@ -188,6 +188,15 @@ public class PatientRoundingFragment extends Fragment {
                         dialog.dismiss();
                     }
                 });
+                newTask.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mainContext, TaskCreationActivity.class);
+                        intent.putExtra("groupid", pBean.getGroupid());
+                        startActivity(intent);
+                        dialog.dismiss();
+                    }
+                });
                 dischargePatient.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

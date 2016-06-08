@@ -221,9 +221,9 @@ public class FileInfoFragment extends Fragment {
                             @Override
                             public void onClick(View v) {
 
-                                Intent intent = new Intent(SingleInstance.mainContext, ForwardUserSelect.class);
-                                intent.putExtra("fromfiles",true);
-                                SingleInstance.mainContext.startActivity(intent);
+                                Intent intent = new Intent(mainContext, ForwardUserSelect.class);
+                                intent.putExtra("fromfile",true);
+                                SingleInstance.mainContext.startActivityForResult(intent, 112);
 
                             }
                         });
@@ -273,13 +273,40 @@ public class FileInfoFragment extends Fragment {
     private ArrayList<String> SendbuddyList = new ArrayList<String>();
     public ArrayList<String> uploadDatas = new ArrayList<String>();
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
+            Log.i("AAAA", "forawrd user " );
+            super.onActivityResult(requestCode, resultCode, data);
+            if (requestCode == 112) {
+                    String members = data.getStringExtra("SELECTED_MEMBERS");
+                    String groupmembers = data.getStringExtra("SELECTED_GROUPS");
+                    Log.i("AAAA", "forawrd user " + groupmembers + members);
+                    if (members != null) {
+                        String[] buddies = members.split(",");
+                        for (String temp : buddies) {
+                            SendbuddyList.add(temp);
+                        }
+                    }
+                    if (groupmembers != null) {
+                        String[] groupMembers = groupmembers.split(",");
+                        for (String temp : groupMembers) {
+                            SendbuddyList.add(temp);
+                        }
+                    }
+                shareMultipleFiles();
+                }
+        } catch (Exception e) {
+
+        }
+    }
+
     private void shareMultipleFiles() {
 
-        try {{
-
+        try {
 
             if (SendbuddyList.size() > 0) {
-
                         if (WebServiceReferences.running) {
                             uploadDatas.add(cbean.getcomponentType());
                             uploadDatas.add("false");
@@ -289,11 +316,6 @@ public class FileInfoFragment extends Fragment {
                             Log.d("sendershare", "" + uploadDatas);
                             sendshare(true);
                         }
-
-
-
-
-
             } else {
                 Toast.makeText(mainContext,
                         SingleInstance.mainContext.getResources().getString(R.string.kindly_select_any_buddies),
@@ -302,8 +324,6 @@ public class FileInfoFragment extends Fragment {
             }
 
             // sendShare(spinner1.getSelectedItem().toString());
-
-        }
         } catch (Exception e) {
             // TODO Auto-generated catch block
             if (AppReference.isWriteInFile)

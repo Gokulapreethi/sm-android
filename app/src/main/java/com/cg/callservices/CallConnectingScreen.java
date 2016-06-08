@@ -123,10 +123,11 @@ public class CallConnectingScreen extends Fragment {
 		mainHeader.setVisibility(View.GONE);
 		final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
 		mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-		min_outcall=(ImageView)getActivity().findViewById(R.id.min_incall);
+		min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
 		min_outcall.setVisibility(View.GONE);
 		ImageView min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
 		min_incall.setVisibility(View.GONE);
+		SingleInstance.instanceTable.put("connection", callConnectingScreen);
 		if(rootView==null) {
 			rootView = inflater.inflate(R.layout.call_connecting, null);
 			Bundle bndl = getArguments();
@@ -220,7 +221,6 @@ public class CallConnectingScreen extends Fragment {
 
 			}
 
-			SingleInstance.instanceTable.put("connection", callConnectingScreen);
 			btn_hangup.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -753,11 +753,6 @@ public class CallConnectingScreen extends Fragment {
 				e.printStackTrace();
 			}
 
-		}
-		try {
-			WebServiceReferences.contextTable.remove("connection");
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 

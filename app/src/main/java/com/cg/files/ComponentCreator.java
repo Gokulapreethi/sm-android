@@ -201,6 +201,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
 	CallDispatcher calldisp;
 	private ImageView newFileImg;
 	EditText filename,fileDesc;
+	TextView tv_file;
+	ImageView file_img;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -289,6 +291,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
 			btnBack = (Button) findViewById(R.id.btn_back);
 			filename=(EditText)findViewById(R.id.ed_createfile);
 			fileDesc=(EditText)findViewById(R.id.ed_filedesc);
+			tv_file=(TextView)findViewById(R.id.tv_file);
+			file_img=(ImageView)findViewById(R.id.file_img);
 			final TextView tv_filename=(TextView)findViewById(R.id.tv_filename);
 			final TextView tv_fileDesc=(TextView)findViewById(R.id.tv_filedesc);
 			btnBack.setBackgroundResource(drawable.navigation_close);
@@ -2725,6 +2729,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
 			Log.d("Test", "Audio@@ComponentCreator@@" + AudioPath.length());
 			btnAudio.setHint(Integer.toString(state));
 			btnAudio.setGravity(Gravity.CENTER);
+			tv_file.setVisibility(View.INVISIBLE);
+			file_img.setVisibility(View.INVISIBLE);
 			imageLoader.DisplayImage(AudioPath,newFileImg, drawable.audionotesnew);
 
 			btnAudio.setHintTextColor(Color.TRANSPARENT);
@@ -2774,6 +2780,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
                 iv.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
 						LayoutParams.WRAP_CONTENT));
 //                imageLoader.DisplayImage(Path, iv, R.drawable.broken);
+				tv_file.setVisibility(View.INVISIBLE);
+				file_img.setVisibility(View.INVISIBLE);
 				imageLoader.DisplayImage(Path, newFileImg, R.drawable.broken);
 //                iv.setOnClickListener(new OnClickListener() {
 //                    @Override
@@ -3527,6 +3535,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
 			if (!path.endsWith(".mp4")) {
 				path = path + ".mp4";
 			}
+			tv_file.setVisibility(View.INVISIBLE);
+			file_img.setVisibility(View.INVISIBLE);
 			imageLoader.DisplayImage(path,newFileImg, drawable.videonotesnew);
 			String thumb = "";
 			if (path.endsWith(".mp4")) {

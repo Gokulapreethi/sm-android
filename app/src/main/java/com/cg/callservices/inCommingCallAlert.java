@@ -226,6 +226,7 @@ public class inCommingCallAlert extends Fragment {
 			ignore.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View view) {
+					CallDispatcher.isCallignored=true;
 					callDisp.stopRingTone();
 					finishactivity();
 				}

@@ -220,7 +220,7 @@ public class CallActiveMembersList extends Activity {
                     } else if (i == 1){
                         holder.header_title.setText("To");
                     }else{
-                        holder.header_title.setVisibility(View.VISIBLE);
+                        holder.header_title.setVisibility(View.INVISIBLE);
                     }
                     holder.statusIcon.setVisibility(View.VISIBLE);
 

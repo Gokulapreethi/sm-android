@@ -55,6 +55,7 @@ public class RoundingFragment extends Fragment {
     public static Vector<GroupBean> grouplist=new Vector<GroupBean>();
     ListView list;
     private ProgressDialog progressDialog = null;
+    public static boolean isEmptyList=false;
 
     public static synchronized RoundingAdapter getRoundingAdapter() {
 
@@ -203,7 +204,7 @@ public class RoundingFragment extends Fragment {
                     WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
             try {
                 RoundingGroupActivity.getallRoundingGroups();
-                if(RoundingGroupActivity.RoundingList.size()==0)
+                if(RoundingGroupActivity.RoundingList.size()==0 && !isEmptyList)
                     showDialog();
                  list=(ListView)_rootView.findViewById(R.id.listview_rounding);
                 adapter=new RoundingAdapter(mainContext,R.layout.grouplist,RoundingGroupActivity.RoundingList);
