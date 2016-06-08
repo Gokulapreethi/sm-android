@@ -796,7 +796,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				intentFilter);
 		NetworkBroadcastReceiver.isRegistered = true;
 		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-		ssid = wifiInfo.getSSID();
+		if(wifiInfo.getSSID()!=null) {
+			ssid = wifiInfo.getSSID();
+		}
 		uploadData = new ArrayList<String>();
 		WebServiceReferences.callDispatch.put("calldispatcher", context);
 		WebServiceReferences.callDispatch.put("calldisp", this);
@@ -8994,7 +8996,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 		Log.i("SSID", "New SSID:" + wifiInfo.getSSID());
 		Log.i("SSID", "network info isconnected:" + networkInfo.isConnected());
 
-		if (ssid != null) {
+		if (ssid != null && wifiInfo != null) {
 			if (!ssid.equals(wifiInfo.getSSID()) && networkInfo.isConnected()) {
 				ssid = wifiInfo.getSSID();
 				// LoginPageFragment loginPageFragment = LoginPageFragment
