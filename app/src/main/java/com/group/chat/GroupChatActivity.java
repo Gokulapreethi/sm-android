@@ -74,6 +74,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.Fingerprint.MainActivity;
 import com.adapter.NotifyListAdapter;
 import com.bean.ConnectionBrokerServerBean;
 import com.bean.GroupChatBean;
@@ -2461,6 +2462,15 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         super.onResume();
         AppMainActivity.inActivity = this;
         context = this;
+        if(AppReference.mainContext.isPinEnable) {
+            if (AppReference.mainContext.openPinActivity) {
+                Intent i = new Intent(GroupChatActivity.this, MainActivity.class);
+                startActivity(i);
+            } else {
+                AppReference.mainContext.count=0;
+                AppReference.mainContext.registerBroadcastReceiver();
+            }
+        }
     }
 
     public void notifyUI(final GroupChatBean gcBean) {
@@ -10763,5 +10773,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             // TODO: handle exception
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i("pin","Groupchatactivity Onstop");
+        AppReference.mainContext.isApplicationBroughtToBackground();
+
     }
 }

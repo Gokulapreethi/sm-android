@@ -325,9 +325,12 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	public static String pinNo=null;
 	public  String[] questions=null;
 	public String seccreatedDate="";
-	private int count=0;
+	public int count=0;
 	public String EidforGroup;
 	public static Chronometer ctimer,cvtimer;
+
+	public String activityOnTop;
+	public boolean openPinActivity=false;
 
 
 	@Override
@@ -666,6 +669,18 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			shareScreen = false;
 		}
 		cancelDialogOnResume();
+		if(isPinEnable) {
+			if (openPinActivity) {
+				openPinActivity=false;
+				Intent i = new Intent(AppMainActivity.this, MainActivity.class);
+				startActivity(i);
+			} else {
+				count=0;
+				registerBroadcastReceiver();
+			}
+		}
+
+
 	}
 
 	public void hideKeyboard() {
@@ -7703,28 +7718,43 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	protected void onStop() {
 		super.onStop();
 		Log.d("AAAA", "onStop ");
-		if(isPinEnable) {
-			if (isApplicationBroughtToBackground()) {
-				Intent i = new Intent(AppMainActivity.this, MainActivity.class);
-				startActivity(i);
-			} else {
-				count=0;
-				registerBroadcastReceiver();
-			}
-		}
+		isApplicationBroughtToBackground();
+//		if(isPinEnable) {
+//			if (isApplicationBroughtToBackground()) {
+//				Intent i = new Intent(AppMainActivity.this, MainActivity.class);
+//				startActivity(i);
+//			} else {
+//				count=0;
+//				registerBroadcastReceiver();
+//			}
+//		}
+
+
 	}
-	private boolean isApplicationBroughtToBackground() {
-		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-		List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
-		if (!tasks.isEmpty()) {
-			ComponentName topActivity = tasks.get(0).topActivity;
-			if (!topActivity.getPackageName().equals(context.getPackageName())) {
-				return true;
-			}
+	public void isApplicationBroughtToBackground() {
+//		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+//		List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
+//		if (!tasks.isEmpty()) {
+//			ComponentName topActivity = tasks.get(0).topActivity;
+//			if (!topActivity.getPackageName().equals(context.getPackageName())) {
+//				return true;
+//			}
+//		}
+//		return false;
+		ActivityManager mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+		List<ActivityManager.RunningTaskInfo> RunningTask = mActivityManager.getRunningTasks(1);
+		ActivityManager.RunningTaskInfo ar = RunningTask.get(0);
+		activityOnTop = ar.topActivity.toString();
+		Log.i("pin", "activityOnTop " + activityOnTop);
+		Log.i("pin", "activityOnTop " + context.getPackageName());
+		if (!activityOnTop.contains(context.getPackageName())) {
+			openPinActivity=true;
+		}else {
+			openPinActivity = false;
 		}
-		return false;
+
 	}
-	private void registerBroadcastReceiver() {
+	public void registerBroadcastReceiver() {
 		final IntentFilter theFilter = new IntentFilter();
 		theFilter.addAction(Intent.ACTION_SCREEN_ON);
 		theFilter.addAction(Intent.ACTION_SCREEN_OFF);
