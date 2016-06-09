@@ -392,9 +392,8 @@ public class ContactsFragment extends Fragment{
 					@Override
 					public void onClick(View view) {
 						if(isContact) {
-							Intent i = new Intent(getActivity(), AMAVerification.class);
-							i.putExtra("fromcall",false);
-							startActivity(i);
+//							Intent i = new Intent(getActivity(), AMAVerification.class);
+//							startActivity(i);
 						}
 					}
 				});

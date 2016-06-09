@@ -939,7 +939,7 @@ public class DashBoardFragment extends Fragment {
     {
         if(getMemorySize()>0) {
             float free = getMemorySize();
-            float total = 5368709120L;
+            float total = 1048576L;
             int num = (int) 5368709120L;
             int temp1 = num - getMemorySize();
             freeSpace.setText(bytesToSize(temp1));

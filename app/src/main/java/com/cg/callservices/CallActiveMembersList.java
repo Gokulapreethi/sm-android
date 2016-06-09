@@ -131,13 +131,13 @@ public class CallActiveMembersList extends Activity {
                 for (BuddyInformationBean buddyInformationBean : ContactsFragment.getBuddyList()){
                     if(user.equalsIgnoreCase(buddyInformationBean.getEmailid())){
                         SignalingBean sb=CallDispatcher.buddySignall.get(buddyInformationBean.getEmailid());
-                        if(sb.getType().equalsIgnoreCase("2"))
-                            buddyInformationBean.setMode("connected");
-                        else if(sb.getType().equalsIgnoreCase("1") && sb.getResult().equalsIgnoreCase("1"))
-                            buddyInformationBean.setMode("connecting...");
-                        else if(sb.getType().equalsIgnoreCase("1") && sb.getResult().equalsIgnoreCase("0"))
-                            buddyInformationBean.setMode("connecting...");
-                        else
+//                        if(sb.getType().equalsIgnoreCase("2"))
+//                            buddyInformationBean.setMode("connected");
+//                        else if(sb.getType().equalsIgnoreCase("1") && sb.getResult().equalsIgnoreCase("1"))
+//                            buddyInformationBean.setMode("connecting...");
+//                        else if(sb.getType().equalsIgnoreCase("1") && sb.getResult().equalsIgnoreCase("0"))
+//                            buddyInformationBean.setMode("connecting...");
+//                        else
                             buddyInformationBean.setMode("connected");
                         ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(user);
                         buddyInformationBean.setProfile_picpath(pBean.getPhoto());

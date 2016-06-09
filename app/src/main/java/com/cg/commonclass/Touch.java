@@ -3,10 +3,13 @@ package com.cg.commonclass;
 
 import android.graphics.Matrix;
 import android.graphics.PointF;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import com.util.SingleInstance;
 
 /**
  * Created by Rajalakshmi gurunath on 08-06-2016.
@@ -44,6 +47,10 @@ public class Touch implements View.OnTouchListener {
 //        ImageView imageView = (ImageView) view;
         final int X = (int) event.getRawX();
         final int Y = (int) event.getRawY();
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        SingleInstance.mainContext.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        int sH = displaymetrics.heightPixels;
+        int sW = displaymetrics.widthPixels;
 
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
 
@@ -130,8 +137,8 @@ public class Touch implements View.OnTouchListener {
                 view.setX(0);
                 view.setY(Y);
 
-                if(view.getY() > 500){
-                    view.setY(480);
+                if(view.getY() > sW){
+                    view.setY(sW-20);
                     break;
                 }
                 break;

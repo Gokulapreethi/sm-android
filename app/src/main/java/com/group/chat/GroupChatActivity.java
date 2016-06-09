@@ -2431,6 +2431,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     protected void onDestroy() {
         // TODO Auto-generated method stub
         stopPlayback();
+        sendlistadapter.stopPlayback();
         UdpMessageBean bean = new UdpMessageBean();
         GroupChatBean gcBean = new GroupChatBean();
         bean.setType("105");
@@ -3005,6 +3006,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                         View item = sendlistadapter.getView(i, null, null);
                                         list_all.addView(item);
                                     }
+                                    audio_call.setBackgroundResource(R.drawable.chat_send);
+                                    audio_call.setTag(1);
                                     // scaleImage(strIPath);
 //									Intent pMsgIntent = new Intent(context,
 //											PrivateMessageActivity.class);
@@ -3072,6 +3075,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 View item = sendlistadapter.getView(i, null, null);
                                 list_all.addView(item);
                             }
+                            audio_call.setBackgroundResource(R.drawable.chat_send);
+                            audio_call.setTag(1);
                             // sendMsg("", strIPath, "image", null);
 //							Intent pMsgIntent = new Intent(context,
 //									PrivateMessageActivity.class);
@@ -3153,6 +3158,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 View item = sendlistadapter.getView(i, null, null);
                                 list_all.addView(item);
                             }
+                            audio_call.setBackgroundResource(R.drawable.chat_send);
+                            audio_call.setTag(1);
                             // sendMsg("", strIPath, "video", null);
 //							Intent pMsgIntent = new Intent(context,
 //									PrivateMessageActivity.class);
@@ -3191,6 +3198,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             View item = sendlistadapter.getView(i, null, null);
                             list_all.addView(item);
                         }
+                        audio_call.setBackgroundResource(R.drawable.chat_send);
+                        audio_call.setTag(1);
                         // sendMsg("", strIPath, "image", null);
 //						Intent pMsgIntent = new Intent(context,
 //								PrivateMessageActivity.class);
@@ -3226,6 +3235,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             View item = sendlistadapter.getView(i, null, null);
                             list_all.addView(item);
                         }
+                        audio_call.setBackgroundResource(R.drawable.chat_send);
+                        audio_call.setTag(1);
                         // sendMsg("", strIPath, "image", null);
 //						Intent pMsgIntent = new Intent(context,
 //								PrivateMessageActivity.class);
@@ -3424,6 +3435,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         View item = sendlistadapter.getView(i, null, null);
                         list_all.addView(item);
                     }
+                    audio_call.setBackgroundResource(R.drawable.chat_send);
+                    audio_call.setTag(1);
 //					Intent pMsgIntent = new Intent(context,
 //							PrivateMessageActivity.class);
 //					pMsgIntent.putExtra("groupid", groupId);
@@ -3899,6 +3912,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     View item = sendlistadapter.getView(i, null, null);
                                     list_all.addView(item);
                                 }
+                                audio_call.setBackgroundResource(R.drawable.chat_send);
+                                audio_call.setTag(1);
 //                                relative_send_layout.getLayoutParams().height = 90;
                             } else if (SendListUI.size() > 1) {
                                 String path = null;
@@ -3927,6 +3942,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     View item = sendlistadapter.getView(i, null, null);
                                     list_all.addView(item);
                                 }
+                                audio_call.setBackgroundResource(R.drawable.chat_send);
+                                audio_call.setTag(1);
 
 
                             } else {
@@ -7554,6 +7571,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     View item = sendlistadapter.getView(i, null, null);
                     list_all.addView(item);
                 }
+                audio_call.setBackgroundResource(R.drawable.chat_send);
+                audio_call.setTag(1);
 //                relative_send_layout.getLayoutParams().height = 90;
             } else {
                 sendMsg(message.getText().toString(), null, "text", spBean);
@@ -7682,6 +7701,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         View item = sendlistadapter.getView(i, null, null);
                         list_all.addView(item);
                     }
+                    audio_call.setBackgroundResource(R.drawable.chat_send);
+                    audio_call.setTag(1);
 //                    relative_send_layout.getLayoutParams().height = 90;
                 } else {
                     sendMsg(message.getText().toString(), null, "text", spBean);
@@ -7815,6 +7836,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         View item = sendlistadapter.getView(i, null, null);
                         list_all.addView(item);
                     }
+                    audio_call.setBackgroundResource(R.drawable.chat_send);
+                    audio_call.setTag(1);
 //                    relative_send_layout.getLayoutParams().height = 90;
                 } else {
                     sendMsg(message.getText().toString(), null, "text", spBean);
@@ -7919,6 +7942,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     View item = sendlistadapter.getView(i, null, null);
                     list_all.addView(item);
                 }
+                audio_call.setBackgroundResource(R.drawable.chat_send);
+                audio_call.setTag(1);
 //                relative_send_layout.getLayoutParams().height = 90;
             } else if (SendListUI.size() > 1) {
                 String path = null;
@@ -7947,6 +7972,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     View item = sendlistadapter.getView(i, null, null);
                     list_all.addView(item);
                 }
+                audio_call.setBackgroundResource(R.drawable.chat_send);
+                audio_call.setTag(1);
 //                relative_send_layout.getLayoutParams().height = 90;
 
 
@@ -8215,57 +8242,57 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         newlist.add(sortlistbean);
                     } else if (status.equalsIgnoreCase("Pending")) {
                         pending.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("a")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("a")) {
                         a.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("b")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("b")) {
                         b.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("c")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("c")) {
                         c.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("d")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("d")) {
                         d.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("e")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("e")) {
                         e.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("f")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("f")) {
                         f.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("g")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("g")) {
                         g.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("h")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("h")) {
                         h.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("i")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("i")) {
                         i.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("j")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("j")) {
                         j.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("k")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("k")) {
                         k.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("l")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("l")) {
                         l.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("m")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("m")) {
                         m.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("n")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("n")) {
                         n.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("o")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("o")) {
                         o.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("p")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("p")) {
                         p.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("q")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("q")) {
                         q.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("r")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("r")) {
                         r.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("s")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("s")) {
                         s.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("t")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("t")) {
                         t.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("u")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("u")) {
                         u.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("v")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("v")) {
                         v.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("w")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("w")) {
                         w.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("x")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("x")) {
                         x.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("y")) {
+                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("y")) {
                         y.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getName().charAt(0)).equalsIgnoreCase("z")) {
+                    } else if (String.valueOf(sortlistbean.getFirstname().charAt(0)).equalsIgnoreCase("z")) {
                         z.add(sortlistbean);
                     }
                 }
@@ -8650,8 +8677,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 BuddyInformationBean bean = new BuddyInformationBean();
                 ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(gBean.getOwnerName());
                 if (pBean != null)
-                    if (pBean.getTitle()!=null &&pBean.getTitle().equalsIgnoreCase("Dr.")
-                            || pBean.getTitle().equalsIgnoreCase("Prof."))
+                    if (pBean.getTitle()!=null &&(pBean.getTitle().equalsIgnoreCase("Dr.")
+                            || pBean.getTitle().equalsIgnoreCase("Prof.")))
                         bean.setFirstname(pBean.getTitle() + pBean.getFirstname());
                     else
                         bean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname());
@@ -8672,8 +8699,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     BuddyInformationBean uBean = new BuddyInformationBean();
                     ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(tmp);
                     if (pbean != null)
-                        if (pbean.getTitle()!=null &&pbean.getTitle().equalsIgnoreCase("Dr.")
-                                || pbean.getTitle().equalsIgnoreCase("Prof."))
+                        if (pbean.getTitle()!=null &&(pbean.getTitle().equalsIgnoreCase("Dr.")
+                                || pbean.getTitle().equalsIgnoreCase("Prof.")))
                             uBean.setFirstname(pbean.getTitle() + pbean.getFirstname());
                         else
                             uBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
@@ -8790,7 +8817,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 BuddyInformationBean bean = new BuddyInformationBean();
                 ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(gBean.getOwnerName());
                 if (pbean != null)
-                    if (pbean.getTitle()!=null &&pbean.getTitle().equalsIgnoreCase("Dr.") || pbean.getTitle().equalsIgnoreCase("Prof."))
+                    if (pbean.getTitle()!=null &&(pbean.getTitle().equalsIgnoreCase("Dr.") || pbean.getTitle().equalsIgnoreCase("Prof.")))
                         bean.setFirstname(pbean.getTitle() + pbean.getFirstname());
                     else
                         bean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
@@ -8812,8 +8839,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     BuddyInformationBean uBean = new BuddyInformationBean();
                     ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(tmp);
                     if (pBean != null)
-                        if (pBean.getTitle()!=null &&pBean.getTitle().equalsIgnoreCase("Dr.")
-                                || pBean.getTitle().equalsIgnoreCase("Prof."))
+                        if (pBean.getTitle()!=null &&(pBean.getTitle().equalsIgnoreCase("Dr.")
+                                || pBean.getTitle().equalsIgnoreCase("Prof.")))
                             uBean.setFirstname(pBean.getTitle() + pBean.getFirstname());
                         else
                             uBean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname());
@@ -9170,6 +9197,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             View item = sendlistadapter.getView(i, null, null);
                             list_all.addView(item);
                         }
+                        audio_call.setBackgroundResource(R.drawable.chat_send);
+                        audio_call.setTag(1);
 //                        relative_send_layout.getLayoutParams().height = 400;
                         try {
                             mediaPlayer.setDataSource(strIPath);
@@ -9522,6 +9551,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         }
         if (SendListUI.size() == 0) {
             SendListUI.clear();
+            audio_call.setBackgroundResource(R.drawable.dashboard_call_white);
+            audio_call.setTag(0);
             sendlistadapter.notifyDataSetChanged();
             list_all.removeAllViews();
             final int adapterCount1 = sendlistadapter.getCount();
@@ -10778,7 +10809,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i("pin","Groupchatactivity Onstop");
+        Log.i("pin", "Groupchatactivity Onstop");
         AppReference.mainContext.isApplicationBroughtToBackground();
 
     }

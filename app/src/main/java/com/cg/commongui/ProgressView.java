@@ -55,7 +55,7 @@ abstract class ProgressView extends View implements ProgressShape {
             Color.LTGRAY, 42);
     private OnProgressViewListener listenr;
     protected boolean isShadow_background, isShadow_progress;
-    protected float maximum_progress = 1073741824L;
+    protected float maximum_progress = 1048576L;
     private int shaderColor = getResources().getColor(R.color.shader_color);
     protected ColorsHelper colorHelper;
     protected int[] gradColors;

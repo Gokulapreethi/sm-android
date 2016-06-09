@@ -337,8 +337,8 @@ public class MyAccountActivity extends Activity {
         optional.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(optional.getWindowToken(), 0);
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 if(isClicked) {
                     isClicked=false;
                     advance_lay.setVisibility(View.VISIBLE);

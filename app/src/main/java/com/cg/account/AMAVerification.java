@@ -55,28 +55,21 @@ public class AMAVerification extends Activity {
     Vector<BuddyInformationBean> result;
     private CallDispatcher objCallDispatcher = null;
 
-    boolean from_callscreen = false;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.ama_verification);
 
-        from_callscreen =  getIntent().getBooleanExtra("fromcall",false);
         if (WebServiceReferences.callDispatch.containsKey("calldisp"))
             objCallDispatcher = (CallDispatcher) WebServiceReferences.callDispatch
                     .get("calldisp");
         else
             objCallDispatcher = new CallDispatcher(context);
         RelativeLayout2 = (RelativeLayout) findViewById(R.id.RelativeLayout2);
-        addmembers_text = (TextView)findViewById(R.id.addmembers_text);
-        RelativeLayout3 = (RelativeLayout) findViewById(R.id.RelativeLayout3);
         selectAll_buddy = (CheckBox) findViewById(R.id.selectAll_buddy);
         selected = (TextView) findViewById(R.id.selected);
         txtView01 = (TextView) findViewById(R.id.txtView01);
         grid_icon = (ImageView)findViewById(R.id.grid_icon);
-        if(from_callscreen){
-            txtView01.setText("ADD MEMBERS");
-        }
         searchResult = (ListView) findViewById(R.id.searchResult);
         final LinearLayout groupbtn = (LinearLayout) findViewById(R.id.groupbtn);
         btn_1 = (EditText) findViewById(R.id.searchet);
@@ -100,24 +93,6 @@ public class AMAVerification extends Activity {
             @Override
             public void onClick(View v) {
                 finish();
-            }
-        });
-        addmembers_text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                for (BuddyInformationBean bib : result) {
-                    if (bib.isSelected()) {
-                        SignalingBean sb = objCallDispatcher.callconfernceUpdate(
-                                bib.getFirstname()+" "+bib.getLastname(),
-                                "AC", CallDispatcher.currentSessionid);
-                        // june04-Implementation
-                        CallDispatcher.conferenceRequest
-                                .put(bib.getFirstname()+" "+bib.getLastname()
-                                        , sb);
-                    }
-                }
-
             }
         });
         context = this;
@@ -176,15 +151,10 @@ public class AMAVerification extends Activity {
                     }
                 }
                 if(count==0){
-                    RelativeLayout3.setVisibility(View.GONE);
                     RelativeLayout2.setVisibility(View.GONE);
                     dialogue.setVisibility(View.GONE);
                 }else{
-                    if(from_callscreen){
-                        RelativeLayout3.setVisibility(View.VISIBLE);
-                    } else {
                         RelativeLayout2.setVisibility(View.VISIBLE);
-                    }
                 }
                 selected.setText(count + " selected");
             }
@@ -211,15 +181,10 @@ public class AMAVerification extends Activity {
                     }
                 }
                 if(count==0){
-                    RelativeLayout3.setVisibility(View.GONE);
                     RelativeLayout2.setVisibility(View.GONE);
                     dialogue.setVisibility(View.GONE);
                 }else{
-                    if(from_callscreen){
-                        RelativeLayout3.setVisibility(View.VISIBLE);
-                    }else{
                         RelativeLayout2.setVisibility(View.VISIBLE);
-                    }
                 }
                 selected.setText(count + " selected");
                 if (count == result.size()) {

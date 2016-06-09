@@ -607,7 +607,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 				if (CallDispatcher.LoginUser != null) {
 					if (username.equalsIgnoreCase(CallDispatcher.LoginUser)
 							&& !SingleInstance.myOrder) {
-						title.setText(getResources().getString(R.string.files));
+						title.setText("SNAZBOX FILES");
 					} else {
 						String localeString = Locale.getDefault().getLanguage();
 						if (localeString.equals("ta")) {

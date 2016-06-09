@@ -101,12 +101,14 @@ public class SendChatListAdapter extends ArrayAdapter<SendListUIBean> {
                 @Override
                 public void onClick(View view) {
                     groupChatActivity.tempSendList(position);
+                    stopPlayback();
                 }
             });
             holder.filexbutton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     groupChatActivity.tempSendList(position);
+                    stopPlayback();
                 }
             });
 
@@ -252,7 +254,7 @@ public class SendChatListAdapter extends ArrayAdapter<SendListUIBean> {
             }
         }
     }
-    private void stopPlayback() {
+    public void stopPlayback() {
         mPlayingPosition = -1;
         mProgressUpdater.mBarToUpdate = null;
         mProgressUpdater.tvToUpdate = null;

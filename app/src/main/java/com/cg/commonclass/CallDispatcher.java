@@ -11451,7 +11451,7 @@ private TrustManager[] get_trust_mgr() {
 							Intent intent = new Intent(SingleInstance.mainContext, NotificationReceiver.class);
 							PendingIntent pIntent = PendingIntent.getActivity(SingleInstance.mainContext, (int) System.currentTimeMillis(), intent, 0);
 							Notification n  = new Notification.Builder(SingleInstance.mainContext)
-									.setContentTitle("New Message from " + signBean.getFrom())
+									.setContentTitle(" Call from " + signBean.getFrom())
 									.setSmallIcon(R.drawable.logo_snazmed)
 									.setContentIntent(pIntent)
 									.setAutoCancel(true).build();

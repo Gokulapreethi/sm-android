@@ -133,6 +133,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 	String strIPath;
 	String groupid;
 	AppMainActivity appMainActivity;
+	private LinearLayout Linearlay_info;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -172,6 +173,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 		ed_groupdesc= (EditText) findViewById(R.id.ed_gpdesc);
 		profile_pic = (ImageView)findViewById(R.id.riv1);
 		edit_pic = (ImageView)findViewById(R.id.capture_image_view);
+		Linearlay_info = (LinearLayout)findViewById(R.id.tv);
 		final TextView tv_gpname=(TextView)findViewById(R.id.tv_gpname);
 		final TextView tv_gpdesc=(TextView)findViewById(R.id.tv_gpdesc);
 		memberCount = (TextView) findViewById(R.id.txt_memberlist);
@@ -249,6 +251,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 		if (isEdit) {
 //			title.setText("EDIT ROUNDING GROUP");
 			 groupid = getIntent().getStringExtra("id");
+//			Linearlay_info.setVisibility(View.GONE);
 			groupBean = callDisp.getdbHeler(context).getGroup(
 					"select * from grouplist where groupid=" + groupid);
 			memberCount.setVisibility(View.VISIBLE);
@@ -264,6 +267,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 				if(groupBean.getGroupIcon()!=null){
 					String profilePic=groupBean.getGroupIcon();
 					if (profilePic != null && profilePic.length() > 0) {
+						edit_pic.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_edit_photo));
 						if (!profilePic.contains("COMMedia")) {
 							profilePic = Environment.getExternalStorageDirectory()
 									+ "/COMMedia/" + profilePic;
@@ -523,7 +527,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 					buddylist.add(bean.getBuddyName());
 				}
 				intent.putStringArrayListExtra("buddylist", buddylist);
-				intent.putExtra("invite", true);
+				intent.putExtra("fromcall", false);
 				intent.putExtra("groupid",groupid);
 				startActivityForResult(intent, 3);
 			}
@@ -1158,16 +1162,12 @@ public class GroupActivity extends Activity implements OnClickListener {
 					"select * from groupdetails where groupid=" + bean.getGroupId());
 			if (!gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
 				if (gBean.getInviteMembers() != null) {
-					String[] invitelist = (gBean.getInviteMembers()).split(",");
-					for (String temp : invitelist) {
-						if (!temp.equalsIgnoreCase(CallDispatcher.LoginUser)) {
-							bean.setStatus("request");
-							requestList.add(bean);
-						} else {
-							bean.setStatus("accepted");
-							acceptedList.add(bean);
-							break;
-						}
+					if(!gBean.getInviteMembers().contains(CallDispatcher.LoginUser)){
+						bean.setStatus("request");
+						requestList.add(bean);
+					}else {
+						bean.setStatus("accepted");
+						acceptedList.add(bean);
 					}
 				} else {
 					bean.setStatus("request");

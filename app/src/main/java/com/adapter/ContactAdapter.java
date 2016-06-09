@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
+import com.cg.account.AMAVerification;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.snazmed.R;
@@ -336,7 +337,9 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                 holder.main_content.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        ContactsFragment.getInstance(context).doDeleteContact(buddyInformationBean.getName());
+//                        ContactsFragment.getInstance(context).doDeleteContact(buddyInformationBean.getName());
+                        Intent i = new Intent(SingleInstance.mainContext, AMAVerification.class);
+                        SingleInstance.mainContext.startActivity(i);
                         return true;
                     }
                 });

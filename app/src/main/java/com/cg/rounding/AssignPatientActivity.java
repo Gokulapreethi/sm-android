@@ -95,6 +95,7 @@ public boolean isSearch=false;
                     for (UserBean userBean : membersList) {
                         buddylist.add(userBean.getBuddyName());
                     }
+                    intent.putExtra("fromcall",false);
                     intent.putStringArrayListExtra("buddylist", buddylist);
                     Log.i("AAAA", "members list " + buddylist.size());
                     startActivityForResult(intent, 3);

@@ -489,7 +489,7 @@ public class RoundNewPatientActivity extends Activity {
                     buddylist.add(userBean.getBuddyName());
                 }
                 intent.putStringArrayListExtra("buddylist", buddylist);
-                intent.putExtra("invite", true);
+                intent.putExtra("fromcall", true);
                 Log.i("AAAA", "members list " + buddylist.size());
                 startActivityForResult(intent, 3);
             }
@@ -567,12 +567,14 @@ public class RoundNewPatientActivity extends Activity {
                     for (UserBean userBean : membersList) {
                         membersMap.put(userBean.getBuddyName(), userBean);
                     }
+                    membersList.clear();
+                    Log.i("AAAA","members size "+list.size());
                     UserBean bean=new UserBean();
                     bean.setBuddyName(CallDispatcher.LoginUser);
                     membersList.add(bean);
-                    membersList.clear();
                     for (UserBean userBean : list) {
                         if (!membersMap.containsKey(userBean.getBuddyName())) {
+                            Log.i("AAAA","members size ");
                             membersList.add(userBean);
                         }
                     }

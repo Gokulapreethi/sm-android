@@ -33,13 +33,14 @@
         android:layout_marginLeft="30dp"
         android:textSize="20dp"
         android:digits="@string/alphaNumeric"
-        android:background="@color/black2"
+        android:background="@color/transparent"
         android:textColor="@color/white"/>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="5dp"
         android:background="#7E8080"
+        android:visibility="gone"
         android:layout_below="@id/Edit_text1"/>
 
 

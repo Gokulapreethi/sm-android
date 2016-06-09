@@ -104,7 +104,7 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:layout_marginBottom="20dp"
-            android:src="@drawable/button_add_photo"
+            android:src="@drawable/button_photo"
             android:layout_gravity="right" />
 
     </LinearLayout>

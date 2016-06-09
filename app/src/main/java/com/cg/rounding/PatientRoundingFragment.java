@@ -42,6 +42,7 @@ import com.cg.commonclass.BuddyListComparator;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.snazmed.R;
+import com.group.AddGroupMembers;
 import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
 import com.main.ContactsFragment;
@@ -61,6 +62,7 @@ import org.lib.model.WebServiceBean;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -152,6 +154,33 @@ public class PatientRoundingFragment extends Fragment {
         final Button plusBtn = (Button) getActivity().findViewById(R.id.add_group);
         plusBtn.setVisibility(View.VISIBLE);
         plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.dot));
+        gmembersbean = DBAccess.getdbHeler().getGroupAndMembers(
+                "select * from groupdetails where groupid="
+                        + gBean.getGroupId());
+        final Vector<UserBean> memberslist=new Vector<UserBean>();
+        if ( gmembersbean != null) {
+            if (gmembersbean.getActiveGroupMembers() != null
+                    && gmembersbean.getActiveGroupMembers().length() > 0) {
+                String[] mlist = (gmembersbean.getActiveGroupMembers())
+                        .split(",");
+                for (String tmp : mlist) {
+                    UserBean uBean = new UserBean();
+
+                    for(BuddyInformationBean bib: ContactsFragment.getBuddyList()){
+                        if(bib.getName().equalsIgnoreCase(tmp)) {
+                            uBean.setFirstname(bib.getFirstname() + " " + bib.getLastname());
+                            break;
+                        }else
+                            uBean.setFirstname(tmp);
+                        uBean.setStatus(bib.getStatus());
+                        ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(tmp);
+                        uBean.setProfilePic(pbean.getPhoto());
+                    }
+                    uBean.setBuddyName(tmp);
+                    memberslist.add(uBean);
+                }
+            }
+        }
         plusBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -188,7 +217,22 @@ public class PatientRoundingFragment extends Fragment {
                         dialog.dismiss();
                     }
                 });
-                newTask.setOnClickListener(new View.OnClickListener() {
+                assign.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(SingleInstance.mainContext,
+                                AddGroupMembers.class);
+                        ArrayList<String> buddylist = new ArrayList<String>();
+                        for (UserBean userBean : memberslist) {
+                            buddylist.add(userBean.getBuddyName());
+                        }
+                        intent.putStringArrayListExtra("buddylist", buddylist);
+                        intent.putExtra("fromcall", true);
+                        Log.i("AAAA", "members list " + buddylist.size());
+                        startActivityForResult(intent, 3);
+                    }
+                });
+                task.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(mainContext, TaskCreationActivity.class);
@@ -262,9 +306,7 @@ public class PatientRoundingFragment extends Fragment {
                 members_img = (ImageView)_rootView. findViewById(R.id.members_img);
 
                patientDetails();
-                 gmembersbean = DBAccess.getdbHeler().getGroupAndMembers(
-                        "select * from groupdetails where groupid="
-                                + gBean.getGroupId());
+
                 patientid=pBean.getPatientid();
                 rounding.setOnClickListener(new View.OnClickListener() {
                     @Override
