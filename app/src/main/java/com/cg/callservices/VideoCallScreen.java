@@ -1875,7 +1875,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	 * Clear Resources on Receive HAng Up
 	 */
 
-	public void receiveHAngUpx() {
+	public void receiveHAngUpx(final SignalingBean sb) {
 		try {
 			videoHandler.post(new Runnable() {
 
@@ -1883,46 +1883,52 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 				public void run() {
 					try {
 						// TODO Auto-generated method stub
+						if (CallDispatcher.conferenceMembers.size() == 1) {
 
-						WebServiceReferences.contextTable.remove("VideoCall");
-						// Log.e("hang",
-						// "Comes to message bye received in Video call Screen");
-						objCallDispatcher.currentSessionid = null;
-						chTimer.stop();
-						AppMainActivity.cvtimer.stop();
-						video_minimize.setVisibility(View.GONE);
-						if (CallDispatcher.videoScreenVisibleState) {
-							//
+							Log.i("callscreenfinish", "1 conferenceMembers.size()==1 name-->" + CallDispatcher.conferenceMembers.get(0));
+							Log.i("callscreenfinish", "1 sb.name-->" + sb.getFrom());
+							if (CallDispatcher.conferenceMembers.get(0).equalsIgnoreCase(sb.getFrom())) {
+								WebServiceReferences.contextTable.remove("VideoCall");
+								// Log.e("hang",
+								// "Comes to message bye received in Video call Screen");
+								objCallDispatcher.currentSessionid = null;
+								chTimer.stop();
+								AppMainActivity.cvtimer.stop();
+								video_minimize.setVisibility(View.GONE);
+								if (CallDispatcher.videoScreenVisibleState) {
+									//
 
-							setDataForOnActivityResult();
-							try {
+									setDataForOnActivityResult();
+									try {
 
-								CallDispatcher.currentSessionid = null;
-								CallDispatcher.conferenceMembers.clear();
+										CallDispatcher.currentSessionid = null;
+										CallDispatcher.conferenceMembers.clear();
 
-								CallDispatcher.videoScreenVisibleState = false;
-								CallDispatcher.isCallInProgress = false;
+										CallDispatcher.videoScreenVisibleState = false;
+										CallDispatcher.isCallInProgress = false;
 
-								enterCallHistory();
+										enterCallHistory();
 
-							} catch (Exception e) {
-								// TODO: handle exception
-								e.printStackTrace();
-							}
-							try {
-								if (pv != null) {
-									pv.stopPreview();
-									pv = null;
-								}
-							} catch (Exception e) {
-								// TODO: handle exception
-								e.printStackTrace();
-							}
-							clearResources();
+									} catch (Exception e) {
+										// TODO: handle exception
+										e.printStackTrace();
+									}
+									try {
+										if (pv != null) {
+											pv.stopPreview();
+											pv = null;
+										}
+									} catch (Exception e) {
+										// TODO: handle exception
+										e.printStackTrace();
+									}
+									clearResources();
 //							finish();
-							finishVideocallScreen();
+									finishVideocallScreen();
 
-							//
+									//
+								}
+							}
 						}
 					} catch (Exception e) {
 						// TODO: handle exception

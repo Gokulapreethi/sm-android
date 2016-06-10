@@ -3032,10 +3032,10 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						if (objCallScreen != null) {
 							if (objCallScreen instanceof AudioCallScreen) {
 								AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
-								acalObj.receiveHangUpx();
+								acalObj.receiveHangUpx(sb);
 							} else if (objCallScreen instanceof VideoCallScreen) {
 								VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
-								acalObj.receiveHAngUpx();
+								acalObj.receiveHAngUpx(sb);
 
 							} else if (objCallScreen instanceof AudioPagingSRWindow) {
 								AudioPagingSRWindow acalObj = (AudioPagingSRWindow) objCallScreen;
@@ -3074,15 +3074,22 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					}
 					Log.i("call","end "+AppMainActivity.connectedbuddies);
 					if (AppMainActivity.connectedbuddies == null) {
-
-						FragmentManager fm =
-								AppReference.mainContext.getSupportFragmentManager();
-						FragmentTransaction ft = fm.beginTransaction();
-						ContactsFragment contactsFragment = ContactsFragment
-								.getInstance(context);
-						ft.replace(R.id.activity_main_content_fragment,
-								contactsFragment);
-						ft.commitAllowingStateLoss();
+						if (conferenceMembers.size() == 1) {
+							isCallInitiate = false;
+							Log.i("callscreenfinish", "1 conferenceMembers.size()==1 name-->" + conferenceMembers.get(0));
+							Log.i("callscreenfinish", "1 sb.name-->" + sb.getFrom());
+							if (conferenceMembers.get(0).equalsIgnoreCase(sb.getFrom())) {
+								Log.i("callscreenfinish", "1.1 sb.name-->" + sb.getFrom());
+								FragmentManager fm =
+										AppReference.mainContext.getSupportFragmentManager();
+								FragmentTransaction ft = fm.beginTransaction();
+								ContactsFragment contactsFragment = ContactsFragment
+										.getInstance(context);
+								ft.replace(R.id.activity_main_content_fragment,
+										contactsFragment);
+								ft.commitAllowingStateLoss();
+							}
+						}
 					}
 
 
@@ -3203,10 +3210,10 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						if (objCallScreen != null) {
 							if (objCallScreen instanceof AudioCallScreen) {
 								AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
-								acalObj.receiveHangUpx();
+								acalObj.receiveHangUpx(sb);
 							} else if (objCallScreen instanceof VideoCallScreen) {
 								VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
-								acalObj.receiveHAngUpx();
+								acalObj.receiveHAngUpx(sb);
 
 							} else if (objCallScreen instanceof AudioPagingSRWindow) {
 								AudioPagingSRWindow acalObj = (AudioPagingSRWindow) objCallScreen;
@@ -3259,10 +3266,10 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						if (objCallScreen != null) {
 							if (objCallScreen instanceof AudioCallScreen) {
 								AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
-								acalObj.receiveHangUpx();
+								acalObj.receiveHangUpx(sb);
 							} else if (objCallScreen instanceof VideoCallScreen) {
 								VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
-								acalObj.receiveHAngUpx();
+								acalObj.receiveHAngUpx(sb);
 
 							} else if (objCallScreen instanceof AudioPagingSRWindow) {
 								AudioPagingSRWindow acalObj = (AudioPagingSRWindow) objCallScreen;
@@ -3755,17 +3762,21 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				public void run() {
 					// TODO Auto-generated method stub
 
-					showAlert("", ErrMsg);
+//					showAlert("", ErrMsg);
 					if (SingleInstance.instanceTable
 							.containsKey("connection")) {
-						if (!issecMadeConference)
+						if (!SingleInstance.instanceTable.containsKey("callscreen")) {
+							if (!issecMadeConference)
 								((CallConnectingScreen) SingleInstance.instanceTable
 										.get("connection")).finishConnectingScreen();
-						} else if (issecMadeConference
+						}
+					} else if (issecMadeConference
 								&& CallDispatcher.contConferencemembers
 										.size() == 0) {
-						((CallConnectingScreen) SingleInstance.instanceTable
-								.get("connection")).finishConnectingScreen();
+						if (!SingleInstance.instanceTable.containsKey("callscreen")) {
+							((CallConnectingScreen) SingleInstance.instanceTable
+									.get("connection")).finishConnectingScreen();
+						}
 					}
 
 					// ShowToast("User Busy", 1);
