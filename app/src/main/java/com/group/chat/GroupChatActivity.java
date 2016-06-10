@@ -2465,6 +2465,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         context = this;
         if(AppReference.mainContext.isPinEnable) {
             if (AppReference.mainContext.openPinActivity) {
+                AppReference.mainContext.openPinActivity=false;
                 Intent i = new Intent(GroupChatActivity.this, MainActivity.class);
                 startActivity(i);
             } else {
@@ -4495,9 +4496,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 final GroupChatBean gcBean = chatList.get(position);
 
                 TextView tv_user, message, dateTime, deadlineReplyText, tv_urgent;
-                RelativeLayout senderLayout = null,normalcontainer;
+                RelativeLayout senderLayout = null,normalcontainer,receive_quotedLayout;
                 LinearLayout join_lay;
-                TextView tv_username,tv_missed,time;
+                TextView tv_username,tv_missed,time,receiver_tvquoted_msg;
                 Button joinBtn;
                 ImageView call_img;
                 RelativeLayout receiverLayout = null;
@@ -4665,6 +4666,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 //				senderLayout.setBackgroundResource(R.color.gchat_bg);
 //				receiverLayout.setBackgroundResource(R.color.gchat_bg);
                     if (gcBean.getFrom().equals(CallDispatcher.LoginUser)) {
+                        Log.i("reply","loginuser");
                         swipeposition = 0;
                         msgStatus = position;
                         tv_urgent = (TextView) convertView
@@ -4822,13 +4824,18 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     if (gcBean.getSubCategory().equalsIgnoreCase(
                                             "GRB_R")) {
                                         if (position > 0) {
+                                            Log.i("reply","position>0");
                                             listrel_quoted.setVisibility(View.VISIBLE);
                                             final GroupChatBean Bean = chatList.get(position - 1);
                                             lvquoted_msg.setText(Bean.getMessage());
                                         }
                                     }
+                                    Log.i("reply","button gone");
+//                                    listrel_quoted.setVisibility(View.VISIBLE);
+//                                    lvquoted_msg.setText(gcBean.getMessage());
                                     waitforreply.setVisibility(View.GONE);
                                 } else {
+                                    Log.i("reply","button Visible");
                                     listrel_quoted.setVisibility(View.GONE);
                                     waitforreply.setVisibility(View.VISIBLE);
                                 }
@@ -4857,6 +4864,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         saveMsg.setTag(gcBean);
 
                     } else {
+                        Log.i("reply","not loginuser");
                         swipeposition = 1;
                         chat_view = (LinearLayout) convertView
                                 .findViewById(R.id.sendlintest);
@@ -4904,6 +4912,17 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         audio_tv = (TextView) convertView.findViewById(R.id.sendtxt_time);
                         audio_tv.setTag(gcBean);
                         retryIcon.setVisibility(View.GONE);
+
+                        //For Receiver Quote
+                        //Start
+                        receive_quotedLayout=(RelativeLayout)convertView.findViewById(R.id.sen_quoted);
+                        receive_quotedLayout.setVisibility(View.GONE);
+                        receiver_tvquoted_msg=(TextView)convertView.findViewById(R.id.sen_tvquoted_msg);
+                        receiver_tvquoted_msg.setVisibility(View.GONE);
+                        //End
+
+
+
                         sender_status = (TextView) convertView
                                 .findViewById(R.id.sender_status);
                         sender_status.setText("Received");
@@ -5059,6 +5078,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     "grb") || gcBean.getSubCategory().equalsIgnoreCase(
                                     "GRB_R")) {
                                 // deadLineReply.setVisibility(View.GONE);
+                                Log.i("reply","receiver side grb|| GRB_R");
                                 deadlineReplyText.setVisibility(View.GONE);
                                 if (gcBean.getPrivateMembers() != null
                                         && gcBean.getPrivateMembers().length() > 0) {
@@ -5070,9 +5090,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 //												+ gcBean.getFrom()
 //										 + "\nTo : "
 //										 + gcBean.getPrivateMembers());
+                                            Log.i("reply","receiver side grb|| GRB_R loginuser");
                                             tv_user.setText(gcBean.getFrom());
                                             senderLayout
-                                                    .setBackgroundResource(R.color.lgreen);
+                                                    .setBackgroundResource(R.color.greenlight);
                                             convertView
                                                     .setBackgroundResource(R.color.lgreen);
                                             scheduleMsg.setTag(gcBean);
@@ -5081,16 +5102,38 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                                     .setImageResource(R.drawable.replybg);
                                             scheduleMsg.setVisibility(View.VISIBLE);
                                             if (gcBean.getReply() != null && !gcBean.getReply().equals("") && gcBean.getReply().equalsIgnoreCase("GRB_R")) {
+                                                Log.i("reply","receiver side GRB_R loginuser");
                                                 btn_reply.setVisibility(View.GONE);
+
+                                                //For Receiver Quote
+                                                //Start
+                                                if(gcBean.getMimetype()!=null && gcBean.getMimetype().equalsIgnoreCase("text") &&
+                                                        gcBean.getMessage()!=null){
+                                                    Log.i("reply","receiver side GRB_R loginuser quote visible");
+                                                    if(position>0){
+                                                    GroupChatBean groupChatBean=chatList.get(position-1);
+                                                    receive_quotedLayout.setVisibility(View.VISIBLE);
+                                                    receiver_tvquoted_msg.setVisibility(View.VISIBLE);
+                                                    receiver_tvquoted_msg.setText(groupChatBean.getMessage());
+                                                    }
+                                                }
+                                                //End
                                             } else {
+                                                Log.i("reply","receiver side GRB_R loginuser else btn_reply visble");
                                                 btn_reply.setVisibility(View.VISIBLE);
                                             }
                                             if (gcBean.getReplied() != null && gcBean.getReplied().equals("reply")) {
                                                 tv_replied.setVisibility(View.VISIBLE);
                                                 tv_replied.setText("Replied " + Html.fromHtml(tick));
+                                                //For Receiver Quote
+                                                //Start
+                                                receive_quotedLayout.setVisibility(View.GONE);
+                                                receiver_tvquoted_msg.setVisibility(View.GONE);
+                                                //End
                                             }
                                             break;
                                         } else {
+                                            Log.i("reply","receiver side grb|| GRB_R not loginuser");
                                             senderLayout
                                                     .setBackgroundResource(R.color.lgreen);
                                             scheduleMsg.setVisibility(View.GONE);
@@ -5101,6 +5144,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 }
 
                             } else {
+                                Log.i("reply","receiver side grb|| GRB_R else ");
                                 deadlineReplyText.setVisibility(View.GONE);
                                 tv_user.setText(gcBean.getFrom());
                                 scheduleMsg.setVisibility(View.GONE);
