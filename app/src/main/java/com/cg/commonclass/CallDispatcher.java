@@ -2420,7 +2420,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 				else if (sb.getType().equals("3")) {
 					// Hang up
-
+					Log.i("callscreenfinish","calldispatcher type=3");
 					// if (CallDispatcher.sb.getBs_parentid() != null) {
 					SingleInstance.mainContext.runOnUiThread(new Runnable() {
 						@Override
@@ -2460,21 +2460,26 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					// }
 					if (conferenceMembers.size() == 1) {
 						isCallInitiate=false;
-						FragmentManager fm =
-								AppReference.mainContext.getSupportFragmentManager();
-						FragmentTransaction ft = fm.beginTransaction();
-						ContactsFragment contactsFragment = ContactsFragment
-								.getInstance(context);
-						ft.replace(R.id.activity_main_content_fragment,
-								contactsFragment);
-						ft.commitAllowingStateLoss();
-						if(!isCallignored)
-						handlerForCall.post(new Runnable() {
-							@Override
-							public void run() {
-								showCallHistory(CallDispatcher.sb.getSessionid(),CallDispatcher.sb.getCallType());
-							}
-						});
+						Log.i("callscreenfinish","conferenceMembers.size()==1 name-->"+conferenceMembers.get(0));
+						Log.i("callscreenfinish","sb.name-->"+sb.getFrom());
+						if(conferenceMembers.get(0).equalsIgnoreCase(sb.getFrom())) {
+							FragmentManager fm =
+									AppReference.mainContext.getSupportFragmentManager();
+							FragmentTransaction ft = fm.beginTransaction();
+							ContactsFragment contactsFragment = ContactsFragment
+									.getInstance(context);
+							ft.replace(R.id.activity_main_content_fragment,
+									contactsFragment);
+							ft.commitAllowingStateLoss();
+
+							if (!isCallignored)
+								handlerForCall.post(new Runnable() {
+									@Override
+									public void run() {
+										showCallHistory(CallDispatcher.sb.getSessionid(), CallDispatcher.sb.getCallType());
+									}
+								});
+						}
 					}
 					if (SingleInstance.instanceTable
 							.containsKey("callscreen")
@@ -2975,6 +2980,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 				} else if (sb.getType().equals("1")
 						&& sb.getResult().equals("1")) {
+					Log.i("callscreenfinish","calldispatcher type=1 and result=1");
 					stopRingTone();
 					CallDispatcher.sb.setStartTime(getCurrentDateandTime());
 					handlerForCall.post(new Runnable() {

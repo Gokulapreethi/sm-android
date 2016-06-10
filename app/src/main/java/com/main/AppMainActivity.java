@@ -7747,9 +7747,13 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		activityOnTop = ar.topActivity.toString();
 		Log.i("pin", "activityOnTop " + activityOnTop);
 		Log.i("pin", "activityOnTop " + context.getPackageName());
-		if (!activityOnTop.contains(context.getPackageName())) {
+		if(activityOnTop.contains("com.android.documentsui")){
+			Log.i("pin", "com.android.documentsui pakage");
+			openPinActivity=false;
+		}else if (!activityOnTop.contains(context.getPackageName())) {
+			Log.i("pin", "Appmain snazmed pakage onStop openActivity=true");
 			openPinActivity=true;
-		}else {
+		} else{
 			openPinActivity = false;
 		}
 
