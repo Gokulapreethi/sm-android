@@ -1,29 +1,16 @@
 package com.cg.callservices;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Set;
-
-import org.lib.model.SignalingBean;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -39,15 +26,23 @@ import android.widget.TextView;
 import com.bean.ProfileBean;
 import com.callHistory.CallHistoryActivity;
 import com.cg.DB.DBAccess;
-import com.cg.hostedconf.AppReference;
-import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
+import com.cg.snazmed.R;
 import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
 import com.main.ContactsFragment;
 import com.util.SingleInstance;
+
+import org.lib.model.SignalingBean;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Set;
 
 public class CallConnectingScreen extends Fragment {
 
@@ -114,6 +109,7 @@ public class CallConnectingScreen extends Fragment {
 //		context = this;
 //		setContentView(R.layout.call_connecting);
 //		getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		if(rootView==null) {
 		final Window win = getActivity().getWindow();
 		win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
 				| WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
@@ -128,7 +124,7 @@ public class CallConnectingScreen extends Fragment {
 		ImageView min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
 		min_incall.setVisibility(View.GONE);
 		SingleInstance.instanceTable.put("connection", callConnectingScreen);
-		if(rootView==null) {
+//		if(rootView==null) {
 			rootView = inflater.inflate(R.layout.call_connecting, null);
 			Bundle bndl = getArguments();
 			calltype = bndl.getString("type");
@@ -473,9 +469,9 @@ public class CallConnectingScreen extends Fragment {
 		super.onDestroy();
 		final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
 		mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-		if (SingleInstance.instanceTable.containsKey("connection")) {
-			SingleInstance.instanceTable.remove("connection");
-		}
+//		if (SingleInstance.instanceTable.containsKey("connection")) {
+//			SingleInstance.instanceTable.remove("connection");
+//		}
 		if (isForceHangUp) {
 			try {
 				SingleInstance.mainContext.logout(false);
@@ -554,6 +550,10 @@ public class CallConnectingScreen extends Fragment {
 			appMainActivity.closingActivity();
 			min_outcall.setVisibility(View.GONE);
 
+			if (SingleInstance.instanceTable.containsKey("connection")) {
+				SingleInstance.instanceTable.remove("connection");
+			}
+			rootView=null;
 			FragmentManager fm =
 					AppReference.mainContext.getSupportFragmentManager();
 			Bundle bun = new Bundle();
@@ -733,6 +733,10 @@ public class CallConnectingScreen extends Fragment {
 //				i.putExtras(bundle);
 //
 //				startActivity(i);
+				if (SingleInstance.instanceTable.containsKey("connection")) {
+					SingleInstance.instanceTable.remove("connection");
+				}
+				rootView=null;
 				FragmentManager fm =
 						AppReference.mainContext.getSupportFragmentManager();
 				Bundle bundle = new Bundle();
@@ -793,6 +797,9 @@ public class CallConnectingScreen extends Fragment {
 	}
 	public void finishConnectingScreen()
 	{
+		if (SingleInstance.instanceTable.containsKey("connection")) {
+			SingleInstance.instanceTable.remove("connection");
+		}
 		rootView=null;
 		FragmentManager fm =
 				AppReference.mainContext.getSupportFragmentManager();

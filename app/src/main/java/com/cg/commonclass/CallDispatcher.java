@@ -2223,9 +2223,15 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							}
 						} else {
 							rejectInComingCall(sb);
-							Toast.makeText(context,
-									sb.getFrom() + " call rejected.", 3000)
-									.show();
+							handlerForCall.post(new Runnable() {
+								@Override
+								public void run() {
+									Toast.makeText(context,
+											sb.getFrom() + " call rejected.", 3000)
+											.show();
+								}
+							});
+
 						}
 					}
 

@@ -1492,6 +1492,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			@Override
 			public void run() {
 				try {
+					if(getActivity() != null)
 					getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 					currentcall_type = "VC";
 					video_layouts.setVisibility(View.VISIBLE);
@@ -2095,17 +2096,17 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	public void onDestroy() {
 		// HomeTabViewScreen home =null;
 		try {
-			Log.d("ZZZ", "----->callscreenactivity destroy<-----");
+			Log.d("AudioCall", "----->callscreenactivity destroy<-----");
 			Activity parent = getActivity();
 			if(parent != null) {
 				getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 			}
-			if (SingleInstance.instanceTable.containsKey("callscreen")) {
-				SingleInstance.instanceTable.remove("callscreen");
-			}
-			if (handler != null)
-				handler.removeCallbacks(runnable);
+//			if (SingleInstance.instanceTable.containsKey("callscreen")) {
+//				SingleInstance.instanceTable.remove("callscreen");
+//			}
+//			if (handler != null)
+//				handler.removeCallbacks(runnable);
 
 			mainHeader.setVisibility(View.VISIBLE);
 			final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
@@ -2388,51 +2389,61 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 	public void finishAudiocallScreen()
 	{
-		rootView=null;
-		objCallDispatcher.stopRingTone();
-		CallDispatcher.currentSessionid = null;
-		objCallDispatcher.alConferenceRequest.clear();
-		CallDispatcher.conferenceMembersTime.clear();
-		WebServiceReferences.videoSSRC_total.clear();
-		WebServiceReferences.videoSSRC_total_list.clear();
-		CallDispatcher.conConference.clear();
-		CallDispatcher.issecMadeConference = false;
-		objCallDispatcher.whenCallHangedUp();
-
-		if(videoQueue != null){
-			videoQueue.clear();
-		}
-		if (pv != null) {
-			pv.stopPreview();
-		}
-
-		if (SingleInstance.instanceTable.containsKey("callscreen")) {
-			SingleInstance.instanceTable.remove("callscreen");
-			Log.e("note", "Call screen instance removed ACS!!");
-		}
-
-		objCallDispatcher.startPlayer(context);
-		if (WebServiceReferences.contextTable.containsKey("audiocall")) {
-			WebServiceReferences.contextTable.remove("audiocall");
-		}
 		try {
-			objCallDispatcher.isHangUpReceived = false;
-			if (audioProperties != null) {
-				audioProperties.setSpeakerphoneOn(false);
-			}
+			rootView=null;
+			objCallDispatcher.stopRingTone();
+			CallDispatcher.currentSessionid = null;
+			objCallDispatcher.alConferenceRequest.clear();
+			CallDispatcher.conferenceMembersTime.clear();
+			WebServiceReferences.videoSSRC_total.clear();
+			WebServiceReferences.videoSSRC_total_list.clear();
+			CallDispatcher.conConference.clear();
+			CallDispatcher.issecMadeConference = false;
+			objCallDispatcher.whenCallHangedUp();
+
+			if(videoQueue != null){
+                videoQueue.clear();
+            }
+			if (pv != null) {
+                pv.stopPreview();
+            }
+
+			if (SingleInstance.instanceTable.containsKey("callscreen")) {
+                SingleInstance.instanceTable.remove("callscreen");
+                Log.e("note", "Call screen instance removed ACS!!");
+            }
+
+			objCallDispatcher.startPlayer(context);
+			if (WebServiceReferences.contextTable.containsKey("audiocall")) {
+                WebServiceReferences.contextTable.remove("audiocall");
+            }
+			try {
+                objCallDispatcher.isHangUpReceived = false;
+                if (audioProperties != null) {
+                    audioProperties.setSpeakerphoneOn(false);
+                }
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+
+
+			if (handler != null)
+                    handler.removeCallbacks(runnable);
+
+
+			CallDispatcher.isCallInitiate = false;
+			FragmentManager fm =
+                    AppReference.mainContext.getSupportFragmentManager();
+			FragmentTransaction ft = fm.beginTransaction();
+			ContactsFragment contactsFragment = ContactsFragment
+                    .getInstance(context);
+			ft.replace(R.id.activity_main_content_fragment,
+                    contactsFragment);
+			ft.commitAllowingStateLoss();
+			audio_minimize.setVisibility(View.GONE);
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
-		CallDispatcher.isCallInitiate = false;
-		FragmentManager fm =
-				AppReference.mainContext.getSupportFragmentManager();
-		FragmentTransaction ft = fm.beginTransaction();
-		ContactsFragment contactsFragment = ContactsFragment
-				.getInstance(context);
-		ft.replace(R.id.activity_main_content_fragment,
-				contactsFragment);
-		ft.commitAllowingStateLoss();
-		audio_minimize.setVisibility(View.GONE);
 	}
 
 

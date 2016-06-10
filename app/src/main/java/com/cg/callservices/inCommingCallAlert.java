@@ -1,22 +1,10 @@
 package com.cg.callservices;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.audio.AudioProperties;
-import org.lib.model.SignalingBean;
-
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.KeyguardManager;
 import android.app.KeyguardManager.KeyguardLock;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -24,32 +12,33 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.telecom.Call;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
-import com.cg.hostedconf.AppReference;
-import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.commongui.MultimediaUtils;
+import com.cg.hostedconf.AppReference;
+import com.cg.snazmed.R;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
 import com.main.ContactsFragment;
 import com.util.SingleInstance;
+
+import org.audio.AudioProperties;
+import org.lib.model.SignalingBean;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class inCommingCallAlert extends Fragment {
 
@@ -112,6 +101,7 @@ public class inCommingCallAlert extends Fragment {
 //		super.onCreate(savedInstanceState);
 //		requestWindowFeature(Window.FEATURE_NO_TITLE);
 //		setContentView(R.layout.callalertscreen);
+		if(rootView==null) {
 		SingleInstance.instanceTable.put("alertscreen",incommingCallAlert);
 		keyguardManager = (KeyguardManager) getActivity().getSystemService(Activity.KEYGUARD_SERVICE);
 		lock = keyguardManager.newKeyguardLock(context.KEYGUARD_SERVICE);
@@ -143,7 +133,7 @@ public class inCommingCallAlert extends Fragment {
 		mainHeader.setVisibility(View.GONE);
 		min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
 		min_incall.setVisibility(View.GONE);
-		if(rootView==null) {
+//		if(rootView==null) {
 			rootView = inflater.inflate(R.layout.callalertscreen, null);
 
 			accept = (ImageView) rootView.findViewById(R.id.tv_accept);
@@ -256,7 +246,7 @@ public class inCommingCallAlert extends Fragment {
 	public void changeTextalert() {
 		CallDispatcher.isCallAcceptRejectOpened = true;
 		CallDispatcher.isIncomingAlert = true;
-		SingleInstance.instanceTable.put("alertscreen", incommingCallAlert);
+//		SingleInstance.instanceTable.put("alertscreen", incommingCallAlert);
 
 		Log.i("ACal", "showIncomingAlert will be viewed");
 		from = sbaen.getFrom();
@@ -622,6 +612,12 @@ public class inCommingCallAlert extends Fragment {
 
 	public void finishactivity() {
 		CallDispatcher.isCallInitiate = false;
+
+
+		if (SingleInstance.instanceTable.containsKey("alertscreen")) {
+			SingleInstance.instanceTable.remove("alertscreen");
+		}
+
 		rootView=null;
 		FragmentManager fm =
 				AppReference.mainContext.getSupportFragmentManager();
@@ -637,9 +633,9 @@ public class inCommingCallAlert extends Fragment {
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
-		if (SingleInstance.instanceTable.containsKey("alertscreen")) {
-			SingleInstance.instanceTable.remove("alertscreen");
-		}
+//		if (SingleInstance.instanceTable.containsKey("alertscreen")) {
+//			SingleInstance.instanceTable.remove("alertscreen");
+//		}
 		/* lock.reenableKeyguard(); */
 		final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
 		mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
@@ -672,6 +668,11 @@ public class inCommingCallAlert extends Fragment {
 		}).start();
 
 		try {
+			if (SingleInstance.instanceTable.containsKey("alertscreen")) {
+				SingleInstance.instanceTable.remove("alertscreen");
+			}
+
+			rootView=null;
 			FragmentManager fm =
 					AppReference.mainContext.getSupportFragmentManager();
 			Bundle bundle = new Bundle();
