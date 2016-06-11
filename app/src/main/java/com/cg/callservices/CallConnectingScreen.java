@@ -560,6 +560,7 @@ public class CallConnectingScreen extends Fragment {
 			bun.putSerializable("signal", sbean);
 			bun.putString("buddy", from);
 			bun.putString("receive", "true");
+			bun.putString("host",from);
 //			bun.putExtra("signal", bun);
 			bun.putBoolean("isreceiver", true);
 			FragmentTransaction ft = fm.beginTransaction();
@@ -710,10 +711,7 @@ public class CallConnectingScreen extends Fragment {
 			i.putExtras(bundle);
 			startActivity(i);
 
-		}
-
-		//
-		else if (sbean.getCallType().equals("VC")) {
+		} else if (sbean.getCallType().equals("VC")) {
 
 			Log.d("RACE",
 					" Race CAse.. assign on call window of Hometabview call videocall screen...."
@@ -743,6 +741,7 @@ public class CallConnectingScreen extends Fragment {
 				bundle.putString("sessionid", sbean.getSessionid());
 				bundle.putString("buddyName", from);
 				bundle.putString("receive", "true");
+				bundle.putString("host",from);
 				FragmentTransaction ft = fm.beginTransaction();
 				VideoCallScreen videoCallScreen = VideoCallScreen
 						.getInstance(context);
@@ -811,5 +810,14 @@ public class CallConnectingScreen extends Fragment {
 		ft.commitAllowingStateLoss();
 		mainHeader.setVisibility(View.VISIBLE);
 		min_outcall.setVisibility(View.GONE);
+	}
+
+	public void removeInstance(){
+		Log.i("AudioCall","CallCOnnectingScreen removeInstance");
+		if (SingleInstance.instanceTable.containsKey("connection")) {
+			SingleInstance.instanceTable.remove("connection");
+		}
+		if(rootView != null)
+			rootView=null;
 	}
 }

@@ -145,6 +145,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 	private String callerName = null;
 
+	private String host = null;
+
 	private String callTypeForServer = "101";
 
 	private HashSet<String> hsCallMembers = new HashSet<String>();
@@ -286,6 +288,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 //			bun = getIntent().getBundleExtra("signal");
 				receiver = bundlevalues.getString("receive");
 				callerName = bundlevalues.getString("buddy");
+				host = bundlevalues.getString("host");
 				isReceiver = bundlevalues.getBoolean("isreceiver", false);
 				Log.d("Audio", "Is receiver --->" + isReceiver);
 				mHandler = new Handler();
@@ -863,11 +866,12 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			members.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+1));
+					member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
 					Intent i = new Intent(AppReference.mainContext, CallActiveMembersList.class);
 					i.putExtra("timer", chTimer.getText().toString());
 					i.putExtra("calltype",calltype);
 					i.putExtra("sessionId", strSessionId);
+					i.putExtra("host", host);
 					AppReference.mainContext.startActivity(i);
 
 				}
@@ -2510,7 +2514,13 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	public void finishAudiocallScreen()
 	{
 		try {
-			rootView=null;
+
+			if (SingleInstance.instanceTable.containsKey("callactivememberslist")) {
+				CallActiveMembersList activeMembersList = (CallActiveMembersList)SingleInstance.instanceTable.get("callactivememberslist");
+				activeMembersList.finishActivity();
+			}
+
+			currentcall_type = "AC";
 			objCallDispatcher.stopRingTone();
 			CallDispatcher.currentSessionid = null;
 			objCallDispatcher.alConferenceRequest.clear();
@@ -2556,7 +2566,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 				getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 			}
-
+			rootView=null;
 			CallDispatcher.isCallInitiate = false;
 			FragmentManager fm =
                     AppReference.mainContext.getSupportFragmentManager();

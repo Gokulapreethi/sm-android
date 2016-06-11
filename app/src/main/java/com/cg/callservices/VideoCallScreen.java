@@ -176,6 +176,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	// public ImageAdapter ad = null;
 	private String buddyName;
 	private Queue videoQueue;
+	private String host;
 	private VideoThreadMultiWindow videoThread;
 
 	public Handler videoHandler;
@@ -723,6 +724,11 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 				buddyName = (String) savedInstanceState.getString("buddyName");
 
 			}
+
+			if(bundlevalues.getString("host") != null) {
+				host = (String)bundlevalues.getString("host");
+			}
+
 			Log.i("NOTES","sessionid : "+sessionid);
 			CallDispatcher.currentSessionid =sessionid;
 			tvTitlename = buddyName;
@@ -893,6 +899,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 						member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+1));
 						Intent i = new Intent(AppReference.mainContext, CallActiveMembersList.class);
 						i.putExtra("sessionId", sessionid);
+						i.putExtra("host", host);
 						AppReference.mainContext.startActivity(i);
 					}
 				});
@@ -3855,6 +3862,11 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 	public void finishVideocallScreen()
 	{
+
+		if (SingleInstance.instanceTable.containsKey("callactivememberslist")) {
+		CallActiveMembersList activeMembersList = (CallActiveMembersList)SingleInstance.instanceTable.get("callactivememberslist");
+		activeMembersList.finishActivity();
+	}
 		if (SingleInstance.instanceTable.containsKey("callscreen")) {
 			SingleInstance.instanceTable.remove("callscreen");
 			Log.e("note", "Call screen instance removed ACS!!");

@@ -373,6 +373,7 @@ public class inCommingCallAlert extends Fragment {
 
 					CallDispatcher.conferenceMembers = new ArrayList<String>();
 					CallDispatcher.conferenceMembers.add(strBuddyName);
+
 					Log.d("test", "open Adding "
 							+ CallDispatcher.conferenceMembers.size());
 					Log.i("ACal", "Audio Screen will be displayedd");
@@ -382,6 +383,9 @@ public class inCommingCallAlert extends Fragment {
 					SignalingBean sb = (SignalingBean) CallDispatcher.sb
 							.clone();
 					ShowConnectionScreen(sb);
+
+					CallDispatcher.conferenceMember_Details = new HashMap<String,SignalingBean>();
+					CallDispatcher.conferenceMember_Details.put(strBuddyName,sb);
 //					finishactivity();
 
 				} else if (sbaen.getCallType().equals("VC")) {
@@ -414,6 +418,10 @@ public class inCommingCallAlert extends Fragment {
 					// openVideoCallScreen();
 					SignalingBean sb = (SignalingBean) CallDispatcher.sb
 							.clone();
+
+					CallDispatcher.conferenceMember_Details = new HashMap<String,SignalingBean>();
+					CallDispatcher.conferenceMember_Details.put(strBuddyName,sb);
+
 					ShowConnectionScreen(sb);
 //					finishactivity();
 

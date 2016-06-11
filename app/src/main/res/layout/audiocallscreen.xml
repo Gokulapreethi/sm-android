@@ -234,9 +234,6 @@
                     android:layout_weight="1"
                     android:visibility="gone">
 
-
-
-
                     <TextView
                         android:id="@+id/onoff2"
                         android:layout_width="wrap_content"
@@ -276,7 +273,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:padding="5dp"
+
                     android:visibility="gone">
 
 
@@ -322,6 +319,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:orientation="horizontal"
                 android:weightSum="2">
 

@@ -496,6 +496,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	 * used to store and retrive conference members.
 	 */
 	public static ArrayList<String> conferenceMembers = new ArrayList<String>();
+
+	public static HashMap<String, SignalingBean> conferenceMember_Details = new HashMap<String, SignalingBean>();
 	/**
 	 * Check video call full screen state.
 	 */
@@ -2195,6 +2197,10 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 				if (sb.getType().equals("0")) {
 
+					Log.i("AudioCall", " isCallInitiate :" + isCallInitiate + " GSMCallisAccepted :" + GSMCallisAccepted + " connection : " + SingleInstance.instanceTable
+							.containsKey("connection"));
+					Log.i("AudioCall","	sb.getSessionid() : "+sb.getSessionid() + " currentSessionid : "+currentSessionid);
+
 					// Incoming call
 					if (isCallInitiate
 							|| GSMCallisAccepted
@@ -2239,6 +2245,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						final Object objCallScreen = SingleInstance.instanceTable
 								.get("callscreen");
 						if (objCallScreen == null) {
+							Log.i("AudioCall","callscreen object null");
 							if (currentSessionid == null) {
 
 								String old_sessionid = null;
@@ -2313,7 +2320,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							}
 
 						} else if (objCallScreen instanceof AudioCallScreen) {
-
+							Log.i("AudioCall","callscreen object AudioCallScreen");
 							if (currentSessionid != null
 									&& currentSessionid.equals(sb
 											.getSessionid())) {
@@ -2338,7 +2345,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								rejectInComingCall(sb);
 
 						} else if (objCallScreen instanceof VideoCallScreen) {
-
+							Log.i("AudioCall","callscreen object VideoCallScreen");
 							if (currentSessionid != null
 									&& currentSessionid.equals(sb
 											.getSessionid())) {
@@ -2755,6 +2762,14 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 												.get("MAIN");
 										appMainActivity.closingActivity();
 
+										if (SingleInstance.instanceTable.containsKey("connection")) {
+											CallConnectingScreen connectingScreen = (CallConnectingScreen)SingleInstance.instanceTable.get("connection");
+											connectingScreen.removeInstance();
+										}
+
+										CallDispatcher.conferenceMember_Details = new HashMap<String,SignalingBean>();
+										CallDispatcher.conferenceMember_Details.put(from, (SignalingBean) sb.clone());
+
 										FragmentManager fm =
 												AppReference.mainContext.getSupportFragmentManager();
 										FragmentTransaction ft = fm.beginTransaction();
@@ -2765,6 +2780,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 //										i.putExtra("signal", bundle);
 										bundle.putString("buddy", from);
 										bundle.putString("receive", "false");
+										bundle.putString("host",CallDispatcher.LoginUser);
 										audioCallScreen.setArguments(bundle);
 										ft.replace(R.id.activity_main_content_fragment,
 												audioCallScreen);
@@ -2809,6 +2825,15 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 											GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
 											groupChatActivity.finish();
 										}
+
+										if (SingleInstance.instanceTable.containsKey("connection")) {
+											CallConnectingScreen connectingScreen = (CallConnectingScreen)SingleInstance.instanceTable.get("connection");
+											connectingScreen.removeInstance();
+										}
+
+										CallDispatcher.conferenceMember_Details = new HashMap<String,SignalingBean>();
+										CallDispatcher.conferenceMember_Details.put(from, (SignalingBean) sb.clone());
+
 										FragmentManager fm =
 												AppReference.mainContext.getSupportFragmentManager();
 										FragmentTransaction ft = fm.beginTransaction();
@@ -2819,6 +2844,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 												sb.getSessionid());
 										bundle.putString("buddyName", from);
 										bundle.putString("receive", "false");
+										bundle.putString("host",CallDispatcher.LoginUser);
 //										i.putExtras(bundle);
 									//	bundle.putString("buddy", from);
 										videoCallScreen.setArguments(bundle);
@@ -2886,6 +2912,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 										sb.setType("2");
 										sb.setFrom(to);
 										sb.setTo(from);
+
+										CallDispatcher.conferenceMember_Details.put(from, (SignalingBean) sb.clone());
 										AppMainActivity.commEngine
 												.acceptCall(sb);
 										Log.e("test",
@@ -2912,6 +2940,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									sb.setType("2");
 									sb.setFrom(to);
 									sb.setTo(from);
+									CallDispatcher.conferenceMember_Details.put(from, (SignalingBean) sb.clone());
 									AppMainActivity.commEngine.acceptCall(sb);
 									Log.e("test",
 											"Comes to Accept call Open new audio call window 3");
