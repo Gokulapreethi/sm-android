@@ -9865,7 +9865,7 @@ public class DBAccess extends SQLiteOpenHelper {
 			return row_id;
 		}
 	}
-	public Vector<PatientDetailsBean> getAllPatientDetails(String groupid) {
+	public Vector<PatientDetailsBean> getAllPatientDetails(String strGetQry) {
 		Vector<PatientDetailsBean> patientList = new Vector<PatientDetailsBean>();
 		try {
 			Cursor cur = null;
@@ -9875,9 +9875,6 @@ public class DBAccess extends SQLiteOpenHelper {
 				openDatabase();
 			}
 			Log.i("AAA", "DB list  " );
-			String strGetQry = null;
-				strGetQry = "select * from patientdetails where groupid='"
-						+ groupid + "'";
 			cur = db.rawQuery(strGetQry, null);
 			int len = cur.getCount();
 			Log.i("AAA", "length" + String.valueOf(len));
@@ -11055,15 +11052,6 @@ public class DBAccess extends SQLiteOpenHelper {
 				e.printStackTrace();
 		}
 		return groupChatList;
-	}
-	public void updateCallStatus(String signalID){
-		try {
-			String s = "update recordtransactiondetails set activecallstatus='callattended' where signalid='" + signalID + "'";
-			Log.d("abcdef","SQL => "+s);
-			db.execSQL(s);
-		}catch(Exception e){
-			Log.d("abcdef","novalue in DB for "+signalID+" returns with error "+e.toString());
-		}
 	}
 	public int insertGroupCallChat(SignalingBean groupChatBean) {
 		int row = 0;

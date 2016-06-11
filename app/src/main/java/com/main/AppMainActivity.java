@@ -672,8 +672,13 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		if(isPinEnable) {
 			if (openPinActivity) {
 				openPinActivity=false;
-				Intent i = new Intent(AppMainActivity.this, MainActivity.class);
-				startActivity(i);
+				if(Build.VERSION.SDK_INT>20) {
+					Intent i = new Intent(AppMainActivity.this, MainActivity.class);
+					startActivity(i);
+				}else {
+					Intent i = new Intent(AppMainActivity.this, PinSecurity.class);
+					startActivity(i);
+				}
 			} else {
 				count=0;
 				registerBroadcastReceiver();

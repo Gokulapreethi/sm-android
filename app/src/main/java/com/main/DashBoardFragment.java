@@ -893,11 +893,11 @@ public class DashBoardFragment extends Fragment {
         Log.i("AAAA", "Omorycontrol &************ size " + total);
         return total;
     }
-    String bytesToSize(int bytes) {
-        int kilobyte = 1024;
-        int megabyte = kilobyte * 1024;
-        int gigabyte = megabyte * 1024;
-        int terabyte = gigabyte * 1024;
+    String bytesToSize(float bytes) {
+        float kilobyte = 1024;
+        float megabyte = kilobyte * 1024;
+        float gigabyte = megabyte * 1024;
+        float terabyte = gigabyte * 1024;
 
         if ((bytes >= 0) && (bytes < kilobyte)) {
             return bytes + " B";
@@ -938,10 +938,10 @@ public class DashBoardFragment extends Fragment {
     public void showMemoryControl()
     {
         if(getMemorySize()>0) {
-            float free = getMemorySize();
             float total = 1048576L;
-            int num = (int) 5368709120L;
-            int temp1 = num - getMemorySize();
+            float free = total-getMemorySize();
+            float num = 5368709120L;
+            float temp1 = num - getMemorySize();
             freeSpace.setText(bytesToSize(temp1));
             float temp = free / total;
             piechart.setPercentage(temp * 100);

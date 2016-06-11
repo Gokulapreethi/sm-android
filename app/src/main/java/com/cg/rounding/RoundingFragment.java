@@ -191,6 +191,15 @@ public class RoundingFragment extends Fragment {
                             dialog.dismiss();
                         }
                     });
+                    existing.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(getActivity().getApplicationContext(),
+                                    DuplicateExistingGroups.class);
+                            getActivity().startActivity(intent);
+                            dialog.dismiss();
+                        }
+                    });
                 }catch (Exception e){
                     e.printStackTrace();
                 }

@@ -256,7 +256,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 					"select * from grouplist where groupid=" + groupid);
 			memberCount.setVisibility(View.VISIBLE);
 			memberAcceptedCount.setVisibility(View.VISIBLE);
-//			refreshMembersList();
+			refreshMembersList();
 			if (groupBean != null) {
 				Log.d("Test", "$$$$$GroupCreatedDate@@@@@ " + groupBean.getCreatedDate());
 				btn_create.setTag(groupBean.getGroupId());

@@ -230,7 +230,7 @@
         android:textColor="@color/snazlgray"
         android:textSize="17dp"
         android:layout_marginLeft="15dp"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
         <EditText
             android:id="@+id/ed_mrn"
             android:layout_width="match_parent"
@@ -275,7 +275,7 @@
                 android:layout_marginLeft="40dp"
                 android:gravity="left"
                 android:text="Floor"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:textColor="#808080"
                 android:textSize="15dp" />
 
@@ -316,7 +316,7 @@
                 android:layout_marginLeft="40dp"
                 android:gravity="left"
                 android:text="Ward"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:textColor="#808080"
                 android:textSize="15dp" />
 
@@ -364,7 +364,7 @@
                 android:layout_marginLeft="40dp"
                 android:gravity="left"
                 android:text="ROOM"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:textColor="#808080"
                 android:textSize="15dp" />
 
@@ -405,7 +405,7 @@
                 android:layout_marginLeft="40dp"
                 android:gravity="left"
                 android:text="Bed"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:textColor="#808080"
                 android:textSize="15dp" />
 
@@ -442,7 +442,7 @@
                 android:textSize="17dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:visibility="visible"/>
+                android:visibility="gone"/>
             <TextView
                 android:id="@+id/ed_Admitdate"
                 android:layout_width="match_parent"

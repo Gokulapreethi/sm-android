@@ -180,16 +180,20 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 								"select * from grouplist where groupid=" + userBean.getGroupid());
 						gBean.setDeleteGroupMembers(userBean.getBuddyName());
 						gBean.setGroupName(userBean.getGroupname());
-						if(gBean.getGrouptype().equalsIgnoreCase("Rounding")) {
-							RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable
-									.get("roundingGroup");
-							roundingGroup.showprogress();
-							WebServiceReferences.webServiceClient.createRoundingGroup(gBean, roundingGroup);
-						}else {
-							GroupActivity groupActivity = (GroupActivity) SingleInstance.contextTable
-									.get("groupActivity");
-							groupActivity.showprogress();
-							WebServiceReferences.webServiceClient.createGroup(gBean, groupActivity);
+						if(gBean.getGrouptype()!=null) {
+							if (gBean.getGrouptype().equalsIgnoreCase("Rounding")) {
+								RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable
+										.get("roundingGroup");
+								if(roundingGroup!=null)
+								roundingGroup.showprogress();
+								WebServiceReferences.webServiceClient.createRoundingGroup(gBean, roundingGroup);
+							} else {
+								GroupActivity groupActivity = (GroupActivity) SingleInstance.contextTable
+										.get("groupActivity");
+								if(groupActivity!=null)
+								groupActivity.showprogress();
+								WebServiceReferences.webServiceClient.createGroup(gBean, groupActivity);
+							}
 						}
 					}
 				}

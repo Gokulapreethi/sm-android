@@ -723,6 +723,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			llayAudioCall = inflater.inflate(R.layout.audiocallscreen, null);
 			final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
 			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+			audio_minimize = (RelativeLayout) getActivity().findViewById(R.id.audio_minimize);
+			audio_minimize.setVisibility(View.GONE);
 //		getActivity().getWindow().setSoftInputMode(
 //				WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 			TextView tv = (TextView) llayAudioCall.findViewById(R.id.status);

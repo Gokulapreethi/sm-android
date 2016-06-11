@@ -129,21 +129,21 @@ public class Touch implements View.OnTouchListener {
 
                 RelativeLayout.LayoutParams layoutParams =
                         (RelativeLayout.LayoutParams) view.getLayoutParams();
-                layoutParams.leftMargin = X - xDelta;
+//                layoutParams.leftMargin = X - xDelta;
                 layoutParams.topMargin = Y - yDelta;
-                layoutParams.rightMargin = X + xDelta;
+//                layoutParams.rightMargin = X + xDelta;
                 layoutParams.bottomMargin = Y + zDelta;
 
                 view.setX(0);
                 view.setY(Y);
 
-                if(view.getY() > sW){
+                if(view.getY() > sW || view.getY() <= 0 ){
                     view.setY(sW-20);
                     break;
                 }
                 break;
         }
-        return true;
+        return false;
     }
 
     private float spacing(MotionEvent event) {

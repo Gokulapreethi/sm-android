@@ -978,6 +978,10 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
         </activity>
+        <activity
+            android:name="com.cg.rounding.DuplicateExistingGroups"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

@@ -163,11 +163,9 @@
         <!--</LinearLayout>-->
 
         <!-- This is where fragment will show up -->
-
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/black2" >
+            android:layout_height="match_parent">
 
             <FrameLayout
                 android:id="@+id/activity_main_content_fragment"
@@ -179,7 +177,8 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_gravity="end|right">
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true">
 
             <RelativeLayout
                 android:id="@+id/audio_minimize"
@@ -188,6 +187,7 @@
                 android:layout_gravity="end|right"
                 android:layout_marginTop="65dp"
                 android:visibility="gone"
+                android:onClick="true"
                 android:background="@drawable/minimize_lay"
                 >
 
@@ -217,6 +217,7 @@
                 android:layout_gravity="end|right"
                 android:layout_marginTop="110dp"
                 android:visibility="gone"
+                android:onClick="true"
                 android:background="@drawable/minimize_lay">
 
                 <ImageView
@@ -240,6 +241,7 @@
                 android:layout_height="60dp"
                 android:layout_gravity="end|right"
                 android:layout_weight="1"
+                android:onClick="true"
                 android:background="@drawable/min_out_call"
                 android:layout_marginTop="140dp"
                 android:visibility="gone"/>
@@ -249,11 +251,12 @@
                 android:layout_height="60dp"
                 android:layout_gravity="end|right"
                 android:layout_weight="1"
+                android:onClick="true"
                 android:background="@drawable/min_in_call"
                 android:layout_marginTop="180dp"
                 android:visibility="gone"/>
             </RelativeLayout>
-        </FrameLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 

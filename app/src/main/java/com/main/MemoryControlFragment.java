@@ -141,8 +141,8 @@ public class MemoryControlFragment extends Fragment {
                     tv_photo.setText(bytesToSize(image));
                     int total=audio+videos+image+other+chat;
                     tv_total.setText(bytesToSize(total));
-                    int num = (int) 5368709120L;
-                    int temp1 = num - total;
+                    float num = (int) 5368709120L;
+                    float temp1 = num - total;
                     tv_free.setText(bytesToSize(temp1));
                     Log.i("AAAA", "Oncreate view of memorycontrol @@@@ size "+other);
                     tv_others.setText(bytesToSize(other));
@@ -194,11 +194,11 @@ public class MemoryControlFragment extends Fragment {
         }
         return hrSize;
     }
-    String bytesToSize(int bytes) {
-        int kilobyte = 1024;
-        int megabyte = kilobyte * 1024;
-        int gigabyte = megabyte * 1024;
-        int terabyte = gigabyte * 1024;
+    String bytesToSize(float bytes) {
+        float kilobyte = 1024;
+        float megabyte = kilobyte * 1024;
+        float gigabyte = megabyte * 1024;
+        float terabyte = gigabyte * 1024;
 
         if ((bytes >= 0) && (bytes < kilobyte)) {
             return bytes + " B";

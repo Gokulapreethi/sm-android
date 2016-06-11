@@ -799,7 +799,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             @Override
             public void run() {
                 try {
-                    PatientList = DBAccess.getdbHeler().getAllPatientDetails(groupBean.getGroupId());
+                    String strGetQry = "select * from patientdetails where groupid='"
+                            + groupBean.getGroupId() + "'";
+                    PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
                     Log.d("patient123", "RoundNewPatientact.class GroupID==========" + groupBean.getGroupId());
                     for(PatientDetailsBean bean:PatientList){
                         bean.setIsFromPatienttab(true);
@@ -8514,6 +8516,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         final TextView name = (TextView) v1.findViewById(R.id.name);
         final TextView location = (TextView) v1.findViewById(R.id.location);
         final TextView status = (TextView) v1.findViewById(R.id.status);
+        final TextView mypatients = (TextView) v1.findViewById(R.id.patients);
         final ImageView name_image = (ImageView)v1.findViewById(R.id.name_image);
         name_image.setVisibility(View.VISIBLE);
         final ImageView location_image = (ImageView)v1.findViewById(R.id.location_image);
@@ -8524,10 +8527,22 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         search_header = (RelativeLayout) v1.findViewById(R.id.search_header);
         ed_search = (EditText) v1.findViewById(R.id.ed_search);
         ImageView plusBtn = (ImageView) v1.findViewById(R.id.plusBtn_patient);
+        mypatients.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, AssignPatientActivity.class);
+                intent.putExtra("groupid", groupId);
+                intent.putExtra("groupname", groupBean.getGroupName());
+                intent.putExtra("fromMyPatient",true);
+                startActivity(intent);
+            }
+        });
 
         PatientList = new Vector<PatientDetailsBean>();
         PatientList.clear();
-        PatientList = DBAccess.getdbHeler().getAllPatientDetails(groupBean.getGroupId());
+        String strGetQry = "select * from patientdetails where groupid='"
+                + groupBean.getGroupId() + "'";
+        PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
         Collections.sort(PatientList, new PatientNameComparator());
         tempPatientList = PatientList;
         Log.i("patientdetails", "chat  filter if " + tempPatientList.size());
@@ -8599,7 +8614,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     @Override
                     public void run() {
                         PatientList.clear();
-                        PatientList = DBAccess.getdbHeler().getAllPatientDetails(groupBean.getGroupId());
+                        String strGetQry = "select * from patientdetails where groupid='"
+                                + groupBean.getGroupId() + "'";
+                        PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
                         Collections.sort(PatientList, new PatientNameComparator());
                         tempPatientList.clear();
                         tempPatientList = PatientList;
@@ -8628,7 +8645,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     @Override
                     public void run() {
                         PatientList.clear();
-                        PatientList = DBAccess.getdbHeler().getAllPatientDetails(groupBean.getGroupId());
+                        String strGetQry = "select * from patientdetails where groupid='"
+                                + groupBean.getGroupId() + "'";
+                        PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
                         Collections.sort(PatientList, new PatientLocationComparator());
                         tempPatientList.clear();
                         tempPatientList = PatientList;
@@ -8657,7 +8676,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     @Override
                     public void run() {
                         PatientList.clear();
-                        PatientList = DBAccess.getdbHeler().getAllPatientDetails(groupBean.getGroupId());
+                        String strGetQry = "select * from patientdetails where groupid='"
+                                + groupBean.getGroupId() + "'";
+                        PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
                         Collections.sort(PatientList, new PatientStatusComparator());
                         tempPatientList.clear();
                         tempPatientList = PatientList;

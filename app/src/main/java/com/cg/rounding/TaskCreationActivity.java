@@ -130,7 +130,9 @@ public class TaskCreationActivity extends Activity {
         });
 
         final Vector<PatientDetailsBean> PatientList;
-        PatientList=DBAccess.getdbHeler().getAllPatientDetails(groupid);
+        String strGetQry = "select * from patientdetails where groupid='"
+                + groupid + "'";
+        PatientList=DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
         if(isEdit) {
             String strQuery="select * from taskdetails where groupid='" + groupid + "'and taskid ='" + taskid+ "'";
             title.setText("EDIT TASK");

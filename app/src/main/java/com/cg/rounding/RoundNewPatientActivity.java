@@ -72,7 +72,7 @@ public class RoundNewPatientActivity extends Activity {
     public Vector<UserBean> membersList = new Vector<UserBean>();
     private String groupid;
     TextView membercount;
-    private String addedMembers[];
+    private String addedMembers;
     final Calendar myCalendar = Calendar.getInstance();
     private LinearLayout lv_buddylist;
     MembersAdapter adapter;
@@ -84,6 +84,7 @@ public class RoundNewPatientActivity extends Activity {
     private ProgressDialog progress = null;
     Vector<PatientDetailsBean> PatientList;
     PatientDetailsBean choosepBean=new PatientDetailsBean();
+    private ArrayList<String> assignedMembers=new ArrayList<String>();
     Boolean isClicked=false;
     RoundingPatientAdapter patientadapter;
 
@@ -152,7 +153,9 @@ public class RoundNewPatientActivity extends Activity {
                 TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
                 ListView patient_list=(ListView)dialog.findViewById(R.id.patient_list);
                 Button create=(Button)dialog.findViewById(R.id.create_patient);
-                PatientList=DBAccess.getdbHeler().getAllPatientDetails(groupid);
+                String strGetQry = "select * from patientdetails where groupid='"
+                        + groupid + "'";
+                PatientList=DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
                 final ChoosePatientAdapter adapter=new ChoosePatientAdapter(context,R.layout.choose_patient_row,PatientList);
                 patient_list.setAdapter(adapter);
                 cancel.setOnClickListener(new View.OnClickListener() {
@@ -274,12 +277,11 @@ public class RoundNewPatientActivity extends Activity {
                 dialog.show();
             }
         });
-        UserBean bean=new UserBean();
-        ProfileBean pbean=DBAccess.getdbHeler().getProfileDetails(CallDispatcher.LoginUser);
-        bean.setBuddyName(CallDispatcher.LoginUser);
-        bean.setFirstname(pbean.getFirstname()+" "+pbean.getLastname());
-        membersList.add(bean);
-       Log.i("sss", "memberss" + membersList.toString());
+//        UserBean bean=new UserBean();
+//        ProfileBean pbean=DBAccess.getdbHeler().getProfileDetails(CallDispatcher.LoginUser);
+//        bean.setBuddyName(CallDispatcher.LoginUser);
+//        bean.setFirstname(pbean.getFirstname()+" "+pbean.getLastname());
+//        membersList.add(bean);
         adapter = new MembersAdapter(RoundNewPatientActivity.this,R.layout.rounding_member_row, membersList);
         final int adapterCount = adapter.getCount();
 
@@ -443,6 +445,9 @@ public class RoundNewPatientActivity extends Activity {
         GroupBean gBean = DBAccess.getdbHeler()
                 .getGroupAndMembers("select * from groupdetails where groupid="
                         + groupid);
+        UserBean uBean=new UserBean();
+        uBean.setBuddyName(CallDispatcher.LoginUser);
+        membersList.add(uBean);
         if (gBean != null) {
             if (gBean.getActiveGroupMembers() != null
                     && gBean.getActiveGroupMembers().length() > 0) {
@@ -451,20 +456,6 @@ public class RoundNewPatientActivity extends Activity {
                 for (String tmp : list1) {
                     UserBean userBean = new UserBean();
                     userBean.setBuddyName(tmp);
-                    userBean.setInvite(true);
-                    userBean.setGroupid(groupid);
-                    userBean.setSelected(true);
-                    membersList.add(userBean);
-                }
-            }
-            if (gBean.getInActiveGroupMembers() != null
-                    && gBean.getInActiveGroupMembers().length() > 0) {
-                String[] list1 = (gBean.getInActiveGroupMembers())
-                        .split(",");
-                for (String tmp : list1) {
-                    UserBean userBean = new UserBean();
-                    userBean.setBuddyName(tmp);
-                    userBean.setSelected(true);
                     membersList.add(userBean);
                 }
             }
@@ -473,15 +464,6 @@ public class RoundNewPatientActivity extends Activity {
         assibnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                view.setEnabled(false);
-                handler.postDelayed(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        view.setEnabled(true);
-
-                    }
-                }, 1000);
                 Intent intent = new Intent(getApplicationContext(),
                         AddGroupMembers.class);
                 ArrayList<String> buddylist = new ArrayList<String>();
@@ -516,10 +498,9 @@ public class RoundNewPatientActivity extends Activity {
                     }else
                         pBean.setSex("");
                   int i=0;
-                    addedMembers=new String[membersList.size()];
-                    for (UserBean userBean : membersList) {
-                        addedMembers[i]= userBean.getBuddyName();
-                        Log.i("sss", "members list " + addedMembers[i]);
+                    addedMembers=new String();
+                    for (String name : assignedMembers) {
+                        addedMembers= addedMembers+","+name;
                         i++;
                     }
                     pBean.setGroupid(groupid);
@@ -532,13 +513,15 @@ public class RoundNewPatientActivity extends Activity {
                     pBean.setHospital(hospital.getText().toString());
                     pBean.setMrn(ed_mrn.getText().toString());
                     pBean.setLocation("");
-
                     pBean.setFloor(ed_floor.getText().toString());
                     pBean.setWard(ed_ward.getText().toString());
                     pBean.setRoom(ed_room.getText().toString());
                     pBean.setBed(ed_bed.getText().toString());
                     pBean.setAdmissiondate(ed_Admitdate.getText().toString());
-                    pBean.setAssignedmembers(CallDispatcher.LoginUser);
+                    if(addedMembers!=null)
+                    pBean.setAssignedmembers(addedMembers);
+                    else
+                        pBean.setAssignedmembers("");
                     showprogress();
                 WebServiceReferences.webServiceClient.SetPatientRecord(pBean, context);
             } else {
@@ -563,20 +546,10 @@ public class RoundNewPatientActivity extends Activity {
                     Bundle bundle = data.getExtras();
                     ArrayList<UserBean> list = (ArrayList<UserBean>) bundle
                             .get("list");
-                    HashMap<String, UserBean> membersMap = new HashMap<String, UserBean>();
-                    for (UserBean userBean : membersList) {
-                        membersMap.put(userBean.getBuddyName(), userBean);
-                    }
                     membersList.clear();
-                    Log.i("AAAA","members size "+list.size());
-                    UserBean bean=new UserBean();
-                    bean.setBuddyName(CallDispatcher.LoginUser);
-                    membersList.add(bean);
-                    for (UserBean userBean : list) {
-                        if (!membersMap.containsKey(userBean.getBuddyName())) {
-                            Log.i("AAAA","members size ");
-                            membersList.add(userBean);
-                        }
+                    membersList.addAll(list);
+                    for(UserBean uBean:list) {
+                        assignedMembers.add(uBean.getBuddyName());
                     }
                     refreshMembersList();
                 }
@@ -617,6 +590,7 @@ public class RoundNewPatientActivity extends Activity {
         });
 
     }
+
     public class MembersAdapter extends ArrayAdapter<UserBean> {
 
         private LayoutInflater inflater = null;
@@ -752,7 +726,7 @@ public class RoundNewPatientActivity extends Activity {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                Toast.makeText(context, message, 1).show();
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             }
         });
 
