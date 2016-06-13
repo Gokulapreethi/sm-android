@@ -1837,7 +1837,7 @@ public class CommunicationEngine implements AudioRecorderListener,
 							VideoThreadBean videoThreadBean = new VideoThreadBean();
 							videoThreadBean.setMember_name(sb.getTo());
 							videoThreadBean.setVideoDisabled(false);
-
+							Log.i("VideoSSRC", "videoSSRC_total.put 1");
 							WebServiceReferences.videoSSRC_total.put(Integer.parseInt(sb.getVideossrc()), videoThreadBean);
 							Log.i("NotesVideo", "videoSSRC size : " + WebServiceReferences.videoSSRC_total.size());
 						}

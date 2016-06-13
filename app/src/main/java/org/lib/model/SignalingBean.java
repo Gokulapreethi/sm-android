@@ -40,6 +40,7 @@ public class SignalingBean implements Serializable, Cloneable {
 	private String participants;
 	private String joincall;
 	private String videopromote = "no";
+	private String runningcallstate;
 	private String callstatus;
 	private String chatid;
 	public String getNetWork() {
@@ -572,6 +573,14 @@ public class SignalingBean implements Serializable, Cloneable {
 
 	public void setVideoStoped(String videoStoped) {
 		this.videoStoped = videoStoped;
+	}
+
+	public String getRunningcallstate() {
+		return runningcallstate;
+	}
+
+	public void setRunningcallstate(String runningcallstate) {
+		this.runningcallstate = runningcallstate;
 	}
 
 	public String getCallstatus() {

@@ -2894,8 +2894,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     "select * from groupdetails where groupid="
                             + groupBean.getGroupId());
             String members = getMembers(gBean.getOwnerName() + ","
-                    + gBean.getActiveGroupMembers());
+                    + gBean.getInviteMembers());
             Log.i("group123", "members " + members);
+
+//            String activeMembers =
+
             Log.i("group123", "members " + members);
             CallDispatcher.chatId=groupBean.getGroupId();
 

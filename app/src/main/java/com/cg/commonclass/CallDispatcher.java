@@ -2768,6 +2768,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 										}
 
 										CallDispatcher.conferenceMember_Details = new HashMap<String,SignalingBean>();
+										sb.setRunningcallstate("Connected");
 										CallDispatcher.conferenceMember_Details.put(from, (SignalingBean) sb.clone());
 
 										FragmentManager fm =
@@ -2832,6 +2833,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 										}
 
 										CallDispatcher.conferenceMember_Details = new HashMap<String,SignalingBean>();
+										sb.setRunningcallstate("Connected");
 										CallDispatcher.conferenceMember_Details.put(from, (SignalingBean) sb.clone());
 
 										FragmentManager fm =
@@ -2913,7 +2915,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 										sb.setFrom(to);
 										sb.setTo(from);
 
+										sb.setRunningcallstate("Connected");
 										CallDispatcher.conferenceMember_Details.put(from, (SignalingBean) sb.clone());
+
 										AppMainActivity.commEngine
 												.acceptCall(sb);
 										Log.e("test",
@@ -2940,7 +2944,10 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									sb.setType("2");
 									sb.setFrom(to);
 									sb.setTo(from);
+
+									sb.setRunningcallstate("Connected");
 									CallDispatcher.conferenceMember_Details.put(from, (SignalingBean) sb.clone());
+
 									AppMainActivity.commEngine.acceptCall(sb);
 									Log.e("test",
 											"Comes to Accept call Open new audio call window 3");

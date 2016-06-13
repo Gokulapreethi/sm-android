@@ -3,7 +3,6 @@ package com.cg.callservices;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -543,6 +542,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 										}
 									}
+									member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
 
 								}
 							} else if (bun.containsKey("img")) {
@@ -622,6 +622,11 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			if (AppMainActivity.commEngine != null) {
                 AppMainActivity.commEngine.setmDecodeFrame(true);
             }
+
+			Activity parent = getActivity();
+			if(parent != null){
+				audio_minimize.setVisibility(View.GONE);
+			}
 
 			if(currentcall_type.equalsIgnoreCase("VC")){
 				getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -874,6 +879,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 					i.putExtra("calltype",calltype);
 					i.putExtra("sessionId", strSessionId);
 					i.putExtra("host", host);
+					i.putExtra("fromscreen","audiocallscreen");
 					AppReference.mainContext.startActivity(i);
 
 				}
@@ -946,10 +952,10 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
                     CharSequence text = chTimer.getText();
                     if (text.length() == 5) {
-                        chTimer.setText("00:" + text);
+                        chTimer.setText( text);
                     } else if (text.length() == 7) {
 
-                        chTimer.setText("0" + text);
+                        chTimer.setText( text);
                     }
 
                 }
@@ -1679,6 +1685,14 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 								for (BuddyInformationBean buddyInformationBean : buddyList) {
 									if (buddyInformationBean.getName().equalsIgnoreCase(vidsignBean.getFrom())) {
 										String pic_path = buddyInformationBean.getProfile_picpath();
+
+										if (pic_path == null || pic_path.length() == 0) {
+											ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(vidsignBean.getFrom());
+											if(pBean != null) {
+												pic_path = pBean.getPhoto();
+												Log.i("Join","pic_path 2 : "+pic_path);
+											}
+										}
 										if (pic_path != null && pic_path.length() > 0) {
 											if (!pic_path.contains("COMMedia")) {
 												pic_path = Environment
@@ -1877,6 +1891,44 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			}
 		});
 
+	}
+
+
+	public void hangupCallFromCallActiveMembers(){
+		try {
+			Message msg = new Message();
+			Bundle bun = new Bundle();
+			bun.putString("action", "leave");
+			msg.obj = bun;
+			selfHangup = true;
+			if (selfHangup) {
+                CallDispatcher.sb
+						.setEndTime(getCurrentDateandTime());
+                CallDispatcher.sb
+                        .setCallDuration(SingleInstance.mainContext
+								.getCallDuration(CallDispatcher.sb
+												.getStartTime(),
+										CallDispatcher.sb
+												.getEndTime()));
+                CallDispatcher.sb.setCallstatus("callattended");
+                DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+                DBAccess.getdbHeler()
+                        .saveOrUpdateRecordtransactiondetails(
+								CallDispatcher.sb);
+
+                showCallHistory();
+
+
+            }
+			final String[] choiceList = returnBuddies();
+			if (choiceList.length != 0) {
+                isBuddyinCall = true;
+                selfHangup = false;
+            }
+			handler.sendMessage(msg);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void notifyGSMCallAccepted() {
@@ -2516,7 +2568,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	public void finishAudiocallScreen()
 	{
 		try {
-
+			Log.i("AudioCall","Came to finishAudiocallScreen in AudioCallScreen");
 			if (SingleInstance.instanceTable.containsKey("callactivememberslist")) {
 				CallActiveMembersList activeMembersList = (CallActiveMembersList)SingleInstance.instanceTable.get("callactivememberslist");
 				activeMembersList.finishActivity();
@@ -2896,39 +2948,39 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 					Log.d("Join", "call status--->" + state);
 
-					if (state != null && state.equalsIgnoreCase("Offline")
-							|| state.equals("Stealth")
-							|| state.equalsIgnoreCase("pending")
-							|| state.equalsIgnoreCase("Virtual")
-							|| state.equalsIgnoreCase("airport")) {
-						if (WebServiceReferences.running) {
-							CallDispatcher.pdialog = new ProgressDialog(context);
-							objCallDispatcher.showprogress(CallDispatcher.pdialog, context);
-
-							String[] res_info = new String[3];
-							res_info[0] = CallDispatcher.LoginUser;
-							res_info[1] = user;
-							if (state.equals("Offline") || state.equals("Stealth"))
-								res_info[2] = objCallDispatcher
-										.getdbHeler(context)
-										.getwheninfo(
-												"select cid from clonemaster where cdescription='Offline'");
-							else
-								res_info[2] = "";
-
-							WebServiceReferences.webServiceClient
-									.OfflineCallResponse(res_info);
-						}
-
-					} else {
-						if (state != null && !state.equalsIgnoreCase("pending")) {
+//					if (state != null && state.equalsIgnoreCase("Offline")
+//							|| state.equals("Stealth")
+//							|| state.equalsIgnoreCase("pending")
+//							|| state.equalsIgnoreCase("Virtual")
+//							|| state.equalsIgnoreCase("airport")) {
+//						if (WebServiceReferences.running) {
+//							CallDispatcher.pdialog = new ProgressDialog(context);
+//							objCallDispatcher.showprogress(CallDispatcher.pdialog, context);
+//
+//							String[] res_info = new String[3];
+//							res_info[0] = CallDispatcher.LoginUser;
+//							res_info[1] = user;
+//							if (state.equals("Offline") || state.equals("Stealth"))
+//								res_info[2] = objCallDispatcher
+//										.getdbHeler(context)
+//										.getwheninfo(
+//												"select cid from clonemaster where cdescription='Offline'");
+//							else
+//								res_info[2] = "";
+//
+//							WebServiceReferences.webServiceClient
+//									.OfflineCallResponse(res_info);
+//						}
+//
+//					} else {
+//						if (state != null && !state.equalsIgnoreCase("pending")) {
 //							SingleInstance.parentId = record_TransactionBean.getParentID();
 							objCallDispatcher.MakeCallFromCallHistory(caseid,
 									user, context, record_TransactionBean, 2, feature);
 							con_scr_opened = con_scr_opened + 1;
-						}
-
-					}
+//						}
+//
+//					}
 				}
 			}
 

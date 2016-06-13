@@ -385,6 +385,7 @@ public class inCommingCallAlert extends Fragment {
 					ShowConnectionScreen(sb);
 
 					CallDispatcher.conferenceMember_Details = new HashMap<String,SignalingBean>();
+					sb.setRunningcallstate("Connecting");
 					CallDispatcher.conferenceMember_Details.put(strBuddyName,sb);
 //					finishactivity();
 
@@ -420,6 +421,7 @@ public class inCommingCallAlert extends Fragment {
 							.clone();
 
 					CallDispatcher.conferenceMember_Details = new HashMap<String,SignalingBean>();
+					sb.setRunningcallstate("Connecting");
 					CallDispatcher.conferenceMember_Details.put(strBuddyName,sb);
 
 					ShowConnectionScreen(sb);

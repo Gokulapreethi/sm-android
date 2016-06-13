@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +47,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 /**
@@ -66,7 +68,7 @@ public class CallActiveMembersList extends Activity {
     Vector<BuddyInformationBean> result;
     private CallDispatcher objCallDispatcher;
     private Vector<UserBean> membersList = new Vector<UserBean>();
-    private String strSessionId, host;
+    private String strSessionId, host, activescreen;
     private Handler handler = new Handler();
     private boolean selfHangup = false;
     private boolean isBuddyinCall = false;
@@ -94,6 +96,10 @@ public class CallActiveMembersList extends Activity {
                 host = getIntent().getStringExtra("host");
                 Log.i("AudioCall", "Host : " + host);
             }
+
+            if (getIntent().getStringExtra("fromscreen") != null) {
+                activescreen = getIntent().getStringExtra("fromscreen");
+            }
             timer = getIntent().getStringExtra("timer");
             calltype = getIntent().getStringExtra("calltype");
 
@@ -113,9 +119,20 @@ public class CallActiveMembersList extends Activity {
             hangupBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    showHangUpAlert();
+
+                    showHangUpAlert();
                 }
             });
+
+
+            Set mapSet = (Set) CallDispatcher.conferenceMember_Details.entrySet();
+            Iterator mapIterator = mapSet.iterator();
+            while (mapIterator.hasNext()) {
+                Map.Entry mapEntry = (Map.Entry) mapIterator.next();
+                String key = (String) mapEntry.getKey();
+                Log.i("AudioCall", "key : " + key);
+                SignalingBean pbean = (SignalingBean) mapEntry.getValue();
+            }
 
             Vector<BuddyInformationBean> participant_objects = new Vector<BuddyInformationBean>();
             Vector<BuddyInformationBean> total_objects = new Vector<BuddyInformationBean>();
@@ -161,7 +178,7 @@ public class CallActiveMembersList extends Activity {
                     }
                 }
 
-                if(havebuddy){
+                if (havebuddy) {
 
                 } else {
                     BuddyInformationBean informationBean = new BuddyInformationBean();
@@ -270,7 +287,7 @@ public class CallActiveMembersList extends Activity {
                     } else {
                         holder.statusIcon.setBackgroundResource(R.drawable.offline_icon);
                     }
-                    if(bib.getFirstname() != null) {
+                    if (bib.getFirstname() != null) {
                         if (bib.getFirstname().equalsIgnoreCase(CallDispatcher.LoginUser)) {
                             holder.buddyName.setText("Me");
                         } else {
@@ -450,34 +467,19 @@ public class CallActiveMembersList extends Activity {
                                         R.string.yes),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-
-                                        Message msg = new Message();
-                                        Bundle bun = new Bundle();
-                                        bun.putString("action", "leave");
-                                        msg.obj = bun;
-                                        selfHangup = true;
-                                        if (selfHangup) {
-                                            CallDispatcher.sb
-                                                    .setEndTime(getCurrentDateandTime());
-                                            CallDispatcher.sb
-                                                    .setCallDuration(SingleInstance.mainContext
-                                                            .getCallDuration(CallDispatcher.sb
-                                                                            .getStartTime(),
-                                                                    CallDispatcher.sb
-                                                                            .getEndTime()));
-                                            CallDispatcher.sb.setCallstatus("callattended");
-                                            DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
-                                            DBAccess.getdbHeler()
-                                                    .saveOrUpdateRecordtransactiondetails(
-                                                            CallDispatcher.sb);
-                                            showCallHistory();
+                                        if (activescreen.equalsIgnoreCase("audiocallscreen")) {
+                                            if (SingleInstance.instanceTable.containsKey("callscreen")) {
+                                                AudioCallScreen audioCallScreen = (AudioCallScreen) SingleInstance.instanceTable.get("callscreen");
+                                                audioCallScreen.hangupCallFromCallActiveMembers();
+                                            }
+                                        } else if (activescreen.equalsIgnoreCase("videocallscreen")) {
+                                            if (SingleInstance.instanceTable.containsKey("callscreen")) {
+                                                VideoCallScreen videoCallScreen = (VideoCallScreen) SingleInstance.instanceTable.get("callscreen");
+                                                videoCallScreen.hangupCallFromCallActiveMembers();
+                                            }
                                         }
-                                        final String[] choiceList = returnBuddies();
-                                        if (choiceList.length != 0) {
-                                            isBuddyinCall = true;
-                                            selfHangup = false;
-                                        }
-                                        handler.sendMessage(msg);
+                                        dialog.cancel();
+                                        finishActivity();
                                     }
                                 })
                         .setNegativeButton(

@@ -30,7 +30,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.telecom.Call;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -41,15 +40,12 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AnimationUtils;
-import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,10 +54,10 @@ import com.bean.ProfileBean;
 import com.bean.UserBean;
 import com.callHistory.CallHistoryActivity;
 import com.cg.DB.DBAccess;
-import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.hostedconf.AppReference;
+import com.cg.snazmed.R;
 import com.group.AddGroupMembers;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
@@ -326,7 +322,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							// ad.notifyDataSetChanged();
 							// }
 							// switchVideo(bundle.getString("newbuddy"));
-
+							member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
 						} else if (bundle.containsKey("newrequest")) {
 							SignalingBean bean = (SignalingBean) bundle
 									.getSerializable("newrequest");
@@ -393,6 +389,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							// "One person is disconnect his call....");
 							CallDispatcher.conferenceMembers.remove(bundle
 									.getString("hangup"));
+							member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
 							/*
 							 * videoConferenceMembers.remove(0);
 							 */
@@ -415,6 +412,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 								Log.d("test", "removed");
 								CallDispatcher.conferenceMembers.remove(bundle
 										.getString("bye"));
+								member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
 							}
 
 							// Log.d("", "removed user");
@@ -783,10 +781,10 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 						CharSequence text = chTimer.getText();
 						if (text.length() == 5) {
-							chTimer.setText("00:" + text);
+							chTimer.setText( text);
 						} else if (text.length() == 7) {
 
-							chTimer.setText("0" + text);
+							chTimer.setText( text);
 						}
 
 					}
@@ -900,6 +898,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 						Intent i = new Intent(AppReference.mainContext, CallActiveMembersList.class);
 						i.putExtra("sessionId", sessionid);
 						i.putExtra("host", host);
+						i.putExtra("fromscreen","videocallscreen");
 						AppReference.mainContext.startActivity(i);
 					}
 				});
@@ -1677,23 +1676,33 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							} else {
 								boolean have_image = false;
 								for (BuddyInformationBean buddyInformationBean : total_buddyList) {
+									Log.i("Join","tb image : "+buddyInformationBean.getName()+" cb image : "+vidsignBean.getFrom());
 									if (buddyInformationBean.getName().equalsIgnoreCase(vidsignBean.getFrom())) {
 										String pic_path = buddyInformationBean.getProfile_picpath();
-											if (pic_path != null && pic_path.length() > 0) {
-												if (!pic_path.contains("COMMedia")) {
-													pic_path = Environment
-															.getExternalStorageDirectory()
-															+ "/COMMedia/" + pic_path;
-												}
-												have_image = true;
-												if (selectedposition == 0) {
-													imageLoader.DisplayImage(pic_path, buddyimageview1, R.drawable.icon_buddy_aoffline);
-												} else if (selectedposition == 1) {
-													imageLoader.DisplayImage(pic_path, buddyimageview2, R.drawable.icon_buddy_aoffline);
-												} else if (selectedposition == 2) {
-													imageLoader.DisplayImage(pic_path, buddyimageview3, R.drawable.icon_buddy_aoffline);
-												}
+										Log.i("Join","pic_path 1 : "+pic_path);
+										if (pic_path == null || pic_path.length() == 0) {
+											ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(vidsignBean.getFrom());
+											if(pBean != null) {
+												pic_path = pBean.getPhoto();
+												Log.i("Join","pic_path 2 : "+pic_path);
 											}
+										}
+
+										if (pic_path != null && pic_path.length() > 0) {
+											if (!pic_path.contains("COMMedia")) {
+												pic_path = Environment
+														.getExternalStorageDirectory()
+														+ "/COMMedia/" + pic_path;
+											}
+											have_image = true;
+											if (selectedposition == 0) {
+												imageLoader.DisplayImage(pic_path, buddyimageview1, R.drawable.icon_buddy_aoffline);
+											} else if (selectedposition == 1) {
+												imageLoader.DisplayImage(pic_path, buddyimageview2, R.drawable.icon_buddy_aoffline);
+											} else if (selectedposition == 2) {
+												imageLoader.DisplayImage(pic_path, buddyimageview3, R.drawable.icon_buddy_aoffline);
+											}
+										}
 									}
 								}
 								if(selectedposition == 0) {
@@ -2023,7 +2032,6 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		}
 
 	}
-
 	void showHangUpAlert() {
 		try {
 
@@ -2038,7 +2046,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 									.getString(R.string.yes),
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
-										int id) {
+													int id) {
 									try {
 										selfHangup = true;
 										Message message = new Message();
@@ -2060,7 +2068,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 									.getString(R.string.no),
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
-										int id) {
+													int id) {
 									dialog.cancel();
 								}
 							});
@@ -2072,6 +2080,22 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		}
 
 		//
+	}
+
+	public void hangupCallFromCallActiveMembers(){
+		try {
+			selfHangup = true;
+			Message message = new Message();
+			Bundle bundle = new Bundle();
+			bundle.putString("hangupfullscreen",
+					"hangupfullscreen");
+			message.obj = bundle;
+			// Log.e("h_bye", "");
+			videoHandler.sendMessage(message);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 	}
 
 	public void showWifiStateChangedAlert(String message) {
@@ -3431,6 +3455,12 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		//
 		// }
 		// else{
+
+		Activity parent = getActivity();
+		if(parent != null){
+			video_minimize.setVisibility(View.GONE);
+		}
+
 			AppMainActivity.inActivity = context;
 		if (AppMainActivity.commEngine != null) {
 			AppMainActivity.commEngine.setmDecodeFrame(true);
@@ -3864,9 +3894,10 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	{
 
 		if (SingleInstance.instanceTable.containsKey("callactivememberslist")) {
-		CallActiveMembersList activeMembersList = (CallActiveMembersList)SingleInstance.instanceTable.get("callactivememberslist");
-		activeMembersList.finishActivity();
-	}
+			CallActiveMembersList activeMembersList = (CallActiveMembersList) SingleInstance.instanceTable.get("callactivememberslist");
+			activeMembersList.finishActivity();
+		}
+
 		if (SingleInstance.instanceTable.containsKey("callscreen")) {
 			SingleInstance.instanceTable.remove("callscreen");
 			Log.e("note", "Call screen instance removed ACS!!");
