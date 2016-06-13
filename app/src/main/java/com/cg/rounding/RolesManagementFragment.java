@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.snazmed.R;
+import com.group.chat.GroupChatActivity;
+import com.util.SingleInstance;
 
 import org.lib.model.GroupBean;
 
@@ -75,6 +78,21 @@ public class RolesManagementFragment extends Fragment {
 
         Button backBtn = (Button) getActivity().findViewById(R.id.backbtn);
         backBtn.setVisibility(View.VISIBLE);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SingleInstance.mainContext, GroupChatActivity.class);
+                intent.putExtra("groupid", groupId);
+                intent.putExtra("isRounding", true);
+                SingleInstance.mainContext.startActivity(intent);
+                RoundingFragment roundingFragment = RoundingFragment.newInstance(SingleInstance.mainContext);
+                FragmentManager fragmentManager = SingleInstance.mainContext
+                        .getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(
+                        R.id.activity_main_content_fragment, roundingFragment)
+                        .commitAllowingStateLoss();
+            }
+        });
         _rootView = null;
         if (_rootView == null) {
 

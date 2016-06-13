@@ -7736,32 +7736,16 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 
 	}
-	public void isApplicationBroughtToBackground() {
-//		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-//		List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
-//		if (!tasks.isEmpty()) {
-//			ComponentName topActivity = tasks.get(0).topActivity;
-//			if (!topActivity.getPackageName().equals(context.getPackageName())) {
-//				return true;
-//			}
-//		}
-//		return false;
-		ActivityManager mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-		List<ActivityManager.RunningTaskInfo> RunningTask = mActivityManager.getRunningTasks(1);
-		ActivityManager.RunningTaskInfo ar = RunningTask.get(0);
-		activityOnTop = ar.topActivity.toString();
-		Log.i("pin", "activityOnTop " + activityOnTop);
-		Log.i("pin", "activityOnTop " + context.getPackageName());
-		if(activityOnTop.contains("com.android.documentsui")){
-			Log.i("pin", "com.android.documentsui pakage");
-			openPinActivity=false;
-		}else if (!activityOnTop.contains(context.getPackageName())) {
-			Log.i("pin", "Appmain snazmed pakage onStop openActivity=true");
-			openPinActivity=true;
-		} else{
-			openPinActivity = false;
+	public boolean isApplicationBroughtToBackground() {
+		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+		List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
+		if (!tasks.isEmpty()) {
+			ComponentName topActivity = tasks.get(0).topActivity;
+			if (!topActivity.getPackageName().equals(context.getPackageName())) {
+				return true;
+			}
 		}
-
+		return false;
 	}
 	public void registerBroadcastReceiver() {
 		final IntentFilter theFilter = new IntentFilter();

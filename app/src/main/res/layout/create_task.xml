@@ -117,8 +117,9 @@
                     android:id="@+id/call_patient"
                     android:textColor="@color/white"
 
-                    android:hint="Call this Patient"
+                    android:hint="Patient Name"
                     android:textSize="15sp"
+                    android:editable="false"
                     android:background="@drawable/edittext_style"
                     android:drawableRight="@drawable/input_arrow"/>
 
@@ -182,6 +183,8 @@
                     android:layout_marginStart="15dp"
                     android:visibility="gone" />
 
+
+
                 <TextView
                     android:id="@+id/ed_dueDate"
                     android:hint="Set Due Date"
@@ -201,6 +204,7 @@
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="15dp"
                     android:background="@color/grey3" />
+
                 <TextView
                     android:id="@+id/dueTime"
                     android:text="Set Due Time"

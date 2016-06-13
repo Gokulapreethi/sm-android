@@ -62,6 +62,7 @@ import org.lib.model.GroupBean;
 import org.lib.model.TaskDetailsBean;
 
 import java.io.File;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -90,6 +91,7 @@ public class TaskCreationActivity extends Activity {
     MemberNamesAdapter memberadapter;
     String tick="&#x2713";
     TextView assignMember;
+    int edit_Year , edit_day, edit_month;
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
@@ -105,6 +107,7 @@ public class TaskCreationActivity extends Activity {
         final EditText ed_taskDesc=(EditText)findViewById(R.id.ed_taskDesc);
         final TextView taskDesc=(TextView)findViewById(R.id.taskDesc);
         final TextView dueDate=(TextView)findViewById(R.id.dueDate);
+        final TextView dueTime=(TextView)findViewById(R.id.dueTime);
         ed_dueDate=(TextView)findViewById(R.id.ed_dueDate);
         final TextView ed_dueTime=(TextView)findViewById(R.id.ed_dueTime);
         final TextView title=(TextView)findViewById(R.id.txtView01);
@@ -255,6 +258,9 @@ public class TaskCreationActivity extends Activity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                if (PatientList.size() == 0) {
+                    patient.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.input_arrow, 0);
+                }
             }
         });
         ed_assignMember.setOnClickListener(new View.OnClickListener() {
@@ -263,32 +269,58 @@ public class TaskCreationActivity extends Activity {
                 showMembers();
             }
         });
-        btn_touch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (btn_touch.isChecked()) {
-                    remainderTag=1;
-                    setReminder.setTextColor(getResources().getColor(R.color.white));
-                    reminder.setVisibility(View.VISIBLE);
-                    remindTime.setVisibility(View.VISIBLE);
-                } else {
-                    remainderTag=0;
-                    setReminder.setTextColor(getResources().getColor(R.color.snazlgray));
-                    reminder.setVisibility(View.GONE);
-                    remindTime.setVisibility(View.GONE);
+
+            btn_touch.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (ed_dueDate.getText().length() > 0 ) {
+                        if (btn_touch.isChecked()) {
+                            remainderTag = 1;
+                            setReminder.setTextColor(getResources().getColor(R.color.white));
+                            reminder.setVisibility(View.VISIBLE);
+                            remindTime.setVisibility(View.VISIBLE);
+                        } else {
+                            remainderTag = 0;
+                            setReminder.setTextColor(getResources().getColor(R.color.snazlgray));
+                            reminder.setVisibility(View.GONE);
+                            remindTime.setVisibility(View.GONE);
+                        }
+                    }else{
+                        Toast.makeText(context, "Please Select the Duedate to set reminder", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
-            }
-        });
+
+            });
+
         final java.sql.Date todayDate = new java.sql.Date(System.currentTimeMillis());
+
         reminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DatePickerPopWin pickerPopWin = new DatePickerPopWin.Builder(TaskCreationActivity.this, new DatePickerPopWin.OnDatePickedListener() {
-                    @Override
-                    public void onDatePickCompleted(int month, int day, int year, String dateDesc) {
-                        Toast.makeText(TaskCreationActivity.this, dateDesc, Toast.LENGTH_SHORT).show();
-
-                        remindTime.setText(dateDesc);
+                        @Override
+                        public void onDatePickCompleted(int month, int day, int year, String dateDesc) {
+//                            Toast.makeText(TaskCreationActivity.this, dateDesc, Toast.LENGTH_SHORT).show();
+                            Date date = new Date();
+                            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                            String inputString2 = dateFormat.format(date);
+                            String Today = inputString2;
+                            SimpleDateFormat myFormat = new SimpleDateFormat("dd-MM-yyyy");
+                            Date date1 = null;
+                            Date date2 = null;
+                            try {
+                                date1 = myFormat.parse(dateDesc);
+                                date2 = myFormat.parse(ed_dueDate.getText().toString());
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                            if (date2.compareTo(date1) <0) {
+                                remindTime.setText(ed_dueDate.getText().toString());
+                            }else{
+                                remindTime.setText(dateDesc);
+//                                Toast.makeText(context, "Please Select the month and date within the Duedate", Toast.LENGTH_SHORT).show();
+                            }
 //                        SimpleDateFormat datefor = new SimpleDateFormat("yyyy/MM/dd");
 //                        Date tmpDate=null;
 //
@@ -314,16 +346,17 @@ public class TaskCreationActivity extends Activity {
 //                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
 //                        }
 
-                    }
-                }).textConfirm("DONE") //text of confirm button
-                        .textCancel("CANCEL") //text of cancel button
-                        .btnTextSize(16) // button text size
-                        .viewTextSize(25) // pick view text size
-                        .minYear(Calendar.getInstance().get(Calendar.YEAR)) //min year in loop
-                        .maxYear(2550) // max year in loop
-                        .dateChose(todayDate.toString()) // date chose when init popwindow
-                        .build();
-                pickerPopWin.showPopWin(TaskCreationActivity.this);
+                        }
+                    }).textConfirm("DONE") //text of confirm button
+                            .textCancel("CANCEL") //text of cancel button
+                            .btnTextSize(16) // button text size
+                            .viewTextSize(25) // pick view text size
+                            .minYear(Calendar.getInstance().get(Calendar.YEAR)) //min year in loop
+                            .maxYear(2550) // max year in loop
+                            .dateChose(todayDate.toString()) // date chose when init popwindow
+                            .build();
+                    pickerPopWin.showPopWin(TaskCreationActivity.this);
+
 
             }
         });
@@ -335,6 +368,9 @@ public class TaskCreationActivity extends Activity {
                 DatePickerPopWin pickerPopWin = new DatePickerPopWin.Builder(TaskCreationActivity.this, new DatePickerPopWin.OnDatePickedListener() {
                     @Override
                     public void onDatePickCompleted(int year, int month, int day, String dateDesc) {
+                        edit_Year = year;
+                        edit_month = month;
+                        edit_day = day;
                         ed_dueDate.setText(dateDesc);
                         dueDate.setVisibility(View.VISIBLE);
 //                        Toast.makeText(TaskCreationActivity.this, dateDesc, Toast.LENGTH_SHORT).show();
@@ -356,18 +392,44 @@ public class TaskCreationActivity extends Activity {
                 Calendar mcurrentTime = Calendar.getInstance();
                 int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
                 int minute = mcurrentTime.get(Calendar.MINUTE);
+                dueTime.setVisibility(View.VISIBLE);
                 CustomTimePickerDialog mTimePicker;
                 mTimePicker = new CustomTimePickerDialog(TaskCreationActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        String AM_PM ;
-                        if(selectedHour < 12) {
-                            AM_PM = "AM";
-                        } else {
-                            AM_PM = "PM";
-                        }
 
-                        ed_dueTime.setText( selectedHour + ":" + selectedMinute+ " " + AM_PM);
+//                        hour = selectedHour;
+//                        minute = selectedMinute;
+                        String timeSet = "";
+                        if (selectedHour > 12) {
+                            selectedHour -= 12;
+                            timeSet = "PM";
+                        } else if (selectedHour == 0) {
+                            selectedHour += 12;
+                            timeSet = "AM";
+                        } else if (selectedHour == 12)
+                            timeSet = "PM";
+                        else
+                            timeSet = "AM";
+
+                        String min = "";
+                        if (selectedMinute < 10)
+                            min = "0" + selectedMinute ;
+                        else
+                            min = String.valueOf(selectedMinute);
+
+                        // Append in a StringBuilder
+                        String aTime = new StringBuilder().append(selectedHour).append(':')
+                                .append(min ).append(" ").append(timeSet).toString();
+                        ed_dueTime.setText(aTime);
+//                        String AM_PM ;
+//                        if(selectedHour < 12) {
+//                            AM_PM = "AM";
+//                        } else {
+//                            AM_PM = "PM";
+//                        }
+//
+//                        ed_dueTime.setText( selectedHour + ":" + selectedMinute+ " " + AM_PM);
                     }
                 }, hour, minute, false);//if true ,Yes 24 hour time
                 mTimePicker.setTitle("Select Time");
@@ -393,7 +455,10 @@ public class TaskCreationActivity extends Activity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 patient.showDropDown();
-                patient.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.up_arrow, 0);
+//                patient.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.up_arrow, 0);
+                if(PatientList.size() == 0){
+                    Toast.makeText(context, "Please create patient before creating new task...", Toast.LENGTH_SHORT).show();
+                }
                 return false;
             }
         });

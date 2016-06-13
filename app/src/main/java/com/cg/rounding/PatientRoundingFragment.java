@@ -275,6 +275,10 @@ public class PatientRoundingFragment extends Fragment {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(SingleInstance.mainContext, GroupChatActivity.class);
+                intent.putExtra("groupid", pBean.getGroupid());
+                intent.putExtra("isRounding", true);
+                SingleInstance.mainContext.startActivity(intent);
                 RoundingFragment changePassword = RoundingFragment.newInstance(mainContext);
                 FragmentManager fragmentManager = SingleInstance.mainContext
                         .getSupportFragmentManager();
