@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
@@ -268,6 +269,10 @@ public class PatientRoundingFragment extends Fragment {
 
         TextView title = (TextView) getActivity().findViewById(
                 R.id.activity_main_content_title);
+        title.setEllipsize(TextUtils.TruncateAt.END);
+        title.setWidth(600);
+        title.setHeight(200);
+        title.setSingleLine();
         title.setVisibility(View.VISIBLE);
         patientName = pBean.getFirstname() + " " + pBean.getLastname();
         title.setText(patientName);
@@ -621,7 +626,7 @@ public class PatientRoundingFragment extends Fragment {
         view_task.setVisibility(View.GONE);
     }
 
-    private void showDiagnosisHistory() {
+    private void showDiagnosisHistory(String edit_content) {
         final Dialog dialog1 = new Dialog(mainContext);
         dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog1.setContentView(R.layout.diagnosis_history);
@@ -629,6 +634,9 @@ public class PatientRoundingFragment extends Fragment {
         dialog1.getWindow().setBackgroundDrawableResource(R.color.trans_black2);
         dialog1.show();
         Button cancel = (Button) dialog1.findViewById(R.id.cancel);
+
+        TextView text_message = (TextView)dialog1.findViewById(R.id.text_message);
+        text_message.setText(edit_content);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -825,7 +833,11 @@ public class PatientRoundingFragment extends Fragment {
         LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v1 = layoutInflater.inflate(R.layout.roundingforpatient, content);
 
-        TextView seeAll = (TextView) v1.findViewById(R.id.see_all);
+        TextView seeAll_diagnosis = (TextView) v1.findViewById(R.id.see_all);
+        TextView seeAll_medications = (TextView) v1.findViewById(R.id.see_all1);
+        TextView seeAll_test = (TextView) v1.findViewById(R.id.see_all3);
+        TextView seeAll_hospital = (TextView) v1.findViewById(R.id.see_all4);
+        TextView seeAll_consult = (TextView) v1.findViewById(R.id.see_all5);
         final Button edit_diagnosis = (Button) v1.findViewById(R.id.edit_diagnosis);
         final Button edit_medications = (Button) v1.findViewById(R.id.edit_medications);
         final Button edit_tests = (Button) v1.findViewById(R.id.edit_tests);
@@ -995,9 +1007,9 @@ public class PatientRoundingFragment extends Fragment {
                         if (pDescBean.getCurrentstatus() != null)
                             currentstatus = pDescBean.getCurrentstatus();
                         if (status[0] != null) {
-                            if (currentstatus.contains(status[0])) {
-                                status[0] = "";
-                            } else {
+//                            if (currentstatus.contains(status[0])) {
+//                                status[0] = "";
+//                            } else {
                                 pcBean.setCurrentstatus(currentstatus + " " + status[0]);
                                 pDescBean.setCurrentstatus(currentstatus + " " + status[0]);
 
@@ -1043,7 +1055,7 @@ public class PatientRoundingFragment extends Fragment {
                                         }
                                     }
                                 }
-                            }
+//                            }
                             WebServiceReferences.webServiceClient.SetPatientDescription(pcBean, patientRoundingFragment);
                         }
                     }
@@ -1051,10 +1063,39 @@ public class PatientRoundingFragment extends Fragment {
                 builder3.show();
             }
         });
-        seeAll.setOnClickListener(new View.OnClickListener() {
+        seeAll_diagnosis.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDiagnosisHistory();
+                showDiagnosisHistory(diagnosis.getText().toString());
+
+            }
+        });
+        seeAll_medications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDiagnosisHistory(medications.getText().toString());
+
+            }
+        });
+
+        seeAll_test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDiagnosisHistory(testandvitals.getText().toString());
+
+            }
+        });
+        seeAll_hospital.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDiagnosisHistory(hospital.getText().toString());
+
+            }
+        });
+        seeAll_consult.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDiagnosisHistory(consults.getText().toString());
 
             }
         });

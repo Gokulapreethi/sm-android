@@ -57,6 +57,7 @@ import org.lib.model.BuddyInformationBean;
 import org.lib.model.GroupBean;
 
 import java.io.File;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -267,16 +268,16 @@ public class RoundNewPatientActivity extends Activity {
                 DatePickerDialog dialog = new DatePickerDialog(RoundNewPatientActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        date.setVisibility(View.VISIBLE);
                         myCalendar.set(Calendar.YEAR, i);
                         myCalendar.set(Calendar.MONTH, i1);
                         myCalendar.set(Calendar.DAY_OF_MONTH, i2);
-                        date.setVisibility(View.VISIBLE);
                         updateadmitLabel();
                     }
                 }, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH));
-                Calendar c = Calendar.getInstance();
-                dialog.getDatePicker().setMaxDate(c.getTimeInMillis());
+//                Calendar c = Calendar.getInstance();
+//                dialog.getDatePicker().setMaxDate(c.getTimeInMillis());
                 dialog.show();
             }
         });
@@ -586,8 +587,34 @@ public class RoundNewPatientActivity extends Activity {
     }
     private void updateadmitLabel() {
         String myFormat = "MM-dd-yyyy";
+
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        ed_Admitdate.setText(sdf.format(myCalendar.getTime()));
+        String due_date =  sdf.format(myCalendar.getTime());
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String inputString2 = dateFormat.format(date);
+        String Today = inputString2;
+//        SimpleDateFormat myFormat = new SimpleDateFormat("dd-MM-yyyy");
+        Date date1 = null;
+        Date date2 = null;
+        try {
+            date1 = sdf.parse(ed_dob.getText().toString());
+            date2 = sdf.parse(due_date);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if(date1!= null) {
+            if (date2.compareTo(date1) <0) {
+                ed_Admitdate.setText(ed_dob.getText().toString());
+
+            } else {
+                ed_Admitdate.setText(due_date);
+//   Toast.makeText(context, "Please Select the month and date within the Duedate", Toast.LENGTH_SHORT).show();
+            }
+        }else {
+            ed_Admitdate.setText(due_date);
+        }
+
     }
     private void refreshMembersList() {
         handler.post(new Runnable() {

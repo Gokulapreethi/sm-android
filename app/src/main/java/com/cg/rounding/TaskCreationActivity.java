@@ -192,10 +192,10 @@ public class TaskCreationActivity extends Activity {
                         && ed_dueTime.getText().toString().trim().length() > 0
                         && remindTime.getText().toString().trim().length() > 0) {
                     taskbean.setGroupid(groupid);
-                    if(isEdit)
+                    if (isEdit)
                         taskbean.setTaskId(taskid);
                     else
-                    taskbean.setTaskId("");
+                        taskbean.setTaskId("");
                     taskbean.setCreatorName(CallDispatcher.LoginUser);
                     taskbean.setTaskdesc(ed_taskDesc.getText().toString().trim());
                     taskbean.setPatientname(patient.getText().toString().trim());
@@ -203,12 +203,12 @@ public class TaskCreationActivity extends Activity {
                     taskbean.setDuetime(ed_dueTime.getText().toString().trim());
                     taskbean.setSetreminder(Integer.toString(remainderTag));
                     taskbean.setTimetoremind(remindTime.getText().toString().trim());
-                    for(PatientDetailsBean bean:PatientList){
-                        String name=bean.getFirstname()+" "+bean.getLastname();
-                        if(name.equalsIgnoreCase(taskbean.getPatientname())) {
+                    for (PatientDetailsBean bean : PatientList) {
+                        String name = bean.getFirstname() + " " + bean.getLastname();
+                        if (name.equalsIgnoreCase(taskbean.getPatientname())) {
                             taskbean.setPatientid(bean.getPatientid());
                             break;
-                        }else
+                        } else
                             taskbean.setPatientid("");
                     }
                     taskbean.setAssignedMembers(assignedMembers);
@@ -249,8 +249,7 @@ public class TaskCreationActivity extends Activity {
                 if (charSequence.length() > 0) {
                     patientName.setVisibility(View.VISIBLE);
                     patient.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.up_arrow, 0);
-                }
-                else {
+                } else {
                     patientName.setVisibility(View.GONE);
                     patient.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.input_arrow, 0);
                 }
@@ -294,6 +293,7 @@ public class TaskCreationActivity extends Activity {
             });
 
         final java.sql.Date todayDate = new java.sql.Date(System.currentTimeMillis());
+        Log.d("string","todaydate"+todayDate);
 
         reminder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -309,13 +309,17 @@ public class TaskCreationActivity extends Activity {
                             SimpleDateFormat myFormat = new SimpleDateFormat("dd-MM-yyyy");
                             Date date1 = null;
                             Date date2 = null;
+                            Date date3 = null;
                             try {
                                 date1 = myFormat.parse(dateDesc);
                                 date2 = myFormat.parse(ed_dueDate.getText().toString());
+                                date3 = todayDate;
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
                             if (date2.compareTo(date1) <0) {
+                                remindTime.setText(ed_dueDate.getText().toString());
+                            }else if(date3.compareTo(date1)<0){
                                 remindTime.setText(ed_dueDate.getText().toString());
                             }else{
                                 remindTime.setText(dateDesc);
@@ -373,7 +377,27 @@ public class TaskCreationActivity extends Activity {
                         edit_day = day;
                         ed_dueDate.setText(dateDesc);
                         dueDate.setVisibility(View.VISIBLE);
-//                        Toast.makeText(TaskCreationActivity.this, dateDesc, Toast.LENGTH_SHORT).show();
+
+//                        Date date = new Date();
+                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                        String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
+//                        String inputString2 = dateFormat.format(date);
+//                        String Today = inputString2;
+                        SimpleDateFormat myFormat = new SimpleDateFormat("dd-MM-yyyy");
+                        Date date1 = null;
+                        Date date2 = null;
+                        try {
+                            date1 = myFormat.parse(date);
+                            date2 = myFormat.parse(dateDesc);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                            if (date2.compareTo(date1) <0) {
+                                ed_dueDate.setText(date);
+
+                            } else {
+                                ed_dueDate.setText(dateDesc);
+                            }
                     }
                 }).textConfirm("DONE") //text of confirm button
                         .textCancel("CANCEL") //text of cancel button
