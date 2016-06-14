@@ -5214,11 +5214,15 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     audio_play.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            File newfile=new File(gcBean.getMediaName());
                             if (finalPlayBean == null) {
                                 audio_play.setBackgroundResource(R.drawable.audiopause);
-                                playAudio(gcBean.getMediaName(), position);
-                                gcBean.setPlaying(true);
-                                finalPlayBean = gcBean;
+                                if(newfile.exists()) {
+                                    playAudio(gcBean.getMediaName(), position);
+                                    gcBean.setPlaying(true);
+                                    finalPlayBean = gcBean;
+                                }else
+                                    showToast("No audio to play");
                             } else if (finalPlayBean == gcBean) {
                                 if (mPlayer.isPlaying()) {
                                     mPlayer.pause();
@@ -5235,7 +5239,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 finalPlayBean = gcBean;
                                 finalPlayBean.setPlaying(true);
                                 audio_play.setBackgroundResource(R.drawable.audiopause);
+                                if(newfile.exists())
                                 playAudio(gcBean.getMediaName(), position);
+                                else
+                                    showToast("No audio to play");
 
                             }
 
@@ -5795,12 +5802,16 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 multiplay_button.setOnClickListener(new OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
+                                        File newfile=new File(path);
                                         if (mPlayer.isPlaying()) {
                                             mPlayer.pause();
                                             multiplay_button.setBackgroundResource(R.drawable.audiopause);
                                         } else {
                                             multiplay_button.setBackgroundResource(R.drawable.play);
+                                            if(newfile.exists())
                                             playAudio(path, position);
+                                            else
+                                                showToast("No audio to play");
                                         }
                                         click = pos;
 
@@ -8530,16 +8541,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         search_header = (RelativeLayout) v1.findViewById(R.id.search_header);
         ed_search = (EditText) v1.findViewById(R.id.ed_search);
         ImageView plusBtn = (ImageView) v1.findViewById(R.id.plusBtn_patient);
-        mypatients.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, AssignPatientActivity.class);
-                intent.putExtra("groupid", groupId);
-                intent.putExtra("groupname", groupBean.getGroupName());
-                intent.putExtra("fromMyPatient",true);
-                startActivity(intent);
-            }
-        });
 
         PatientList = new Vector<PatientDetailsBean>();
         PatientList.clear();
@@ -8596,10 +8597,15 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         listViewPatient.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(context, AssignPatientActivity.class);
-                intent.putExtra("groupid", groupId);
-                intent.putExtra("groupname", groupBean.getGroupName());
-                startActivity(intent);
+                int questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where (groupid='"
+                        + groupId + "' and assignedmembers='" + CallDispatcher.LoginUser + "') or ( groupid='" + groupId + "' and assignedmembers='')");
+                if (questionsCount > 0) {
+                    Intent intent = new Intent(context, AssignPatientActivity.class);
+                    intent.putExtra("groupid", groupId);
+                    intent.putExtra("groupname", groupBean.getGroupName());
+                    startActivity(intent);
+                } else
+                    showToast("Members already assigned and this patient is not assigned to you");
                 return true;
             }
         });
@@ -8681,6 +8687,33 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         PatientList.clear();
                         String strGetQry = "select * from patientdetails where groupid='"
                                 + groupBean.getGroupId() + "'";
+                        PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
+                        Collections.sort(PatientList, new PatientStatusComparator());
+                        tempPatientList.clear();
+                        tempPatientList = PatientList;
+                        for (PatientDetailsBean bean : PatientList) {
+                            bean.setIsFromPatienttab(true);
+                        }
+                        patientadapter = new RoundingPatientAdapter(context, R.layout.rouding_patient_row, PatientList);
+                        listViewPatient.setAdapter(null);
+                        listViewPatient.setAdapter(patientadapter);
+                        patientadapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        });
+
+        mypatients.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                patientType = "name";
+                mypatients.setTextColor(getResources().getColor(R.color.white));
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        PatientList.clear();
+                        String strGetQry = "select * from patientdetails where groupid='"
+                                + groupId + "' and assignedmembers='"+CallDispatcher.LoginUser+"'";
                         PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
                         Collections.sort(PatientList, new PatientStatusComparator());
                         tempPatientList.clear();
@@ -9303,15 +9336,20 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     }
                 }
             }
-        } catch (IllegalStateException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } finally {
             if (mRecorder != null) {
                 mRecorder.stop();
                 mRecorder.release();
                 mRecorder = null;
             }
+        } catch (IllegalStateException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+//            if (mRecorder != null) {
+//                mRecorder.stop();
+//                mRecorder.release();
+//                mRecorder = null;
+//            }
         }
     }
 
@@ -10244,31 +10282,30 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         String status = null;
         Vector<BuddyInformationBean> tempList = new Vector<BuddyInformationBean>();
         Vector<BuddyInformationBean> onlinelist = new Vector<BuddyInformationBean>();
-        Vector<BuddyInformationBean> offlinelist = new Vector<BuddyInformationBean>();
-        Vector<BuddyInformationBean> airplanelist = new Vector<BuddyInformationBean>();
-        Vector<BuddyInformationBean> awaylist = new Vector<BuddyInformationBean>();
+//        Vector<BuddyInformationBean> offlinelist = new Vector<BuddyInformationBean>();
+//        Vector<BuddyInformationBean> airplanelist = new Vector<BuddyInformationBean>();
+//        Vector<BuddyInformationBean> awaylist = new Vector<BuddyInformationBean>();
         tempList.clear();
         for (BuddyInformationBean sortlistbean : vectorBean) {
             status = sortlistbean.getStatus();
-            Log.i("AAAA","online list "+status);
             if (status.equalsIgnoreCase("Online")) {
                 onlinelist.add(sortlistbean);
-            } else if (status.equalsIgnoreCase("Offline") || status.equalsIgnoreCase("Stealth")) {
-                offlinelist.add(sortlistbean);
-            } else if (status.equalsIgnoreCase("Airport")|| status.equalsIgnoreCase("busy")) {
-                airplanelist.add(sortlistbean);
-            } else if (status.equalsIgnoreCase("Away")) {
-                awaylist.add(sortlistbean);
+//            } else if (status.equalsIgnoreCase("Offline") || status.equalsIgnoreCase("Stealth")) {
+//                offlinelist.add(sortlistbean);
+//            } else if (status.equalsIgnoreCase("Airport")|| status.equalsIgnoreCase("busy")) {
+//                airplanelist.add(sortlistbean);
+//            } else if (status.equalsIgnoreCase("Away")) {
+//                awaylist.add(sortlistbean);
             }
         }
         if(onlinelist.size()>0)
             tempList.addAll(onlinelist);
-        if(airplanelist.size()>0)
-            tempList.addAll(airplanelist);
-        if(awaylist.size()>0)
-            tempList.addAll(awaylist);
-        if(offlinelist.size()>0)
-            tempList.addAll(offlinelist);
+//        if(airplanelist.size()>0)
+//            tempList.addAll(airplanelist);
+//        if(awaylist.size()>0)
+//            tempList.addAll(awaylist);
+//        if(offlinelist.size()>0)
+//            tempList.addAll(offlinelist);
 
         return tempList;
 

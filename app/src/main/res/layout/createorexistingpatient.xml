@@ -72,6 +72,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="First name"
+        android:maxLength="10"
+        android:digits="@string/alphaNumeric"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
         android:textColor="@color/white"/>
@@ -96,6 +98,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Middle Name"
+        android:maxLength="10"
+        android:digits="@string/alphaNumeric"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="5dp"
         android:textSize="20dp"
@@ -120,6 +124,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Last name"
+        android:maxLength="10"
+        android:digits="@string/alphaNumeric"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
         android:textColor="@color/white"/>
@@ -202,6 +208,15 @@
         android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp"
         android:background="@color/grey3" />
+        <TextView
+            android:id="@+id/tv_hospital"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hospital "
+            android:textColor="@color/snazlgray"
+            android:textSize="17dp"
+            android:layout_marginLeft="15dp"
+            android:visibility="gone"/>
     <AutoCompleteTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -236,6 +251,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="MRN"
+            android:maxLength="20"
             android:inputType="number"
             android:textColor="@color/white"
             android:layout_marginLeft="15dp"
@@ -288,7 +304,7 @@
                 android:layout_marginLeft="40dp"
                 android:hint="Floor"
                 android:background="#272829"
-                android:maxLength="5"
+                android:maxLength="20"
                 android:gravity="center_vertical"
                 android:inputType="number"
                 android:textColor="#fff" />
@@ -330,8 +346,8 @@
                 android:hint="Ward"
                 android:background="#272829"
                 android:gravity="center_vertical"
-                android:inputType="number"
-                android:maxLength="5"
+                android:digits="@string/alphaNumeric"
+                android:maxLength="20"
                 android:textColor="#fff" />
                 <View
                     android:layout_width="match_parent"
@@ -379,7 +395,7 @@
                 android:background="#272829"
                 android:gravity="center_vertical"
                 android:inputType="number"
-                android:maxLength="5"
+                android:maxLength="20"
                 android:textColor="#fff" />
                 <View
                     android:layout_width="match_parent"
@@ -420,7 +436,7 @@
                 android:background="#272829"
                 android:gravity="center_vertical"
                 android:inputType="number"
-                android:maxLength="5"
+                android:maxLength="20"
                 android:textColor="#fff" />
                 <View
                     android:layout_width="match_parent"
@@ -462,12 +478,15 @@
             android:background="@color/grey3" />
 
         <LinearLayout
+            android:id="@+id/member_lay"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:background="@color/black1"
             android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginBottom="40dp"
             android:gravity="center"
             >
         <TextView
@@ -484,7 +503,7 @@
                 android:id="@+id/members_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="(1)"
+                android:text="(0)"
                 android:textColor="@color/blue2"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="0dp"

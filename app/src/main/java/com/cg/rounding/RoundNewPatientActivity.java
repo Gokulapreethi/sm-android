@@ -86,6 +86,7 @@ public class RoundNewPatientActivity extends Activity {
     PatientDetailsBean choosepBean=new PatientDetailsBean();
     private ArrayList<String> assignedMembers=new ArrayList<String>();
     Boolean isClicked=false;
+    LinearLayout member_lay;
     RoundingPatientAdapter patientadapter;
 
 
@@ -113,7 +114,9 @@ public class RoundNewPatientActivity extends Activity {
         final TextView room=(TextView)findViewById(R.id.room);
         final TextView bed=(TextView)findViewById(R.id.bed);
         final TextView date=(TextView)findViewById(R.id.Admit_date);
+        final TextView tv_hospital=(TextView)findViewById(R.id.tv_hospital);
         membercount=(TextView)findViewById(R.id.members_count);
+        member_lay=(LinearLayout)findViewById(R.id.member_lay);
         lv_buddylist = (LinearLayout) findViewById(R.id.membersList);
         gender_patient = (RadioGroup) findViewById(R.id.gender_patient);
         groupid=getIntent().getStringExtra("groupid");
@@ -299,10 +302,27 @@ public class RoundNewPatientActivity extends Activity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.length()>0)
+                if (charSequence.length() > 0)
                     firstname.setVisibility(View.VISIBLE);
                 else
                     firstname.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        hospital.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.length()>0)
+                    tv_hospital.setVisibility(View.VISIBLE);
+                else
+                    tv_hospital.setVisibility(View.GONE);
             }
             @Override
             public void afterTextChanged(Editable editable) {
@@ -445,22 +465,21 @@ public class RoundNewPatientActivity extends Activity {
         GroupBean gBean = DBAccess.getdbHeler()
                 .getGroupAndMembers("select * from groupdetails where groupid="
                         + groupid);
-        UserBean uBean=new UserBean();
-        uBean.setBuddyName(CallDispatcher.LoginUser);
-        membersList.add(uBean);
-        if (gBean != null) {
-            if (gBean.getActiveGroupMembers() != null
-                    && gBean.getActiveGroupMembers().length() > 0) {
-                String[] list1 = (gBean.getActiveGroupMembers())
-                        .split(",");
-                for (String tmp : list1) {
-                    UserBean userBean = new UserBean();
-                    userBean.setBuddyName(tmp);
-                    membersList.add(userBean);
-                }
-            }
-        }
-        Log.i("AAAA","members list "+membersList.size());
+//        UserBean uBean=new UserBean();
+//        uBean.setBuddyName(CallDispatcher.LoginUser);
+//        membersList.add(uBean);
+//        if (gBean != null) {
+//            if (gBean.getActiveGroupMembers() != null
+//                    && gBean.getActiveGroupMembers().length() > 0) {
+//                String[] list1 = (gBean.getActiveGroupMembers())
+//                        .split(",");
+//                for (String tmp : list1) {
+//                    UserBean userBean = new UserBean();
+//                    userBean.setBuddyName(tmp);
+//                    membersList.add(userBean);
+//                }
+//            }
+//        }
         assibnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -471,7 +490,8 @@ public class RoundNewPatientActivity extends Activity {
                     buddylist.add(userBean.getBuddyName());
                 }
                 intent.putStringArrayListExtra("buddylist", buddylist);
-                intent.putExtra("fromcall", true);
+                intent.putExtra("fromRounding", true);
+                intent.putExtra("groupid",groupid);
                 Log.i("AAAA", "members list " + buddylist.size());
                 startActivityForResult(intent, 3);
             }
@@ -540,7 +560,7 @@ public class RoundNewPatientActivity extends Activity {
             super.onActivityResult(requestCode, resultCode, data);
 
             // check if the request code is same as what is passed here it is 2
-            membercount.setVisibility(View.VISIBLE);
+            member_lay.setVisibility(View.VISIBLE);
             if (requestCode == 3) {
                 if (data != null) {
                     Bundle bundle = data.getExtras();
@@ -560,12 +580,12 @@ public class RoundNewPatientActivity extends Activity {
         }
     }
     private void updateLabel() {
-        String myFormat = "MM/dd/yyyy";
+        String myFormat = "MM-dd-yyyy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         ed_dob.setText(sdf.format(myCalendar.getTime()));
     }
     private void updateadmitLabel() {
-        String myFormat = "MM/dd/yyyy";
+        String myFormat = "MM-dd-yyyy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         ed_Admitdate.setText(sdf.format(myCalendar.getTime()));
     }

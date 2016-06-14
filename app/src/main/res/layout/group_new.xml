@@ -171,18 +171,42 @@
                     android:background="#7E8080" />
 
             </LinearLayout>
+        <LinearLayout
+            android:id="@+id/member_lay"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:background="@color/black1"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            >
 
             <TextView
                 android:id="@+id/txt_memberlist"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:text="INVITATIONS"
                 android:textColor="#808080"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:visibility="gone"
+                android:visibility="visible"
+                android:background="@color/black1"/>
+            <TextView
+                android:id="@+id/members_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(1)"
+                android:textColor="@color/blue2"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="0dp"
+                android:layout_gravity="center"
                 android:background="@color/black1"
-                android:layout_marginTop="10dp"/>
+
+                />
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -190,17 +214,83 @@
                 android:id="@+id/lv_buddylist">
 
             </LinearLayout>
+        <LinearLayout
+            android:id="@+id/member_lay1"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:background="@color/black1"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            >
             <TextView
                 android:id="@+id/txt_list"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:text="MEMBERS"
                 android:textColor="#808080"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:visibility="gone"
+                android:visibility="visible"
+                android:background="@color/black1"/>
+            <TextView
+                android:id="@+id/members_count1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(1)"
+                android:textColor="@color/blue2"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="0dp"
+                android:layout_gravity="center"
                 android:background="@color/black1"
-                android:layout_marginTop="10dp"/>
+
+                />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:gravity="right"
+                android:weightSum="2"
+                android:id="@+id/sort"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/role_sort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/snazlgray"
+                    android:background="@color/black2"
+                    android:text="ROLE"
+
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="10dp"/>
+
+                <Button
+                    android:id="@+id/online_sort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/snazlgray"
+                    android:background="@color/black2"
+                    android:text="ONLINE"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="10dp"/>
+
+                <Button
+                    android:id="@+id/alpha_sort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/black2"
+                    android:drawableRight="@drawable/sort_arrow"
+                    android:drawableEnd="@drawable/sort_arrow"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:text="A &gt; Z"/>
+
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -1132,8 +1132,7 @@ public class PatientRoundingFragment extends Fragment {
             if (pBean.getDob() != null && pBean.getDob().length() > 0) {
                 String birthdate = pBean.getDob();
                 Log.i("sss", "Current birthdate" + birthdate);
-                birthdate.replace("-", "/");
-                String[] str = birthdate.split("/");
+                String[] str = birthdate.split("-");
                 int Currentyear = Calendar.getInstance().get(Calendar.YEAR);
                 Log.i("sss", "Current year" + Currentyear);
 
@@ -1161,8 +1160,7 @@ public class PatientRoundingFragment extends Fragment {
                 String inputString = dateFormat.format(date);
                 String Today = inputString;
                 SimpleDateFormat myFormat = new SimpleDateFormat("dd-MM-yyyy");
-                String str = AdmitDate.replace("/", "-");
-                String fromDate = str;
+                String fromDate = AdmitDate;
                 String inputString1 = fromDate;
                 Log.i("sss", "From Date1 : " + inputString1);
                 String inputString2 = Today;

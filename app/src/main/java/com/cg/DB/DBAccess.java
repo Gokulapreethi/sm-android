@@ -9521,6 +9521,7 @@ public class DBAccess extends SQLiteOpenHelper {
 	public int countEntryDetails(String query) {
 		int cnt = 0;
 		String countQuery = query;
+		Log.i("AAAA","count "+query);
 		try {
 			if (!db.isOpen())
 				openDatabase();

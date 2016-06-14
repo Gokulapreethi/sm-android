@@ -152,9 +152,8 @@ public class RoundingPatientAdapter extends ArrayAdapter<PatientDetailsBean> {
                     holder.patientname.setText(pBean.getFirstname()+" "+pBean.getLastname());
                 if(pBean.getDob()!=null&& pBean.getDob().length()>0) {
                     String birthdate=pBean.getDob();
-                    Log.i("sss","Current birthdate"+birthdate);
-                    birthdate.replace("-","/");
-                    String[] str = birthdate.split("/");
+                    Log.i("sss", "Current birthdate" + birthdate);
+                    String[] str = birthdate.split("-");
                     int Currentyear = Calendar.getInstance().get(Calendar.YEAR);
                     Log.i("sss","Current year"+Currentyear);
 
@@ -182,9 +181,8 @@ public class RoundingPatientAdapter extends ArrayAdapter<PatientDetailsBean> {
                     String inputString = dateFormat.format(date);
                     String Today = inputString;
                     SimpleDateFormat myFormat = new SimpleDateFormat("dd-MM-yyyy");
-                    String str = AdmitDate.replace("/","-");
                     Log.i("patientdetails","patient adapter "+AdmitDate);
-                    String fromDate=str;
+                    String fromDate=AdmitDate;
                     String inputString1 =fromDate;
                     Log.i("sss","From Date1 : " + inputString1);
                     String inputString2 = Today;

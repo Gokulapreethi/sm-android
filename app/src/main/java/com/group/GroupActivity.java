@@ -88,6 +88,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 	private Typeface tf_bold = null;
 
 	private LinearLayout lv_buddylist;
+	LinearLayout member_lay,member_lay1;
 
 	private BuddyAdapter adapter = null;
 	LinearLayout lv_memberList;
@@ -124,7 +125,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 	private boolean isUpdateMembers = false;
 	private boolean isModify = false,fromRounding=false;
 
-	static Handler handler = new Handler();
+	Handler handler = new Handler();
 
 	private ProgressDialog progress = null;
 	
@@ -176,11 +177,13 @@ public class GroupActivity extends Activity implements OnClickListener {
 		Linearlay_info = (LinearLayout)findViewById(R.id.tv);
 		final TextView tv_gpname=(TextView)findViewById(R.id.tv_gpname);
 		final TextView tv_gpdesc=(TextView)findViewById(R.id.tv_gpdesc);
-		memberCount = (TextView) findViewById(R.id.txt_memberlist);
+		memberCount = (TextView) findViewById(R.id.members_count);
 		lv_buddylist = (LinearLayout) findViewById(R.id.lv_buddylist);
-		memberAcceptedCount = (TextView) findViewById(R.id.txt_list);
+		memberAcceptedCount = (TextView) findViewById(R.id.members_count1);
 		lv_memberList = (LinearLayout) findViewById(R.id.lv_memberlist);
 		isEdit = getIntent().getBooleanExtra("isEdit", false);
+		member_lay=(LinearLayout)findViewById(R.id.member_lay);
+		member_lay1=(LinearLayout)findViewById(R.id.member_lay1);
 //
 		if (WebServiceReferences.callDispatch.containsKey("calldisp"))
 			callDisp = (CallDispatcher) WebServiceReferences.callDispatch
@@ -256,6 +259,8 @@ public class GroupActivity extends Activity implements OnClickListener {
 					"select * from grouplist where groupid=" + groupid);
 			memberCount.setVisibility(View.VISIBLE);
 			memberAcceptedCount.setVisibility(View.VISIBLE);
+			member_lay.setVisibility(View.VISIBLE);
+			member_lay1.setVisibility(View.VISIBLE);
 			refreshMembersList();
 			if (groupBean != null) {
 				Log.d("Test", "$$$$$GroupCreatedDate@@@@@ " + groupBean.getCreatedDate());
@@ -378,8 +383,8 @@ public class GroupActivity extends Activity implements OnClickListener {
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						memberCount.setText("INVITATIONS" + " (" + String.valueOf(membersList.size()) + ")");
-						memberAcceptedCount.setText("MEMBERS" + " ("
+						memberCount.setText(" (" + String.valueOf(membersList.size()) + ")");
+						memberAcceptedCount.setText( " ("
 								+ String.valueOf(membersAcceptedList.size()) + ")");
 					}
 				});
@@ -1057,7 +1062,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 						showToast("Special Characters -/. Are only allowed");
 					} else if (groupName.length() > 15) {
 						showToast("Groupname must be 1-15 characters");
-					} else if(membersList.size()==0){
+					} else if(membersAcceptedList.size()==0){
 						showToast("Please select group members");
 					}else {
 						Toast.makeText(getApplicationContext(),
@@ -1202,9 +1207,9 @@ public class GroupActivity extends Activity implements OnClickListener {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				memberCount.setText("INVITATIONS ("
+				memberCount.setText(" ("
 						+ String.valueOf(membersList.size()) + ")");
-				memberAcceptedCount.setText("MEMBERS ("
+				memberAcceptedCount.setText(" ("
 						+ String.valueOf(membersAcceptedList.size()) + ")");
 				lv_buddylist.removeAllViews();
 				adapter = new BuddyAdapter(GroupActivity.this, membersList);

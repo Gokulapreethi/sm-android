@@ -141,7 +141,7 @@ public class MemoryControlFragment extends Fragment {
                     tv_photo.setText(bytesToSize(image));
                     int total=audio+videos+image+other+chat;
                     tv_total.setText(bytesToSize(total));
-                    float num = (int) 5368709120L;
+                    float num = 5368709120L;
                     float temp1 = num - total;
                     tv_free.setText(bytesToSize(temp1));
                     Log.i("AAAA", "Oncreate view of memorycontrol @@@@ size "+other);

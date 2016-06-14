@@ -39,7 +39,7 @@ public class AssignPatientActivity extends Activity{
     Handler handler = new Handler();
     public Vector<UserBean> membersList = new Vector<UserBean>();
     private boolean fromMyPatient=false;
-public boolean isSearch=false;
+    public boolean isSearch=false;
 
     Vector<PatientDetailsBean> PatientList;
 
@@ -62,26 +62,26 @@ public boolean isSearch=false;
         ListView listView=(ListView)findViewById(R.id.lv_buddylist);
         PatientList=new Vector<PatientDetailsBean>();
         PatientList.clear();
-        UserBean bean=new UserBean();
-        bean.setBuddyName(CallDispatcher.LoginUser);
-        membersList.add(bean);
+//        UserBean bean=new UserBean();
+//        bean.setBuddyName(CallDispatcher.LoginUser);
+//        membersList.add(bean);
 
-        String groupid=getIntent().getStringExtra("groupid");
+        final String groupid=getIntent().getStringExtra("groupid");
         String groupname=getIntent().getStringExtra("groupname");
         fromMyPatient=getIntent().getBooleanExtra("fromMyPatient",false);
         header.setText(groupname);
         String strGetQry=null;
-        if(fromMyPatient) {
-             strGetQry = "select * from patientdetails where groupid='"
-                    + groupid + "' and assignedmembers='"+CallDispatcher.LoginUser+"'";
-            unassign_lay.setVisibility(View.VISIBLE);
-            assign.setText("ASSIGN PATIENTS TO");
-            unassign.setText("UNASSIGN FROM ME");
-        }else {
             strGetQry = "select * from patientdetails where groupid='"
                     + groupid + "' and assignedmembers=''";
-        }
         PatientList=DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
+            if(PatientList.size()==0) {
+                strGetQry = "select * from patientdetails where groupid='"
+                        + groupid + "' and assignedmembers='"+CallDispatcher.LoginUser+"'";
+                isSearch=true;
+                PatientList=DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
+                assign.setText("ASSIGN PATIENTS TO");
+                unassign.setText("UNASSIGN FROM ME");
+            }
         Collections.sort(PatientList, new PatientNameComparator());
         GroupChatActivity.patientType="name";
         final RoundingPatientAdapter adapter=new RoundingPatientAdapter(context,R.layout.rouding_patient_row,PatientList);
@@ -89,19 +89,14 @@ public boolean isSearch=false;
         assign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-//                if(!isSearch) {
-//                    unassign_lay.setVisibility(View.VISIBLE);
-//                    assign.setText("ASSIGN PATIENTS TO");
-//                    unassign.setText("UNASSIGN FROM ME");
-//                    isSearch=true;
-//                }else {
                     Intent intent = new Intent(getApplicationContext(),
                             AddGroupMembers.class);
                     ArrayList<String> buddylist = new ArrayList<String>();
                     for (UserBean userBean : membersList) {
                         buddylist.add(userBean.getBuddyName());
                     }
-                    intent.putExtra("fromcall",false);
+                    intent.putExtra("fromRounding",true);
+                    intent.putExtra("groupid",groupid);
                     intent.putStringArrayListExtra("buddylist", buddylist);
                     Log.i("AAAA", "members list " + buddylist.size());
                     startActivityForResult(intent, 3);
