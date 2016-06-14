@@ -157,6 +157,7 @@ public class ForwardUserSelect extends Activity {
                             groupMembers=groupMembers+gBean.getGroupId()+",";
                         }
                     }
+                    Log.i("activityresult","ForwardUserSelect Call FileInfoFragment");
                     Intent resultIntent = new Intent();
                     if(members.length()>0)
                     resultIntent.putExtra("SELECTED_MEMBERS", members.substring(0,members.length()-1));
@@ -191,6 +192,7 @@ public class ForwardUserSelect extends Activity {
                         btn_ok.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                dialog.dismiss();
                                 finish();
                             }
                         });

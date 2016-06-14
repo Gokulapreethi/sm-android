@@ -68,6 +68,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 public class PatientRoundingFragment extends Fragment {
@@ -1373,7 +1375,37 @@ public class PatientRoundingFragment extends Fragment {
             @Override
             public void run() {
                 CommentsList = DBAccess.getdbHeler().getPatientComments(gBean.getGroupId(), pBean.getPatientid(), CallDispatcher.LoginUser, commentType);
-                cadapter = new CommentsAdapter(mainContext, R.layout.comments_row, CommentsList);
+
+                //For type all and team sorting
+                //start
+                if(commentType.equalsIgnoreCase("all") || commentType.equalsIgnoreCase("team")) {
+                    HashMap<String,PatientCommentsBean> list=new HashMap<String, PatientCommentsBean>();
+                    Vector<PatientCommentsBean> patientCommentsBeen=new Vector<PatientCommentsBean>();
+                    if(CommentsList!=null) {
+                        for (PatientCommentsBean commentsBean : CommentsList) {
+                            if (list.containsKey(commentsBean.getGroupmember())) {
+                                list.remove(commentsBean.getGroupmember());
+                                list.put(commentsBean.getGroupmember(), commentsBean);
+                            } else {
+                                list.put(commentsBean.getGroupmember(), commentsBean);
+                            }
+                        }
+                    }
+                    Iterator iterator1 = list.entrySet()
+                            .iterator();
+
+                    while (iterator1.hasNext()) {
+
+                        Map.Entry mapEntry = (Map.Entry) iterator1.next();
+
+                        PatientCommentsBean bean = (PatientCommentsBean) mapEntry.getValue();
+                        patientCommentsBeen.add(bean);
+                    }
+                    cadapter = new CommentsAdapter(mainContext, R.layout.comments_row, patientCommentsBeen);
+                }else{
+                    cadapter = new CommentsAdapter(mainContext, R.layout.comments_row, CommentsList);
+                }
+                //End
                 clistView.setAdapter(null);
                 clistView.setAdapter(cadapter);
                 cadapter.notifyDataSetChanged();
