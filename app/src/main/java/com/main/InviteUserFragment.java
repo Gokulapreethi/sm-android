@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.cg.callservices.AudioCallScreen;
 import com.cg.callservices.VideoCallScreen;
+import com.cg.hostedconf.AppReference;
 import com.cg.rounding.RoundingFragment;
 import com.cg.snazmed.R;
 import com.util.SingleInstance;
@@ -50,6 +51,7 @@ public class InviteUserFragment extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
 
         try {
+            AppReference.bacgroundFragment=inviteUserFragment;
             Button select = (Button) getActivity().findViewById(R.id.btn_brg);
             select.setVisibility(View.GONE);
             TextView title = (TextView) getActivity().findViewById(

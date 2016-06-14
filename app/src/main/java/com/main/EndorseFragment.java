@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cg.account.SecurityQuestions;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.util.SingleInstance;
 
@@ -49,6 +50,7 @@ public class EndorseFragment extends Fragment {
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         try {
+            AppReference.bacgroundFragment=endorseFragment;
             Button select = (Button) getActivity().findViewById(R.id.btn_brg);
             select.setVisibility(View.GONE);
             final RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);

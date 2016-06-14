@@ -34,6 +34,7 @@ import com.cg.account.FindPeople;
 import com.cg.callservices.AudioCallScreen;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.util.SingleInstance;
 
@@ -84,7 +85,7 @@ public class SearchPeopleFragment extends Fragment {
     }@Override
      public View onCreateView(LayoutInflater inflater, ViewGroup container,
                               Bundle savedInstanceState) {
-
+        AppReference.bacgroundFragment=searchPeopleFragment;
         Button select = (Button) getActivity().findViewById(R.id.btn_brg);
         select.setVisibility(View.GONE);
         RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);

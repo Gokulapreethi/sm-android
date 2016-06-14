@@ -255,7 +255,7 @@ public class ContactsFragment extends Fragment{
 //		tf_regular = Typeface.createFromAsset(mainContext.getAssets(),
 //				getResources().getString(R.string.fontfamily));
 
-
+		AppReference.bacgroundFragment=contactsFragment;
 		appMainActivity = SingleInstance.mainContext;
 		SingleInstance.instanceTable.put("contactspage", contactsFragment);
 		Button select = (Button) getActivity().findViewById(R.id.btn_brg);

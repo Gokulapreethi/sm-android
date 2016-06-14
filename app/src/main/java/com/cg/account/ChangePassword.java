@@ -88,6 +88,7 @@ public class ChangePassword extends Fragment {
 	}
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
+		AppReference.bacgroundFragment=changePassword;
 		Button select = (Button) getActivity().findViewById(R.id.btn_brg);
 		select.setVisibility(View.GONE);
 		RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);

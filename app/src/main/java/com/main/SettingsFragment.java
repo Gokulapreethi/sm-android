@@ -150,6 +150,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 			Bundle savedInstanceState) {
 
 		try {
+			AppReference.bacgroundFragment=settingsFragment;
 			Button select = (Button) getActivity().findViewById(R.id.btn_brg);
 			select.setVisibility(View.GONE);
 			final RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);

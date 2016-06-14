@@ -165,10 +165,10 @@ public class CallConnectingScreen extends Fragment {
 					FragmentManager fm =
 							AppReference.mainContext.getSupportFragmentManager();
 					FragmentTransaction ft = fm.beginTransaction();
-					ContactsFragment contactsFragment = ContactsFragment
-							.getInstance(context);
+//					ContactsFragment contactsFragment = ContactsFragment
+//							.getInstance(context);
 					ft.replace(R.id.activity_main_content_fragment,
-							contactsFragment);
+							AppReference.bacgroundFragment);
 					ft.commitAllowingStateLoss();
 					min_outcall.setVisibility(View.VISIBLE);
 				}

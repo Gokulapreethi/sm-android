@@ -278,6 +278,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 //					| WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 //			win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 //					| WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+			final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
+			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 			if(rootView==null) {
 				if (getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
 					getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -726,8 +728,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 //		final RelativeLayout  llayAudioCall = ( RelativeLayout ) View.inflate(
 //				context, R.layout.call_connecting, null);
 			llayAudioCall = inflater.inflate(R.layout.audiocallscreen, null);
-			final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
-			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+//			final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
+//			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 			audio_minimize = (RelativeLayout) getActivity().findViewById(R.id.audio_minimize);
 			audio_minimize.setVisibility(View.GONE);
 //		getActivity().getWindow().setSoftInputMode(
@@ -2912,10 +2914,10 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 		FragmentManager fm =
 				AppReference.mainContext.getSupportFragmentManager();
 		FragmentTransaction ft = fm.beginTransaction();
-		ContactsFragment contactsFragment = ContactsFragment
-				.getInstance(context);
+//		ContactsFragment contactsFragment = ContactsFragment
+//				.getInstance(context);
 		ft.replace(R.id.activity_main_content_fragment,
-				contactsFragment);
+				AppReference.bacgroundFragment);
 		ft.commitAllowingStateLoss();
 		audio_minimize.setVisibility(View.VISIBLE);
 		mainHeader.setVisibility(View.VISIBLE);

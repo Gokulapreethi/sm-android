@@ -196,6 +196,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		AppReference.bacgroundFragment=filesFragment;
 		view = null;
 		btn_edit = (Button) getActivity().findViewById(R.id.btn_settings);
 		selectall = (Button) getActivity().findViewById(R.id.btn_brg);
@@ -577,7 +578,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 					text_show.setVisibility(View.GONE);
 				}
 
-				plus = (Button) getActivity().findViewById(R.id.add_group); 
+				plus = (Button) getActivity().findViewById(R.id.add_group);
 				plus.setVisibility(View.VISIBLE);
 				plus.setText("");
 				plus.setBackgroundResource(R.drawable.navigation_search);
