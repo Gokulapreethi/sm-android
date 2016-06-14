@@ -220,8 +220,25 @@ public class CallHistoryActivity extends Activity {
 				date.setText(recordTransactionBean.getStartTime());
 			}
 			if (recordTransactionBean.getCallDuration() != null) {
-				duration.setText(recordTransactionBean
-						.getCallDuration());
+				if(recordTransactionBean.getCallDuration().contains(":")){
+					String hour=recordTransactionBean.getCallDuration().split(":")[0];
+					String min=recordTransactionBean.getCallDuration().split(":")[1];
+					String sec=recordTransactionBean.getCallDuration().split(":")[2];
+					if(hour.length()==1){
+						hour="0"+hour;
+					}
+					if(min.length()==1){
+						min="0"+min;
+					}
+					if(sec.length()==1){
+						sec="0"+sec;
+					}
+					String totTime=hour+":"+min+":"+sec;
+					duration.setText(totTime);
+				}else {
+					duration.setText(recordTransactionBean
+							.getCallDuration());
+				}
 //							tvTimer.setText(recordTransactionBean
 //									.getCallDuration());
 
