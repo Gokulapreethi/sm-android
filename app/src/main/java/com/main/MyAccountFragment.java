@@ -432,7 +432,7 @@ public class MyAccountFragment extends Fragment {
             if(bean.getTitle()!=null)
                 title.setText(bean.getTitle());
 
-            if(bean.getSex() != null)
+            if(bean.getSex() != null &&bean.getSex().length()>0)
                 sex.setText(String.valueOf(bean.getSex().charAt(0)));
 
             if(bean.getUsertype()!=null){

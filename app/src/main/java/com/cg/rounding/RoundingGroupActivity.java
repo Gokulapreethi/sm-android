@@ -1268,9 +1268,11 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
         Vector<UserBean> onlinelist = new Vector<UserBean>();
         tempList.clear();
         for (UserBean sortlistbean : vectorBean) {
-            status = sortlistbean.getStatus();
-            if (status.equalsIgnoreCase("Online")) {
-                onlinelist.add(sortlistbean);
+            if(sortlistbean.getStatus()!=null) {
+                status = sortlistbean.getStatus();
+                if (status.equalsIgnoreCase("Online")) {
+                    onlinelist.add(sortlistbean);
+                }
             }
         }
         if(onlinelist.size()>0)

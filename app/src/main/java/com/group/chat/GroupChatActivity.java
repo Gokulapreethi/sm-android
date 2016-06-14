@@ -246,6 +246,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     private Button video_call;
     private int progressStates;
     private int presentbuddiescount = 0;
+
+    RoundingTaskAdapter taskAdapter;
     SwipeMenuListView listView = null;
     // start 07-10-15 changes
 
@@ -871,6 +873,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             TextView officeaddre = (TextView) v1.findViewById(R.id.officeaddre);
             TextView hospitalspec = (TextView) v1.findViewById(R.id.hospitalspec);
             TextView citation = (TextView) v1.findViewById(R.id.citation);
+            LinearLayout footer1=(LinearLayout)v1.findViewById(R.id.footer1);
+            footer1.setVisibility(View.GONE);
             if (!pb.getPhoto().equals(null)) {
                 String directory_path = Environment
                         .getExternalStorageDirectory()
@@ -9188,7 +9192,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         Vector<TaskDetailsBean> tasklist = DBAccess.getdbHeler().getAllTaskDetails(strQuery);
         Collections.sort(tasklist, new TaskDateComparator());
         Vector<TaskDetailsBean> taskList = getdatelist(tasklist);
-        final RoundingTaskAdapter taskAdapter = new RoundingTaskAdapter(context, R.layout.round_task_row, taskList);
+        taskAdapter = new RoundingTaskAdapter(context, R.layout.round_task_row, taskList);
         tasklistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -9944,7 +9948,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         Vector<TaskDetailsBean> tasklist = DBAccess.getdbHeler().getAllTaskDetails(strQuery);
         Collections.sort(tasklist, new TaskDateComparator());
         Vector<TaskDetailsBean> taskList = getdatelist(tasklist);
-        final RoundingTaskAdapter taskAdapter = new RoundingTaskAdapter(context, R.layout.round_task_row, taskList);
+        taskAdapter = new RoundingTaskAdapter(context, R.layout.round_task_row, taskList);
         handler.post(new Runnable() {
             @Override
             public void run() {

@@ -83,6 +83,7 @@ public class DuplicateExistingGroups extends Activity {
                     intent.putExtra("isEdit", true);
                     intent.putExtra("id", groupBean.getGroupId());
                     startActivity(intent);
+                    finish();
                 }
             });
         } catch (Exception e) {
