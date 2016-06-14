@@ -260,6 +260,8 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 //			context = this;
 //			WebServiceReferences.contextTable.put("callscreen", this);
 			Log.i("VideoCall","VideoCallScreen onCreate");
+			final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
+			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 			if(rootView==null){
 			SingleInstance.instanceTable.put("callscreen",videoCallScreen);
             bundlevalues=getArguments();
@@ -704,8 +706,8 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 //			context = this;
 			WebServiceReferences.contextTable.put("VideoCallscreen", context);
-			final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
-			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+//			final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
+//			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
 			if (savedInstanceState == null) {
 
@@ -2525,8 +2527,8 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			if(parent != null) {
 				getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 			}
-//			final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
-//			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+			final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
+			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 //			AppMainActivity.commEngine.enable_disable_VideoPreview(true);
 //			WebServiceReferences.videoSSRC_total.clear();
 //			WebServiceReferences.videoSSRC_total_list.clear();
@@ -4076,10 +4078,10 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		FragmentManager fm =
 				AppReference.mainContext.getSupportFragmentManager();
 		FragmentTransaction ft = fm.beginTransaction();
-		ContactsFragment contactsFragment = ContactsFragment
-				.getInstance(context);
+//		ContactsFragment contactsFragment = ContactsFragment
+//				.getInstance(context);
 		ft.replace(R.id.activity_main_content_fragment,
-				contactsFragment);
+				AppReference.bacgroundFragment);
 		ft.commitAllowingStateLoss();
 		video_minimize.setVisibility(View.VISIBLE);
 		mainHeader.setVisibility(View.VISIBLE);

@@ -118,6 +118,7 @@ public class DashBoardFragment extends Fragment {
                     R.id.activity_main_content_title);
             title.setText("DASHBOARD");
             title.setVisibility(View.VISIBLE);
+            AppReference.bacgroundFragment=dashBoardFragment;
 
             Button imVw = (Button) getActivity().findViewById(R.id.im_view);
             imVw.setVisibility(View.GONE);

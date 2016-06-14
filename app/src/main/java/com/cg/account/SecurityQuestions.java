@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cg.DB.DBAccess;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
@@ -81,6 +82,7 @@ public class SecurityQuestions extends Fragment {
                              Bundle savedInstanceState) {
 
         try {
+            AppReference.bacgroundFragment=securityQuestions;
             Button select = (Button) getActivity().findViewById(R.id.btn_brg);
             select.setVisibility(View.GONE);
             RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);

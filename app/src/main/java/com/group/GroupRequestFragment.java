@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.bean.ProfileBean;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
 import com.cg.rounding.RoundingFragment;
 import com.cg.snazmed.R;
 import com.image.utils.ImageLoader;
@@ -69,6 +70,7 @@ public class GroupRequestFragment extends Fragment {
     }
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        AppReference.bacgroundFragment=groupRequestFragment;
         Button select = (Button) getActivity().findViewById(R.id.btn_brg);
         select.setVisibility(View.GONE);
         RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);

@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
 import com.cg.commonclass.Logger;
@@ -92,4 +93,6 @@ public class AppReference {
 
 	}
 	private static int isApplication = 1;
+
+	public static Fragment bacgroundFragment=null;
 }

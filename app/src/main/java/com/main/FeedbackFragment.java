@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.image.utils.ImageLoader;
 
@@ -64,6 +65,7 @@ public class FeedbackFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater layoutInflater,ViewGroup container, Bundle savedInstance){
         try{
+            AppReference.bacgroundFragment=feedbackFragment;
             Button select = (Button) getActivity().findViewById(R.id.btn_brg);
             select.setVisibility(View.GONE);
             RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);

@@ -48,6 +48,7 @@ public class InviteCodeFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         try {
+            AppReference.bacgroundFragment=inviteCodeFragment;
             Button select = (Button) getActivity().findViewById(R.id.btn_brg);
             select.setVisibility(View.GONE);
             final RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
