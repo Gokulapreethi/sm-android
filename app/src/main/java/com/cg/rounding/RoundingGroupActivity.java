@@ -196,6 +196,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
         }
         appMainActivity = (AppMainActivity) SingleInstance.contextTable
                 .get("MAIN");
+        btn_addMemberFromContact.setText("INVITE NEW MEMBERS");
 
         edit_pic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -856,7 +857,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                     groupBean.setDeleteGroupMembers("");
                 }
                 groupBean.setCallback(this);
-                WebServiceReferences.webServiceClient.createRoundingGroup(groupBean, this);
+                WebServiceReferences.webServiceClient.createRoundingGroup(groupBean, context);
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -1052,6 +1053,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
 
                     if(bib.getBuddyName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
                         holder.rights.setText("Owner");
+                        holder.delete_mark.setVisibility(View.GONE);
                         holder.rights.setTextColor(getResources().getColor(R.color.green));
                     }else {
                         if(bib.getAdmin()!=null){
@@ -1069,16 +1071,27 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                         holder.role.setText(bib.getRole());
                     }else
                         holder.role.setVisibility(View.GONE);
+                    holder.delete_mark.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+//                            if(gBean.getGroupId()!=null) {
+//                                GroupBean groupBean = DBAccess.getdbHeler().getGroupAndMembers(
+//                                        "select * from grouplist where groupid=" + gBean.getGroupId());
+                                gBean.setDeleteGroupMembers(bib.getBuddyName());
+                                gBean.setGroupName(groupBean.getGroupName());
+                                showprogress();
+                                WebServiceReferences.webServiceClient.createRoundingGroup(gBean, context);
+//                            }
+                        }
+                    });
                     holder.edit.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-//                            if(!bib.isSelected()) {
                             Intent intent = new Intent(context, RoundingEditActivity.class);
                             intent.putExtra("buddyname", bib.getBuddyName());
                             intent.putExtra("firstname", bib.getFirstname());
                             intent.putExtra("groupid", groupid);
                             startActivity(intent);
-//                            }
                         }
                     });
 

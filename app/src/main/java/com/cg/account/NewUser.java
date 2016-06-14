@@ -96,6 +96,13 @@ public class NewUser extends Activity {
         stateAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, states);
         state.setAdapter(stateAdapter);
         state.setThreshold(1);
+        state.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                state.showDropDown();
+            }
+        });
 
         ed_firstname.addTextChangedListener(new TextWatcher() {
             @Override

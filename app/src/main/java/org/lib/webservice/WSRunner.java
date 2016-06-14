@@ -1643,6 +1643,10 @@ public class WSRunner implements Runnable {
 									.toString());
 
 							mServicebean.setObj(temp);
+						}else {
+							webServiceBean = mParser.parseResultFromXml(mSp
+									.toString());
+							mServicebean.setObj(webServiceBean);
 						}
 						if (mServicebean.getCallBack() != null) {
 							Log.i("sss", "notifyRightsToUI of rights wsrunner ");

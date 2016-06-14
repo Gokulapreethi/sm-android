@@ -21,6 +21,7 @@ import com.util.SingleInstance;
 
 import org.lib.model.FileDetailsBean;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Vector;
 
@@ -144,7 +145,6 @@ public class MemoryControlFragment extends Fragment {
                     float num = 5368709120L;
                     float temp1 = num - total;
                     tv_free.setText(bytesToSize(temp1));
-                    Log.i("AAAA", "Oncreate view of memorycontrol @@@@ size "+other);
                     tv_others.setText(bytesToSize(other));
                     tv_chat.setText(bytesToSize(chat));
                     lineProgressbar = (LineProgressBar) view.findViewById(R.id.line_progressbar);
@@ -201,22 +201,22 @@ public class MemoryControlFragment extends Fragment {
         float terabyte = gigabyte * 1024;
 
         if ((bytes >= 0) && (bytes < kilobyte)) {
-            return bytes + " B";
+            return  new BigDecimal(String.valueOf(bytes)).setScale(2, BigDecimal.ROUND_DOWN) + " B";
 
         } else if ((bytes >= kilobyte) && (bytes < megabyte)) {
-            return (bytes / kilobyte) + " KB";
+            return  new BigDecimal(String.valueOf((bytes / kilobyte))).setScale(2, BigDecimal.ROUND_DOWN) + " KB";
 
         } else if ((bytes >= megabyte) && (bytes < gigabyte)) {
-            return (bytes / megabyte) + " MB";
+            return  new BigDecimal(String.valueOf((bytes / megabyte))).setScale(2, BigDecimal.ROUND_DOWN) + " MB";
 
         } else if ((bytes >= gigabyte) && (bytes < terabyte)) {
-            return (bytes / gigabyte) + " GB";
+            return  new BigDecimal(String.valueOf((bytes / gigabyte))).setScale(2, BigDecimal.ROUND_DOWN) + " GB";
 
         } else if (bytes >= terabyte) {
-            return (bytes / terabyte) + " TB";
+            return  new BigDecimal(String.valueOf((bytes / terabyte))).setScale(2, BigDecimal.ROUND_DOWN) + " TB";
 
         } else {
-            return bytes + " B";
+            return  new BigDecimal(String.valueOf(bytes)).setScale(2, BigDecimal.ROUND_DOWN) + " B";
         }
     }
 

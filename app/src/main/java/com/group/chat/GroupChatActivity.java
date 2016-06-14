@@ -152,6 +152,8 @@ import org.lib.model.GroupBean;
 import org.lib.model.GroupMemberBean;
 import org.lib.model.PermissionBean;
 import org.lib.model.RecordTransactionBean;
+import org.lib.model.RoleAccessBean;
+import org.lib.model.RolePatientManagementBean;
 import org.lib.model.TaskDetailsBean;
 import org.lib.model.UdpMessageBean;
 import org.lib.model.WebServiceBean;
@@ -462,19 +464,37 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 dialog.dismiss();
                             }
                         });
+                        GroupMemberBean memberbean = DBAccess.getdbHeler().getMemberDetails(groupBean.getGroupId(), CallDispatcher.LoginUser);
+                        RoleAccessBean roleAccessBean = DBAccess.getdbHeler().getRoleAccessDetails(groupBean.getGroupId(), memberbean.getRole());
+                        RolePatientManagementBean rolePatientManagementBean = DBAccess.getdbHeler().getRolePatientManagement(groupBean.getGroupId(), memberbean.getRole());
+                        if (!groupBean.getOwnerName().equalsIgnoreCase(
+                                CallDispatcher.LoginUser)) {
+                            edit.setEnabled(false);
+                            edit.setBackgroundColor(context.getResources().getColor(R.color.black));
+                            delete.setEnabled(false);
+                            delete.setBackgroundColor(context.getResources().getColor(R.color.black));
+                            role.setEnabled(false);
+                            role.setBackgroundColor(context.getResources().getColor(R.color.black));
+                        }
+                        if(!(groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                                roleAccessBean.getTaskmanagement()!=null && roleAccessBean.getTaskmanagement().equalsIgnoreCase("1"))){
+                            newTask.setEnabled(false);
+                            newTask.setBackgroundColor(context.getResources().getColor(R.color.black));
+                        }
+                        if(!(groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                                rolePatientManagementBean.getAdd()!=null && rolePatientManagementBean.getAdd().equalsIgnoreCase("1"))){
+                            newPatient.setEnabled(false);
+                            newPatient.setBackgroundColor(context.getResources().getColor(R.color.black));
+                        }
                         edit.setOnClickListener(new OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                if (groupBean.getOwnerName().equalsIgnoreCase(
-                                        CallDispatcher.LoginUser)) {
                                     Intent intent = new Intent(GroupChatActivity.this,
                                             RoundingGroupActivity.class);
                                     intent.putExtra("isEdit", true);
                                     intent.putExtra("id", groupBean.getGroupId());
                                     startActivity(intent);
                                     dialog.dismiss();
-                                } else
-                                    showToast("You are not owner of this group");
                             }
                         });
                         newTask.setOnClickListener(new OnClickListener() {
@@ -489,8 +509,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         role.setOnClickListener(new OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                if (groupBean.getOwnerName().equalsIgnoreCase(
-                                        CallDispatcher.LoginUser)) {
                                     RolesManagementFragment rolesManagementFragment = RolesManagementFragment.newInstance(SingleInstance.mainContext);
                                     rolesManagementFragment.setGroupName(groupBean.getGroupName());
                                     rolesManagementFragment.setGroupId(groupBean.getGroupId());
@@ -501,8 +519,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                             .commitAllowingStateLoss();
                                     dialog.dismiss();
                                     finish();
-                                } else
-                                    showToast("You are not owner of this group");
                             }
                         });
                         ownership.setOnClickListener(new OnClickListener() {
@@ -530,12 +546,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                         .getInstance(context);
                                 // TODO Auto-generated method stub
                                 if (SingleInstance.mainContext.isNetworkConnectionAvailable()) {
-                                    if (groupBean.getOwnerName().equalsIgnoreCase(
-                                            CallDispatcher.LoginUser))
                                         contactsFragment.deleteGroup(groupBean,
                                                 "Are you sure you want to delete this group ");
-                                    else
-                                        showToast("You are not owner of this group");
                                 } else {
                                     contactsFragment.showAlert1("Info",
                                             "Check internet connection Unable to connect server");
@@ -8598,7 +8610,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 int questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where (groupid='"
-                        + groupId + "' and assignedmembers='" + CallDispatcher.LoginUser + "') or ( groupid='" + groupId + "' and assignedmembers='')");
+                        + groupId + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser + "%') or ( groupid='" + groupId + "' and assignedmembers='')");
                 if (questionsCount > 0) {
                     Intent intent = new Intent(context, AssignPatientActivity.class);
                     intent.putExtra("groupid", groupId);
@@ -8622,16 +8634,16 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        PatientList.clear();
-                        String strGetQry = "select * from patientdetails where groupid='"
-                                + groupBean.getGroupId() + "'";
-                        PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
-                        Collections.sort(PatientList, new PatientNameComparator());
-                        tempPatientList.clear();
-                        tempPatientList = PatientList;
-                        for (PatientDetailsBean bean : PatientList) {
-                            bean.setIsFromPatienttab(true);
-                        }
+//                        PatientList.clear();
+//                        String strGetQry = "select * from patientdetails where groupid='"
+//                                + groupBean.getGroupId() + "'";
+//                        PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
+//                        Collections.sort(PatientList, new PatientNameComparator());
+//                        tempPatientList.clear();
+//                        tempPatientList = PatientList;
+//                        for (PatientDetailsBean bean : PatientList) {
+//                            bean.setIsFromPatienttab(true);
+//                        }
                         patientadapter = new RoundingPatientAdapter(context, R.layout.rouding_patient_row, PatientList);
                         listViewPatient.setAdapter(null);
                         listViewPatient.setAdapter(patientadapter);
@@ -8653,16 +8665,16 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        PatientList.clear();
-                        String strGetQry = "select * from patientdetails where groupid='"
-                                + groupBean.getGroupId() + "'";
-                        PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
-                        Collections.sort(PatientList, new PatientLocationComparator());
-                        tempPatientList.clear();
-                        tempPatientList = PatientList;
-                        for (PatientDetailsBean bean : PatientList) {
-                            bean.setIsFromPatienttab(true);
-                        }
+//                        PatientList.clear();
+//                        String strGetQry = "select * from patientdetails where groupid='"
+//                                + groupBean.getGroupId() + "'";
+//                        PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
+//                        Collections.sort(PatientList, new PatientLocationComparator());
+//                        tempPatientList.clear();
+//                        tempPatientList = PatientList;
+//                        for (PatientDetailsBean bean : PatientList) {
+//                            bean.setIsFromPatienttab(true);
+//                        }
                         patientadapter = new RoundingPatientAdapter(context, R.layout.rouding_patient_row, PatientList);
                         listViewPatient.setAdapter(null);
                         listViewPatient.setAdapter(patientadapter);
@@ -8684,16 +8696,16 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        PatientList.clear();
-                        String strGetQry = "select * from patientdetails where groupid='"
-                                + groupBean.getGroupId() + "'";
-                        PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
-                        Collections.sort(PatientList, new PatientStatusComparator());
-                        tempPatientList.clear();
-                        tempPatientList = PatientList;
-                        for (PatientDetailsBean bean : PatientList) {
-                            bean.setIsFromPatienttab(true);
-                        }
+//                        PatientList.clear();
+//                        String strGetQry = "select * from patientdetails where groupid='"
+//                                + groupBean.getGroupId() + "'";
+//                        PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
+//                        Collections.sort(PatientList, new PatientStatusComparator());
+//                        tempPatientList.clear();
+//                        tempPatientList = PatientList;
+//                        for (PatientDetailsBean bean : PatientList) {
+//                            bean.setIsFromPatienttab(true);
+//                        }
                         patientadapter = new RoundingPatientAdapter(context, R.layout.rouding_patient_row, PatientList);
                         listViewPatient.setAdapter(null);
                         listViewPatient.setAdapter(patientadapter);

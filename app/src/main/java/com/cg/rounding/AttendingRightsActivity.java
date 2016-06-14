@@ -14,9 +14,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.cg.DB.DBAccess;
+import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.snazmed.R;
 import com.util.SingleInstance;
@@ -26,6 +28,7 @@ import org.lib.model.RoleCommentsViewBean;
 import org.lib.model.RoleEditRndFormBean;
 import org.lib.model.RolePatientManagementBean;
 import org.lib.model.RoleTaskMgtBean;
+import org.lib.model.WebServiceBean;
 
 import java.util.List;
 import java.util.Objects;
@@ -40,6 +43,7 @@ public class AttendingRightsActivity extends Activity {
     RoleEditRndFormBean roleEditRndFormBean=new RoleEditRndFormBean();
     RoleTaskMgtBean roleTaskMgtBean=new RoleTaskMgtBean();
     RoleCommentsViewBean roleCommentsViewBean=new RoleCommentsViewBean();
+    RoleAccessBean roleAccessBean=new RoleAccessBean();
     Handler handler = new Handler();
     private ProgressDialog progress = null;
 
@@ -103,7 +107,7 @@ public class AttendingRightsActivity extends Activity {
             title.setText("RESIDENT RIGHTS");
         else if(Role.equalsIgnoreCase("medical student"))
             title.setText("MEDICAL STUDENT RIGHTS");
-        RoleAccessBean rBean=DBAccess.getdbHeler().getRoleAccessDetails(groupId,Role);
+        final RoleAccessBean rBean=DBAccess.getdbHeler().getRoleAccessDetails(groupId,Role);
         if(rBean!=null){
             if(rBean.getPatientmanagement()!=null )
                 if(rBean.getPatientmanagement().equalsIgnoreCase("0"))
@@ -237,10 +241,10 @@ public class AttendingRightsActivity extends Activity {
             }
         }
 
-        final RoleTaskMgtBean rtBean=DBAccess.getdbHeler().getRoleTaskManagement(groupId, Role);
+        final RoleCommentsViewBean rtBean=DBAccess.getdbHeler().getRoleCommentsView(groupId, Role);
         if(rtBean!=null){
-            if(rtBean.getTattending()!=null )
-                if(rtBean.getTattending().equalsIgnoreCase("0"))
+            if(rtBean.getCattending()!=null )
+                if(rtBean.getCattending().equalsIgnoreCase("0"))
                 ch_attending.setChecked(false);
                 else
                     ch_attending.setChecked(true);
@@ -248,8 +252,8 @@ public class AttendingRightsActivity extends Activity {
                 ch_attending.setChecked(false);
                 ch_attending.setEnabled(false);
             }
-            if(rtBean.getTfellow()!=null )
-                if(rtBean.getTfellow().equalsIgnoreCase("0"))
+            if(rtBean.getCfellow()!=null )
+                if(rtBean.getCfellow().equalsIgnoreCase("0"))
                 ch_fellow.setChecked(false);
                 else
                     ch_fellow.setChecked(true);
@@ -257,8 +261,8 @@ public class AttendingRightsActivity extends Activity {
                 ch_fellow.setChecked(false);
                 ch_fellow.setEnabled(false);
             }
-            if(rtBean.getTchiefresident()!=null )
-                if(rtBean.getTchiefresident().equalsIgnoreCase("0"))
+            if(rtBean.getCchiefresident()!=null )
+                if(rtBean.getCchiefresident().equalsIgnoreCase("0"))
                 ch_chief.setChecked(false);
                 else
                     ch_chief.setChecked(true);
@@ -266,8 +270,8 @@ public class AttendingRightsActivity extends Activity {
                 ch_chief.setChecked(false);
                 ch_chief.setEnabled(false);
             }
-            if(rtBean.getTresident()!=null)
-                if(rtBean.getTresident().equalsIgnoreCase("0"))
+            if(rtBean.getCresident()!=null)
+                if(rtBean.getCresident().equalsIgnoreCase("0"))
                 ch_resident.setChecked(false);
                 else
                     ch_resident.setChecked(true);
@@ -275,8 +279,8 @@ public class AttendingRightsActivity extends Activity {
                 ch_resident.setChecked(false);
                 ch_resident.setEnabled(false);
             }
-            if(rtBean.getTmedstudent()!=null )
-                if(rtBean.getTmedstudent().equalsIgnoreCase("0"))
+            if(rtBean.getCmedstudent()!=null )
+                if(rtBean.getCmedstudent().equalsIgnoreCase("0"))
                 ch_medstudent.setChecked(false);
                 else
                     ch_medstudent.setChecked(true);
@@ -286,10 +290,10 @@ public class AttendingRightsActivity extends Activity {
             }
         }
 
-        final RoleCommentsViewBean cvBean=DBAccess.getdbHeler().getRoleCommentsView(groupId,Role);
+        final RoleTaskMgtBean cvBean=DBAccess.getdbHeler().getRoleTaskManagement(groupId, Role);
         if(cvBean!=null){
-            if(cvBean.getCattending()!=null )
-                if(cvBean.getCattending().equalsIgnoreCase("0"))
+            if(cvBean.getTattending()!=null )
+                if(cvBean.getTattending().equalsIgnoreCase("0"))
                 ch_tmattending.setChecked(false);
                 else
                     ch_tmattending.setChecked(true);
@@ -297,8 +301,8 @@ public class AttendingRightsActivity extends Activity {
                 ch_tmattending.setChecked(false);
                 ch_tmattending.setEnabled(false);
             }
-            if(cvBean.getCfellow()!=null )
-                if(cvBean.getCfellow().equalsIgnoreCase("0"))
+            if(cvBean.getTfellow()!=null )
+                if(cvBean.getTfellow().equalsIgnoreCase("0"))
                 ch_tmfellow.setChecked(false);
                 else
                     ch_tmfellow.setChecked(true);
@@ -306,8 +310,8 @@ public class AttendingRightsActivity extends Activity {
                 ch_tmfellow.setChecked(false);
                 ch_tmfellow.setEnabled(false);
             }
-            if(cvBean.getCchiefresident()!=null)
-                if(cvBean.getCchiefresident().equalsIgnoreCase("0"))
+            if(cvBean.getTchiefresident()!=null)
+                if(cvBean.getTchiefresident().equalsIgnoreCase("0"))
                 ch_tmchief.setChecked(false);
                 else
                     ch_tmchief.setChecked(true);
@@ -315,8 +319,8 @@ public class AttendingRightsActivity extends Activity {
                 ch_tmchief.setChecked(false);
                 ch_tmchief.setEnabled(false);
             }
-            if(cvBean.getCresident()!=null )
-                if(cvBean.getCresident().equalsIgnoreCase("0"))
+            if(cvBean.getRole()!=null )
+                if(cvBean.getTresident().equalsIgnoreCase("0"))
                 ch_tmresident.setChecked(false);
                 else
                     ch_tmresident.setChecked(true);
@@ -324,8 +328,8 @@ public class AttendingRightsActivity extends Activity {
                 ch_tmresident.setChecked(false);
                 ch_tmresident.setEnabled(false);
             }
-            if(cvBean.getCmedstudent()!=null)
-                if(cvBean.getCmedstudent().equalsIgnoreCase("0"))
+            if(cvBean.getTmedstudent()!=null)
+                if(cvBean.getTmedstudent().equalsIgnoreCase("0"))
                 ch_tmmedstudent.setChecked(false);
                 else
                     ch_tmmedstudent.setChecked(true);
@@ -437,16 +441,19 @@ public class AttendingRightsActivity extends Activity {
                     roleEditRndFormBean.setGroupid(groupId);
                     roleTaskMgtBean.setGroupid(groupId);
                     roleCommentsViewBean.setGroupid(groupId);
+                    roleAccessBean.setGroupid(groupId);
 
                     rolePatientManagementBean.setGroupowner(groupOwner);
                     roleEditRndFormBean.setGroupowner(groupOwner);
                     roleTaskMgtBean.setGroupowner(groupOwner);
                     roleCommentsViewBean.setGroupowner(groupOwner);
+                    roleAccessBean.setGroupowner(groupOwner);
 
-                    rolePatientManagementBean.setGroupmember(groupMember);
-                    roleEditRndFormBean.setGroupmember(groupMember);
-                    roleTaskMgtBean.setGroupmember(groupMember);
-                    roleCommentsViewBean.setGroupmember(groupMember);
+                    rolePatientManagementBean.setGroupmember(CallDispatcher.LoginUser);
+                    roleEditRndFormBean.setGroupmember(CallDispatcher.LoginUser);
+                    roleTaskMgtBean.setGroupmember(CallDispatcher.LoginUser);
+                    roleCommentsViewBean.setGroupmember(CallDispatcher.LoginUser);
+                    roleAccessBean.setGroupmember(CallDispatcher.LoginUser);
 
                     if(pmBean!=null && pmBean.getRoleid()!=null)
                         rolePatientManagementBean.setRoleid(pmBean.getRoleid());
@@ -460,6 +467,10 @@ public class AttendingRightsActivity extends Activity {
                         roleTaskMgtBean.setRoleid(rtBean.getRoleid());
                     else
                         roleTaskMgtBean.setRoleid("");
+                    if(rBean!=null && rBean.getRoleid()!=null)
+                        roleAccessBean.setRoleid(rBean.getRoleid());
+                    else
+                        roleAccessBean.setRoleid("");
                     if(cvBean!=null && cvBean.getRoleid()!=null)
                         roleCommentsViewBean.setRoleid(cvBean.getRoleid());
                     else
@@ -469,6 +480,7 @@ public class AttendingRightsActivity extends Activity {
                     roleEditRndFormBean.setRole(Role);
                     roleTaskMgtBean.setRole(Role);
                     roleCommentsViewBean.setRole(Role);
+                    roleAccessBean.setRole(Role);
 
                     if(ch_add.isChecked())
                     rolePatientManagementBean.setAdd("1");
@@ -557,6 +569,23 @@ public class AttendingRightsActivity extends Activity {
                     else
                         roleCommentsViewBean.setCmedstudent("0");
 
+                    if(ch_pm.isChecked())
+                        roleAccessBean.setPatientmanagement("1");
+                    else
+                        roleAccessBean.setPatientmanagement("0");
+                    if(ch_tm.isChecked())
+                        roleAccessBean.setTaskmanagement("1");
+                    else
+                        roleAccessBean.setTaskmanagement("0");
+                    if(ch_er.isChecked())
+                        roleAccessBean.setEditroundingform("1");
+                    else
+                        roleAccessBean.setEditroundingform("0");
+                    if(ch_cv.isChecked())
+                        roleAccessBean.setCommentsview("1");
+                    else
+                        roleAccessBean.setCommentsview("0");
+
                 }
                 showprogress();
                 WebServiceReferences.webServiceClient.SetOrEditRoleAccess(rolePatientManagementBean,roleEditRndFormBean,roleTaskMgtBean,roleCommentsViewBean, mainContext);
@@ -577,13 +606,14 @@ public class AttendingRightsActivity extends Activity {
             roleTaskMgtBean.setRoleid(result[0]);
             roleCommentsViewBean.setRoleid(result[0]);
 
-
+            DBAccess.getdbHeler().insertorupdateRoleAccess(roleAccessBean);
             DBAccess.getdbHeler().insertorupdateRolepatientAccess(rolePatientManagementBean);
             DBAccess.getdbHeler().insertorupdateRoleEditRoundingFormAccess(roleEditRndFormBean);
             DBAccess.getdbHeler().insertorupdateRoleTransactionAccess(roleTaskMgtBean);
             DBAccess.getdbHeler().insertorupdateRoleCommentsViewAccess(roleCommentsViewBean);
             finish();
-        }
+        }else if (obj instanceof WebServiceBean)
+            showToast(((WebServiceBean) obj).getText());
     }
 
     public void showprogress() {
@@ -610,6 +640,15 @@ public class AttendingRightsActivity extends Activity {
 
         });
 
+    }
+    private void showToast(final String msg) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                Toast.makeText(mainContext, msg, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void cancelDialog() {

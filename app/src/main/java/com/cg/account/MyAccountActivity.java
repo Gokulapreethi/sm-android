@@ -254,7 +254,7 @@ public class MyAccountActivity extends Activity {
                     lp.width = WindowManager.LayoutParams.MATCH_PARENT;
                     lp.height = WindowManager.LayoutParams.MATCH_PARENT;
                     Window window = dialog1.getWindow();
-                    dialog1.getWindow().setBackgroundDrawableResource(R.color.transparent);
+                    dialog1.getWindow().setBackgroundDrawableResource(R.color.trans_black2);
                     window.setAttributes(lp);
                     dialog1.show();
 
@@ -484,16 +484,34 @@ public class MyAccountActivity extends Activity {
         stateAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, stateList);
         state.setAdapter(stateAdapter);
         state.setThreshold(1);
+        state.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                state.showDropDown();
+            }
+        });
 
         hospitalList=DBAccess.getdbHeler().getHospitalDetails();
         hospitalDetailsAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, hospitalList);
         hospital.setAdapter(hospitalDetailsAdapter);
         hospital.setThreshold(1);
+        hospital.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hospital.showDropDown();
+            }
+        });
 
         medicalSocietyList=DBAccess.getdbHeler().getMedicalSocietiesDetails();
         medicalDetailsAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, medicalSocietyList);
         association_membership.setAdapter(medicalDetailsAdapter);
         association_membership.setThreshold(1);
+        association_membership.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                association_membership.showDropDown();
+            }
+        });
 
 
 
@@ -526,6 +544,12 @@ public class MyAccountActivity extends Activity {
 
         usertype.setAdapter(dataAdapter);
         usertype.setThreshold(1);
+        usertype.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                usertype.showDropDown();
+            }
+        });
 
         state.addTextChangedListener(new TextWatcher() {
             @Override
@@ -569,6 +593,12 @@ public class MyAccountActivity extends Activity {
         dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         medical_schools.setAdapter(dataAdapter);
         medical_schools.setSelection(0);
+        medical_schools.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                medical_schools.showDropDown();
+            }
+        });
 
         list = new ArrayList<String>();
         list.add("Residency Program");
@@ -576,6 +606,12 @@ public class MyAccountActivity extends Activity {
         dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         residency_pgm.setAdapter(dataAdapter);
         residency_pgm.setSelection(0);
+        residency_pgm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                residency_pgm.showDropDown();
+            }
+        });
 
         list = new ArrayList<String>();
         list.add("Fellowship Program");
@@ -583,6 +619,12 @@ public class MyAccountActivity extends Activity {
         dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         fellowship_pgm.setAdapter(dataAdapter);
         fellowship_pgm.setSelection(0);
+        fellowship_pgm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fellowship_pgm.showDropDown();
+            }
+        });
 
         list = new ArrayList<String>();
         list.add("MD");
@@ -592,12 +634,24 @@ public class MyAccountActivity extends Activity {
         dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         rlay_professional_org.setAdapter(dataAdapter);
         rlay_professional_org.setSelection(0);
+        rlay_professional_org.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rlay_professional_org.showDropDown();
+            }
+        });
 
         specialityList=DBAccess.getdbHeler().getSpecialityDetails();
         dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list,specialityList);
         dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         Speciality.setAdapter(dataAdapter);
         Speciality.setThreshold(1);
+        Speciality.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Speciality.showDropDown();
+            }
+        });
 
 
         hospital.addTextChangedListener(new TextWatcher() {

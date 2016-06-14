@@ -71,17 +71,17 @@ public class AssignPatientActivity extends Activity{
         fromMyPatient=getIntent().getBooleanExtra("fromMyPatient",false);
         header.setText(groupname);
         String strGetQry=null;
-            strGetQry = "select * from patientdetails where groupid='"
-                    + groupid + "' and assignedmembers=''";
+        strGetQry="select * from patientdetails where (groupid='"
+                + groupid + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser + "%') or ( groupid='" + groupid + "' and assignedmembers='')";
         PatientList=DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
-            if(PatientList.size()==0) {
-                strGetQry = "select * from patientdetails where groupid='"
-                        + groupid + "' and assignedmembers='"+CallDispatcher.LoginUser+"'";
-                isSearch=true;
-                PatientList=DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
-                assign.setText("ASSIGN PATIENTS TO");
-                unassign.setText("UNASSIGN FROM ME");
-            }
+        int questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where (groupid='"
+                + groupid + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser + "%'");
+        if(questionsCount>0){
+            unassign_lay.setVisibility(View.VISIBLE);
+            assign.setText("ASSIGN PATIENTS TO");
+            unassign.setText("UNASSIGN FROM ME");
+        }
+
         Collections.sort(PatientList, new PatientNameComparator());
         GroupChatActivity.patientType="name";
         final RoundingPatientAdapter adapter=new RoundingPatientAdapter(context,R.layout.rouding_patient_row,PatientList);

@@ -266,7 +266,7 @@
     <string name="members">Members</string>
     <string name="update_members">Update Members</string>
     <string name="modify_group">Modify</string>
-    <string name="group_created_success">Group Created Successfully</string>
+    <string name="group_created_success">Group Created or modified Successfully</string>
     <string name="clear_history1">Clear History</string>
     <string name="no_profile_for1">No Profile For</string>
     <string name="chat_options">Chat options</string>

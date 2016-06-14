@@ -44,7 +44,7 @@
                 android:id="@+id/temp1"
                 android:layout_width="213dp"
                 android:layout_height="99dp"
-                android:background="@drawable/img_logo"
+                android:background="@drawable/img_logo1"
                 android:layout_centerHorizontal="true"
                 android:layout_margin="30dp"/>
 

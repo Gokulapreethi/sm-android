@@ -453,7 +453,6 @@
          android:layout_alignBaseline="@+id/btn_addbuddy1"
          android:layout_alignBottom="@+id/btn_addbuddy1"
          android:layout_marginLeft="15dp"
-         android:layout_weight="0.5"
          android:background="@drawable/call_reject"
          android:visibility="visible" />
 

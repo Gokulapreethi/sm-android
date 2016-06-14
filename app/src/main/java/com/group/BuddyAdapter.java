@@ -118,6 +118,7 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 					holder.selectUser.setVisibility(View.GONE);
 					holder.cancel_lay.setVisibility(View.VISIBLE);
 					holder.occupation.setText("invite Sent");
+					holder.statusIcon.setVisibility(View.GONE);
 					holder.header_title.setVisibility(View.GONE);
 				}
 				if (userBean.getProfilePic() != null) {

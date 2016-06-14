@@ -365,6 +365,7 @@ public class ContactsFragment extends Fragment{
 				SortList();
 
 				GroupActivity.getAllGroups();
+				loadRecents();
 
 
 
@@ -392,8 +393,8 @@ public class ContactsFragment extends Fragment{
 					@Override
 					public void onClick(View view) {
 						if(isContact) {
-//							Intent i = new Intent(getActivity(), AMAVerification.class);
-//							startActivity(i);
+							Intent i = new Intent(getActivity(), AMAVerification.class);
+							startActivity(i);
 						}
 					}
 				});
@@ -447,41 +448,7 @@ public class ContactsFragment extends Fragment{
 				final View view_mygroup = (View) _rootView.findViewById(R.id.view_mygroup);
 
 
-				tempnotifylist = DashBoardFragment.newInstance(mainContext).LoadFilesList(CallDispatcher.LoginUser);
-				for(NotifyListBean bean:tempnotifylist){
-					if(bean.getNotifttype().equalsIgnoreCase("F"))
-						contactrecentlist.add(bean);
-					else if(bean.getNotifttype().equalsIgnoreCase("C")){
-						if(isNumeric(bean.getFileid()))
-							grouprecentlist.add(bean);
-						else
-							contactrecentlist.add(bean);
-					}else if(bean.getNotifttype().equalsIgnoreCase("I")) {
-						if (bean.getCategory().equalsIgnoreCase("G"))
-							grouprecentlist.add(bean);
-						else if(bean.getCategory().equalsIgnoreCase("I"))
-							contactrecentlist.add(bean);
-					}
-				}
 
-				for(BuddyInformationBean bean:ContactsFragment.getBuddyList() ){
-					if(bean.getStatus().equalsIgnoreCase("new")) {
-						NotifyListBean nBean=new NotifyListBean();
-						nBean.setUsername(bean.getFirstname()+" "+bean.getLastname());
-						nBean.setNotifttype("Invite");
-						nBean.setType("contact");
-						contactrecentlist.add(nBean);
-					}
-				}
-				for(GroupBean gbean: GroupActivity.groupList){
-					if(gbean.getStatus().equalsIgnoreCase("request")){
-						NotifyListBean nbean = new NotifyListBean();
-						nbean.setUsername(gbean.getOwnerName());
-						nbean.setNotifttype("Invite");
-						nbean.setType("group");
-						grouprecentlist.add(nbean);
-					}
-				}
 
 
 
@@ -517,7 +484,7 @@ public class ContactsFragment extends Fragment{
 								plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_add_contact));
 								search.setVisibility(View.VISIBLE);
 								}else{
-
+									loadRecents();
 									contactrecent = true;
 									grouprecent = true;
 									lv2.setVisibility(View.GONE);
@@ -579,6 +546,7 @@ public class ContactsFragment extends Fragment{
 								main_search.setVisibility(View.GONE);
 								search.setVisibility(View.VISIBLE);
 							}else{
+								loadRecents();
 								isContact = false;
 								contactrecent = true;
 								grouprecent = true;
@@ -3850,6 +3818,44 @@ public class ContactsFragment extends Fragment{
 			fragmentManager.beginTransaction().replace(
 					R.id.activity_main_content_fragment, videoCallScreen)
 					.commitAllowingStateLoss();
+		}
+	}
+	private void loadRecents()
+	{
+		tempnotifylist = DashBoardFragment.newInstance(mainContext).LoadFilesList(CallDispatcher.LoginUser);
+		for(NotifyListBean bean:tempnotifylist){
+			if(bean.getNotifttype().equalsIgnoreCase("F"))
+				contactrecentlist.add(bean);
+			else if(bean.getNotifttype().equalsIgnoreCase("C")){
+				if(isNumeric(bean.getFileid()))
+					grouprecentlist.add(bean);
+				else
+					contactrecentlist.add(bean);
+			}else if(bean.getNotifttype().equalsIgnoreCase("I")) {
+				if (bean.getCategory().equalsIgnoreCase("G"))
+					grouprecentlist.add(bean);
+				else if(bean.getCategory().equalsIgnoreCase("I"))
+					contactrecentlist.add(bean);
+			}
+		}
+
+		for(BuddyInformationBean bean:ContactsFragment.getBuddyList() ){
+			if(bean.getStatus().equalsIgnoreCase("new")) {
+				NotifyListBean nBean=new NotifyListBean();
+				nBean.setUsername(bean.getFirstname()+" "+bean.getLastname());
+				nBean.setNotifttype("Invite");
+				nBean.setType("contact");
+				contactrecentlist.add(nBean);
+			}
+		}
+		for(GroupBean gbean: GroupActivity.groupList){
+			if(gbean.getStatus().equalsIgnoreCase("request")){
+				NotifyListBean nbean = new NotifyListBean();
+				nbean.setUsername(gbean.getOwnerName());
+				nbean.setNotifttype("Invite");
+				nbean.setType("group");
+				grouprecentlist.add(nbean);
+			}
 		}
 	}
 }
