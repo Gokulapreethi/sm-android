@@ -2,16 +2,12 @@ package com.cg.callservices;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.hardware.Camera;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
@@ -31,8 +27,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.Chronometer.OnChronometerTickListener;
@@ -47,7 +41,6 @@ import android.widget.Toast;
 import com.adapter.ContactAdapter;
 import com.bean.ProfileBean;
 import com.bean.UserBean;
-import com.callHistory.CallHistoryActivity;
 import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
@@ -70,7 +63,6 @@ import org.video.Preview;
 import org.video.PreviewFrameSink;
 import org.video.VideoFrameRenderer;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
@@ -2691,117 +2683,117 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	String file = "";
 	private void showCallHistory()
 	{
-
-		try {
-			final Dialog dialog = new Dialog(SingleInstance.mainContext);
-			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-			dialog.setContentView(R.layout.call_record_dialog);
-			dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-			dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
-			dialog.show();
-			Button save = (Button) dialog.findViewById(R.id.save);
-			Button delete = (Button) dialog.findViewById(R.id.delete);
-			final ImageView play_button = (ImageView) dialog.findViewById(R.id.play_button);
-			final SeekBar seekBar1 = (SeekBar) dialog.findViewById(R.id.seekBar1);
-			final TextView txt_time= (TextView)dialog.findViewById(R.id.txt_time);
-			play_button.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					file = Environment
-							.getExternalStorageDirectory()
-							+ "/COMMedia/CallRecording/"
-							+ strSessionId + ".wav";
-					Log.d("Stringpath", "mediapath--->" + file);
-					File newfile=new File(file);
-
-					if (mPlayer.isPlaying()) {
-						mPlayer.pause();
-						play_button.setBackgroundResource(R.drawable.play);
-					} else {
-						play_button.setBackgroundResource(R.drawable.audiopause);
-						if(newfile.exists())
-						playAudio(file, 0);
-
-					}
-					if(newfile.exists()){
-
-		if (position == mPlayingPosition) {
-			mProgressUpdater.mBarToUpdate = seekBar1;
-			mProgressUpdater.tvToUpdate = txt_time;
-			mHandler.postDelayed(mProgressUpdater, 100);
-		} else {
-
-			try {
-				Log.d("Stringpath", "mediapath--->");
-				seekBar1.setProgress(0);
-				MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-				mmr.setDataSource(file);
-				String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-				mmr.release();
-				String min, sec;
-				min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration)));
-				sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(Long.parseLong(duration)) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration))));
-				if (Integer.parseInt(min) < 10) {
-					min = 0 + String.valueOf(min);
-				}
-				if (Integer.parseInt(sec) < 10) {
-					sec = 0 + String.valueOf(sec);
-				}
-				txt_time.setText(min + ":" + sec);
-//                            audio_tv.setText(duration);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			seekBar1.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
-			seekBar1.setProgress(0);
-			if (mProgressUpdater.mBarToUpdate == seekBar1) {
-				//this progress would be updated, but this is the wrong position
-				mProgressUpdater.mBarToUpdate = null;
-			}
-		}
-		}
-				}
-
-			});
-
-
-
-			save.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					dialog.dismiss();
-					Intent intentComponent = new Intent(context,
-							CallHistoryActivity.class);
-					intentComponent.putExtra("buddyname",
-							CallDispatcher.sb.getFrom());
-					intentComponent.putExtra("individual", true);
-					intentComponent.putExtra("isDelete", false);
-					intentComponent.putExtra("sessionid",
-							CallDispatcher.sb.getSessionid());
-					context.startActivity(intentComponent);
-					mPlayer.stop();
-				}
-			});
-			delete.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					dialog.dismiss();
-					Intent intentComponent = new Intent(context,
-							CallHistoryActivity.class);
-					intentComponent.putExtra("buddyname",
-							CallDispatcher.sb.getFrom());
-					intentComponent.putExtra("isDelete", true);
-					intentComponent.putExtra("individual", true);
-					intentComponent.putExtra("sessionid",
-							CallDispatcher.sb.getSessionid());
-					context.startActivity(intentComponent);
-					mPlayer.stop();
-				}
-			});
-		}catch (Exception e){
-			e.printStackTrace();
-		}
+		objCallDispatcher.showCallHistory(strSessionId , calltype);
+//		try {
+//			final Dialog dialog = new Dialog(SingleInstance.mainContext);
+//			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//			dialog.setContentView(R.layout.call_record_dialog);
+//			dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+//			dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
+//			dialog.show();
+//			Button save = (Button) dialog.findViewById(R.id.save);
+//			Button delete = (Button) dialog.findViewById(R.id.delete);
+//			final ImageView play_button = (ImageView) dialog.findViewById(R.id.play_button);
+//			final SeekBar seekBar1 = (SeekBar) dialog.findViewById(R.id.seekBar1);
+//			final TextView txt_time= (TextView)dialog.findViewById(R.id.txt_time);
+//			play_button.setOnClickListener(new View.OnClickListener() {
+//				@Override
+//				public void onClick(View v) {
+//					file = Environment
+//							.getExternalStorageDirectory()
+//							+ "/COMMedia/CallRecording/"
+//							+ strSessionId + ".wav";
+//					Log.d("Stringpath", "mediapath--->" + file);
+//					File newfile=new File(file);
+//
+//					if (mPlayer.isPlaying()) {
+//						mPlayer.pause();
+//						play_button.setBackgroundResource(R.drawable.play);
+//					} else {
+//						play_button.setBackgroundResource(R.drawable.audiopause);
+//						if(newfile.exists())
+//						playAudio(file, 0);
+//
+//					}
+//					if(newfile.exists()){
+//
+//		if (position == mPlayingPosition) {
+//			mProgressUpdater.mBarToUpdate = seekBar1;
+//			mProgressUpdater.tvToUpdate = txt_time;
+//			mHandler.postDelayed(mProgressUpdater, 100);
+//		} else {
+//
+//			try {
+//				Log.d("Stringpath", "mediapath--->");
+//				seekBar1.setProgress(0);
+//				MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+//				mmr.setDataSource(file);
+//				String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+//				mmr.release();
+//				String min, sec;
+//				min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration)));
+//				sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(Long.parseLong(duration)) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration))));
+//				if (Integer.parseInt(min) < 10) {
+//					min = 0 + String.valueOf(min);
+//				}
+//				if (Integer.parseInt(sec) < 10) {
+//					sec = 0 + String.valueOf(sec);
+//				}
+//				txt_time.setText(min + ":" + sec);
+////                            audio_tv.setText(duration);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//
+//			seekBar1.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+//			seekBar1.setProgress(0);
+//			if (mProgressUpdater.mBarToUpdate == seekBar1) {
+//				//this progress would be updated, but this is the wrong position
+//				mProgressUpdater.mBarToUpdate = null;
+//			}
+//		}
+//		}
+//				}
+//
+//			});
+//
+//
+//
+//			save.setOnClickListener(new View.OnClickListener() {
+//				@Override
+//				public void onClick(View v) {
+//					dialog.dismiss();
+//					Intent intentComponent = new Intent(context,
+//							CallHistoryActivity.class);
+//					intentComponent.putExtra("buddyname",
+//							CallDispatcher.sb.getFrom());
+//					intentComponent.putExtra("individual", true);
+//					intentComponent.putExtra("isDelete", false);
+//					intentComponent.putExtra("sessionid",
+//							CallDispatcher.sb.getSessionid());
+//					context.startActivity(intentComponent);
+//					mPlayer.stop();
+//				}
+//			});
+//			delete.setOnClickListener(new View.OnClickListener() {
+//				@Override
+//				public void onClick(View v) {
+//					dialog.dismiss();
+//					Intent intentComponent = new Intent(context,
+//							CallHistoryActivity.class);
+//					intentComponent.putExtra("buddyname",
+//							CallDispatcher.sb.getFrom());
+//					intentComponent.putExtra("isDelete", true);
+//					intentComponent.putExtra("individual", true);
+//					intentComponent.putExtra("sessionid",
+//							CallDispatcher.sb.getSessionid());
+//					context.startActivity(intentComponent);
+//					mPlayer.stop();
+//				}
+//			});
+//		}catch (Exception e){
+//			e.printStackTrace();
+//		}
 
 	}
 	private class PlaybackUpdater implements Runnable {

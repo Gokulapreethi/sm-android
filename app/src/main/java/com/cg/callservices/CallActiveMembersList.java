@@ -230,7 +230,7 @@ public class CallActiveMembersList extends Activity {
                 holder = new ViewHolder();
                 if (convertView == null) {
                     inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.rounding_member_row, null);
+                    convertView = inflater.inflate(R.layout.callmembers, null);
                     holder.selectUser = (CheckBox) convertView.findViewById(R.id.sel_buddy);
                     holder.selectUser.setVisibility(View.GONE);
                     holder.buddyicon = (ImageView) convertView.findViewById(R.id.buddyicon);
@@ -241,11 +241,16 @@ public class CallActiveMembersList extends Activity {
                     holder.position = (TextView) convertView.findViewById(R.id.position);
                     holder.occupation = (TextView) convertView.findViewById(R.id.occupation);
                     holder.header_title = (TextView) convertView.findViewById(R.id.header_title);
+                    holder.overlay_image = (ImageView) convertView.findViewById(R.id.overlay);
                     convertView.setTag(holder);
                 } else
                     holder = (ViewHolder) convertView.getTag();
                 final BuddyInformationBean bib = result.get(i);
-
+                if (calltype.equalsIgnoreCase("VC")) {
+                    holder.overlay_image.setVisibility(View.VISIBLE);
+                } else {
+                    holder.overlay_image.setVisibility(View.GONE);
+                }
                 if (bib != null) {
                     if (bib.getProfile_picpath() != null) {
                         String pic_Path = Environment.getExternalStorageDirectory().getAbsolutePath()
@@ -290,6 +295,7 @@ public class CallActiveMembersList extends Activity {
                     if (bib.getFirstname() != null) {
                         if (bib.getFirstname().equalsIgnoreCase(CallDispatcher.LoginUser)) {
                             holder.buddyName.setText("Me");
+                            holder.overlay_image.setVisibility(View.GONE);
                         } else {
                             holder.buddyName.setText(bib.getFirstname() + " " + bib.getLastname());
                         }
@@ -368,7 +374,7 @@ public class CallActiveMembersList extends Activity {
     public static class ViewHolder {
         CheckBox selectUser;
         ImageView buddyicon, edit;
-        ImageView statusIcon;
+        ImageView statusIcon, overlay_image;
         TextView buddyName, timer, position;
         TextView occupation;
         TextView header_title;

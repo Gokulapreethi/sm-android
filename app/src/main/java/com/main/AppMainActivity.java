@@ -8225,56 +8225,68 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		if (SingleInstance.contextTable.containsKey("groupchat"))
 		{
 			GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
-			groupChatActivity.finish();
+			if(groupChatActivity != null) {
+				groupChatActivity.finish();
+			}
 		}
 
 		if (WebServiceReferences.contextTable.containsKey("ordermenuactivity")) {
 			CallHistoryActivity callHistoryActivity = (CallHistoryActivity) WebServiceReferences.contextTable.get("ordermenuactivity");
-			callHistoryActivity.finish();
+			if(callHistoryActivity != null) {
+				callHistoryActivity.finish();
+			}
 		}
 
 		if (WebServiceReferences.contextTable.containsKey("myaccountactivity")) {
 
 			MyAccountActivity myaccount_activity = (MyAccountActivity) WebServiceReferences.contextTable.get("myaccountactivity");
-			myaccount_activity.finish();
+			if(myaccount_activity != null) {
+				myaccount_activity.finish();
+			}
 		}
 		if (WebServiceReferences.contextTable.containsKey("roundnewpatient")) {
 
 			RoundNewPatientActivity roundnewpatient = (RoundNewPatientActivity) WebServiceReferences.contextTable.get("roundnewpatient");
-			roundnewpatient.finish();
-
+			if(roundnewpatient != null) {
+				roundnewpatient.finish();
+			}
 		}
 		if (WebServiceReferences.contextTable.containsKey("roundingEdit")) {
 
 			RoundingEditActivity roundingEdit = (RoundingEditActivity) WebServiceReferences.contextTable.get("roundingEdit");
-			roundingEdit.finish();
+			if(roundingEdit != null) {
+				roundingEdit.finish();
+			}
 		}
 		if (WebServiceReferences.contextTable.containsKey("roundingGroup")) {
 
 			RoundingGroupActivity roundingGroup = (RoundingGroupActivity) WebServiceReferences.contextTable.get("roundingGroup");
-			roundingGroup.finish();
+			if(roundingGroup != null) {
+				roundingGroup.finish();
+			}
 		}
 
 		if (WebServiceReferences.contextTable.containsKey("taskcreation")) {
 
 			TaskCreationActivity taskcreation = (TaskCreationActivity) WebServiceReferences.contextTable.get("taskcreation");
-			taskcreation.finish();
+			if(taskcreation != null) {
+				taskcreation.finish();
+			}
 		}
 		if (WebServiceReferences.contextTable.containsKey("forwarduser")) {
 
 			ForwardUserSelect forwarduser = (ForwardUserSelect) WebServiceReferences.contextTable.get("forwarduser");
-			forwarduser.finish();
+			if(forwarduser != null) {
+				forwarduser.finish();
+			}
 		}
 		if (WebServiceReferences.contextTable.containsKey("groupactivity")) {
 
 			GroupActivity groupactivity = (GroupActivity) WebServiceReferences.contextTable.get("groupactivity");
-			groupactivity.finish();
+			if(groupactivity != null) {
+				groupactivity.finish();
+			}
 		}
-
-
-
-
-
 
 	}
 }

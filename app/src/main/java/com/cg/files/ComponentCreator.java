@@ -417,7 +417,11 @@ public class ComponentCreator extends Activity implements IMNotifier {
 					audio.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							openAudio();
+							if(CallDispatcher.isCallInitiate) {
+								showToast("Call is in progress, Please try later");
+							} else {
+								openAudio();
+							}
 							dialog.dismiss();
 						}
 					});
@@ -425,44 +429,48 @@ public class ComponentCreator extends Activity implements IMNotifier {
 						@Override
 						public void onClick(View v) {
 							dialog.dismiss();
-							final Dialog dialog = new Dialog(context);
-							dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-							dialog.setContentView(R.layout.dialog_myacc_menu);
-							WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-							lp.copyFrom(dialog.getWindow().getAttributes());
-							lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-							lp.height = WindowManager.LayoutParams.MATCH_PARENT;
-							lp.horizontalMargin = 15;
-							Window window = dialog.getWindow();
-							window.setBackgroundDrawableResource((R.color.lblack));
-							window.setAttributes(lp);
-							window.setGravity(Gravity.BOTTOM);
-							dialog.show();
-							TextView photo = (TextView) dialog.findViewById(R.id.delete_acc);
-							photo.setText("PHOTO");
-							TextView video = (TextView) dialog.findViewById(R.id.log_out);
-							video.setText("VIDEO");
-							TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
-							cancel.setOnClickListener(new View.OnClickListener() {
-								@Override
-								public void onClick(View arg0) {
-									dialog.dismiss();
-								}
-							});
-							photo.setOnClickListener(new OnClickListener() {
-								@Override
-								public void onClick(View v) {
-									openCamera("photo");
-									dialog.dismiss();
-								}
-							});
-							video.setOnClickListener(new OnClickListener() {
-								@Override
-								public void onClick(View v) {
-									openCamera("video");
-									dialog.dismiss();
-								}
-							});
+							if(CallDispatcher.isCallInitiate) {
+								showToast("Call is in progress, Please try later");
+							} else {
+								final Dialog dialog = new Dialog(context);
+								dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+								dialog.setContentView(R.layout.dialog_myacc_menu);
+								WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+								lp.copyFrom(dialog.getWindow().getAttributes());
+								lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+								lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+								lp.horizontalMargin = 15;
+								Window window = dialog.getWindow();
+								window.setBackgroundDrawableResource((R.color.lblack));
+								window.setAttributes(lp);
+								window.setGravity(Gravity.BOTTOM);
+								dialog.show();
+								TextView photo = (TextView) dialog.findViewById(R.id.delete_acc);
+								photo.setText("PHOTO");
+								TextView video = (TextView) dialog.findViewById(R.id.log_out);
+								video.setText("VIDEO");
+								TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
+								cancel.setOnClickListener(new View.OnClickListener() {
+									@Override
+									public void onClick(View arg0) {
+										dialog.dismiss();
+									}
+								});
+								photo.setOnClickListener(new OnClickListener() {
+									@Override
+									public void onClick(View v) {
+										openCamera("photo");
+										dialog.dismiss();
+									}
+								});
+								video.setOnClickListener(new OnClickListener() {
+									@Override
+									public void onClick(View v) {
+										openCamera("video");
+										dialog.dismiss();
+									}
+								});
+							}
 						}
 					});
 				}
