@@ -706,6 +706,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 
         if (isOpen.equalsIgnoreCase("C")) {
             chatprocess();
+        }else if (isOpen.equalsIgnoreCase("p")) {
+            setDefault();
+            file_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_patients_white));
+            tv_file.setTextColor(getResources().getColor(R.color.white));
+            view_snazbox.setVisibility(View.VISIBLE);
+            PatientDetails();
         } else if (isOpen.equalsIgnoreCase("A") || isOpen.equalsIgnoreCase("B")) {
             try {
                 profileProcess();

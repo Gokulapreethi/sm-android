@@ -146,7 +146,7 @@ public class PatientRoundingFragment extends Fragment {
         mainHeader.setVisibility(View.VISIBLE);
         LinearLayout contact_layout = (LinearLayout) getActivity().findViewById(R.id.contact_layout);
         contact_layout.setVisibility(View.GONE);
-        Button imVw = (Button) getActivity().findViewById(R.id.im_view);
+        final Button imVw = (Button) getActivity().findViewById(R.id.im_view);
         imVw.setVisibility(View.GONE);
 
 
@@ -322,6 +322,7 @@ public class PatientRoundingFragment extends Fragment {
                 Intent intent = new Intent(SingleInstance.mainContext, GroupChatActivity.class);
                 intent.putExtra("groupid", pBean.getGroupid());
                 intent.putExtra("isRounding", true);
+                intent.putExtra("isReq", "p");
                 SingleInstance.mainContext.startActivity(intent);
                 RoundingFragment changePassword = RoundingFragment.newInstance(mainContext);
                 FragmentManager fragmentManager = SingleInstance.mainContext

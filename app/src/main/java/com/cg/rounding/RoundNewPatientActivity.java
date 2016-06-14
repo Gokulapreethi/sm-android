@@ -591,15 +591,15 @@ public class RoundNewPatientActivity extends Activity {
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         String due_date =  sdf.format(myCalendar.getTime());
         Date date = new Date();
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
         String inputString2 = dateFormat.format(date);
         String Today = inputString2;
 //        SimpleDateFormat myFormat = new SimpleDateFormat("dd-MM-yyyy");
         Date date1 = null;
         Date date2 = null;
         try {
-            date1 = sdf.parse(ed_dob.getText().toString());
-            date2 = sdf.parse(due_date);
+            date1 = dateFormat.parse(ed_dob.getText().toString());
+            date2 = dateFormat.parse(due_date);
         }catch (Exception e){
             e.printStackTrace();
         }
