@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -200,10 +201,15 @@ public class PinAndTouchId extends Fragment {
                             repeatpin.setVisibility(View.GONE);
                         }
                         setSave();
+                        if(charSequence.length() >= 4){
+                            InputMethodManager imm = (InputMethodManager)SingleInstance.mainContext.getSystemService(SingleInstance.mainContext.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(et_repeatpin.getWindowToken(), 0);
+                        }
                     }
 
                     @Override
                     public void afterTextChanged(Editable editable) {
+
                     }
                 });
 
