@@ -1143,17 +1143,21 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 btn_videocall.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (isGroup || isRounding) {
-                            Log.d("Test", "Inside Group VideoConference onclick");
-                            if(!CallDispatcher.isCallInitiate)
-                            groupCallMenu(2);
-                            else
-                            showToast("Please try...Call is in progress");
+                        if(CallDispatcher.isCallignored) {
+                            showToast("Please try... Ignored Call is in progress");
                         } else {
-                            if(!CallDispatcher.isCallInitiate)
-                            individualCallMenu(1);
-                            else
-                                showToast("Please try...Call is in progress");
+                            if (isGroup || isRounding) {
+                                Log.d("Test", "Inside Group VideoConference onclick");
+                                if (!CallDispatcher.isCallInitiate)
+                                    groupCallMenu(2);
+                                else
+                                    showToast("Please try...Call is in progress");
+                            } else {
+                                if (!CallDispatcher.isCallInitiate)
+                                    individualCallMenu(1);
+                                else
+                                    showToast("Please try...Call is in progress");
+                            }
                         }
                     }
                 });
@@ -4015,24 +4019,28 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         }
                     } else {
 
-                        if (isGroup || isRounding) {
-                            Log.d("Test", "Inside Group audioconference onclick");
-                            gcpBean = SingleInstance.mainContext
-                                    .getGroupChatPermission(groupBean);
-                            if (gcpBean.getAudioConference().equalsIgnoreCase("1")) {
-                                if(!CallDispatcher.isCallInitiate) {
-                                    groupCallMenu(0);
-                                }else
-                                    showToast("Please try..Call is in progress");
-                            } else {
-                                showToast("Sorry you dont have permission");
-                            }
+                        if(CallDispatcher.isCallignored){
+                            showToast("Please try... Ignored Call is in progress");
                         } else {
-                            if(!CallDispatcher.isCallInitiate) {
-                                individualCallMenu(0);
-                            }else
-                                showToast("Please try..Call is in progress");
+                            if (isGroup || isRounding) {
+                                Log.d("Test", "Inside Group audioconference onclick");
+                                gcpBean = SingleInstance.mainContext
+                                        .getGroupChatPermission(groupBean);
+                                if (gcpBean.getAudioConference().equalsIgnoreCase("1")) {
+                                    if (!CallDispatcher.isCallInitiate) {
+                                        groupCallMenu(0);
+                                    } else
+                                        showToast("Please try..Call is in progress");
+                                } else {
+                                    showToast("Sorry you dont have permission");
+                                }
+                            } else {
+                                if (!CallDispatcher.isCallInitiate) {
+                                    individualCallMenu(0);
+                                } else
+                                    showToast("Please try..Call is in progress");
 //                            ContactsFragment.getInstance(context).sipprocessCallRequest(buddy);
+                            }
                         }
                     }
                     break;

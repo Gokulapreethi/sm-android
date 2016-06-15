@@ -187,7 +187,11 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	private boolean selfHangup = false;
 	
 	private boolean isbuddyaudio=false;
+
 	private boolean isBuddyinCall = false;
+
+//	private boolean preview_hided = false;
+
 	private int position=0;
 	private Vector<UserBean> membersList=new Vector<UserBean>();
 
@@ -1207,6 +1211,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			onoff_preview.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View view) {
+//					preview_hided = true;
 					own_video_layout.setVisibility(View.GONE);
 				}
 			});
@@ -1407,12 +1412,16 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 		if(WebServiceReferences.videoSSRC_total_list != null && WebServiceReferences.videoSSRC_total_list.size() > selectedposition){
 			int turn_ssrc =	WebServiceReferences.videoSSRC_total_list.get(selectedposition);
 			final int size = WebServiceReferences.videoSSRC_total_list.size();
+
+			WebServiceReferences.removed_videoSSRC_list.add(turn_ssrc);
+			WebServiceReferences.videoSSRC_total_list.remove(selectedposition);
+
 			final String buddy_name = (WebServiceReferences.videoSSRC_total.get(turn_ssrc)).getMember_name();
 			onOffVideo(buddy_name,onoff);
 			handler.post(new Runnable() {
 				@Override
 				public void run() {
-//					if (onoff) {
+					if (onoff) {
 						if(selectedposition == 0) {
 
 							buddyframelayout01.setVisibility(View.GONE);
@@ -1434,7 +1443,61 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 							buddyframelayout03.setVisibility(View.GONE);
 							buddysurfaceview_03.setVisibility(View.GONE);
 						}
-//					} else {
+					} else {
+
+						int changed_size = WebServiceReferences.videoSSRC_total_list.size();
+						if (changed_size == 0) {
+							bottom_videowindows.setVisibility(View.GONE);
+							buddysurfaceview_01.setVisibility(View.GONE);
+							buddyframelayout01.setVisibility(View.GONE);
+
+							buddysurfaceview_0102.setVisibility(View.GONE);
+							buddysurfaceview_02.setVisibility(View.GONE);
+							buddysurfaceview_03.setVisibility(View.GONE);
+							buddyframelayout0102.setVisibility(View.GONE);
+							buddyframelayout02.setVisibility(View.GONE);
+							buddyframelayout03.setVisibility(View.GONE);
+							//							videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
+							//							own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
+						} else if (changed_size == 1) {
+							buddysurfaceview_01.setVisibility(View.VISIBLE);
+							bottom_videowindows.setVisibility(View.GONE);
+							buddyframelayout01.setVisibility(View.VISIBLE);
+							buddysurfaceview_0102.setVisibility(View.GONE);
+							buddysurfaceview_02.setVisibility(View.GONE);
+							buddysurfaceview_03.setVisibility(View.GONE);
+							buddyframelayout0102.setVisibility(View.GONE);
+							buddyframelayout02.setVisibility(View.GONE);
+							buddyframelayout03.setVisibility(View.GONE);
+							buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+							own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+						} else if (changed_size == 2) {
+							buddysurfaceview_01.setVisibility(View.VISIBLE);
+							bottom_videowindows.setVisibility(View.GONE);
+							buddyframelayout01.setVisibility(View.VISIBLE);
+							buddysurfaceview_0102.setVisibility(View.VISIBLE);
+							buddysurfaceview_02.setVisibility(View.GONE);
+							buddysurfaceview_03.setVisibility(View.GONE);
+							buddyframelayout0102.setVisibility(View.VISIBLE);
+							buddyframelayout02.setVisibility(View.GONE);
+							buddyframelayout03.setVisibility(View.GONE);
+							buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
+							own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
+						} else if (changed_size == 3) {
+							buddysurfaceview_01.setVisibility(View.VISIBLE);
+							buddysurfaceview_02.setVisibility(View.VISIBLE);
+							buddysurfaceview_03.setVisibility(View.VISIBLE);
+							buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+							own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+							buddyframelayout03.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
+							buddysurfaceview_0102.setVisibility(View.GONE);
+							bottom_videowindows.setVisibility(View.VISIBLE);
+							buddyframelayout01.setVisibility(View.VISIBLE);
+							buddyframelayout0102.setVisibility(View.GONE);
+							buddyframelayout03.setVisibility(View.VISIBLE);
+							buddyframelayout02.setVisibility(View.VISIBLE);
+						}
+					}
 //						boolean have_image = false;
 //						for (BuddyInformationBean buddyInformationBean : buddyList) {
 //							if (buddyInformationBean.getName().equalsIgnoreCase(buddy_name)) {
@@ -1503,6 +1566,9 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 										buddysurfaceview_0102.setVisibility(View.GONE);
 										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
 										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+//										if(preview_hided){
+//											own_video_layout.setVisibility(View.GONE);
+//										}
 									} else if (size == 2) {
 										bottom_videowindows.setVisibility(View.GONE);
 										buddyframelayout01.setVisibility(View.VISIBLE);
@@ -1512,6 +1578,9 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 										buddysurfaceview_0102.setVisibility(View.VISIBLE);
 										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
 										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
+//										if(preview_hided){
+//											own_video_layout.setVisibility(View.GONE);
+//										}
 									} else if (size == 3) {
 										bottom_videowindows.setVisibility(View.VISIBLE);
 										buddyframelayout01.setVisibility(View.VISIBLE);
@@ -1521,24 +1590,27 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 										buddysurfaceview_0102.setVisibility(View.GONE);
 										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
 										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+//										if(preview_hided){
+//											own_video_layout.setVisibility(View.GONE);
+//										}
 									}
-									if(on_off1.getTag()==false) {
-										buddyframelayout01.setVisibility(View.GONE);
-										buddysurfaceview_0102.setVisibility(View.GONE);
-										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
-										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
-									}if(on_off2.getTag()==false) {
-										buddyframelayout02.setVisibility(View.GONE);
-										buddysurfaceview_02.setVisibility(View.GONE);
-									}if(on_off3.getTag()==false) {
-										buddyframelayout03.setVisibility(View.GONE);
-										buddysurfaceview_03.setVisibility(View.GONE);
-									}if(on_off12.getTag()==false) {
-										buddyframelayout0102.setVisibility(View.GONE);
-										buddysurfaceview_0102.setVisibility(View.GONE);
-										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
-										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
-									}
+//									if(on_off1.getTag()==false) {
+//										buddyframelayout01.setVisibility(View.GONE);
+//										buddysurfaceview_0102.setVisibility(View.GONE);
+//										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+//										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+//									}if(on_off2.getTag()==false) {
+//										buddyframelayout02.setVisibility(View.GONE);
+//										buddysurfaceview_02.setVisibility(View.GONE);
+//									}if(on_off3.getTag()==false) {
+//										buddyframelayout03.setVisibility(View.GONE);
+//										buddysurfaceview_03.setVisibility(View.GONE);
+//									}if(on_off12.getTag()==false) {
+//										buddyframelayout0102.setVisibility(View.GONE);
+//										buddysurfaceview_0102.setVisibility(View.GONE);
+//										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+//										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+//									}
 									String mem_name = "";
 									if (WebServiceReferences.videoSSRC_total.containsKey((int) (long) ssrc)) {
 //										mem_name = WebServiceReferences.videoSSRC_total.get((int) (long) ssrc);
@@ -2575,6 +2647,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			CallDispatcher.conferenceMembersTime.clear();
 			WebServiceReferences.videoSSRC_total.clear();
 			WebServiceReferences.videoSSRC_total_list.clear();
+			WebServiceReferences.removed_videoSSRC_list.clear();
 			CallDispatcher.conConference.clear();
 			CallDispatcher.issecMadeConference = false;
 			objCallDispatcher.whenCallHangedUp();
