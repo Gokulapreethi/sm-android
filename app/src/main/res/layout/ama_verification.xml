@@ -105,9 +105,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="13sp"
-                android:drawableTop="@drawable/grid_text"
+                android:drawableTop="@drawable/icon_patient"
                 android:textColor="@color/white"
-                android:text="Text\nMessage"/>
+                android:text="Send\nNote"/>
             <Button
                 android:background="#343536"
                 android:layout_weight="1"
@@ -127,7 +127,7 @@
                 android:textSize="13sp"
                 android:drawableTop="@drawable/grid_audio"
                 android:textColor="@color/white"
-                android:text="Text\nMessage"/>
+                android:text="Video\nMessage"/>
             <Button
                 android:background="#343536"
                 android:layout_weight="1"
@@ -161,9 +161,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="13sp"
-                android:drawableTop="@drawable/memory_audio"
+                android:drawableTop="@drawable/dashboard_invite_blue"
                 android:textColor="@color/white"
-                android:text="Photo\nMessage"/>
+                android:text="One Way\nBroadcaast"/>
             <Button
                 android:background="#343536"
                 android:layout_weight="1"
@@ -171,9 +171,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="13sp"
-                android:drawableTop="@drawable/grid_videobroadcast"
+                android:drawableTop="@drawable/broadcast"
                 android:textColor="@color/white"
-                android:text="Text\nMessage"/>
+                android:text="Two Way\nBroadcaast"/>
             <Button
                 android:background="#343536"
                 android:layout_weight="1"
@@ -189,9 +189,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:background="#343536">
+            android:background="@color/black2">
             <Button
-                android:background="#343536"
+                android:id="@+id/chat"
+                android:background="@color/black2"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -201,17 +202,19 @@
                 android:textColor="@color/white"
                 android:text="Chat"/>
             <Button
-                android:background="#343536"
+                android:id="@+id/audiocall"
+                android:background="@color/black2"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="13sp"
-                android:drawableTop="@drawable/recent_calls"
+                android:drawableTop="@drawable/dashboard_call_blue"
                 android:textColor="@color/white"
                 android:text="Audio Call"/>
             <Button
-                android:background="#343536"
+                android:id="@+id/videocall"
+                android:background="@color/black2"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -221,13 +224,14 @@
                 android:textColor="@color/white"
                 android:text="Video Call"/>
             <Button
-                android:background="#343536"
+                android:id="@+id/sendfile"
+                android:background="@color/black2"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="13sp"
-                android:drawableTop="@drawable/recent_files"
+                android:drawableTop="@drawable/memory_other"
                 android:textColor="@color/white"
                 android:text="Send File"/>
         </LinearLayout>
@@ -243,25 +247,26 @@
 
         <Button
             android:id="@+id/btnGrp"
-            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@color/lblack"
-            android:layout_alignParentLeft="true"
             android:layout_margin="5dp"
+            android:layout_marginLeft="20dp"
             android:textColor="@color/white"
             android:textSize="13sp"
+            android:gravity="center"
             android:text="Add to\nGroup"
             android:drawableTop="@drawable/dashboard_group_blue"/>
 
         <Button
+            android:id="@+id/delete"
             android:layout_toRightOf="@+id/btnGrp"
-            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@color/lblack"
             android:gravity="center"
-            android:layout_margin="5dp"
+            android:layout_marginLeft="20dp"
+            android:layout_margin="10dp"
             android:textColor="@color/white"
             android:textSize="13sp"
             android:text="Delete\ncontacts"
@@ -269,7 +274,7 @@
 
         <LinearLayout
             android:id="@+id/groupbtn"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:padding="5dp"

@@ -85,6 +85,7 @@ import com.bean.SpecialMessageBean;
 import com.bean.UserBean;
 import com.cg.DB.DBAccess;
 import com.cg.account.AMAVerification;
+import com.cg.account.PinSecurity;
 import com.cg.commonclass.BuddyListComparator;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.SipNotificationListener;
@@ -2513,8 +2514,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         if(AppReference.mainContext.isPinEnable) {
             if (AppReference.mainContext.openPinActivity) {
                 AppReference.mainContext.openPinActivity=false;
-                Intent i = new Intent(GroupChatActivity.this, MainActivity.class);
-                startActivity(i);
+                if(Build.VERSION.SDK_INT>20) {
+                    Intent i = new Intent(GroupChatActivity.this, MainActivity.class);
+                    startActivity(i);
+                }else {
+                    Intent i = new Intent(GroupChatActivity.this, PinSecurity.class);
+                    startActivity(i);
+                }
             } else {
                 AppReference.mainContext.count=0;
                 AppReference.mainContext.registerBroadcastReceiver();
@@ -3057,6 +3063,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                         View item = sendlistadapter.getView(i, null, null);
                                         list_all.addView(item);
                                     }
+                                    msgoptionview.setVisibility(View.VISIBLE);
                                     audio_call.setBackgroundResource(R.drawable.chat_send);
                                     audio_call.setTag(1);
                                     // scaleImage(strIPath);
@@ -3126,6 +3133,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 View item = sendlistadapter.getView(i, null, null);
                                 list_all.addView(item);
                             }
+                            msgoptionview.setVisibility(View.VISIBLE);
                             audio_call.setBackgroundResource(R.drawable.chat_send);
                             audio_call.setTag(1);
                             // sendMsg("", strIPath, "image", null);
@@ -3209,6 +3217,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 View item = sendlistadapter.getView(i, null, null);
                                 list_all.addView(item);
                             }
+                            msgoptionview.setVisibility(View.VISIBLE);
                             audio_call.setBackgroundResource(R.drawable.chat_send);
                             audio_call.setTag(1);
                             // sendMsg("", strIPath, "video", null);
@@ -3249,6 +3258,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             View item = sendlistadapter.getView(i, null, null);
                             list_all.addView(item);
                         }
+                        msgoptionview.setVisibility(View.VISIBLE);
                         audio_call.setBackgroundResource(R.drawable.chat_send);
                         audio_call.setTag(1);
                         // sendMsg("", strIPath, "image", null);
@@ -3286,6 +3296,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             View item = sendlistadapter.getView(i, null, null);
                             list_all.addView(item);
                         }
+                        msgoptionview.setVisibility(View.VISIBLE);
                         audio_call.setBackgroundResource(R.drawable.chat_send);
                         audio_call.setTag(1);
                         // sendMsg("", strIPath, "image", null);
@@ -3486,6 +3497,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         View item = sendlistadapter.getView(i, null, null);
                         list_all.addView(item);
                     }
+                    msgoptionview.setVisibility(View.VISIBLE);
                     audio_call.setBackgroundResource(R.drawable.chat_send);
                     audio_call.setTag(1);
 //					Intent pMsgIntent = new Intent(context,
@@ -3963,6 +3975,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     View item = sendlistadapter.getView(i, null, null);
                                     list_all.addView(item);
                                 }
+                                msgoptionview.setVisibility(View.VISIBLE);
                                 audio_call.setBackgroundResource(R.drawable.chat_send);
                                 audio_call.setTag(1);
 //                                relative_send_layout.getLayoutParams().height = 90;
@@ -3993,6 +4006,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     View item = sendlistadapter.getView(i, null, null);
                                     list_all.addView(item);
                                 }
+                                msgoptionview.setVisibility(View.VISIBLE);
                                 audio_call.setBackgroundResource(R.drawable.chat_send);
                                 audio_call.setTag(1);
 
@@ -7676,6 +7690,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     View item = sendlistadapter.getView(i, null, null);
                     list_all.addView(item);
                 }
+                msgoptionview.setVisibility(View.VISIBLE);
                 audio_call.setBackgroundResource(R.drawable.chat_send);
                 audio_call.setTag(1);
 //                relative_send_layout.getLayoutParams().height = 90;
@@ -7806,6 +7821,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         View item = sendlistadapter.getView(i, null, null);
                         list_all.addView(item);
                     }
+                    msgoptionview.setVisibility(View.VISIBLE);
                     audio_call.setBackgroundResource(R.drawable.chat_send);
                     audio_call.setTag(1);
 //                    relative_send_layout.getLayoutParams().height = 90;
@@ -7941,6 +7957,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         View item = sendlistadapter.getView(i, null, null);
                         list_all.addView(item);
                     }
+                    msgoptionview.setVisibility(View.VISIBLE);
                     audio_call.setBackgroundResource(R.drawable.chat_send);
                     audio_call.setTag(1);
 //                    relative_send_layout.getLayoutParams().height = 90;
@@ -8047,6 +8064,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     View item = sendlistadapter.getView(i, null, null);
                     list_all.addView(item);
                 }
+                msgoptionview.setVisibility(View.VISIBLE);
                 audio_call.setBackgroundResource(R.drawable.chat_send);
                 audio_call.setTag(1);
 //                relative_send_layout.getLayoutParams().height = 90;
@@ -8077,6 +8095,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     View item = sendlistadapter.getView(i, null, null);
                     list_all.addView(item);
                 }
+                msgoptionview.setVisibility(View.VISIBLE);
                 audio_call.setBackgroundResource(R.drawable.chat_send);
                 audio_call.setTag(1);
 //                relative_send_layout.getLayoutParams().height = 90;
@@ -9343,6 +9362,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             View item = sendlistadapter.getView(i, null, null);
                             list_all.addView(item);
                         }
+                        msgoptionview.setVisibility(View.VISIBLE);
                         audio_call.setBackgroundResource(R.drawable.chat_send);
                         audio_call.setTag(1);
 //                        relative_send_layout.getLayoutParams().height = 400;
@@ -9702,6 +9722,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         }
         if (SendListUI.size() == 0) {
             SendListUI.clear();
+            msgoptionview.setVisibility(View.GONE);
             audio_call.setBackgroundResource(R.drawable.dashboard_call_white);
             audio_call.setTag(0);
             sendlistadapter.notifyDataSetChanged();
@@ -10176,6 +10197,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 
     private void sendSplMsg() {
         memlist_splmsg.setVisibility(View.GONE);
+        msgoptionview.setVisibility(View.GONE);
         String members = null;
 
 

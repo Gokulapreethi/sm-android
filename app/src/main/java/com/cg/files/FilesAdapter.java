@@ -236,7 +236,11 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
 				holder.ttlText.setVisibility(View.GONE);
 			}
 			holder.type.setText(fileBean.getcomponentType());
-			File file = new File(fileBean.getContentpath());
+			File file;
+			if(fileBean.getcomponentType().equalsIgnoreCase("video"))
+				file = new File(fileBean.getContentpath()+".mp4");
+			else
+				file = new File(fileBean.getContentpath());
 			long length = (int) file.length();
 			length = length/1024;
 			holder.size.setText(bytesToSize((int) length));

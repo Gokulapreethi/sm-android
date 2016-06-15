@@ -1,9 +1,13 @@
 package com.cg.account;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -23,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cg.DB.DBAccess;
 import com.cg.commonclass.BuddyListComparator;
@@ -31,13 +36,16 @@ import com.cg.commonclass.WebServiceReferences;
 import com.cg.snazmed.R;
 import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
+import com.main.AppMainActivity;
 import com.main.ContactsFragment;
+import com.util.SingleInstance;
 
 import org.lib.model.BuddyInformationBean;
 import org.lib.model.GroupBean;
 import org.lib.model.SignalingBean;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Vector;
 
@@ -54,6 +62,8 @@ public class AMAVerification extends Activity {
     private RelativeLayout RelativeLayout2, RelativeLayout3;
     Vector<BuddyInformationBean> result;
     private CallDispatcher objCallDispatcher = null;
+    private Handler handler = new Handler();
+    private AppMainActivity appMainActivity;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +75,7 @@ public class AMAVerification extends Activity {
                     .get("calldisp");
         else
             objCallDispatcher = new CallDispatcher(context);
+        appMainActivity=SingleInstance.mainContext;
         RelativeLayout2 = (RelativeLayout) findViewById(R.id.RelativeLayout2);
         selectAll_buddy = (CheckBox) findViewById(R.id.selectAll_buddy);
         selected = (TextView) findViewById(R.id.selected);
@@ -75,6 +86,10 @@ public class AMAVerification extends Activity {
         btn_1 = (EditText) findViewById(R.id.searchet);
         cancel  = (Button)findViewById(R.id.cancel);
         search = (Button) findViewById(R.id.search);
+        final Button deleteContact=(Button)findViewById(R.id.delete);
+        Button chat=(Button)findViewById(R.id.chat);
+        Button audiocall=(Button)findViewById(R.id.audiocall);
+        Button videocall=(Button)findViewById(R.id.videocall);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -116,6 +131,52 @@ public class AMAVerification extends Activity {
                 }
             }
         });
+        deleteContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int count=0;
+                ArrayList<String> names=new ArrayList<String>();
+                for (BuddyInformationBean bib : result) {
+                    if (bib.isSelected()) {
+                        count++;
+                        names.add(bib.getName());
+                    }
+                }
+                if(count>0){
+                    doDeleteContact(names,count);
+                }
+            }
+        });
+        chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int count=0;
+                for (BuddyInformationBean bib : result) {
+                    if (bib.isSelected()) {
+                        count++;
+                    }
+                    }
+                if(count==1) {
+                    for (BuddyInformationBean bib : result) {
+                        if (bib.isSelected()) {
+                            finish();
+                            Intent intent = new Intent(SingleInstance.mainContext, GroupChatActivity.class);
+                            intent.putExtra("groupid", CallDispatcher.LoginUser
+                                    + bib.getName());
+                            intent.putExtra("isGroup", false);
+                            intent.putExtra("isReq", "C");
+                            intent.putExtra("buddy", bib.getName());
+                            intent.putExtra("buddystatus", bib.getStatus());
+                            intent.putExtra("nickname", bib.getFirstname() + " " + bib.getLastname());
+                            SingleInstance.mainContext.startActivity(intent);
+                        }
+                    }
+                }else {
+                    showToast("One Person will be allowed to chat");
+                    finish();
+                }
+            }
+        });
 
         btn_1.addTextChangedListener(new TextWatcher() {
 
@@ -150,11 +211,11 @@ public class AMAVerification extends Activity {
                         count++;
                     }
                 }
-                if(count==0){
+                if (count == 0) {
                     RelativeLayout2.setVisibility(View.GONE);
                     dialogue.setVisibility(View.GONE);
-                }else{
-                        RelativeLayout2.setVisibility(View.VISIBLE);
+                } else {
+                    RelativeLayout2.setVisibility(View.VISIBLE);
                 }
                 selected.setText(count + " selected");
             }
@@ -180,18 +241,18 @@ public class AMAVerification extends Activity {
                         count++;
                     }
                 }
-                if(count==0){
+                if (count == 0) {
                     RelativeLayout2.setVisibility(View.GONE);
                     dialogue.setVisibility(View.GONE);
-                }else{
-                        RelativeLayout2.setVisibility(View.VISIBLE);
+                } else {
+                    RelativeLayout2.setVisibility(View.VISIBLE);
                 }
                 selected.setText(count + " selected");
-                if (count == result.size()) {
-                    selectAll_buddy.setChecked(true);
-                } else {
-                    selectAll_buddy.setChecked(false);
-                }
+//                if (count == result.size()) {
+//                    selectAll_buddy.setChecked(true);
+//                } else {
+//                    selectAll_buddy.setChecked(false);
+//                }
                 final BuddyInformationBean finalBib = bib;
                 selectUser.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -211,11 +272,17 @@ public class AMAVerification extends Activity {
                             }
                         }
                         selected.setText(count + " selected");
-                        if (count == result.size()) {
-                            selectAll_buddy.setChecked(true);
+                        if (count == 0) {
+                            RelativeLayout2.setVisibility(View.GONE);
+                            dialogue.setVisibility(View.GONE);
                         } else {
-                            selectAll_buddy.setChecked(false);
+                            RelativeLayout2.setVisibility(View.VISIBLE);
                         }
+//                        if (count == result.size()) {
+//                            selectAll_buddy.setChecked(true);
+//                        } else {
+//                            selectAll_buddy.setChecked(false);
+//                        }
                     }
                 });
             }
@@ -641,7 +708,52 @@ public class AMAVerification extends Activity {
         TextView header_title;
 
     }
+    private void showToast(final String message) {
+        handler.post(new Runnable() {
+
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
 
 
 
+    public void doDeleteContact(final ArrayList<String> buddynames, final int count) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                try {
+                    if (appMainActivity.isNetworkConnectionAvailable()) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setTitle("Warning !");
+                        builder.setMessage("Are you sure you want to delete "
+                                + count + " members?").setCancelable(false).setPositiveButton(SingleInstance.mainContext.getResources().getString(R.string.yes),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                            finish();
+                                            ContactsFragment.getInstance(SingleInstance.mainContext).deleteContact(buddynames);
+                                    }
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+                        AlertDialog alert1 = builder.create();
+                        alert1.show();
+                    }
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    Log.d("R4J1","ERROR -> "+e.toString());
+                }
+            }
+        });
+
+    }
 }

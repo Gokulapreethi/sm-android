@@ -769,10 +769,11 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        String groupName = ed_groupname.getText().toString();
+//        String groupName = ed_groupname.getText().toString();
         switch (view.getId()) {
 
             case R.id.save_group:
+                String groupName = ed_groupname.getText().toString();
                 if (SingleInstance.mainContext.isNetworkConnectionAvailable()) {
 
                     if (groupName.length() > 0 && groupName.length() <= 15

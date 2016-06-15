@@ -3858,4 +3858,11 @@ public class ContactsFragment extends Fragment{
 			}
 		}
 	}
+	public void deleteContact(ArrayList<String> buddynames){
+		showprogress();
+		for(String name:buddynames) {
+			WebServiceReferences.webServiceClient.deletePeople(
+					CallDispatcher.LoginUser, name, contactsFragment);
+		}
+	}
 }

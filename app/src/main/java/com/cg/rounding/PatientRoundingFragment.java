@@ -1260,8 +1260,8 @@ public class PatientRoundingFragment extends Fragment {
                 String inputString2 = Today;
                 Log.i("sss", "Current Date1 : " + inputString2);
                 try {
-                    Date date1 = myFormat.parse(inputString1);
-                    Date date2 = myFormat.parse(inputString2);
+                    Date date1 = dateFormat.parse(inputString1);
+                    Date date2 = dateFormat.parse(inputString2);
                     long diff = date2.getTime() - date1.getTime();
                     Log.i("sss", "DIFF" + diff);
                     long diffSeconds = diff / 1000 % 60;
@@ -1277,7 +1277,7 @@ public class PatientRoundingFragment extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                los.setText("LOS : " + Result);
+                los.setText("LOS : " + Result+" days");
             }
             if (pBean.getBed() != null)
                 bed.setText("Bed : " + pBean.getBed());
@@ -1866,13 +1866,11 @@ public class PatientRoundingFragment extends Fragment {
             String[] result = (String[]) obj;
             if (result[0].equalsIgnoreCase("Patient removed Successfully")) {
                 DBAccess.getdbHeler().deletePatientRelatedDetails(result[1], result[2]);
-                RoundingFragment roundingFragment = RoundingFragment.newInstance(mainContext);
-                FragmentManager fragmentManager = SingleInstance.mainContext
-                        .getSupportFragmentManager();
-                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                fragmentManager.beginTransaction().replace(
-                        R.id.activity_main_content_fragment, roundingFragment)
-                        .commitAllowingStateLoss();
+                Intent intent = new Intent(SingleInstance.mainContext, GroupChatActivity.class);
+                intent.putExtra("groupid", pBean.getGroupid());
+                intent.putExtra("isRounding", true);
+                intent.putExtra("isReq", "p");
+                SingleInstance.mainContext.startActivity(intent);
             }
         } else if (obj instanceof WebServiceBean)
             showToast(((WebServiceBean) obj).getText());

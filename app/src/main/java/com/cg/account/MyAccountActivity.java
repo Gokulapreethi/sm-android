@@ -664,7 +664,7 @@ public class MyAccountActivity extends Activity {
                 if (charSequence.length() > 0) {
                     tv_hospital.setVisibility(View.VISIBLE);
 
-                }else
+                } else
                     tv_hospital.setVisibility(View.GONE);
             }
 
@@ -675,50 +675,51 @@ public class MyAccountActivity extends Activity {
         btnRegisterOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                if (edNickname.getText().toString().trim().length() > 0
-//                        && fName.getText().toString().trim().length() > 0
-//                        && lName.getText().toString().trim().length() > 0
-//                        && strIPath != null) {
-                ProfileBean pBean = new ProfileBean();
-                pBean.setUsername(CallDispatcher.LoginUser);
-                pBean.setNickname(edNickname.getText().toString().trim());
-                if (strIPath != null) {
-                    File f = new File(strIPath);
-                    if (f.exists())
-                        pBean.setPhoto(f.getName());
-                }
-                pBean.setTitle(title.getText().toString().trim());
-                pBean.setFirstname(edFname.getText().toString().trim());
-                pBean.setLastname(edLname.getText().toString().trim());
-                int selectedId = gender.getCheckedRadioButtonId();
-                if (selectedId > 0) {
-                    genderSelected = (RadioButton) findViewById(selectedId);
-                    pBean.setSex(genderSelected.getText().toString());
-                } else
-                    pBean.setSex("");
-                pBean.setUsertype(usertype.getText().toString().trim());
-                pBean.setState(state.getText().toString().trim());
-                pBean.setProfession(rlay_professional_org.getText().toString().trim());
-                pBean.setSpeciality(Speciality.getText().toString().trim());
-                pBean.setMedicalschool(medical_schools.getText().toString().trim());
-                pBean.setResidencyprogram(residency_pgm.getText().toString().trim());
-                pBean.setFellowshipprogram(fellowship_pgm.getText
-                        ().toString().trim());
-                pBean.setOfficeaddress(tv_addr.getText().toString().trim());
-                pBean.setHospitalaffiliation(hospital.getText().toString().trim());
-                pBean.setCitationpublications(add_citation);
-                pBean.setOrganizationmembership(association_membership.getText().toString());
-                pBean.setTos("1");
-                pBean.setBaa("1");
-                SingleInstance.myAccountBean = pBean;
-                WebServiceReferences.webServiceClient.SetMyAccount(pBean, MyAccountActivity.this);
-                showDialog();
+                if (edFname.getText().toString().trim().length() > 0
+                        && edLname.getText().toString().trim().length() > 0) {
+                    ProfileBean pBean = new ProfileBean();
+                    pBean.setUsername(CallDispatcher.LoginUser);
+                    pBean.setNickname(edNickname.getText().toString().trim());
+                    if (strIPath != null) {
+                        File f = new File(strIPath);
+                        if (f.exists())
+                            pBean.setPhoto(f.getName());
+                    }
+                    pBean.setTitle(title.getText().toString().trim());
+                    pBean.setFirstname(edFname.getText().toString().trim());
+                    pBean.setLastname(edLname.getText().toString().trim());
+                    int selectedId = gender.getCheckedRadioButtonId();
+                    if (selectedId > 0) {
+                        genderSelected = (RadioButton) findViewById(selectedId);
+                        pBean.setSex(genderSelected.getText().toString());
+                    } else
+                        pBean.setSex("");
+                    pBean.setUsertype(usertype.getText().toString().trim());
+                    pBean.setState(state.getText().toString().trim());
+                    pBean.setProfession(rlay_professional_org.getText().toString().trim());
+                    pBean.setSpeciality(Speciality.getText().toString().trim());
+                    pBean.setMedicalschool(medical_schools.getText().toString().trim());
+                    pBean.setResidencyprogram(residency_pgm.getText().toString().trim());
+                    pBean.setFellowshipprogram(fellowship_pgm.getText
+                            ().toString().trim());
+                    pBean.setOfficeaddress(tv_addr.getText().toString().trim());
+                    pBean.setHospitalaffiliation(hospital.getText().toString().trim());
+                    pBean.setCitationpublications(add_citation);
+                    pBean.setOrganizationmembership(association_membership.getText().toString());
+                    pBean.setTos("1");
+                    pBean.setBaa("1");
+                    SingleInstance.myAccountBean = pBean;
+                    WebServiceReferences.webServiceClient.SetMyAccount(pBean, MyAccountActivity.this);
+                    showDialog();
 
-//                } else {
-//                    Toast.makeText(mainContext,
-//                            "Please fill all the fields properly",
-//                            Toast.LENGTH_SHORT).show();
-//                }
+                } else {
+                    if (edFname.getText().toString().length() == 0)
+                        Toast.makeText(context,
+                                "Please enter First name", Toast.LENGTH_SHORT).show();
+                    else if (edLname.getText().toString().length() == 0)
+                        Toast.makeText(context,
+                                "Please enter Last name", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         loadFields();

@@ -22,13 +22,16 @@ import android.widget.Toast;
 
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.commongui.MultimediaUtils;
 import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.group.chat.ForwardUserSelect;
 import com.image.utils.FileImageLoader;
 import com.main.AppMainActivity;
 import com.main.FilesFragment;
+import com.util.FullScreenImage;
 import com.util.SingleInstance;
+import com.util.VideoPlayer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -179,7 +182,11 @@ public class FileInfoFragment extends Fragment {
                             modofieddate.setText(cbean.getDateAndTime());
                         if(cbean.getContentpath()!=null) {
                             size.setText(cbean.getcomponentType());
-                            File file = new File(cbean.getContentpath());
+                            File file;
+                            if(cbean.getcomponentType().equalsIgnoreCase("video"))
+                                file = new File(cbean.getContentpath()+".mp4");
+                            else
+                                file = new File(cbean.getContentpath());
                             long length = (int) file.length();
                             length = length/1024;
                             size.setText(bytesToSize((int) length));
@@ -225,6 +232,30 @@ public class FileInfoFragment extends Fragment {
                                 intent.putExtra("fromfile",true);
                                 SingleInstance.mainContext.startActivityForResult(intent, 112);
 
+                            }
+                        });
+                        fileIcon.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (cbean.getcomponentType().equalsIgnoreCase("video")) {
+                                    Intent intent = new Intent(mainContext, VideoPlayer.class);
+                                    intent.putExtra("video", cbean.getContentpath()+".mp4");
+                                    mainContext.startActivity(intent);
+                                } else if (cbean.getcomponentType().equalsIgnoreCase("photo")) {
+                                    Intent intent = new Intent(mainContext, FullScreenImage.class);
+                                    intent.putExtra("image", cbean.getContentpath());
+                                    mainContext.startActivity(intent);
+                                }else if(cbean.getcomponentType().equalsIgnoreCase("audio")){
+                                    Intent intent = new Intent(mainContext, MultimediaUtils.class);
+                                    intent.putExtra("filePath", cbean.getContentpath());
+                                    intent.putExtra("requestCode", 4);
+                                    intent.putExtra("action", "audio");
+                                    intent.putExtra("createOrOpen", "open");
+                                    startActivity(intent);
+                                } else {
+                                    Log.i("AAAA","openFilesinExternalApp");
+                                    FilesFragment.openFilesinExternalApp(cbean.getContentpath());
+                                }
                             }
                         });
                     }

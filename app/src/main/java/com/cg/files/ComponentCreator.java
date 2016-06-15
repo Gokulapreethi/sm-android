@@ -287,6 +287,30 @@ public class ComponentCreator extends Activity implements IMNotifier {
 //
 //				}
 //			});
+			newFileImg.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if(ComponentPath!=null){
+						Log.i("group123", "icon clicked component "+ComponentPath);
+						if (ComponentPath.endsWith(".jpg")) {
+							Intent intent = new Intent(context, FullScreenImage.class);
+							intent.putExtra("image", ComponentPath);
+							context.startActivity(intent);
+						}else if(ComponentPath.endsWith(".mp4")){
+							Intent intent = new Intent(context, MultimediaUtils.class);
+							intent.putExtra("filePath", ComponentPath);
+							intent.putExtra("requestCode", AUDIO);
+							intent.putExtra("action", "audio");
+							intent.putExtra("createOrOpen", "open");
+							startActivity(intent);
+						} else {
+							Intent intent = new Intent(context, VideoPlayer.class);
+							intent.putExtra("video", ComponentPath+".mp4");
+							context.startActivity(intent);
+						}
+					}
+				}
+			});
 
 			btnBack = (Button) findViewById(R.id.btn_back);
 			filename=(EditText)findViewById(R.id.ed_createfile);
