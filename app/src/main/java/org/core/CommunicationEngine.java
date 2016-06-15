@@ -2948,13 +2948,15 @@ public class CommunicationEngine implements AudioRecorderListener,
 					if (WebServiceReferences.videoSSRC_total_list.contains((int) (long) ssrc)) {
 
 					} else {
-						WebServiceReferences.videoSSRC_total_list.add((int) (long) ssrc);
+						if(!WebServiceReferences.removed_videoSSRC_list.contains((int) (long) ssrc)) {
+							WebServiceReferences.videoSSRC_total_list.add((int) (long) ssrc);
+						}
 //						if(WebServiceReferences.videoSSRC_total.containsKey((int) (long) ssrc)){
 //
 //						}
 					}
 				}
-				if (frame != null) {
+				if (frame != null && WebServiceReferences.videoSSRC_total_list.contains((int) (long) ssrc)) {
 					Log.d("VIDEOP12345", "frame != null");
 					// System.out.println("decodessrc :"+decodessrc+" videocodec :"+videoCodec);
 					if (videoCodec != null && mDecodeFrame) {

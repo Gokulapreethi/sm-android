@@ -1,19 +1,5 @@
 package com.cg.commonclass;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Set;
-
-import org.lib.model.BuddyInformationBean;
-import org.lib.model.ShareReminder;
-import org.lib.model.SignalingBean;
-import org.lib.webservice.WebServiceClient;
-
 import android.R.string;
 import android.content.Context;
 import android.widget.ImageView;
@@ -24,6 +10,20 @@ import com.cg.callservices.VideoThreadBean;
 import com.cg.files.Components;
 import com.cg.hostedconf.AppReference;
 import com.cg.instancemessage.MMBean;
+
+import org.lib.model.BuddyInformationBean;
+import org.lib.model.ShareReminder;
+import org.lib.model.SignalingBean;
+import org.lib.webservice.WebServiceClient;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Set;
 
 /**
  * To maintain the static references which is used for our application call
@@ -172,6 +172,8 @@ public class WebServiceReferences {
 	public static LinkedHashMap<Integer, VideoThreadBean> videoSSRC_total = new LinkedHashMap<Integer, VideoThreadBean>();
 
 	public static ArrayList<Integer> videoSSRC_total_list = new ArrayList<>();
+
+	public static ArrayList<Integer> removed_videoSSRC_list = new ArrayList<>();
 
 	public static String getNoteCreateTimeForFiles() {
 		try {
