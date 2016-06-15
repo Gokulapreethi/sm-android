@@ -1585,7 +1585,7 @@ public class VideoPagingSRWindow extends Activity implements VideoCallback,
 										selfHangup = true;
 										if (selfHangup) {
 											CallDispatcher.sb
-													.setEndTime(getCurrentDateTime());
+													.setEndTime(objCallDispatcher.getCurrentDateTime());
 											CallDispatcher.sb
 													.setCallDuration(SingleInstance.mainContext.getCallDuration(
 															CallDispatcher.sb

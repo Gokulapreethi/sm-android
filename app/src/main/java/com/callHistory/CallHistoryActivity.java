@@ -235,6 +235,7 @@ public class CallHistoryActivity extends Activity {
 					}
 					String totTime=hour+":"+min+":"+sec;
 					duration.setText(totTime);
+					tvTimer.setText(hour+":"+min+":"+sec);
 				}else {
 					duration.setText(recordTransactionBean
 							.getCallDuration());
@@ -243,6 +244,8 @@ public class CallHistoryActivity extends Activity {
 //									.getCallDuration());
 
 
+			}else{
+				duration.setText("00:00:00");
 			}
 
 			if (recordTransactionBean.getSessionid() != null) {
@@ -336,6 +339,7 @@ public class CallHistoryActivity extends Activity {
 
 				}
 			});
+
 		}catch (Exception e){
 			e.printStackTrace();
 		}

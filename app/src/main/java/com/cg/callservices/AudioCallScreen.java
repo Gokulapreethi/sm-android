@@ -352,7 +352,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 									enterCallHistory();
 									// if (CallDispatcher.sb.getBs_parentid() != null) {
 									CallDispatcher.sb
-											.setEndTime(getCurrentDateandTime());
+											.setEndTime(objCallDispatcher.getCurrentDateandTime());
 									CallDispatcher.sb
 											.setCallDuration(SingleInstance.mainContext
 													.getCallDuration(CallDispatcher.sb
@@ -1918,7 +1918,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 										selfHangup = true;
 										if (selfHangup) {
 											CallDispatcher.sb
-													.setEndTime(getCurrentDateandTime());
+													.setEndTime(objCallDispatcher.getCurrentDateandTime());
 											CallDispatcher.sb
 													.setCallDuration(SingleInstance.mainContext
 															.getCallDuration(CallDispatcher.sb
@@ -1969,7 +1969,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			selfHangup = true;
 			if (selfHangup) {
                 CallDispatcher.sb
-						.setEndTime(getCurrentDateandTime());
+						.setEndTime(objCallDispatcher.getCurrentDateandTime());
                 CallDispatcher.sb
                         .setCallDuration(SingleInstance.mainContext
 								.getCallDuration(CallDispatcher.sb

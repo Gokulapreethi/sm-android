@@ -863,7 +863,7 @@ public class AudioPagingSRWindow extends Activity {
 							enterCallHistory();
 							
 							CallDispatcher.sb
-							.setEndTime(getCurrentDateandTime());
+							.setEndTime(objCallDispatcher.getCurrentDateandTime());
 					CallDispatcher.sb
 							.setCallDuration(SingleInstance.mainContext
 									.getCallDuration(CallDispatcher.sb
@@ -1038,7 +1038,7 @@ public class AudioPagingSRWindow extends Activity {
 														objCallDispatcher
 																.getCurrentDateTime());
 										CallDispatcher.sb
-										.setEndTime(getCurrentDateandTime());
+										.setEndTime(objCallDispatcher.getCurrentDateandTime());
 								CallDispatcher.sb
 										.setCallDuration(SingleInstance.mainContext
 												.getCallDuration(CallDispatcher.sb
@@ -1170,7 +1170,7 @@ public class AudioPagingSRWindow extends Activity {
 								try {
 									selfHangup = true;
 									CallDispatcher.sb
-											.setEndTime(getCurrentDateandTime());
+											.setEndTime(objCallDispatcher.getCurrentDateandTime());
 									CallDispatcher.sb
 											.setCallDuration(SingleInstance.mainContext.getCallDuration(
 													CallDispatcher.sb

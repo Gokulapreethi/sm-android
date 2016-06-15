@@ -223,7 +223,11 @@ public class CallConnectingScreen extends Fragment {
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					Log.d("lddd", "Button Clicked.....######################");
-
+					if (SingleInstance.instanceTable.containsKey("connection")) {
+						Log.i("audiocall","context table remove connection");
+						SingleInstance.instanceTable.remove("connection");
+					}
+					Log.i("audiocall","btn_hangup--->"+SingleInstance.instanceTable.containsKey("connection"));
 					if (isBConf)
 						disconnectConfMembers();
 

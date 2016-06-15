@@ -336,7 +336,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							AppMainActivity.cvtimer.stop();
 							video_minimize.setVisibility(View.GONE);
 							CallDispatcher.sb
-									.setEndTime(getCurrentDateandTime());
+									.setEndTime(objCallDispatcher.getCurrentDateandTime());
 							CallDispatcher.sb
 									.setCallDuration(SingleInstance.mainContext
 											.getCallDuration(CallDispatcher.sb
@@ -537,7 +537,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							isHangedUp = true;
 							if (selfHangup) {
 								CallDispatcher.sb
-								.setEndTime(getCurrentDateandTime());
+								.setEndTime(objCallDispatcher.getCurrentDateandTime());
 						CallDispatcher.sb
 								.setCallDuration(SingleInstance.mainContext
 										.getCallDuration(CallDispatcher.sb
@@ -2083,7 +2083,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 					try {
 						// tvTitle.setText(buddyName);
-                        CallDispatcher.sb.setStartTime(getCurrentDateandTime());
+                        CallDispatcher.sb.setStartTime(objCallDispatcher.getCurrentDateandTime());
 						tvTitlename = buddyName;
 					} catch (Exception e) {
 						// TODO: handle exception
