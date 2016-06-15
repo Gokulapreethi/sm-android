@@ -324,13 +324,7 @@ public class PatientRoundingFragment extends Fragment {
                 intent.putExtra("isRounding", true);
                 intent.putExtra("isReq", "p");
                 SingleInstance.mainContext.startActivity(intent);
-                RoundingFragment changePassword = RoundingFragment.newInstance(mainContext);
-                FragmentManager fragmentManager = SingleInstance.mainContext
-                        .getSupportFragmentManager();
-                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                fragmentManager.beginTransaction().replace(
-                        R.id.activity_main_content_fragment, changePassword)
-                        .commitAllowingStateLoss();
+
             }
         });
         _rootView = null;
@@ -664,7 +658,7 @@ public class PatientRoundingFragment extends Fragment {
         view_task.setVisibility(View.GONE);
     }
 
-    private void showDiagnosisHistory(String edit_content) {
+    private void showDiagnosisHistory(String edit_content, String title) {
         final Dialog dialog1 = new Dialog(mainContext);
         dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog1.setContentView(R.layout.diagnosis_history);
@@ -672,7 +666,8 @@ public class PatientRoundingFragment extends Fragment {
         dialog1.getWindow().setBackgroundDrawableResource(R.color.trans_black2);
         dialog1.show();
         Button cancel = (Button) dialog1.findViewById(R.id.cancel);
-
+        TextView header_name = (TextView)dialog1.findViewById(R.id.header_title);
+        header_name.setText(title);
         TextView text_message = (TextView)dialog1.findViewById(R.id.text_message);
         text_message.setText(edit_content);
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -1121,14 +1116,14 @@ public class PatientRoundingFragment extends Fragment {
         seeAll_diagnosis.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDiagnosisHistory(diagnosis.getText().toString());
+                showDiagnosisHistory(diagnosis.getText().toString(),"DIAGNOSIS HISTORY" );
 
             }
         });
         seeAll_medications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDiagnosisHistory(medications.getText().toString());
+                showDiagnosisHistory(medications.getText().toString(), "MEDICATIONS HISTORY");
 
             }
         });
@@ -1136,21 +1131,21 @@ public class PatientRoundingFragment extends Fragment {
         seeAll_test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDiagnosisHistory(testandvitals.getText().toString());
+                showDiagnosisHistory(testandvitals.getText().toString(),"TEST AND VITALS HISTORY");
 
             }
         });
         seeAll_hospital.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDiagnosisHistory(hospital.getText().toString());
+                showDiagnosisHistory(hospital.getText().toString(), "HOSPITAL COURSE HISTORY");
 
             }
         });
         seeAll_consult.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDiagnosisHistory(consults.getText().toString());
+                showDiagnosisHistory(consults.getText().toString(), "CONSULTS HISTORY");
 
             }
         });

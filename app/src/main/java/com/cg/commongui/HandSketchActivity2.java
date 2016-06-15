@@ -501,9 +501,9 @@ getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.Layou
 							dir.mkdir();
 						}
 
-						File fle = new File(folderPath, "Instruction_image"
+						File fle = new File(folderPath, "Sketch_file"
 								+ getFileName() + ".jpg");
-						String filename = folderPath + "Instruction_image"
+						String filename = folderPath + "Sketch_file"
 								+ getFileName() + ".jpg";
 						// String imgSaved =
 						// MediaStore.Images.Media.insertImage(

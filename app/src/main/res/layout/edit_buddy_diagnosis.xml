@@ -89,6 +89,7 @@
         android:text="12 Feb 2016"
         android:id="@+id/see_all"
         android:layout_gravity="right"
+        android:visibility="gone"
         android:layout_below="@+id/active_descrip"
         android:layout_alignRight="@+id/active_descrip"
         android:layout_alignEnd="@+id/active_descrip"

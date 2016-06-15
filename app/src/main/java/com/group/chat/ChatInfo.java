@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -12,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bean.GroupChatBean;
+import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
 import com.cg.snazmed.R;
 import com.main.ContactsFragment;
@@ -69,10 +71,15 @@ public class ChatInfo extends Activity {
 
                 Vector<ChatInfoBean> chat = new Vector<ChatInfoBean>();
                 Vector<ChatInfoBean> deliveredchat = new Vector<ChatInfoBean>();
+
                 for(ChatInfoBean b:ChatInfoMap)
                 {
+                    ProfileBean profileBean = DBAccess.getdbHeler().getProfileDetails(b.getName());
+                    b.setName(profileBean.getFirstname()+" "+profileBean.getLastname());
+                    Log.d("username","string"+b.getName());
                     if(b.getStatus().equalsIgnoreCase("3"))
                     {
+
                         chat.add(b);
                     }
                     deliveredchat.add(b);
@@ -102,6 +109,9 @@ public class ChatInfo extends Activity {
                 Vector<ChatInfoBean> deliveredchat = new Vector<ChatInfoBean>();
                 for(ChatInfoBean b:ChatInfoMap)
                 {
+                    ProfileBean profileBean = DBAccess.getdbHeler().getProfileDetails(b.getName());
+                    b.setName(profileBean.getFirstname()+" "+profileBean.getLastname());
+                    Log.d("username","stringe"+b.getName());
                     if(b.getStatus().equalsIgnoreCase("3"))
                     {
                         chat.add(b);

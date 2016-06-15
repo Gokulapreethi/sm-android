@@ -45,13 +45,14 @@ public class PinAndTouchId extends Fragment {
     private TextView oldpin;
     private TextView newpin;
     private TextView repeatpin;
-    private ImageView touch;
+    private ImageView toggle_off;
     private Button savepswd;
     private ProgressDialog progressDialog = null;
     private static PinAndTouchId pinAndTouchId;
     private static CallDispatcher calldisp = null;
     public View _rootView;
     AppMainActivity appMainActivity;
+    Boolean istoggleOff=false;
     public static PinAndTouchId newInstance(Context context) {
         try {
             if (pinAndTouchId == null) {
@@ -122,9 +123,49 @@ public class PinAndTouchId extends Fragment {
                 oldpin = (TextView)_rootView. findViewById(R.id.oldpin);
                 newpin = (TextView)_rootView. findViewById(R.id.newpin);
                 repeatpin = (TextView)_rootView. findViewById(R.id.repeatpin);
-                touch=(ImageView)_rootView.findViewById(R.id.btn_touch);
                 savepswd = (Button) _rootView.findViewById(R.id.savepswd);
+                toggle_off = (ImageView)_rootView.findViewById(R.id.toggle_off);
                 setSave();
+
+                toggle_off.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!istoggleOff) {
+                            toggle_off.setBackgroundDrawable(getResources().getDrawable(R.drawable.toggle_dummy));
+                            istoggleOff = true;
+                            final Dialog dialog = new Dialog(context);
+                dialog.setContentView(R.layout.error_dialogue);
+                dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+                dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
+                ImageView error_img = (ImageView) dialog.findViewById(R.id.error_img);
+                TextView tv_title = (TextView) dialog.findViewById(R.id.tv_title);
+                TextView tv_firstLine = (TextView) dialog.findViewById(R.id.tv_firstLine);
+                TextView tv_secondLine = (TextView) dialog.findViewById(R.id.tv_secondLine);
+                TextView tv_note = (TextView) dialog.findViewById(R.id.tv_note);
+                Button btn_ok = (Button) dialog.findViewById(R.id.btn_ok);
+                error_img.setVisibility(View.VISIBLE);
+                tv_title.setVisibility(View.VISIBLE);
+                tv_firstLine.setVisibility(View.VISIBLE);
+                tv_firstLine.setText("You need to activate\nthe option in your\nphone settings");
+                tv_secondLine.setVisibility(View.GONE);
+                tv_note.setVisibility(View.GONE);
+                btn_ok.setText("OK");
+                btn_ok.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
+//
+                        } else {
+                            toggle_off.setBackgroundDrawable(getResources().getDrawable(R.drawable.touch_toogle));
+                            Log.d("toggle1", "button");
+                            istoggleOff = false;
+                        }
+
+                    }
+                });
 
                 et_newpin.addTextChangedListener(new TextWatcher() {
                     @Override
@@ -203,9 +244,9 @@ public class PinAndTouchId extends Fragment {
                     }
                 });
 
-                touch.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+//                toggle_off.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
 //                final Dialog dialog = new Dialog(context);
 //                dialog.setContentView(R.layout.error_dialogue);
 //                dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
@@ -230,8 +271,8 @@ public class PinAndTouchId extends Fragment {
 //                    }
 //                });
 //                dialog.show();
-                    }
-                });
+//                    }
+//                });
             } catch (Exception e) {
                 e.printStackTrace();
             }

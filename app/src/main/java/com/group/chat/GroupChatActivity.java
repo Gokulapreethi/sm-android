@@ -119,6 +119,7 @@ import com.cg.rounding.PatientStatusComparator;
 import com.cg.rounding.RolesManagementFragment;
 import com.cg.rounding.RoundNewPatientActivity;
 import com.cg.rounding.RoundingAdapter;
+import com.cg.rounding.RoundingFragment;
 import com.cg.rounding.RoundingGroupActivity;
 import com.cg.rounding.RoundingPatientAdapter;
 import com.cg.rounding.RoundingTaskAdapter;
@@ -373,6 +374,15 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             this.calldisp = new CallDispatcher(context);
         groupBean = DBAccess.getdbHeler().getGroup(
                 "select * from grouplist where groupid='" + groupId + "'");
+        if(isRounding){
+            RoundingFragment changePassword = RoundingFragment.newInstance(context);
+            FragmentManager fragmentManager = SingleInstance.mainContext
+                    .getSupportFragmentManager();
+            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fragmentManager.beginTransaction().replace(
+                    R.id.activity_main_content_fragment, changePassword)
+                    .commitAllowingStateLoss();
+        }
 
         dot.setOnClickListener(new OnClickListener() {
             @Override
@@ -895,8 +905,21 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 lastName.setText(pb.getLastname());
             if (pb.getNickname() != null && pb.getNickname().length() > 0)
                 nickName.setText(pb.getNickname());
-            if (pb.getSex() != null && pb.getSex().length() > 0)
-                mf.setText(pb.getSex());
+
+                if(pb.getDob()!=null&& pb.getDob().length()>0) {
+                    String birthdate=pb.getDob();
+                    Log.i("sss1", "Current birthdate" + birthdate);
+                    String[] str = birthdate.split("/");
+                    int Currentyear = Calendar.getInstance().get(Calendar.YEAR);
+                    Log.i("sss1","Current year"+Currentyear);
+
+                    String BirthYear=str[2];
+                    int age=Currentyear-(Integer.parseInt(BirthYear));
+                    Log.i("sss1","Current age"+age);
+
+                    mf.setText(String.valueOf(age));
+                }
+//                mf.setText(pb.getDob());
             if (pb.getUsertype() != null && pb.getUsertype().length() > 0)
                 atten_phys.setText(pb.getUsertype());
             if (pb.getState() != null && pb.getState().length() > 0)
