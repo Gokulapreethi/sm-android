@@ -334,6 +334,27 @@ public class inCommingCallAlert extends Fragment {
 											CallDispatcher.sb.getEndTime()));
 				Log.d("Test","TimeDuration inside callDispatcher"+CallDispatcher.sb.getStartTime()+""+CallDispatcher.sb.getEndTime());
 
+				//For Callhistory host and participant name entry
+				//Start
+				CallDispatcher.sb.setHost_name(CallDispatcher.sb.getHost());
+				String participant=null;
+				if(CallDispatcher.conferenceMembers!=null && CallDispatcher.conferenceMembers.size()>0){
+					for(String name:CallDispatcher.conferenceMembers){
+						if(!name.equalsIgnoreCase(CallDispatcher.sb.getHost())){
+							if(participant==null){
+								participant=name;
+							}else{
+								participant=participant+","+name;
+							}
+
+						}
+					}
+				}
+				if(participant!=null){
+					CallDispatcher.sb.setParticipant_name(participant);
+				}
+				//end
+
 				DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 				DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
 						CallDispatcher.sb);

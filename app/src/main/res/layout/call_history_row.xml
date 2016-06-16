@@ -201,6 +201,8 @@
             android:layout_marginRight="5dp"
             android:textColor="@color/snazlgray"
             android:textSize="17dp"
+            android:ellipsize="end"
+            android:singleLine="true"
             android:textStyle="bold" />
     </LinearLayout>
     <LinearLayout
@@ -437,8 +439,8 @@
 
                 <ImageView
                     android:id="@+id/delete_icon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:layout_marginTop="4dp"
                     android:background="@drawable/icon_delete"/>
             </RelativeLayout>

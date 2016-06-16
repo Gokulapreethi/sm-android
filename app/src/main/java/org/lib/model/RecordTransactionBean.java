@@ -28,6 +28,13 @@ public class RecordTransactionBean {
 	private String callstatus;
 	private String chatid;
 
+
+	private String host_emailid;
+
+	private String tot_participant;
+
+	private String call_state;
+
 	public String getFromName() {
 		return fromName;
 	}
@@ -202,4 +209,29 @@ public class RecordTransactionBean {
 	public void setCallstatus(String callstatus) {
 		this.callstatus = callstatus;
 	}
+
+	public String getTot_participant() {
+		return tot_participant;
+	}
+
+	public void setTot_participant(String tot_participant) {
+		this.tot_participant = tot_participant;
+	}
+
+	public String getCall_state() {
+		return call_state;
+	}
+
+	public void setCall_state(String call_state) {
+		this.call_state = call_state;
+	}
+
+	public String getHost_emailid() {
+		return host_emailid;
+	}
+
+	public void setHost_emailid(String host_emailid) {
+		this.host_emailid = host_emailid;
+	}
+
 }

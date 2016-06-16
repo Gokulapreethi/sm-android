@@ -184,7 +184,7 @@ public class ContactsFragment extends Fragment{
 
 	private Button plus = null; // this button plus hide in this page,this
 	// button create fragment xml
-	private static Vector<BuddyInformationBean> buddyList = new Vector<BuddyInformationBean>();
+	public static Vector<BuddyInformationBean> buddyList = new Vector<BuddyInformationBean>();
 
 	private static ContactAdapter contactAdapter;
 	public NotifyListAdapter notifyAdapter;

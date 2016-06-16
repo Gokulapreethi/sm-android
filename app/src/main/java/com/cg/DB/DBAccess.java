@@ -138,7 +138,7 @@ public class DBAccess extends SQLiteOpenHelper {
 	String autoacceptcalls = "create table if not exists autoacceptcalls(owner nvarchar(255), username nvarchar(255),flag nvarchar(25))";
 	String scheduleevent = "create table if not exists scheduleevent(owner nvarchar(255), title nvarchar(255), starttime nvarchar(225), endtime nvarchar(255), eventdate nvarchar(255))";
 	String securityquestions = "create table if not exists securityquestions(id tinyint(4), questions nvarchar(225), createddate nvarchar(255))";
-    String recordtransactiondetails = "create table if not exists recordtransactiondetails(id INTEGER PRIMARY KEY AUTOINCREMENT, fromname nvarchar(100), toname nvarchar(100),parentid nvarchar(250), sessionid nvarchar(250), type nvarchar(100), starttime nvarchar(100), endtime nvarchar(100), calltime nvarchar(100), userid nvarchar(100), network nvarchar(50), deviceos nvarchar(50),recordedfile nvarchar(100), calltype nvarchar(100),bs_calltype tinyint(4),bs_callstatus tinyint(4),bs_callcategory tinyint(4),sortdate nvarchar(100),status tinyint(4),activecallstatus nvarchar(100),chatid nvarchar(100),host varchar(100), participants varchar(256))";
+    String recordtransactiondetails = "create table if not exists recordtransactiondetails(id INTEGER PRIMARY KEY AUTOINCREMENT, fromname nvarchar(100), toname nvarchar(100),parentid nvarchar(250), sessionid nvarchar(250), type nvarchar(100), starttime nvarchar(100), endtime nvarchar(100), calltime nvarchar(100), userid nvarchar(100), network nvarchar(50), deviceos nvarchar(50),recordedfile nvarchar(100), calltype nvarchar(100),bs_calltype tinyint(4),bs_callstatus tinyint(4),bs_callcategory tinyint(4),sortdate nvarchar(100),status tinyint(4),activecallstatus nvarchar(100),chatid nvarchar(100),host varchar(100), participants varchar(256),hostname varchar(50),participantname varchar(250))";
 	String chattemplate = "create table if not exists chattemplate(id varchar(10), message nvarchar(225))";
 	String serverhelp = "create table if not exists serverhelp(method varchar(100), lastmodified nvarchar(225))";
 	String roundingmemberdetails = "create table if not exists roundingmemberdetails(groupid nvarchar(25),membername nvarchar(25),role nvarchar(25),admin nvarchar(25))";
@@ -8631,6 +8631,14 @@ public class DBAccess extends SQLiteOpenHelper {
 				cv.put("participants",sb.getParticipants());
 			}
 
+			if(sb.getHost_name()!=null){
+				cv.put("hostname",sb.getHost_name());
+			}
+
+			if(sb.getParticipant_name()!=null){
+				cv.put("participantname",sb.getParticipant_name());
+			}
+
 			if (isRecordExists("select * from recordtransactiondetails where parentid = '"
 					+ sb.getBs_parentid()
 					+ "' and starttime = '"
@@ -8881,6 +8889,15 @@ public class DBAccess extends SQLiteOpenHelper {
 				}
 				if(cur.getString(22) != null) {
 					hDetails.setParticipants(cur.getString(22));
+				}
+				if(cur.getString(23)!=null){
+					hDetails.setHost_emailid(cur.getString(23));
+				}
+				if(cur.getString(24)!=null){
+					hDetails.setTot_participant(cur.getString(24));
+				}
+				if(cur.getString(19)!=null){
+                   hDetails.setCall_state(cur.getString(19));
 				}
 
 				list.add(hDetails);

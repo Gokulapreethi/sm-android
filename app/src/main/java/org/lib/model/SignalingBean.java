@@ -43,6 +43,12 @@ public class SignalingBean implements Serializable, Cloneable {
 	private String runningcallstate;
 	private String callstatus;
 	private String chatid;
+
+
+
+	private String host_name;
+	private String participant_name;
+
 	public String getNetWork() {
 		return netWork;
 	}
@@ -608,6 +614,22 @@ public class SignalingBean implements Serializable, Cloneable {
 			// TODO: handle exception
 			return null;
 		}
+	}
+
+	public String getHost_name() {
+		return host_name;
+	}
+
+	public void setHost_name(String host_name) {
+		this.host_name = host_name;
+	}
+
+	public String getParticipant_name() {
+		return participant_name;
+	}
+
+	public void setParticipant_name(String participant_name) {
+		this.participant_name = participant_name;
 	}
 
 }

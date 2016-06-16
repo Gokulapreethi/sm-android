@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import org.lib.model.BuddyInformationBean;
 import org.lib.model.RecordTransactionBean;
 
 import android.app.Activity;
@@ -38,6 +39,7 @@ import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.commongui.MultimediaUtils;
 import com.main.AppMainActivity;
+import com.main.ContactsFragment;
 import com.util.SingleInstance;
 
 public class CallHistoryActivity extends Activity {
@@ -148,6 +150,7 @@ public class CallHistoryActivity extends Activity {
 						public void onClick(View v) {
 							text_recording.setVisibility(View.GONE);
 							recoding_layout.setVisibility(View.GONE);
+							delete_icon.setVisibility(View.GONE);
 							dialog.dismiss();
 							mPlayer.pause();
 						}
@@ -210,12 +213,180 @@ public class CallHistoryActivity extends Activity {
 			if (recordTransactionBean.getCalltype() != null) {
 				callcontent.setText(recordTransactionBean.getCalltype());
 			}
+
+			//For this set From and To name
+			//start
+
 			if (recordTransactionBean.getFromName() != null) {
-				from.setText(recordTransactionBean.getFromName());
+				Log.i("callhistory","fromname-->"+recordTransactionBean.getFromName());
+				Log.i("callhistory","LoginUser-->"+CallDispatcher.LoginUser);
+				if(ContactsFragment.buddyList!=null && ContactsFragment.buddyList.size()>0){
+					for(BuddyInformationBean bean:ContactsFragment.buddyList){
+						if(bean.getEmailid()!=null) {
+							if (bean.getEmailid().equalsIgnoreCase(recordTransactionBean.getFromName())) {
+								if (bean.getFirstname() != null && bean.getLastname() != null) {
+									from.setText(bean.getFirstname() + " " + bean.getLastname());
+									break;
+								} else if (bean.getFirstname() != null) {
+									from.setText(bean.getFirstname());
+									break;
+								}
+							}
+						}
+
+					}
+
+					if(recordTransactionBean.getFromName().trim().equalsIgnoreCase(CallDispatcher.LoginUser.trim())){
+						from.setText("Me");
+					}
+				}else {
+					from.setText(recordTransactionBean.getFromName());
+				}
 			}
+
+			if(recordTransactionBean.getHost_emailid()!=null){
+				Log.i("callhistory","fromname-->"+recordTransactionBean.getHost_emailid());
+				Log.i("callhistory","LoginUser-->"+CallDispatcher.LoginUser);
+				if(ContactsFragment.buddyList!=null && ContactsFragment.buddyList.size()>0){
+					for(BuddyInformationBean bean:ContactsFragment.buddyList){
+						if(bean.getEmailid()!=null) {
+							if (bean.getEmailid().equalsIgnoreCase(recordTransactionBean.getHost_emailid())) {
+								if (bean.getFirstname() != null && bean.getLastname() != null) {
+									from.setText(bean.getFirstname() + " " + bean.getLastname());
+									break;
+								} else if (bean.getFirstname() != null) {
+									from.setText(bean.getFirstname());
+									break;
+								}
+							}
+						}
+
+					}
+
+					if(recordTransactionBean.getHost_emailid().trim().equalsIgnoreCase(CallDispatcher.LoginUser.trim())){
+						from.setText("Me");
+					}
+				}else {
+					from.setText(recordTransactionBean.getHost_emailid());
+				}
+			}
+
 			if (recordTransactionBean.getToName() != null) {
-				to.setText(recordTransactionBean.getToName());
+				if(ContactsFragment.buddyList!=null && ContactsFragment.buddyList.size()>0){
+					for(BuddyInformationBean bean:ContactsFragment.buddyList){
+						if(bean.getEmailid()!=null) {
+							if (bean.getEmailid().equalsIgnoreCase(recordTransactionBean.getToName())) {
+								if (bean.getFirstname() != null && bean.getLastname() != null) {
+									to.setText(bean.getFirstname() + " " + bean.getLastname());
+									break;
+								} else if (bean.getFirstname() != null) {
+									to.setText(bean.getFirstname());
+									break;
+								}
+							}
+						}
+
+					}
+					if(recordTransactionBean.getHost_emailid()!=null) {
+						if (recordTransactionBean.getToName().equalsIgnoreCase(recordTransactionBean.getHost_emailid())) {
+							to.setText("Me");
+						}
+					}
+				}else {
+					to.setText(recordTransactionBean.getToName());
+				}
 			}
+
+			if (recordTransactionBean.getTot_participant() != null) {
+				if(ContactsFragment.buddyList!=null && ContactsFragment.buddyList.size()>0){
+					String buddies=null;
+					if(recordTransactionBean.getToName().equalsIgnoreCase(CallDispatcher.LoginUser)){
+						to.setText("Me");
+					}
+
+					if(recordTransactionBean.getTot_participant().contains(",")) {
+						String s[] = recordTransactionBean.getTot_participant().split(",");
+						for (int i=0;i<s.length;i++) {
+							for (BuddyInformationBean bean : ContactsFragment.buddyList) {
+								if (bean.getEmailid() != null) {
+									if (bean.getEmailid().equalsIgnoreCase(s[i])) {
+										if (bean.getFirstname() != null && bean.getLastname() != null) {
+											if (buddies == null) {
+												buddies = bean.getFirstname() + " " + bean.getLastname();
+											} else {
+												buddies = buddies + "," + bean.getFirstname() + " " + bean.getLastname();
+											}
+
+										} else if (bean.getFirstname() != null) {
+											if (buddies == null) {
+												buddies = bean.getFirstname();
+											} else {
+												buddies = buddies + "," + bean.getFirstname();
+											}
+										}
+									}
+								}
+
+							}
+						}
+					}else{
+						for (BuddyInformationBean bean : ContactsFragment.buddyList) {
+							if (bean.getEmailid() != null) {
+								if (bean.getEmailid().equalsIgnoreCase(recordTransactionBean.getTot_participant())) {
+									if (bean.getFirstname() != null && bean.getLastname() != null) {
+										if (buddies == null) {
+											buddies = bean.getFirstname() + " " + bean.getLastname();
+										} else {
+											buddies = buddies + "," + bean.getFirstname() + " " + bean.getLastname();
+										}
+
+
+									} else if (bean.getFirstname() != null) {
+										if (buddies == null) {
+											buddies = bean.getFirstname();
+										} else {
+											buddies = buddies + "," + bean.getFirstname();
+										}
+									}
+								}
+							}
+
+						}
+					}
+					if(buddies!=null){
+						to.setText(buddies);
+					}
+
+				}else {
+					to.setText(recordTransactionBean.getToName());
+				}
+			}
+
+			if(recordTransactionBean.getCall_state()!=null){
+				if(recordTransactionBean.getCall_state().equalsIgnoreCase("missedcall")){
+					if(recordTransactionBean.getHost()!=null){
+						if(ContactsFragment.buddyList!=null && ContactsFragment.buddyList.size()>0){
+							for(BuddyInformationBean bean:ContactsFragment.buddyList){
+								if(bean.getEmailid()!=null) {
+									if (bean.getEmailid().equalsIgnoreCase(recordTransactionBean.getHost())) {
+										if (bean.getFirstname() != null && bean.getLastname() != null) {
+											from.setText(bean.getFirstname() + " " + bean.getLastname());
+											break;
+										} else if (bean.getFirstname() != null) {
+											from.setText(bean.getFirstname());
+											break;
+										}
+									}
+								}
+
+							}
+							to.setText("Me");
+						}
+
+					}
+				}
+			}
+			//End
 			if (recordTransactionBean.getStartTime() != null) {
 				date.setText(recordTransactionBean.getStartTime());
 			}

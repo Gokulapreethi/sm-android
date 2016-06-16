@@ -360,6 +360,28 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 															CallDispatcher.sb
 																	.getEndTime()));
 									CallDispatcher.sb.setCallstatus("callattended");
+
+									//For Callhistory host and participant name entry
+									//Start
+									CallDispatcher.sb.setHost_name(host);
+									String participant=null;
+									if(CallDispatcher.conferenceMembers!=null && CallDispatcher.conferenceMembers.size()>0){
+										for(String name:CallDispatcher.conferenceMembers){
+											if(!name.equalsIgnoreCase(host)){
+												if(participant==null){
+													participant=name;
+												}else{
+													participant=participant+","+name;
+												}
+
+											}
+										}
+									}
+									if(participant!=null){
+										CallDispatcher.sb.setParticipant_name(participant);
+									}
+									//end
+
 									if (selfHangup) {
 										DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 										DBAccess.getdbHeler()
@@ -1926,6 +1948,28 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 																	CallDispatcher.sb
 																			.getEndTime()));
 											CallDispatcher.sb.setCallstatus("callattended");
+
+											//For Callhistory host and participant name entry
+											//Start
+											CallDispatcher.sb.setHost_name(host);
+											String participant=null;
+											if(CallDispatcher.conferenceMembers!=null && CallDispatcher.conferenceMembers.size()>0){
+												for(String name:CallDispatcher.conferenceMembers){
+													if(!name.equalsIgnoreCase(host)){
+														if(participant==null){
+															participant=name;
+														}else{
+															participant=participant+","+name;
+														}
+
+													}
+												}
+											}
+											if(participant!=null){
+												CallDispatcher.sb.setParticipant_name(participant);
+											}
+											//end
+
 											DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 											DBAccess.getdbHeler()
 													.saveOrUpdateRecordtransactiondetails(
@@ -1977,6 +2021,28 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 										CallDispatcher.sb
 												.getEndTime()));
                 CallDispatcher.sb.setCallstatus("callattended");
+
+				//For Callhistory host and participant name entry
+				//Start
+				CallDispatcher.sb.setHost_name(host);
+				String participant=null;
+				if(CallDispatcher.conferenceMembers!=null && CallDispatcher.conferenceMembers.size()>0){
+					for(String name:CallDispatcher.conferenceMembers){
+						if(!name.equalsIgnoreCase(host)){
+							if(participant==null){
+								participant=name;
+							}else{
+								participant=participant+","+name;
+							}
+
+						}
+					}
+				}
+				if(participant!=null){
+					CallDispatcher.sb.setParticipant_name(participant);
+				}
+				//end
+
                 DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
                 DBAccess.getdbHeler()
                         .saveOrUpdateRecordtransactiondetails(
