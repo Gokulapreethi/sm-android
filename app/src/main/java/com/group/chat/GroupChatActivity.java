@@ -6393,16 +6393,19 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     private void loadTotalChatHistory(String groupOrBuddyName) {
         if (loadChatHistory(groupOrBuddyName) != null)
             chatList = loadChatHistory(groupOrBuddyName);
-        if (SingleInstance.groupChatHistory.get(groupOrBuddyName) != null
-                && SingleInstance.groupChatHistory.get(groupOrBuddyName).size() > 0) {
-            chatList = SingleInstance.groupChatHistory.get(groupOrBuddyName);
-            Log.i("group123", "inside chathistory hashmap" + SingleInstance.groupChatHistory.get(groupOrBuddyName).size());
-        } else {
+//        if (SingleInstance.groupChatHistory.get(groupOrBuddyName) != null
+//                && SingleInstance.groupChatHistory.get(groupOrBuddyName).size() > 0) {
+//            chatList = SingleInstance.groupChatHistory.get(groupOrBuddyName);
+//            Log.i("group123", "inside chathistory hashmap" + SingleInstance.groupChatHistory.get(groupOrBuddyName).size());
+//        } else {
             if (chatList == null)
                 chatList = new Vector<GroupChatBean>();
             Log.i("group123", "inside else chathistory hashmap");
+            if(SingleInstance.groupChatHistory.containsKey(groupOrBuddyName)) {
+                SingleInstance.groupChatHistory.remove(groupOrBuddyName);
+            }
             SingleInstance.groupChatHistory.put(groupOrBuddyName, chatList);
-        }
+//        }
     }
 
     private String getMembers(String to) {

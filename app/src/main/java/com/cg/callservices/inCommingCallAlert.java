@@ -241,6 +241,14 @@ public class inCommingCallAlert extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+//		if(min_outcall != null) {
+//			min_outcall.setVisibility(View.GONE);
+//		}
+
+		if(min_incall != null) {
+			min_incall.setVisibility(View.GONE);
+		}
     }
 
 	public void changeTextalert() {
@@ -317,7 +325,7 @@ public class inCommingCallAlert extends Fragment {
 				Object objCallScreen = SingleInstance.instanceTable
 						.get("callscreen");
 				if (objCallScreen == null) {
-					CallDispatcher.sb.setCallDuration("0:0:0");
+					CallDispatcher.sb.setCallDuration("00:00:00");
 				}else
 					CallDispatcher.sb
 							.setCallDuration(SingleInstance.mainContext

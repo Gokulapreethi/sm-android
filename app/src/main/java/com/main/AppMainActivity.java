@@ -6724,9 +6724,27 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					"duration : " + String.valueOf(diffHours) + ":"
 							+ String.valueOf(diffMinutes) + ":"
 							+ String.valueOf(diffSeconds));
-			return String.valueOf(diffHours) + ":"
-					+ String.valueOf(diffMinutes) + ":"
-					+ String.valueOf(diffSeconds);
+
+			String secstr = String.valueOf(diffSeconds);
+			if(secstr.length() == 1){
+				secstr = "0"+secstr;
+			}
+			String minstr = String.valueOf(diffHours);
+			if(minstr.length() == 1){
+				minstr = "0"+minstr;
+			}
+			String hourstr = String.valueOf(diffHours);
+			if(hourstr.length() == 1){
+				hourstr = "0"+hourstr;
+			}
+
+			return hourstr + ":"
+					+ minstr + ":"
+					+ secstr;
+
+//			return String.valueOf(diffHours) + ":"
+//					+ String.valueOf(diffHours) + ":"
+//					+ String.valueOf(diffSeconds);
 			// return "0:"
 			// + String.valueOf(diffMinutes) + ":"
 			// + String.valueOf(diffSeconds);

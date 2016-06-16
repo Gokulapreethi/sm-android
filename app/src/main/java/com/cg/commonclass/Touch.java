@@ -6,7 +6,6 @@ import android.graphics.PointF;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.util.SingleInstance;
@@ -113,11 +112,11 @@ public class Touch implements View.OnTouchListener {
 //        return true;
 
             case MotionEvent.ACTION_DOWN:
-                RelativeLayout.LayoutParams Params1 =
-                        (RelativeLayout.LayoutParams) view.getLayoutParams();
-                xDelta = X - Params1.leftMargin;
-                yDelta = Y - Params1.topMargin;
-                zDelta = Y + Params1.bottomMargin;
+//                RelativeLayout.LayoutParams Params1 =
+//                        (RelativeLayout.LayoutParams) view.getLayoutParams();
+//                xDelta = X - Params1.leftMargin;
+//                yDelta = Y - Params1.topMargin;
+//                zDelta = Y + Params1.bottomMargin;
                 break;
             case MotionEvent.ACTION_UP:
                 break;
@@ -129,6 +128,10 @@ public class Touch implements View.OnTouchListener {
 
                 RelativeLayout.LayoutParams layoutParams =
                         (RelativeLayout.LayoutParams) view.getLayoutParams();
+
+                yDelta = Y - layoutParams.topMargin;
+                zDelta = Y + layoutParams.bottomMargin;
+
 //                layoutParams.leftMargin = X - xDelta;
                 layoutParams.topMargin = Y - yDelta;
 //                layoutParams.rightMargin = X + xDelta;

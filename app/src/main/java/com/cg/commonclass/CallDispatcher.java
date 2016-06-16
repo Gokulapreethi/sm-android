@@ -2451,7 +2451,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					Object objCallScreen = SingleInstance.instanceTable
 							.get("callscreen");
 					if (objCallScreen == null) {
-						CallDispatcher.sb.setCallDuration("0:0:0");
+						CallDispatcher.sb.setCallDuration("00:00:00");
 						CallDispatcher.sb.setCallstatus("missedcall");
 					}else
 						CallDispatcher.sb.setCallstatus("callattended");

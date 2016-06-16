@@ -1,16 +1,54 @@
 package com.cg.DB;
 
-import java.io.File;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Vector;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
+import android.graphics.Bitmap;
+import android.os.Environment;
+import android.preference.PreferenceManager;
+import android.util.Base64;
+import android.util.Log;
+
+import com.bean.BuddyPermission;
+import com.bean.DefaultPermission;
+import com.bean.EditFormBean;
+import com.bean.FormFieldBean;
+import com.bean.FormInfoBean;
+import com.bean.GroupChatBean;
+import com.bean.GroupChatPermissionBean;
+import com.bean.NotifyListBean;
+import com.bean.OfflineFormRecordBean;
+import com.bean.ProfileBean;
+import com.bean.UploadDownloadStatusBean;
+import com.bean.UserBean;
+import com.cg.Calendar.ScheduleBean;
+import com.cg.commonclass.CallDispatcher;
+import com.cg.commonclass.WebServiceReferences;
+import com.cg.files.CompleteListBean;
+import com.cg.files.Components;
+import com.cg.forms.Alert;
+import com.cg.forms.InputsFields;
+import com.cg.forms.formItem;
+import com.cg.hostedconf.AppReference;
+import com.cg.quickaction.ContactLogicbean;
+import com.cg.quickaction.QuickActionBroadCastReceiver;
+import com.cg.quickaction.QuickActionBuilder;
+import com.cg.quickaction.TableColumnsBean;
+import com.cg.settings.UserSettingsBean;
+import com.cg.snazmed.R;
+import com.cg.timer.ReminderDetail;
+import com.cg.timer.ReminderRetrieve;
+import com.chat.ChatBean;
+import com.group.chat.ChatInfoBean;
+import com.main.ContactsFragment;
+import com.util.SingleInstance;
 
 import org.lib.PatientDetailsBean;
 import org.lib.model.BuddyInformationBean;
@@ -34,56 +72,17 @@ import org.lib.model.TaskDetailsBean;
 import org.lib.model.UtilityBean;
 import org.lib.model.chattemplatebean;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
-import android.graphics.Bitmap;
-import android.os.Environment;
-import android.preference.PreferenceManager;
-import android.telecom.Call;
-import android.util.Base64;
-import android.util.Log;
-
-import com.bean.BuddyPermission;
-import com.bean.DefaultPermission;
-import com.bean.EditFormBean;
-import com.bean.FormFieldBean;
-import com.bean.FormInfoBean;
-import com.bean.GroupChatBean;
-import com.bean.GroupChatPermissionBean;
-import com.bean.NotifyListBean;
-import com.bean.OfflineFormRecordBean;
-import com.bean.ProfileBean;
-import com.bean.UploadDownloadStatusBean;
-import com.bean.UserBean;
-import com.cg.Calendar.ScheduleBean;
-import com.cg.snazmed.R;
-import com.cg.commonclass.CallDispatcher;
-import com.cg.commonclass.WebServiceReferences;
-import com.cg.files.CompleteListBean;
-import com.cg.files.Components;
-import com.cg.forms.Alert;
-import com.cg.forms.InputsFields;
-import com.cg.forms.formItem;
-import com.cg.hostedconf.AppReference;
-import com.cg.quickaction.ContactLogicbean;
-import com.cg.quickaction.QuickActionBroadCastReceiver;
-import com.cg.quickaction.QuickActionBuilder;
-import com.cg.quickaction.TableColumnsBean;
-import com.cg.settings.UserSettingsBean;
-import com.cg.timer.ReminderDetail;
-import com.cg.timer.ReminderRetrieve;
-import com.chat.ChatBean;
-import com.group.chat.ChatInfoBean;
-import com.main.ContactsFragment;
-import com.util.SingleInstance;
+import java.io.File;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Vector;
 
 public class DBAccess extends SQLiteOpenHelper {
 
@@ -7292,6 +7291,7 @@ public class DBAccess extends SQLiteOpenHelper {
 			Log.i("group123", "chat list size in db: " + groupChatList.size());
 			cur.close();
 		} catch (Exception e) {
+			e.printStackTrace();
 			if (AppReference.isWriteInFile)
 				AppReference.logger.error(e.getMessage(), e);
 			else
@@ -11110,7 +11110,19 @@ public class DBAccess extends SQLiteOpenHelper {
 				openDatabase();
 			ContentValues cv = new ContentValues();
 			cv.put("category", "call");
-			cv.put("groupid", groupChatBean.getChatid());
+			if(groupChatBean.getChatid().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+				if(!groupChatBean.getTo().equalsIgnoreCase(CallDispatcher.LoginUser)){
+					cv.put("groupid", groupChatBean.getTo());
+				} else if(!groupChatBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)){
+					cv.put("groupid", groupChatBean.getFrom());
+				}
+			} else if(groupChatBean.getChatid().contains(CallDispatcher.LoginUser)) {
+				cv.put("groupid", groupChatBean.getChatid());
+			} else {
+
+				cv.put("groupid", groupChatBean.getChatid());
+			}
+
 			cv.put("fromuser", groupChatBean.getFrom());
 			cv.put("touser", groupChatBean.getTo());
 			cv.put("message", groupChatBean.getCallType());

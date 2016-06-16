@@ -79,7 +79,7 @@ public class CallConnectingScreen extends Fragment {
 	private ArrayList<String> confMembers=new ArrayList<String>();
 	private static CallConnectingScreen callConnectingScreen;
 	public View rootView;
-	ImageView min_outcall;
+	ImageView min_outcall , min_incall;
 	RelativeLayout mainHeader;
 
 	public static CallConnectingScreen getInstance(Context maincontext) {
@@ -121,7 +121,7 @@ public class CallConnectingScreen extends Fragment {
 		mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 		min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
 		min_outcall.setVisibility(View.GONE);
-		ImageView min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
+		 min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
 		min_incall.setVisibility(View.GONE);
 		SingleInstance.instanceTable.put("connection", callConnectingScreen);
 //		if(rootView==null) {
@@ -245,6 +245,14 @@ public class CallConnectingScreen extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+		if(min_outcall != null) {
+			min_outcall.setVisibility(View.GONE);
+		}
+
+		if(min_incall != null) {
+			min_incall.setVisibility(View.GONE);
+		}
     }
 
 	public void forceHangUp(boolean isForceHangUp) {
