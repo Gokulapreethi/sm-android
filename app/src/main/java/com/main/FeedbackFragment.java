@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.cg.commonclass.WebServiceReferences;
 import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.image.utils.ImageLoader;
+import com.util.SingleInstance;
 
 import org.lib.model.PatientCommentsBean;
 import org.lib.webservice.EnumWebServiceMethods;
@@ -87,10 +89,21 @@ public class FeedbackFragment extends Fragment {
             TextView title = (TextView) getActivity().findViewById(
                     R.id.activity_main_content_title);
             title.setVisibility(View.VISIBLE);
-            title.setText("SETTINGS");
+            title.setText("FEEDBACK");
 
             Button backBtn = (Button) getActivity().findViewById(R.id.backbtn);
-            backBtn.setVisibility(View.GONE);
+            backBtn.setVisibility(View.VISIBLE);
+            backBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    SettingsFragment settingsFragment = SettingsFragment.newInstance(mainContext);
+                    FragmentManager fragmentManager = SingleInstance.mainContext
+                            .getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(
+                            R.id.activity_main_content_fragment, settingsFragment)
+                            .commitAllowingStateLoss();
+                }
+            });
 
             view = null;
             if (view == null) {
@@ -114,7 +127,7 @@ public class FeedbackFragment extends Fragment {
                             Log.d("hhhhhi", "jjjj");
                             toggle_off.setBackgroundDrawable(getResources().getDrawable(R.drawable.touch_toogle));
                             right_arrow.setClickable(false);
-                            text_feedback.setTextColor(getResources().getColor(R.color.grey));
+                            text_feedback.setTextColor(getResources().getColor(R.color.grey3));
                             istoggleOff = false;
                         }
 

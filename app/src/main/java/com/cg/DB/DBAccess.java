@@ -159,6 +159,7 @@ public class DBAccess extends SQLiteOpenHelper {
 	String specialitydetails ="create table if not exists specialitydetails(speciality nvarchar(200),code nvarchar(25))";
 	String hospitaldetails ="create table if not exists hospitaldetails(hospitalname nvarchar(200))";
 	String medicalsocieties ="create table if not exists medicalsocieties(id nvarchar(25),medicalsociety nvarchar(200))";
+	String seeallpatientdetails = "create table if not exists seeallpatientdetails(groupid nvarchar(25), patientid nvarchar(100), diagnosis nvarchar(100), commentdate nvarchar(100))";
 	private CallDispatcher callDisp;
 
 	public DBAccess(Context context) {
@@ -290,6 +291,7 @@ public class DBAccess extends SQLiteOpenHelper {
 		db.execSQL(specialitydetails);
 		db.execSQL(hospitaldetails);
 		db.execSQL(medicalsocieties);
+		db.execSQL(seeallpatientdetails);
 	}
 
     public void updateThumbs(String signalID){
@@ -10363,7 +10365,7 @@ public class DBAccess extends SQLiteOpenHelper {
 			} else {
 				openDatabase();
 			}
-			Log.i("AAA", "DB list  " );
+			Log.i("AAA", "DB list  ");
 			String strGetQry = null;
 				strGetQry = "select * from patientcomments where groupid='"
 						+ groupid +  "'and patientid='" + patientid + "'and groupmember='" + membername +"'";
@@ -10823,6 +10825,53 @@ public class DBAccess extends SQLiteOpenHelper {
 		} finally {
 			return row_id;
 		}
+	}
+	public int insertseallcomments(PatientDescriptionBean pbean){
+		int comment_id = 0;
+		try{
+			if(!db.isOpen())
+				openDatabase();
+			ContentValues cv = new ContentValues();
+			cv.put("groupid", pbean.getGroupid());
+			cv.put("patientid", pbean.getPatientid());
+			if(pbean.getDiagnosis()!=null)
+			cv.put("diagnosis", pbean.getDiagnosis());
+			if(pbean.getDate()!=null)
+				cv.put("commentdate",pbean.getDate());
+			comment_id = (int)db.insert("seeallpatientdetails", null, cv);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return comment_id;
+	}
+
+	public Vector<PatientDescriptionBean> getseallcomments(String strGetQry){
+		Vector<PatientDescriptionBean> seeallcomment = new Vector<PatientDescriptionBean>();
+		try {
+			Cursor cur = null;
+			if (!db.isOpen())
+				openDatabase();
+
+			cur = db.rawQuery(strGetQry, null);
+			int length = cur.getCount();
+			Log.d("Stringvalue", "dbvalue0"+strGetQry);
+			cur.moveToFirst();
+			Log.d("Stringvalue", "dbvalue1");
+			while (cur.isAfterLast() == false) {
+				Log.d("Stringvalue", "dbvalue2");
+				PatientDescriptionBean pBean = new PatientDescriptionBean();
+				pBean.setDiagnosis(cur.getString(0));
+				pBean.setDate(cur.getString(1));
+				cur.moveToNext();
+				seeallcomment.add(pBean);
+				Log.d("Stringvalue","dbvalue"+pBean.getDiagnosis());
+			}
+			cur.close();
+
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return seeallcomment;
 	}
 	public ArrayList<String> getStateDetails() {
 		ArrayList<String> stateList = new ArrayList<String>();
