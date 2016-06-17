@@ -171,7 +171,7 @@
             <SeekBar
                 android:id="@+id/seekBar1"
                 android:thumb="@drawable/seek_handler"
-                android:layout_width="140dp"
+                android:layout_width="115dp"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="13dp"

@@ -59,7 +59,7 @@ public class CustomVideoCamera extends Activity {
 	private String filepath;
 	private boolean ispaused = false;
 	private Handler handler = new Handler();
-	final Context context = this;
+	Context context=null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +78,8 @@ public class CustomVideoCamera extends Activity {
 
 		try {
 			super.onCreate(savedInstanceState);
+			context = this;
+			SingleInstance.contextTable.put("customvideocallscreen",context);
 			recording = false;
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 			setContentView(R.layout.customvideo);
@@ -572,6 +574,10 @@ public class CustomVideoCamera extends Activity {
 		String locale_string = sharedPreferences.getString("locale",
 				SingleInstance.mainContext.getResources()
 						.getString(R.string.english_langugage));
+
+		if(SingleInstance.contextTable.containsKey("customvideocallscreen")){
+			SingleInstance.contextTable.remove("customvideocallscreen");
+		}
 		
 		int pos = 0;
 		if (locale_string.equalsIgnoreCase("English")) {

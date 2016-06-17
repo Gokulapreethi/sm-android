@@ -771,6 +771,9 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
         // TODO Auto-generated method stub
         if (WebServiceReferences.contextTable.containsKey("creategroup"))
             WebServiceReferences.contextTable.remove("creategroup");
+        if(SingleInstance.contextTable.containsKey("roundingGroup")){
+            SingleInstance.contextTable.remove("roundingGroup");
+        }
         super.onDestroy();
     }
 

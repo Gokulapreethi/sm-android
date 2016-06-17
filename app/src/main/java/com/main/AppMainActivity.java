@@ -171,6 +171,7 @@ import com.thread.CommunicationBean;
 import com.thread.SipCommunicator;
 import com.thread.SipCommunicator.sip_operation_types;
 import com.thread.SipQueue;
+import com.util.CustomVideoCamera;
 import com.util.MyExceptionHandler;
 import com.util.SingleInstance;
 import com.util.Utils;
@@ -8247,6 +8248,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			if(groupChatActivity != null) {
 				groupChatActivity.finish();
 			}
+
 		}
 
 		if (WebServiceReferences.contextTable.containsKey("ordermenuactivity")) {
@@ -8277,9 +8279,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				roundingEdit.finish();
 			}
 		}
-		if (WebServiceReferences.contextTable.containsKey("roundingGroup")) {
+		if (SingleInstance.contextTable.containsKey("roundingGroup")) {
 
-			RoundingGroupActivity roundingGroup = (RoundingGroupActivity) WebServiceReferences.contextTable.get("roundingGroup");
+			RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable.get("roundingGroup");
 			if(roundingGroup != null) {
 				roundingGroup.finish();
 			}
@@ -8304,6 +8306,13 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			GroupActivity groupactivity = (GroupActivity) WebServiceReferences.contextTable.get("groupactivity");
 			if(groupactivity != null) {
 				groupactivity.finish();
+			}
+		}
+
+		if(SingleInstance.contextTable.containsKey("customvideocallscreen")){
+			CustomVideoCamera customVideoCamera=(CustomVideoCamera)SingleInstance.contextTable.get("customvideocallscreen");
+			if(customVideoCamera!=null){
+				customVideoCamera.finish();
 			}
 		}
 
