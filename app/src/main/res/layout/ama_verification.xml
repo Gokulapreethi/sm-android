@@ -127,7 +127,7 @@
                 android:textSize="13sp"
                 android:drawableTop="@drawable/grid_audio"
                 android:textColor="@color/white"
-                android:text="Video\nMessage"/>
+                android:text="Audio\nMessage"/>
             <Button
                 android:background="#343536"
                 android:layout_weight="1"
@@ -137,7 +137,7 @@
                 android:textSize="13sp"
                 android:drawableTop="@drawable/memory_video"
                 android:textColor="@color/white"
-                android:text="Text\nMessage"/>
+                android:text="Video\nMessage"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -161,6 +161,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="13sp"
+                android:visibility="invisible"
                 android:drawableTop="@drawable/dashboard_invite_blue"
                 android:textColor="@color/white"
                 android:text="One Way\nBroadcaast"/>
@@ -171,6 +172,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="13sp"
+                android:visibility="invisible"
                 android:drawableTop="@drawable/broadcast"
                 android:textColor="@color/white"
                 android:text="Two Way\nBroadcaast"/>
@@ -231,6 +233,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="13sp"
+                android:visibility="gone"
                 android:drawableTop="@drawable/memory_other"
                 android:textColor="@color/white"
                 android:text="Send File"/>
@@ -254,6 +257,7 @@
             android:layout_marginLeft="20dp"
             android:textColor="@color/white"
             android:textSize="13sp"
+            android:visibility="gone"
             android:gravity="center"
             android:text="Add to\nGroup"
             android:drawableTop="@drawable/dashboard_group_blue"/>

@@ -154,12 +154,14 @@ public class PinAndTouchId extends Fragment {
                 btn_ok.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        SingleInstance.mainContext.isTouchIdEnabled=true;
                         dialog.dismiss();
                     }
                 });
                 dialog.show();
 //
                         } else {
+                            SingleInstance.mainContext.isTouchIdEnabled=false;
                             toggle_off.setBackgroundDrawable(getResources().getDrawable(R.drawable.touch_toogle));
                             Log.d("toggle1", "button");
                             istoggleOff = false;

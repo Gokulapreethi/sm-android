@@ -41,14 +41,17 @@ public class FeedbackFragment extends Fragment {
     public static Context mainContext;
     public View view;
     private  ImageView toggle_off, right_arrow;
-    private RelativeLayout relay_feedback;
+    private RelativeLayout relay_feedback,relaay1;
     TextView text_feedback;
-    Boolean istoggleOff=false;
+    LinearLayout relay_footer;
+    private boolean istoggleOff=false;
     String add_citation = "";
+    EditText comment;
     private Handler handler = new Handler();
     private Dialog dialog;
     ProgressDialog progressDialog;
     public static CallDispatcher calldisp;
+    TextView title;
 
     public static FeedbackFragment newInstance(Context context){
         try{
@@ -67,6 +70,8 @@ public class FeedbackFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater layoutInflater,ViewGroup container, Bundle savedInstance){
         try{
+            getActivity().getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
             AppReference.bacgroundFragment=feedbackFragment;
             Button select = (Button) getActivity().findViewById(R.id.btn_brg);
             select.setVisibility(View.GONE);
@@ -86,7 +91,7 @@ public class FeedbackFragment extends Fragment {
             final Button plusBtn = (Button) getActivity().findViewById(R.id.add_group);
             plusBtn.setVisibility(View.GONE);
 
-            TextView title = (TextView) getActivity().findViewById(
+            title = (TextView) getActivity().findViewById(
                     R.id.activity_main_content_title);
             title.setVisibility(View.VISIBLE);
             title.setText("FEEDBACK");
@@ -96,6 +101,7 @@ public class FeedbackFragment extends Fragment {
             backBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    comment.setText("");
                     SettingsFragment settingsFragment = SettingsFragment.newInstance(mainContext);
                     FragmentManager fragmentManager = SingleInstance.mainContext
                             .getSupportFragmentManager();
@@ -108,11 +114,27 @@ public class FeedbackFragment extends Fragment {
             view = null;
             if (view == null) {
                 view = layoutInflater.inflate(R.layout.feedback_lay, null);
+                getActivity().getWindow().setSoftInputMode(
+                        WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
                 toggle_off = (ImageView)view.findViewById(R.id.toggle_off);
                 relay_feedback = (RelativeLayout)view.findViewById(R.id.relay_feedback);
+                relay_footer = (LinearLayout)view.findViewById(R.id.relay_footer);
+                relaay1 = (RelativeLayout)view.findViewById(R.id.linear1);
                 right_arrow = (ImageView)view.findViewById(R.id.right_arrow);
                 text_feedback = (TextView)view.findViewById(R.id.text_feedback);
-                right_arrow.setClickable(false);
+                comment = (EditText)view.findViewById(R.id.comment);
+                Button save=(Button)view.findViewById(R.id.save_button);
+                Button cancel=(Button)view.findViewById(R.id.cancel_button);
+
+                if (!istoggleOff) {
+                    toggle_off.setBackgroundDrawable(getResources().getDrawable(R.drawable.toogle_button_on_pink));
+                    right_arrow.setClickable(true);
+                    text_feedback.setTextColor(getResources().getColor(R.color.white));
+                } else {
+                    toggle_off.setBackgroundDrawable(getResources().getDrawable(R.drawable.touch_toogle));
+                    right_arrow.setClickable(false);
+                    text_feedback.setTextColor(getResources().getColor(R.color.grey3));
+                }
 
 
                 toggle_off.setOnClickListener(new View.OnClickListener() {
@@ -133,13 +155,38 @@ public class FeedbackFragment extends Fragment {
 
                     }
                 });
-
-
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        title.setText("FEEDBACK");
+                        relaay1.setVisibility(View.VISIBLE);
+                        relay_feedback.setVisibility(View.VISIBLE);
+                        comment.setVisibility(View.GONE);
+                        relay_footer.setVisibility(View.GONE);
+                        comment.setText("");
+                    }
+                });
+                save.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (comment.getText().toString().trim().length()>0) {
+                            add_citation = comment.getText().toString().trim();
+                            calldisp.showprogress(progressDialog,mainContext);
+                            WebServiceReferences.webServiceClient.FeedBack(add_citation);
+                        }
+                    }
+                });
 
                 right_arrow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showview();
+                        if(istoggleOff){
+                            title.setText("PROVIDE FEEDBACK");
+                            relaay1.setVisibility(View.GONE);
+                            relay_feedback.setVisibility(View.GONE);
+                            comment.setVisibility(View.VISIBLE);
+                            relay_footer.setVisibility(View.VISIBLE);
+                        }
 
                     }
                 });
@@ -152,50 +199,6 @@ public class FeedbackFragment extends Fragment {
             e.printStackTrace();
         }
         return view;
-    }
-    public void showview(){
-        try {
-             dialog = new Dialog(mainContext);
-            dialog.setContentView(R.layout.add_citation);
-            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-            lp.copyFrom(dialog.getWindow().getAttributes());
-            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-            lp.height = WindowManager.LayoutParams.MATCH_PARENT;
-            Window window = dialog.getWindow();
-            dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
-            window.setAttributes(lp);
-            dialog.show();
-            TextView Text_view1 = (TextView)dialog.findViewById(R.id.Text_view1);
-            Text_view1.setVisibility(View.GONE);
-            final EditText citation_info = (EditText)dialog.findViewById(R.id.Edit_text1);
-
-            Button save = (Button)dialog.findViewById(R.id.save_button1);
-            save.setText("SEND");
-            Button cancel = (Button)dialog.findViewById(R.id.cancel_button1);
-
-            cancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-            save.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    if (citation_info.getText().toString().trim().length()>0) {
-                       add_citation = citation_info.getText().toString().trim();
-                        Log.i("feedback", "save button click");
-                        calldisp.showprogress(progressDialog,mainContext);
-                        WebServiceReferences.webServiceClient.FeedBack(add_citation);
-//                        dialog.dismiss();
-                    }
-
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public void showwindow(){
@@ -214,9 +217,13 @@ public class FeedbackFragment extends Fragment {
                 btn_ok.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog.dismiss();
                         dialog1.dismiss();
-
+                        title.setText("FEEDBACK");
+                        relaay1.setVisibility(View.VISIBLE);
+                        relay_feedback.setVisibility(View.VISIBLE);
+                        comment.setVisibility(View.GONE);
+                        relay_footer.setVisibility(View.GONE);
+                        comment.setText("");
                     }
                 });
 

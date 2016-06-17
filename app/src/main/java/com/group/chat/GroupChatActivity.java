@@ -307,6 +307,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     Button cancel_button, cancel;
     ImageView sidemenu;
     Button dot;
+    boolean isatoz=true;
     private RecordTransactionBean rBean=null;
 
     @Override
@@ -2287,10 +2288,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     for (int i = 0; i < chatList.size(); i++) {
                         GroupChatBean gcBean1 = chatList.get(i);
                         if (gcBean1.getParentId().equals(gcBean.getParentId())) {
-                            gcBean.setSubCategory("gc_ack");
-                            gcBean1.setSubCategory("gc_ack");
-                            gcBean.setReply("gc_ack");
-                            gcBean1.setReply("gc_ack");
+                            gcBean.setSubCategory("gc_r");
+                            gcBean1.setSubCategory("gc_r");
+                            gcBean.setReply("gc_r");
+                            gcBean1.setReply("gc_r");
                             gcBean1.setReplied("reply");
                         }
                     }
@@ -2518,7 +2519,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         if(AppReference.mainContext.isPinEnable) {
             if (AppReference.mainContext.openPinActivity) {
                 AppReference.mainContext.openPinActivity=false;
-                if(Build.VERSION.SDK_INT>20) {
+                if(Build.VERSION.SDK_INT>20 && AppReference.mainContext.isTouchIdEnabled) {
                     Intent i = new Intent(GroupChatActivity.this, MainActivity.class);
                     startActivity(i);
                 }else {
@@ -2685,11 +2686,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             }
 
                         }
-                        if (!gcBean.getFrom().equals(CallDispatcher.LoginUser) && gcBean.getSubCategory() != null && gcBean.getSubCategory().equalsIgnoreCase("gc_ack")) {
+                        if (!gcBean.getFrom().equals(CallDispatcher.LoginUser) && gcBean.getSubCategory() != null && gcBean.getSubCategory().equalsIgnoreCase("gc_r")) {
                             for (int i = 0; i < chatList.size(); i++) {
                                 GroupChatBean gChat = chatList.get(i);
                                 if (gChat.getParentId().equals(gcBean.getParentId())) {
-                                    gChat.setReply("gc_ack");
+                                    gChat.setReply("gc_r");
                                     chatList.remove(gcBean);
                                 }
                             }
@@ -4926,7 +4927,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 deadlineReplyText.setVisibility(View.GONE);
                             } else if (gcBean.getSubCategory().equalsIgnoreCase(
                                     "gc")) {
-                                if (gcBean.getReply() != null && !gcBean.getReply().equals("") && gcBean.getReply().equals("gc_ack")) {
+                                if (gcBean.getReply() != null && !gcBean.getReply().equals("") && gcBean.getReply().equals("gc_r")) {
                                     waitforconfir.setVisibility(View.GONE);
                                 } else {
                                     waitforconfir.setVisibility(View.VISIBLE);
@@ -5143,9 +5144,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 }
                             } else if (gcBean.getSubCategory().equalsIgnoreCase(
                                     "gc") || gcBean.getSubCategory().equalsIgnoreCase(
-                                    "gc_ack")) {
+                                    "gc_r")) {
                                 tv_user.setText(gcBean.getFrom());
-                                if (gcBean.getReply() != null && gcBean.getReply().equals("gc_ack")) {
+                                if (gcBean.getReply() != null && gcBean.getReply().equals("gc_r")) {
                                     btn_confrm.setVisibility(View.GONE);
                                     tv_replied.setVisibility(View.VISIBLE);
                                     tv_replied.setText("Confirmed" + Html.fromHtml(tick));
@@ -5826,6 +5827,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     } else {
                         if (gcBean.getWithdrawn() != null && gcBean.getWithdrawn().equals("1")) {
                             message.setText("Message withdrawn");
+                            swipeposition=2;
                         }
                         withdraw.setVisibility(View.GONE);
                         xbutton.setVisibility(View.GONE);
@@ -8264,9 +8266,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             Log.i("AAAA", "group chat getAdapterList online ");
             Vector<BuddyInformationBean> newlist = new Vector<BuddyInformationBean>();
             Vector<BuddyInformationBean> onlinelist = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> offlinelist = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> airplanelist = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> awaylist = new Vector<BuddyInformationBean>();
+//            Vector<BuddyInformationBean> offlinelist = new Vector<BuddyInformationBean>();
+//            Vector<BuddyInformationBean> airplanelist = new Vector<BuddyInformationBean>();
+//            Vector<BuddyInformationBean> awaylist = new Vector<BuddyInformationBean>();
             Vector<BuddyInformationBean> individualList = new Vector<BuddyInformationBean>();
             Vector<BuddyInformationBean> pending = new Vector<BuddyInformationBean>();
             tempList.clear();
@@ -8297,13 +8299,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         newlist.add(sortlistbean);
                     } else if (status.equalsIgnoreCase("Online")) {
                         onlinelist.add(sortlistbean);
-                    } else if (status.equalsIgnoreCase("Offline") || status.equalsIgnoreCase("Stealth")) {
-                        sortlistbean.setStatus("Offline");
-                        offlinelist.add(sortlistbean);
-                    } else if (status.equalsIgnoreCase("Airport")) {
-                        airplanelist.add(sortlistbean);
-                    } else if (status.equalsIgnoreCase("Away")) {
-                        awaylist.add(sortlistbean);
+//                    } else if (status.equalsIgnoreCase("Offline") || status.equalsIgnoreCase("Stealth")) {
+//                        sortlistbean.setStatus("Offline");
+//                        offlinelist.add(sortlistbean);
+//                    } else if (status.equalsIgnoreCase("Airport")) {
+//                        airplanelist.add(sortlistbean);
+//                    } else if (status.equalsIgnoreCase("Away")) {
+//                        awaylist.add(sortlistbean);
                     } else if (status.equalsIgnoreCase("Pending")) {
                         pending.add(sortlistbean);
                     }
@@ -8316,12 +8318,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             tempList.addAll(pending);
             Collections.sort(onlinelist, new BuddyListComparator());
             tempList.addAll(onlinelist);
-            Collections.sort(airplanelist, new BuddyListComparator());
-            tempList.addAll(airplanelist);
-            Collections.sort(awaylist, new BuddyListComparator());
-            tempList.addAll(awaylist);
-            Collections.sort(offlinelist, new BuddyListComparator());
-            tempList.addAll(offlinelist);
+//            Collections.sort(airplanelist, new BuddyListComparator());
+//            tempList.addAll(airplanelist);
+//            Collections.sort(awaylist, new BuddyListComparator());
+//            tempList.addAll(awaylist);
+//            Collections.sort(offlinelist, new BuddyListComparator());
+//            tempList.addAll(offlinelist);
 
             for (BuddyInformationBean bBean : tempList) {
                 individualList.add(bBean);
@@ -9026,6 +9028,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 role.setTextColor(getResources().getColor(R.color.snazlgray));
                 sorting = "alpha";
                 Collections.sort(memberslist, new BuddyListComparator());
+                if(isatoz)
+                    isatoz=false;
+                else {
+                    isatoz = true;
+                    Collections.reverse(memberslist);
+                }
                 MembersAdapter adapter = new MembersAdapter(context, R.layout.rounding_member_row, memberslist);
                 list.removeAllViews();
                 final int adapterCount = adapter.getCount();
@@ -9152,6 +9160,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 online.setTextColor(getResources().getColor(R.color.snazlgray));
                 sorting = "alpha";
                 Collections.sort(memberslist, new BuddyListComparator());
+                if(isatoz)
+                    isatoz=false;
+                else {
+                    isatoz = true;
+                    Collections.reverse(memberslist);
+                }
                 MembersAdapter adapter = new MembersAdapter(context, R.layout.rounding_member_row, memberslist);
                 list.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
@@ -10768,10 +10782,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     for (int i = 0; i < chatList.size(); i++) {
                         GroupChatBean gcBean1 = chatList.get(i);
                         if (gcBean1.getParentId().equals(gcBean.getParentId())) {
-                            gcBean.setSubCategory("gc_ack");
-                            gcBean1.setSubCategory("gc_ack");
-                            gcBean.setReply("gc_ack");
-                            gcBean1.setReply("gc_ack");
+                            gcBean.setSubCategory("gc_r");
+                            gcBean1.setSubCategory("gc_r");
+                            gcBean.setReply("gc_r");
+                            gcBean1.setReply("gc_r");
                             gcBean1.setReplied("reply");
                         }
                     }

@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black2">
 
     <RelativeLayout
+        android:id="@+id/linear1"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginLeft="20dp"
+        android:visibility="visible"
         android:layout_marginTop="50dp"
         >
 
@@ -40,10 +42,11 @@
 
     <RelativeLayout
         android:id="@+id/relay_feedback"
+        android:layout_below="@+id/linear1"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="20dp"
-        android:clickable="false"
+        android:visibility="visible"
         android:background="@color/black2"
 
         >
@@ -67,12 +70,55 @@
             android:layout_alignParentRight="true"
             android:background="@drawable/button_arrow_right"
             android:layout_marginRight="20dp"
-            android:clickable="false"
             android:layout_marginTop="10dp"
             android:visibility="visible"/>
 
 
 
         </RelativeLayout>
+    <EditText
+        android:id="@+id/comment"
+        android:layout_below="@+id/relay_feedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Add your comment"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:textSize="18dp"
+        android:visibility="gone"
+        android:textColor="@color/white"
+        android:layout_marginTop="13dp"
 
-</LinearLayout>
+        />
+    <LinearLayout
+        android:id="@+id/relay_footer"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:visibility="gone"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:weightSum="2">
+
+            <Button
+                android:id="@+id/cancel_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_weight="1"
+                android:text="CANCEL"
+                android:textColor="@color/white"
+                android:background="@color/snazgray"/>
+
+            <Button
+                android:id="@+id/save_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_weight="1"
+                android:text="SEND"
+                android:textColor="@color/white"
+                android:background="@color/blue2"
+                />
+    </LinearLayout>
+
+</RelativeLayout>

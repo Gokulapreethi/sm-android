@@ -130,6 +130,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
     String groupid;
     GroupBean gBean;
     AppMainActivity appMainActivity;
+    boolean isatoz=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -237,6 +238,12 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                 role.setTextColor(getResources().getColor(R.color.snazlgray));
                 sorting = "alpha";
                 Collections.sort(membersAcceptedList, new BuddiesListComparator());
+                if(isatoz)
+                    isatoz=false;
+                else {
+                    isatoz = true;
+                    Collections.reverse(membersAcceptedList);
+                }
                 memberAdapter = new MembersAdapter(context,R.layout.rounding_member_row,membersAcceptedList);
                 lv_memberList.removeAllViews();
                 final int adapterCount = memberAdapter.getCount();

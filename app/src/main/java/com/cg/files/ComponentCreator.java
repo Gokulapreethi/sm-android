@@ -2356,8 +2356,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
 			ScrollView scrollView = new ScrollView(this);
 			scrollView.setLayoutParams(lp);
 			scrollView.setFillViewport(true);
-			tvTitle.setText(SingleInstance.mainContext.getResources()
-					.getString(R.string.txt_note));
+//			tvTitle.setText(SingleInstance.mainContext.getResources()
+//					.getString(R.string.txt_note));
 			edNotes = new EditText(this);
 			edNotes.setScroller(new Scroller(this));
 			edNotes.setVerticalScrollBarEnabled(true);
@@ -2491,7 +2491,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 	private void openCamera(String type)
 	{
 		if(type.equalsIgnoreCase("photo")) {
-			tvTitle.setText("Photo");
+//			tvTitle.setText("Photo");
 			GET_RESOURCES = FROM_CAMERA;
 			Long free_size = callDisp.getExternalMemorySize();
 			if (free_size > 0 && free_size >= 5120) {
@@ -3046,7 +3046,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 								.containsKey("sharenotepicker")) {
 							finish();
 						}
-						tvTitle.setText("Text Note");
+//						tvTitle.setText("Text Note");
 						// showToast("Kindly choose image files");
 					} else {
 						btnDone.setVisibility(View.VISIBLE);
@@ -3102,7 +3102,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 								.containsKey("sharenotepicker")) {
 							finish();
 						}
-						tvTitle.setText("Text Note");
+//						tvTitle.setText("Text Note");
 					} else {
 						btnDone.setVisibility(View.VISIBLE);
 						if (img != null) {
@@ -4461,8 +4461,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
 				cbean = null;
 			commandlayout.setVisibility(View.GONE);
 			footerlayout.setVisibility(View.GONE);
-			tvTitle.setText(SingleInstance.mainContext.getResources()
-					.getString(R.string._audio_));
+//			tvTitle.setText(SingleInstance.mainContext.getResources()
+//					.getString(R.string._audio_));
 			showAudioView();
 
 		} else {
@@ -4505,8 +4505,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
 						cbean = null;
 					commandlayout.setVisibility(View.GONE);
 					footerlayout.setVisibility(View.GONE);
-					tvTitle.setText(SingleInstance.mainContext.getResources()
-							.getString(R.string._audio_));
+//					tvTitle.setText(SingleInstance.mainContext.getResources()
+//							.getString(R.string._audio_));
 					showAudioView();
 
 				} else {

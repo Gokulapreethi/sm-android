@@ -117,13 +117,13 @@ public class GroupChatHistoryWriter extends Thread {
                             if(row>0)
                             groupChatBean.setReply("1");
                         }
-                        if(groupChatBean.getSubCategory()!=null&&groupChatBean.getSubCategory().equalsIgnoreCase("gc_ack"))
+                        if(groupChatBean.getSubCategory()!=null&&groupChatBean.getSubCategory().equalsIgnoreCase("gc_r"))
                         {
                             int row = DBAccess.getdbHeler(
                                     SipNotificationListener.getCurrentContext())
                                     . updateChatReply(groupChatBean);
                             if(row>0) {
-                                groupChatBean.setReply("gc_ack");
+                                groupChatBean.setReply("gc_r");
                             }
                         }
                         else if(groupChatBean.getFrom().equals(CallDispatcher.LoginUser)&&groupChatBean.getSubCategory()!=null&&groupChatBean.getSubCategory().equalsIgnoreCase("gc")){

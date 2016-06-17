@@ -331,6 +331,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 	public String activityOnTop;
 	public boolean openPinActivity=false;
+	public boolean isTouchIdEnabled=true;
 
 
 	@Override
@@ -672,7 +673,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		if(isPinEnable) {
 			if (openPinActivity) {
 				openPinActivity=false;
-				if(Build.VERSION.SDK_INT>20) {
+				if(Build.VERSION.SDK_INT>20 && isTouchIdEnabled) {
 					Intent i = new Intent(AppMainActivity.this, MainActivity.class);
 					startActivity(i);
 				}else {

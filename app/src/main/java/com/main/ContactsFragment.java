@@ -172,7 +172,7 @@ public class ContactsFragment extends Fragment{
 	public Context mainContext;
 	private  GroupBean groupManagementBean;
 	private String quotes = "\"";
-	public static String SortType="ONLINE";
+	public static String SortType="ALPH";
 	boolean searchClick = false;
 
 
@@ -3830,6 +3830,9 @@ public class ContactsFragment extends Fragment{
 	}
 	private void loadRecents()
 	{
+		tempnotifylist.clear();
+		contactrecentlist.clear();
+		grouprecentlist.clear();
 		tempnotifylist = DashBoardFragment.newInstance(mainContext).LoadFilesList(CallDispatcher.LoginUser);
 		for(NotifyListBean bean:tempnotifylist){
 			if(bean.getNotifttype().equalsIgnoreCase("F"))

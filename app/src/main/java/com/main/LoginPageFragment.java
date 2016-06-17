@@ -916,7 +916,7 @@ public class LoginPageFragment extends Fragment {
                 @Override
                 public void run() {
                     try {
-                        AppMainActivity.isPinEnable = true;
+
                         // TODO Auto-generated method stub
                         //cancelDialog();
                         SingleInstance.printLog("LOGIN",
@@ -1096,7 +1096,7 @@ public class LoginPageFragment extends Fragment {
                             // fragmentManager.beginTransaction()
                             // .replace(R.id.activity_main_content_fragment,
                             // contactsFragment).commitAllowingStateLoss();
-
+                            AppMainActivity.isPinEnable = true;
                             for (BuddyInformationBean bibBean : BGProcessor.ownerList) {
                                 if (bibBean.getName().equalsIgnoreCase(
                                         CallDispatcher.LoginUser)) {

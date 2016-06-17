@@ -2,6 +2,7 @@ package com.cg.account;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -64,6 +65,7 @@ public class AMAVerification extends Activity {
     private CallDispatcher objCallDispatcher = null;
     private Handler handler = new Handler();
     private AppMainActivity appMainActivity;
+    private CallDispatcher calldisp;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +78,7 @@ public class AMAVerification extends Activity {
         else
             objCallDispatcher = new CallDispatcher(context);
         appMainActivity=SingleInstance.mainContext;
+        calldisp=new CallDispatcher(SingleInstance.mainContext);
         RelativeLayout2 = (RelativeLayout) findViewById(R.id.RelativeLayout2);
         selectAll_buddy = (CheckBox) findViewById(R.id.selectAll_buddy);
         selected = (TextView) findViewById(R.id.selected);
@@ -143,7 +146,7 @@ public class AMAVerification extends Activity {
                     }
                 }
                 if(count>0){
-                    doDeleteContact(names,count);
+                    doDeleteContact(names, count);
                 }
             }
         });
@@ -152,9 +155,8 @@ public class AMAVerification extends Activity {
             public void onClick(View v) {
                 int count=0;
                 for (BuddyInformationBean bib : result) {
-                    if (bib.isSelected()) {
+                    if (bib.isSelected())
                         count++;
-                    }
                     }
                 if(count==1) {
                     for (BuddyInformationBean bib : result) {
@@ -175,6 +177,42 @@ public class AMAVerification extends Activity {
                     showToast("One Person will be allowed to chat");
                     finish();
                 }
+            }
+        });
+        audiocall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int count=0;
+                for(BuddyInformationBean bib:result){
+                    if(bib.isSelected())
+                        count++;
+                }
+                if(count==1){
+                    for(BuddyInformationBean bib:result){
+                        calldisp.MakeCall(1, bib.getName(),
+                                context);
+                    }
+                }else
+                    showToast("One Person is allowed to make audio call");
+                finish();
+            }
+        });
+        videocall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int count=0;
+                for(BuddyInformationBean bib:result){
+                    if(bib.isSelected())
+                        count++;
+                }
+                if(count==1){
+                    for(BuddyInformationBean bib:result){
+                        calldisp.MakeCall(1, bib.getName(),
+                                context);
+                    }
+                }else
+                    showToast("One Person is allowed to make audio call");
+                finish();
             }
         });
 
@@ -248,11 +286,11 @@ public class AMAVerification extends Activity {
                     RelativeLayout2.setVisibility(View.VISIBLE);
                 }
                 selected.setText(count + " selected");
-//                if (count == result.size()) {
-//                    selectAll_buddy.setChecked(true);
-//                } else {
-//                    selectAll_buddy.setChecked(false);
-//                }
+                if (count == result.size()) {
+                    selectAll_buddy.setChecked(true);
+                } else {
+                    selectAll_buddy.setChecked(false);
+                }
                 final BuddyInformationBean finalBib = bib;
                 selectUser.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -278,11 +316,11 @@ public class AMAVerification extends Activity {
                         } else {
                             RelativeLayout2.setVisibility(View.VISIBLE);
                         }
-//                        if (count == result.size()) {
-//                            selectAll_buddy.setChecked(true);
-//                        } else {
-//                            selectAll_buddy.setChecked(false);
-//                        }
+                        if (count == result.size()) {
+                            selectAll_buddy.setChecked(true);
+                        } else {
+                            selectAll_buddy.setChecked(false);
+                        }
                     }
                 });
             }
@@ -603,20 +641,6 @@ public class AMAVerification extends Activity {
                         }
 
                     }
-//                    if (result.size() > 0) {
-//                        final BuddyInformationBean buddyInformationBean = (BuddyInformationBean) result.get(i);
-//                        if (bib.isTitle()) {
-//                            if (!buddyInformationBean.getHeader().equalsIgnoreCase("null")) {
-//                                holder.header_title.setVisibility(View.VISIBLE);
-//                                holder.header_title.setText(bib.getHeader());
-//                                Log.d("titlte", "header---->");
-//                            }
-//
-//                        } else {
-//                            holder.header_title.setVisibility(View.GONE);
-//                            Log.d("titlte111", "header---->");
-//                        }
-//                    }
                     if (bib.isSelected()) {
                         holder.selectUser.setChecked(true);
                     } else {
