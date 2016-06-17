@@ -192,7 +192,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	private String strStartTime;
 	private Chronometer chTimer;
 	private ImageView mic;
-	private ImageView loudSpeaker;
+	private ImageView loudSpeaker,min_outcall,min_incall;
 	// TextView tvTitle;
 	String tvTitlename = null;
 	FrameLayout.LayoutParams layoutParamsf, layoutParamsf12, layoutParamsf2, layoutParamsf3;
@@ -287,8 +287,12 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			CallDispatcher.networkState = objCallDispatcher.connectivityType();
 			mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
 			mainHeader.setVisibility(View.GONE);
-			ImageView min_outcall=(ImageView)getActivity().findViewById(R.id.min_incall);
+
+			min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
 			min_outcall.setVisibility(View.GONE);
+
+			min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
+			min_incall.setVisibility(View.GONE);
 
 			video_minimize = (RelativeLayout) getActivity().findViewById(R.id.video_minimize);
 			video_minimize.setVisibility(View.GONE);
@@ -3637,6 +3641,13 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		Activity parent = getActivity();
 		if(parent != null){
 			video_minimize.setVisibility(View.GONE);
+			if(min_outcall != null) {
+				min_outcall.setVisibility(View.GONE);
+			}
+
+			if(min_incall != null) {
+				min_incall.setVisibility(View.GONE);
+			}
 		}
 
 			AppMainActivity.inActivity = context;

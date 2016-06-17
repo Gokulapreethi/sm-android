@@ -7283,6 +7283,11 @@ public class DBAccess extends SQLiteOpenHelper {
                 groupChatBean.setThumb(cur.getInt(21));
                 groupChatBean.setReply(cur.getString(22));
                 groupChatBean.setReplied(cur.getString(23));
+				if(cur.getString(26) != null && cur.getString(26).equalsIgnoreCase("join")) {
+					groupChatBean.setIsJoin(true);
+				} else {
+					groupChatBean.setIsJoin(false);
+				}
                 groupChatBean.setWithdrawn(cur.getString(27));
 				groupChatList.add(groupChatBean);
 				cur.moveToNext();
@@ -11140,8 +11145,14 @@ public class DBAccess extends SQLiteOpenHelper {
 				cv.put("groupid", groupChatBean.getChatid());
 			}
 
-			cv.put("fromuser", groupChatBean.getFrom());
-			cv.put("touser", groupChatBean.getTo());
+			cv.put("fromuser",groupChatBean.getHost());
+			if(groupChatBean.getHost().equalsIgnoreCase(groupChatBean.getTo())) {
+				cv.put("touser", groupChatBean.getFrom());
+			} else if(groupChatBean.getHost().equalsIgnoreCase(groupChatBean.getFrom())){
+				cv.put("touser", groupChatBean.getTo());
+			}
+//			cv.put("fromuser", groupChatBean.getFrom());
+//			cv.put("touser", groupChatBean.getTo());
 			cv.put("message", groupChatBean.getCallType());
 			cv.put("ftpusername", groupChatBean.getHost());
 			cv.put("sessionid", groupChatBean.getSessionid());
@@ -11150,6 +11161,13 @@ public class DBAccess extends SQLiteOpenHelper {
 			cv.put("ftppassword", groupChatBean.getParticipants());
 			cv.put("remindertime", groupChatBean.getCallDuration());
 			cv.put("subcategory", groupChatBean.getCallstatus());
+
+			if(groupChatBean.getCallstatus() != null && groupChatBean.getCallstatus().equalsIgnoreCase("missedcall")) {
+				cv.put("unview","join");
+			} else {
+				cv.put("unview","normal");
+			}
+
 			if (isRecordExists("select * from chat where signalid='"
 					+ groupChatBean.getSessionid() + "'")) {
 				row = (int) db.update("chat", cv,
@@ -11166,6 +11184,29 @@ public class DBAccess extends SQLiteOpenHelper {
 			return 0;
 		}
 
+	}
+
+	public int updateGroupCallChatEntry(GroupChatBean groupChatBean){
+		int row = 0;
+		try {
+			if (!db.isOpen())
+				openDatabase();
+			ContentValues cv = new ContentValues();
+			cv.put("unview","normal");
+
+
+			if (isRecordExists("select * from chat where sessionid='"
+					+ groupChatBean.getSessionid() + "'")) {
+				Log.i("AudioCall", "chat hisory Available=============== ");
+				row = (int) db.update("chat", cv, "sessionid='" + groupChatBean.getSessionid() + "'", null);
+			} else {
+				Log.i("AudioCall","Chat history not available");
+			}
+
+			return row;
+		} catch (Exception e) {
+			return row;
+		}
 	}
 
 

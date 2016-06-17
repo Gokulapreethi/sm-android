@@ -4658,13 +4658,19 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     if(gcBean.getSubCategory()!=null &&gcBean.getSubCategory().equalsIgnoreCase("missedcall")){
                     if(gcBean.getFtpPassword()!=null){
                         String[] mlist = (gcBean.getFtpPassword()).split(",");
-                        if(mlist.length>1){
-                        joinBtn.setVisibility(View.VISIBLE);
-                        join_lay.setBackgroundColor(getResources().getColor(R.color.blue1));
-                        call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_incoming_call));
-                        tv_missed.setVisibility(View.GONE);
-                        tv_username.setText(gcBean.getFtpPassword());
-                        }else {
+                        if(mlist.length>1) {
+                            if (gcBean.isJoin()) {
+                                Log.i("AudioCall","gcBean.isJoin() = true");
+                                joinBtn.setVisibility(View.VISIBLE);
+                            } else {
+                                Log.i("AudioCall","gcBean.isJoin() = false");
+                                joinBtn.setVisibility(View.GONE);
+                            }
+                            join_lay.setBackgroundColor(getResources().getColor(R.color.blue1));
+                            call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_incoming_call));
+                            tv_missed.setVisibility(View.GONE);
+                            tv_username.setText(gcBean.getFtpPassword());
+                        } else {
                             joinBtn.setVisibility(View.GONE);
                             tv_missed.setVisibility(View.VISIBLE);
                         }
@@ -4674,7 +4680,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     }
                     }else {
                         join_lay.setBackgroundColor(getResources().getColor(R.color.grey1));
-                        call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_incoming_call));
+                        if(gcBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+                            call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.iconoutgoingcall));
+                        } else {
+                            call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_incoming_call));
+                        }
                         if(gcBean.getReminderTime()!=null)
                         tv_missed.setText(gcBean.getReminderTime());
                         tv_missed.setTextColor(getResources().getColor(R.color.blue2));
@@ -4699,6 +4709,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             transactionBean.setParticipants(gcBean.getFtpPassword());
                             transactionBean.setChatid(gcBean.getGroupId());
                             if(transactionBean.getParticipants()!=null) {
+                                DBAccess.getdbHeler().updateGroupCallChatEntry(gcBean);
+                                gcBean.setIsJoin(false);
                                 String[] temp=transactionBean.getParticipants().split(",");
                                 for(String user:temp)
                                 calldisp.MakeCallFromCallHistory(caseid,

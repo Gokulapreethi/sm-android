@@ -3289,7 +3289,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					}
 					//end
 
-					
+
 					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 					DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
 							CallDispatcher.sb);
@@ -14388,6 +14388,14 @@ private TrustManager[] get_trust_mgr() {
 					((CallConnectingScreen) SingleInstance.instanceTable
 							.get("connection")).setTitle(online);
 			}
+		} else {
+			Log.i("AudioCall","Call Screen :"+SingleInstance.instanceTable.containsKey("callscreen")+
+					" Alert Screen :"+SingleInstance.instanceTable
+					.containsKey("alertscreen")+" Sip Call Alert :"+
+					WebServiceReferences.contextTable
+					.containsKey("sicallalert")+ " Sip Call Screen :"+
+					WebServiceReferences.contextTable
+					.containsKey("sipcallscreen"));
 		}
 
 	}

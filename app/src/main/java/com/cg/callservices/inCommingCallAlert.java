@@ -355,6 +355,8 @@ public class inCommingCallAlert extends Fragment {
 				}
 				//end
 
+				CallDispatcher.sb.setCallstatus("callattended");
+
 				DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 				DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
 						CallDispatcher.sb);
