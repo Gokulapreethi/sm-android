@@ -32,7 +32,7 @@
         android:layout_below="@id/Text_view1"
         android:layout_marginLeft="30dp"
         android:textSize="20dp"
-        android:digits="@string/alphaNumeric"
+       android:inputType="textEmailAddress"
         android:background="@color/transparent"
         android:textColor="@color/white"/>
     <View

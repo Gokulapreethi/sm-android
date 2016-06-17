@@ -978,7 +978,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 String pen = "&#x270D";
 //                pen="&#128393";
 //                pen= "\uD83D\uDD89";
-                typingstatus.setText(buddy + " is Typing " + Html.fromHtml(pen));
+                typingstatus.setText(nickname + " is Typing " + Html.fromHtml(pen));
                 msgoptionview = (LinearLayout) v1.findViewById(R.id.splmsglay1);
                 settingsBtn.setOnClickListener(this);
                 status = (TextView) v1.findViewById(R.id.buddy_status);
@@ -8448,132 +8448,211 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             if (a.size() > 0) {
                 Collections.sort(a, new BuddyListComparator());
                 a.get(0).setHeader("A");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(a);
+                }
                 tempList.addAll(a);
             }
             if (b.size() > 0) {
                 Collections.sort(b, new BuddyListComparator());
                 b.get(0).setHeader("B");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(b);
+                }
                 tempList.addAll(b);
             }
             if (c.size() > 0) {
                 Collections.sort(c, new BuddyListComparator());
                 c.get(0).setHeader("C");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(c);
+                }
                 tempList.addAll(c);
             }
             if (d.size() > 0) {
                 Collections.sort(d, new BuddyListComparator());
                 d.get(0).setHeader("D");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(d);
+                }
                 tempList.addAll(d);
             }
             if (e.size() > 0) {
                 Collections.sort(e, new BuddyListComparator());
                 e.get(0).setHeader("E");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(e);
+                }
                 tempList.addAll(e);
             }
             if (f.size() > 0) {
                 Collections.sort(f, new BuddyListComparator());
                 f.get(0).setHeader("F");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(f);
+                }
                 tempList.addAll(f);
             }
             if (g.size() > 0) {
                 Collections.sort(g, new BuddyListComparator());
                 g.get(0).setHeader("G");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(g);
+                }
                 tempList.addAll(g);
             }
             if (h.size() > 0) {
                 Collections.sort(h, new BuddyListComparator());
                 h.get(0).setHeader("H");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(h);
+                }
                 tempList.addAll(h);
             }
             if (i.size() > 0) {
                 Collections.sort(i, new BuddyListComparator());
                 i.get(0).setHeader("I");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(i);
+                }
                 tempList.addAll(i);
             }
             if (j.size() > 0) {
                 Collections.sort(j, new BuddyListComparator());
                 j.get(0).setHeader("J");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(j);
+                }
                 tempList.addAll(j);
             }
             if (k.size() > 0) {
                 Collections.sort(k, new BuddyListComparator());
                 k.get(0).setHeader("K");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(k);
+                }
                 tempList.addAll(k);
             }
             if (l.size() > 0) {
                 Collections.sort(l, new BuddyListComparator());
                 l.get(0).setHeader("L");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(l);
+                }
                 tempList.addAll(l);
             }
             if (m.size() > 0) {
                 Collections.sort(m, new BuddyListComparator());
                 m.get(0).setHeader("M");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(m);
+                }
                 tempList.addAll(m);
             }
             if (n.size() > 0) {
                 Collections.sort(n, new BuddyListComparator());
                 n.get(0).setHeader("N");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(n);
+                }
                 tempList.addAll(n);
             }
             if (o.size() > 0) {
                 Collections.sort(o, new BuddyListComparator());
                 o.get(0).setHeader("O");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(o);
+                }
                 tempList.addAll(o);
             }
             if (p.size() > 0) {
                 Collections.sort(p, new BuddyListComparator());
                 p.get(0).setHeader("P");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(p);
+                }
                 tempList.addAll(p);
             }
             if (q.size() > 0) {
                 Collections.sort(q, new BuddyListComparator());
                 q.get(0).setHeader("Q");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(q);
+                }
                 tempList.addAll(q);
             }
             if (r.size() > 0) {
                 Collections.sort(r, new BuddyListComparator());
                 r.get(0).setHeader("R");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(r);
+                }
                 tempList.addAll(r);
             }
             if (s.size() > 0) {
                 Collections.sort(s, new BuddyListComparator());
                 s.get(0).setHeader("S");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(s);
+                }
                 tempList.addAll(s);
             }
             if (t.size() > 0) {
                 Collections.sort(t, new BuddyListComparator());
                 t.get(0).setHeader("T");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(t);
+                }
                 tempList.addAll(t);
             }
             if (u.size() > 0) {
                 Collections.sort(u, new BuddyListComparator());
                 u.get(0).setHeader("U");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(u);
+                }
                 tempList.addAll(u);
             }
             if (v.size() > 0) {
                 Collections.sort(v, new BuddyListComparator());
                 v.get(0).setHeader("V");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(v);
+                }
                 tempList.addAll(v);
             }
             if (w.size() > 0) {
                 Collections.sort(w, new BuddyListComparator());
                 w.get(0).setHeader("W");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(w);
+                }
                 tempList.addAll(w);
             }
             if (x.size() > 0) {
                 Collections.sort(x, new BuddyListComparator());
                 x.get(0).setHeader("X");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(x);
+                }
                 tempList.addAll(x);
             }
             if (y.size() > 0) {
                 Collections.sort(y, new BuddyListComparator());
                 y.get(0).setHeader("Y");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(y);
+                }
                 tempList.addAll(y);
             }
             if (z.size() > 0) {
                 Collections.sort(z, new BuddyListComparator());
                 z.get(0).setHeader("Z");
+                if(!ContactsFragment.getInstance(context).isazsort) {
+                    Collections.reverse(z);
+                }
                 tempList.addAll(z);
+
             }
             for (BuddyInformationBean bBean : tempList) {
                 Log.d("R46NU5", "Name: " + bBean.getName() + " Header: " + bBean.getHeader());
@@ -8581,10 +8660,15 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             }
             tempList.clear();
             tempList.addAll(individualList);
+            if(!ContactsFragment.getInstance(context).isazsort) {
+                Collections.reverse(tempList);
+            }
 
         }
+
         return tempList;
     }
+
 
     private void openFolder() {
         try {

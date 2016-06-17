@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cg.Calendar.DateView;
 import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
@@ -37,6 +38,7 @@ import com.util.SingleInstance;
 
 import org.lib.model.WebServiceBean;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -47,7 +49,7 @@ public class NewUser extends Activity {
     private Context context;
     private EditText ed_firstname=null;
     private EditText ed_lastname=null;
-    private TextView ed_dob=null;
+    public TextView ed_dob=null;
     private EditText ed_securityno=null;
     private EditText ed_hno=null;
     private EditText ed_zipcode=null;
@@ -288,17 +290,24 @@ public class NewUser extends Activity {
             public void onClick(View arg0) {
 
                 try {
+
                     SimpleDateFormat sdf = new SimpleDateFormat();
                     String due_date =  ed_dob.getText().toString();
                     if(due_date!=null&& due_date.length()>0) {
                         String birthdate = due_date;
+
                         Log.i("sss", "Current birthdate" + birthdate);
                         String[] str = birthdate.split("/");
+                        int month = Integer.parseInt(str[0]);
+                        int day = Integer.parseInt(str[1]);
+                        int year = Integer.parseInt(str[2]);
+                        Log.d("String", "agevalue" + getAge(year, month, day));
                         int Currentyear = Calendar.getInstance().get(Calendar.YEAR);
                         Log.i("sss", "Current year" + Currentyear);
 
                         String BirthYear = str[2];
-                        age = Currentyear - (Integer.parseInt(BirthYear));
+                        age = Integer.parseInt(getAge(year,month,day));
+//                        age = Currentyear - (Integer.parseInt(BirthYear));
                         Log.i("sss", "Current age" + age);
                         if ((ed_firstname.getText().toString().length() > 0) && (ed_lastname.getText().toString().length() > 0) &&
                                 (ed_dob.getText().toString().length() > 0) && (ed_securityno.getText().toString().length() > 0) &&
@@ -370,6 +379,31 @@ public class NewUser extends Activity {
                 }
             }
         });
+
+    }
+
+    public String getAge(int year, int month, int day) {
+
+
+            Calendar dob = Calendar.getInstance();;
+        Calendar today = Calendar.getInstance();
+
+
+            dob.set(year, month - 1, day);
+
+        int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+        if (today.get(Calendar.MONTH) < dob.get(Calendar.MONTH)) {
+            age--;
+        } else if(today.get(Calendar.MONTH) == dob.get(Calendar.MONTH)) {
+            if (today.get(Calendar.DAY_OF_MONTH) < dob.get(Calendar.DAY_OF_MONTH)) {
+                age--;
+            }
+        }
+
+        Integer ageInt = new Integer(age);
+        String ageS = ageInt.toString();
+
+        return ageS;
 
     }
 

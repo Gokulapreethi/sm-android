@@ -114,6 +114,7 @@ public class ContactsFragment extends Fragment{
 	public boolean groupstatus = false;
 	public boolean contactrecent = false;
 	private boolean grouprecent = true;
+	public boolean isazsort = true;
 
 	private AlertDialog alert = null;
 	private ImageLoader imageLoader;
@@ -433,8 +434,15 @@ public class ContactsFragment extends Fragment{
 					public void onClick(View view) {
 						online_sort.setTextColor(getResources().getColor(R.color.snazlgray));
 						alph_sort.setTextColor(getResources().getColor(R.color.white));
+						if(isazsort) {
+
+							isazsort = false;
+						}else {
+							isazsort = true;
+						}
 						SortType = "ALPH";
-						SortList();
+							SortList();
+
 					}
 				});
 
