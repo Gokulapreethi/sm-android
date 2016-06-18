@@ -306,7 +306,20 @@ public class DBAccess extends SQLiteOpenHelper {
         try {
             String s = "update chat set withdrawn='1' and mimetype='text' where signalid='" + signalID + "'";
             Log.d("abcdef","SQL => "+s);
-            db.execSQL(s);
+                Log.i("withdraw","DbAccess updatewothdraw mathod");
+			//For withdraw message
+			//start
+			    ContentValues contentValues =new ContentValues();
+			    contentValues.put("subcategory","null");
+				contentValues.put("mimetype","text");
+				contentValues.put("message","Message withdraw");
+			    contentValues.put("media","null");
+				int row_id = updateChatWithdraw_row(contentValues, "signalid='" + signalID
+						+ "'");
+
+          //end
+
+//            db.execSQL(s);
         }catch(Exception e){
             Log.d("abcdef","novalue in DB for "+signalID+" returns with error "+e.toString());
         }
@@ -11206,6 +11219,24 @@ public class DBAccess extends SQLiteOpenHelper {
 			return row;
 		} catch (Exception e) {
 			return row;
+		}
+	}
+
+
+	public int updateChatWithdraw_row(ContentValues cv, String condition) {
+		int row_id = 0;
+		try {
+			if (!db.isOpen())
+				openDatabase();
+
+			row_id = (int) db.update("chat", cv, condition, null);
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+
+		} finally {
+			return row_id;
 		}
 	}
 

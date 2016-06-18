@@ -2519,6 +2519,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 @Override
                 public void run() {
                     try {
+
                         String groupId = null;
                         if (gcBean.getCategory().equalsIgnoreCase("G")) {
                             groupId = groupBean.getGroupId();
@@ -2655,9 +2656,14 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 for (int i = 0; i < chatList.size(); i++) {
                                     GroupChatBean gChat = chatList.get(i);
                                     if (gChat != null
-                                            && gChat.getSignalid().equals(
+                                            &&gChat.getSignalid()!=null && gcBean.getpSingnalId()!=null && gChat.getSignalid().equals(
                                             gcBean.getpSingnalId())) {
-                                        chatList.remove(i);
+                                        //For withdrraw message
+                                        //start
+                                        gChat.setMimetype("text");
+                                        gChat.setMessage("Message withdrawn");
+                                        //End
+                                        //chatList.remove(i);
                                         adapter.notifyDataSetChanged();
                                         break;
                                     }
@@ -5983,6 +5989,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         chat_view.setVisibility(View.GONE);
                     }
                 }
+
             } catch (Exception e) {
                 // TODO Auto-generated catch block
 //				if (AppReference.isWriteInFile)
