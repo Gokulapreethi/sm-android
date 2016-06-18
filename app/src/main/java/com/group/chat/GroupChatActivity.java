@@ -1,6 +1,5 @@
 package com.group.chat;
 
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -15,8 +14,6 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.Typeface;
-import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
@@ -26,19 +23,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.SystemClock;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
-import android.telecom.Call;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -50,28 +41,22 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.Fingerprint.MainActivity;
@@ -84,7 +69,6 @@ import com.bean.ProfileBean;
 import com.bean.SpecialMessageBean;
 import com.bean.UserBean;
 import com.cg.DB.DBAccess;
-import com.cg.account.AMAVerification;
 import com.cg.account.PinSecurity;
 import com.cg.commonclass.BuddyListComparator;
 import com.cg.commonclass.CallDispatcher;
@@ -100,7 +84,6 @@ import com.cg.commongui.listswipe.SwipeMenuListView;
 import com.cg.files.CompleteListBean;
 import com.cg.files.CompleteListView;
 import com.cg.files.ComponentCreator;
-import com.cg.files.FileInfoFragment;
 import com.cg.files.FilePicker;
 import com.cg.files.FilesAdapter;
 import com.cg.forms.AddNewForm;
@@ -113,13 +96,11 @@ import com.cg.profiles.ViewProfiles;
 import com.cg.rounding.AssignPatientActivity;
 import com.cg.rounding.LinksAdapter;
 import com.cg.rounding.OwnershipActivity;
-import com.cg.rounding.PatientLocationComparator;
 import com.cg.rounding.PatientNameComparator;
 import com.cg.rounding.PatientRoundingFragment;
 import com.cg.rounding.PatientStatusComparator;
 import com.cg.rounding.RolesManagementFragment;
 import com.cg.rounding.RoundNewPatientActivity;
-import com.cg.rounding.RoundingAdapter;
 import com.cg.rounding.RoundingFragment;
 import com.cg.rounding.RoundingGroupActivity;
 import com.cg.rounding.RoundingPatientAdapter;
@@ -184,8 +165,6 @@ import java.util.TimerTask;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-
-import static com.cg.account.AMAVerification.*;
 
 public class GroupChatActivity extends Activity implements OnClickListener ,TextWatcher {
     private Button btnBack;
@@ -4656,30 +4635,35 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     normalcontainer.setVisibility(View.GONE);
                     join_lay.setVisibility(View.VISIBLE);
                     tv_username.setText(gcBean.getFtpPassword());
-                    if(gcBean.getSubCategory()!=null &&gcBean.getSubCategory().equalsIgnoreCase("missedcall")){
-                    if(gcBean.getFtpPassword()!=null){
-                        String[] mlist = (gcBean.getFtpPassword()).split(",");
-                        if(mlist.length>1) {
-                            if (gcBean.isJoin()) {
-                                Log.i("AudioCall","gcBean.isJoin() = true");
-                                joinBtn.setVisibility(View.VISIBLE);
+                    if(gcBean.getSubCategory()!=null &&gcBean.getSubCategory().equalsIgnoreCase("missedcall")) {
+                        if (gcBean.getFtpPassword() != null) {
+                            String[] mlist = (gcBean.getFtpPassword()).split(",");
+                            if (mlist.length > 1) {
+                                if (gcBean.isJoin()) {
+                                    Log.i("AudioCall", "gcBean.isJoin() = true");
+                                    joinBtn.setVisibility(View.VISIBLE);
+                                } else {
+                                    Log.i("AudioCall", "gcBean.isJoin() = false");
+                                    joinBtn.setVisibility(View.GONE);
+                                }
+                                join_lay.setBackgroundColor(getResources().getColor(R.color.blue1));
+                                if(gcBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+                                    call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.iconoutgoingcall));
+                                } else {
+                                    call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_incoming_call));
+                                }
+                                tv_missed.setVisibility(View.GONE);
+                                tv_username.setText(gcBean.getFtpPassword());
                             } else {
-                                Log.i("AudioCall","gcBean.isJoin() = false");
                                 joinBtn.setVisibility(View.GONE);
+                                tv_missed.setVisibility(View.VISIBLE);
                             }
-                            join_lay.setBackgroundColor(getResources().getColor(R.color.blue1));
-                            call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_incoming_call));
-                            tv_missed.setVisibility(View.GONE);
-                            tv_username.setText(gcBean.getFtpPassword());
                         } else {
                             joinBtn.setVisibility(View.GONE);
                             tv_missed.setVisibility(View.VISIBLE);
                         }
                     }else {
                         joinBtn.setVisibility(View.GONE);
-                        tv_missed.setVisibility(View.VISIBLE);
-                    }
-                    }else {
                         join_lay.setBackgroundColor(getResources().getColor(R.color.grey1));
                         if(gcBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)) {
                             call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.iconoutgoingcall));
@@ -4699,23 +4683,48 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     joinBtn.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            int caseid;
-                            if(gcBean.getMessage().equalsIgnoreCase("AC"))
-                                 caseid=1;
-                            else
-                                caseid=2;
-                            RecordTransactionBean transactionBean = new RecordTransactionBean();
-                            transactionBean.setSessionid(gcBean.getSessionid());
-                            transactionBean.setHost(CallDispatcher.LoginUser);
-                            transactionBean.setParticipants(gcBean.getFtpPassword());
-                            transactionBean.setChatid(gcBean.getGroupId());
-                            if(transactionBean.getParticipants()!=null) {
+                            try {
+                                int caseid;
+                                if(gcBean.getMessage().equalsIgnoreCase("AC"))
+                                     caseid=1;
+                                else
+                                    caseid=2;
+
                                 DBAccess.getdbHeler().updateGroupCallChatEntry(gcBean);
                                 gcBean.setIsJoin(false);
-                                String[] temp=transactionBean.getParticipants().split(",");
-                                for(String user:temp)
-                                calldisp.MakeCallFromCallHistory(caseid,
-                                        user, context, transactionBean, 0, "");
+
+                                RecordTransactionBean transactionBean = new RecordTransactionBean();
+                                transactionBean.setSessionid(gcBean.getSessionid());
+                                transactionBean.setHost(gcBean.getFtpUsername());
+                                transactionBean.setParticipants(gcBean.getFtpPassword());
+                                transactionBean.setChatid(gcBean.getGroupId());
+
+                                String total_participants = gcBean.getFtpPassword()+","+gcBean.getFtpUsername();
+
+                                String[] total_participant_array = total_participants.split(",");
+                                int con_scr_opened = 0;
+                                for(int i=0;i<total_participant_array.length;i++) {
+                                    String user = total_participant_array[i];
+                                    Log.i("AudioCall"," Call to User : "+user);
+    //                                RecordTransactionBean transactionBean = new RecordTransactionBean();
+    //                                transactionBean.setSessionid(gcBean.getSessionid());
+    //                                transactionBean.setHost(gcBean.getFtpUsername());
+    //                                transactionBean.setParticipants(gcBean.getFtpPassword());
+    //                                transactionBean.setChatid(gcBean.getGroupId());
+    //                                if (transactionBean.getParticipants() != null) {
+    //                                    DBAccess.getdbHeler().updateGroupCallChatEntry(gcBean);
+    //                                    gcBean.setIsJoin(false);
+    //                                    String[] temp = transactionBean.getParticipants().split(",");
+    //                                    for (String user : temp)
+                                    if(user != null && !user.equalsIgnoreCase(CallDispatcher.LoginUser)) {
+                                        Log.i("AudioCall"," Call to User 1 : "+user);
+                                            calldisp.MakeCallFromCallHistory(caseid,
+                                                    user, context, transactionBean, con_scr_opened, "");
+                                             con_scr_opened = con_scr_opened+1;
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
 
                         }

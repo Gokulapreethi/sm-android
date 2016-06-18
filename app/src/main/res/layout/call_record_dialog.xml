@@ -3,195 +3,191 @@
     android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:orientation="vertical"
-    android:background="@color/white" >
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:gravity="center"
-        android:layout_margin="20dp"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:gravity="center"
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/error_img"
-            android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/question_circle"/>
+            android:layout_marginTop="10dp"
+            android:background="@drawable/question_circle" />
 
 
         <TextView
             android:id="@+id/tv_firstLine"
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:gravity="center"
-            android:textSize="16sp"
-            android:textStyle="bold"
+            android:text="This session was recorded\n by the video call initiator."
             android:textColor="@color/black"
-            android:text="This session was recorded\n by the video call initiator."/>
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_SecondLine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="16sp"
             android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:text="Would you like to save a copy for yourself?"
             android:textColor="@color/snazlgray"
-            android:text="Would you like to save a copy for yourself?"/>
+            android:textSize="16sp" />
 
         <RelativeLayout
             android:id="@+id/video_relay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            >
+            android:visibility="gone">
 
-        <FrameLayout
-            android:id="@+id/VideoView01"
-            android:layout_width="fill_parent"
-            android:layout_height="200dp"
-            android:padding="10dp"
-            >
-
-            <ImageView
+            <FrameLayout
+                android:id="@+id/VideoView01"
                 android:layout_width="fill_parent"
                 android:layout_height="200dp"
-                android:padding="30dp"
-                android:background="@color/blue2"
-                />
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginTop="100dp"
-                >
+                android:padding="10dp">
+
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="200dp"
+                    android:background="@color/blue2"
+                    android:padding="30dp" />
 
                 <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="42dp"
-                    android:layout_below="@+id/msg_container_receiver"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginTop="10dp"
-                    android:visibility="visible"
-                    android:id="@+id/ad_play1"
-                    android:background="@drawable/bg_bluecolr"
-                    >
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginTop="100dp">
 
-                    <ImageView
-                        android:id="@+id/play_button1"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_centerInParent="true"
-                        android:background="@drawable/play" />
-                    <ImageView
-                        android:id="@+id/btn_pause1"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_centerInParent="true"
-                        android:background="@drawable/audiopause"
-                        android:visibility="gone"/>
+                    <RelativeLayout
+                        android:id="@+id/ad_play1"
+                        android:layout_width="match_parent"
+                        android:layout_height="42dp"
+                        android:layout_below="@+id/msg_container_receiver"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/bg_bluecolr"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:id="@+id/play_button1"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginLeft="10dp"
+                            android:background="@drawable/play" />
+
+                        <ImageView
+                            android:id="@+id/btn_pause1"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginLeft="10dp"
+                            android:background="@drawable/audiopause"
+                            android:visibility="gone" />
 
 
+                        <SeekBar
+                            android:id="@+id/seekBar11"
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_marginLeft="5dp"
+                            android:layout_toRightOf="@+id/play_button1"
+                            android:progressDrawable="@drawable/progress"
+                            android:thumb="@drawable/seek_handler" />
 
-                    <SeekBar
-                        android:id="@+id/seekBar11"
-                        android:thumb="@drawable/seek_handler"
-                        android:layout_width="120dp"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_marginLeft="5dp"
-                        android:layout_toRightOf="@+id/play_button1"
-                        android:progressDrawable="@drawable/progress"
-                        />
-                    <Chronometer
-                        android:id="@+id/chronometer11"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Chronometer"
-                        android:textColor="@color/white"
-                        android:textSize="20dp"
-                        android:visibility="gone"/>
-                    <TextView
-                        android:id="@+id/txt_time1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="18dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_toRightOf="@+id/seekBar11"
-                        android:layout_centerInParent="true"
-                        android:layout_marginRight="20dp"
-                        android:text="00:00"
-                        android:textColor="@color/white" />
+                        <Chronometer
+                            android:id="@+id/chronometer11"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Chronometer"
+                            android:textColor="@color/white"
+                            android:textSize="20dp"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/txt_time1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="18dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_toRightOf="@+id/seekBar11"
+                            android:text="00:00"
+                            android:textColor="@color/white" />
+
+                    </RelativeLayout>
 
                 </RelativeLayout>
 
-            </RelativeLayout>
-
-        </FrameLayout>
+            </FrameLayout>
 
         </RelativeLayout>
+
         <ImageView
             android:id="@+id/own_image"
             android:layout_width="fill_parent"
             android:layout_height="180dp"
-            android:padding="30dp"
-            android:visibility="gone"
             android:background="@color/blue2"
-            />
+            android:padding="30dp"
+            android:visibility="gone" />
 
         <RelativeLayout
+            android:id="@+id/ad_play"
             android:layout_width="match_parent"
             android:layout_height="42dp"
-            android:layout_marginTop="10dp"
-            android:visibility="visible"
-            android:id="@+id/ad_play"
-            android:layout_alignBottom="@+id/own_image"
             android:layout_alignBaseline="@+id/own_image"
+            android:layout_alignBottom="@+id/own_image"
+            android:layout_marginTop="10dp"
             android:background="@drawable/bg_bluecolr"
-            >
+            android:visibility="visible">
 
             <ImageView
                 android:id="@+id/play_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_alignParentLeft="true"
-                android:layout_marginLeft="10dp"
                 android:layout_centerInParent="true"
+                android:layout_marginLeft="10dp"
                 android:background="@drawable/play" />
-
 
 
             <SeekBar
                 android:id="@+id/seekBar1"
-                android:thumb="@drawable/seek_handler"
                 android:layout_width="115dp"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="13dp"
                 android:layout_toRightOf="@+id/play_button"
                 android:progressDrawable="@drawable/progress"
-                />
+                android:thumb="@drawable/seek_handler" />
+
             <TextView
                 android:id="@+id/txt_time"
                 android:layout_width="wrap_content"
                 android:layout_height="18dp"
                 android:layout_alignParentRight="true"
-                android:layout_toRightOf="@+id/seekBar1"
                 android:layout_centerInParent="true"
                 android:layout_marginRight="20dp"
+                android:layout_toRightOf="@+id/seekBar1"
                 android:text="00:00"
                 android:textColor="@color/white" />
 
         </RelativeLayout>
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -202,22 +198,22 @@
             android:id="@+id/delete"
             android:layout_width="match_parent"
             android:layout_height="45dp"
+            android:layout_weight="1"
             android:background="@color/pink"
-            android:textColor="@color/white"
             android:text="NO, DELETE IT"
-            android:textSize="17sp"
-            android:layout_weight="1"/>
+            android:textColor="@color/white"
+            android:textSize="17sp" />
+
         <Button
             android:id="@+id/save"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:background="@color/blue2"
-            android:textColor="@color/white"
             android:layout_weight="1"
+            android:background="@color/blue2"
             android:text="SAVE"
+            android:textColor="@color/white"
             android:textSize="17sp" />
     </LinearLayout>
-
 
 
 </LinearLayout>

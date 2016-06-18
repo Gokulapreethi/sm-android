@@ -16,8 +16,8 @@ import android.widget.TextView;
 
 import com.cg.callservices.AudioCallScreen;
 import com.cg.callservices.CallConnectingScreen;
-import com.cg.callservices.VideoCallScreen;
 import com.cg.callservices.inCommingCallAlert;
+import com.cg.callservices.VideoCallScreen;
 import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.util.SingleInstance;

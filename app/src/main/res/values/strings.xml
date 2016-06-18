@@ -98,9 +98,9 @@
     <string name="connected_buddies1">Connected  </string>
     <string name="connected_buddies">Connected Buddies :  </string>
     <string name="screen_share">Screen Sharing</string>
-    <string name="call_types1">Call Type.....................</string>
+    <string name="call_types1">Call Type: .....</string>
     <string name="call_contents1">Content:</string>
-    <string name="durations">Duration: .....................</string>
+    <string name="durations">Duration: .....</string>
     <string name="previews">Recording:</string>
     <!-- Call Types End -->
 
@@ -1234,9 +1234,9 @@
     
     <!-- newly -->
      <string name="feed_back">Feedback</string>
-     <string name="from_call">From: ......................</string>
-     <string name="to_call">To: .........................</string>
-     <string name="time_call">Time: .....................</string>
+     <string name="from_call">From: .....</string>
+     <string name="to_call">To: .....</string>
+     <string name="time_call">Time: .....</string>
      <string name="with_draw">Withdraw</string>
      <string name="view_group1">View Group</string>
       <string name="leave_group1">Leave Group</string>

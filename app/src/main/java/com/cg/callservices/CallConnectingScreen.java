@@ -33,7 +33,6 @@ import com.cg.snazmed.R;
 import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
-import com.main.ContactsFragment;
 import com.util.SingleInstance;
 
 import org.lib.model.SignalingBean;
@@ -227,12 +226,13 @@ public class CallConnectingScreen extends Fragment {
 						Log.i("audiocall","context table remove connection");
 						SingleInstance.instanceTable.remove("connection");
 					}
-					Log.i("audiocall","btn_hangup--->"+SingleInstance.instanceTable.containsKey("connection"));
-					if (isBConf)
+					Log.i("audiocall","btn_hangup--->"+SingleInstance.instanceTable.containsKey("connection")+" isBConf : "+isBConf);
+					if (isBConf) {
 						disconnectConfMembers();
 
-					else
+					} else {
 						HangupCall();
+					}
 				}
 			});
 			setNameandTitle();
@@ -282,7 +282,17 @@ public class CallConnectingScreen extends Fragment {
 
 			}
 
+			if (CallDispatcher.callType != null) {
+				CallDispatcher.callType = null;
+			}
+
+			CallDispatcher.isCallInProgress = false;
+			CallDispatcher.isCallInitiate = false;
+
+			CallDispatcher.currentSessionid = null;
+
 		} catch (Exception e) {
+			e.printStackTrace();
 			Log.d("stattus", "completed  vcvcv " + e);
 		} finally {
 			finishConnectingScreen();
@@ -815,10 +825,10 @@ public class CallConnectingScreen extends Fragment {
 		FragmentManager fm =
 				AppReference.mainContext.getSupportFragmentManager();
 		FragmentTransaction ft = fm.beginTransaction();
-		ContactsFragment contactsFragment = ContactsFragment
-				.getInstance(context);
+//		ContactsFragment contactsFragment = ContactsFragment
+//				.getInstance(context);
 		ft.replace(R.id.activity_main_content_fragment,
-				contactsFragment);
+				AppReference.bacgroundFragment);
 		ft.commitAllowingStateLoss();
 		mainHeader.setVisibility(View.VISIBLE);
 		min_outcall.setVisibility(View.GONE);

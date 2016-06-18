@@ -120,7 +120,6 @@ import com.cg.callservices.CallConnectingScreen;
 import com.cg.callservices.SipCallConnectingScreen;
 import com.cg.callservices.VideoCallScreen;
 import com.cg.callservices.VideoPagingSRWindow;
-import com.cg.callservices.inCommingCallAlert;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.Logger;
 import com.cg.commonclass.SipNotificationListener;
@@ -130,7 +129,9 @@ import com.cg.commongui.MultimediaUtils;
 import com.cg.commongui.TestHTML5WebView;
 import com.cg.files.CompleteListBean;
 import com.cg.files.CompleteListView;
+import com.cg.files.ComponentCreator;
 import com.cg.files.Components;
+import com.cg.files.FilePicker;
 import com.cg.forms.Alert;
 import com.cg.forms.AppsView;
 import com.cg.forms.FormRecordsCreators;
@@ -8313,6 +8314,27 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			CustomVideoCamera customVideoCamera=(CustomVideoCamera)SingleInstance.contextTable.get("customvideocallscreen");
 			if(customVideoCamera!=null){
 				customVideoCamera.finish();
+			}
+		}
+
+		if(WebServiceReferences.contextTable.containsKey("customvideoplayer")) {
+			VideoPlayer videoPlayer = (VideoPlayer)WebServiceReferences.contextTable.get("customvideoplayer");
+			if(videoPlayer != null) {
+				videoPlayer.finish();
+			}
+		}
+
+		if (WebServiceReferences.contextTable.containsKey("filepicker")) {
+			FilePicker filePicker = (FilePicker)WebServiceReferences.contextTable.get("filepicker");
+			if(filePicker != null){
+				filePicker.finish();
+			}
+		}
+
+		if (WebServiceReferences.contextTable.containsKey("Component")) {
+			ComponentCreator componentCreator = (ComponentCreator) WebServiceReferences.contextTable.get("Component");
+			if(componentCreator != null){
+				componentCreator.finish();
 			}
 		}
 

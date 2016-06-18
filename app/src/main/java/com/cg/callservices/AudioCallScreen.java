@@ -2767,10 +2767,10 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			FragmentManager fm =
                     AppReference.mainContext.getSupportFragmentManager();
 			FragmentTransaction ft = fm.beginTransaction();
-			ContactsFragment contactsFragment = ContactsFragment
-                    .getInstance(context);
+//			ContactsFragment contactsFragment = ContactsFragment
+//                    .getInstance(context);
 			ft.replace(R.id.activity_main_content_fragment,
-                    contactsFragment);
+					AppReference.bacgroundFragment);
 			ft.commitAllowingStateLoss();
 			audio_minimize.setVisibility(View.GONE);
 		} catch (Exception e) {

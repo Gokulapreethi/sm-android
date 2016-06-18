@@ -1,6 +1,5 @@
 package com.main;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +7,6 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -34,8 +32,8 @@ import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
 import com.cg.callservices.AudioCallScreen;
 import com.cg.callservices.CallConnectingScreen;
-import com.cg.callservices.VideoCallScreen;
 import com.cg.callservices.inCommingCallAlert;
+import com.cg.callservices.VideoCallScreen;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.DateComparator;
 import com.cg.files.CompleteListBean;
@@ -47,12 +45,10 @@ import com.image.utils.ImageLoader;
 import com.util.PieChart;
 import com.util.SingleInstance;
 
-import org.lib.model.BuddyInformationBean;
 import org.lib.model.FileDetailsBean;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

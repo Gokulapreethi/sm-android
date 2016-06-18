@@ -99,9 +99,9 @@ import com.cg.avatar.CloneActivity;
 import com.cg.callservices.AudioCallScreen;
 import com.cg.callservices.AudioPagingSRWindow;
 import com.cg.callservices.CallConnectingScreen;
+import com.cg.callservices.inCommingCallAlert;
 import com.cg.callservices.VideoCallScreen;
 import com.cg.callservices.VideoPagingSRWindow;
-import com.cg.callservices.inCommingCallAlert;
 import com.cg.commongui.MultimediaUtils;
 import com.cg.commongui.TestHTML5WebView;
 import com.cg.files.CompleteListBean;
@@ -163,7 +163,6 @@ import com.main.AppMainActivity;
 import com.main.AvatarFragment;
 import com.main.ContactsFragment;
 import com.main.CreateProfileFragment;
-import com.main.DashBoardFragment;
 import com.main.ExchangesFragment;
 import com.main.FilesFragment;
 import com.main.FormsFragment;
@@ -209,7 +208,6 @@ import org.lib.webservice.Servicebean;
 import org.lib.webservice.WebServiceCallback;
 import org.lib.webservice.WebServiceClient;
 import org.net.rtp.RtpPacket;
-import org.tcp.TCPEngine;
 import org.util.Queue;
 import org.util.Utility;
 import org.wifi.NetworkBroadcastReceiver;
@@ -16669,6 +16667,7 @@ private TrustManager[] get_trust_mgr() {
 	public void showCallHistory(final String strSessionId, final String callType)
 	{
 		try {
+			checkandcloseDialog();
 			Log.i("AudioCall","came to showCallHistory");
 			final Dialog dialog = new Dialog(SingleInstance.mainContext);
 			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -16683,6 +16682,9 @@ private TrustManager[] get_trust_mgr() {
 			final ImageView play_button = (ImageView) dialog.findViewById(R.id.play_button);
 			final SeekBar seekBar1 = (SeekBar) dialog.findViewById(R.id.seekBar1);
 			final TextView txt_time= (TextView)dialog.findViewById(R.id.txt_time);
+			if(CallDispatcher.sb.getCallDuration() != null) {
+				txt_time.setText(CallDispatcher.sb.getCallDuration());
+			}
 			Log.i("AudioCall","came to showCallHistory 1");
 			play_button.setOnClickListener(new View.OnClickListener() {
 				@Override

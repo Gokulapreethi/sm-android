@@ -2,7 +2,6 @@ package com.cg.callservices;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.KeyguardManager;
 import android.app.KeyguardManager.KeyguardLock;
 import android.app.ProgressDialog;
@@ -13,10 +12,7 @@ import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.hardware.Camera;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
@@ -38,8 +34,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.FrameLayout;
@@ -52,7 +46,6 @@ import android.widget.Toast;
 
 import com.bean.ProfileBean;
 import com.bean.UserBean;
-import com.callHistory.CallHistoryActivity;
 import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
@@ -75,7 +68,6 @@ import org.video.Preview;
 import org.video.PreviewFrameSink;
 import org.video.VideoFrameRenderer;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
@@ -947,6 +939,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 					public void onClick(View v) {
 						member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+1));
 						Intent i = new Intent(AppReference.mainContext, CallActiveMembersList.class);
+						i.putExtra("timer", chTimer.getText().toString());
 						i.putExtra("sessionId", sessionid);
 						i.putExtra("calltype","VC");
 						i.putExtra("host", host);
@@ -4140,10 +4133,10 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		FragmentManager fm =
 				AppReference.mainContext.getSupportFragmentManager();
 		FragmentTransaction ft = fm.beginTransaction();
-		ContactsFragment contactsFragment = ContactsFragment
-				.getInstance(context);
+//		ContactsFragment contactsFragment = ContactsFragment
+//				.getInstance(context);
 		ft.replace(R.id.activity_main_content_fragment,
-				contactsFragment);
+				AppReference.bacgroundFragment);
 		ft.commitAllowingStateLoss();
 		video_minimize.setVisibility(View.GONE);
 	}

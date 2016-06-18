@@ -1,16 +1,5 @@
 package com.main;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.util.Arrays;
-import java.util.Vector;
-
-import org.lib.model.FieldTemplateBean;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -28,8 +17,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,23 +32,32 @@ import android.widget.ToggleButton;
 
 import com.cg.DB.DBAccess;
 import com.cg.account.ChangePassword;
-import com.cg.account.GenerateInviteCode;
 import com.cg.account.PinAndTouchId;
 import com.cg.account.SecurityQuestions;
 import com.cg.callservices.AudioCallScreen;
 import com.cg.callservices.CallConnectingScreen;
-import com.cg.callservices.VideoCallScreen;
 import com.cg.callservices.inCommingCallAlert;
-import com.cg.commonclass.WebServiceReferences;
-import com.cg.hostedconf.AppReference;
-import com.cg.snazmed.R;
+import com.cg.callservices.VideoCallScreen;
 import com.cg.commonclass.CallDispatcher;
+import com.cg.commonclass.WebServiceReferences;
 import com.cg.files.CompleteListView;
-import com.cg.settings.About;
+import com.cg.hostedconf.AppReference;
 import com.cg.settings.UserSettingsBean;
+import com.cg.snazmed.R;
 import com.image.utils.ImageLoader;
 import com.process.MemoryProcessor;
 import com.util.SingleInstance;
+
+import org.lib.model.FieldTemplateBean;
+
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.Arrays;
+import java.util.Vector;
 
 public class SettingsFragment extends Fragment implements OnClickListener {
 	int pos = 0;

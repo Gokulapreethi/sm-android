@@ -3,12 +3,13 @@
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
     android:background="@color/black2"
-    android:orientation="vertical" >
+    android:orientation="vertical">
+
     <RelativeLayout
         android:id="@+id/call_hist_title_layout"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
-        android:background="@color/blue2" >
+        android:background="@color/blue2">
 
         <ImageView
             android:id="@+id/back_button"
@@ -32,44 +33,43 @@
             android:textSize="20dp" />
 
 
-
     </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal"
         android:layout_marginLeft="10dp"
-        >
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/ctype"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="5dp"
             android:text="@string/call_types1"
             android:textColor="@color/snazlgray"
-            android:textSize="17dp"
-            android:textStyle="bold" />
+            android:textSize="17dp" />
 
         <TextView
             android:id="@+id/ctype_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="7dp"
+            android:layout_alignParentRight="true"
             android:layout_marginRight="5dp"
+            android:gravity="right"
+            android:text="Call Type"
             android:textColor="@color/snazlgray"
-            android:text=""
-            android:textSize="17dp"
-            android:textStyle="bold" />
-    </LinearLayout>
+            android:textSize="17dp" />
+    </RelativeLayout>
 
     <LinearLayout
+
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
@@ -78,8 +78,7 @@
             android:layout_marginRight="5dp"
             android:text="@string/call_contents1"
             android:textColor="@color/grey"
-            android:textSize="17dp"
-            android:textStyle="bold" />
+            android:textSize="17dp" />
 
         <TextView
             android:id="@+id/ccontent_title"
@@ -88,16 +87,16 @@
             android:layout_marginLeft="7dp"
             android:layout_marginRight="5dp"
             android:textColor="@color/grey"
-            android:textSize="17dp"
-            android:textStyle="bold" />
+            android:textSize="17dp" />
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/time"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
@@ -106,8 +105,7 @@
             android:layout_marginRight="5dp"
             android:text="@string/time_call"
             android:textColor="@color/snazlgray"
-            android:textSize="17dp"
-            android:textStyle="bold" />
+            android:textSize="17dp" />
 
         <TextView
             android:id="@+id/date_title"
@@ -115,17 +113,17 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="5dp"
+            android:gravity="right"
             android:textColor="@color/snazlgray"
-            android:textSize="17dp"
-            android:textStyle="bold" />
+            android:textSize="17dp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="20dp"
-        android:layout_marginLeft="10dp">
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
@@ -134,8 +132,7 @@
             android:layout_marginRight="5dp"
             android:text="@string/durations"
             android:textColor="@color/snazlgray"
-            android:textSize="17dp"
-            android:textStyle="bold" />
+            android:textSize="17dp" />
 
         <TextView
             android:id="@+id/duration_title"
@@ -143,17 +140,17 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="5dp"
+            android:gravity="right"
             android:textColor="@color/snazlgray"
-            android:textSize="17dp"
-            android:textStyle="bold" />
+            android:textSize="17dp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
@@ -162,8 +159,7 @@
             android:layout_marginRight="5dp"
             android:text="@string/from_call"
             android:textColor="@color/snazlgray"
-            android:textSize="17dp"
-            android:textStyle="bold" />
+            android:textSize="17dp" />
 
         <TextView
             android:id="@+id/from_title"
@@ -171,17 +167,17 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="5dp"
+            android:gravity="right"
             android:textColor="@color/snazlgray"
-            android:textSize="17dp"
-            android:textStyle="bold" />
+            android:textSize="17dp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="20dp"
-        android:layout_marginLeft="10dp">
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
@@ -190,8 +186,7 @@
             android:layout_marginRight="5dp"
             android:text="@string/to_call"
             android:textColor="@color/snazlgray"
-            android:textSize="17dp"
-            android:textStyle="bold" />
+            android:textSize="17dp" />
 
         <TextView
             android:id="@+id/touser_title"
@@ -199,12 +194,13 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="5dp"
-            android:textColor="@color/snazlgray"
-            android:textSize="17dp"
             android:ellipsize="end"
+            android:gravity="right"
             android:singleLine="true"
-            android:textStyle="bold" />
+            android:textColor="@color/snazlgray"
+            android:textSize="17dp" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -233,6 +229,7 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/text_recording"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -240,78 +237,71 @@
         android:layout_marginTop="30dp"
         android:text="@string/previews"
         android:textColor="@color/snazlgray"
-        android:textSize="17dp"
-        android:textStyle="bold"
-        android:id="@+id/text_recording"/>
+        android:textSize="17dp" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        >
+        android:layout_height="wrap_content">
 
         <FrameLayout
             android:id="@+id/frame_lay"
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:padding="10dp"
-            android:visibility="gone"
-            >
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
-                android:padding="10dp"
                 android:background="@color/blue2"
-                />
+                android:padding="10dp" />
+
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginTop="100dp"
-                >
+                android:layout_marginTop="100dp">
 
                 <RelativeLayout
+                    android:id="@+id/ad_play1"
                     android:layout_width="300dp"
                     android:layout_height="42dp"
                     android:layout_below="@+id/msg_container_receiver"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
-                    android:visibility="visible"
-                    android:id="@+id/ad_play1"
                     android:background="@drawable/bg_bluecolr"
-                    >
+                    android:visibility="visible">
 
                     <ImageView
                         android:id="@+id/play_button1"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_alignParentLeft="true"
-                        android:layout_marginLeft="10dp"
                         android:layout_centerInParent="true"
+                        android:layout_marginLeft="10dp"
                         android:background="@drawable/play" />
+
                     <ImageView
                         android:id="@+id/btn_pause1"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_alignParentLeft="true"
-                        android:layout_marginLeft="10dp"
                         android:layout_centerInParent="true"
+                        android:layout_marginLeft="10dp"
                         android:background="@drawable/audiopause"
-                        android:visibility="gone"/>
-
+                        android:visibility="gone" />
 
 
                     <SeekBar
                         android:id="@+id/seekBar11"
-                        android:thumb="@drawable/seek_handler"
                         android:layout_width="170dp"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="13dp"
                         android:layout_toRightOf="@+id/play_button1"
                         android:progressDrawable="@drawable/progress"
-                        />
+                        android:thumb="@drawable/seek_handler" />
+
                     <Chronometer
                         android:id="@+id/chronometer11"
                         android:layout_width="wrap_content"
@@ -319,25 +309,26 @@
                         android:text="Chronometer"
                         android:textColor="@color/white"
                         android:textSize="20dp"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
+
                     <TextView
                         android:id="@+id/txt_time1"
                         android:layout_width="wrap_content"
                         android:layout_height="18dp"
-                        android:layout_marginLeft="10dp"
                         android:layout_alignParentRight="true"
-                        android:layout_toRightOf="@+id/seekBar11"
                         android:layout_centerInParent="true"
+                        android:layout_marginLeft="10dp"
                         android:layout_marginRight="20dp"
+                        android:layout_toRightOf="@+id/seekBar11"
                         android:text="00:00:00"
                         android:textColor="@color/white" />
 
                 </RelativeLayout>
+
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    >
+                    android:layout_alignParentRight="true">
 
                     <ImageView
                         android:id="@+id/delete_icon1"
@@ -345,71 +336,70 @@
                         android:layout_height="50dp"
                         android:layout_marginTop="4dp"
 
-                        android:background="@drawable/icon_delete"/>
+                        android:background="@drawable/icon_delete" />
                 </RelativeLayout>
 
             </RelativeLayout>
 
         </FrameLayout>
+
         <ImageView
             android:id="@+id/own_image"
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:padding="10dp"
-            android:visibility="gone"
             android:background="@color/blue2"
-            />
+            android:padding="10dp"
+            android:visibility="gone" />
+
         <RelativeLayout
             android:id="@+id/recoding_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
+            android:layout_alignBaseline="@+id/own_image"
             android:layout_alignBottom="@+id/own_image"
-            android:layout_alignBaseline="@+id/own_image">
-
+            android:visibility="visible">
 
 
             <RelativeLayout
+                android:id="@+id/ad_play"
                 android:layout_width="310dp"
                 android:layout_height="42dp"
                 android:layout_below="@+id/msg_container_receiver"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:visibility="visible"
-                android:id="@+id/ad_play"
                 android:background="@drawable/bg_bluecolr"
-                >
+                android:visibility="visible">
 
                 <ImageView
                     android:id="@+id/play_button"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="10dp"
                     android:layout_centerInParent="true"
+                    android:layout_marginLeft="10dp"
                     android:background="@drawable/play" />
+
                 <ImageView
                     android:id="@+id/btn_pause"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="10dp"
                     android:layout_centerInParent="true"
+                    android:layout_marginLeft="10dp"
                     android:background="@drawable/audiopause"
-                    android:visibility="gone"/>
-
+                    android:visibility="gone" />
 
 
                 <SeekBar
                     android:id="@+id/seekBar1"
-                    android:thumb="@drawable/seek_handler"
                     android:layout_width="170dp"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_marginLeft="13dp"
                     android:layout_toRightOf="@+id/play_button"
                     android:progressDrawable="@drawable/progress"
-                    />
+                    android:thumb="@drawable/seek_handler" />
+
                 <Chronometer
                     android:id="@+id/chronometer1"
                     android:layout_width="wrap_content"
@@ -417,32 +407,34 @@
                     android:text="Chronometer"
                     android:textColor="@color/white"
                     android:textSize="20dp"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
+
                 <TextView
                     android:id="@+id/txt_time"
                     android:layout_width="wrap_content"
                     android:layout_height="18dp"
-                    android:layout_marginLeft="10dp"
                     android:layout_alignParentRight="true"
-                    android:layout_toRightOf="@+id/seekBar1"
                     android:layout_centerInParent="true"
+                    android:layout_marginLeft="10dp"
                     android:layout_marginRight="20dp"
+                    android:layout_toRightOf="@+id/seekBar1"
                     android:text="00:00:00"
                     android:textColor="@color/white" />
 
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                >
+                android:layout_centerVertical="true">
 
                 <ImageView
                     android:id="@+id/delete_icon"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:layout_marginTop="4dp"
-                    android:background="@drawable/icon_delete"/>
+                    android:background="@drawable/icon_delete" />
             </RelativeLayout>
 
         </RelativeLayout>
@@ -458,7 +450,7 @@
         android:layout_marginTop="10dp"
         android:orientation="horizontal"
         android:visibility="gone"
-        android:weightSum="3" >
+        android:weightSum="3">
 
         <Button
             android:id="@+id/acceptbtn"

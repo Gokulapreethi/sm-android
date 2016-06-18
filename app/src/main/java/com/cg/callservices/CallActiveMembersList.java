@@ -242,14 +242,17 @@ public class CallActiveMembersList extends Activity {
                     holder.occupation = (TextView) convertView.findViewById(R.id.occupation);
                     holder.header_title = (TextView) convertView.findViewById(R.id.header_title);
                     holder.overlay_image = (ImageView) convertView.findViewById(R.id.overlay);
+                    holder.overlay_image1 = (ImageView) convertView.findViewById(R.id.overlay1);
                     convertView.setTag(holder);
                 } else
                     holder = (ViewHolder) convertView.getTag();
                 final BuddyInformationBean bib = result.get(i);
                 if (calltype.equalsIgnoreCase("VC")) {
                     holder.overlay_image.setVisibility(View.VISIBLE);
+                    holder.overlay_image1.setVisibility(View.VISIBLE);
                 } else {
                     holder.overlay_image.setVisibility(View.GONE);
+                    holder.overlay_image1.setVisibility(View.GONE);
                 }
                 if (bib != null) {
                     if (bib.getProfile_picpath() != null) {
@@ -296,6 +299,7 @@ public class CallActiveMembersList extends Activity {
                         if (bib.getFirstname().equalsIgnoreCase(CallDispatcher.LoginUser)) {
                             holder.buddyName.setText("Me");
                             holder.overlay_image.setVisibility(View.GONE);
+                            holder.overlay_image1.setVisibility(View.GONE);
                         } else {
                             holder.buddyName.setText(bib.getFirstname() + " " + bib.getLastname());
                         }
@@ -374,7 +378,7 @@ public class CallActiveMembersList extends Activity {
     public static class ViewHolder {
         CheckBox selectUser;
         ImageView buddyicon, edit;
-        ImageView statusIcon, overlay_image;
+        ImageView statusIcon, overlay_image, overlay_image1;
         TextView buddyName, timer, position;
         TextView occupation;
         TextView header_title;
@@ -397,7 +401,6 @@ public class CallActiveMembersList extends Activity {
                 intent.putExtra("fromcall", true);
                 intent.putStringArrayListExtra("buddylist", memberslist);
                 startActivityForResult(intent, 3);
-//
 
             } else {
                 Toast.makeText(

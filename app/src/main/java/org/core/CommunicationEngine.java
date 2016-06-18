@@ -3971,16 +3971,25 @@ public class CommunicationEngine implements AudioRecorderListener,
 	private void mixFiles() {
 		try {
 
-			InputStream is1 = new FileInputStream(new File(
+			File ownAudiofile = new File(
 					Environment.getExternalStorageDirectory()
 							+ "/COMMedia/CallRecording/"
 							+ CallDispatcher.sb.getFrom() + "_"
-							+ CallDispatcher.sb.getSessionid() + ".wav"));
-			InputStream is2 = new FileInputStream(new File(
+							+ CallDispatcher.sb.getSessionid() + ".wav");
+
+			File othersfile = new File(
 					Environment.getExternalStorageDirectory()
 							+ "/COMMedia/CallRecording/"
 							+ CallDispatcher.sb.getTo() + "_"
-							+ CallDispatcher.sb.getSessionid() + ".wav"));
+							+ CallDispatcher.sb.getSessionid() + ".wav");
+
+			if(!ownAudiofile.exists() || !othersfile.exists()) {
+				return;
+			}
+
+			InputStream is1 = new FileInputStream(ownAudiofile);
+			InputStream is2 = new FileInputStream(othersfile);
+
 			// InputStream is3 = new FileInputStream(new File(
 			// Environment.getExternalStorageDirectory(),
 			// "/Android/data/blablabla3.mp3"));
@@ -4028,115 +4037,117 @@ public class CommunicationEngine implements AudioRecorderListener,
 					finalMusic1[i] = (byte) 0xff;
 				}
 			}
-			byte[] outputByte = new byte[finalMusic1.length];
+			if(finalMusic1 != null) {
+				byte[] outputByte = new byte[finalMusic1.length];
 
-			for (int i = 0; i < finalMusic1.length; i++) {
-				outputByte[i] = (byte) (finalMusic1[i] + finalMusic2[i]);
-			}
+				for (int i = 0; i < finalMusic1.length; i++) {
+					outputByte[i] = (byte) (finalMusic1[i] + finalMusic2[i]);
+				}
 
-			String fileName = "" + CallDispatcher.sb.getSessionid();
+				String fileName = "" + CallDispatcher.sb.getSessionid();
 
-			DataOutputStream amplifyOutputStream = new DataOutputStream(
-					new BufferedOutputStream(new FileOutputStream(
+				DataOutputStream amplifyOutputStream = new DataOutputStream(
+						new BufferedOutputStream(new FileOutputStream(
+								Environment.getExternalStorageDirectory()
+										+ "/COMMedia/CallRecording/"
+										+ fileName.trim() + ".wav")));
+
+				amplifyOutputStream.write(outputByte);
+				amplifyOutputStream.close();
+
+				// start
+
+				long size = 0;
+				try {
+					FileInputStream fileSize = new FileInputStream(
 							Environment.getExternalStorageDirectory()
-									+ "/COMMedia/CallRecording/"
-									+ fileName.trim() + ".wav")));
+									+ "/COMMedia/CallRecording/" + fileName.trim()
+									+ ".wav");
+					size = fileSize.getChannel().size();
+					fileSize.close();
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
-			amplifyOutputStream.write(outputByte);
-			amplifyOutputStream.close();
+				final int RECORDER_BPP = 16;
+				int RECORDER_SAMPLERATE = 8000;
 
-			// start
+				long datasize = size + 36;
+				long byteRate = (RECORDER_BPP * RECORDER_SAMPLERATE) / 8;
+				long longSampleRate = RECORDER_SAMPLERATE;
+				byte[] header = new byte[44];
 
-			long size = 0;
-			try {
-				FileInputStream fileSize = new FileInputStream(
-						Environment.getExternalStorageDirectory()
-								+ "/COMMedia/CallRecording/" + fileName.trim()
-								+ ".wav");
-				size = fileSize.getChannel().size();
-				fileSize.close();
-			} catch (FileNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				header[0] = 'R'; // RIFF/WAVE header
+				header[1] = 'I';
+				header[2] = 'F';
+				header[3] = 'F';
+				header[4] = (byte) (datasize & 0xff);
+				header[5] = (byte) ((datasize >> 8) & 0xff);
+				header[6] = (byte) ((datasize >> 16) & 0xff);
+				header[7] = (byte) ((datasize >> 24) & 0xff);
+				header[8] = 'W';
+				header[9] = 'A';
+				header[10] = 'V';
+				header[11] = 'E';
+				header[12] = 'f'; // 'fmt ' chunk
+				header[13] = 'm';
+				header[14] = 't';
+				header[15] = ' ';
+				header[16] = 16; // 4 bytes: size of 'fmt ' chunk
+				header[17] = 0;
+				header[18] = 0;
+				header[19] = 0;
+				header[20] = 1; // format = 1
+				header[21] = 0;
+				header[22] = (byte) 1;
+				header[23] = 0;
+				header[24] = (byte) (longSampleRate & 0xff);
+				header[25] = (byte) ((longSampleRate >> 8) & 0xff);
+				header[26] = (byte) ((longSampleRate >> 16) & 0xff);
+				header[27] = (byte) ((longSampleRate >> 24) & 0xff);
+				header[28] = (byte) (byteRate & 0xff);
+				header[29] = (byte) ((byteRate >> 8) & 0xff);
+				header[30] = (byte) ((byteRate >> 16) & 0xff);
+				header[31] = (byte) ((byteRate >> 24) & 0xff);
+				header[32] = (byte) ((RECORDER_BPP) / 8); // block align
+				header[33] = 0;
+				header[34] = RECORDER_BPP; // bits per sample
+				header[35] = 0;
+				header[36] = 'd';
+				header[37] = 'a';
+				header[38] = 't';
+				header[39] = 'a';
+				header[40] = (byte) (size & 0xff);
+				header[41] = (byte) ((size >> 8) & 0xff);
+				header[42] = (byte) ((size >> 16) & 0xff);
+				header[43] = (byte) ((size >> 24) & 0xff);
+				// out.write(header, 0, 44);
+
+				try {
+					RandomAccessFile rFile = new RandomAccessFile(
+							Environment.getExternalStorageDirectory()
+									+ "/COMMedia/CallRecording/" + fileName.trim()
+									+ ".wav", "rw");
+					rFile.seek(0);
+					rFile.write(header);
+					rFile.close();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				// end
+
+				// play(output);
+				// escribir(output);
 			}
-
-			final int RECORDER_BPP = 16;
-			int RECORDER_SAMPLERATE = 8000;
-
-			long datasize = size + 36;
-			long byteRate = (RECORDER_BPP * RECORDER_SAMPLERATE) / 8;
-			long longSampleRate = RECORDER_SAMPLERATE;
-			byte[] header = new byte[44];
-
-			header[0] = 'R'; // RIFF/WAVE header
-			header[1] = 'I';
-			header[2] = 'F';
-			header[3] = 'F';
-			header[4] = (byte) (datasize & 0xff);
-			header[5] = (byte) ((datasize >> 8) & 0xff);
-			header[6] = (byte) ((datasize >> 16) & 0xff);
-			header[7] = (byte) ((datasize >> 24) & 0xff);
-			header[8] = 'W';
-			header[9] = 'A';
-			header[10] = 'V';
-			header[11] = 'E';
-			header[12] = 'f'; // 'fmt ' chunk
-			header[13] = 'm';
-			header[14] = 't';
-			header[15] = ' ';
-			header[16] = 16; // 4 bytes: size of 'fmt ' chunk
-			header[17] = 0;
-			header[18] = 0;
-			header[19] = 0;
-			header[20] = 1; // format = 1
-			header[21] = 0;
-			header[22] = (byte) 1;
-			header[23] = 0;
-			header[24] = (byte) (longSampleRate & 0xff);
-			header[25] = (byte) ((longSampleRate >> 8) & 0xff);
-			header[26] = (byte) ((longSampleRate >> 16) & 0xff);
-			header[27] = (byte) ((longSampleRate >> 24) & 0xff);
-			header[28] = (byte) (byteRate & 0xff);
-			header[29] = (byte) ((byteRate >> 8) & 0xff);
-			header[30] = (byte) ((byteRate >> 16) & 0xff);
-			header[31] = (byte) ((byteRate >> 24) & 0xff);
-			header[32] = (byte) ((RECORDER_BPP) / 8); // block align
-			header[33] = 0;
-			header[34] = RECORDER_BPP; // bits per sample
-			header[35] = 0;
-			header[36] = 'd';
-			header[37] = 'a';
-			header[38] = 't';
-			header[39] = 'a';
-			header[40] = (byte) (size & 0xff);
-			header[41] = (byte) ((size >> 8) & 0xff);
-			header[42] = (byte) ((size >> 16) & 0xff);
-			header[43] = (byte) ((size >> 24) & 0xff);
-			// out.write(header, 0, 44);
-
-			try {
-				RandomAccessFile rFile = new RandomAccessFile(
-						Environment.getExternalStorageDirectory()
-								+ "/COMMedia/CallRecording/" + fileName.trim()
-								+ ".wav", "rw");
-				rFile.seek(0);
-				rFile.write(header);
-				rFile.close();
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			// end
-
-			// play(output);
-			// escribir(output);
 		} catch (NotFoundException e) {
 			// toast("notf");
 			e.printStackTrace();

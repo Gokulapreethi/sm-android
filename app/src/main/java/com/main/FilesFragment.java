@@ -21,7 +21,6 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -47,17 +46,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.adapter.NotifyListAdapter;
 import com.cg.DB.DBAccess;
 import com.cg.callservices.AudioCallScreen;
 import com.cg.callservices.CallConnectingScreen;
-import com.cg.callservices.VideoCallScreen;
 import com.cg.callservices.inCommingCallAlert;
-import com.cg.commongui.WebView_doc;
+import com.cg.callservices.VideoCallScreen;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.TextNoteDatas;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.commongui.MultimediaUtils;
+import com.cg.commongui.WebView_doc;
 import com.cg.commongui.listswipe.SwipeMenu;
 import com.cg.commongui.listswipe.SwipeMenuCreator;
 import com.cg.commongui.listswipe.SwipeMenuItem;
@@ -95,8 +93,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.Vector;
-import java.net.URL;
-import java.net.URI;
 /**
  * This screen will populate all the event entries made by the user, it may be
  * notes or call history. From here user can create notes and they can make the
@@ -176,6 +172,8 @@ public class FilesFragment extends Fragment implements OnClickListener {
 	private Boolean isSearch=false;
 	Button clearAllBtn;
 	public static String sortorder="";
+
+	private Dialog plus_dialog;
 
 	public static FilesFragment newInstance(Context maincontext) {
 		try {
@@ -273,6 +271,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 									dialog.dismiss();
 								}
 							});
+							plus_dialog = dialog;
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -630,6 +629,14 @@ public class FilesFragment extends Fragment implements OnClickListener {
 			((ViewGroup) view.getParent()).removeView(view);
 		}
 		return view;
+	}
+
+	public void closeOpenedDialogs(){
+		if(plus_dialog != null){
+			if(plus_dialog.isShowing()) {
+				plus_dialog.dismiss();
+			}
+		}
 	}
 
 	public String getUsername(String username) {
