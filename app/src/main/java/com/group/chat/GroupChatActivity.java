@@ -3201,6 +3201,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             uIbean.setUser(buddy);
                             SendListUI.add(uIbean);
                             sendlistadapter.notifyDataSetChanged();
+                            list_all.removeAllViews();
                             final int adapterCount = sendlistadapter.getCount();
 
                             for (int i = 0; i < adapterCount; i++) {
@@ -8282,9 +8283,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             Log.i("AAAA", "group chat getAdapterList online ");
             Vector<BuddyInformationBean> newlist = new Vector<BuddyInformationBean>();
             Vector<BuddyInformationBean> onlinelist = new Vector<BuddyInformationBean>();
-//            Vector<BuddyInformationBean> offlinelist = new Vector<BuddyInformationBean>();
-//            Vector<BuddyInformationBean> airplanelist = new Vector<BuddyInformationBean>();
-//            Vector<BuddyInformationBean> awaylist = new Vector<BuddyInformationBean>();
             Vector<BuddyInformationBean> individualList = new Vector<BuddyInformationBean>();
             Vector<BuddyInformationBean> pending = new Vector<BuddyInformationBean>();
             tempList.clear();
@@ -8315,13 +8313,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         newlist.add(sortlistbean);
                     } else if (status.equalsIgnoreCase("Online")) {
                         onlinelist.add(sortlistbean);
-//                    } else if (status.equalsIgnoreCase("Offline") || status.equalsIgnoreCase("Stealth")) {
-//                        sortlistbean.setStatus("Offline");
-//                        offlinelist.add(sortlistbean);
-//                    } else if (status.equalsIgnoreCase("Airport")) {
-//                        airplanelist.add(sortlistbean);
-//                    } else if (status.equalsIgnoreCase("Away")) {
-//                        awaylist.add(sortlistbean);
                     } else if (status.equalsIgnoreCase("Pending")) {
                         pending.add(sortlistbean);
                     }
@@ -8334,12 +8325,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             tempList.addAll(pending);
             Collections.sort(onlinelist, new BuddyListComparator());
             tempList.addAll(onlinelist);
-//            Collections.sort(airplanelist, new BuddyListComparator());
-//            tempList.addAll(airplanelist);
-//            Collections.sort(awaylist, new BuddyListComparator());
-//            tempList.addAll(awaylist);
-//            Collections.sort(offlinelist, new BuddyListComparator());
-//            tempList.addAll(offlinelist);
 
             for (BuddyInformationBean bBean : tempList) {
                 individualList.add(bBean);
@@ -8352,32 +8337,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             Log.i("AAAA", "group chat getAdapterList alpha ");
             Vector<BuddyInformationBean> newlist = new Vector<BuddyInformationBean>();
             Vector<BuddyInformationBean> pending = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> a = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> b = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> c = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> d = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> e = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> f = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> g = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> h = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> i = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> j = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> k = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> l = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> m = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> n = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> o = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> p = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> q = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> r = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> s = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> t = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> u = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> v = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> w = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> x = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> y = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> z = new Vector<BuddyInformationBean>();
+            Vector<BuddyInformationBean> numbers = new Vector<BuddyInformationBean>();
             Vector<BuddyInformationBean> individualList = new Vector<BuddyInformationBean>();
             tempList.clear();
             for (BuddyInformationBean sortlistbean : vectorBean) {
@@ -8407,293 +8367,28 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         newlist.add(sortlistbean);
                     } else if (status.equalsIgnoreCase("Pending")) {
                         pending.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("a")) {
-                        a.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("b")) {
-                        b.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("c")) {
-                        c.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("d")) {
-                        d.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("e")) {
-                        e.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("f")) {
-                        f.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("g")) {
-                        g.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("h")) {
-                        h.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("i")) {
-                        i.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("j")) {
-                        j.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("k")) {
-                        k.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("l")) {
-                        l.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("m")) {
-                        m.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("n")) {
-                        n.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("o")) {
-                        o.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("p")) {
-                        p.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("q")) {
-                        q.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("r")) {
-                        r.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("s")) {
-                        s.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("t")) {
-                        t.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("u")) {
-                        u.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("v")) {
-                        v.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("w")) {
-                        w.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("x")) {
-                        x.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getLastname().charAt(0)).equalsIgnoreCase("y")) {
-                        y.add(sortlistbean);
-                    } else if (String.valueOf(sortlistbean.getFirstname().charAt(0)).equalsIgnoreCase("z")) {
-                        z.add(sortlistbean);
-                    }
+                    }else
+                        numbers.add(sortlistbean);
                 }
             }
-
-            if (newlist.size() > 0) {
-                Collections.sort(newlist, new BuddyListComparator());
-                newlist.get(0).setHeader("Request");
+            if(newlist.size()>0) {
+                newlist.get(0).setHeader("REQUEST");
                 tempList.addAll(newlist);
             }
-            if (pending.size() > 0) {
-                Collections.sort(pending, new BuddyListComparator());
+            if(pending.size()>0) {
                 if (!(newlist.size() > 0)) {
-                    pending.get(0).setHeader("Request");
+                    pending.get(0).setHeader("REQUEST");
                 }
                 tempList.addAll(pending);
             }
-            if (a.size() > 0) {
-                Collections.sort(a, new BuddyListComparator());
-                a.get(0).setHeader("A");
+            if (numbers.size() > 0) {
+                Collections.sort(numbers, new BuddyListComparator());
                 if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(a);
+                    Collections.reverse(numbers);
                 }
-                tempList.addAll(a);
-            }
-            if (b.size() > 0) {
-                Collections.sort(b, new BuddyListComparator());
-                b.get(0).setHeader("B");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(b);
-                }
-                tempList.addAll(b);
-            }
-            if (c.size() > 0) {
-                Collections.sort(c, new BuddyListComparator());
-                c.get(0).setHeader("C");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(c);
-                }
-                tempList.addAll(c);
-            }
-            if (d.size() > 0) {
-                Collections.sort(d, new BuddyListComparator());
-                d.get(0).setHeader("D");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(d);
-                }
-                tempList.addAll(d);
-            }
-            if (e.size() > 0) {
-                Collections.sort(e, new BuddyListComparator());
-                e.get(0).setHeader("E");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(e);
-                }
-                tempList.addAll(e);
-            }
-            if (f.size() > 0) {
-                Collections.sort(f, new BuddyListComparator());
-                f.get(0).setHeader("F");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(f);
-                }
-                tempList.addAll(f);
-            }
-            if (g.size() > 0) {
-                Collections.sort(g, new BuddyListComparator());
-                g.get(0).setHeader("G");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(g);
-                }
-                tempList.addAll(g);
-            }
-            if (h.size() > 0) {
-                Collections.sort(h, new BuddyListComparator());
-                h.get(0).setHeader("H");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(h);
-                }
-                tempList.addAll(h);
-            }
-            if (i.size() > 0) {
-                Collections.sort(i, new BuddyListComparator());
-                i.get(0).setHeader("I");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(i);
-                }
-                tempList.addAll(i);
-            }
-            if (j.size() > 0) {
-                Collections.sort(j, new BuddyListComparator());
-                j.get(0).setHeader("J");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(j);
-                }
-                tempList.addAll(j);
-            }
-            if (k.size() > 0) {
-                Collections.sort(k, new BuddyListComparator());
-                k.get(0).setHeader("K");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(k);
-                }
-                tempList.addAll(k);
-            }
-            if (l.size() > 0) {
-                Collections.sort(l, new BuddyListComparator());
-                l.get(0).setHeader("L");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(l);
-                }
-                tempList.addAll(l);
-            }
-            if (m.size() > 0) {
-                Collections.sort(m, new BuddyListComparator());
-                m.get(0).setHeader("M");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(m);
-                }
-                tempList.addAll(m);
-            }
-            if (n.size() > 0) {
-                Collections.sort(n, new BuddyListComparator());
-                n.get(0).setHeader("N");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(n);
-                }
-                tempList.addAll(n);
-            }
-            if (o.size() > 0) {
-                Collections.sort(o, new BuddyListComparator());
-                o.get(0).setHeader("O");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(o);
-                }
-                tempList.addAll(o);
-            }
-            if (p.size() > 0) {
-                Collections.sort(p, new BuddyListComparator());
-                p.get(0).setHeader("P");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(p);
-                }
-                tempList.addAll(p);
-            }
-            if (q.size() > 0) {
-                Collections.sort(q, new BuddyListComparator());
-                q.get(0).setHeader("Q");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(q);
-                }
-                tempList.addAll(q);
-            }
-            if (r.size() > 0) {
-                Collections.sort(r, new BuddyListComparator());
-                r.get(0).setHeader("R");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(r);
-                }
-                tempList.addAll(r);
-            }
-            if (s.size() > 0) {
-                Collections.sort(s, new BuddyListComparator());
-                s.get(0).setHeader("S");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(s);
-                }
-                tempList.addAll(s);
-            }
-            if (t.size() > 0) {
-                Collections.sort(t, new BuddyListComparator());
-                t.get(0).setHeader("T");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(t);
-                }
-                tempList.addAll(t);
-            }
-            if (u.size() > 0) {
-                Collections.sort(u, new BuddyListComparator());
-                u.get(0).setHeader("U");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(u);
-                }
-                tempList.addAll(u);
-            }
-            if (v.size() > 0) {
-                Collections.sort(v, new BuddyListComparator());
-                v.get(0).setHeader("V");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(v);
-                }
-                tempList.addAll(v);
-            }
-            if (w.size() > 0) {
-                Collections.sort(w, new BuddyListComparator());
-                w.get(0).setHeader("W");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(w);
-                }
-                tempList.addAll(w);
-            }
-            if (x.size() > 0) {
-                Collections.sort(x, new BuddyListComparator());
-                x.get(0).setHeader("X");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(x);
-                }
-                tempList.addAll(x);
-            }
-            if (y.size() > 0) {
-                Collections.sort(y, new BuddyListComparator());
-                y.get(0).setHeader("Y");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(y);
-                }
-                tempList.addAll(y);
-            }
-            if (z.size() > 0) {
-                Collections.sort(z, new BuddyListComparator());
-                z.get(0).setHeader("Z");
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(z);
-                }
-                tempList.addAll(z);
+                tempList.addAll(numbers);
 
             }
-            for (BuddyInformationBean bBean : tempList) {
-                Log.d("R46NU5", "Name: " + bBean.getName() + " Header: " + bBean.getHeader());
-                individualList.add(bBean);
-            }
-            tempList.clear();
-            tempList.addAll(individualList);
-            if(!ContactsFragment.getInstance(context).isazsort) {
-                Collections.reverse(tempList);
-            }
-
         }
 
         return tempList;

@@ -103,6 +103,8 @@ public class MyAccountFragment extends Fragment {
 
         try {
             AppReference.bacgroundFragment=myAccountFragment;
+            getActivity().getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
             Button select = (Button) getActivity().findViewById(R.id.btn_brg);
             select.setVisibility(View.GONE);
             TextView title = (TextView) getActivity().findViewById(

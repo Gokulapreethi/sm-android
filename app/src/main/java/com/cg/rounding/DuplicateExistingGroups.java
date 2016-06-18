@@ -82,6 +82,7 @@ public class DuplicateExistingGroups extends Activity {
                             RoundingGroupActivity.class);
                     intent.putExtra("isEdit", true);
                     intent.putExtra("id", groupBean.getGroupId());
+                    intent.putExtra("isduplicate",true);
                     startActivity(intent);
                     finish();
                 }

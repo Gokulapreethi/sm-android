@@ -25,6 +25,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.cg.commonclass.WebServiceReferences;
 import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.image.utils.ImageLoader;
@@ -64,6 +66,10 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 				row = inflater.inflate(R.layout.grouplist, null, false);
 				holder.listContainer = (LinearLayout) row
 						.findViewById(R.id.list_container);
+				holder.accept_lay = (LinearLayout) row
+						.findViewById(R.id.ll_accept);
+				holder.reject_lay = (LinearLayout) row
+						.findViewById(R.id.ll_reject);
 				holder.grouplist = (TextView) row.findViewById(R.id.group_name);
 				holder.header_title = (TextView) row.findViewById(R.id.header_title);
 				holder.members = (TextView) row.findViewById(R.id.members);
@@ -163,6 +169,20 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 
 					}
 				});
+			holder.accept_lay.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					GroupRequestFragment.newInstance(SingleInstance.mainContext).showDialog();
+					WebServiceReferences.webServiceClient.AcceptRejectGroupmember(groupBean.getGroupId(), CallDispatcher.LoginUser, "1",SingleInstance.mainContext);
+				}
+			});
+			holder.reject_lay.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					GroupRequestFragment.newInstance(SingleInstance.mainContext).showDialog();
+					WebServiceReferences.webServiceClient.AcceptRejectGroupmember(groupBean.getGroupId(), CallDispatcher.LoginUser, "0",SingleInstance.mainContext);
+				}
+			});
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -172,7 +192,7 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 	}
 
 	public static class ViewHolder {
-		LinearLayout listContainer;
+		LinearLayout listContainer,accept_lay,reject_lay;
 		TextView grouplist,members,header_title;
 		LinearLayout contact_history;
 		LinearLayout inreq;

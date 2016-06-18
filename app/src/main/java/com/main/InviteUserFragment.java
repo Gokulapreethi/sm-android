@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -64,6 +65,8 @@ public class InviteUserFragment extends android.support.v4.app.Fragment {
             Button edit = (Button) getActivity().findViewById(
                     R.id.btn_settings);
             edit.setVisibility(View.GONE);
+            final EditText search_box = (EditText)getActivity().findViewById(R.id.search_box);
+            search_box.setVisibility(View.GONE);
             final RelativeLayout mainHeader = (RelativeLayout) getActivity().findViewById(R.id.mainheader);
             mainHeader.setVisibility(View.VISIBLE);
             LinearLayout contact_layout = (LinearLayout) getActivity()

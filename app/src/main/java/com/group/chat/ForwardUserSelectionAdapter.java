@@ -44,6 +44,7 @@ public class ForwardUserSelectionAdapter extends ArrayAdapter<BuddyInformationBe
     private static int checkBoxCounter = 0;
     private int checkboxcount;
     private  ForwardFilter filter;
+    boolean[] checkBoxState;
 
 
     /************* CustomAdapter Constructor *****************/
@@ -58,6 +59,7 @@ public class ForwardUserSelectionAdapter extends ArrayAdapter<BuddyInformationBe
         this.originallist.addAll(userList);
         inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        checkBoxState = new boolean[userList.size()];
 
         /*********** Layout inflator to call external xml layout () ***********/
 
@@ -90,15 +92,8 @@ public class ForwardUserSelectionAdapter extends ArrayAdapter<BuddyInformationBe
             final BuddyInformationBean userBean = userList.get(position);
             if(userBean!=null) {
                 Log.d("status", "---->" + userBean.getStatus());
-
-//				if (userBean.getIsTitle()) {
-//					holder.header_title.setVisibility(View.VISIBLE);
-//					holder.header_title.setText(userBean.getHeader());
-//				} else {
-//					holder.header_title.setVisibility(View.GONE);
-//				}
                 holder.header_title.setVisibility(View.VISIBLE);
-                holder.buddyName.setText(userBean.getFirstname());
+                holder.buddyName.setText(userBean.getFirstname()+" "+userBean.getLastname());
 
                 String cname1, cname2;
                 cname1 = String.valueOf(userBean.getFirstname().charAt(0));
@@ -119,47 +114,34 @@ public class ForwardUserSelectionAdapter extends ArrayAdapter<BuddyInformationBe
 
                     holder.occupation.setText(userBean.getOccupation());
                 }
-//                Log.d("budddyname","--->");
-
-
-//                if(userBean.getInvite()){
-//                    holder.selectUser.setVisibility(View.GONE);
-//                    holder.cancel_lay.setVisibility(View.VISIBLE);
-//                    holder.occupation.setText("invite Sent");
-//                }
                 if(userBean.isSelected()){
                     holder.selectUser.setChecked(true);
                 }else{
                     holder.selectUser.setChecked(false);
                 }
+//                holder.selectUser.setChecked(checkBoxState[position]);
                 final ForwardUserSelect listmembers = (ForwardUserSelect) WebServiceReferences.contextTable
                         .get("forwarduser");
-
-                holder.selectUser
-                        .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                            @Override
-                            public void onCheckedChanged(CompoundButton arg0,
-                                                         boolean isChecked) {
-                                Log.d("selecteduser", "---->entering the bean");
-                                if (isChecked) {
-                                    Log.d("selecteduser", "---->checking the values" + isChecked);
-                                    userBean.setSelected(true);
-                                    checkBoxCounter++;
-                                    if (listmembers != null) {
-                                        Log.d("selecteduser", "---->counting values " + checkBoxCounter);
-                                        listmembers.countofcheckbox(checkBoxCounter);
-                                    }
-                                } else {
-                                    userBean.setSelected(false);
-                                    checkBoxCounter--;
-                                    if (listmembers != null) {
-                                        Log.d("selecteduser", "---->checkboxcounter " + checkBoxCounter);
-                                        listmembers.countofcheckbox(checkBoxCounter);
-                                    }
-                                }
+                holder.selectUser.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (((CheckBox) v).isChecked()) {
+                            checkBoxState[position] = true;
+                            userBean.setSelected(true);
+                            checkBoxCounter++;
+                            if (listmembers != null) {
+                                listmembers.countofcheckbox(checkBoxCounter);
                             }
-
-                        });
+                        } else {
+                            checkBoxState[position] = false;
+                            userBean.setSelected(false);
+                            checkBoxCounter--;
+                            if (listmembers != null) {
+                                listmembers.countofcheckbox(checkBoxCounter);
+                            }
+                        }
+                    }
+                });
                 if (userBean.getStatus() != null) {
                     Log.d("status1", "---->" + userBean.getStatus());
 

@@ -93,7 +93,8 @@ public class MyAccountActivity extends Activity {
 
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.my_account_1);
@@ -258,6 +259,13 @@ public class MyAccountActivity extends Activity {
                     window.setAttributes(lp);
                     dialog1.show();
 
+                    final TextView Addresstext = (TextView)dialog1.findViewById(R.id.address_text1);
+                    final TextView addresstext = (TextView)dialog1.findViewById(R.id.address_text2);
+                    final TextView ziptext = (TextView)dialog1.findViewById(R.id.address_text3);
+                    final TextView citytext = (TextView)dialog1.findViewById(R.id.address_text4);
+                    final TextView office_phone_numbertext = (TextView)dialog1.findViewById(R.id.address_text5);
+                    final TextView office_fax_numbertext = (TextView)dialog1.findViewById(R.id.address_text6);
+
 
                    final EditText Address1 = (EditText)dialog1.findViewById(R.id.address_edit1);
                     final EditText address2 = (EditText)dialog1.findViewById(R.id.address_edit2);
@@ -269,6 +277,118 @@ public class MyAccountActivity extends Activity {
 
                     Button save1 = (Button)dialog1.findViewById(R.id.save_button2);
                     Button cancel1 = (Button)dialog1.findViewById(R.id.cancel_button2);
+
+                    office_phone_number.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            if (charSequence.length() > 0) {
+                                office_phone_numbertext.setVisibility(View.VISIBLE);
+                            } else {
+                                office_phone_numbertext.setVisibility(View.GONE);
+                            }
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                        }
+                    });
+
+
+                    office_fax_number.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            if (charSequence.length() > 0) {
+                                office_fax_numbertext.setVisibility(View.VISIBLE);
+                            } else {
+                                office_fax_numbertext.setVisibility(View.GONE);
+                            }
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                        }
+                    });
+
+                    Address1.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            if (charSequence.length() > 0) {
+                                Addresstext.setVisibility(View.VISIBLE);
+                            } else {
+                                Addresstext.setVisibility(View.GONE);
+                            }
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                        }
+                    });
+                    address2.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            if (charSequence.length() > 0) {
+                                addresstext.setVisibility(View.VISIBLE);
+                            } else {
+                                addresstext.setVisibility(View.GONE);
+                            }
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                        }
+                    });
+                    zip.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            if (charSequence.length() > 0) {
+                                ziptext.setVisibility(View.VISIBLE);
+                            } else {
+                                ziptext.setVisibility(View.GONE);
+                            }
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                        }
+                    });
+                    city.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            if (charSequence.length() > 0) {
+                                citytext.setVisibility(View.VISIBLE);
+                            } else {
+                                citytext.setVisibility(View.GONE);
+                            }
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                        }
+                    });
 
                     cancel1.setOnClickListener(new View.OnClickListener() {
                         @Override

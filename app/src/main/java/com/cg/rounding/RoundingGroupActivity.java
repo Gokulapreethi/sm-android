@@ -105,7 +105,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
 
     private TextView memberCount = null,memberAcceptedCount;
 
-    private boolean isEdit = false;
+    private boolean isEdit = false,isduplicate;
 
     private GroupBean groupBean = null;
 
@@ -173,6 +173,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
         memberAcceptedCount = (TextView) findViewById(R.id.members_count1);
         lv_memberList = (LinearLayout) findViewById(R.id.lv_memberlist);
         isEdit = getIntent().getBooleanExtra("isEdit", false);
+        isduplicate = getIntent().getBooleanExtra("isduplicate", false);
         fromRounding=getIntent().getBooleanExtra("fromRounding",false);
         SingleInstance.contextTable.put("roundingGroup", context);
         member_lay=(LinearLayout)findViewById(R.id.member_lay);
@@ -323,6 +324,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
             memberAcceptedCount.setVisibility(View.VISIBLE);
             member_lay.setVisibility(View.VISIBLE);
             member_lay1.setVisibility(View.VISIBLE);
+            edit_pic.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_edit_photo));
             refreshMembersList();
             if (groupBean != null) {Log.d("Test",
                     "$$$$$GroupCreatedDate@@@@@ " + groupBean.getCreatedDate());
@@ -835,6 +837,8 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
         try {
             if (groupBean != null) {
                 if(groupid!=null) groupBean.setGroupId(groupid);
+                if(isduplicate)
+                    groupBean.setGroupId("");
                 groupBean.setGroupStatus("1");
                 if (membersList.size() != 0) {
                     String deleteMembers = "";
@@ -920,6 +924,10 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
             @Override
             public void run() {
                 // TODO Auto-generated method stub
+                if(membersList.size()>0)
+                    member_lay.setVisibility(View.VISIBLE);
+                if(membersAcceptedList.size()>0)
+                    member_lay1.setVisibility(View.VISIBLE);
                 memberCount.setText("("
                         + String.valueOf(membersList.size()) + ")");
                 memberAcceptedCount.setText("("

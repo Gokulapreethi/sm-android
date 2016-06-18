@@ -261,6 +261,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 			memberAcceptedCount.setVisibility(View.VISIBLE);
 			member_lay.setVisibility(View.VISIBLE);
 			member_lay1.setVisibility(View.VISIBLE);
+			edit_pic.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_edit_photo));
 			refreshMembersList();
 			if (groupBean != null) {
 				Log.d("Test", "$$$$$GroupCreatedDate@@@@@ " + groupBean.getCreatedDate());
@@ -589,6 +590,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 					}
 					for (UserBean userBean : list) {
 						if (!membersMap.containsKey(userBean.getBuddyName())) {
+							userBean.setInvite(true);
 							membersList.add(userBean);
 						}
 					}
@@ -1207,6 +1209,10 @@ public class GroupActivity extends Activity implements OnClickListener {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
+				if(membersList.size()>0)
+					member_lay.setVisibility(View.VISIBLE);
+				if(membersAcceptedList.size()>0)
+				member_lay1.setVisibility(View.VISIBLE);
 				memberCount.setText(" ("
 						+ String.valueOf(membersList.size()) + ")");
 				memberAcceptedCount.setText(" ("

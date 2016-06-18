@@ -281,7 +281,7 @@ public class GroupRequestFragment extends Fragment {
         TextView occupation;
         TextView header_title;
     }
-    private void showDialog() {
+    public void showDialog() {
         handler.post(new Runnable() {
 
             @Override

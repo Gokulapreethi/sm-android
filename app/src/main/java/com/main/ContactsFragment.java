@@ -278,6 +278,8 @@ public class ContactsFragment extends Fragment{
 
 		Button backBtn = (Button) getActivity().findViewById(R.id.backbtn);
 		backBtn.setVisibility(View.GONE);
+		final EditText search_box = (EditText)getActivity().findViewById(R.id.search_box);
+		search_box.setVisibility(View.GONE);
 
 		TextView title = (TextView) getActivity().findViewById(
 				R.id.activity_main_content_title);

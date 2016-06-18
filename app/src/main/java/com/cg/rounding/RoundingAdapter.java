@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cg.commonclass.CallDispatcher;
+import com.cg.commonclass.WebServiceReferences;
 import com.cg.snazmed.R;
 import com.group.GroupRequestFragment;
 import com.image.utils.ImageLoader;
@@ -58,6 +59,10 @@ public class RoundingAdapter extends ArrayAdapter<GroupBean> {
                 row = inflater.inflate(R.layout.grouplist, null, false);
                 holder.listContainer = (LinearLayout) row
                         .findViewById(R.id.list_container);
+                holder.accept_lay = (LinearLayout) row
+                        .findViewById(R.id.ll_accept);
+                holder.reject_lay = (LinearLayout) row
+                        .findViewById(R.id.ll_reject);
                 holder.grouplist = (TextView) row.findViewById(R.id.group_name);
                 holder.members = (TextView) row.findViewById(R.id.members);
                 holder.contact_history = (LinearLayout) row.findViewById(R.id.contact_history);
@@ -137,6 +142,22 @@ public class RoundingAdapter extends ArrayAdapter<GroupBean> {
 
                 }
             });
+            holder.accept_lay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    GroupRequestFragment.newInstance(SingleInstance.mainContext).showDialog();
+                    GroupRequestFragment.newInstance(SingleInstance.mainContext).setRequestFrom(true);
+                    WebServiceReferences.webServiceClient.AcceptRejectGroupmember(groupBean.getGroupId(), CallDispatcher.LoginUser, "1", SingleInstance.mainContext);
+                }
+            });
+            holder.reject_lay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    GroupRequestFragment.newInstance(SingleInstance.mainContext).showDialog();
+                    GroupRequestFragment.newInstance(SingleInstance.mainContext).setRequestFrom(true);
+                    WebServiceReferences.webServiceClient.AcceptRejectGroupmember(groupBean.getGroupId(), CallDispatcher.LoginUser, "0",SingleInstance.mainContext);
+                }
+            });
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -146,7 +167,7 @@ public class RoundingAdapter extends ArrayAdapter<GroupBean> {
     }
 
     public static class ViewHolder {
-        LinearLayout listContainer;
+        LinearLayout listContainer,accept_lay,reject_lay;
         TextView grouplist,members;
         LinearLayout contact_history;
         LinearLayout inreq;

@@ -44,6 +44,7 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 	private int checkBoxCounter = 0;
 	private int checkboxcount;
 	private ImageLoader imageLoader;
+	boolean[] checkBoxState;
 
 	public void setCheckcount(int checkboxcount) {
 		this.checkboxcount = checkboxcount;
@@ -67,6 +68,7 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 		inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		imageLoader=new ImageLoader(context);
+		checkBoxState = new boolean[userList.size()];
 
 		/*********** Layout inflator to call external xml layout () ***********/
 
@@ -110,6 +112,7 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 				} else {
 					holder.selectUser.setChecked(false);
 				}
+//				holder.selectUser.setChecked(checkBoxState[position]);
 				if (userBean.isOwner())
 					holder.occupation.setText("Owner");
 				else
@@ -152,26 +155,27 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 			} else {
 				final AddGroupMembers addGroupMembers = (AddGroupMembers) WebServiceReferences.contextTable
 						.get("groupcontact");
-				holder.selectUser
-						.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-							@Override
-							public void onCheckedChanged(CompoundButton arg0,
-									boolean isChecked) {
-								if (isChecked) {
-									userBean.setSelected(true);
-									checkBoxCounter++;
-									if (addGroupMembers != null) {
-										addGroupMembers.countofcheckbox(checkBoxCounter);
-									}
-								} else {
-									userBean.setSelected(false);
-									checkBoxCounter--;
-									if (addGroupMembers != null) {
-										addGroupMembers.countofcheckbox(checkBoxCounter);
-									}
-								}
+				holder.selectUser.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						if (((CheckBox) v).isChecked()) {
+							checkBoxState[position] = true;
+							userBean.setSelected(true);
+							checkBoxCounter++;
+							if (addGroupMembers != null) {
+								addGroupMembers.countofcheckbox(checkBoxCounter);
 							}
-						});
+						} else {
+							checkBoxState[position] = false;
+							userBean.setSelected(false);
+							checkBoxCounter--;
+							if (addGroupMembers != null) {
+								addGroupMembers.countofcheckbox(checkBoxCounter);
+							}
+						}
+					}
+				});
+//
 			}
 			holder.cancel_lay.setOnClickListener(new View.OnClickListener() {
 				@Override
@@ -242,7 +246,8 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 				for(int i = 0, l = originallist.size(); i < l; i++)
 				{
 					UserBean gBean = originallist.get(i);
-					if(gBean.getFirstname().toLowerCase().startsWith(String.valueOf(constraint)))
+					if(gBean.getFirstname()!=null)
+					if(gBean.getFirstname().toLowerCase().contains(String.valueOf(constraint)))
 						uBeans.add(gBean);
 				}
 

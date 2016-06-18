@@ -1166,12 +1166,7 @@ public class Registration extends Activity {
                                     .trim());
                             sb.setEmailId(edEmail.getText().toString().trim());
                             sb.setPhoto(strIPath);
-                            sb.setSecques1(sp5.getSelectedItem().toString()
-                                    .trim());
-                            sb.setSecques2(sp6.getSelectedItem().toString()
-                                    .trim());
-                            sb.setSecques3(sp7.getSelectedItem().toString()
-                                    .trim());
+
                             sb.setOccupation(sp2.getText().toString());
                             sb.setFname(edFname.getText().toString());
                             sb.setMname("");
@@ -1213,6 +1208,7 @@ public class Registration extends Activity {
                                     sp6.getSelectedItem().toString().equalsIgnoreCase("Choose Question") ||
                                     sp7.getSelectedItem().toString().equalsIgnoreCase("Choose Question")) {
                                 showAlert1("Please Enter valid secret questions");
+                                return;
                             } else if (sp5.getSelectedItem().toString().equalsIgnoreCase("Other Question") ||
                                     sp6.getSelectedItem().toString().equalsIgnoreCase("Other Question") ||
                                     sp7.getSelectedItem().toString().equalsIgnoreCase("Other Question")) {
@@ -1224,6 +1220,13 @@ public class Registration extends Activity {
                                     sb.setSecques3(etsecQues3.toString().trim());
 
                             } else {
+                                sb.setSecques1(sp5.getSelectedItem().toString()
+                                        .trim());
+                                sb.setSecques2(sp6.getSelectedItem().toString()
+                                        .trim());
+                                sb.setSecques3(sp7.getSelectedItem().toString()
+                                        .trim());
+                            }
                                 if (!WebServiceReferences.running) {
                                     String url = preferences.getString("url", null);
                                     String port = preferences.getString("port",
@@ -1241,7 +1244,6 @@ public class Registration extends Activity {
                                 showDialog();
                                 CallDispatcher.LoginUser = sb.getEmailId();
                                 CallDispatcher.Password = sb.getPassword();
-                            }
 
                         } else if (edEmail.getText().toString().trim().length() == 0) {
                             edEmail.requestFocus();

@@ -672,5 +672,10 @@ public void onDestroy() {
         }
 
     }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+    }
 
     }

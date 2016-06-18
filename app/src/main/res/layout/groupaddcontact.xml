@@ -85,7 +85,8 @@
         android:background="#272829"
         android:cacheColorHint="#00000000"
         android:divider="@color/light_gray"
-        android:dividerHeight="1dp" >
+        android:dividerHeight="1dp"
+        android:layout_marginBottom="45dp">
     </ListView>
     <LinearLayout
         android:id="@+id/linear3"

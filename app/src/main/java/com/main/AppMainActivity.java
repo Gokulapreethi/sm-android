@@ -5521,9 +5521,12 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 							if (!bInfo.getName().equalsIgnoreCase(
 									buddyInformationBean.getName())) {
 								synchronized (ContactsFragment.getBuddyList()) {
-									buddyInformationBean.setTitle(false);
-									ContactsFragment.getBuddyList().add(
-											buddyInformationBean);
+									BuddyInformationBean bib=ContactsFragment.getBuddyList().get(ContactsFragment.getBuddyList().size() - 1);
+									if(!bib.getName().equalsIgnoreCase(buddyInformationBean.getName())) {
+										buddyInformationBean.setTitle(false);
+										ContactsFragment.getBuddyList().add(
+												buddyInformationBean);
+									}
 
 									break;
 
