@@ -154,11 +154,9 @@ public class RoundingEditActivity extends Activity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() > 0) {
-                    rights.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.up_arrow, 0);
-                } else {
+
                     rights.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.input_arrow, 0);
-                }
+
             }
 
             @Override
@@ -182,6 +180,7 @@ public class RoundingEditActivity extends Activity {
 
             @Override
             public void onClick(View v) {
+                rights.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.up_arrow, 0);
                 rights.showDropDown();
             }
         });

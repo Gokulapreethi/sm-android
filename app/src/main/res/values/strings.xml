@@ -7,6 +7,7 @@
     <string name="alphaNumeric">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</string>
     <string name="emailId">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.</string>
     <string name="alpha">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+    <string name="alphaNumericandspace">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_. </string>
     <string name="numeric">0123456789</string>
     <string name="my_group">My Group(s)</string>
     <string name="my_contact">My Contact(s)</string>

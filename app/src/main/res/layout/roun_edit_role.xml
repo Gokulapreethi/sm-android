@@ -107,6 +107,7 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:text="Fellow"
+        android:editable="false"
         android:background="@drawable/edittext_style"
         android:drawableRight="@drawable/input_arrow"
         android:textColor="@color/white"/>

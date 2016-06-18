@@ -49,7 +49,8 @@ public class SearchPeopleFragment extends Fragment {
     private static SearchPeopleFragment searchPeopleFragment;
     private static CallDispatcher calldisp = null;
     public static Context mainContext;
-    public View _rootView;EditText lname,fname,nickname;
+    public View _rootView;
+    EditText lname,fname,nickname;
     Button search,back,advsearch;
     AutoCompleteTextView usertype,state,city,speciality,hospital,medical,residency,fellow;
     private Handler handler = new Handler();
@@ -58,6 +59,8 @@ public class SearchPeopleFragment extends Fragment {
     RadioButton genderSelected;
     Boolean isClicked=true;
     AppMainActivity appMainActivity;
+    private RadioButton radioFemale;
+    private RadioButton radioMale ;
 
     ArrayList<String> stateList = new ArrayList<String>();
     ArrayList<String> specialityList = new ArrayList<String>();
@@ -86,6 +89,8 @@ public class SearchPeopleFragment extends Fragment {
      public View onCreateView(LayoutInflater inflater, ViewGroup container,
                               Bundle savedInstanceState) {
         AppReference.bacgroundFragment=searchPeopleFragment;
+        getActivity().getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         Button select = (Button) getActivity().findViewById(R.id.btn_brg);
         select.setVisibility(View.GONE);
         RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
@@ -131,7 +136,7 @@ public class SearchPeopleFragment extends Fragment {
 
             _rootView = inflater.inflate(R.layout.search_contact, null);
             getActivity().getWindow().setSoftInputMode(
-                    WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+                    WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
             try {
                 final TextView tv_nickname=(TextView)_rootView.findViewById(R.id.tv_nickname);
                 final TextView tv_fname=(TextView)_rootView.findViewById(R.id.tv_fname);
@@ -177,8 +182,8 @@ public class SearchPeopleFragment extends Fragment {
                         }
                     }
                 });
-                final RadioButton radioMale = (RadioButton) _rootView.findViewById(R.id.radioMale);
-                final RadioButton radioFemale = (RadioButton) _rootView.findViewById(R.id.radioFemale);
+                radioMale = (RadioButton) _rootView.findViewById(R.id.radioMale);
+                radioFemale = (RadioButton) _rootView.findViewById(R.id.radioFemale);
                 radioMale.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -516,6 +521,7 @@ public class SearchPeopleFragment extends Fragment {
                 search.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        appMainActivity.removeFragments(searchPeopleFragment.newInstance(SingleInstance.mainContext));
                         if (nickname.getText().toString().trim().length() > 0
                                 || fname.getText().toString().trim().length() > 0
                                 || lname.getText().toString().trim().length() > 0
@@ -565,13 +571,40 @@ public class SearchPeopleFragment extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }else
-            ((ViewGroup) _rootView.getParent()).removeView(_rootView);
+        }
+//            ((ViewGroup) _rootView.getParent()).removeView(_rootView);
         return _rootView;
     }
     public View getParentView() {
+
         return _rootView;
     }
+
+    @Override
+    public void onDestroyView() {
+        _rootView =null;
+        super.onDestroyView();
+    }
+
+    @Override
+public void onDestroy() {
+    Log.i("AAAA","on destroy ");        nickname.setText("");
+    fname.setText("");
+    lname.setText("");
+    state.setText("");
+    speciality.setText("");
+    hospital.setText("");
+    medical.setText("");
+    residency.setText("");
+    fellow.setText("");
+    usertype.setText("");
+    city.setText("");
+    radioFemale.setChecked(false);
+    radioMale.setChecked(false);
+    super.onDestroy();
+
+}
+
     public void notifySearchPeople(Object obj)
     {
         Log.i("AAAA", "Search people ");
@@ -595,6 +628,7 @@ public class SearchPeopleFragment extends Fragment {
                     Log.i("AAAA", "Search people " + result1);
                     Toast.makeText(mainContext,
                             result1, Toast.LENGTH_SHORT).show();
+
                 }
             });
         }

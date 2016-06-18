@@ -696,16 +696,16 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         });
         BuddyStatus();
         if (!isGroup && !isRounding)
-            txtView01.setText(nickname);
+            txtView01.setText(nickname.toUpperCase());
         else if (isGroup && !isRounding) {
-            txtView01.setText(groupBean.getGroupName());
+            txtView01.setText(groupBean.getGroupName().toUpperCase());
             header.setWeightSum(5);
             info_lay.setVisibility(View.VISIBLE);
             tv_profie.setText("Members");
             profile_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_members));
         } else if (isRounding) {
             if (groupBean.getGroupName() != null)
-                txtView01.setText(groupBean.getGroupName());
+                txtView01.setText(groupBean.getGroupName().toUpperCase());
             header.setWeightSum(5);
             info_lay.setVisibility(View.VISIBLE);
             tv_info.setText("Calendar");

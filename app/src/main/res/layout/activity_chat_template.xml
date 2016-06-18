@@ -25,6 +25,7 @@
         android:divider="@null"
         android:dividerHeight="10dp"
         android:layout_alignParentBottom="true"
+        android:stackFromBottom="true"
         android:layout_alignParentTop="true"></ListView>
         <ImageView
             android:id="@+id/deleteview"
