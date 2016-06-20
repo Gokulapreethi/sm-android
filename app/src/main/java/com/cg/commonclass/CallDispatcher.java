@@ -2481,9 +2481,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					}
 					//end
 
-					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
-					DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
-							CallDispatcher.sb);
+//					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+//					DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
+//							CallDispatcher.sb);
 					SingleInstance.mainContext.notifyUI();
 					// }
 					if (conferenceMembers.size() == 1) {
@@ -2491,8 +2491,19 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						Log.i("callscreenfinish","conferenceMembers.size()==1 name-->"+conferenceMembers.get(0));
 						Log.i("callscreenfinish", "sb.name-->" + sb.getFrom() + " sb.getTo() :" + sb.getTo());
 
+						DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+						DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
+								CallDispatcher.sb);
 
 						if(conferenceMembers.get(0) != null && conferenceMembers.get(0).equalsIgnoreCase(sb.getFrom())) {
+
+							if (SingleInstance.instanceTable.containsKey("alertscreen")) {
+								inCommingCallAlert inCommingcallAlert = (inCommingCallAlert)SingleInstance.instanceTable.get("alertscreen");
+								if(inCommingcallAlert != null) {
+									inCommingcallAlert.removeInstance();
+								}
+							}
+
 							FragmentManager fm =
 									AppReference.mainContext.getSupportFragmentManager();
 							FragmentTransaction ft = fm.beginTransaction();
@@ -3184,6 +3195,14 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							Log.i("callscreenfinish", "1 sb.name-->" + sb.getFrom());
 							if (conferenceMembers.get(0).equalsIgnoreCase(sb.getFrom())) {
 								Log.i("callscreenfinish", "1.1 sb.name-->" + sb.getFrom());
+
+								if (SingleInstance.instanceTable.containsKey("alertscreen")) {
+									inCommingCallAlert inCommingcallAlert = (inCommingCallAlert)SingleInstance.instanceTable.get("alertscreen");
+									if(inCommingcallAlert != null) {
+										inCommingcallAlert.removeInstance();
+									}
+								}
+
 								FragmentManager fm =
 										AppReference.mainContext.getSupportFragmentManager();
 								FragmentTransaction ft = fm.beginTransaction();

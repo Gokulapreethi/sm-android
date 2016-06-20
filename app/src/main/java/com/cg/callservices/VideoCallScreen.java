@@ -1469,6 +1469,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 						onOffVideoForSelectedUser(0, !shown);
 //						on_off1.setTag(!shown);
+						if(preview_hided)
 						hideOwnVideo();
 					}
 				});
@@ -1479,6 +1480,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 						boolean shown = (boolean) on_off12.getTag();
 						onOffVideoForSelectedUser(1, !shown);
 //						on_off12.setTag(!shown);
+						if(preview_hided)
 						hideOwnVideo();
 					}
 				});
@@ -1489,6 +1491,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 						boolean shown = (boolean) on_off2.getTag();
 						onOffVideoForSelectedUser(1, !shown);
 //						on_off2.setTag(!shown);
+						if(preview_hided)
 						hideOwnVideo();
 					}
 				});
@@ -1499,6 +1502,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 						boolean shown = (boolean) on_off3.getTag();
 						onOffVideoForSelectedUser(2, !shown);
 //						on_off3.setTag(!shown);
+						if(preview_hided)
 						hideOwnVideo();
 					}
 				});
