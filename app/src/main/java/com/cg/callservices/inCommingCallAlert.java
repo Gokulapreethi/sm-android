@@ -100,138 +100,146 @@ public class inCommingCallAlert extends Fragment {
 //		super.onCreate(savedInstanceState);
 //		requestWindowFeature(Window.FEATURE_NO_TITLE);
 //		setContentView(R.layout.callalertscreen);
-		if(rootView==null) {
-		SingleInstance.instanceTable.put("alertscreen",incommingCallAlert);
-		keyguardManager = (KeyguardManager) getActivity().getSystemService(Activity.KEYGUARD_SERVICE);
-		lock = keyguardManager.newKeyguardLock(context.KEYGUARD_SERVICE);
-		lock.disableKeyguard();
-//		context = this;
+		try {
+			if(rootView==null) {
+				SingleInstance.instanceTable.put("alertscreen", incommingCallAlert);
+				keyguardManager = (KeyguardManager) getActivity().getSystemService(Activity.KEYGUARD_SERVICE);
+				lock = keyguardManager.newKeyguardLock(context.KEYGUARD_SERVICE);
+				lock.disableKeyguard();
+				//		context = this;
 
-//		DisplayMetrics displaymetrics = new DisplayMetrics();
-//		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-//		int noScrHeight = displaymetrics.heightPixels;
-//		int noScrWidth = displaymetrics.widthPixels;
-//		this.setFinishOnTouchOutside(false);
-//		RelativeLayout ll = (RelativeLayout) findViewById(R.id.callalert_lay);
-//		Window window=getWindow();
-//		getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+				//		DisplayMetrics displaymetrics = new DisplayMetrics();
+				//		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+				//		int noScrHeight = displaymetrics.heightPixels;
+				//		int noScrWidth = displaymetrics.widthPixels;
+				//		this.setFinishOnTouchOutside(false);
+				//		RelativeLayout ll = (RelativeLayout) findViewById(R.id.callalert_lay);
+				//		Window window=getWindow();
+				//		getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-		if (WebServiceReferences.callDispatch.containsKey("calldisp"))
-			callDisp = (CallDispatcher) WebServiceReferences.callDispatch
-					.get("calldisp");
-		else
-		callDisp = new CallDispatcher(context);
+				if (WebServiceReferences.callDispatch.containsKey("calldisp"))
+					callDisp = (CallDispatcher) WebServiceReferences.callDispatch
+							.get("calldisp");
+				else
+					callDisp = new CallDispatcher(context);
 
-//		callDisp.setNoScrHeight(noScrHeight);
-//		callDisp.setNoScrWidth(noScrWidth);
-//		displaymetrics = null;
-		bundlevalues=getArguments();
-		final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
-		mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-		mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
-		mainHeader.setVisibility(View.GONE);
-		min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
-		min_incall.setVisibility(View.GONE);
-//		if(rootView==null) {
-			rootView = inflater.inflate(R.layout.callalertscreen, null);
+				//		callDisp.setNoScrHeight(noScrHeight);
+				//		callDisp.setNoScrWidth(noScrWidth);
+				//		displaymetrics = null;
+				bundlevalues = getArguments();
+				final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
+				mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+				mainHeader = (RelativeLayout) getActivity().findViewById(R.id.mainheader);
+				mainHeader.setVisibility(View.GONE);
+				min_incall = (ImageView) getActivity().findViewById(R.id.min_incall);
+				min_incall.setVisibility(View.GONE);
+				//		if(rootView==null) {
+				rootView = inflater.inflate(R.layout.callalertscreen, null);
 
-			accept = (ImageView) rootView.findViewById(R.id.tv_accept);
-			reject = (ImageView) rootView.findViewById(R.id.tv_decline);
-			ignore = (ImageView) rootView.findViewById(R.id.tv_ignore);
-			Button minimize=(Button)rootView.findViewById(R.id.minimize_btn);
+				accept = (ImageView) rootView.findViewById(R.id.tv_accept);
+				reject = (ImageView) rootView.findViewById(R.id.tv_decline);
+				ignore = (ImageView) rootView.findViewById(R.id.tv_ignore);
+				Button minimize = (Button) rootView.findViewById(R.id.minimize_btn);
 
-			tv_title = (TextView) rootView.findViewById(R.id.caller_name);
-			call_type = (TextView) rootView.findViewById(R.id.call_type);
-			profilePicture = (ImageView) rootView.findViewById(R.id.profile_pic);
-			sbaen = (SignalingBean) bundlevalues.getSerializable("bean");
-			CallDispatcher.sb = sbaen;
-			CallDispatcher.notify_sb = sbaen;
-			bean = DBAccess.getdbHeler().getProfileDetails(sbaen.getFrom());
-			changeTextalert();
-			Log.i("thread", ">>>>>>>>>>>> incoming call on create");
-			imageLoader = new ImageLoader(SingleInstance.mainContext);
-			if (bean.getPhoto() != null) {
-				String profilePic = bean.getPhoto();
-				Log.i("AAAA", "MYACCOUNT " + profilePic);
-				if (profilePic != null && profilePic.length() > 0) {
-					if (!profilePic.contains("COMMedia")) {
-						profilePic = Environment
-								.getExternalStorageDirectory()
-								+ "/COMMedia/" + profilePic;
-					}
+				tv_title = (TextView) rootView.findViewById(R.id.caller_name);
+				call_type = (TextView) rootView.findViewById(R.id.call_type);
+				profilePicture = (ImageView) rootView.findViewById(R.id.profile_pic);
+				sbaen = (SignalingBean) bundlevalues.getSerializable("bean");
+				CallDispatcher.sb = sbaen;
+				CallDispatcher.notify_sb = sbaen;
+				bean = DBAccess.getdbHeler().getProfileDetails(sbaen.getFrom());
+				changeTextalert();
+				Log.i("thread", ">>>>>>>>>>>> incoming call on create");
+				imageLoader = new ImageLoader(SingleInstance.mainContext);
+				if (bean.getPhoto() != null) {
+					String profilePic = bean.getPhoto();
 					Log.i("AAAA", "MYACCOUNT " + profilePic);
-					imageLoader.DisplayImage(profilePic, profilePicture,
-							R.drawable.img_user);
-				}
-			}
-			minimize.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					FragmentManager fm =
-							AppReference.mainContext.getSupportFragmentManager();
-					FragmentTransaction ft = fm.beginTransaction();
-//					ContactsFragment contactsFragment = ContactsFragment
-//							.getInstance(context);
-					ft.replace(R.id.activity_main_content_fragment,
-							AppReference.bacgroundFragment);
-					ft.commitAllowingStateLoss();
-					min_incall.setVisibility(View.VISIBLE);
-				}
-			});
-			if (WebServiceReferences.contextTable
-					.containsKey("multimediautils"))
-				((MultimediaUtils) WebServiceReferences.contextTable
-						.get("multimediautils")).StopAudioPlay();
-			accept.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					if (WebServiceReferences.missedcallCount.containsKey(sbaen
-							.getFrom()))
-						WebServiceReferences.missedcallCount.remove(sbaen.getFrom());
-
-					if (CallDispatcher.LoginUser != null) {
-						acceptCall(sbaen.getFrom());
-					} else {
-						callDisp.hangUpCall();
+					if (profilePic != null && profilePic.length() > 0) {
+						if (!profilePic.contains("COMMedia")) {
+							profilePic = Environment
+									.getExternalStorageDirectory()
+									+ "/COMMedia/" + profilePic;
+						}
+						Log.i("AAAA", "MYACCOUNT " + profilePic);
+						imageLoader.DisplayImage(profilePic, profilePicture,
+								R.drawable.img_user);
 					}
 				}
-			});
+				minimize.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						try {
+							FragmentManager fm =
+                                    AppReference.mainContext.getSupportFragmentManager();
+							FragmentTransaction ft = fm.beginTransaction();
+							//					ContactsFragment contactsFragment = ContactsFragment
+							//							.getInstance(context);
+							ft.replace(R.id.activity_main_content_fragment,
+                                    AppReference.bacgroundFragment);
+							ft.commitAllowingStateLoss();
+							min_incall.setVisibility(View.VISIBLE);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
+				if (WebServiceReferences.contextTable
+						.containsKey("multimediautils"))
+					((MultimediaUtils) WebServiceReferences.contextTable
+							.get("multimediautils")).StopAudioPlay();
+				accept.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						if (WebServiceReferences.missedcallCount.containsKey(sbaen
+								.getFrom()))
+							WebServiceReferences.missedcallCount.remove(sbaen.getFrom());
 
-			reject.setOnClickListener(new OnClickListener() {
+						if (CallDispatcher.LoginUser != null) {
+							acceptCall(sbaen.getFrom());
+						} else {
+							callDisp.hangUpCall();
+						}
+					}
+				});
 
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
+				reject.setOnClickListener(new OnClickListener() {
 
-					if (WebServiceReferences.missedcallCount.containsKey(sbaen
-							.getFrom()))
-						WebServiceReferences.missedcallCount.remove(sbaen.getFrom());
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
 
-					rejectCall();
-				}
-			});
+						if (WebServiceReferences.missedcallCount.containsKey(sbaen
+								.getFrom()))
+							WebServiceReferences.missedcallCount.remove(sbaen.getFrom());
 
-			ignore.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					CallDispatcher.isCallignored=true;
-					callDisp.stopRingTone();
+						rejectCall();
+					}
+				});
+
+				ignore.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						CallDispatcher.isCallignored = true;
+						callDisp.stopRingTone();
+						finishactivity();
+					}
+				});
+
+				SharedPreferences sPreferences = PreferenceManager
+						.getDefaultSharedPreferences(SingleInstance.mainContext
+								.getApplicationContext());
+				boolean isAutoAccept = sPreferences.getBoolean("autoaccept", false);
+				if (isAutoAccept
+						&& SingleInstance.mainContext.isAutoAcceptEnabled(
+						CallDispatcher.LoginUser,
+						CallDispatcher.getUser(sbaen.getFrom(), sbaen.getTo()))) {
+					acceptCall(sbaen.getFrom());
 					finishactivity();
 				}
-			});
-
-			SharedPreferences sPreferences = PreferenceManager
-					.getDefaultSharedPreferences(SingleInstance.mainContext
-							.getApplicationContext());
-			boolean isAutoAccept = sPreferences.getBoolean("autoaccept", false);
-			if (isAutoAccept
-					&& SingleInstance.mainContext.isAutoAcceptEnabled(
-					CallDispatcher.LoginUser,
-					CallDispatcher.getUser(sbaen.getFrom(), sbaen.getTo()))) {
-				acceptCall(sbaen.getFrom());
-				finishactivity();
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		return rootView;

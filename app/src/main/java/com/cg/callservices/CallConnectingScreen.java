@@ -108,138 +108,146 @@ public class CallConnectingScreen extends Fragment {
 //		context = this;
 //		setContentView(R.layout.call_connecting);
 //		getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-		if(rootView==null) {
-		final Window win = getActivity().getWindow();
-		win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-				| WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+		try {
+			if(rootView==null) {
+            final Window win = getActivity().getWindow();
+            win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                    | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 
-//		this.setFinishOnTouchOutside(false);
-		mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
-		mainHeader.setVisibility(View.GONE);
-		final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
-		mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-		min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
-		min_outcall.setVisibility(View.GONE);
-		 min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
-		min_incall.setVisibility(View.GONE);
-		SingleInstance.instanceTable.put("connection", callConnectingScreen);
-//		if(rootView==null) {
-			rootView = inflater.inflate(R.layout.call_connecting, null);
-			Bundle bndl = getArguments();
-			calltype = bndl.getString("type");
-			UserId = bndl.getString("name");
-			profilePicture = (ImageView) rootView.findViewById(R.id.profilePic);
-			ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(UserId);
-			imageLoader = new ImageLoader(SingleInstance.mainContext);
-			if (pBean.getPhoto() != null) {
-				String profilePic = pBean.getPhoto();
-				Log.i("AAAA", "MYACCOUNT " + profilePic);
-				if (profilePic != null && profilePic.length() > 0) {
-					if (!profilePic.contains("COMMedia")) {
-						profilePic = Environment
-								.getExternalStorageDirectory()
-								+ "/COMMedia/" + profilePic;
-					}
-					Log.i("AAAA", "MYACCOUNT " + profilePic);
-					imageLoader.DisplayImage(profilePic, profilePicture,
-							R.drawable.img_user);
-				}
-			}
-			callerName = pBean.getFirstname() + " " + pBean.getLastname();
-			iscoonecting = bndl.getBoolean("status");
-			isBConf = bndl.getBoolean("bconf");
-			bean = (SignalingBean) bndl.getSerializable("bean");
-			tilte = (TextView)rootView. findViewById(R.id.callscreen);
-			tv_name = (TextView)rootView. findViewById(R.id.my_userinfo_tv);
-			tv_status = (TextView)rootView. findViewById(R.id.status);
-			btn_hangup = (Button) rootView.findViewById(R.id.btn_han);
-			frameLayout = (FrameLayout)rootView. findViewById(R.id.frame_lay);
-			profilePic1 = (ImageView)rootView. findViewById(R.id.profilePic1);
-			profilePic2 = (ImageView) rootView.findViewById(R.id.profilePic2);
-			profilePic3 = (ImageView) rootView.findViewById(R.id.profilePic3);
-			Button minimize=(Button)rootView.findViewById(R.id.minimize_btn);
-			minimize.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					FragmentManager fm =
-							AppReference.mainContext.getSupportFragmentManager();
-					FragmentTransaction ft = fm.beginTransaction();
-//					ContactsFragment contactsFragment = ContactsFragment
-//							.getInstance(context);
-					ft.replace(R.id.activity_main_content_fragment,
-							AppReference.bacgroundFragment);
-					ft.commitAllowingStateLoss();
-					min_outcall.setVisibility(View.VISIBLE);
-				}
-			});
-
-			if (WebServiceReferences.callDispatch.containsKey("calldisp"))
-				callDisp = (CallDispatcher) WebServiceReferences.callDispatch
-						.get("calldisp");
-			else
-				callDisp = new CallDispatcher(context);
-
-
-			if (isBConf && calltype.equalsIgnoreCase("VC")) {
-				setTitle();
-				frameLayout.setVisibility(View.VISIBLE);
-				profilePicture.setVisibility(View.INVISIBLE);
-				int i = 0;
-				Log.i("onlineuser", "confereence  " + confMembers.size());
-				for (String user : confMembers) {
-					Log.i("onlineuser", "confereence members " + user);
-					ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(user);
-					if (bean.getPhoto() != null) {
-						Log.i("onlineuser", "confereence members profile ");
-						String profilePic = bean.getPhoto();
-						if (!profilePic.contains("COMMedia")) {
-							profilePic = Environment.getExternalStorageDirectory()
-									+ "/COMMedia/" + profilePic;
-						}
-						if (i == 0) {
-							profilePic3.setVisibility(View.VISIBLE);
-							imageLoader.DisplayImage(profilePic, profilePic3,
-									R.drawable.img_user);
-						} else if (i == 1) {
-							profilePic2.setVisibility(View.VISIBLE);
-							imageLoader.DisplayImage(profilePic, profilePic2,
-									R.drawable.img_user);
-						} else {
-							profilePic1.setVisibility(View.VISIBLE);
-							imageLoader.DisplayImage(profilePic, profilePic1,
-									R.drawable.img_user);
+    //		this.setFinishOnTouchOutside(false);
+            mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
+            mainHeader.setVisibility(View.GONE);
+            final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
+            min_outcall.setVisibility(View.GONE);
+             min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
+            min_incall.setVisibility(View.GONE);
+            SingleInstance.instanceTable.put("connection", callConnectingScreen);
+    //		if(rootView==null) {
+                rootView = inflater.inflate(R.layout.call_connecting, null);
+                Bundle bndl = getArguments();
+                calltype = bndl.getString("type");
+                UserId = bndl.getString("name");
+                profilePicture = (ImageView) rootView.findViewById(R.id.profilePic);
+                ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(UserId);
+                imageLoader = new ImageLoader(SingleInstance.mainContext);
+                if (pBean.getPhoto() != null) {
+                    String profilePic = pBean.getPhoto();
+                    Log.i("AAAA", "MYACCOUNT " + profilePic);
+                    if (profilePic != null && profilePic.length() > 0) {
+                        if (!profilePic.contains("COMMedia")) {
+                            profilePic = Environment
+                                    .getExternalStorageDirectory()
+                                    + "/COMMedia/" + profilePic;
+                        }
+                        Log.i("AAAA", "MYACCOUNT " + profilePic);
+                        imageLoader.DisplayImage(profilePic, profilePicture,
+                                R.drawable.img_user);
+                    }
+                }
+                callerName = pBean.getFirstname() + " " + pBean.getLastname();
+                iscoonecting = bndl.getBoolean("status");
+                isBConf = bndl.getBoolean("bconf");
+                bean = (SignalingBean) bndl.getSerializable("bean");
+                tilte = (TextView)rootView. findViewById(R.id.callscreen);
+                tv_name = (TextView)rootView. findViewById(R.id.my_userinfo_tv);
+                tv_status = (TextView)rootView. findViewById(R.id.status);
+                btn_hangup = (Button) rootView.findViewById(R.id.btn_han);
+                frameLayout = (FrameLayout)rootView. findViewById(R.id.frame_lay);
+                profilePic1 = (ImageView)rootView. findViewById(R.id.profilePic1);
+                profilePic2 = (ImageView) rootView.findViewById(R.id.profilePic2);
+                profilePic3 = (ImageView) rootView.findViewById(R.id.profilePic3);
+                Button minimize=(Button)rootView.findViewById(R.id.minimize_btn);
+                minimize.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+						try {
+							FragmentManager fm =
+                                    AppReference.mainContext.getSupportFragmentManager();
+							FragmentTransaction ft = fm.beginTransaction();
+							//					ContactsFragment contactsFragment = ContactsFragment
+							//							.getInstance(context);
+							ft.replace(R.id.activity_main_content_fragment,
+                                    AppReference.bacgroundFragment);
+							ft.commitAllowingStateLoss();
+							min_outcall.setVisibility(View.VISIBLE);
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
 					}
-					i++;
-				}
-				CallDispatcher.conConference.clear();
+                });
 
-			}
+                if (WebServiceReferences.callDispatch.containsKey("calldisp"))
+                    callDisp = (CallDispatcher) WebServiceReferences.callDispatch
+                            .get("calldisp");
+                else
+                    callDisp = new CallDispatcher(context);
 
-			btn_hangup.setOnClickListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					Log.d("lddd", "Button Clicked.....######################");
-					if (SingleInstance.instanceTable.containsKey("connection")) {
-						Log.i("audiocall","context table remove connection");
-						SingleInstance.instanceTable.remove("connection");
-					}
-					Log.i("audiocall","btn_hangup--->"+SingleInstance.instanceTable.containsKey("connection")+" isBConf : "+isBConf);
-					if (isBConf) {
-						disconnectConfMembers();
+                if (isBConf && calltype.equalsIgnoreCase("VC")) {
+                    setTitle();
+                    frameLayout.setVisibility(View.VISIBLE);
+                    profilePicture.setVisibility(View.INVISIBLE);
+                    int i = 0;
+                    Log.i("onlineuser", "confereence  " + confMembers.size());
+                    for (String user : confMembers) {
+                        Log.i("onlineuser", "confereence members " + user);
+                        ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(user);
+                        if (bean.getPhoto() != null) {
+                            Log.i("onlineuser", "confereence members profile ");
+                            String profilePic = bean.getPhoto();
+                            if (!profilePic.contains("COMMedia")) {
+                                profilePic = Environment.getExternalStorageDirectory()
+                                        + "/COMMedia/" + profilePic;
+                            }
+                            if (i == 0) {
+                                profilePic3.setVisibility(View.VISIBLE);
+                                imageLoader.DisplayImage(profilePic, profilePic3,
+                                        R.drawable.img_user);
+                            } else if (i == 1) {
+                                profilePic2.setVisibility(View.VISIBLE);
+                                imageLoader.DisplayImage(profilePic, profilePic2,
+                                        R.drawable.img_user);
+                            } else {
+                                profilePic1.setVisibility(View.VISIBLE);
+                                imageLoader.DisplayImage(profilePic, profilePic1,
+                                        R.drawable.img_user);
+                            }
+                        }
+                        i++;
+                    }
+                    CallDispatcher.conConference.clear();
 
-					} else {
-						HangupCall();
-					}
-				}
-			});
-			setNameandTitle();
-			if (isBConf)
-				setTitle();
+                }
+
+                btn_hangup.setOnClickListener(new OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        // TODO Auto-generated method stub
+                        Log.d("lddd", "Button Clicked.....######################");
+                        if (SingleInstance.instanceTable.containsKey("connection")) {
+                            Log.i("audiocall","context table remove connection");
+                            SingleInstance.instanceTable.remove("connection");
+                        }
+                        Log.i("audiocall","btn_hangup--->"+SingleInstance.instanceTable.containsKey("connection")+" isBConf : "+isBConf);
+                        if (isBConf) {
+                            disconnectConfMembers();
+
+                        } else {
+                            HangupCall();
+                        }
+                    }
+                });
+                setNameandTitle();
+                if (isBConf)
+                    setTitle();
+            }
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-			return rootView;
+		return rootView;
 	}
 
     @Override
