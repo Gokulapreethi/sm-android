@@ -1225,12 +1225,14 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
             }
         } else if (obj instanceof String) {
             showToast((String) obj);
+
+        cancelDialog();
+        finish();
         } else {
+            cancelDialog();
             showAlert(SingleInstance.mainContext.getResources().getString(R.string.response_group),
                     ((WebServiceBean) obj).getText());
         }
-        cancelDialog();
-        finish();
     }
     public  void refreshInviteMembers()
     {

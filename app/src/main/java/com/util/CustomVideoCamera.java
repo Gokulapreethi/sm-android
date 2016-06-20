@@ -222,7 +222,11 @@ public class CustomVideoCamera extends Activity {
 		if (recording) {
 			// stop recording and release camera
 			if (mediaRecorder != null)
-				mediaRecorder.stop(); // stop the recording
+				try {
+					mediaRecorder.stop();// stop the recording
+				}catch(Exception e){
+					e.printStackTrace();
+				}
 			releaseMediaRecorder(); // release the MediaRecorder
 									// object
 			chronometer.stop();

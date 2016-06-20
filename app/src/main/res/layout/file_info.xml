@@ -16,6 +16,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp">
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv"
+            android:id="@+id/framelay"
+            android:layout_gravity="center"
+            android:layout_centerHorizontal="true" >
 
         <ImageView
             android:id="@+id/newfile"
@@ -25,6 +32,15 @@
             android:layout_below="@+id/tv"
             android:layout_marginTop="10dp"
             android:layout_centerHorizontal="true" />
+            <ImageView
+                android:id="@+id/overlay"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_margin="10dp"
+                android:visibility="gone"
+                android:layout_gravity="center"
+                android:src="@drawable/play"/>
+        </FrameLayout>
 
         <ImageView
             android:layout_width="60dp"
@@ -34,7 +50,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginRight="105dp"
             android:layout_marginEnd="85dp"
-            android:layout_alignTop="@+id/newfile"
+            android:layout_alignTop="@+id/framelay"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="110dp" />

@@ -143,6 +143,7 @@ public class FileInfoFragment extends Fragment {
                     TextView filename=(TextView)v1.findViewById(R.id.filename);
                     TextView filedesc=(TextView)v1.findViewById(R.id.filedesc);
                     ImageView fileIcon=(ImageView)v1.findViewById(R.id.newfile);
+                    ImageView overlay=(ImageView)v1.findViewById(R.id.overlay);
                     TextView tv_share = (TextView)view.findViewById(R.id.tv_share);
                     tv_send = (TextView)view.findViewById(R.id.tv_send);
 
@@ -168,9 +169,6 @@ public class FileInfoFragment extends Fragment {
                             }
                             filename.setText(fileName);
                         }
-
-
-
 
                         if(cbean.getContent()!=null)
                             filedesc.setText(cbean.getContent());
@@ -200,6 +198,7 @@ public class FileInfoFragment extends Fragment {
                         else if (cbean.getcomponentType().trim().equals("video")) {
                            fileIcon.setTag(cbean.getComponentId());
                             fileIcon.setVisibility(View.VISIBLE);
+                            overlay.setVisibility(View.VISIBLE);
                             fileImageLoader.DisplayImage(cbean.getContentpath() + ".mp4",fileIcon, R.drawable.videonotesnew);
                         }
                         else if (cbean.getcomponentType().trim().equalsIgnoreCase("sketch")) {
@@ -230,7 +229,7 @@ public class FileInfoFragment extends Fragment {
 
                                 Intent intent = new Intent(mainContext, ForwardUserSelect.class);
                                 intent.putExtra("fromfile",true);
-                                SingleInstance.mainContext.startActivityForResult(intent, 112);
+                                startActivityForResult(intent, 112);
 
                             }
                         });
@@ -311,6 +310,7 @@ public class FileInfoFragment extends Fragment {
             Log.i("AAAA", "forawrd user " );
             super.onActivityResult(requestCode, resultCode, data);
             if (requestCode == 112) {
+                Log.i("AAAA", "forawrd user code" );
                     String members = data.getStringExtra("SELECTED_MEMBERS");
                     String groupmembers = data.getStringExtra("SELECTED_GROUPS");
                     Log.i("AAAA", "forawrd user " + groupmembers + members);
@@ -336,7 +336,8 @@ public class FileInfoFragment extends Fragment {
     private void shareMultipleFiles() {
 
         try {
-
+            Log.i("AAAA", "forawrd user share" +
+                    "" );
             if (SendbuddyList.size() > 0) {
                         if (WebServiceReferences.running) {
                             uploadDatas.add(cbean.getcomponentType());

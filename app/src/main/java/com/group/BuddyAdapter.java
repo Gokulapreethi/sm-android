@@ -113,6 +113,10 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 					holder.selectUser.setChecked(false);
 				}
 //				holder.selectUser.setChecked(checkBoxState[position]);
+				if(userBean.isFromchat())
+					holder.statusIcon.setVisibility(View.GONE);
+				else
+					holder.statusIcon.setVisibility(View.VISIBLE);
 				if (userBean.isOwner())
 					holder.occupation.setText("Owner");
 				else

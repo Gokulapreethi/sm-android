@@ -674,9 +674,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             }
         });
         BuddyStatus();
-        if (!isGroup && !isRounding)
-            txtView01.setText(nickname.toUpperCase());
-        else if (isGroup && !isRounding) {
+        if (!isGroup && !isRounding) {
+            if(nickname==null) {
+                ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(buddy);
+                nickname=bean.getFirstname()+" "+bean.getLastname();
+            }
+            txtView01.setText(nickname);
+        }else if (isGroup && !isRounding) {
             txtView01.setText(groupBean.getGroupName().toUpperCase());
             header.setWeightSum(5);
             info_lay.setVisibility(View.VISIBLE);
@@ -10221,6 +10225,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             userBean.setProfilePic(pbean.getPhoto());
                             userBean.setBuddyName(tmp);
                             userBean.setSelected(false);
+                            userBean.setFromchat(true);
                             membersList.add(userBean);
                         }
                     }
@@ -10236,6 +10241,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             userBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
                             userBean.setBuddyName(tmp);
                             userBean.setSelected(false);
+                            userBean.setFromchat(true);
                             membersList.add(userBean);
                         }
                     }
@@ -10256,8 +10262,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 UserBean uBean = new UserBean();
                 ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(groupBean.getOwnerName());
                 uBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
+                uBean.setProfilePic(pbean.getPhoto());
                 uBean.setBuddyName(groupBean.getOwnerName());
                 uBean.setSelected(false);
+                uBean.setFromchat(true);
                 return uBean;
             } else
                 return null;

@@ -202,7 +202,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 	private ImageView newFileImg;
 	EditText filename,fileDesc;
 	TextView tv_file;
-	ImageView file_img;
+	ImageView file_img,overlay;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -317,6 +317,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 			fileDesc=(EditText)findViewById(R.id.ed_filedesc);
 			tv_file=(TextView)findViewById(R.id.tv_file);
 			file_img=(ImageView)findViewById(R.id.file_img);
+			overlay=(ImageView)findViewById(R.id.overlay);
 			final TextView tv_filename=(TextView)findViewById(R.id.tv_filename);
 			final TextView tv_fileDesc=(TextView)findViewById(R.id.tv_filedesc);
 			btnBack.setBackgroundResource(drawable.navigation_close);
@@ -1828,6 +1829,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 					}
 				}else {
 					showToast("Please enter filename and description");
+					return;
 				}
 
 				if (WebServiceReferences.contextTable
@@ -3204,6 +3206,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 							} else {
 								ComponentPath = null;
 							}
+							overlay.setVisibility(View.VISIBLE);
 						}
 					}
 				} catch (Exception e) {

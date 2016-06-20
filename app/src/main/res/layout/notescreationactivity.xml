@@ -56,16 +56,33 @@
             android:gravity="center"
             android:layout_weight="0.12">
 
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv"
+                android:id="@+id/framelay"
+                android:layout_gravity="center"
+                android:layout_centerHorizontal="true" >
 
-        <ImageView
-            android:id="@+id/newfile"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
-            android:layout_below="@+id/tv"
-            android:layout_marginTop="10dp"
-            android:background="@color/black3"
-            android:layout_centerHorizontal="true" />
+                <ImageView
+                    android:id="@+id/newfile"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:layout_below="@+id/tv"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/black3"
+                    android:layout_centerHorizontal="true" />
+                <ImageView
+                    android:id="@+id/overlay"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_margin="10dp"
+                    android:visibility="gone"
+                    android:layout_gravity="center"
+                    android:src="@drawable/play"/>
+            </FrameLayout>
+
             <ImageView
                 android:id="@+id/file_img"
                 android:layout_width="wrap_content"
@@ -93,7 +110,7 @@
             android:id="@+id/new_file_create"
             android:background="@drawable/button_add_photo"
             android:layout_gravity="center_horizontal"
-            android:layout_alignBottom="@+id/newfile"
+            android:layout_alignBottom="@+id/framelay"
             android:layout_toRightOf="@+id/tv_file"
             android:layout_toEndOf="@+id/tv_file" />
         </RelativeLayout>

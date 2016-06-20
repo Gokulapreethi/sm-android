@@ -800,15 +800,17 @@ public class GroupActivity extends Activity implements OnClickListener {
 			}
 		} else if (obj instanceof String) {
 			showToast((String) obj);
+
+		// callDisp.cancelDialog();
+		cancelDialog();
+		finish();
 		} else {
+			cancelDialog();
 			showAlert(
 					SingleInstance.mainContext.getResources().getString(
 							R.string.response_group),
 					((WebServiceBean) obj).getText());
 		}
-		// callDisp.cancelDialog();
-		cancelDialog();
-		finish();
 	}
 	private void showAlert(final String title, final String message) {
 		handler.post(new Runnable() {
