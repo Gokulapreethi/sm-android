@@ -133,13 +133,17 @@
         </LinearLayout>
 
     </LinearLayout>
-
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/layour_realy1"
+        android:layout_below="@+id/header2">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_below="@+id/header2"
         android:id="@+id/chbox_lay"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="visible">
 
 
         <CheckBox
@@ -150,6 +154,7 @@
             android:textSize="15sp"
             android:layout_centerVertical="true"
             android:text="  select all"/>
+
         <TextView
             android:id="@+id/selected"
             android:layout_width="wrap_content"
@@ -162,13 +167,45 @@
             android:layout_alignParentRight="true"/>
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/chbox_lay1"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+
+        <CheckBox
+            android:id="@+id/btn_selectall1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/checkbok_selector"
+            android:textSize="15sp"
+            android:layout_centerVertical="true"
+            android:text="  select all"/>
+
+        <TextView
+            android:id="@+id/selected1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dip"
+            android:textSize="15sp"
+            android:text="0 selected"
+            android:textColor="@color/white"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+    </RelativeLayout>
+
+
 
 
     <ListView
         android:id="@+id/listViews1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/chbox_lay"
+        android:layout_below="@+id/layour_realy1"
+
         android:background="@color/black2"
         android:layout_above="@id/linear3"
         android:visibility="visible">

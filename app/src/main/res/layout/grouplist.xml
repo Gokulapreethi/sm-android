@@ -37,6 +37,7 @@
             android:focusable="false"
             android:button="@drawable/checkbok_selector"
             android:visibility="gone"/>
+
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

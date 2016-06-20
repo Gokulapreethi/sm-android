@@ -10314,6 +10314,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             chatlinkList=DBAccess.getdbHeler().getChatLinksHistory(groupId,true);
         else
             chatlinkList=DBAccess.getdbHeler().getChatLinksHistory(buddy,true);
+        for (GroupChatBean bean : chatlinkList) {
+            ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(bean.getFrom());
+            bean.setFrom(pbean.getFirstname() + " " + pbean.getLastname());
+            Log.d("name","stringvalue--->"+bean.getFrom());
+        }
         LinksAdapter adapter=new LinksAdapter(context,R.layout.chat_links,chatlinkList);
         list.setAdapter(adapter);
         adapter.notifyDataSetChanged();
