@@ -11190,10 +11190,11 @@ public class DBAccess extends SQLiteOpenHelper {
 			}
 			return row;
 		} catch (Exception e) {
+			e.printStackTrace();
 			if (AppReference.isWriteInFile)
 				AppReference.logger.error(e.getMessage(), e);
-			else
-				e.printStackTrace();
+//			else
+//				e.printStackTrace();
 			return 0;
 		}
 

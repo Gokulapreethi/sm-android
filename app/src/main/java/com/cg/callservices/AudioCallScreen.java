@@ -1176,7 +1176,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 						RecordTransactionBean transactionBean = new RecordTransactionBean();
 						transactionBean.setSessionid(strSessionId);
 						transactionBean.setHost(CallDispatcher.LoginUser);
-						transactionBean.setParticipants("");
+						transactionBean.setParticipants(CallDispatcher.sb.getParticipants());
+						transactionBean.setChatid(CallDispatcher.sb.getChatid());
 						processCallRequest(2, transactionBean, "promote");
 
 						for (int i = 0; i < CallDispatcher.conferenceMembers.size(); i++) {
@@ -1942,58 +1943,65 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 										R.string.yes),
 								new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog, int id) {
-										Message msg = new Message();
-										Bundle bun = new Bundle();
-										bun.putString("action", "leave");
-										msg.obj = bun;
-										selfHangup = true;
-										if (selfHangup) {
-											CallDispatcher.sb
-													.setEndTime(objCallDispatcher.getCurrentDateandTime());
-											CallDispatcher.sb
-													.setCallDuration(SingleInstance.mainContext
-															.getCallDuration(CallDispatcher.sb
-																			.getStartTime(),
-																	CallDispatcher.sb
-																			.getEndTime()));
-											CallDispatcher.sb.setCallstatus("callattended");
+										try {
+											Message msg = new Message();
+											Bundle bun = new Bundle();
+											bun.putString("action", "leave");
+											msg.obj = bun;
+											selfHangup = true;
+											if (selfHangup) {
 
-											//For Callhistory host and participant name entry
-											//Start
-											CallDispatcher.sb.setHost_name(host);
-											String participant=null;
-											if(CallDispatcher.conferenceMembers!=null && CallDispatcher.conferenceMembers.size()>0){
-												for(String name:CallDispatcher.conferenceMembers){
-													if(!name.equalsIgnoreCase(host)){
-														if(participant==null){
-															participant=name;
-														}else{
-															participant=participant+","+name;
-														}
+                                                Log.i("AudioCall","StartTime :"+CallDispatcher.sb
+														.getStartTime());
+                                                CallDispatcher.sb
+														.setEndTime(objCallDispatcher.getCurrentDateandTime());
+                                                CallDispatcher.sb
+                                                        .setCallDuration(SingleInstance.mainContext
+																.getCallDuration(CallDispatcher.sb
+																				.getStartTime(),
+																		CallDispatcher.sb
+																				.getEndTime()));
+                                                CallDispatcher.sb.setCallstatus("callattended");
 
-													}
-												}
-											}
-											if(participant!=null){
-												CallDispatcher.sb.setParticipant_name(participant);
-											}
-											//end
+                                                //For Callhistory host and participant name entry
+                                                //Start
+                                                CallDispatcher.sb.setHost_name(host);
+                                                String participant=null;
+                                                if(CallDispatcher.conferenceMembers!=null && CallDispatcher.conferenceMembers.size()>0){
+                                                    for(String name:CallDispatcher.conferenceMembers){
+                                                        if(!name.equalsIgnoreCase(host)){
+                                                            if(participant==null){
+                                                                participant=name;
+                                                            }else{
+                                                                participant=participant+","+name;
+                                                            }
 
-											DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
-											DBAccess.getdbHeler()
-													.saveOrUpdateRecordtransactiondetails(
-															CallDispatcher.sb);
+                                                        }
+                                                    }
+                                                }
+                                                if(participant!=null){
+                                                    CallDispatcher.sb.setParticipant_name(participant);
+                                                }
+                                                //end
 
-											showCallHistory();
+                                                DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+                                                DBAccess.getdbHeler()
+                                                        .saveOrUpdateRecordtransactiondetails(
+																CallDispatcher.sb);
+
+                                                showCallHistory();
 
 
+                                            }
+											final String[] choiceList = returnBuddies();
+											if (choiceList.length != 0) {
+                                                isBuddyinCall = true;
+                                                selfHangup = false;
+                                            }
+											handler.sendMessage(msg);
+										} catch (Exception e) {
+											e.printStackTrace();
 										}
-										final String[] choiceList = returnBuddies();
-										if (choiceList.length != 0) {
-											isBuddyinCall = true;
-											selfHangup = false;
-										}
-										handler.sendMessage(msg);
 									}
 								})
 						.setNegativeButton(

@@ -658,7 +658,7 @@ public class inCommingCallAlert extends Fragment {
 			SingleInstance.instanceTable.remove("alertscreen");
 		}
 
-		rootView=null;
+		rootView = null;
 		FragmentManager fm =
 				AppReference.mainContext.getSupportFragmentManager();
 		FragmentTransaction ft = fm.beginTransaction();
@@ -668,7 +668,17 @@ public class inCommingCallAlert extends Fragment {
 				AppReference.bacgroundFragment);
 		ft.commitAllowingStateLoss();
 		mainHeader.setVisibility(View.VISIBLE);
-		min_incall.setVisibility(View.GONE);}
+		min_incall.setVisibility(View.GONE);
+	}
+
+	public void removeInstance(){
+		Log.i("AudioCall","incoming Alert removeInstance");
+		if (SingleInstance.instanceTable.containsKey("alertscreen")) {
+			SingleInstance.instanceTable.remove("alertscreen");
+		}
+		if(rootView != null)
+			rootView=null;
+	}
 
 	@Override
 	public void onDestroy() {

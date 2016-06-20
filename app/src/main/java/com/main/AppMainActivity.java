@@ -8341,5 +8341,12 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			}
 		}
 
+		if (WebServiceReferences.contextTable.containsKey("multimediautils")) {
+			MultimediaUtils multimediaUtils = (MultimediaUtils)WebServiceReferences.contextTable.get("multimediautils");
+			if(multimediaUtils != null) {
+				multimediaUtils.finish();
+			}
+		}
+
 	}
 }

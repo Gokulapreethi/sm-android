@@ -2,7 +2,6 @@ package com.main;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,7 +12,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -25,13 +23,11 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cg.DB.DBAccess;
 import com.cg.account.FindPeople;
-import com.cg.callservices.AudioCallScreen;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.hostedconf.AppReference;
@@ -670,11 +666,6 @@ public void onDestroy() {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-    }
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
 
     }
 

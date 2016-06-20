@@ -387,6 +387,21 @@ public class CallConnectingScreen extends Fragment {
 					callDisp.callHangupFromScreen(bean);
 					CallDispatcher.currentSessionid = null;
 					CallDispatcher.isAudioCallWindowOpened = true;
+
+					CallDispatcher.sb.setCallstatus("callattended");
+					CallDispatcher.sb.setStartTime(callDisp.getCurrentDateandTime());
+					CallDispatcher.sb.setEndTime(callDisp.getCurrentDateandTime());
+					CallDispatcher.sb
+							.setCallDuration(SingleInstance.mainContext
+									.getCallDuration(CallDispatcher.sb
+													.getStartTime(),
+											CallDispatcher.sb
+													.getEndTime()));
+
+					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+					DBAccess.getdbHeler()
+							.saveOrUpdateRecordtransactiondetails(
+									CallDispatcher.sb);
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
@@ -410,6 +425,22 @@ public class CallConnectingScreen extends Fragment {
 
 					CallDispatcher.currentSessionid = null;
 
+					CallDispatcher.sb.setCallstatus("callattended");
+					CallDispatcher.sb.setStartTime(callDisp.getCurrentDateandTime());
+					CallDispatcher.sb.setEndTime(callDisp.getCurrentDateandTime());
+
+
+					CallDispatcher.sb
+							.setCallDuration(SingleInstance.mainContext
+									.getCallDuration(CallDispatcher.sb
+													.getStartTime(),
+											CallDispatcher.sb
+													.getEndTime()));
+
+					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+					DBAccess.getdbHeler()
+							.saveOrUpdateRecordtransactiondetails(
+									CallDispatcher.sb);
 					Log.d("hang", "Hang up from the call");
 				} catch (Exception e) {
 					e.printStackTrace();

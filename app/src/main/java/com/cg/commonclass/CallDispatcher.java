@@ -2803,6 +2803,11 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 											connectingScreen.removeInstance();
 										}
 
+										if (SingleInstance.instanceTable.containsKey("alertscreen")) {
+											inCommingCallAlert inCommingcallAlert = (inCommingCallAlert)SingleInstance.instanceTable.get("alertscreen");
+											inCommingcallAlert.removeInstance();
+										}
+
 										CallDispatcher.conferenceMember_Details = new HashMap<String,SignalingBean>();
 										sb.setRunningcallstate("Connected");
 										CallDispatcher.conferenceMember_Details.put(from, (SignalingBean) sb.clone());
@@ -2866,6 +2871,11 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 										if (SingleInstance.instanceTable.containsKey("connection")) {
 											CallConnectingScreen connectingScreen = (CallConnectingScreen)SingleInstance.instanceTable.get("connection");
 											connectingScreen.removeInstance();
+										}
+
+										if (SingleInstance.instanceTable.containsKey("alertscreen")) {
+											inCommingCallAlert inCommingcallAlert = (inCommingCallAlert)SingleInstance.instanceTable.get("alertscreen");
+											inCommingcallAlert.removeInstance();
 										}
 
 										CallDispatcher.conferenceMember_Details = new HashMap<String,SignalingBean>();
@@ -14387,13 +14397,13 @@ private TrustManager[] get_trust_mgr() {
 							.get("connection")).setTitle(online);
 			}
 		} else {
-			Log.i("AudioCall","Call Screen :"+SingleInstance.instanceTable.containsKey("callscreen")+
-					" Alert Screen :"+SingleInstance.instanceTable
-					.containsKey("alertscreen")+" Sip Call Alert :"+
+			Log.i("AudioCall", "Call Screen :" + SingleInstance.instanceTable.containsKey("callscreen") +
+					" Alert Screen :" + SingleInstance.instanceTable
+					.containsKey("alertscreen") + " Sip Call Alert :" +
 					WebServiceReferences.contextTable
-					.containsKey("sicallalert")+ " Sip Call Screen :"+
+							.containsKey("sicallalert") + " Sip Call Screen :" +
 					WebServiceReferences.contextTable
-					.containsKey("sipcallscreen"));
+							.containsKey("sipcallscreen"));
 		}
 
 	}
@@ -14639,6 +14649,14 @@ private TrustManager[] get_trust_mgr() {
 
 			// bib = WebServiceReferences.buddyList.get(username);
 			if (bib != null) {
+
+				SignalingBean pefore_promote = null;
+				String previous_start_time = null;
+				if(promote_feature != null && promote_feature.equalsIgnoreCase("promote")) {
+					previous_start_time = sb.getStartTime();
+					pefore_promote = (SignalingBean) sb.clone();
+				}
+
 				CallDispatcher.sb = new SignalingBean();
 				CallDispatcher.sb.setFrom(CallDispatcher.LoginUser);
 				CallDispatcher.sb.setTo(username);
@@ -14657,6 +14675,7 @@ private TrustManager[] get_trust_mgr() {
 
 				if(promote_feature.equalsIgnoreCase("promote")) {
 					CallDispatcher.sb.setVideopromote("yes");
+					CallDispatcher.sb.setStartTime(previous_start_time);
 				} else if(promote_feature.equalsIgnoreCase("disablevideo")){
 					CallDispatcher.sb.setVideoStoped(transaction_Bean.getDisableVideo());
 				} else {
