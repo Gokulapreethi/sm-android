@@ -310,9 +310,9 @@ public class DBAccess extends SQLiteOpenHelper {
 			//For withdraw message
 			//start
 			    ContentValues contentValues =new ContentValues();
-			    contentValues.put("subcategory","null");
+//			    contentValues.put("subcategory","null");
 				contentValues.put("mimetype","text");
-				contentValues.put("message","Message withdraw");
+				contentValues.put("message","Message withdrawn");
 			    contentValues.put("media","null");
 				int row_id = updateChatWithdraw_row(contentValues, "signalid='" + signalID
 						+ "'");
