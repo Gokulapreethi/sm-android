@@ -44,6 +44,40 @@ public class ChatInfo extends Activity {
             TextView tvdelivered = (TextView) findViewById(R.id.tvdelivered);
             GroupChatBean chatList = (GroupChatBean) getIntent().getSerializableExtra("chatlistindividual");
             msgView.setText(chatList.getMessage());
+            if(chatList!=null && chatList.getMediaName()!=null){
+                if(chatList.getMediaName().contains("COMMedia")){
+                    String allFiles_name=null;
+                    if(chatList.getMediaName().contains(",")){
+                        String multi_name[]=chatList.getMediaName().split(",");
+                        for(int i=0;i<multi_name.length;i++){
+                            String filename = multi_name[i].split("COMMedia/")[1];
+                            if (filename != null && !filename.equalsIgnoreCase("null")) {
+                                if (allFiles_name == null) {
+                                    allFiles_name = filename;
+                                } else {
+                                    allFiles_name = allFiles_name + "\n" + filename;
+                                }
+                            }
+
+                        }
+
+                    }else {
+                        String filename = chatList.getMediaName().split("COMMedia/")[1];
+                        if (filename != null && !filename.equalsIgnoreCase("null")) {
+                            allFiles_name=filename;
+                        }
+                    }
+                    if(chatList.getMessage()!=null && !chatList.getMessage().equalsIgnoreCase("null")&&allFiles_name!=null){
+                        msgView.setText(chatList.getMessage()+"\n"+allFiles_name);
+                    }else{
+                        if(allFiles_name!=null) {
+                            msgView.setText(allFiles_name);
+                        }
+                    }
+
+
+                }
+            }
             sentView.setText("Sent:");
 //        tvdate.setText(chatList.getSenttime());
             tvread.setText(Html.fromHtml("<font color=\"#FFFFFF\">"

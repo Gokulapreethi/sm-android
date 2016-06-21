@@ -312,8 +312,10 @@ public class DBAccess extends SQLiteOpenHelper {
 			    ContentValues contentValues =new ContentValues();
 //			    contentValues.put("subcategory","null");
 				contentValues.put("mimetype","text");
-				contentValues.put("message","Message withdrawn");
+				contentValues.put("message","Message withdrawn @"+getCurrentTime());
 			    contentValues.put("media","null");
+			contentValues.put("withdrawn","1");
+//			contentValues.put("withdrawtime",getCurrentTime());
 				int row_id = updateChatWithdraw_row(contentValues, "signalid='" + signalID
 						+ "'");
 
@@ -11238,6 +11240,19 @@ public class DBAccess extends SQLiteOpenHelper {
 
 		} finally {
 			return row_id;
+		}
+	}
+
+	public String getCurrentTime() {
+		try {
+			Date curDate = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat(
+					"hh:mm a");
+			return sdf.format(curDate).toString();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
 		}
 	}
 

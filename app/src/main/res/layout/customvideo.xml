@@ -32,7 +32,17 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:background="@drawable/start_recording"
-            android:textSize="12dp" />
+            android:textSize="12dp"
+            />
+        <Button
+            android:id="@+id/mybutton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/start_recording"
+            android:textSize="12dp"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/Button1"

@@ -47,7 +47,7 @@ public class CustomVideoCamera extends Activity {
 	private MyCameraSurfaceView myCameraSurfaceView;
 	private MediaRecorder mediaRecorder;
 
-	Button myButton;
+	Button myButton,start_rec;
 	SurfaceHolder surfaceHolder;
 	boolean recording;
 	Button back, front;
@@ -85,6 +85,28 @@ public class CustomVideoCamera extends Activity {
 			setContentView(R.layout.customvideo);
 			filepath = getIntent().getStringExtra("filePath");
 			isPhoto = getIntent().getBooleanExtra("isPhoto", false);
+			myButton = (Button) findViewById(R.id.mybutton);
+			start_rec=(Button)findViewById(R.id.mybutton1);
+			front = (Button) findViewById(R.id.Button1);
+			back = (Button) findViewById(R.id.Button2);
+			start_rec.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					myButton.setVisibility(View.VISIBLE);
+					start_rec.setVisibility(View.GONE);
+//					front.setVisibility(View.GONE);
+//					back.setVisibility(View.GONE);
+					front.setEnabled(false);
+					back.setEnabled(false);
+					startRecording();
+				}
+			});
+			if(!isPhoto){
+				myButton.setVisibility(View.GONE);
+				start_rec.setVisibility(View.VISIBLE);
+
+			}
+
 			myCameraPreview = (FrameLayout) findViewById(R.id.videoview);
 			// Get Camera for preview
 			int numOfCam = Camera.getNumberOfCameras();
@@ -92,13 +114,25 @@ public class CustomVideoCamera extends Activity {
 			//myButton.setEnabled(false);
 			if (myCamera == null) {
 				if (numOfCam > 1) {
-					camera_no = 1;
-					myCamera = Camera
-							.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
-				} else {
+					//For Change Camera front from back
+					//start
+//					camera_no = 1;
+//					myCamera = Camera
+//							.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
 					camera_no = 0;
 					myCamera = Camera
 							.open(Camera.CameraInfo.CAMERA_FACING_BACK);
+					//end
+				} else {
+					//For Change Camera front from back
+					//start
+//					camera_no = 0;
+//					myCamera = Camera
+//							.open(Camera.CameraInfo.CAMERA_FACING_BACK);
+					camera_no = 1;
+					myCamera = Camera
+							.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
+					//end
 				}
 
 				myCameraSurfaceView = new MyCameraSurfaceView(this, myCamera);
@@ -110,17 +144,19 @@ public class CustomVideoCamera extends Activity {
 						Toast.LENGTH_LONG).show();
 			}
 
-			front = (Button) findViewById(R.id.Button1);
-			back = (Button) findViewById(R.id.Button2);
-			if (!(numOfCam == 1)) {
 
-				back.setVisibility(View.VISIBLE);
+			if (!(numOfCam == 1)) {
+				//For Change Camera front from back
+				//start
+//				back.setVisibility(View.VISIBLE);
+				front.setVisibility(View.VISIBLE);
+				//end
 			}
 			chronometer = (Chronometer) findViewById(R.id.chronometer1);
 			if (isPhoto) {
 				chronometer.setVisibility(View.GONE);
 			}
-			myButton = (Button) findViewById(R.id.mybutton);
+
 			myButton.setOnClickListener(myButtonOnClickListener);
 			front.setOnClickListener(new OnClickListener() {
 
@@ -128,6 +164,7 @@ public class CustomVideoCamera extends Activity {
 				public void onClick(View arg0) {
 					try {
 						// TODO Auto-generated method stub
+						Log.i("camera","front click");
 						myCameraPreview.removeView(myCameraSurfaceView);
 						myCamera.stopPreview();
 						myCamera.release();
@@ -152,6 +189,7 @@ public class CustomVideoCamera extends Activity {
 				public void onClick(View arg0) {
 					try {
 						// TODO Auto-generated method stub
+						Log.i("camera","back click");
 						myCameraPreview.removeView(myCameraSurfaceView);
 						myCamera.stopPreview();
 						myCamera.release();
@@ -205,8 +243,14 @@ public class CustomVideoCamera extends Activity {
 		   // }, 1000);
 		   mediaRecorder.start();
 		   recording = true;
-		   back.setVisibility(View.VISIBLE);
-		   front.setVisibility(View.GONE);
+
+			  //For Change Camera front from back
+			  //start
+//		   back.setVisibility(View.VISIBLE);
+//		   front.setVisibility(View.GONE);
+			  back.setVisibility(View.GONE);
+			  front.setVisibility(View.VISIBLE);
+			  //end
 		   // myButton.setText("STOP");
 		   // myButton.setBackgroundResource(R.drawable.stop_recording);
 		   chronometer.setBase(SystemClock.elapsedRealtime());
@@ -258,6 +302,7 @@ public class CustomVideoCamera extends Activity {
 			} else if (front_back == 1) {
 
 				myCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
+
 			}
 		} catch (Exception e) {
 			// Camera is not available (in use or does not exist)
@@ -447,7 +492,7 @@ public class CustomVideoCamera extends Activity {
 				e.printStackTrace();
 			}
 			if (!isPhoto) {
-			    startRecording();
+//			    startRecording();
 			   }
 		}
 

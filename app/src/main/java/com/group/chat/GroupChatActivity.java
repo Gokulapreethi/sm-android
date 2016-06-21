@@ -2678,7 +2678,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                         //For withdrraw message
                                         //start
                                         gChat.setMimetype("text");
-                                        gChat.setMessage("Message withdrawn");
+                                        gChat.setMessage("Message withdrawn @"+getCurrentTime());
+                                        gChat.setWithdrawn("1");
                                         //End
                                         //chatList.remove(i);
                                         adapter.notifyDataSetChanged();
@@ -4618,6 +4619,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         .findViewById(R.id.btn_confrm);
                 TextView waitforconfir = (TextView) convertView
                         .findViewById(R.id.waitforconfir);
+                TextView received_confirmation=(TextView) convertView.findViewById(R.id.tv_confirm);
                 TextView tv_today = (TextView) convertView
                         .findViewById(R.id.viewtoday);
                 TextView waitforreply = (TextView) convertView
@@ -4636,6 +4638,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 btn_reply.setVisibility(View.GONE);
                 tv_replied.setVisibility(View.GONE);
                 waitforconfir.setVisibility(View.GONE);
+                received_confirmation.setVisibility(View.GONE);
                 btn_confrm.setVisibility(View.GONE);
                 btn_private.setVisibility(View.GONE);
                 final CheckBox selectInvidual_buddy = (CheckBox) convertView
@@ -4891,8 +4894,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 tv_urgent.setTextColor(Color.parseColor("#daa520"));
                                 tv_urgent.setText("  Urgent  !  ");
                                 tvprivate.setVisibility(View.GONE);
-                                if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-                                        && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+//                                if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+//                                        && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+                                if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
                                     tv_urgent.setVisibility(View.GONE);
                                 }else{
                                     tv_urgent.setVisibility(View.VISIBLE);
@@ -4965,8 +4969,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                             lvquoted_msg.setText(Bean.getMessage());
                                             //For withdraw message
                                             //start
-                                            if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-                                                    && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+//                                            if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+//                                                    && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+                                            if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
                                                 listrel_quoted.setVisibility(View.GONE);
                                             }else{
                                                 listrel_quoted.setVisibility(View.VISIBLE);
@@ -4984,8 +4989,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     waitforreply.setVisibility(View.VISIBLE);
                                     //For withdraw message
                                     //start
-                                    if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-                                            && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+//                                    if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+//                                            && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+                                    if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
                                         waitforreply.setVisibility(View.GONE);
                                     }else{
                                         waitforreply.setVisibility(View.VISIBLE);
@@ -4995,14 +5001,29 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 deadlineReplyText.setVisibility(View.GONE);
                             } else if (gcBean.getSubCategory().equalsIgnoreCase(
                                     "gc")) {
+                                Log.i("confirm","Loginuser subCategory gc");
                                 if (gcBean.getReply() != null && !gcBean.getReply().equals("") && gcBean.getReply().equals("gc_r")) {
+                                    Log.i("confirm","Loginuser subCategory gc and Reply gc_r if");
                                     waitforconfir.setVisibility(View.GONE);
+                                    received_confirmation.setVisibility(View.VISIBLE);
+                                    //For withdraw message
+                                    //start
+//                                    if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+//                                            && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+                                    if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
+                                        received_confirmation.setVisibility(View.GONE);
+                                    }else{
+                                        received_confirmation.setVisibility(View.VISIBLE);
+                                    }
+                                    //End
                                 } else {
+                                    Log.i("confirm","Loginuser subCategory gc and Reply gc_r else");
                                     waitforconfir.setVisibility(View.VISIBLE);
                                     //For withdraw message
                                     //start
-                                    if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-                                            && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+//                                    if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+//                                            && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+                                    if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
                                         waitforconfir.setVisibility(View.GONE);
                                     }else{
                                         waitforconfir.setVisibility(View.VISIBLE);
@@ -5230,8 +5251,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     tv_replied.setText("Confirmed" + Html.fromHtml(tick));
                                     //For withdraw message
                                     //start
-                                    if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-                                            && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+//                                    if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+//                                            && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+                                    if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
                                         tv_replied.setVisibility(View.GONE);
                                     }else{
                                         tv_replied.setVisibility(View.VISIBLE);
@@ -5242,8 +5264,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     btn_confrm.setVisibility(View.VISIBLE);
                                     //For withdraw message
                                     //start
-                                    if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-                                            && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+//                                    if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+//                                            && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+                                    if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
                                         btn_confrm.setVisibility(View.GONE);
                                     }else{
                                         btn_confrm.setVisibility(View.VISIBLE);
@@ -5257,8 +5280,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 tv_urgent.setText("  Urgent  !  ");
                                 //For withdraw message
                                 //start
-                                if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-                                        && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+//                                if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+//                                        && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+                                if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
                                     tv_urgent.setVisibility(View.GONE);
                                 }else{
                                     tv_urgent.setVisibility(View.VISIBLE);
@@ -5307,8 +5331,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                                     receiver_tvquoted_msg.setText(groupChatBean.getMessage());
                                                         //For withdraw message
                                                         //start
-                                                        if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-                                                                && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+//                                                        if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+//                                                                && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+                                                        if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
                                                             receive_quotedLayout.setVisibility(View.GONE);
                                                         }else{
                                                             receive_quotedLayout.setVisibility(View.VISIBLE);
@@ -5322,8 +5347,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                                 btn_reply.setVisibility(View.VISIBLE);
                                                 //For withdraw message
                                                 //start
-                                                if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-                                                        && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+//                                                if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+//                                                        && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+                                                if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
                                                     btn_reply.setVisibility(View.GONE);
                                                 }else{
                                                     btn_reply.setVisibility(View.VISIBLE);
@@ -5340,8 +5366,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                                 //End
                                                 //For withdraw message
                                                 //start
-                                                if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-                                                        && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+//                                                if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+//                                                        && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+                                                if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
                                                     tv_replied.setVisibility(View.GONE);
                                                 }else{
                                                     tv_replied.setVisibility(View.VISIBLE);
@@ -5920,7 +5947,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 //                            chatList.remove(gcBean);
                                 gcBean.setWithdrawn("1");
                                 gcBean.setMimetype("text");
-                                gcBean.setMessage("Message withdrawn");
+                                gcBean.setMessage("Message withdrawn @"+getCurrentTime());
                                 gcBean.setWithdraw(false);
 
                                 adapter.notifyDataSetChanged();
@@ -5959,7 +5986,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         xbutton.setTextColor(Color.parseColor("#99004c"));
                     } else {
                         if (gcBean.getWithdrawn() != null && gcBean.getWithdrawn().equals("1")) {
-                            message.setText("Message withdrawn");
+//                            message.setText("Message withdrawn");
                             swipeposition=2;
                         }
                         withdraw.setVisibility(View.GONE);
@@ -10943,4 +10970,19 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         AppReference.mainContext.isApplicationBroughtToBackground();
 
     }
+
+    public String getCurrentTime() {
+        try {
+            Date curDate = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat(
+                    "hh:mm a");
+            return sdf.format(curDate).toString();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 }
