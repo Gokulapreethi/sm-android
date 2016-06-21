@@ -45,6 +45,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -68,6 +69,7 @@ import com.bean.GroupTempBean;
 import com.bean.ProfileBean;
 import com.bean.SpecialMessageBean;
 import com.bean.UserBean;
+import com.cg.Calendar.DateView;
 import com.cg.DB.DBAccess;
 import com.cg.account.PinSecurity;
 import com.cg.commonclass.BuddyListComparator;
@@ -288,6 +290,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     Button dot;
     boolean isatoz=true;
     private RecordTransactionBean rBean=null;
+    int mYear;
+    int mMonth;
+    int mDay;
+    Calendar c = Calendar.getInstance();
+    int prevDay = c.get(Calendar.DAY_OF_MONTH);
+    int prevMonth = c.get(Calendar.MONTH);
+    int prevYear = c.get(Calendar.YEAR);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -794,15 +803,16 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             @Override
             public void onClick(View view) {
                 isChat = false;
+                setDefault();
                 if (isGroup) {
-                    setDefault();
-//                    info_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_calendar_white));
-//                else
                     info_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_info_white));
+                    GroupInfo();
+                }else {
+                    info_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_calendar_white));
+                    calendarProcess();
+                }
                     tv_info.setTextColor(getResources().getColor(R.color.white));
                     view_info.setVisibility(View.VISIBLE);
-                    GroupInfo();
-                }
             }
         });
     }
@@ -2269,7 +2279,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 if (spBean != null && spBean.getSubcategory() != null && spBean.getSubcategory().equalsIgnoreCase("grb")) {
                     for (int i = 0; i < chatList.size(); i++) {
                         GroupChatBean gcBean1 = chatList.get(i);
-                        if (gcBean1.getParentId().equals(gcBean.getParentId())) {
+                        if (gcBean1.getParentId()!=null&&gcBean1.getParentId().equals(gcBean.getParentId())) {
                             gcBean.setSubCategory("GRB_R");
                             gcBean1.setSubCategory("GRB_R");
                             gcBean.setReply("GRB_R");
@@ -2283,7 +2293,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 } else if (spBean != null && spBean.getSubcategory() != null && spBean.getSubcategory().equalsIgnoreCase("gc")) {
                     for (int i = 0; i < chatList.size(); i++) {
                         GroupChatBean gcBean1 = chatList.get(i);
-                        if (gcBean1.getParentId().equals(gcBean.getParentId())) {
+                        if (gcBean1.getParentId()!=null&&gcBean1.getParentId().equals(gcBean.getParentId())) {
                             gcBean.setSubCategory("gc_r");
                             gcBean1.setSubCategory("gc_r");
                             gcBean.setReply("gc_r");
@@ -3984,7 +3994,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     View item = sendlistadapter.getView(i, null, null);
                                     list_all.addView(item);
                                 }
-                                msgoptionview.setVisibility(View.VISIBLE);
                                 audio_call.setBackgroundResource(R.drawable.chat_send);
                                 audio_call.setTag(1);
 //                                relative_send_layout.getLayoutParams().height = 90;
@@ -4015,7 +4024,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     View item = sendlistadapter.getView(i, null, null);
                                     list_all.addView(item);
                                 }
-                                msgoptionview.setVisibility(View.VISIBLE);
                                 audio_call.setBackgroundResource(R.drawable.chat_send);
                                 audio_call.setTag(1);
 
@@ -5017,13 +5025,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     }
                                     //End
                                 } else {
-                                    Log.i("confirm","Loginuser subCategory gc and Reply gc_r else");
                                     waitforconfir.setVisibility(View.VISIBLE);
                                     //For withdraw message
                                     //start
-//                                    if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-//                                            && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
-                                    if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
+                                    if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+                                            && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
                                         waitforconfir.setVisibility(View.GONE);
                                     }else{
                                         waitforconfir.setVisibility(View.VISIBLE);
@@ -5294,12 +5300,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 // deadLineReply.setVisibility(View.GONE);
                                 Log.i("reply","receiver side grb|| GRB_R");
                                 deadlineReplyText.setVisibility(View.GONE);
-                                if (gcBean.getPrivateMembers() != null
-                                        && gcBean.getPrivateMembers().length() > 0) {
-                                    String[] privateMembers = gcBean
-                                            .getPrivateMembers().split(",");
-                                    for (String tmp : privateMembers) {
-                                        if (tmp.equalsIgnoreCase(CallDispatcher.LoginUser)) {
+//                                if (gcBean.getPrivateMembers() != null
+//                                        && gcBean.getPrivateMembers().length() > 0) {
+//                                    String[] privateMembers = gcBean
+//                                            .getPrivateMembers().split(",");
+//                                    for (String tmp : privateMembers) {
+//                                        if (tmp.equalsIgnoreCase(CallDispatcher.LoginUser)) {
 //										tv_user.setText(SingleInstance.mainContext.getResources().getString(R.string.reply_back_message_from)
 //												+ gcBean.getFrom()
 //										 + "\nTo : "
@@ -5347,9 +5353,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                                 btn_reply.setVisibility(View.VISIBLE);
                                                 //For withdraw message
                                                 //start
-//                                                if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-//                                                        && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
-                                                if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
+                                                if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+                                                        && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
                                                     btn_reply.setVisibility(View.GONE);
                                                 }else{
                                                     btn_reply.setVisibility(View.VISIBLE);
@@ -5375,17 +5380,17 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                                 }
                                                 //End
                                             }
-                                            break;
-                                        } else {
-                                            Log.i("reply","receiver side grb|| GRB_R not loginuser");
-                                            senderLayout
-                                                    .setBackgroundResource(R.color.lgreen);
-                                            scheduleMsg.setVisibility(View.GONE);
-                                            convertView
-                                                    .setBackgroundResource(R.color.lgreen);
-                                        }
-                                    }
-                                }
+//                                            break;
+//                                        } else {
+//                                            Log.i("reply","receiver side grb|| GRB_R not loginuser");
+//                                            senderLayout
+//                                                    .setBackgroundResource(R.color.lgreen);
+//                                            scheduleMsg.setVisibility(View.GONE);
+//                                            convertView
+//                                                    .setBackgroundResource(R.color.lgreen);
+//                                        }
+//                                    }
+//                                }
 
                             } else {
                                 Log.i("reply","receiver side grb|| GRB_R else ");
@@ -10631,7 +10636,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 if (spBean != null && spBean.getSubcategory() != null && spBean.getSubcategory().equalsIgnoreCase("grb")) {
                     for (int i = 0; i < chatList.size(); i++) {
                         GroupChatBean gcBean1 = chatList.get(i);
-                        if (gcBean1.getParentId().equals(gcBean.getParentId())) {
+                        if (gcBean1.getParentId()!=null&&gcBean1.getParentId().equals(gcBean.getParentId())) {
                             gcBean.setSubCategory("GRB_R");
                             gcBean1.setSubCategory("GRB_R");
                             gcBean.setReply("GRB_R");
@@ -10645,7 +10650,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 } else if (spBean != null && spBean.getSubcategory() != null && spBean.getSubcategory().equalsIgnoreCase("gc")) {
                     for (int i = 0; i < chatList.size(); i++) {
                         GroupChatBean gcBean1 = chatList.get(i);
-                        if (gcBean1.getParentId().equals(gcBean.getParentId())) {
+                        if (gcBean1.getParentId()!=null&&gcBean1.getParentId().equals(gcBean.getParentId())) {
                             gcBean.setSubCategory("gc_r");
                             gcBean1.setSubCategory("gc_r");
                             gcBean.setReply("gc_r");
@@ -10969,6 +10974,56 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         Log.i("pin", "Groupchatactivity Onstop");
         AppReference.mainContext.isApplicationBroughtToBackground();
 
+    }
+    private void calendarProcess()
+    {
+        final LinearLayout content = (LinearLayout) findViewById(R.id.content);
+        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        content.removeAllViews();
+        final View v1 = layoutInflater.inflate(R.layout.calendar, content);
+        CalendarView cal = (CalendarView)v1. findViewById(R.id.calendarView1);
+
+
+        cal.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+
+            @Override
+            public void onSelectedDayChange(CalendarView view, int year, int month,
+                                            int dayOfMonth) {
+                // TODO Auto-generated method stub
+                mDay = dayOfMonth;
+                mMonth = month;
+                mYear = year;
+                try {
+                    Calendar c = Calendar.getInstance();
+                    c.set(mYear, mMonth, mDay);
+                    SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy");
+                    String selectedDate = df.format(c.getTime());
+                    Date date = df.parse(selectedDate);
+                    SimpleDateFormat outFormat = new SimpleDateFormat("EEE");
+                    String goal = outFormat.format(date);
+                    if (changeUpdate(mYear, mMonth, mDay)) {
+                        prevDay = mDay;
+                        prevMonth = mMonth;
+                        prevYear = mYear;
+                        Intent intent = new Intent(context, DateView.class);
+                        intent.putExtra("date", selectedDate);
+                        intent.putExtra("day", goal);
+                        startActivity(intent);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+    private boolean changeUpdate(int curYear, int curMonth, int curDay) {
+        boolean changed = false;
+
+        if (curDay != prevDay || curMonth != prevMonth || curYear != prevYear) {
+            changed = true;
+        }
+        return changed;
     }
 
     public String getCurrentTime() {

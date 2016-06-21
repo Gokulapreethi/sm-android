@@ -1590,8 +1590,13 @@ public class WSRunner implements Runnable {
 						if (mParser.getResult(mSp.toString())) {
 							String[] temp = mParser.parseNewVerification(mSp
 									.toString());
-
 							mServicebean.setObj(temp);
+						}else {
+							webServiceBean = mParser.parseResultFromXml(mSp
+									.toString());
+							mServicebean.setObj(webServiceBean);
+						}
+
 							if (mServicebean.getCallBack() != null) {
 								((NewUser) mServicebean.getCallBack())
 										.notifyWebserviceResponse(mServicebean.getObj());
@@ -1599,8 +1604,6 @@ public class WSRunner implements Runnable {
 								SingleInstance.printLog(TAG, "Login, Callback is NULL",
 										null, null);
 							}
-
-						}
 						break;
 					case SETPATIENTRECORD:
 						if (mParser.getResult(mSp.toString())) {

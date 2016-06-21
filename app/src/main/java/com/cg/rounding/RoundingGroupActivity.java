@@ -1223,11 +1223,12 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                 });
 
             }
+            cancelDialog();
+            finish();
         } else if (obj instanceof String) {
             showToast((String) obj);
 
         cancelDialog();
-        finish();
         } else {
             cancelDialog();
             showAlert(SingleInstance.mainContext.getResources().getString(R.string.response_group),

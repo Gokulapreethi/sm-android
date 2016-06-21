@@ -11243,18 +11243,5 @@ public class DBAccess extends SQLiteOpenHelper {
 		}
 	}
 
-	public String getCurrentTime() {
-		try {
-			Date curDate = new Date();
-			SimpleDateFormat sdf = new SimpleDateFormat(
-					"hh:mm a");
-			return sdf.format(curDate).toString();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-	}
-
 
 }

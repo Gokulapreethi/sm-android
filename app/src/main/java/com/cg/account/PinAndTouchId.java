@@ -127,6 +127,14 @@ public class PinAndTouchId extends Fragment {
                 savepswd = (Button) _rootView.findViewById(R.id.savepswd);
                 toggle_off = (ImageView)_rootView.findViewById(R.id.toggle_off);
                 setSave();
+                if(SingleInstance.mainContext.isTouchIdEnabled) {
+                    istoggleOff=true;
+                    toggle_off.setBackgroundDrawable(getResources().getDrawable(R.drawable.toggle_dummy));
+                }else {
+                    istoggleOff=false;
+                    toggle_off.setBackgroundDrawable(getResources().getDrawable(R.drawable.touch_toogle));
+                }
+
 
                 toggle_off.setOnClickListener(new View.OnClickListener() {
                     @Override

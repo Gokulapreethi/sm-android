@@ -45,7 +45,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Attending Physicians,\nFellows and Residents or\n Medical Students"
+                        android:text="Attending Physicians,\nFellows, Residents and\n Medical Students"
                         android:gravity="center"
                         android:textSize="14sp"
                         android:textColor="@color/white" />
@@ -89,7 +89,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Anyone else"
+                        android:text="Everyone else"
                         android:textSize="14sp"
                         android:gravity="center"
                         android:textColor="@color/white" />

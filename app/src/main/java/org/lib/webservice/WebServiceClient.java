@@ -1136,7 +1136,7 @@ public class WebServiceClient {
 		servicebean.setProperty_map(ws_argmap);
 		servicebean.setServiceMethods(EnumWebServiceMethods.USERSIGNIN);
 		if (wsNotifier != null) {
-//			wsNotifier.clearBGTask();
+			wsNotifier.clearBGTask();
 			wsNotifier.addTasktoExecutor(servicebean);
 		}
 	}

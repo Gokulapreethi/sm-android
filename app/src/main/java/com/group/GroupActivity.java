@@ -798,12 +798,13 @@ public class GroupActivity extends Activity implements OnClickListener {
 				});
 
 			}
+			cancelDialog();
+			finish();
 		} else if (obj instanceof String) {
 			showToast((String) obj);
 
 		// callDisp.cancelDialog();
 		cancelDialog();
-		finish();
 		} else {
 			cancelDialog();
 			showAlert(

@@ -139,7 +139,11 @@ public class MyAccountActivity extends Activity {
         final TextView tv_hospital=(TextView)findViewById(R.id.tv_hospital);
         final TextView tv_state=(TextView)findViewById(R.id.tv_state);
         final TextView tv_medical=(TextView)findViewById(R.id.tv_medical);
-//        final EditText tv_addr = (EditText)findViewById(R.id.tv_addr);
+        final TextView tv_residency=(TextView)findViewById(R.id.tv_residency);
+        final TextView tv_fellow=(TextView)findViewById(R.id.tv_fellow);
+        final TextView tv_usertype=(TextView)findViewById(R.id.usertype);
+        final TextView profDesc=(TextView)findViewById(R.id.profDesc);
+        final TextView tv_speciality=(TextView)findViewById(R.id.tv_speciality);
         final TextView tv_association=(TextView)findViewById(R.id.tv_association);
         statusTxt.setText(status);
         if(status.equalsIgnoreCase("online"))
@@ -176,11 +180,11 @@ public class MyAccountActivity extends Activity {
                     window.setAttributes(lp);
                     dialog.show();
 
-                    final EditText citation_info = (EditText)dialog.findViewById(R.id.Edit_text1);
+                    final EditText citation_info = (EditText) dialog.findViewById(R.id.Edit_text1);
 
 
-                    Button save = (Button)dialog.findViewById(R.id.save_button1);
-                    Button cancel = (Button)dialog.findViewById(R.id.cancel_button1);
+                    Button save = (Button) dialog.findViewById(R.id.save_button1);
+                    Button cancel = (Button) dialog.findViewById(R.id.cancel_button1);
 
                     cancel.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -191,11 +195,11 @@ public class MyAccountActivity extends Activity {
                     save.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(add_citation==null) {
-                                if(SingleInstance.myAccountBean.getCitationpublications()!=null)
-                                add_citation = SingleInstance.myAccountBean.getCitationpublications();
-                            }else
-                                add_citation = add_citation+","+citation_info.getText().toString().trim();
+                            if (add_citation == null) {
+                                if (SingleInstance.myAccountBean.getCitationpublications() != null)
+                                    add_citation = SingleInstance.myAccountBean.getCitationpublications();
+                            } else
+                                add_citation = add_citation + "," + citation_info.getText().toString().trim();
                             String[] split = add_citation.split(",");
                             cite_lay.removeAllViews();
                             cite_lay1.removeAllViews();
@@ -259,24 +263,24 @@ public class MyAccountActivity extends Activity {
                     window.setAttributes(lp);
                     dialog1.show();
 
-                    final TextView Addresstext = (TextView)dialog1.findViewById(R.id.address_text1);
-                    final TextView addresstext = (TextView)dialog1.findViewById(R.id.address_text2);
-                    final TextView ziptext = (TextView)dialog1.findViewById(R.id.address_text3);
-                    final TextView citytext = (TextView)dialog1.findViewById(R.id.address_text4);
-                    final TextView office_phone_numbertext = (TextView)dialog1.findViewById(R.id.address_text5);
-                    final TextView office_fax_numbertext = (TextView)dialog1.findViewById(R.id.address_text6);
+                    final TextView Addresstext = (TextView) dialog1.findViewById(R.id.address_text1);
+                    final TextView addresstext = (TextView) dialog1.findViewById(R.id.address_text2);
+                    final TextView ziptext = (TextView) dialog1.findViewById(R.id.address_text3);
+                    final TextView citytext = (TextView) dialog1.findViewById(R.id.address_text4);
+                    final TextView office_phone_numbertext = (TextView) dialog1.findViewById(R.id.address_text5);
+                    final TextView office_fax_numbertext = (TextView) dialog1.findViewById(R.id.address_text6);
 
 
-                   final EditText Address1 = (EditText)dialog1.findViewById(R.id.address_edit1);
-                    final EditText address2 = (EditText)dialog1.findViewById(R.id.address_edit2);
-                    final EditText zip = (EditText)dialog1.findViewById(R.id.address_edit3);
-                    final EditText city = (EditText)dialog1.findViewById(R.id.address_edit4);
-                    final EditText office_phone_number = (EditText)dialog1.findViewById(R.id.address_edit5);
-                    final EditText office_fax_number = (EditText)dialog1.findViewById(R.id.address_edit6);
-                   state1 = (AutoCompleteTextView)dialog1.findViewById(R.id.state_of_practice);
+                    final EditText Address1 = (EditText) dialog1.findViewById(R.id.address_edit1);
+                    final EditText address2 = (EditText) dialog1.findViewById(R.id.address_edit2);
+                    final EditText zip = (EditText) dialog1.findViewById(R.id.address_edit3);
+                    final EditText city = (EditText) dialog1.findViewById(R.id.address_edit4);
+                    final EditText office_phone_number = (EditText) dialog1.findViewById(R.id.address_edit5);
+                    final EditText office_fax_number = (EditText) dialog1.findViewById(R.id.address_edit6);
+                    state1 = (AutoCompleteTextView) dialog1.findViewById(R.id.state_of_practice);
 
-                    Button save1 = (Button)dialog1.findViewById(R.id.save_button2);
-                    Button cancel1 = (Button)dialog1.findViewById(R.id.cancel_button2);
+                    Button save1 = (Button) dialog1.findViewById(R.id.save_button2);
+                    Button cancel1 = (Button) dialog1.findViewById(R.id.cancel_button2);
 
                     office_phone_number.addTextChangedListener(new TextWatcher() {
                         @Override
@@ -390,6 +394,7 @@ public class MyAccountActivity extends Activity {
                         }
                     });
 
+
                     cancel1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -405,34 +410,34 @@ public class MyAccountActivity extends Activity {
                             city_value = city.getText().toString();
                             state_value = state1.getText().toString().trim();
                             office_phone_no = office_phone_number.getText().toString();
-                            office_fax= office_fax_number.getText().toString();
+                            office_fax = office_fax_number.getText().toString();
 
                             String office_address = "";
-                            if(Addressline1!= null && !Addressline1.trim().equals("")){
-                                 office_address =Addressline1;
+                            if (Addressline1 != null && !Addressline1.trim().equals("")) {
+                                office_address = Addressline1;
                             }
-                            if(Addressline2!= null && !Addressline2.trim().equals("")){
-                                office_address =office_address+","+Addressline2;
+                            if (Addressline2 != null && !Addressline2.trim().equals("")) {
+                                office_address = office_address + "," + Addressline2;
                             }
-                            if(zip_code!= null && !zip_code.trim().equals("")){
-                                office_address =office_address+","+zip_code;
+                            if (zip_code != null && !zip_code.trim().equals("")) {
+                                office_address = office_address + "," + zip_code;
                             }
-                            if(city_value!= null && !city_value.trim().equals("")){
-                                office_address =office_address+","+city_value;
+                            if (city_value != null && !city_value.trim().equals("")) {
+                                office_address = office_address + "," + city_value;
                             }
-                            if(state_value!= null && !state_value.trim().equals("")){
-                                office_address =office_address+","+state_value;
+                            if (state_value != null && !state_value.trim().equals("")) {
+                                office_address = office_address + "," + state_value;
                             }
-                            if(office_phone_no!= null && !office_phone_no.trim().equals("")){
-                                office_address =office_address+","+office_phone_no;
+                            if (office_phone_no != null && !office_phone_no.trim().equals("")) {
+                                office_address = office_address + "," + office_phone_no;
                             }
-                            if(office_fax!= null && !office_fax.trim().equals("")){
-                                office_address =office_address+","+office_fax;
+                            if (office_fax != null && !office_fax.trim().equals("")) {
+                                office_address = office_address + "," + office_fax;
                             }
 
 //                            office_address = (Addressline1 + ", "+ Addressline2+ ", "+ zip_code+ ", "+city_value+ ", "+state_value+","+office_phone_no+ ", "+office_fax);
 
-                            if (Address1.length()> 0) {
+                            if (Address1.length() > 0) {
                                 Address1.append(",");
                             }
                             tv_addr.setText(office_address);
@@ -440,11 +445,17 @@ public class MyAccountActivity extends Activity {
 
                         }
                     });
-                    states= DBAccess.getdbHeler().getStateDetails();
+                    states = DBAccess.getdbHeler().getStateDetails();
 
                     stateAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, states);
                     state1.setAdapter(stateAdapter);
                     state1.setThreshold(1);
+                    state1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            state1.showDropDown();
+                        }
+                    });
 
                     addr_lay.setVisibility(View.VISIBLE);
 //                    tv_addr.setText(edOffc.getText().toString());
@@ -459,12 +470,12 @@ public class MyAccountActivity extends Activity {
             public void onClick(View view) {
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                if(isClicked) {
-                    isClicked=false;
+                if (isClicked) {
+                    isClicked = false;
                     advance_lay.setVisibility(View.VISIBLE);
                     arrow.setBackgroundResource(R.drawable.up_arrow);
-                }else {
-                    isClicked=true;
+                } else {
+                    isClicked = true;
                     advance_lay.setVisibility(View.GONE);
                     arrow.setBackgroundResource(R.drawable.input_arrow);
                 }
@@ -568,6 +579,7 @@ public class MyAccountActivity extends Activity {
                     offc.setVisibility(View.VISIBLE);
                 }
             }
+
             @Override
             public void afterTextChanged(Editable editable) {
             }
@@ -583,6 +595,7 @@ public class MyAccountActivity extends Activity {
                     citations.setVisibility(View.VISIBLE);
                 }
             }
+
             @Override
             public void afterTextChanged(Editable editable) {
             }
@@ -633,6 +646,115 @@ public class MyAccountActivity extends Activity {
             }
         });
 
+        medical_schools.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() > 0) {
+                    tv_medical.setVisibility(View.VISIBLE);
+                } else {
+                    tv_medical.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        residency_pgm.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() > 0) {
+                    tv_residency.setVisibility(View.VISIBLE);
+                } else {
+                    tv_residency.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        fellowship_pgm.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() > 0) {
+                    tv_fellow.setVisibility(View.VISIBLE);
+                } else {
+                    tv_fellow.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        Speciality.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() > 0) {
+                    tv_speciality.setVisibility(View.VISIBLE);
+                } else {
+                    tv_speciality.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        usertype.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() > 0) {
+                    tv_usertype.setVisibility(View.VISIBLE);
+                } else {
+                    tv_usertype.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        rlay_professional_org.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() > 0) {
+                    profDesc.setVisibility(View.VISIBLE);
+                } else {
+                    profDesc.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
 
 
         List<String> list = new ArrayList<String>();
@@ -651,6 +773,12 @@ public class MyAccountActivity extends Activity {
 
         title.setAdapter(dataAdapter);
         title.setSelection(0);
+        title.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                title.showDropDown();
+            }
+        });
 
         list = new ArrayList<String>();
         list.add("Student");

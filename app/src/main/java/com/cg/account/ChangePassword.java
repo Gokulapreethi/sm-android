@@ -332,7 +332,7 @@ public class ChangePassword extends Fragment {
 					public void onClick(DialogInterface dialog, int id) {
 						try {
 							if (isLogout) {
-								appMainActivity.showprogress();
+//								appMainActivity.showprogress();
 								((AppMainActivity) SingleInstance.contextTable
 										.get("MAIN")).logout(true);
 							}

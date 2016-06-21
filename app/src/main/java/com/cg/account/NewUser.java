@@ -310,9 +310,8 @@ public class NewUser extends Activity {
 //                        age = Currentyear - (Integer.parseInt(BirthYear));
                         Log.i("sss", "Current age" + age);
                         if ((ed_firstname.getText().toString().length() > 0) && (ed_lastname.getText().toString().length() > 0) &&
-                                (ed_dob.getText().toString().length() > 0) && (ed_securityno.getText().toString().length() > 0) &&
-                                (state.getText().toString().length() > 0) &&
-                                (ed_hno.getText().toString().length() > 0) && (ed_zipcode.getText().toString().length() > 0) && age >= 18) {
+                                (ed_dob.getText().toString().length() > 0)  && (state.getText().toString().length() > 0)
+                                && age >= 18) {
 
                             String[] param = new String[8];
                             param[0] = role;
@@ -342,34 +341,35 @@ public class NewUser extends Activity {
                         } else if (age < 18) {
                             Toast.makeText(context, "Sorry! Only 18 and above age persons are allowed to Create New User", Toast.LENGTH_SHORT).show();
                         } else {
-                            final Dialog dialog = new Dialog(context);
-                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                            dialog.setContentView(R.layout.error_dialogue);
-                            dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-                            dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
-                            ImageView error_img = (ImageView) dialog.findViewById(R.id.error_img);
-                            TextView tv_title = (TextView) dialog.findViewById(R.id.tv_title);
-                            tv_title.setText("SORRY!");
-                            TextView tv_firstLine = (TextView) dialog.findViewById(R.id.tv_firstLine);
-                            TextView tv_secondLine = (TextView) dialog.findViewById(R.id.tv_secondLine);
-                            TextView tv_note = (TextView) dialog.findViewById(R.id.tv_note);
-                            Button btn_ok = (Button) dialog.findViewById(R.id.btn_ok);
-                            error_img.setVisibility(View.VISIBLE);
-                            tv_title.setVisibility(View.VISIBLE);
-                            tv_firstLine.setVisibility(View.VISIBLE);
-                            tv_firstLine.setText("Unable to verify your \nprofessional credentials");
-                            tv_secondLine.setVisibility(View.GONE);
-                            tv_note.setVisibility(View.VISIBLE);
-                            tv_note.setText("Please contact the American Medical Association\nto establish your credentials");
-                            btn_ok.setText("OK");
-                            btn_ok.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    dialog.dismiss();
-                                    finish();
-                                }
-                            });
-                            dialog.show();
+                            showToast("Enter mandatory fields");
+//                            final Dialog dialog = new Dialog(context);
+//                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//                            dialog.setContentView(R.layout.error_dialogue);
+//                            dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+//                            dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
+//                            ImageView error_img = (ImageView) dialog.findViewById(R.id.error_img);
+//                            TextView tv_title = (TextView) dialog.findViewById(R.id.tv_title);
+//                            tv_title.setText("SORRY!");
+//                            TextView tv_firstLine = (TextView) dialog.findViewById(R.id.tv_firstLine);
+//                            TextView tv_secondLine = (TextView) dialog.findViewById(R.id.tv_secondLine);
+//                            TextView tv_note = (TextView) dialog.findViewById(R.id.tv_note);
+//                            Button btn_ok = (Button) dialog.findViewById(R.id.btn_ok);
+//                            error_img.setVisibility(View.VISIBLE);
+//                            tv_title.setVisibility(View.VISIBLE);
+//                            tv_firstLine.setVisibility(View.VISIBLE);
+//                            tv_firstLine.setText("Unable to verify your \nprofessional credentials");
+//                            tv_secondLine.setVisibility(View.GONE);
+//                            tv_note.setVisibility(View.VISIBLE);
+//                            tv_note.setText("Please contact the American Medical Association\nto establish your credentials");
+//                            btn_ok.setText("OK");
+//                            btn_ok.setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    dialog.dismiss();
+//                                    finish();
+//                                }
+//                            });
+//                            dialog.show();
                         }
                     }
 
@@ -443,32 +443,32 @@ public class NewUser extends Activity {
                 startActivity(intent);
                 finish();
             } else {
-                final Dialog dialog = new Dialog(context);
-                dialog.setContentView(R.layout.error_dialogue);
-                dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-                dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
-                ImageView error_img = (ImageView) dialog.findViewById(R.id.error_img);
-                TextView tv_title = (TextView) dialog.findViewById(R.id.tv_title);
-                tv_title.setText("SORRY!");
-                TextView tv_firstLine = (TextView) dialog.findViewById(R.id.tv_firstLine);
-                TextView tv_secondLine = (TextView) dialog.findViewById(R.id.tv_secondLine);
-                TextView tv_note = (TextView) dialog.findViewById(R.id.tv_note);
-                Button btn_ok = (Button) dialog.findViewById(R.id.btn_ok);
-                error_img.setVisibility(View.VISIBLE);
-                tv_title.setVisibility(View.VISIBLE);
-                tv_firstLine.setVisibility(View.VISIBLE);
-                tv_firstLine.setText("Unable to verify your details\nwith the American Medical\nAssociation (AMA)");
-                tv_secondLine.setVisibility(View.GONE);
-                tv_note.setVisibility(View.VISIBLE);
-                tv_note.setText("Please Contact AMA to\nresolve this problem");
-                btn_ok.setText("CONTACT AMA");
-                btn_ok.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show();
+//                final Dialog dialog = new Dialog(context);
+//                dialog.setContentView(R.layout.error_dialogue);
+//                dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+//                dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
+//                ImageView error_img = (ImageView) dialog.findViewById(R.id.error_img);
+//                TextView tv_title = (TextView) dialog.findViewById(R.id.tv_title);
+//                tv_title.setText("SORRY!");
+//                TextView tv_firstLine = (TextView) dialog.findViewById(R.id.tv_firstLine);
+//                TextView tv_secondLine = (TextView) dialog.findViewById(R.id.tv_secondLine);
+//                TextView tv_note = (TextView) dialog.findViewById(R.id.tv_note);
+//                Button btn_ok = (Button) dialog.findViewById(R.id.btn_ok);
+//                error_img.setVisibility(View.VISIBLE);
+//                tv_title.setVisibility(View.VISIBLE);
+//                tv_firstLine.setVisibility(View.VISIBLE);
+//                tv_firstLine.setText("Unable to verify your details\nwith the American Medical\nAssociation (AMA)");
+//                tv_secondLine.setVisibility(View.GONE);
+//                tv_note.setVisibility(View.VISIBLE);
+//                tv_note.setText("Please Contact AMA to\nresolve this problem");
+//                btn_ok.setText("CONTACT AMA");
+//                btn_ok.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        dialog.dismiss();
+//                    }
+//                });
+//                dialog.show();
             }
         }
 

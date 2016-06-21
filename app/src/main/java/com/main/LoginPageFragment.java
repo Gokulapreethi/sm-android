@@ -258,6 +258,7 @@ public class LoginPageFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
+                    showToast("Please contact support desk www.snazmed.com");
 
 //							Intent i = new Intent(getActivity()
 //									.getApplicationContext(), GetEndorsement.class);
@@ -1438,7 +1439,7 @@ public class LoginPageFragment extends Fragment {
                 public void run() {
                     // TODO Auto-generated method stub
                     Log.i("login098", "inside handler");
-                    edUserName.setText("");
+//                    edUserName.setText("");
                     edPswd.setText("");
                 }
             });

@@ -127,15 +127,14 @@ public class FeedbackFragment extends Fragment {
                 Button cancel=(Button)view.findViewById(R.id.cancel_button);
 
                 if (!istoggleOff) {
-                    toggle_off.setBackgroundDrawable(getResources().getDrawable(R.drawable.toogle_button_on_pink));
-                    right_arrow.setClickable(true);
-                    text_feedback.setTextColor(getResources().getColor(R.color.white));
-                } else {
                     toggle_off.setBackgroundDrawable(getResources().getDrawable(R.drawable.touch_toogle));
                     right_arrow.setClickable(false);
                     text_feedback.setTextColor(getResources().getColor(R.color.grey3));
+                } else {
+                    toggle_off.setBackgroundDrawable(getResources().getDrawable(R.drawable.toogle_button_on_pink));
+                    right_arrow.setClickable(true);
+                    text_feedback.setTextColor(getResources().getColor(R.color.white));
                 }
-
 
                 toggle_off.setOnClickListener(new View.OnClickListener() {
                     @Override
