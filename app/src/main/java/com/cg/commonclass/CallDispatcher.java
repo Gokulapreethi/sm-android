@@ -562,7 +562,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	public boolean Sipcallisconnected = false;
 
-	public boolean GSMCallisAccepted = false;
+	public static boolean GSMCallisAccepted = false;
 
 	public boolean SIPCallisAccepted = false;
 
@@ -10909,7 +10909,7 @@ private TrustManager[] get_trust_mgr() {
 
 	public void notifyGSMCallAcceted() {
 		isCallInitiate = false;
-		GSMCallisAccepted = false;
+		GSMCallisAccepted = true;
 		if (WebServiceReferences.contextTable.containsKey("multimediautils"))
 			((MultimediaUtils) WebServiceReferences.contextTable
 					.get("multimediautils")).notifyGSMCallAccepted();

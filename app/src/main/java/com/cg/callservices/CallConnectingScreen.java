@@ -253,7 +253,7 @@ public class CallConnectingScreen extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
+		Log.i("Minimise","CallConnectingScreen OnResume");
 		if(min_outcall != null) {
 			min_outcall.setVisibility(View.GONE);
 		}
@@ -262,6 +262,12 @@ public class CallConnectingScreen extends Fragment {
 			min_incall.setVisibility(View.GONE);
 		}
     }
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		Log.i("Minimise", "CallConnectingScreen OnPause");
+	}
 
 	public void forceHangUp(boolean isForceHangUp) {
 		this.isForceHangUp = isForceHangUp;

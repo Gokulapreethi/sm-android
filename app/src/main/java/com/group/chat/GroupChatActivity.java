@@ -1133,15 +1133,27 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         } else {
                             if (isGroup || isRounding) {
                                 Log.d("Test", "Inside Group VideoConference onclick");
-                                if (!CallDispatcher.isCallInitiate)
-                                    groupCallMenu(2);
-                                else
+                                if (!CallDispatcher.isCallInitiate) {
+                                    if(!CallDispatcher.GSMCallisAccepted) {
+                                        groupCallMenu(2);
+                                    } else {
+                                        showToast("Please try.. GSM Call is in progress");
+                                    }
+                                } else {
                                     showToast("Please try...Call is in progress");
+                                }
                             } else {
-                                if (!CallDispatcher.isCallInitiate)
-                                    individualCallMenu(1);
-                                else
+                                if (!CallDispatcher.isCallInitiate) {
+                                    if (!CallDispatcher.GSMCallisAccepted) {
+                                        individualCallMenu(1);
+                                    } else {
+                                        showToast("Please try.. GSM Call is in progress");
+                                    }
+
+                                } else {
                                     showToast("Please try...Call is in progress");
+                                }
+
                             }
                         }
                     }
@@ -4034,17 +4046,27 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                         .getGroupChatPermission(groupBean);
                                 if (gcpBean.getAudioConference().equalsIgnoreCase("1")) {
                                     if (!CallDispatcher.isCallInitiate) {
-                                        groupCallMenu(0);
-                                    } else
+                                        if(!CallDispatcher.GSMCallisAccepted) {
+                                            groupCallMenu(0);
+                                        } else {
+                                            showToast("Please try.. GSM Call is in progress");
+                                        }
+                                    } else {
                                         showToast("Please try..Call is in progress");
+                                    }
                                 } else {
                                     showToast("Sorry you dont have permission");
                                 }
                             } else {
                                 if (!CallDispatcher.isCallInitiate) {
-                                    individualCallMenu(0);
-                                } else
+                                    if(!CallDispatcher.GSMCallisAccepted) {
+                                        individualCallMenu(0);
+                                    } else {
+                                        showToast("Please try.. GSM Call is in progress");
+                                    }
+                                } else {
                                     showToast("Please try..Call is in progress");
+                                }
 //                            ContactsFragment.getInstance(context).sipprocessCallRequest(buddy);
                             }
                         }

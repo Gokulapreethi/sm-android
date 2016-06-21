@@ -641,6 +641,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
     public void onResume() {
         super.onResume();
 		try {
+			Log.i("Minimise","AudioCallScreen OnResume");
 			AppMainActivity.inActivity = context;
 			if (AppMainActivity.commEngine != null) {
                 AppMainActivity.commEngine.setmDecodeFrame(true);
@@ -3111,6 +3112,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 		}
 	}
 	void addShowHideListener() {
+		Log.i("Minimise", "AudioCallScreen minimise");
 		FragmentManager fm =
 				AppReference.mainContext.getSupportFragmentManager();
 		FragmentTransaction ft = fm.beginTransaction();

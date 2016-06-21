@@ -3,12 +3,9 @@ package com.cg.broadcastreceivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import com.cg.account.SplashScreen;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 
@@ -33,6 +30,7 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent arg1) {
 		String action = arg1.getAction();
 		try {
+			Log.i("BroadCast","inside ReminderBroadcastReceiver");
 			if (action != null) {
 				if (action
 						.equalsIgnoreCase("android.intent.action.PHONE_STATE")
@@ -40,11 +38,14 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
 					if (arg1.getStringExtra(TelephonyManager.EXTRA_STATE)
 							.equals(TelephonyManager.EXTRA_STATE_RINGING)
 							&& arg1 != null) {
+						Log.i("BroadCast","GSM Ringing");
 					} else if (arg1
 							.getStringExtra(TelephonyManager.EXTRA_STATE)
 							.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)
 							&& arg1 != null) {
-
+						Log.i("BroadCast","GSM Accepted");
+						Log.i("BroadCast","Contains CallDisp"+WebServiceReferences.callDispatch
+								.containsKey("calldisp"));
 						if (WebServiceReferences.callDispatch
 								.containsKey("calldisp")) {
 							CallDispatcher callDisp = (CallDispatcher) WebServiceReferences.callDispatch
@@ -56,10 +57,18 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
 							.getStringExtra(TelephonyManager.EXTRA_STATE)
 							.equals(TelephonyManager.EXTRA_STATE_IDLE)
 							&& arg1 != null) {
+						Log.i("BroadCast","GSM Disconnected");
+						Log.i("BroadCast","Contains CallDisp"+WebServiceReferences.callDispatch
+								.containsKey("calldispatch"));
 						if (WebServiceReferences.callDispatch
 								.containsKey("calldispatch")) {
 							CallDispatcher callDisp = (CallDispatcher) WebServiceReferences.callDispatch
 									.get("calldispatch");
+							callDisp.GSMCallisAccepted = false;
+						} else if (WebServiceReferences.callDispatch
+								.containsKey("calldisp")) {
+							CallDispatcher callDisp = (CallDispatcher) WebServiceReferences.callDispatch
+									.get("calldisp");
 							callDisp.GSMCallisAccepted = false;
 						}
 					}
