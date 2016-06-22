@@ -329,14 +329,11 @@ public class TaskCreationActivity extends Activity {
                             }
                             if (date1.compareTo(date2) > 0) {
                                 remindTime.setText(ed_dueDate.getText().toString() + " " + correcttime);
-                                Log.d("datevalue", "editdatecomparison");
-                            } else if (date1.after(date3)) {
-                                Log.d("datevalue","todaydatecomparison");
-                                Log.d("todaydate","datevalue"+date3);
-                                remindTime.setText(todayDate.toString()+" "+correcttime);
-                            } else {
+                            } else  if (date3.compareTo(date1) >0) {
+                                remindTime.setText(todayDate.toString() + " " + correcttime);
+                            }
+                            else {
                                 remindTime.setText(dateDesc+" "+correcttime);
-                                Log.d("datevalue", "reminder");
                             }
 
                         }
@@ -531,7 +528,7 @@ public class TaskCreationActivity extends Activity {
             String[] result=(String[])obj;
             SimpleDateFormat datefor = new SimpleDateFormat("yyyy-MM-dd");;
             Date tmpDate=null;
-            Date timevalue = null;
+            String timevalue="";
             String alarmtime = remindTime.getText().toString();
             String[] reminder = remindTime.getText().toString().split(" ");
             String Timevalue = reminder[1]+" "+reminder[2];
@@ -549,12 +546,14 @@ public class TaskCreationActivity extends Activity {
             SimpleDateFormat displayFormat = new SimpleDateFormat("HH:mm");
             SimpleDateFormat parseFormat = new SimpleDateFormat("hh:mm a");
             try {
-                timevalue = displayFormat.parse(reminder[1]);
+                Date date = parseFormat.parse(reminder[1] + " " + reminder[2]);
+                timevalue = displayFormat.format(date);
                 Log.d("timevalue","finaltime"+timevalue);
+                Log.d("timevalue","Intialtime"+reminder[1]+reminder[2]);
             }catch (Exception e){
                 e.printStackTrace();
             }
-
+            String[] time=timevalue.split(":");
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             Intent intent = new Intent(context, ScheduleManager.class);
             intent.putExtra("patientname", patient.getText().toString());
@@ -564,8 +563,8 @@ public class TaskCreationActivity extends Activity {
             Calendar cal  = Calendar.getInstance();
             cal.setTime(tmpDate);
 
-            cal.set(Calendar.HOUR, Integer.parseInt(reminder[1].split(":")[0]));
-            cal.set(Calendar.MINUTE, Integer.parseInt(reminder[1].split(":")[1]));
+            cal.set(Calendar.HOUR, Integer.parseInt(time[0]));
+            cal.set(Calendar.MINUTE, Integer.parseInt(time[1]));
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
                 Log.i("schedulemanager", "build version kitkat and below");
                 alarmManager.set(AlarmManager.RTC_WAKEUP,cal.getTimeInMillis(),pendingIntent);

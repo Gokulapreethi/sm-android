@@ -177,7 +177,14 @@ public class FileInfoFragment extends Fragment {
                         if(cbean.getcomponentType()!=null)
                             type.setText(cbean.getcomponentType());
                         if(cbean.getDateAndTime()!=null) {
-                            available.setText(cbean.getDateAndTime());
+                            SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                            Date d1 = new Date();
+                            String[] month = cbean.getDateAndTime().split(" ");
+                            String date = sdf.format(d1);
+                            String[] time = month[1].split(":");
+                            available.setText(date + " "+ time[0]+":"+time[1] +" "+month[2]);
+//                            available.setText(cbean.getDateAndTime());
 
                         }
                         if(cbean.getDateAndTime()!=null) {
