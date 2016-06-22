@@ -615,7 +615,7 @@ public class CallConnectingScreen extends Fragment {
 			AppMainActivity appMainActivity = (AppMainActivity) SingleInstance.contextTable
 					.get("MAIN");
 			appMainActivity.closingActivity();
-			min_outcall.setVisibility(View.GONE);
+		//	min_outcall.setVisibility(View.GONE);
 
 			if (SingleInstance.instanceTable.containsKey("connection")) {
 				SingleInstance.instanceTable.remove("connection");
@@ -863,6 +863,7 @@ public class CallConnectingScreen extends Fragment {
 	}
 	public void finishConnectingScreen()
 	{
+		Log.i("AudioCall","CallCOnnectingScreen finishConnectingScreen");
 		if (SingleInstance.instanceTable.containsKey("connection")) {
 			SingleInstance.instanceTable.remove("connection");
 		}
