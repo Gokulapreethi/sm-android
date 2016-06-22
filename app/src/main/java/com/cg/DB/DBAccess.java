@@ -10323,8 +10323,8 @@ public class DBAccess extends SQLiteOpenHelper {
 			cv.put("roleid", rBean.getRoleid());
 			cv.put("role", rBean.getRole());
 			cv.put("patientmanagement", rBean.getPatientmanagement());
-			cv.put("taskmanagement", rBean.getEditroundingform());
-			cv.put("editroundingform", rBean.getTaskmanagement());
+			cv.put("taskmanagement", rBean.getTaskmanagement());
+			cv.put("editroundingform", rBean.getEditroundingform());
 			cv.put("commentsview", rBean.getCommentsview());
 
 

@@ -1694,6 +1694,7 @@ public class PatientRoundingFragment extends Fragment {
                     }
                 }
                 bean.setBuddyName(gmembersbean.getOwnerName());
+                bean.setFlag("0");
                 bean.setSelected(true);
                 memberslist.add(bean);
                 for (String tmp : mlist) {
@@ -1706,6 +1707,7 @@ public class PatientRoundingFragment extends Fragment {
                             uBean.setFirstname(tmp);
                     }
                     uBean.setBuddyName(tmp);
+                    uBean.setFlag("0");
                     memberslist.add(uBean);
                 }
             }

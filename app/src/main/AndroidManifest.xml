@@ -279,120 +279,120 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Dialog" >
         </activity>
-        <activity
-            android:name="com.cg.files.CompleteListView"
-            android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.OTPMain" >
-            <intent-filter>
-                <action android:name="android.intent.action.ATTACH_DATA" />
-                <action android:name="android.intent.action.VIEW" />
-                <action android:name="android.intent.action.EDIT" />
-                <action android:name="android.intent.action.INSERT" />
+        <!--<activity-->
+            <!--android:name="com.cg.files.CompleteListView"-->
+            <!--android:configChanges="orientation|keyboardHidden"-->
+            <!--android:launchMode="singleTop"-->
+            <!--android:screenOrientation="portrait"-->
+            <!--android:theme="@style/Theme.OTPMain" >-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.ATTACH_DATA" />-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
+                <!--<action android:name="android.intent.action.EDIT" />-->
+                <!--<action android:name="android.intent.action.INSERT" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
 
-                <data android:mimeType="application/*" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.ATTACH_DATA" />
+                <!--<data android:mimeType="application/*" />-->
+            <!--</intent-filter>-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.ATTACH_DATA" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
 
-                <data
-                    android:host="*"
-                    android:mimeType="application/*"
-                    android:pathPattern=".*.doc"
-                    android:scheme="content" />
-            </intent-filter>
+                <!--<data-->
+                    <!--android:host="*"-->
+                    <!--android:mimeType="application/*"-->
+                    <!--android:pathPattern=".*.doc"-->
+                    <!--android:scheme="content" />-->
+            <!--</intent-filter>-->
 
-            <!-- For file browsers -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+            <!--&lt;!&ndash; For file browsers &ndash;&gt;-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
 
-                <data
-                    android:host="*"
-                    android:mimeType="application/*"
-                    android:pathPattern=".*.doc"
-                    android:scheme="file" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <!--<data-->
+                    <!--android:host="*"-->
+                    <!--android:mimeType="application/*"-->
+                    <!--android:pathPattern=".*.doc"-->
+                    <!--android:scheme="file" />-->
+            <!--</intent-filter>-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
 
-                <data
-                    android:host="*"
-                    android:mimeType="application/*"
-                    android:pathPattern=".*.doc"
-                    android:scheme="http" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <action android:name="android.intent.action.EDIT" />
+                <!--<data-->
+                    <!--android:host="*"-->
+                    <!--android:mimeType="application/*"-->
+                    <!--android:pathPattern=".*.doc"-->
+                    <!--android:scheme="http" />-->
+            <!--</intent-filter>-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
+                <!--<action android:name="android.intent.action.EDIT" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
 
-                <data
-                    android:host="*"
-                    android:mimeType="application/octet-stream"
-                    android:pathPattern=".*\\.doc" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <!--<data-->
+                    <!--android:host="*"-->
+                    <!--android:mimeType="application/octet-stream"-->
+                    <!--android:pathPattern=".*\\.doc" />-->
+            <!--</intent-filter>-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
 
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-                <data android:scheme="about" />
-                <data android:scheme="javascript" />
-            </intent-filter>
-            <!--
-                  For these schemes where any of these particular MIME types
-                  have been supplied, we are a good candidate.
-            -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <!--<data android:scheme="http" />-->
+                <!--<data android:scheme="https" />-->
+                <!--<data android:scheme="about" />-->
+                <!--<data android:scheme="javascript" />-->
+            <!--</intent-filter>-->
+            <!--&lt;!&ndash;-->
+                  <!--For these schemes where any of these particular MIME types-->
+                  <!--have been supplied, we are a good candidate.-->
+            <!--&ndash;&gt;-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
 
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
 
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-                <data android:scheme="inline" />
-                <data android:mimeType="text/html" />
-                <data android:mimeType="text/plain" />
-                <data android:mimeType="application/xhtml+xml" />
-                <data android:mimeType="application/vnd.wap.xhtml+xml" />
-            </intent-filter>
-            <!-- For viewing saved web archives. -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <!--<data android:scheme="http" />-->
+                <!--<data android:scheme="https" />-->
+                <!--<data android:scheme="inline" />-->
+                <!--<data android:mimeType="text/html" />-->
+                <!--<data android:mimeType="text/plain" />-->
+                <!--<data android:mimeType="application/xhtml+xml" />-->
+                <!--<data android:mimeType="application/vnd.wap.xhtml+xml" />-->
+            <!--</intent-filter>-->
+            <!--&lt;!&ndash; For viewing saved web archives. &ndash;&gt;-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
 
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
 
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-                <data android:scheme="file" />
-                <data android:mimeType="application/x-webarchive-xml" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.WEB_SEARCH" />
+                <!--<data android:scheme="http" />-->
+                <!--<data android:scheme="https" />-->
+                <!--<data android:scheme="file" />-->
+                <!--<data android:mimeType="application/x-webarchive-xml" />-->
+            <!--</intent-filter>-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.WEB_SEARCH" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
 
-                <data android:scheme="" />
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-            </intent-filter>
-        </activity>
+                <!--<data android:scheme="" />-->
+                <!--<data android:scheme="http" />-->
+                <!--<data android:scheme="https" />-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
         <activity
             android:name="com.cg.commongui.MultimediaUtils"
             android:screenOrientation="portrait"
@@ -903,7 +903,7 @@
         <activity
             android:name="com.cg.account.MyAccountActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" >
+            android:windowSoftInputMode="stateHidden|adjustResize" >
         </activity>
         <activity
             android:name="com.cg.account.GenerateInviteCode"

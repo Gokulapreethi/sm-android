@@ -1187,9 +1187,13 @@ public class Registration extends Activity {
                             sb.setSecans3(etsecAns3.getText().toString());
                             sb.setAver(context.getResources().getString(
                                     R.string.app_version));
+                            if(dob!=null)
                             sb.setDob(dob);
+                            if(ssn!=null)
                             sb.setSsn(ssn);
+                            if(houseno!=null)
                             sb.setHouseno(houseno);
+                            if(zipcode!=null)
                             sb.setZipcode(zipcode);
                             sb.setProfession(rlay_professional_org.getText().toString());
                             sb.setSpeciality(Speciality.getText().toString());
@@ -1214,9 +1218,9 @@ public class Registration extends Activity {
                                     sp7.getSelectedItem().toString().equalsIgnoreCase("Other Question")) {
                                 if (sp5.getSelectedItem().toString().equalsIgnoreCase("Other Question"))
                                     sb.setSecques1(etsecQues1.toString().trim());
-                                if (sp5.getSelectedItem().toString().equalsIgnoreCase("Other Question"))
+                                if (sp6.getSelectedItem().toString().equalsIgnoreCase("Other Question"))
                                     sb.setSecques2(etsecQues2.toString().trim());
-                                if (sp5.getSelectedItem().toString().equalsIgnoreCase("Other Question"))
+                                if (sp7.getSelectedItem().toString().equalsIgnoreCase("Other Question"))
                                     sb.setSecques3(etsecQues3.toString().trim());
 
                             } else {

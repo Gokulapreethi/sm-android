@@ -789,7 +789,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                 if (SingleInstance.mainContext.isNetworkConnectionAvailable()) {
 
                     if (groupName.length() > 0 && groupName.length() <= 15
-                            && isGroupNameValidate(groupName) && membersList.size()>0) {
+                            && isGroupNameValidate(groupName) && (membersList.size()>0 || membersAcceptedList.size()>0)) {
                         hideKeyboard();
                         // callDisp.showprogress(CallDispatcher.pdialog, context);
                         groupBean=new GroupBean();

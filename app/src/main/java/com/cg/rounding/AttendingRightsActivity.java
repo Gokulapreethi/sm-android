@@ -601,6 +601,7 @@ public class AttendingRightsActivity extends Activity {
         if(obj instanceof String[]) {
             Log.i("sss", "notifyRightsToUI of rights");
             String[] result=(String[])obj;
+            roleAccessBean.setRoleid(result[0]);
             rolePatientManagementBean.setRoleid(result[0]);
             roleEditRndFormBean.setRoleid(result[0]);
             roleTaskMgtBean.setRoleid(result[0]);
