@@ -4573,6 +4573,25 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 //            }
         }
 
+
+//        @Override
+//        public int getItemViewType(int position) {
+////            return super.getItemViewType(position);
+////            return position % 3;
+//            GroupChatBean gcBean = chatList.get(position);
+//            if(gcBean.getFrom().equals(CallDispatcher.LoginUser))
+//            {
+//                return 0;
+//            }else{
+//            return 1;
+//            }
+//        }
+//
+//        @Override
+//        public int getViewTypeCount() {
+//            return super.getViewTypeCount();
+//        }
+
         /******
          * Depends upon data size called for each row , Create each ListView row
          *****/
@@ -4973,7 +4992,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                             Log.i("reply","position>0");
                                             listrel_quoted.setVisibility(View.VISIBLE);
                                             final GroupChatBean Bean = chatList.get(position - 1);
-                                            lvquoted_msg.setText(Bean.getMessage());
+                                            if(getReplyMessage(Bean)!=null) {
+                                                lvquoted_msg.setText(getReplyMessage(Bean));
+                                            }
                                             //For withdraw message
                                             //start
 //                                            if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
@@ -4985,15 +5006,36 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                             }
                                             //End
                                         }
-                                    }
-                                    Log.i("reply","button gone");
+                                        //For Received Reply
+                                        //Start
+                                        waitforreply.setVisibility(View.GONE);
+                                        //End
+                                    }else {
+                                        Log.i("reply", "button gone");
 //                                    listrel_quoted.setVisibility(View.VISIBLE);
 //                                    lvquoted_msg.setText(gcBean.getMessage());
-                                    waitforreply.setVisibility(View.GONE);
+                                        //old Code  waitforreply.setVisibility(View.GONE);
+                                        //For Received Reply
+                                        //Start
+                                        if (gcBean.getWithdrawn() != null && gcBean.getWithdrawn().equalsIgnoreCase("1")) {
+                                            waitforreply.setVisibility(View.GONE);
+                                        } else {
+                                            waitforreply.setVisibility(View.VISIBLE);
+                                            waitforreply.setText("Received Reply");
+                                            waitforreply.setTextColor(Color.parseColor("#00B254"));
+                                        }
+                                        //End
+                                    }
+
                                 } else {
                                     Log.i("reply","button Visible");
                                     listrel_quoted.setVisibility(View.GONE);
                                     waitforreply.setVisibility(View.VISIBLE);
+                                    //For Received Reply
+                                    //Start
+                                    waitforreply.setText("Waiting for Reply");
+                                    waitforreply.setTextColor(Color.parseColor("#DD2671"));
+                                    //End
                                     //For withdraw message
                                     //start
 //                                    if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
@@ -5333,7 +5375,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                                     GroupChatBean groupChatBean=chatList.get(position-1);
                                                     receive_quotedLayout.setVisibility(View.VISIBLE);
                                                     receiver_tvquoted_msg.setVisibility(View.VISIBLE);
-                                                    receiver_tvquoted_msg.setText(groupChatBean.getMessage());
+                                                    if(getReplyMessage(groupChatBean)!=null) {
+                                                        receiver_tvquoted_msg.setText(getReplyMessage(groupChatBean));
+                                                    }
                                                         //For withdraw message
                                                         //start
 //                                                        if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
@@ -5787,7 +5831,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 // TODO Auto-generated method stub
                                 GroupChatBean gcBean1 = (GroupChatBean) view
                                         .getTag();
-                                tvquoted_msg.setText(gcBean1.getMessage());
+                                if(getReplyMessage(gcBean1)!=null) {
+                                    tvquoted_msg.setText(getReplyMessage(gcBean1));
+                                }
                                 rel_quoted.setVisibility(View.VISIBLE);
                                 if (gcBean1.getSubCategory() != null) {
                                     if (gcBean1.getSubCategory().equalsIgnoreCase(
@@ -11036,6 +11082,60 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             e.printStackTrace();
             return null;
         }
+    }
+
+    private String getReplyMessage(GroupChatBean groupChatBean){
+        String message=null;
+        if(groupChatBean!=null){
+
+            if(groupChatBean.getMessage()!=null && !groupChatBean.getMessage().equalsIgnoreCase("null")){
+                if(message==null){
+                    message=groupChatBean.getMessage();
+                }else{
+                    message=message+"\n"+groupChatBean.getMessage();
+                }
+            }
+            if(groupChatBean.getMimetype()!=null && !groupChatBean.getMimetype().equalsIgnoreCase("null")){
+                if(groupChatBean.getMimetype().equalsIgnoreCase("audio")){
+                    if(message==null){
+                        message="Audio";
+                    }else{
+                        message=message+"\n"+"Audio";
+                    }
+                }
+                if(groupChatBean.getMimetype().equalsIgnoreCase("image")){
+                    if(message==null){
+                        message="Image";
+                    }else{
+                        message=message+"\n"+"Image";
+                    }
+                }
+                if(groupChatBean.getMimetype().equalsIgnoreCase("sketch")){
+                    if(message==null){
+                        message="Sketch";
+                    }else{
+                        message=message+"\n"+"Sketch";
+                    }
+                }
+                if(groupChatBean.getMimetype().equalsIgnoreCase("document")){
+                    if(message==null){
+                        message="Document";
+                    }else{
+                        message=message+"\n"+"Dodument";
+                    }
+                }
+                if(groupChatBean.getMimetype().equalsIgnoreCase("video")){
+                    if(message==null){
+                        message="Video";
+                    }else{
+                        message=message+"\n"+"Video";
+                    }
+                }
+
+
+            }
+        }
+        return message;
     }
 
 
