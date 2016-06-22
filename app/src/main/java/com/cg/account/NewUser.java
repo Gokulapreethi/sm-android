@@ -442,7 +442,8 @@ public class NewUser extends Activity {
                 intent.putExtra("zipcode", ed_zipcode.getText().toString());
                 startActivity(intent);
                 finish();
-            } else {
+            } else if(obj instanceof WebServiceBean) {
+                showToast(((WebServiceBean) obj).getText());
 //                final Dialog dialog = new Dialog(context);
 //                dialog.setContentView(R.layout.error_dialogue);
 //                dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
