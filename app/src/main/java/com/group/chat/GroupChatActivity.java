@@ -972,7 +972,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 String pen = "&#x270D";
 //                pen="&#128393";
 //                pen= "\uD83D\uDD89";
-                typingstatus.setText(nickname + " is Typing " + Html.fromHtml(pen));
+                typingstatus.setText(nickname + " is typing " + Html.fromHtml(pen));
                 msgoptionview = (LinearLayout) v1.findViewById(R.id.splmsglay1);
                 settingsBtn.setOnClickListener(this);
                 status = (TextView) v1.findViewById(R.id.buddy_status);
@@ -2126,7 +2126,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             startActivityForResult(intent, 36);
         }
     }
-
     protected void showAlert1(String string) {
         // TODO Auto-generated method stub
 

@@ -91,6 +91,7 @@ public class TaskCreationActivity extends Activity {
     MemberNamesAdapter memberadapter;
     String tick="&#x2713";
     TextView assignMember;
+    private TextView remindTime;
     int edit_Year , edit_day, edit_month;
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -116,7 +117,7 @@ public class TaskCreationActivity extends Activity {
          ed_assignMember=(TextView)findViewById(R.id.ed_assignMember);
         assignMember=(TextView)findViewById(R.id.assignMember);
         final TextView setReminder=(TextView)findViewById(R.id.setReminder);
-        final TextView remindTime=(TextView)findViewById(R.id.remindTime);
+        remindTime=(TextView)findViewById(R.id.remindTime);
         reminder=(TextView)findViewById(R.id.reminder);
         final ToggleButton btn_touch=(ToggleButton)findViewById(R.id.btn_touch);
         patient=(AutoCompleteTextView)findViewById(R.id.call_patient);
@@ -285,6 +286,7 @@ public class TaskCreationActivity extends Activity {
                             remindTime.setVisibility(View.GONE);
                         }
                     }else{
+                        btn_touch.setChecked(false);
                         Toast.makeText(context, "Please Select the Duedate to set reminder", Toast.LENGTH_SHORT).show();
                     }
 
@@ -293,15 +295,22 @@ public class TaskCreationActivity extends Activity {
             });
 
         final java.sql.Date todayDate = new java.sql.Date(System.currentTimeMillis());
-        Log.d("string","todaydate"+todayDate);
+        Log.d("string", "todaydate" + Calendar.getInstance().getTime());
+
 
         reminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePickerPopWin pickerPopWin = new DatePickerPopWin.Builder(TaskCreationActivity.this, new DatePickerPopWin.OnDatePickedListener() {
+                DatePickerPopWin pickerPopWin = new DatePickerPopWin.Builder(TaskCreationActivity.this,true, new DatePickerPopWin.OnDatePickedListener() {
                         @Override
-                        public void onDatePickCompleted(int month, int day, int year, String dateDesc) {
+                        public void onDatePickCompleted(int month, int day, int year, int hour, int minute, String am, String dateDesc) {
 //                            Toast.makeText(TaskCreationActivity.this, dateDesc, Toast.LENGTH_SHORT).show();
+                            Log.d("boolean", "valueof2" + dateDesc);
+                            String Hour = String.valueOf(hour);
+                            String Minute = String.valueOf(minute);
+                            String AM = am;
+                            String[] time= dateDesc.split(" ");
+                            String correcttime = time[1]+" "+time[2];
                             Date date = new Date();
                             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
                             String inputString2 = dateFormat.format(date);
@@ -310,45 +319,25 @@ public class TaskCreationActivity extends Activity {
                             Date date1 = null;
                             Date date2 = null;
                             Date date3 = null;
+
                             try {
                                 date1 = myFormat.parse(dateDesc);
                                 date2 = myFormat.parse(ed_dueDate.getText().toString());
                                 date3 = todayDate;
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            if (date2.compareTo(date1) <0) {
-                                remindTime.setText(ed_dueDate.getText().toString());
-                            }else if(date3.compareTo(date1)<0){
-                                remindTime.setText(ed_dueDate.getText().toString());
-                            }else{
-                                remindTime.setText(dateDesc);
-//                                Toast.makeText(context, "Please Select the month and date within the Duedate", Toast.LENGTH_SHORT).show();
+                            if (date1.compareTo(date2) > 0) {
+                                remindTime.setText(ed_dueDate.getText().toString() + " " + correcttime);
+                                Log.d("datevalue", "editdatecomparison");
+                            } else if (date1.after(date3)) {
+                                Log.d("datevalue","todaydatecomparison");
+                                Log.d("todaydate","datevalue"+date3);
+                                remindTime.setText(todayDate.toString()+" "+correcttime);
+                            } else {
+                                remindTime.setText(dateDesc+" "+correcttime);
+                                Log.d("datevalue", "reminder");
                             }
-//                        SimpleDateFormat datefor = new SimpleDateFormat("yyyy/MM/dd");
-//                        Date tmpDate=null;
-//
-//                        try {
-//                            tmpDate = datefor.parse(dateDesc);
-//                        }catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//                        Intent intent = new Intent(getBaseContext(), MyAlarmService.class);
-//                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), 1000,
-//                                intent, 0);
-//                        Calendar cal  = Calendar.getInstance();
-//                        cal .setTime(tmpDate);
-////                        cal .set(Calendar.HOUR, Integer.parseInt(strTime.split(":")[0]));
-////                        cal .set(Calendar.MINUTE, Integer.parseInt(strTime.split(":")[1]));
-//
-//                        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-//                            Log.i("schedulemanager", "build version kitkat and below");
-//                            alarmManager.set(AlarmManager.RTC_WAKEUP,cal.getTimeInMillis(),pendingIntent);
-//                        } else {
-//                            Log.i("schedulemanager", "build version kitkat above");
-//                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
-//                        }
 
                         }
                     }).textConfirm("DONE") //text of confirm button
@@ -358,7 +347,7 @@ public class TaskCreationActivity extends Activity {
                             .minYear(Calendar.getInstance().get(Calendar.YEAR)) //min year in loop
                             .maxYear(2550) // max year in loop
                             .dateChose(todayDate.toString()) // date chose when init popwindow
-                            .build();
+                        .build();
                     pickerPopWin.showPopWin(TaskCreationActivity.this);
 
 
@@ -369,13 +358,15 @@ public class TaskCreationActivity extends Activity {
         ed_dueDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePickerPopWin pickerPopWin = new DatePickerPopWin.Builder(TaskCreationActivity.this, new DatePickerPopWin.OnDatePickedListener() {
+                DatePickerPopWin pickerPopWin = new DatePickerPopWin.Builder(TaskCreationActivity.this, false, new DatePickerPopWin.OnDatePickedListener() {
                     @Override
-                    public void onDatePickCompleted(int year, int month, int day, String dateDesc) {
+                    public void onDatePickCompleted(int year, int month, int day, int hour, int minute, String am, String dateDesc) {
                         edit_Year = year;
                         edit_month = month;
                         edit_day = day;
+
                         ed_dueDate.setText(dateDesc);
+                        Log.d("boolean","valueof1"+dateDesc);
                         dueDate.setVisibility(View.VISIBLE);
 
 //                        Date date = new Date();
@@ -386,17 +377,18 @@ public class TaskCreationActivity extends Activity {
                         SimpleDateFormat myFormat = new SimpleDateFormat("dd-MM-yyyy");
                         Date date1 = null;
                         Date date2 = null;
+                        String []datevalue= dateDesc.split(" ");
                         try {
                             date1 = myFormat.parse(date);
-                            date2 = myFormat.parse(dateDesc);
+                            date2 = myFormat.parse(String.valueOf(datevalue[0]));
                         }catch (Exception e){
                             e.printStackTrace();
                         }
-                            if (date2.compareTo(date1) <0) {
+                            if (date1.compareTo(date2) >0) {
                                 ed_dueDate.setText(date);
 
                             } else {
-                                ed_dueDate.setText(dateDesc);
+                                ed_dueDate.setText(datevalue[0]);
                             }
                     }
                 }).textConfirm("DONE") //text of confirm button
@@ -524,12 +516,63 @@ public class TaskCreationActivity extends Activity {
         }
 
     }
+        public void notifytime(String value) throws Exception {
+            SimpleDateFormat displayFormat = new SimpleDateFormat("HH:mm");
+            SimpleDateFormat parseFormat = new SimpleDateFormat("hh:mm a");
+            Date date = parseFormat.parse(value);
+            System.out.println(parseFormat.format(date) + " = " + displayFormat.format(date));
+        }
+
     public void notifytaskcreated(Object obj) {
         cancelDialog();
         Log.i("sss", "notifytaskcreated updated ");
         if(obj instanceof String[])
         {
             String[] result=(String[])obj;
+            SimpleDateFormat datefor = new SimpleDateFormat("yyyy-MM-dd");;
+            Date tmpDate=null;
+            Date timevalue = null;
+            String alarmtime = remindTime.getText().toString();
+            String[] reminder = remindTime.getText().toString().split(" ");
+            String Timevalue = reminder[1]+" "+reminder[2];
+            Log.d("Valueof","datefor"+reminder[0]);
+            Log.d("Valueof","datefor"+reminder[1]);
+            Log.d("Valueof","datefor"+remindTime.getText().toString());
+
+            try {
+                tmpDate = datefor.parse(reminder[0]);
+                Log.d("Valueof","date1"+tmpDate);
+            }catch (Exception e) {
+                e.printStackTrace();
+                Log.d("Valueof", "date1" + e.toString());
+            }
+            SimpleDateFormat displayFormat = new SimpleDateFormat("HH:mm");
+            SimpleDateFormat parseFormat = new SimpleDateFormat("hh:mm a");
+            try {
+                timevalue = displayFormat.parse(reminder[1]);
+                Log.d("timevalue","finaltime"+timevalue);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(context, ScheduleManager.class);
+            intent.putExtra("patientname", patient.getText().toString());
+            intent.putExtra("Duedate",ed_dueDate.getText().toString());
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1,
+                    intent, 0);
+            Calendar cal  = Calendar.getInstance();
+            cal.setTime(tmpDate);
+
+            cal.set(Calendar.HOUR, Integer.parseInt(reminder[1].split(":")[0]));
+            cal.set(Calendar.MINUTE, Integer.parseInt(reminder[1].split(":")[1]));
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+                Log.i("schedulemanager", "build version kitkat and below");
+                alarmManager.set(AlarmManager.RTC_WAKEUP,cal.getTimeInMillis(),pendingIntent);
+            } else {
+                Log.i("schedulemanager", "build version kitkat above");
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+            }
             taskbean.setTaskId(result[0]);
             DBAccess.getdbHeler().insertorUpdatTaskDetails(taskbean);
             GroupChatActivity gChat = (GroupChatActivity) SingleInstance.contextTable

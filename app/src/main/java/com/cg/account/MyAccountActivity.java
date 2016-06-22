@@ -58,6 +58,7 @@ import java.util.List;
 
 public class MyAccountActivity extends Activity {
     private Context context;
+    String add_association_mem="";
     Boolean isClicked=true;
     AutoCompleteTextView title, usertype;
     AutoCompleteTextView state,hospital,state1;
@@ -66,11 +67,14 @@ public class MyAccountActivity extends Activity {
     ImageView profile_pic, edit_pic,status_icon;
     Button img_cite;
     String strIPath;
+    private  Button button, members_button, address_button;
      TextView nickname, fname,lname, offc ,edOffc,citations,statusTxt ,edcitations;
      EditText edNickname , edFname , edLname ,tv_cite ,tv_addr;
     private ImageLoader imageLoader;
     ArrayAdapter<String> stateAdapter;
     private LinearLayout cite_lay, cite_lay1;
+    private TextView dynamicText, members_dynamicText, address_dynamicText;
+    private LinearLayout llay, members_llay, address_llay;
 
     private Handler handler = new Handler();
     private ProgressDialog progressDialog = null;
@@ -78,7 +82,7 @@ public class MyAccountActivity extends Activity {
     AutoCompleteTextView medical_schools ;
     AutoCompleteTextView association_membership;
     ArrayAdapter<String> hospitalDetailsAdapter;
-    private String add_citation="", Addressline1,Addressline2, office_phone_no, office_fax, zip_code, city_value,office_address, state_value = "";
+    private String add_citation="", Addressline1,Addressline2, office_phone_no, office_fax, zip_code, city_value,office_address, state_value = "", add_address = "";
     ArrayAdapter<String> medicalDetailsAdapter;
     ArrayList<String> stateList = new ArrayList<String>();
     ArrayList<String> specialityList = new ArrayList<String>();
@@ -87,6 +91,7 @@ public class MyAccountActivity extends Activity {
     ArrayList<String> medicalSocietyList = new ArrayList<String>();
     ArrayList<String> states=new ArrayList<String>();
     private String pastingContentCopy;
+    private LinearLayout member_lay1;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -129,6 +134,7 @@ public class MyAccountActivity extends Activity {
         final LinearLayout optional = (LinearLayout) findViewById(R.id.optional);
         cite_lay = (LinearLayout) findViewById(R.id.cite_lay);
         cite_lay1 = (LinearLayout) findViewById(R.id.cite_lay1);
+        member_lay1 = (LinearLayout)findViewById(R.id.member_lay1);
 //        img_cite = (Button)findViewById(R.id.img_cite);
         final LinearLayout addr_lay = (LinearLayout) findViewById(R.id.addr_lay);
         final LinearLayout advance_lay=(LinearLayout)findViewById(R.id.optional_lay);
@@ -204,7 +210,7 @@ public class MyAccountActivity extends Activity {
                             cite_lay.removeAllViews();
                             cite_lay1.removeAllViews();
                             for (int i = 0; i < split.length; i++) {
-                                LinearLayout llay = new LinearLayout(context);
+                                llay = new LinearLayout(context);
                                 LinearLayout.LayoutParams dut = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                                 dut.leftMargin = 20;
                                 dut.rightMargin = 20;
@@ -212,20 +218,25 @@ public class MyAccountActivity extends Activity {
                                 llay.setWeightSum(1);
 
 
-                                TextView dynamicText = new TextView(context);
+                                dynamicText = new TextView(context);
                                 LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                                 dim.leftMargin = 30;
                                 dim.weight = 1;
                                 dim.topMargin = 5;
                                 dynamicText.setLayoutParams(dim);
-                                Button button = new Button(context);
+
+
+                                button = new Button(context);
                                 LinearLayout.LayoutParams but = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                                 button.setGravity(Gravity.END);
                                 but.rightMargin = 15;
-
-
                                 button.setLayoutParams(but);
+                                button.setOnClickListener(onclicklistener);
+                                button.setTag(split[i]);
                                 button.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_delete));
+
+
+
 
 
                                 if (!split[i].equalsIgnoreCase("") && split.length > 0) {
@@ -245,6 +256,7 @@ public class MyAccountActivity extends Activity {
                 }
             }
         });
+
         addr_plus.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -441,6 +453,52 @@ public class MyAccountActivity extends Activity {
                                 Address1.append(",");
                             }
                             tv_addr.setText(office_address);
+
+                            if(add_citation==null) {
+                                if(SingleInstance.myAccountBean.getAddress()!=null)
+                                    add_address = SingleInstance.myAccountBean.getAddress();
+                            }else
+                                add_address = office_address;
+                            String[] split = add_address.split(",");
+                            cite_lay.removeAllViews();
+                            cite_lay1.removeAllViews();
+                            for (int i = 0; i < split.length; i++) {
+                                address_llay = new LinearLayout(context);
+                                LinearLayout.LayoutParams dut = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                dut.leftMargin = 20;
+                                dut.rightMargin = 20;
+                                address_llay.setLayoutParams(dut);
+                                address_llay.setWeightSum(1);
+
+
+                                address_dynamicText = new TextView(context);
+                                LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                dim.leftMargin = 30;
+                                dim.weight = 1;
+                                dim.topMargin = 5;
+                                dynamicText.setLayoutParams(dim);
+
+
+                                address_button = new Button(context);
+                                LinearLayout.LayoutParams but = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                button.setGravity(Gravity.END);
+                                but.rightMargin = 15;
+                                button.setLayoutParams(but);
+                                button.setOnClickListener(onclicklistener);
+                                button.setTag(split[i]);
+                                button.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_delete));
+
+
+
+
+
+                                if (!split[i].equalsIgnoreCase("") && split.length > 0) {
+                                    dynamicText.setText(split[i]);
+                                    address_llay.addView(dynamicText);
+                                    address_llay.addView(button);
+                                    cite_lay1.addView(address_llay);
+                                }
+                            }
                             dialog1.dismiss();
 
                         }
@@ -826,15 +884,73 @@ public class MyAccountActivity extends Activity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() > 0) {
                     tv_association.setVisibility(View.VISIBLE);
+
                 } else {
                     tv_association.setVisibility(View.GONE);
+                  
                 }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
+
             }
+
         });
+
+    if (association_membership != null) {
+//                    Log.d("assocition", "string" + association_membership);
+//                    add_association_mem = association_membership.getText().toString().trim();
+//
+//                    Log.d("association", "string1" + add_association_mem);
+        if (add_citation == null) {
+            if (SingleInstance.myAccountBean.getOrganizationmembership() != null)
+                add_association_mem = SingleInstance.myAccountBean.getOrganizationmembership();
+        } else
+            add_association_mem = add_association_mem + "," + association_membership.getText().toString().trim();
+        association_membership.setText("");
+        String[] split = add_association_mem.split(",");
+        member_lay1.removeAllViews();
+        for (int i = 0; i < split.length; i++) {
+            members_llay = new LinearLayout(context);
+            LinearLayout.LayoutParams dut = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, 80);
+            dut.leftMargin = 20;
+            dut.rightMargin = 20;
+            members_llay.setLayoutParams(dut);
+            members_llay.setWeightSum(1);
+
+
+            members_dynamicText = new TextView(context);
+            LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            dim.leftMargin = 30;
+            dim.weight = 1;
+            dim.topMargin = 5;
+            members_dynamicText.setLayoutParams(dim);
+
+
+            members_button = new Button(context);
+            LinearLayout.LayoutParams but = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            members_button.setGravity(Gravity.END);
+            but.rightMargin = 15;
+            members_button.setLayoutParams(but);
+            members_button.setOnClickListener(onclicklistener1);
+            members_button.setTag(split[i]);
+            members_button.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_delete));
+
+
+            if (!split[i].equalsIgnoreCase("") && split.length > 0) {
+                members_dynamicText.setText(split[i]);
+                members_llay.addView(members_dynamicText);
+                members_llay.addView(members_button);
+                member_lay1.addView(members_llay);
+            }
+        }
+
+
+    }
+
+
+
 
         medicalschoolsList=DBAccess.getdbHeler().getMedicalSchoolDetails();
         dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list,medicalschoolsList);
@@ -1174,27 +1290,54 @@ public class MyAccountActivity extends Activity {
                 cite_lay.removeAllViews();
                 cite_lay1.removeAllViews();
                 for (int i = 0; i < split.length; i++) {
-                    LinearLayout llay = new LinearLayout(context);
+
+                    llay = new LinearLayout(context);
                     LinearLayout.LayoutParams dut = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                     dut.leftMargin = 20;
                     dut.rightMargin = 20;
                     llay.setLayoutParams(dut);
                     llay.setWeightSum(1);
 
-                    TextView dynamicText = new TextView(context);
+
+                    dynamicText = new TextView(context);
                     LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                     dim.leftMargin = 30;
                     dim.topMargin = 5;
                     dim.weight = 1;
                     dynamicText.setLayoutParams(dim);
-                    Button button = new Button(context);
+
+                    button = new Button(context);
                     LinearLayout.LayoutParams but = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                     button.setGravity(Gravity.END);
-
                     but.rightMargin = 15;
-
                     button.setLayoutParams(but);
+                    button.setTag(split[i]);
+                    button.setOnClickListener(onclicklistener);
                     button.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_delete));
+
+//                    View.OnClickListener btnClickListener = new View.OnClickListener() {
+//
+//                        @Override
+//                        public void onClick(View v) {
+//                            Log.d("btnClickListener", ""-----TextView Clicked : "+v.getTag());
+//                            Toast.makeText(YourActivity.this, "TextView Clicked : "+v.getTag(),
+//                                    Toast.LENGTH_SHORT).show();
+//                        }
+//
+//                    };
+
+//                    button.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            // TODO Auto-generated method stub
+//                            button.getTag();
+//                            llay.setVisibility(View.GONE);
+//                            dynamicText.setVisibility(View.GONE);
+////                            LinearLayout linearParent =  (LinearLayout) v.getParent().getParent();
+////                            LinearLayout linearChild = (LinearLayout) v.getParent();
+////                            linearParent.removeView(linearChild);
+//                        }
+//                    });
 
 
                     if (!split[i].equalsIgnoreCase("") && split.length > 0) {
@@ -1206,13 +1349,81 @@ public class MyAccountActivity extends Activity {
                 }
             }
             if(bean.getOrganizationmembership()!= null){
-                association_membership.setText(bean.getOrganizationmembership());
+//                add_association_mem=bean.getOrganizationmembership();
+//                association_membership.setText(bean.getOrganizationmembership());
+
+                if(association_membership!= null){
+                    Log.d("assocition","string"+association_membership);
+                    add_association_mem = bean.getOrganizationmembership();
+
+                    Log.d("association","string1"+add_association_mem);
+                    String[] split = add_association_mem.split(",");
+                    member_lay1.removeAllViews();
+                    for (int i = 0; i < split.length; i++) {
+                        members_llay = new LinearLayout(context);
+                        LinearLayout.LayoutParams dut = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        dut.leftMargin = 20;
+                        dut.rightMargin = 20;
+                        members_llay.setLayoutParams(dut);
+                        members_llay.setWeightSum(1);
+
+
+                        members_dynamicText = new TextView(context);
+                        LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        dim.leftMargin = 30;
+                        dim.weight = 1;
+                        dim.topMargin = 5;
+                        members_dynamicText.setLayoutParams(dim);
+
+
+                        members_button = new Button(context);
+                        LinearLayout.LayoutParams but = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        members_button.setGravity(Gravity.END);
+                        but.rightMargin = 15;
+                        members_button.setLayoutParams(but);
+                        members_button.setOnClickListener(onclicklistener1);
+                        members_button.setTag(split[i]);
+                        members_button.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_delete));
+
+
+                        if (!split[i].equalsIgnoreCase("") && split.length > 0) {
+                            members_dynamicText.setText(split[i]);
+                            members_llay.addView(members_dynamicText);
+                            members_llay.addView(members_button);
+                            member_lay1.addView(members_llay);
+                        }
+                    }
+                }
+
             }
         } catch (Exception e){
             e.printStackTrace();
         }
     }
 
+    View.OnClickListener onclicklistener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            // TODO Auto-generated method stub
+            if(add_citation.contains(v.getTag().toString()))
+                add_citation=add_citation.replace(v.getTag().toString(),"");
+            LinearLayout ll = (LinearLayout) v.getParent();
+            ll.removeAllViews();
+        }
+    };
+
+    View.OnClickListener onclicklistener1 = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            // TODO Auto-generated method stub
+            if(add_association_mem.contains(v.getTag().toString()))
+                add_association_mem=add_association_mem.replace(v.getTag().toString(),"");
+            LinearLayout llay = (LinearLayout) v.getParent();
+            llay.removeAllViews();
+        }
+    };
     private void showToast(final String message) {
         handler.post(new Runnable() {
             @Override

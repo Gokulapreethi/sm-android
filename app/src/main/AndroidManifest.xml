@@ -111,6 +111,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
         </activity>
+
         <activity
             android:name="com.cg.forms.FormFieldAccessActivity"
             android:label="@string/app_name"
@@ -235,6 +236,7 @@
             android:name="com.cg.account.ShareByProfileByddy"
             android:screenOrientation="portrait" >
         </activity>
+        <receiver android:name="com.cg.rounding.ScheduleManager"/>"
         <activity
             android:name="com.cg.account.buddyView1"
             android:screenOrientation="portrait"

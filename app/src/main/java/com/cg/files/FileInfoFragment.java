@@ -37,8 +37,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Vector;
 
 /**
@@ -174,10 +176,20 @@ public class FileInfoFragment extends Fragment {
                             filedesc.setText(cbean.getContent());
                         if(cbean.getcomponentType()!=null)
                             type.setText(cbean.getcomponentType());
-                        if(cbean.getDateAndTime()!=null)
+                        if(cbean.getDateAndTime()!=null) {
                             available.setText(cbean.getDateAndTime());
-                        if(cbean.getDateAndTime()!=null)
-                            modofieddate.setText(cbean.getDateAndTime());
+
+                        }
+                        if(cbean.getDateAndTime()!=null) {
+                            SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+                            SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd");
+                            Date d1 = new Date();
+                            String[] month = cbean.getDateAndTime().split(" ");
+                            d1 = dateformat.parse(month[0]);
+                            String date = sdf.format(d1);
+                            String[] time = month[1].split(":");
+                            modofieddate.setText(date + " "+ time[0]+":"+time[1] +" "+month[2]);
+                        }
                         if(cbean.getContentpath()!=null) {
                             size.setText(cbean.getcomponentType());
                             File file;

@@ -80,6 +80,7 @@ public class SearchPeopleFragment extends Fragment {
     }
 
     public void setContext(Context cxt) {
+
         this.mainContext = cxt;
     }@Override
      public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -106,7 +107,7 @@ public class SearchPeopleFragment extends Fragment {
         TextView title = (TextView) getActivity().findViewById(
                 R.id.activity_main_content_title);
         title.setVisibility(View.VISIBLE);
-        title.setText("SEARCH SNAZMED NETWORK");
+        title.setText("ADD CONTACTS");
         title.setTextSize(17);
         title.setGravity(Gravity.CENTER);
         appMainActivity = (AppMainActivity) SingleInstance.contextTable
@@ -584,20 +585,26 @@ public class SearchPeopleFragment extends Fragment {
 
     @Override
 public void onDestroy() {
-    Log.i("AAAA","on destroy ");        nickname.setText("");
-    fname.setText("");
-    lname.setText("");
-    state.setText("");
-    speciality.setText("");
-    hospital.setText("");
-    medical.setText("");
-    residency.setText("");
-    fellow.setText("");
-    usertype.setText("");
-    city.setText("");
-    radioFemale.setChecked(false);
-    radioMale.setChecked(false);
-    super.onDestroy();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.i("AAAA", "on destroy ");
+                nickname.setText("");
+                fname.setText("");
+                lname.setText("");
+                state.setText("");
+                speciality.setText("");
+                hospital.setText("");
+                medical.setText("");
+                residency.setText("");
+                fellow.setText("");
+                usertype.setText("");
+                city.setText("");
+                radioFemale.setChecked(false);
+                radioMale.setChecked(false);
+            }
+            });
+        super.onDestroy();
 
 }
 

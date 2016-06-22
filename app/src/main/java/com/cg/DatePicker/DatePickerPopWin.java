@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,9 @@ public class DatePickerPopWin extends PopupWindow implements OnClickListener {
     public LoopView yearLoopView;
     public LoopView monthLoopView;
     public LoopView dayLoopView;
+    public LoopView picker_hour;
+    public LoopView picker_minute;
+    public LoopView picker_am;
     public View pickerContainerV;
     public View contentView;//root view
 
@@ -47,6 +51,9 @@ public class DatePickerPopWin extends PopupWindow implements OnClickListener {
     private int yearPos = 0;
     private int monthPos = 0;
     private int dayPos = 0;
+    private int hourPos = 0;
+    private int minutePos = 0;
+    private int am_pm;
     private Context mContext;
     private String textCancel;
     private String textConfirm;
@@ -54,19 +61,28 @@ public class DatePickerPopWin extends PopupWindow implements OnClickListener {
     private int colorConfirm;
     private int btnTextsize;//text btnTextsize of cancel and confirm button
     private int viewTextSize;
+    private boolean fromRemind=false;
 
     List<String> yearList = new ArrayList();
     List<String> monthList = new ArrayList();
     List<String> dayList = new ArrayList();
+    List<String> hourList = new ArrayList();
+    List<String> minuteList = new ArrayList();
+    List<String> am_pmList = new ArrayList();
+
+
 
     public static class Builder{
 
         //Required
         private Context context;
         private OnDatePickedListener listener;
-        public Builder(Context context,OnDatePickedListener listener){
+        private boolean fromReminder=false;
+        public Builder(Context context, boolean fromreminder,OnDatePickedListener listener){
             this.context = context;
             this.listener = listener;
+            this.fromReminder = fromreminder;
+            Log.d("boolean","valueof"+fromreminder);
         }
 
         //Option
@@ -75,6 +91,7 @@ public class DatePickerPopWin extends PopupWindow implements OnClickListener {
         private String textCancel = "Cancel";
         private String textConfirm = "Confirm";
         private String dateChose = getStrDate();
+        private String currenttime = getCurrenttime();
         private int colorCancel = Color.parseColor("#999999");
         private int colorConfirm = Color.parseColor("#303F9F");
         private int btnTextSize = 16;//text btnTextsize of cancel and confirm button
@@ -102,6 +119,10 @@ public class DatePickerPopWin extends PopupWindow implements OnClickListener {
 
         public Builder dateChose(String dateChose){
             this.dateChose = dateChose;
+            return this;
+        }
+        public Builder currenttime(String currenttime){
+            this.currenttime = currenttime;
             return this;
         }
 
@@ -148,14 +169,16 @@ public class DatePickerPopWin extends PopupWindow implements OnClickListener {
         this.colorConfirm = builder.colorConfirm;
         this.btnTextsize = builder.btnTextSize;
         this.viewTextSize = builder.viewTextSize;
+        this.fromRemind=builder.fromReminder;
         setSelectedDate(builder.dateChose);
+
         initView();
     }
 
     private OnDatePickedListener mListener;
 
     private void initView() {
-        LayoutInflater inflater = (LayoutInflater) SingleInstance.mainContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         contentView = inflater.inflate(
                 R.layout.layout_date_picker, null);
         cancelBtn = (Button) contentView.findViewById(R.id.btn_cancel);
@@ -163,7 +186,11 @@ public class DatePickerPopWin extends PopupWindow implements OnClickListener {
         yearLoopView = (LoopView) contentView.findViewById(R.id.picker_year);
         monthLoopView = (LoopView) contentView.findViewById(R.id.picker_month);
         dayLoopView = (LoopView) contentView.findViewById(R.id.picker_day);
+        picker_hour = (LoopView) contentView.findViewById(R.id.picker_hour);
+        picker_minute = (LoopView) contentView.findViewById(R.id.picker_minute);
+        picker_am = (LoopView) contentView.findViewById(R.id.picker_am);
         pickerContainerV = contentView.findViewById(R.id.container_picker);
+
 
         cancelBtn.setText(textCancel);
         confirmBtn.setText(textConfirm);
@@ -176,11 +203,18 @@ public class DatePickerPopWin extends PopupWindow implements OnClickListener {
         yearLoopView.setNotLoop();
         monthLoopView.setNotLoop();
         dayLoopView.setNotLoop();
+        picker_hour.setNotLoop();
+        picker_minute.setNotLoop();
+        picker_am.setNotLoop();
 
         //set loopview text btnTextsize
         yearLoopView.setTextSize(viewTextSize);
         monthLoopView.setTextSize(viewTextSize);
         dayLoopView.setTextSize(viewTextSize);
+        picker_hour.setTextSize(viewTextSize);
+        picker_minute.setTextSize(viewTextSize);
+        picker_am.setTextSize(viewTextSize);
+
 
         //set checked listen
         yearLoopView.setListener(new LoopListener() {
@@ -203,6 +237,26 @@ public class DatePickerPopWin extends PopupWindow implements OnClickListener {
                 dayPos = item;
             }
         });
+        picker_hour.setListener(new LoopListener() {
+            @Override
+            public void onItemSelect(int item) {
+                hourPos = item;
+            }
+        });
+
+        picker_minute.setListener(new LoopListener() {
+            @Override
+            public void onItemSelect(int item) {
+                minutePos = item;
+            }
+        });
+
+        picker_am.setListener(new LoopListener() {
+            @Override
+            public void onItemSelect(int item) {
+                am_pm = item;
+            }
+        });
 
         initPickerViews(); // init year and month loop view
         initDayPickerView(); //init day loop view
@@ -219,6 +273,17 @@ public class DatePickerPopWin extends PopupWindow implements OnClickListener {
         setContentView(contentView);
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+        if(fromRemind == false){
+            picker_hour.setVisibility(View.GONE);
+            picker_minute.setVisibility(View.GONE);
+            picker_am.setVisibility(View.GONE);
+            Log.d("boolean","false");
+        }else {
+            picker_hour.setVisibility(View.VISIBLE);
+            picker_minute.setVisibility(View.VISIBLE);
+            picker_am.setVisibility(View.VISIBLE);
+            Log.d("boolean", "true");
+        }
     }
 
     /**
@@ -237,11 +302,29 @@ public class DatePickerPopWin extends PopupWindow implements OnClickListener {
             monthList.add(format2LenStr(j + 1));
         }
 
+        for (int h = 0; h<12; h++){
+            hourList.add(format2LenStr(h+1));
+        }
+        for (int m=0; m<60; m++){
+            minuteList.add(format2LenStr(m));
+        }
+        am_pmList.add("AM");
+        am_pmList.add("PM");
+
         yearLoopView.setArrayList((ArrayList) yearList);
         yearLoopView.setInitPosition(yearPos);
 
         monthLoopView.setArrayList((ArrayList) monthList);
         monthLoopView.setInitPosition(monthPos);
+
+        picker_hour.setArrayList((ArrayList) hourList);
+        picker_hour.setInitPosition(hourPos);
+
+        picker_minute.setArrayList((ArrayList) minuteList);
+        picker_minute.setInitPosition(minutePos);
+
+        picker_am.setArrayList((ArrayList) am_pmList);
+        picker_am.setInitPosition(am_pm);
     }
 
     /**
@@ -250,14 +333,19 @@ public class DatePickerPopWin extends PopupWindow implements OnClickListener {
     private void initDayPickerView() {
 
         int dayMaxInMonth;
+        int curretntime;
         Calendar calendar = Calendar.getInstance();
         dayList = new ArrayList<String>();
 
         calendar.set(Calendar.YEAR, minYear + yearPos);
         calendar.set(Calendar.MONTH, monthPos);
+        calendar.set(Calendar.HOUR, hourPos);
+        calendar.set(Calendar.MINUTE, minutePos);
+        calendar.set(Calendar.AM_PM, am_pm);
 
         //get max day in month
         dayMaxInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        curretntime = calendar.getActualMaximum(Calendar.HOUR);
 
         for (int i = 0; i < dayMaxInMonth; i++) {
             dayList.add(format2LenStr(i + 1));
@@ -277,14 +365,24 @@ public class DatePickerPopWin extends PopupWindow implements OnClickListener {
         if (!TextUtils.isEmpty(dateStr)) {
 
             long milliseconds = getLongFromyyyyMMdd(dateStr);
-            Calendar calendar = Calendar.getInstance(Locale.CHINA);
+            Log.d("am", "value1" + dateStr);
+            Calendar calendar = Calendar.getInstance(Locale.US);
 
             if (milliseconds != -1) {
 
                 calendar.setTimeInMillis(milliseconds);
+                Log.d("am", "value2" + milliseconds);
                 yearPos = calendar.get(Calendar.YEAR) - minYear;
                 monthPos = calendar.get(Calendar.MONTH);
                 dayPos = calendar.get(Calendar.DAY_OF_MONTH) - 1;
+                hourPos = calendar.get(Calendar.HOUR);
+                minutePos = calendar.get(Calendar.MINUTE);
+                if (calendar.get(Calendar.AM_PM) == Calendar.AM)
+                    am_pm =0;
+                else if (calendar.get(Calendar.AM_PM) == Calendar.PM)
+                    am_pm = 1;
+//                am_pm = calendar.get(Calendar.AM_PM);
+                Log.d("am","value"+calendar.get(Calendar.AM_PM));
             }
         }
     }
@@ -357,6 +455,9 @@ public class DatePickerPopWin extends PopupWindow implements OnClickListener {
                 int year = minYear + yearPos;
                 int month = monthPos + 1;
                 int day = dayPos + 1;
+                int hour = hourPos+1;
+                int minute = minutePos;
+                String am = String.valueOf(am_pm);
                 StringBuffer sb = new StringBuffer();
 
                 sb.append(String.valueOf(month));
@@ -364,7 +465,17 @@ public class DatePickerPopWin extends PopupWindow implements OnClickListener {
                 sb.append(format2LenStr(day));
                 sb.append("-");
                 sb.append(format2LenStr(year));
-                mListener.onDatePickCompleted(month, day, year, sb.toString());
+
+                sb.append(" ");
+                sb.append(format2LenStr(hour));
+                sb.append(":");
+                sb.append(format2LenStr(minute));
+                sb.append(" ");
+                if(am_pm==0)
+                    sb.append("AM");
+                else
+                    sb.append("PM");
+                mListener.onDatePickCompleted(month, day, year, hour,minute, am, sb.toString());
             }
 
             dismissPopWin();
@@ -392,8 +503,12 @@ public class DatePickerPopWin extends PopupWindow implements OnClickListener {
         }
     }
 
+    public static String getCurrenttime(){
+        SimpleDateFormat ct = new SimpleDateFormat("yyyy-MM-dd HH:MM a", Locale.CHINA);
+        return ct.format(new Date());
+    }
     public static String getStrDate() {
-        SimpleDateFormat dd = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+        SimpleDateFormat dd = new SimpleDateFormat("yyyy-MM-dd HH:MM a", Locale.CHINA);
         return dd.format(new Date());
     }
 
@@ -423,7 +538,7 @@ public class DatePickerPopWin extends PopupWindow implements OnClickListener {
          * @param day
          * @param dateDesc  yyyy-MM-dd
          */
-        void onDatePickCompleted(int month, int day, int year,
+        void onDatePickCompleted(int month, int day, int year, int hour, int minute, String am,
                                  String dateDesc);
     }
 }
