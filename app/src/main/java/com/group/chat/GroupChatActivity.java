@@ -381,7 +381,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     if (!isGroup && !isRounding) {
                         final Dialog dialog = new Dialog(context);
                         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                        dialog.setContentView(R.layout.dialog_myacc_menu);
+                        dialog.setContentView(R.layout.group_dialog);
                         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                         lp.copyFrom(dialog.getWindow().getAttributes());
                         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -392,10 +392,15 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         window.setAttributes(lp);
                         window.setGravity(Gravity.BOTTOM);
                         dialog.show();
-                        TextView sms = (TextView) dialog.findViewById(R.id.delete_acc);
-                        sms.setText("SMS");
-                        TextView clear = (TextView) dialog.findViewById(R.id.log_out);
-                        clear.setText("Clear History");
+
+                        TextView edit_grp = (TextView) dialog.findViewById(R.id.edit_grp);
+                        edit_grp.setVisibility(View.GONE);
+                        TextView sms = (TextView) dialog.findViewById(R.id.invite_grp);
+                        sms.setText("Invite User to Group");
+                        TextView clear = (TextView) dialog.findViewById(R.id.leave_grp);
+                        clear.setText("Withdraw all Mesages");
+                        TextView delet_user = (TextView) dialog.findViewById(R.id.delete_grp);
+                        delet_user.setText("Delete User from Contacts");
                         TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
                         cancel.setOnClickListener(new View.OnClickListener() {
 
@@ -408,20 +413,28 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 }
                             }
                         });
-                        sms.setOnClickListener(new View.OnClickListener() {
+                        delet_user.setOnClickListener(new View.OnClickListener() {
 
                             @Override
                             public void onClick(View arg0) {
-                                try {
-                                    dialog.dismiss();
-                                    Intent smsintent = new Intent(context, ShortMessage.class);
-                                    smsintent.putExtra("Grid", true);
-                                    startActivity(smsintent);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
+
+                            ContactsFragment.getInstance(context).doDeleteContact(buddy);
+                }
                         });
+//                        sms.setOnClickListener(new View.OnClickListener() {
+//
+//                            @Override
+//                            public void onClick(View arg0) {
+//                                try {
+//                                    dialog.dismiss();
+//                                    Intent smsintent = new Intent(context, ShortMessage.class);
+//                                    smsintent.putExtra("Grid", true);
+//                                    startActivity(smsintent);
+//                                } catch (Exception e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        });
                         clear.setOnClickListener(new View.OnClickListener() {
 
                             @Override
@@ -1516,6 +1529,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         selectAll_container.setVisibility(View.GONE);
                         sendLay.setVisibility(View.VISIBLE);
                         header.setVisibility(View.VISIBLE);
+                        audio_call.setVisibility(View.VISIBLE);
                         sidemenu.setBackgroundResource(R.drawable.navigation_menu);
                         cancel.setVisibility(View.VISIBLE);
                         dot.setVisibility(View.VISIBLE);
@@ -4347,9 +4361,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         try {
             AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(context);
             myAlertDialog.setTitle(SingleInstance.mainContext.getResources().getString(R.string.clear_chat_history));
+            ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(groupOrBuddyName);
+            String fullname=bean.getFirstname()+" "+bean.getLastname();
             myAlertDialog
                     .setMessage(SingleInstance.mainContext.getResources().getString(R.string.are_you_sure_you_want_to_delete_entire_chat_history)
-                            + groupOrBuddyName + "?");
+                            +" " + fullname + "?");
             myAlertDialog.setPositiveButton("OK",
                     new DialogInterface.OnClickListener() {
 

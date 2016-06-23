@@ -149,6 +149,8 @@ public class PatientRoundingFragment extends Fragment {
         mainHeader.setVisibility(View.VISIBLE);
         LinearLayout contact_layout = (LinearLayout) getActivity().findViewById(R.id.contact_layout);
         contact_layout.setVisibility(View.GONE);
+        EditText search_box = (EditText)getActivity().findViewById(R.id.search_box);
+        search_box.setVisibility(View.GONE);
         final Button imVw = (Button) getActivity().findViewById(R.id.im_view);
         imVw.setVisibility(View.GONE);
 
@@ -673,7 +675,7 @@ public class PatientRoundingFragment extends Fragment {
         header_name.setText(title);
         ListView listview = (ListView) dialog1.findViewById(R.id.listview);
         String strGetQry = "select diagnosis,commentdate from seeallpatientdetails where groupid='"
-                + pDescBean.getGroupid() + "'and patientid='" + pDescBean.getPatientid() + "' ORDER BY commentdate DESC";
+                + pBean.getGroupid() + "'and patientid='" + pBean.getPatientid() + "' ORDER BY commentdate DESC";
         isfromedit_diagnosis = true;
         Vector<PatientDescriptionBean> comments = DBAccess.getdbHeler().getseallcomments(strGetQry);
         Log.d("listvalues","string"+comments.size());
@@ -707,7 +709,7 @@ public class PatientRoundingFragment extends Fragment {
         newDescription.setHint(edithint);
         isfromedit_diagnosis = false;
         String strGetQry = "select diagnosis,commentdate from seeallpatientdetails where groupid='"
-                + pDescBean.getGroupid() + "'and patientid='" + pDescBean.getPatientid() + "' ORDER BY commentdate DESC";
+                + pBean.getGroupid() + "'and patientid='" + pBean.getPatientid() + "' ORDER BY commentdate DESC";
 
         Vector<PatientDescriptionBean> comments = DBAccess.getdbHeler().getseallcomments(strGetQry);
         Log.d("listvalues","string"+comments.size());

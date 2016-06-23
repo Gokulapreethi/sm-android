@@ -5466,8 +5466,13 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						}
 					}
 				}
-
+				String fullname;
 				for (BuddyInformationBean bInfo : tempList) {
+					ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(buddyInformationBean.getName());
+					if((bean.getFirstname()!=null)&&(bean.getLastname()!=null))
+					fullname=bean.getFirstname()+" "+bean.getLastname();
+					else
+					fullname = buddyInformationBean.getName();
 					if (!bInfo.isTitle()) {
 						if (buddyInformationBean.getStatus().equalsIgnoreCase(
 								"delete")) {
@@ -5475,12 +5480,12 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 									buddyInformationBean.getName())) {
 								if (bInfo.getStatus().equalsIgnoreCase(
 										"pending")) {
-									showToast(buddyInformationBean.getName()
+									showToast(fullname
 											+ " reject's your request");
 								} else if (bInfo.getStatus().equalsIgnoreCase(
 										"new")) {
 									showToast("Buddy request by "
-											+ buddyInformationBean.getName()
+											+ fullname
 											+ " has been deleted");
 									if (WebServiceReferences.contextTable
 											.containsKey("viewprofileactivity")) {
@@ -5496,7 +5501,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 									}
 								} else {
 									showToast("you have been removed from "
-											+ buddyInformationBean.getName()
+											+ fullname
 											+ " contact list");
 									if (WebServiceReferences.contextTable
 											.containsKey("viewprofileactivity")) {
@@ -5587,11 +5592,17 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 						@Override
 						public void run() {
+							String fullname;
+							ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(buddyName);
+							if(buddyName!=null)
+							fullname=bean.getFirstname()+" "+bean.getLastname();
+							else
+							fullname=buddyName;
 							// TODO Auto-generated method stub
 							Toast.makeText(
 									context,
 									SingleInstance.mainContext.getResources().getString(R.string.buddy_request_sent_successfully_to1)
-											+ buddyName, 3000).show();
+											+ fullname, 3000).show();
 							ContactsFragment.getInstance(context).SortList();
 
 						}

@@ -2,6 +2,7 @@ package com.group;
 
 import java.util.Vector;
 
+import org.lib.model.BuddyInformationBean;
 import org.lib.model.GroupBean;
 
 import android.app.Dialog;
@@ -21,6 +22,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -29,6 +31,7 @@ import android.widget.TextView;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
+import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
 import com.main.ContactsFragment;
 import com.util.SingleInstance;
@@ -40,12 +43,19 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 
 	private Typeface tf_bold = null;
 	ImageLoader imageLoader;
+	private Vector<GroupBean> grouplist;
+	private Vector<GroupBean> originalList;
+	private  GroupFilter filter;
 
 	public GroupAdapter(Context context, int textViewResourceId,
 			Vector<GroupBean> groupList) {
 
 		super(context, R.layout.grouplist, groupList);
 		this.context = context;
+		grouplist = new Vector<GroupBean>();
+		grouplist.addAll(ContactsFragment.getGroupList());
+		originalList = new Vector<GroupBean>();
+		this.originalList.addAll(ContactsFragment.getGroupList());
 		imageLoader=new ImageLoader(SingleInstance.mainContext);
 
 	}
@@ -97,7 +107,7 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 				holder.header_title.setText(name.toUpperCase());
 			}
 			if(position>0){
-				GroupBean gBean=(GroupBean) ContactsFragment.getGroupList().get(position-1);
+				GroupBean gBean=(GroupBean) ContactsFragment.getGroupList().get(position - 1);
 				if(gBean.getStatus().equalsIgnoreCase("request"))
 					holder.header_title.setVisibility(View.GONE);
 				else {
@@ -197,6 +207,55 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 		LinearLayout contact_history;
 		LinearLayout inreq;
 		ImageView buddy_icon;
+	}
+	public Filter getFilter() {
+		if (filter == null){
+			filter  = new GroupFilter();
+		}
+		return filter;
+	}
+	private class GroupFilter extends Filter
+	{
+
+		@Override
+		protected FilterResults performFiltering(CharSequence constraint) {
+
+			constraint = constraint.toString().toLowerCase();
+
+			FilterResults result = new FilterResults();
+			if (constraint != null && constraint.toString().length() > 0) {
+				Vector<GroupBean> gBeans = new Vector<GroupBean>();
+				for(int i = 0, l = originalList.size(); i < l; i++)
+				{
+					GroupBean groupBean = originalList.get(i);
+					if(groupBean.getGroupName().toLowerCase().startsWith(String.valueOf(constraint)))
+						gBeans.add(groupBean);
+				}
+				result.count = gBeans.size();
+				result.values = gBeans;
+			} else {
+				synchronized (this) {
+					result.values = originalList;
+					result.count = originalList.size();
+				}
+			}
+			return result;
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		protected void publishResults(CharSequence constraint,
+									  FilterResults results) {
+
+			grouplist= (Vector<GroupBean>)results.values;
+			notifyDataSetChanged();
+			clear();
+			for(int i = 0, l = grouplist.size(); i < l; i++)
+				add(grouplist.get(i));
+			notifyDataSetInvalidated();
+
+		}
+
 	}
 
 }

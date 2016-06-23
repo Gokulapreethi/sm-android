@@ -270,6 +270,8 @@ public class ContactsFragment extends Fragment{
 		search.setVisibility(View.VISIBLE);
 		search.setText("");
 
+		final EditText btn_1 = (EditText) getActivity().findViewById(R.id.searchet);
+
 		final Button plusBtn = (Button) getActivity().findViewById(R.id.add_group);
 		plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_add_contact));
 		plusBtn.setVisibility(View.VISIBLE);
@@ -281,7 +283,7 @@ public class ContactsFragment extends Fragment{
 		final EditText search_box = (EditText)getActivity().findViewById(R.id.search_box);
 		search_box.setVisibility(View.GONE);
 
-		TextView title = (TextView) getActivity().findViewById(
+		final TextView title = (TextView) getActivity().findViewById(
 				R.id.activity_main_content_title);
 		title.setVisibility(View.VISIBLE);
 		title.setText("CONTACTS");
@@ -374,10 +376,6 @@ public class ContactsFragment extends Fragment{
 				Log.i("Test", "OWNER LIST>>>>>>" + getGroupList());
 				Log.i("Test", "OWNER LIST>>>>>>" + getBuddyGroupList());
 
-				GroupActivity.groupAdapter2 = new GroupAdapter2(mainContext,
-						R.layout.grouplist, getBuddyGroupList());
-				GroupActivity.groupAdapter2.notifyDataSetChanged();
-
 				Log.i("Test", "CONTACT>>>>>>>>>" + groupList);
 				lv.setAdapter(contactAdapter);
 				lv.setDivider(null);
@@ -395,8 +393,35 @@ public class ContactsFragment extends Fragment{
 							Intent i = new Intent(getActivity(), AMAVerification.class);
 							startActivity(i);
 						}
+						else if(!isContact){
+									if(title.getVisibility()==View.VISIBLE){
+										title.setVisibility(View.GONE);
+										btn_1.setVisibility(View.VISIBLE);
+										search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_close));
+									}else {
+										title.setVisibility(View.VISIBLE);
+										btn_1.setVisibility(View.GONE);
+										btn_1.setText("");
+										search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
+									}
+						}
 					}
 				});
+				btn_1.addTextChangedListener(new TextWatcher() {
+
+					public void afterTextChanged(Editable s) {
+					}
+
+					public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+					}
+
+					public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                        }
+						if (s != null && s != "")
+							GroupActivity.groupAdapter.getFilter().filter(s);
+					}
+				});
+
 				myFilter.addTextChangedListener(new TextWatcher() {
 
 					public void afterTextChanged(Editable s){}
@@ -462,7 +487,10 @@ public class ContactsFragment extends Fragment{
 				tv11.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-
+						title.setVisibility(View.VISIBLE);
+						btn_1.setVisibility(View.GONE);
+						btn_1.setText("");
+						search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
 							try {
 								if(contactrecent) {
 								isContact = true;
@@ -1855,11 +1883,19 @@ public class ContactsFragment extends Fragment{
 				// TODO Auto-generated method stub
 				try {
 					selectedBuddy=buddy;
+					Context context;
 					if (appMainActivity.isNetworkConnectionAvailable()) {
-						AlertDialog.Builder builder = new AlertDialog.Builder(mainContext);
+						GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
+						if(groupChatActivity != null) {
+							context=groupChatActivity;
+						} else
+						context=mainContext;
+						ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(buddy);
+						String fullname=bean.getFirstname()+" "+bean.getLastname();
+						AlertDialog.Builder builder = new AlertDialog.Builder(context);
 						builder.setTitle("Warning !");
 						builder.setMessage("Are you sure you want to delete "
-										+ buddy + " ?").setCancelable(false).setPositiveButton(SingleInstance.mainContext.getResources().getString(R.string.yes),
+										+ fullname + " ?").setCancelable(false).setPositiveButton(SingleInstance.mainContext.getResources().getString(R.string.yes),
 										new DialogInterface.OnClickListener() {
 											public void onClick(DialogInterface dialog, int id) {
 												if (!WebServiceReferences.running) {
@@ -3260,6 +3296,9 @@ public class ContactsFragment extends Fragment{
 								}
 							}
 						}
+						ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(buddyInformationBean
+								.getName());
+						final String fullname=bean.getFirstname()+" "+bean.getLastname();
 						handler.post(new Runnable() {
 							@Override
 							public void run() {
@@ -3268,8 +3307,7 @@ public class ContactsFragment extends Fragment{
 									Toast.makeText(
 											mainContext,
 											"You Accepted "
-													+ buddyInformationBean
-													.getName(),
+													+ fullname,
 											Toast.LENGTH_LONG).show();
                                     SortList();
 								} catch (Exception e) {
@@ -3297,15 +3335,18 @@ public class ContactsFragment extends Fragment{
 									}
 								}
 							}
+
 							handler.post(new Runnable() {
 								@Override
 								public void run() {
 									try {
+										ProfileBean bean1 = DBAccess.getdbHeler().getProfileDetails(bean.getText());
+										final String fullname=bean1.getFirstname()+" "+bean1.getLastname();
 										// TODO Auto-generated method stub
 										Toast.makeText(
 												mainContext,
 												"You Rejected "
-														+ bean.getText(),
+														+ fullname,
 												Toast.LENGTH_LONG).show();
                                         SortList();
 									} catch (Exception e) {

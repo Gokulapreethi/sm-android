@@ -70,6 +70,16 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="3dp"
                 android:visibility="gone" />
+            <EditText
+                android:id="@+id/searchet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:hint="Search"
+                android:textColorHint="@color/white"
+                android:textColor="@color/white"
+                android:visibility="gone"/>
+
 
             <Button
                 android:id="@+id/btn_settings"

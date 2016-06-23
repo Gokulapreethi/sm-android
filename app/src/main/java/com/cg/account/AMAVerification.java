@@ -689,7 +689,7 @@ public class AMAVerification extends Activity {
                     for(int i = 0, l = originalList.size(); i < l; i++)
                     {
                         BuddyInformationBean buddyInformationBean = originalList.get(i);
-                        if(buddyInformationBean.getName().toLowerCase().startsWith(String.valueOf(constraint)))
+                        if(buddyInformationBean.getName().toLowerCase().contains(String.valueOf(constraint)))
                             buddyInformationBeans.add(buddyInformationBean);
                     }
                     buddyInformationBeans = GroupChatActivity.getAdapterList(buddyInformationBeans);
