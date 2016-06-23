@@ -72,6 +72,10 @@ public class MyAccountActivity extends Activity {
     ArrayAdapter<String> stateAdapter;
     private LinearLayout cite_lay, cite_lay1;
     private boolean isEdit=false;
+    private boolean isTitle=false,isUsertype=false,isProff=false,isState=false;
+    private boolean isSpeciality=false,isMedical=false,isResidency=false;
+    private boolean isFellow=false,isHospital=false,isAssociation=false;
+    boolean isOffcState=false;
 
     private Handler handler = new Handler();
     private ProgressDialog progressDialog = null;
@@ -145,16 +149,16 @@ public class MyAccountActivity extends Activity {
         final TextView profDesc=(TextView)findViewById(R.id.profDesc);
         final TextView tv_speciality=(TextView)findViewById(R.id.tv_speciality);
         final TextView tv_association=(TextView)findViewById(R.id.tv_association);
-        ImageView titel_img=(ImageView)findViewById(R.id.title_img);
-        ImageView usertype_img=(ImageView)findViewById(R.id.usertype_img);
-        ImageView prof_img=(ImageView)findViewById(R.id.prof_img);
-        ImageView state_img=(ImageView)findViewById(R.id.state_img);
-        ImageView speciality_img=(ImageView)findViewById(R.id.speciality_img);
-        ImageView medical_img=(ImageView)findViewById(R.id.medical_img);
-        ImageView residency_img=(ImageView)findViewById(R.id.residency_img);
-        ImageView fellow_img=(ImageView)findViewById(R.id.fellow_img);
-        ImageView hospital_img=(ImageView)findViewById(R.id.hospital_img);
-        ImageView association_img=(ImageView)findViewById(R.id.association_img);
+        final ImageView titel_img=(ImageView)findViewById(R.id.title_img);
+        final ImageView usertype_img=(ImageView)findViewById(R.id.usertype_img);
+        final ImageView prof_img=(ImageView)findViewById(R.id.prof_img);
+        final ImageView state_img=(ImageView)findViewById(R.id.state_img);
+        final ImageView speciality_img=(ImageView)findViewById(R.id.speciality_img);
+        final ImageView medical_img=(ImageView)findViewById(R.id.medical_img);
+        final ImageView residency_img=(ImageView)findViewById(R.id.residency_img);
+        final ImageView fellow_img=(ImageView)findViewById(R.id.fellow_img);
+        final ImageView hospital_img=(ImageView)findViewById(R.id.hospital_img);
+        final ImageView association_img=(ImageView)findViewById(R.id.association_img);
         Button img_edit=(Button)findViewById(R.id.addr_edit);
         Button img_close=(Button)findViewById(R.id.img_close);
         statusTxt.setText(status);
@@ -257,6 +261,8 @@ public class MyAccountActivity extends Activity {
                 }
             }
         });
+
+
         addr_plus.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -290,7 +296,7 @@ public class MyAccountActivity extends Activity {
                     final EditText office_phone_number = (EditText) dialog1.findViewById(R.id.address_edit5);
                     final EditText office_fax_number = (EditText) dialog1.findViewById(R.id.address_edit6);
                     state1 = (AutoCompleteTextView) dialog1.findViewById(R.id.state_of_practice);
-                    ImageView offcstate_img=(ImageView)dialog1.findViewById(R.id.offcstate_img);
+                    final ImageView offcstate_img=(ImageView)dialog1.findViewById(R.id.offcstate_img);
 
                     Button save1 = (Button) dialog1.findViewById(R.id.save_button2);
                     Button cancel1 = (Button) dialog1.findViewById(R.id.cancel_button2);
@@ -480,7 +486,15 @@ public class MyAccountActivity extends Activity {
                     offcstate_img.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            state1.showDropDown();
+                            if(isOffcState) {
+                                isOffcState=false;
+                                state1.dismissDropDown();
+                                offcstate_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                            }else {
+                                isOffcState=true;
+                                offcstate_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                                state1.showDropDown();
+                            }
                         }
                     });
 
@@ -550,8 +564,10 @@ public class MyAccountActivity extends Activity {
         img_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isEdit=true;
-                addr_plus.performClick();
+                if(tv_addr.getText().length()>0) {
+                    isEdit = true;
+                    addr_plus.performClick();
+                }
             }
         });
         edNickname.addTextChangedListener(new TextWatcher() {
@@ -660,7 +676,15 @@ public class MyAccountActivity extends Activity {
         state_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                state.showDropDown();
+                if(isState) {
+                    isState=false;
+                    state.dismissDropDown();
+                    state_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                }else {
+                    isState=true;
+                    state_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    state.showDropDown();
+                }
             }
         });
 
@@ -671,7 +695,15 @@ public class MyAccountActivity extends Activity {
         hospital_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hospital.showDropDown();
+                if(isHospital) {
+                    isHospital=false;
+                    hospital.dismissDropDown();
+                    hospital_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                }else {
+                    isHospital=true;
+                    hospital_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    hospital.showDropDown();
+                }
             }
         });
 
@@ -682,7 +714,15 @@ public class MyAccountActivity extends Activity {
         association_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                association_membership.showDropDown();
+                if(isAssociation) {
+                    isAssociation=false;
+                    association_membership.dismissDropDown();
+                    association_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                }else {
+                    isAssociation=true;
+                    association_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    association_membership.showDropDown();
+                }
             }
         });
 
@@ -816,7 +856,15 @@ public class MyAccountActivity extends Activity {
         titel_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                title.showDropDown();
+                if(isTitle) {
+                    isTitle=false;
+                    title.dismissDropDown();
+                    titel_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                }else {
+                    isTitle=true;
+                    titel_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    title.showDropDown();
+                }
             }
         });
 
@@ -835,7 +883,15 @@ public class MyAccountActivity extends Activity {
         usertype_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                usertype.showDropDown();
+                if(isUsertype) {
+                    isUsertype=false;
+                    usertype.dismissDropDown();
+                    usertype_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                }else {
+                    isUsertype=true;
+                    usertype_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    usertype.showDropDown();
+                }
             }
         });
 
@@ -884,7 +940,15 @@ public class MyAccountActivity extends Activity {
         medical_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                medical_schools.showDropDown();
+                if(isMedical) {
+                    isMedical=false;
+                    medical_schools.dismissDropDown();
+                    medical_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                }else {
+                    isMedical=true;
+                    medical_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    medical_schools.showDropDown();
+                }
             }
         });
 
@@ -897,7 +961,15 @@ public class MyAccountActivity extends Activity {
         residency_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                residency_pgm.showDropDown();
+                if(isResidency) {
+                    isResidency=false;
+                    residency_pgm.dismissDropDown();
+                    residency_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                }else {
+                    isResidency=true;
+                    residency_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    residency_pgm.showDropDown();
+                }
             }
         });
 
@@ -910,7 +982,15 @@ public class MyAccountActivity extends Activity {
         fellow_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fellowship_pgm.showDropDown();
+                if(isFellow) {
+                    isFellow=false;
+                    fellowship_pgm.dismissDropDown();
+                    fellow_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                }else {
+                    isFellow=true;
+                    fellow_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    fellowship_pgm.showDropDown();
+                }
             }
         });
 
@@ -925,7 +1005,15 @@ public class MyAccountActivity extends Activity {
         prof_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                rlay_professional_org.showDropDown();
+                if(isProff) {
+                    isProff=false;
+                    rlay_professional_org.dismissDropDown();
+                    prof_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                }else {
+                    isProff=true;
+                    prof_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    rlay_professional_org.showDropDown();
+                }
             }
         });
 
@@ -937,7 +1025,15 @@ public class MyAccountActivity extends Activity {
         speciality_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Speciality.showDropDown();
+                if(isSpeciality) {
+                    isSpeciality=false;
+                    Speciality.dismissDropDown();
+                    speciality_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                }else {
+                    isSpeciality=true;
+                    speciality_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    Speciality.showDropDown();
+                }
             }
         });
 

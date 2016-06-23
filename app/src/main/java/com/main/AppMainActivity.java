@@ -2838,9 +2838,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 								}
 								progress.dismiss();
 
-								Toast.makeText(SingleInstance.mainContext,
-										server_response.getText(),
-										Toast.LENGTH_LONG).show();
+//								Toast.makeText(SingleInstance.mainContext,
+//										server_response.getText(),
+//										Toast.LENGTH_LONG).show();
 
 							} else {
 								Toast.makeText(SingleInstance.mainContext,

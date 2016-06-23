@@ -3182,7 +3182,80 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             showToast("Not able to process. Please try again");
                         }
                     }
-                } else if (requestCode == 34) {
+                }
+                else if(requestCode==35){
+                    if (data != null) {
+                        Log.i("AAA","New activity 32*************");
+                        Uri selectedImageUri = data.getData();
+                        strIPath = callDisp.getRealPathFromURI(selectedImageUri);
+                        final String path = Environment.getExternalStorageDirectory()
+                                + "/COMMedia/" + callDisp.getFileName() + ".mp4";
+
+                        strIPath = path;
+                        Log.i("AAA","New activity "+strIPath);
+                        SendListUIBean uIbean = new SendListUIBean();
+                        uIbean.setType("video");
+                        uIbean.setPath(strIPath);
+                        SendListUI.add(uIbean);
+                        sendlistadapter.notifyDataSetChanged();
+                        list_all.removeAllViews();
+                        final int adapterCount = sendlistadapter.getCount();
+
+                        for (int i = 0; i < adapterCount; i++) {
+                            View item = sendlistadapter.getView(i, null, null);
+                            list_all.addView(item);
+                        }
+                        msgoptionview.setVisibility(View.VISIBLE);
+                        audio_call.setBackgroundResource(R.drawable.chat_send);
+                        audio_call.setTag(1);
+                    }
+                }else if(requestCode==39){
+                    if (data != null) {
+                        Log.i("AAA","New activity 33*************");
+                        Uri selectedImageUri = data.getData();
+                        strIPath = callDisp.getRealPathFromURI(selectedImageUri);
+                        final String path = Environment.getExternalStorageDirectory()
+                                + "/COMMedia/" + callDisp.getFileName() + ".mp4";
+
+                        Log.i("AAA","New activity "+strIPath);
+                        strIPath = path;
+                        Log.i("AAA","New activity "+strIPath);
+                        SendListUIBean uIbean = new SendListUIBean();
+                        uIbean.setType("video");
+                        uIbean.setPath(strIPath);
+                        SendListUI.add(uIbean);
+                        sendlistadapter.notifyDataSetChanged();
+                        list_all.removeAllViews();
+                        final int adapterCount = sendlistadapter.getCount();
+
+                        for (int i = 0; i < adapterCount; i++) {
+                            View item = sendlistadapter.getView(i, null, null);
+                            list_all.addView(item);
+                        }
+                        msgoptionview.setVisibility(View.VISIBLE);
+                        audio_call.setBackgroundResource(R.drawable.chat_send);
+                        audio_call.setTag(1);
+                        FileInputStream fin = (FileInputStream) getContentResolver()
+                                .openInputStream(selectedImageUri);
+                        ByteArrayOutputStream straam = new ByteArrayOutputStream();
+                        byte[] content = new byte[1024];
+                        int bytesread;
+                        while ((bytesread = fin.read(content)) != -1) {
+                            straam.write(content, 0, bytesread);
+                        }
+                        byte[] bytes = straam.toByteArray();
+                        FileOutputStream fout = new FileOutputStream(strIPath);
+                        straam.flush();
+                        straam.close();
+                        straam = null;
+                        fin.close();
+                        fin = null;
+                        fout.write(bytes);
+                        fout.flush();
+                        fout.close();
+                        fout = null;
+                    }
+                }else if (requestCode == 34) {
                     Bundle bun = data.getBundleExtra("share");
                     if (bun != null) {
                         String path = bun.getString("filepath");
@@ -3709,10 +3782,18 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 startActivityForResult(intent, 40);
                                 dialog.dismiss();
                             } else if (pos == 1) {
-                                Intent i = new Intent(context,
-                                        NotePickerScreen.class);
-                                i.putExtra("note", "video");
-                                startActivityForResult(i, 34);
+                                if (Build.VERSION.SDK_INT < 19) {
+                                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                                    intent.setType("video/*");
+                                    startActivityForResult(intent, 35);
+                                } else {
+                                    Log.i("img", "sdk is above 19");
+                                    Log.i("clone", "====> inside gallery");
+                                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                                    intent.setType("video/*");
+                                    startActivityForResult(intent, 39);
+                                }
                                 dialog.dismiss();
 
                             } else if (pos == 2) {

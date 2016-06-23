@@ -174,8 +174,8 @@
                     android:id="@+id/rlay_tilte"/>
                     <ImageView
                         android:id="@+id/title_img"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_marginRight="15dp"
                         android:background="@drawable/input_arrow"/>
                 </LinearLayout>
@@ -316,8 +316,8 @@
                         android:id="@+id/rlay_user_type"/>
                     <ImageView
                         android:id="@+id/usertype_img"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_marginRight="15dp"
                         android:background="@drawable/input_arrow"/>
                 </LinearLayout>
@@ -359,8 +359,8 @@
                         android:id="@+id/prof_desgn"/>
                     <ImageView
                         android:id="@+id/prof_img"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_marginRight="15dp"
                         android:background="@drawable/input_arrow"/>
                 </LinearLayout>
@@ -402,8 +402,8 @@
                         android:background="@color/black2"/>
                     <ImageView
                         android:id="@+id/state_img"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_marginRight="15dp"
                         android:background="@drawable/input_arrow"/>
                 </LinearLayout>
@@ -447,8 +447,8 @@
                         android:id="@+id/speciality"/>
                     <ImageView
                         android:id="@+id/speciality_img"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_marginRight="15dp"
                         android:background="@drawable/input_arrow"/>
                 </LinearLayout>
@@ -480,8 +480,8 @@
                         android:textColor="#458EDB" />
                     <Button
                         android:id="@+id/arrow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginRight="15dp"
                         android:background="@drawable/input_arrow" />
@@ -610,8 +610,8 @@
                             android:id="@+id/medical_scl"/>
                         <ImageView
                             android:id="@+id/medical_img"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_marginRight="15dp"
                             android:background="@drawable/input_arrow"/>
                     </LinearLayout>
@@ -654,8 +654,8 @@
                             android:id="@+id/resi_pro"/>
                         <ImageView
                             android:id="@+id/residency_img"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_marginRight="15dp"
                             android:background="@drawable/input_arrow"/>
                     </LinearLayout>
@@ -698,8 +698,8 @@
                             android:id="@+id/fellow"/>
                         <ImageView
                             android:id="@+id/fellow_img"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_marginRight="15dp"
                             android:background="@drawable/input_arrow"/>
                     </LinearLayout>
@@ -840,8 +840,8 @@
                             android:id="@+id/association_membership"/>
                         <ImageView
                             android:id="@+id/association_img"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_marginRight="15dp"
                             android:background="@drawable/input_arrow"/>
                     </LinearLayout>
@@ -884,8 +884,8 @@
                             android:id="@+id/rlay_hospital_affiliation"/>
                         <ImageView
                             android:id="@+id/hospital_img"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_marginRight="15dp"
                             android:background="@drawable/input_arrow"/>
                     </LinearLayout>

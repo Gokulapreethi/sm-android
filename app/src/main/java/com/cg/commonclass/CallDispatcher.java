@@ -5628,9 +5628,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 								}
 
-								Toast.makeText(cntxt,
-										server_response.getText(),
-										Toast.LENGTH_LONG).show();
+//								Toast.makeText(cntxt,
+//										server_response.getText(),
+//										Toast.LENGTH_LONG).show();
 
 							} else {
 								Toast.makeText(cntxt,
