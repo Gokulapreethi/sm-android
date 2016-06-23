@@ -4079,70 +4079,66 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	public void finishVideocallScreen()
 	{
 
-		if (SingleInstance.instanceTable.containsKey("callactivememberslist")) {
-			CallActiveMembersList activeMembersList = (CallActiveMembersList) SingleInstance.instanceTable.get("callactivememberslist");
-			activeMembersList.finishActivity();
-		}
-
-		if (SingleInstance.instanceTable.containsKey("callscreen")) {
-			SingleInstance.instanceTable.remove("callscreen");
-			Log.e("note", "Call screen instance removed ACS!!");
-		}
-		if (videoThread != null) {
-			if (Build.VERSION.SDK_INT < 10) {
-				videoThread.stop();
-			} else {
-				videoThread.stopVideoThread();
+		try {
+			if (SingleInstance.instanceTable.containsKey("callactivememberslist")) {
+				CallActiveMembersList activeMembersList = (CallActiveMembersList) SingleInstance.instanceTable.get("callactivememberslist");
+				activeMembersList.finishActivity();
 			}
 
-		}
-		if (videoQueue != null) {
-			videoQueue.clear();
-		}
-		preview_hided = false;
-		CallDispatcher.isCallInitiate = false;
-		CallDispatcher.videoScreenVisibleState = false;
-		AppMainActivity.commEngine.enable_disable_VideoPreview(true);
-		WebServiceReferences.videoSSRC_total.clear();
-		WebServiceReferences.videoSSRC_total_list.clear();
-		WebServiceReferences.removed_videoSSRC_list.clear();
+			if (SingleInstance.instanceTable.containsKey("callscreen")) {
+				SingleInstance.instanceTable.remove("callscreen");
+				Log.e("note", "Call screen instance removed ACS!!");
+			}
+			if (videoThread != null) {
+				if (Build.VERSION.SDK_INT < 10) {
+					videoThread.stop();
+				} else {
+					videoThread.stopVideoThread();
+				}
 
-		CallDispatcher.conConference.clear();
-		CallDispatcher.issecMadeConference = false;
-		rootView=null;
+			}
+			if (videoQueue != null) {
+				videoQueue.clear();
+			}
+			preview_hided = false;
+			CallDispatcher.isCallInitiate = false;
+			CallDispatcher.videoScreenVisibleState = false;
+			AppMainActivity.commEngine.enable_disable_VideoPreview(true);
+			WebServiceReferences.videoSSRC_total.clear();
+			WebServiceReferences.videoSSRC_total_list.clear();
+			WebServiceReferences.removed_videoSSRC_list.clear();
 
+			CallDispatcher.conConference.clear();
+			CallDispatcher.issecMadeConference = false;
+			rootView = null;
 
-		try {
 			objCallDispatcher.stopRingTone();
 			objCallDispatcher.isHangUpReceived = false;
 			objCallDispatcher.alConferenceRequest.clear();
 			CallDispatcher.conferenceMembersTime.clear();
 			CallDispatcher.currentSessionid = null;
 
+//		final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
+//		mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
+			if (this.mWakeLock != null && this.mWakeLock.isHeld())
+				this.mWakeLock.release();
+			lock.reenableKeyguard();
 
-		final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
-		mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+			objCallDispatcher.startPlayer(context);
 
-		if (this.mWakeLock != null && this.mWakeLock.isHeld())
-			this.mWakeLock.release();
-		lock.reenableKeyguard();
-
-		objCallDispatcher.startPlayer(context);
-
-		FragmentManager fm =
-				AppReference.mainContext.getSupportFragmentManager();
-		FragmentTransaction ft = fm.beginTransaction();
+			FragmentManager fm =
+					AppReference.mainContext.getSupportFragmentManager();
+			FragmentTransaction ft = fm.beginTransaction();
 //		ContactsFragment contactsFragment = ContactsFragment
 //				.getInstance(context);
-		ft.replace(R.id.activity_main_content_fragment,
-				AppReference.bacgroundFragment);
-		ft.commitAllowingStateLoss();
-		video_minimize.setVisibility(View.GONE);
+			ft.replace(R.id.activity_main_content_fragment,
+					AppReference.bacgroundFragment);
+			ft.commitAllowingStateLoss();
+			video_minimize.setVisibility(View.GONE);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void showCallHistory()

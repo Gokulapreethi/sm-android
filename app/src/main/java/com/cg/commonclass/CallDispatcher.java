@@ -2428,7 +2428,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 				else if (sb.getType().equals("3")) {
 					// Hang up
-					Log.i("callscreenfinish","calldispatcher type=3");
+					Log.i("callscreenfinish", "calldispatcher type=3");
 					// if (CallDispatcher.sb.getBs_parentid() != null) {
 					SingleInstance.mainContext.runOnUiThread(new Runnable() {
 						@Override
@@ -2444,7 +2444,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						}
 					});
 
-
+					if(CallDispatcher.sb.getStartTime() == null){
+						CallDispatcher.sb.setStartTime(getCurrentDateandTime());
+					}
 					CallDispatcher.sb.setEndTime(getCurrentDateandTime());
 					Object objCallScreen = SingleInstance.instanceTable
 							.get("callscreen");
@@ -2637,6 +2639,13 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 //														sb);
 										if(!isCallignored) {
 //											isCallignored=true;
+											CallDispatcher.sb.setStartTime(getCurrentDateandTime());
+											handlerForCall.post(new Runnable() {
+												@Override
+												public void run() {
+													showCallHistory(CallDispatcher.sb.getSessionid(), CallDispatcher.sb.getCallType());
+												}
+											});
 											showMissedcallAlert(
 													sb,
 													SipNotificationListener
@@ -3189,28 +3198,34 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					}
 					Log.i("call","end "+AppMainActivity.connectedbuddies);
 					if (AppMainActivity.connectedbuddies == null) {
-						if (conferenceMembers.size() == 1) {
-							isCallInitiate = false;
-							Log.i("callscreenfinish", "1 conferenceMembers.size()==1 name-->" + conferenceMembers.get(0));
-							Log.i("callscreenfinish", "1 sb.name-->" + sb.getFrom());
-							if (conferenceMembers.get(0).equalsIgnoreCase(sb.getFrom())) {
-								Log.i("callscreenfinish", "1.1 sb.name-->" + sb.getFrom());
+						if(conferenceMembers != null) {
+							Log.i("callscreenfinish", "conferenceMembers size" + conferenceMembers.size());
 
-								if (SingleInstance.instanceTable.containsKey("alertscreen")) {
-									inCommingCallAlert inCommingcallAlert = (inCommingCallAlert)SingleInstance.instanceTable.get("alertscreen");
-									if(inCommingcallAlert != null) {
-										inCommingcallAlert.removeInstance();
+							if (conferenceMembers.size() == 1) {
+								isCallInitiate = false;
+								Log.i("callscreenfinish", "1 conferenceMembers.size()==1 name-->" + conferenceMembers.get(0));
+								Log.i("callscreenfinish", "1 sb.name-->" + sb.getFrom());
+								if (conferenceMembers.get(0).equalsIgnoreCase(sb.getFrom())) {
+									Log.i("callscreenfinish", "1.1 sb.name-->" + sb.getFrom());
+
+									if (SingleInstance.instanceTable.containsKey("alertscreen")) {
+										inCommingCallAlert inCommingcallAlert = (inCommingCallAlert) SingleInstance.instanceTable.get("alertscreen");
+										if (inCommingcallAlert != null) {
+											inCommingcallAlert.removeInstance();
+										}
 									}
-								}
 
-								FragmentManager fm =
-										AppReference.mainContext.getSupportFragmentManager();
-								FragmentTransaction ft = fm.beginTransaction();
-								ContactsFragment contactsFragment = ContactsFragment
-										.getInstance(context);
-								ft.replace(R.id.activity_main_content_fragment,
-										contactsFragment);
-								ft.commitAllowingStateLoss();
+									FragmentManager fm =
+											AppReference.mainContext.getSupportFragmentManager();
+									FragmentTransaction ft = fm.beginTransaction();
+									ContactsFragment contactsFragment = ContactsFragment
+											.getInstance(context);
+									ft.replace(R.id.activity_main_content_fragment,
+											contactsFragment);
+									ft.commitAllowingStateLoss();
+								}
+							} else if (conferenceMembers.size() == 0) {
+
 							}
 						}
 					}
@@ -3316,7 +3331,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					}
 					//end
 
-
+					CallDispatcher.sb.setCallstatus("callattended");
 					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 					DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
 							CallDispatcher.sb);
@@ -3909,12 +3924,27 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					// TODO Auto-generated method stub
 
 //					showAlert("", ErrMsg);
+					Log.i("calltest", "showBusyMessage" +SingleInstance.instanceTable
+							.containsKey("connection") +SingleInstance.instanceTable.containsKey("callscreen")+issecMadeConference);
 					if (SingleInstance.instanceTable
 							.containsKey("connection")) {
 						if (!SingleInstance.instanceTable.containsKey("callscreen")) {
-							if (!issecMadeConference)
+							if (!issecMadeConference) {
 								((CallConnectingScreen) SingleInstance.instanceTable
 										.get("connection")).finishConnectingScreen();
+							}
+//							else if (issecMadeConference
+//									&& CallDispatcher.contConferencemembers
+//									.size() == 0) {
+//								if(CallDispatcher.sb != null && CallDispatcher.sb.getParticipants() != null) {
+//									String mam_bers = CallDispatcher.sb.getParticipants();
+//									String[] mam_bers_array = mam_bers.split("'");
+//									if (mam_bers_array.length == 1 && !SingleInstance.instanceTable.containsKey("callscreen")) {
+//										((CallConnectingScreen) SingleInstance.instanceTable
+//												.get("connection")).finishConnectingScreen();
+//									}
+//								}
+//							}
 						}
 					} else if (issecMadeConference
 								&& CallDispatcher.contConferencemembers
@@ -14412,8 +14442,14 @@ private TrustManager[] get_trust_mgr() {
 			}
 			if (online != null) {
 					Log.d("AAAA", "notifyType2Received ifpart ==> ");
-					((CallConnectingScreen) SingleInstance.instanceTable
-							.get("connection")).setTitle(online);
+				if(SingleInstance.instanceTable
+						.containsKey("connection")) {
+					CallConnectingScreen connectingScreen = (CallConnectingScreen) SingleInstance.instanceTable
+							.get("connection");
+					if(connectingScreen != null) {
+						connectingScreen.setTitle(online);
+					}
+				}
 			}
 		} else {
 			Log.i("AudioCall", "Call Screen :" + SingleInstance.instanceTable.containsKey("callscreen") +
