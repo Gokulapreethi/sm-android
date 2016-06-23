@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -63,6 +64,7 @@ public class SecurityQuestions extends Fragment {
     private ArrayAdapter<String> dataAdapter_secQue2;
     private ArrayAdapter<String> dataAdapter_secQue3;
     AppMainActivity appMainActivity;
+    EditText etsecQues1, etsecQues2, etsecQues3;
     public static SecurityQuestions newInstance(Context context) {
         try {
             if (securityQuestions == null) {
@@ -139,20 +141,20 @@ public class SecurityQuestions extends Fragment {
 
                     String[] questions = Arrays.copyOf(SettingsFragment.questions, SettingsFragment.questions.length);
                     final ArrayList<String> quesList=DBAccess.getdbHeler().getSecurityQuestions();
+                    quesList.add("Other Question");
 
                     list_secQue1 = new ArrayList<String>();
                     list_secQue1.addAll(quesList);
 
                     dataAdapter_secQue1 = new ArrayAdapter<String>(mainContext, R.layout.spinner_lay, list_secQue1);
                     dataAdapter_secQue1.setDropDownViewResource(R.layout.spinner_dropdown_list);
-                    Log.i("AAAA", "Sec " + questions[0] + " " + questions[1] + " " + questions[2] + " " + dataAdapter_secQue1.getPosition(questions[0]));
-
+                    Log.i("AAAA", "Sec " + questions[0] + " " + questions[1] + " " + questions[2]);
+                    Log.i("AAAA", "Sec question " + dataAdapter_secQue1.getPosition(questions[0]));
                     secQues1.setAdapter(dataAdapter_secQue1);
                     secQues1.setSelection(dataAdapter_secQue1.getPosition(questions[0]));
 
                     list_secQue2 = new ArrayList<String>();
                     list_secQue2.addAll(quesList);
-                    list_secQue2.remove(secQues1.getSelectedItem());
 
                     dataAdapter_secQue2 = new ArrayAdapter<String>(mainContext, R.layout.spinner_lay, list_secQue2);
                     dataAdapter_secQue2.setDropDownViewResource(R.layout.spinner_dropdown_list);
@@ -160,44 +162,153 @@ public class SecurityQuestions extends Fragment {
                     secQues2.setAdapter(dataAdapter_secQue2);
                     secQues2.setSelection(dataAdapter_secQue2.getPosition(questions[1]));
 
+
                     list_secQue3 = new ArrayList<String>();
                     list_secQue3.addAll(quesList);
-                    list_secQue3.remove(secQues1.getSelectedItem());
-                    list_secQue3.remove(secQues2.getSelectedItem());
+                    etsecQues1 = (EditText)view. findViewById(R.id.etsecques1);
+                    etsecQues2 = (EditText)view. findViewById(R.id.etsecques2);
+                    etsecQues3 = (EditText) view.findViewById(R.id.etsecques3);
+                    final View view_q1 = (View) view.findViewById(R.id.view1);
+                    final View view_q2 = (View)view. findViewById(R.id.view2);
+                    final View view_q3 = (View)view. findViewById(R.id.view3);
+                    final TextView q1 = (TextView) view.findViewById(R.id.tv_q1);
+                    final TextView q2 = (TextView) view.findViewById(R.id.tv_q2);
+                    final TextView q3 = (TextView) view.findViewById(R.id.tv_q3);
 
                     dataAdapter_secQue3 = new ArrayAdapter<String>(mainContext, R.layout.spinner_lay, list_secQue3);
                     dataAdapter_secQue3.setDropDownViewResource(R.layout.spinner_dropdown_list);
                     secQues3.setAdapter(dataAdapter_secQue3);
                     secQues3.setSelection(dataAdapter_secQue3.getPosition(questions[2]));
+                    if(dataAdapter_secQue1.getPosition(questions[0])<0){
+                        secQues1.setSelection(dataAdapter_secQue1.getPosition("Other Question"));
+                        q1.setVisibility(View.VISIBLE);
+                        etsecQues1.setVisibility(View.VISIBLE);
+                        view_q1.setVisibility(View.VISIBLE);
+                        etsecQues1.setText(questions[0]);
+                    }
+                    if(dataAdapter_secQue2.getPosition(questions[1])<0){
+                        secQues2.setSelection(dataAdapter_secQue2.getPosition("Other Question"));
+                        q2.setVisibility(View.VISIBLE);
+                        etsecQues2.setVisibility(View.VISIBLE);
+                        view_q2.setVisibility(View.VISIBLE);
+                        etsecQues2.setText(questions[1]);
+                    }
+                    if(dataAdapter_secQue3.getPosition(questions[2])<0){
+                        secQues3.setSelection(dataAdapter_secQue3.getPosition("Other Question"));
+                        q3.setVisibility(View.VISIBLE);
+                        etsecQues3.setVisibility(View.VISIBLE);
+                        view_q3.setVisibility(View.VISIBLE);
+                        etsecQues3.setText(questions[2]);
+                    }
                     secQues1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
-                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            setQuestions();
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            if (secQues1.getSelectedItem().toString().equalsIgnoreCase("Other Question")) {
+                                etsecQues1.setVisibility(View.VISIBLE);
+                                view_q1.setVisibility(View.VISIBLE);
+                            } else {
+                                etsecQues1.setVisibility(View.GONE);
+                                view_q1.setVisibility(View.GONE);
+                                q1.setVisibility(View.GONE);
+                                setQuestions();
+                            }
                         }
 
                         @Override
-                        public void onNothingSelected(AdapterView<?> adapterView) {
-                            setQuestions();
+                        public void onNothingSelected(AdapterView<?> parent) {
+
                         }
                     });
                     secQues2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
-                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            setQuestions();
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            if (secQues2.getSelectedItem().toString().equalsIgnoreCase("Other Question")) {
+                                etsecQues2.setVisibility(View.VISIBLE);
+                                view_q2.setVisibility(View.VISIBLE);
+                            } else {
+                                etsecQues2.setVisibility(View.GONE);
+                                view_q2.setVisibility(View.GONE);
+                                q2.setVisibility(View.GONE);
+                                setQuestions2();
+                            }
                         }
+
                         @Override
-                        public void onNothingSelected(AdapterView<?> adapterView) {
-                            setQuestions();
+                        public void onNothingSelected(AdapterView<?> parent) {
+
                         }
                     });
                     secQues3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
-                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            setQuestions();
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            if (secQues3.getSelectedItem().toString().equalsIgnoreCase("Other Question")) {
+                                etsecQues3.setVisibility(View.VISIBLE);
+                                view_q3.setVisibility(View.VISIBLE);
+                            } else {
+                                etsecQues3.setVisibility(View.GONE);
+                                view_q3.setVisibility(View.GONE);
+                                q3.setVisibility(View.GONE);
+                                setQuestions3();
+                            }
                         }
+
                         @Override
-                        public void onNothingSelected(AdapterView<?> adapterView) {
-                            setQuestions();
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+                    etsecQues1.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            if (charSequence.length() > 0) {
+                                q1.setVisibility(View.VISIBLE);
+                            } else {
+                                q1.setVisibility(View.GONE);
+                            }
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                        }
+                    });
+                    etsecQues2.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            if (charSequence.length() > 0) {
+                                q2.setVisibility(View.VISIBLE);
+                            } else {
+                                q2.setVisibility(View.GONE);
+                            }
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                        }
+                    });
+                    etsecQues3.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            if (charSequence.length() > 0) {
+                                q3.setVisibility(View.VISIBLE);
+                            } else {
+                                q3.setVisibility(View.GONE);
+                            }
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
                         }
                     });
 
@@ -263,8 +374,34 @@ public class SecurityQuestions extends Fragment {
                                     || sec_ans2.getText().toString().trim().equals("")
                                     || sec_ans3.getText().toString().trim().equals(""))) {
 
-                                String[] parm = {CallDispatcher.LoginUser, secQues1.getSelectedItem().toString().trim(), sec_ans1.getText().toString().trim(), secQues2.getSelectedItem().toString().trim(), sec_ans2.getText().toString().trim(),
-                                        secQues3.getSelectedItem().toString().trim(), sec_ans3.getText().toString().trim()};
+
+                                String[] parm = new String[7];
+                                        parm[0]=CallDispatcher.LoginUser;
+
+                                        parm[2]=sec_ans1.getText().toString().trim();
+                                        parm[4]=sec_ans2.getText().toString().trim();
+                                        parm[6]=sec_ans3.getText().toString().trim();
+                                if (secQues1.getSelectedItem().toString().equalsIgnoreCase("Other Question") ||
+                                        secQues2.getSelectedItem().toString().equalsIgnoreCase("Other Question") ||
+                                        secQues3.getSelectedItem().toString().equalsIgnoreCase("Other Question")) {
+                                    if (secQues1.getSelectedItem().toString().equalsIgnoreCase("Other Question"))
+                                        parm[1]=etsecQues1.getText().toString().trim();
+                                    else
+                                        parm[1]=secQues1.getSelectedItem().toString().trim();
+                                    if (secQues2.getSelectedItem().toString().equalsIgnoreCase("Other Question"))
+                                        parm[3]=etsecQues2.getText().toString().trim();
+                                    else
+                                        parm[3]=secQues2.getSelectedItem().toString().trim();
+                                    if (secQues3.getSelectedItem().toString().equalsIgnoreCase("Other Question"))
+                                        parm[5]=etsecQues3.getText().toString().trim();
+                                    else
+                                        parm[5]=secQues3.getSelectedItem().toString().trim();
+
+                                } else {
+                                    parm[1]=secQues1.getSelectedItem().toString().trim();
+                                    parm[3]=secQues2.getSelectedItem().toString().trim();
+                                    parm[5]=secQues3.getSelectedItem().toString().trim();
+                                }
                                 showDialog();
                                 WebServiceReferences.webServiceClient
                                         .UpdateSecretQuestion(parm, securityQuestions);
@@ -367,37 +504,41 @@ public class SecurityQuestions extends Fragment {
         final ArrayList<String> quesList=DBAccess.getdbHeler().getSecurityQuestions();
 
         list_secQue1.clear();
-//        list_secQue1.add("Choose Question");
         list_secQue1.addAll(quesList);
-//        list_secQue1.add("Other Question");
-
-        list_secQue2.clear();
-//        list_secQue2.add("Choose Question");
-        list_secQue2.addAll(quesList);
-//        list_secQue2.add("Other Question");
-
-        list_secQue3.clear();
-//        list_secQue3.add("Choose Question");
-        list_secQue3.addAll(quesList);
-//        list_secQue3.add("Other Question");
-
-//        if (!sp5.getSelectedItem().toString().equalsIgnoreCase("Choose Question") && !sp5.getSelectedItem().toString().equalsIgnoreCase("Other Question")) {
+        list_secQue1.add("Other Question");
+        if (!secQues1.getSelectedItem().toString().equalsIgnoreCase("Other Question")) {
             list_secQue2.remove(secQues1.getSelectedItem());
             list_secQue3.remove(secQues1.getSelectedItem());
             dataAdapter_secQue2.notifyDataSetChanged();
             dataAdapter_secQue3.notifyDataSetChanged();
-//        }
-//        if (!sp6.getSelectedItem().toString().equalsIgnoreCase("Choose Question") && !sp6.getSelectedItem().toString().equalsIgnoreCase("Other Question")) {
+        }
+    }
+
+    private void setQuestions2() {
+
+        final ArrayList<String> quesList = DBAccess.getdbHeler().getSecurityQuestions();
+        list_secQue2.clear();
+        list_secQue2.addAll(quesList);
+        list_secQue2.add("Other Question");
+        if (!secQues2.getSelectedItem().toString().equalsIgnoreCase("Other Question")) {
             list_secQue1.remove(secQues2.getSelectedItem());
             list_secQue3.remove(secQues2.getSelectedItem());
             dataAdapter_secQue1.notifyDataSetChanged();
             dataAdapter_secQue3.notifyDataSetChanged();
-//        }
-//        if (!sp7.getSelectedItem().toString().equalsIgnoreCase("Choose Question") && !sp7.getSelectedItem().toString().equalsIgnoreCase("Other Question")) {
+        }
+    }
+    private void setQuestions3() {
+
+        final ArrayList<String> quesList = DBAccess.getdbHeler().getSecurityQuestions();
+        list_secQue3.clear();
+        list_secQue3.addAll(quesList);
+        list_secQue3.add("Other Question");
+        if (!secQues3.getSelectedItem().toString().equalsIgnoreCase("Other Question")) {
             list_secQue1.remove(secQues3.getSelectedItem());
             list_secQue2.remove(secQues3.getSelectedItem());
             dataAdapter_secQue1.notifyDataSetChanged();
             dataAdapter_secQue2.notifyDataSetChanged();
-//        }
+        }
     }
-}
+
+    }

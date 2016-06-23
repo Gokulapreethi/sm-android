@@ -154,6 +154,7 @@ public class MemoryControlFragment extends Fragment {
                     lineProgressbar3 = (LineProgressBar) view.findViewById(R.id.line_progressbar3);
                     lineProgressbar4 = (LineProgressBar) view.findViewById(R.id.line_progressbar4);
                     lineProgressbar5 = (LineProgressBar) view.findViewById(R.id.line_progressbar5);
+                    lineProgressbar5.setBackgroundColor(getResources().getColor(R.color.snazlgray));
                     setTimer();
                 }catch (Exception e){
                     e.printStackTrace();

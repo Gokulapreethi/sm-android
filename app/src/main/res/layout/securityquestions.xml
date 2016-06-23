@@ -65,6 +65,45 @@
                 android:layout_marginTop="5dp"
                 android:background="@color/snazgray"
                 android:layout_marginLeft="60dp"/>
+            <TextView
+                android:id="@+id/tv_q1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="50dp"
+                android:gravity="left"
+                android:visibility="gone"
+                android:padding="7dp"
+                android:text="Question"
+                android:textColor="#808080"
+                android:textSize="15dp" />
+
+            <EditText
+                android:id="@+id/etsecques1"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="50dp"
+                android:padding="7dp"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:hint="Question"
+                android:background="#272829"
+                android:gravity="center_vertical"
+                android:maxLength="100"
+                android:textColor="#fff" />
+
+            <View
+                android:id="@+id/view1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"
+                android:background="@color/snazgray"
+                android:layout_marginLeft="50dp"/>
 
 
             <TextView
@@ -146,6 +185,44 @@
                 android:background="@color/snazgray"
                 android:layout_marginLeft="60dp"/>
             <TextView
+                android:id="@+id/tv_q2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="50dp"
+                android:gravity="left"
+                android:visibility="gone"
+                android:padding="7dp"
+                android:text="Question"
+                android:textColor="#808080"
+                android:textSize="15dp" />
+
+            <EditText
+                android:id="@+id/etsecques2"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="50dp"
+                android:padding="7dp"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:hint="Question"
+                android:background="#272829"
+                android:gravity="center_vertical"
+                android:maxLength="100"
+                android:textColor="#fff" />
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"
+                android:background="@color/snazgray"
+                android:layout_marginLeft="50dp"/>
+            <TextView
                 android:id="@+id/tv_ans2"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -222,6 +299,44 @@
                 android:layout_marginTop="5dp"
                 android:background="@color/snazgray"
                 android:layout_marginLeft="60dp"/>
+            <TextView
+                android:id="@+id/tv_q3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="50dp"
+                android:gravity="left"
+                android:visibility="gone"
+                android:padding="7dp"
+                android:text="Question"
+                android:textColor="#808080"
+                android:textSize="15dp" />
+
+            <EditText
+                android:id="@+id/etsecques3"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="50dp"
+                android:padding="7dp"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:hint="Question"
+                android:background="#272829"
+                android:gravity="center_vertical"
+                android:maxLength="100"
+                android:textColor="#fff" />
+            <View
+                android:id="@+id/view3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:visibility="gone"
+                android:layout_marginTop="5dp"
+                android:background="@color/snazgray"
+                android:layout_marginLeft="50dp"/>
 
 
 

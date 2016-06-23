@@ -71,6 +71,7 @@ public class MyAccountActivity extends Activity {
     private ImageLoader imageLoader;
     ArrayAdapter<String> stateAdapter;
     private LinearLayout cite_lay, cite_lay1;
+    private boolean isEdit=false;
 
     private Handler handler = new Handler();
     private ProgressDialog progressDialog = null;
@@ -144,6 +145,18 @@ public class MyAccountActivity extends Activity {
         final TextView profDesc=(TextView)findViewById(R.id.profDesc);
         final TextView tv_speciality=(TextView)findViewById(R.id.tv_speciality);
         final TextView tv_association=(TextView)findViewById(R.id.tv_association);
+        ImageView titel_img=(ImageView)findViewById(R.id.title_img);
+        ImageView usertype_img=(ImageView)findViewById(R.id.usertype_img);
+        ImageView prof_img=(ImageView)findViewById(R.id.prof_img);
+        ImageView state_img=(ImageView)findViewById(R.id.state_img);
+        ImageView speciality_img=(ImageView)findViewById(R.id.speciality_img);
+        ImageView medical_img=(ImageView)findViewById(R.id.medical_img);
+        ImageView residency_img=(ImageView)findViewById(R.id.residency_img);
+        ImageView fellow_img=(ImageView)findViewById(R.id.fellow_img);
+        ImageView hospital_img=(ImageView)findViewById(R.id.hospital_img);
+        ImageView association_img=(ImageView)findViewById(R.id.association_img);
+        Button img_edit=(Button)findViewById(R.id.addr_edit);
+        Button img_close=(Button)findViewById(R.id.img_close);
         statusTxt.setText(status);
         if(status.equalsIgnoreCase("online"))
             status_icon.setBackgroundResource(R.drawable.online_icon);
@@ -175,7 +188,7 @@ public class MyAccountActivity extends Activity {
                     lp.width = WindowManager.LayoutParams.MATCH_PARENT;
                     lp.height = WindowManager.LayoutParams.MATCH_PARENT;
                     Window window = dialog.getWindow();
-                    dialog.getWindow().setBackgroundDrawableResource(R.color.transparent);
+                    dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
                     window.setAttributes(lp);
                     dialog.show();
 
@@ -258,7 +271,7 @@ public class MyAccountActivity extends Activity {
                     lp.width = WindowManager.LayoutParams.MATCH_PARENT;
                     lp.height = WindowManager.LayoutParams.MATCH_PARENT;
                     Window window = dialog1.getWindow();
-                    dialog1.getWindow().setBackgroundDrawableResource(R.color.trans_black2);
+                    dialog1.getWindow().setBackgroundDrawableResource(R.color.black2);
                     window.setAttributes(lp);
                     dialog1.show();
 
@@ -277,9 +290,21 @@ public class MyAccountActivity extends Activity {
                     final EditText office_phone_number = (EditText) dialog1.findViewById(R.id.address_edit5);
                     final EditText office_fax_number = (EditText) dialog1.findViewById(R.id.address_edit6);
                     state1 = (AutoCompleteTextView) dialog1.findViewById(R.id.state_of_practice);
+                    ImageView offcstate_img=(ImageView)dialog1.findViewById(R.id.offcstate_img);
 
                     Button save1 = (Button) dialog1.findViewById(R.id.save_button2);
                     Button cancel1 = (Button) dialog1.findViewById(R.id.cancel_button2);
+                    if(isEdit){
+                        isEdit=false;
+                        String[] address=tv_addr.getText().toString().split(",");
+                        Address1.setText(address[0]);
+                        address2.setText(address[1]);
+                        zip.setText(address[2]);
+                        city.setText(address[3]);
+                        state1.setText(address[4]);
+                        office_phone_number.setText(address[5]);
+                        office_fax_number.setText(address[6]);
+                    }
 
                     office_phone_number.addTextChangedListener(new TextWatcher() {
                         @Override
@@ -410,37 +435,40 @@ public class MyAccountActivity extends Activity {
                             state_value = state1.getText().toString().trim();
                             office_phone_no = office_phone_number.getText().toString();
                             office_fax = office_fax_number.getText().toString();
+                            if(Address1.getText().toString().length()>0 && address2.getText().toString().length()>0 && zip.getText().toString().length()>0
+                                    && city.getText().toString().length()>0 && state1.getText().toString().length()>0
+                                    && office_phone_number.getText().toString().length()>0 && office_fax_number.getText().toString().length()>0) {
 
-                            String office_address = "";
-                            if (Addressline1 != null && !Addressline1.trim().equals("")) {
-                                office_address = Addressline1;
-                            }
-                            if (Addressline2 != null && !Addressline2.trim().equals("")) {
-                                office_address = office_address + "," + Addressline2;
-                            }
-                            if (zip_code != null && !zip_code.trim().equals("")) {
-                                office_address = office_address + "," + zip_code;
-                            }
-                            if (city_value != null && !city_value.trim().equals("")) {
-                                office_address = office_address + "," + city_value;
-                            }
-                            if (state_value != null && !state_value.trim().equals("")) {
-                                office_address = office_address + "," + state_value;
-                            }
-                            if (office_phone_no != null && !office_phone_no.trim().equals("")) {
-                                office_address = office_address + "," + office_phone_no;
-                            }
-                            if (office_fax != null && !office_fax.trim().equals("")) {
-                                office_address = office_address + "," + office_fax;
-                            }
+                                String office_address = "";
+                                if (Addressline1 != null && !Addressline1.trim().equals("")) {
+                                    office_address = Addressline1;
+                                }
+                                if (Addressline2 != null && !Addressline2.trim().equals("")) {
+                                    office_address = office_address + "," + Addressline2;
+                                }
+                                if (zip_code != null && !zip_code.trim().equals("")) {
+                                    office_address = office_address + "," + zip_code;
+                                }
+                                if (city_value != null && !city_value.trim().equals("")) {
+                                    office_address = office_address + "," + city_value;
+                                }
+                                if (state_value != null && !state_value.trim().equals("")) {
+                                    office_address = office_address + "," + state_value;
+                                }
+                                if (office_phone_no != null && !office_phone_no.trim().equals("")) {
+                                    office_address = office_address + "," + office_phone_no;
+                                }
+                                if (office_fax != null && !office_fax.trim().equals("")) {
+                                    office_address = office_address + "," + office_fax;
+                                }
 
-//                            office_address = (Addressline1 + ", "+ Addressline2+ ", "+ zip_code+ ", "+city_value+ ", "+state_value+","+office_phone_no+ ", "+office_fax);
-
-                            if (Address1.length() > 0) {
-                                Address1.append(",");
-                            }
-                            tv_addr.setText(office_address);
-                            dialog1.dismiss();
+                                if (Address1.length() > 0) {
+                                    Address1.append(",");
+                                }
+                                tv_addr.setText(office_address);
+                                dialog1.dismiss();
+                            }else
+                                showToast("Please enter mandatory fields");
 
                         }
                     });
@@ -449,7 +477,7 @@ public class MyAccountActivity extends Activity {
                     stateAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, states);
                     state1.setAdapter(stateAdapter);
                     state1.setThreshold(30);
-                    state1.setOnClickListener(new View.OnClickListener() {
+                    offcstate_img.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             state1.showDropDown();
@@ -511,6 +539,19 @@ public class MyAccountActivity extends Activity {
                 intent.putExtra("filePath", strIPath);
                 intent.putExtra("isPhoto", true);
                 startActivityForResult(intent, 1);
+            }
+        });
+        img_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tv_addr.setText("");
+            }
+        });
+        img_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isEdit=true;
+                addr_plus.performClick();
             }
         });
         edNickname.addTextChangedListener(new TextWatcher() {
@@ -616,7 +657,7 @@ public class MyAccountActivity extends Activity {
         stateAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, stateList);
         state.setAdapter(stateAdapter);
         state.setThreshold(30);
-        state.setOnClickListener(new View.OnClickListener() {
+        state_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 state.showDropDown();
@@ -627,7 +668,7 @@ public class MyAccountActivity extends Activity {
         hospitalDetailsAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, hospitalList);
         hospital.setAdapter(hospitalDetailsAdapter);
         hospital.setThreshold(30);
-        hospital.setOnClickListener(new View.OnClickListener() {
+        hospital_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 hospital.showDropDown();
@@ -638,7 +679,7 @@ public class MyAccountActivity extends Activity {
         medicalDetailsAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, medicalSocietyList);
         association_membership.setAdapter(medicalDetailsAdapter);
         association_membership.setThreshold(30);
-        association_membership.setOnClickListener(new View.OnClickListener() {
+        association_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 association_membership.showDropDown();
@@ -772,7 +813,7 @@ public class MyAccountActivity extends Activity {
 
         title.setAdapter(dataAdapter);
         title.setThreshold(10);
-        title.setOnClickListener(new View.OnClickListener() {
+        titel_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 title.showDropDown();
@@ -791,7 +832,7 @@ public class MyAccountActivity extends Activity {
 
         usertype.setAdapter(dataAdapter);
         usertype.setThreshold(10);
-        usertype.setOnClickListener(new View.OnClickListener() {
+        usertype_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 usertype.showDropDown();
@@ -840,7 +881,7 @@ public class MyAccountActivity extends Activity {
         dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         medical_schools.setAdapter(dataAdapter);
         medical_schools.setThreshold(30);
-        medical_schools.setOnClickListener(new View.OnClickListener() {
+        medical_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 medical_schools.showDropDown();
@@ -853,7 +894,7 @@ public class MyAccountActivity extends Activity {
         dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         residency_pgm.setAdapter(dataAdapter);
         residency_pgm.setThreshold(30);
-        residency_pgm.setOnClickListener(new View.OnClickListener() {
+        residency_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 residency_pgm.showDropDown();
@@ -866,7 +907,7 @@ public class MyAccountActivity extends Activity {
         dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         fellowship_pgm.setAdapter(dataAdapter);
         fellowship_pgm.setThreshold(30);
-        fellowship_pgm.setOnClickListener(new View.OnClickListener() {
+        fellow_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fellowship_pgm.showDropDown();
@@ -880,8 +921,8 @@ public class MyAccountActivity extends Activity {
         dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list,list);
         dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         rlay_professional_org.setAdapter(dataAdapter);
-        rlay_professional_org.setThreshold(10);
-        rlay_professional_org.setOnClickListener(new View.OnClickListener() {
+        rlay_professional_org.setThreshold(30);
+        prof_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 rlay_professional_org.showDropDown();
@@ -893,7 +934,7 @@ public class MyAccountActivity extends Activity {
         dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         Speciality.setAdapter(dataAdapter);
         Speciality.setThreshold(30);
-        Speciality.setOnClickListener(new View.OnClickListener() {
+        speciality_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Speciality.showDropDown();

@@ -156,20 +156,30 @@
                     android:visibility="visible"
                     android:textColor="#808080"
                     android:textSize="15dp" />
-
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
                 <AutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:layout_marginRight="15dp"
                     android:layout_marginLeft="15dp"
                     android:paddingLeft="13dp"
                     android:textColor="@color/white"
                     android:hint="Title"
-                    android:popupBackground="#202021"
-                    style="@style/spinner_style"
-                    android:spinnerMode="dropdown"
+                    android:background="#272829"
+                    android:layout_weight="1"
                     android:id="@+id/rlay_tilte"/>
+                    <ImageView
+                        android:id="@+id/title_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/input_arrow"/>
+                </LinearLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -288,18 +298,30 @@
                     android:text="User Type"
                     android:textColor="#808080"
                     android:textSize="15dp" />
-                <AutoCompleteTextView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginLeft="15dp"
-                    android:paddingLeft="13dp"
-                    android:popupBackground="#202021"
-                    style="@style/spinner_style"
-                    android:textColor="@color/white"
-                    android:hint="User Type"
-                    android:id="@+id/rlay_user_type"/>
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+                    <AutoCompleteTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="15dp"
+                        android:paddingLeft="13dp"
+                        android:background="@color/black2"
+                        android:textColor="@color/white"
+                        android:hint="User Type"
+                        android:layout_weight="1"
+                        android:id="@+id/rlay_user_type"/>
+                    <ImageView
+                        android:id="@+id/usertype_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/input_arrow"/>
+                </LinearLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -319,18 +341,29 @@
                     android:text="Professional Designation"
                     android:textColor="#808080"
                     android:textSize="15dp" />
-                <AutoCompleteTextView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginLeft="15dp"
-                    android:paddingLeft="13dp"
-                    android:popupBackground="#202021"
-                    style="@style/spinner_style"
-                    android:textColor="@color/white"
-                    android:hint="Professional Designation"
-                    android:id="@+id/prof_desgn"/>
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+                    <AutoCompleteTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="15dp"
+                        android:paddingLeft="13dp"
+                        android:background="@color/black2"
+                        android:textColor="@color/white"
+                        android:layout_weight="1"
+                        android:hint="Professional Designation"
+                        android:id="@+id/prof_desgn"/>
+                    <ImageView
+                        android:id="@+id/prof_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/input_arrow"/>
+                </LinearLayout>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -350,19 +383,32 @@
                     android:visibility="gone"
                     android:textColor="#808080"
                     android:textSize="15dp" />
-
-                <AutoCompleteTextView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginLeft="15dp"
-                    android:id="@+id/rlay_state_of_practice"
-                    android:textColor="@color/white"
-                    android:hint="State Of Practice"
-                    android:textSize="15sp"
-                    android:padding="7dp"
-                    android:layout_marginTop="10dp"
-                    style="@style/spinner_style"/>
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+                    <AutoCompleteTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:id="@+id/rlay_state_of_practice"
+                        android:textColor="@color/white"
+                        android:hint="State Of Practice"
+                        android:layout_weight="1"
+                        android:textSize="15sp"
+                        android:padding="7dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/black2"/>
+                    <ImageView
+                        android:id="@+id/state_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/input_arrow"/>
+                </LinearLayout>
+
+
 
                 <View
                     android:layout_width="match_parent"
@@ -383,18 +429,30 @@
                     android:text="Specialty"
                     android:textColor="#808080"
                     android:textSize="15dp" />
-                <AutoCompleteTextView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginLeft="15dp"
-                    android:paddingLeft="13dp"
-                    android:popupBackground="#202021"
-                    style="@style/spinner_style"
-                    android:textColor="@color/white"
-                    android:hint="Specialty"
-                    android:id="@+id/speciality"/>
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+                    <AutoCompleteTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="15dp"
+                        android:paddingLeft="13dp"
+                        android:layout_weight="1"
+                        android:background="@color/black2"
+                        android:textColor="@color/white"
+                        android:hint="Specialty"
+                        android:id="@+id/speciality"/>
+                    <ImageView
+                        android:id="@+id/speciality_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/input_arrow"/>
+                </LinearLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -534,18 +592,31 @@
                         android:text="Medical Schools"
                         android:textColor="#808080"
                         android:textSize="15dp" />
-
-                    <AutoCompleteTextView
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="1dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginLeft="15dp"
-                        android:padding="7dp"
-                        style="@style/spinner_style"
-                        android:textColor="@color/white"
-                        android:hint="Medical School"
-                        android:id="@+id/medical_scl"/>
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+                        <AutoCompleteTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
+                            android:layout_marginLeft="15dp"
+                            android:padding="7dp"
+                            android:layout_weight="1"
+                            android:background="@color/black2"
+                            android:textColor="@color/white"
+                            android:hint="Medical School"
+                            android:id="@+id/medical_scl"/>
+                        <ImageView
+                            android:id="@+id/medical_img"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:background="@drawable/input_arrow"/>
+                    </LinearLayout>
+
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
@@ -565,18 +636,31 @@
                         android:textColor="#808080"
                         android:visibility="gone"
                         android:textSize="15dp" />
-
-                    <AutoCompleteTextView
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="1dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginLeft="15dp"
-                        android:padding="7dp"
-                        android:textColor="@color/white"
-                        android:hint="residency Program"
-                        style="@style/spinner_style"
-                        android:id="@+id/resi_pro"/>
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+                        <AutoCompleteTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
+                            android:layout_marginLeft="15dp"
+                            android:padding="7dp"
+                            android:layout_weight="1"
+                            android:textColor="@color/white"
+                            android:hint="residency Program"
+                            android:background="@color/black2"
+                            android:id="@+id/resi_pro"/>
+                        <ImageView
+                            android:id="@+id/residency_img"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:background="@drawable/input_arrow"/>
+                    </LinearLayout>
+
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
@@ -596,18 +680,31 @@
                         android:text="Fellowship Program"
                         android:textColor="#808080"
                         android:textSize="15dp" />
-
-                    <AutoCompleteTextView
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="1dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginLeft="15dp"
-                        android:padding="7dp"
-                        android:textColor="@color/white"
-                        android:hint="Fellowship Program"
-                        style="@style/spinner_style"
-                        android:id="@+id/fellow"/>
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+                        <AutoCompleteTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
+                            android:layout_marginLeft="15dp"
+                            android:padding="7dp"
+                            android:layout_weight="1"
+                            android:textColor="@color/white"
+                            android:hint="Fellowship Program"
+                            android:background="@color/black2"
+                            android:id="@+id/fellow"/>
+                        <ImageView
+                            android:id="@+id/fellow_img"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:background="@drawable/input_arrow"/>
+                    </LinearLayout>
+
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
@@ -643,6 +740,7 @@
                             android:gravity="left"
                             android:layout_weight="1"
                             android:hint="Address"
+                            android:editable="false"
                             android:padding="7dp"
                             android:textColor="@color/white"
                             android:textSize="15dp"/>
@@ -659,7 +757,7 @@
                             />
 
                         <Button
-                            android:id="@+id/img_addr"
+                            android:id="@+id/img_close"
                             android:gravity="center"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -722,16 +820,32 @@
                         android:visibility="gone"
                         android:textColor="#808080"
                         android:textSize="15dp" />
-                    <AutoCompleteTextView
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginLeft="15dp"
-                        android:padding="7dp"
-                        android:hint="Add Hospital Affiliation"
-                        android:textSize="15sp"
-                        android:textColor="@color/white" android:background="@drawable/edittext_style" android:drawableRight="@drawable/input_arrow" android:id="@+id/rlay_hospital_affiliation"/>
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+                        <AutoCompleteTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginLeft="15dp"
+                            android:padding="7dp"
+                            android:layout_weight="1"
+                            android:textColor="@color/white"
+                            android:visibility="visible"
+                            android:hint="Choose Association"
+                            android:textSize="15sp"
+                            android:background="@color/black2"
+                            android:id="@+id/association_membership"/>
+                        <ImageView
+                            android:id="@+id/association_img"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:background="@drawable/input_arrow"/>
+                    </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
@@ -751,19 +865,31 @@
                         android:visibility="gone"
                         android:textColor="#808080"
                         android:textSize="15dp" />
-                    <AutoCompleteTextView
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginLeft="15dp"
-                        android:padding="7dp"
-                        android:textColor="@color/white"
-                        android:visibility="visible"
-                        android:hint="Choose Association"
-                        android:textSize="15sp"
-                        style="@style/spinner_style"
-                        android:id="@+id/association_membership"/>
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+                        <AutoCompleteTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginLeft="15dp"
+                            android:padding="7dp"
+                            android:hint="Add Hospital Affiliation"
+                            android:textSize="15sp"
+                            android:textColor="@color/white"
+                            android:background="@color/black2"
+                            android:layout_weight="1"
+                            android:id="@+id/rlay_hospital_affiliation"/>
+                        <ImageView
+                            android:id="@+id/hospital_img"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:background="@drawable/input_arrow"/>
+                    </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
