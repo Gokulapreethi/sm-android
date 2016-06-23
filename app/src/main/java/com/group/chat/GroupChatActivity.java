@@ -4578,15 +4578,15 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         }
 
         public int getItemViewType(int position) {
-//            Log.d("Swipeselect","Swipeselect : "+position);
-            // current menu type
-//            GroupChatBean gcBean = chatList.get(position);
-//            if(gcBean.getFrom().equals(CallDispatcher.LoginUser))
-//            {
-//                return 0;
-//            }else{
+////            Log.d("Swipeselect","Swipeselect : "+position);
+//            // current menu type
+////            GroupChatBean gcBean = chatList.get(position);
+////            if(gcBean.getFrom().equals(CallDispatcher.LoginUser))
+////            {
+////                return 0;
+////            }else{
             return 1;
-//            }
+////            }
         }
 
 
@@ -6195,6 +6195,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             holder.setTag(gcBean);
                             chat_view.addView(holder);
                             chat_view.setVisibility(View.VISIBLE);
+
                         }
                     } else {
                         chat_view.setVisibility(View.GONE);
@@ -7926,26 +7927,64 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 spBean.setMembers(buddy);
             }
             if (SendListUI.size() > 0) {
-                Log.i("audioplay", "path--->" + strIPath);
-                SendListUIBean bean = SendListUI.get(0);
-                sendMsg(message.getText().toString(), bean.getPath(), bean.getType(), spBean);
-                message.setVisibility(View.VISIBLE);
-                SendListUI.remove(0);
-                if (SendListUI.size() == 0) {
-                    SendListUI.clear();
-                }
-                sendlistadapter.notifyDataSetChanged();
-                list_all.removeAllViews();
-                final int adapterCount = sendlistadapter.getCount();
+                if(SendListUI.size()==1) {
+                    Log.i("audioplay", "path--->" + strIPath);
+                    SendListUIBean bean = SendListUI.get(0);
+                    sendMsg(message.getText().toString(), bean.getPath(), bean.getType(), spBean);
+                    message.setVisibility(View.VISIBLE);
+                    SendListUI.remove(0);
+                    if (SendListUI.size() == 0) {
+                        SendListUI.clear();
+                    }
+                    sendlistadapter.notifyDataSetChanged();
+                    list_all.removeAllViews();
+                    final int adapterCount = sendlistadapter.getCount();
 
-                for (int i = 0; i < adapterCount; i++) {
-                    View item = sendlistadapter.getView(i, null, null);
-                    list_all.addView(item);
-                }
-                msgoptionview.setVisibility(View.VISIBLE);
-                audio_call.setBackgroundResource(R.drawable.chat_send);
-                audio_call.setTag(1);
+                    for (int i = 0; i < adapterCount; i++) {
+                        View item = sendlistadapter.getView(i, null, null);
+                        list_all.addView(item);
+                    }
+                    msgoptionview.setVisibility(View.VISIBLE);
+                    audio_call.setBackgroundResource(R.drawable.chat_send);
+                    audio_call.setTag(1);
 //                relative_send_layout.getLayoutParams().height = 90;
+                }
+                //For Multi file send with Reply back
+                //start
+                else if(SendListUI.size()>1){
+                    String path = null;
+                    for (int i = 0; i < SendListUI.size(); i++) {
+                        SendListUIBean bean = SendListUI.get(i);
+                        if (path == null) {
+                            path = bean.getPath();
+                        } else {
+                            path = path + "," + bean.getPath();
+                        }
+                    }
+//                    SendListUIBean bean = SendListUI.get(0);
+                    sendMsg(message.getText().toString(), path, "mixedfile", spBean);
+                    message.setVisibility(View.VISIBLE);
+//                    SendListUI.remove(0);
+//                    if (SendListUI.size() == 0) {
+//                        SendListUI.clear();
+//                    }
+                    SendListUI.clear();
+                    sendlistadapter.notifyDataSetChanged();
+                    list_all.removeAllViews();
+                    final int adapterCount = sendlistadapter.getCount();
+
+                    for (int i = 0; i < adapterCount; i++) {
+                        View item = sendlistadapter.getView(i, null, null);
+                        list_all.addView(item);
+                    }
+                    msgoptionview.setVisibility(View.VISIBLE);
+                    audio_call.setBackgroundResource(R.drawable.chat_send);
+                    audio_call.setTag(1);
+                }
+                //End
+
+
+
             } else {
                 sendMsg(message.getText().toString(), null, "text", spBean);
             }
@@ -11113,38 +11152,176 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             }
             if(groupChatBean.getMimetype()!=null && !groupChatBean.getMimetype().equalsIgnoreCase("null")){
                 if(groupChatBean.getMimetype().equalsIgnoreCase("audio")){
-                    if(message==null){
-                        message="Audio";
+                    if(groupChatBean.getMediaName()!=null && !groupChatBean.getMediaName().equalsIgnoreCase("null")) {
+                        if (groupChatBean.getMediaName().contains("COMMedia")) {
+                            if(!groupChatBean.getMediaName().split("COMMedia/")[1].equalsIgnoreCase("null")){
+                                if(message==null){
+                                    message=groupChatBean.getMediaName().split("COMMedia/")[1];
+                                }else{
+                                    message=message+"\n"+groupChatBean.getMediaName().split("COMMedia/")[1];
+                                }
+                            }
+
+                        }else{
+                            if(message==null){
+                                message=groupChatBean.getMediaName();
+                            }else{
+                                message=message+"\n"+groupChatBean.getMediaName();
+                            }
+                        }
                     }else{
-                        message=message+"\n"+"Audio";
+                                    if (message == null) {
+                                        message = "Audio";
+                                    } else {
+                                        message = message + "\n" + "Audio";
+                                    }
                     }
                 }
                 if(groupChatBean.getMimetype().equalsIgnoreCase("image")){
-                    if(message==null){
-                        message="Image";
+                    if(groupChatBean.getMediaName()!=null && !groupChatBean.getMediaName().equalsIgnoreCase("null")) {
+                        if (groupChatBean.getMediaName().contains("COMMedia")) {
+                            if(!groupChatBean.getMediaName().split("COMMedia/")[1].equalsIgnoreCase("null")){
+                                if(message==null){
+                                    message=groupChatBean.getMediaName().split("COMMedia/")[1];
+                                }else{
+                                    message=message+"\n"+groupChatBean.getMediaName().split("COMMedia/")[1];
+                                }
+                            }
+
+                        }else{
+                            if(message==null){
+                                message=groupChatBean.getMediaName();
+                            }else{
+                                message=message+"\n"+groupChatBean.getMediaName();
+                            }
+                        }
                     }else{
-                        message=message+"\n"+"Image";
-                    }
-                }
+                        if (message == null) {
+                            message = "Image";
+                        } else {
+                            message = message + "\n" + "Image";
+                        }
+                    }                }
                 if(groupChatBean.getMimetype().equalsIgnoreCase("sketch")){
-                    if(message==null){
-                        message="Sketch";
+                    if(groupChatBean.getMediaName()!=null && !groupChatBean.getMediaName().equalsIgnoreCase("null")) {
+                        if (groupChatBean.getMediaName().contains("COMMedia")) {
+                            if(!groupChatBean.getMediaName().split("COMMedia/")[1].equalsIgnoreCase("null")){
+                                if(message==null){
+                                    message=groupChatBean.getMediaName().split("COMMedia/")[1];
+                                }else{
+                                    message=message+"\n"+groupChatBean.getMediaName().split("COMMedia/")[1];
+                                }
+                            }
+
+                        }else{
+                            if(message==null){
+                                message=groupChatBean.getMediaName();
+                            }else{
+                                message=message+"\n"+groupChatBean.getMediaName();
+                            }
+                        }
                     }else{
-                        message=message+"\n"+"Sketch";
+                        if (message == null) {
+                            message = "Sketch";
+                        } else {
+                            message = message + "\n" + "Sketch";
+                        }
                     }
                 }
                 if(groupChatBean.getMimetype().equalsIgnoreCase("document")){
-                    if(message==null){
-                        message="Document";
+                    if(groupChatBean.getMediaName()!=null && !groupChatBean.getMediaName().equalsIgnoreCase("null")) {
+                        if (groupChatBean.getMediaName().contains("COMMedia")) {
+                            if(!groupChatBean.getMediaName().split("COMMedia/")[1].equalsIgnoreCase("null")){
+                                if(message==null){
+                                    message=groupChatBean.getMediaName().split("COMMedia/")[1];
+                                }else{
+                                    message=message+"\n"+groupChatBean.getMediaName().split("COMMedia/")[1];
+                                }
+                            }
+
+                        }else{
+                            if(message==null){
+                                message=groupChatBean.getMediaName();
+                            }else{
+                                message=message+"\n"+groupChatBean.getMediaName();
+                            }
+                        }
                     }else{
-                        message=message+"\n"+"Dodument";
+                        if (message == null) {
+                            message = "Document";
+                        } else {
+                            message = message + "\n" + "Document";
+                        }
                     }
                 }
                 if(groupChatBean.getMimetype().equalsIgnoreCase("video")){
-                    if(message==null){
-                        message="Video";
+                    if(groupChatBean.getMediaName()!=null && !groupChatBean.getMediaName().equalsIgnoreCase("null")) {
+                        if (groupChatBean.getMediaName().contains("COMMedia")) {
+                            if(!groupChatBean.getMediaName().split("COMMedia/")[1].equalsIgnoreCase("null")){
+                                if(message==null){
+                                    message=groupChatBean.getMediaName().split("COMMedia/")[1];
+                                }else{
+                                    message=message+"\n"+groupChatBean.getMediaName().split("COMMedia/")[1];
+                                }
+                            }
+
+                        }else{
+                            if(message==null){
+                                message=groupChatBean.getMediaName();
+                            }else{
+                                message=message+"\n"+groupChatBean.getMediaName();
+                            }
+                        }
                     }else{
-                        message=message+"\n"+"Video";
+                        if (message == null) {
+                            message = "Video";
+                        } else {
+                            message = message + "\n" + "Video";
+                        }
+                    }
+                }
+                if(groupChatBean.getMimetype().equalsIgnoreCase("mixedfile")){
+                    if(groupChatBean.getMediaName()!=null && !groupChatBean.getMediaName().equalsIgnoreCase("null")) {
+                        if(groupChatBean.getMediaName().contains(",")) {
+                            String[] fname = groupChatBean.getMediaName().split(",");
+                            for(int i=0;i<fname.length;i++) {
+                                if(fname[i].contains("COMMedia")) {
+                                    if (message == null) {
+                                        if(!fname[i].split("COMMedia/")[1].equalsIgnoreCase("null")){
+                                            message=fname[i].split("COMMedia/")[1];
+                                        }
+                                    } else {
+                                        if(!fname[i].split("COMMedia/")[1].equalsIgnoreCase("null")) {
+                                            message = message + "\n" + fname[i].split("COMMedia/")[1];
+                                        }
+                                    }
+                                }else{
+                                    if(message==null){
+                                        message=fname[i];
+                                    }else{
+                                        message=message+"\n"+fname[i];
+                                    }
+                                }
+                            }
+                        }else{
+                            if(groupChatBean.getMediaName().contains("COMMedia")){
+                                if(message==null) {
+                                    if(!groupChatBean.getMediaName().split("COMMedia/")[1].equalsIgnoreCase("null")) {
+                                        message = groupChatBean.getMediaName().split("COMMedia/")[1];
+                                    }
+                                }else{
+                                    if(!groupChatBean.getMediaName().split("COMMedia/")[1].equalsIgnoreCase("null")) {
+                                        message = message + "\n" + groupChatBean.getMediaName().split("COMMedia/")[1];
+                                    }
+                                }
+                            }else{
+                                if(message==null){
+                                    message=groupChatBean.getMediaName();
+                                }else{
+                                    message=message+"\n"+groupChatBean.getMediaName();
+                                }
+                            }
+                        }
                     }
                 }
 
