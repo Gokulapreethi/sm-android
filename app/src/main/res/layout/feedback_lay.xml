@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black2">
+    android:background="@color/black1">
 
     <RelativeLayout
         android:id="@+id/linear1"
@@ -41,8 +41,26 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/relay_feedback"
+        android:layout_width="wrap_content"
         android:layout_below="@+id/linear1"
+        android:id="@+id/message_lay"
+        android:layout_height="80dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/snazlgray"
+            android:textSize="18dp"
+            android:text="Activate Comment Mode to touch on any screen to give us your ideas on how to make SnazMed even better. "/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relay_feedback"
+        android:layout_below="@+id/message_lay"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="20dp"

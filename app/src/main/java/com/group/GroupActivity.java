@@ -775,7 +775,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 					public void run() {
 						// TODO Auto-generated method stub
 						GroupActivity.groupAdapter.notifyDataSetChanged();
-						GroupActivity.groupAdapter2.notifyDataSetChanged();
+//						GroupActivity.groupAdapter2.notifyDataSetChanged();
 //						ll_addcontact.setVisibility(View.VISIBLE);
 //						btn_delete.setVisibility(View.VISIBLE);
 						// btn_create.setText(SingleInstance.mainContext
@@ -869,7 +869,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 						try {
 //							dateTime.setText(groupBean.getCreatedDate());
 							GroupActivity.groupAdapter.notifyDataSetChanged();
-							GroupActivity.groupAdapter2.notifyDataSetChanged();
+//							GroupActivity.groupAdapter2.notifyDataSetChanged();
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -943,7 +943,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 							public void run() {
 								GroupActivity.groupAdapter
 										.notifyDataSetChanged();
-								GroupActivity.groupAdapter2.notifyDataSetChanged();
+//								GroupActivity.groupAdapter2.notifyDataSetChanged();
 							}
 						});
 						break;

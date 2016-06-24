@@ -189,7 +189,7 @@ public class FileInfoFragment extends Fragment {
                         }
                         if(cbean.getDateAndTime()!=null) {
                             SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
-                            SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd");
+                            SimpleDateFormat sdf = new SimpleDateFormat("MMM");
                             Date d1 = new Date();
                             String[] month = cbean.getDateAndTime().split(" ");
                             d1 = dateformat.parse(month[0]);

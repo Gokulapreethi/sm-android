@@ -3901,7 +3901,9 @@ public class ContactsFragment extends Fragment{
 		for(GroupBean gbean: GroupActivity.groupList){
 			if(gbean.getStatus().equalsIgnoreCase("request")){
 				NotifyListBean nbean = new NotifyListBean();
-				nbean.setUsername(gbean.getOwnerName());
+				ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(gbean.getOwnerName());
+				String fullname=bean.getFirstname()+" "+bean.getLastname();
+				nbean.setUsername(fullname);
 				nbean.setNotifttype("Invite");
 				nbean.setType("group");
 				grouprecentlist.add(nbean);

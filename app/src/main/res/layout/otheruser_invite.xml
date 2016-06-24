@@ -7,7 +7,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="30dp"
         android:layout_gravity="center"
         android:layout_marginBottom="50dp"
         android:textColor="@color/grey3"
@@ -15,56 +15,89 @@
         android:text="Share the message below with the \n person you would like to invite"/>
 
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/sender_layout"
-        android:layout_width="370dp"
-        android:layout_height="240dp"
+        android:layout_width="390dp"
+        android:layout_height="330dp"
         android:layout_gravity="center"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         android:padding="30dp"
         android:orientation="vertical"
-        android:weightSum="2"
         android:background="@drawable/new_2" >
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sender_layout2">
+
 
         <TextView
             android:id="@+id/textinfo_1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="itunes.apple.com"
-            android:layout_weight="1"
-            android:textSize="18dp"/>
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="Hi. I am using SnazMed. An amazing healthcare communication app. Please download it using the links below so we can start exchanging HIPAA-compliant,secure communications and much more."
+            android:textSize="20dp"/>
 
         <TextView
             android:id="@+id/textinfo_2"
             android:layout_below="@+id/textinfo_1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Download the app\n and enter this code:"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="Use the following Invite Code during "
             android:textSize="20dp"/>
 
         <TextView
             android:id="@+id/textinfo_3"
             android:layout_below="@+id/textinfo_2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="New User sign-up: "
+            android:textSize="20dp"/>
+
+
+        <TextView
+            android:id="@+id/textinfo_4"
+            android:layout_alignBaseline="@+id/textinfo_3"
+            android:layout_marginLeft="170dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:visibility="visible"
             android:text="2456GHT234"
             android:textColor="@color/blue2"
             android:textSize="18dp"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/sender_layout1"
+            android:layout_below="@+id/sender_layout2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/textinfo_5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/blue2"
+                android:text="Google Play store link"
+                android:layout_weight="1"
+                android:textSize="18dp"/>
+        </RelativeLayout>
+    </RelativeLayout>
 
 
 
-    </LinearLayout>
+
+
+
+
     <RelativeLayout
         android:id="@+id/relay_share"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
 
         <Button
             android:id="@+id/share_button"
