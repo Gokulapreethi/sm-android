@@ -3599,7 +3599,15 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					noteType = context.getResources().getString(
 							R.string.image_share);
 				}
-				Toast.makeText(context, cBean.getFromUser() + " " + noteType, 1)
+				String name=cBean.getFromUser();
+				for(BuddyInformationBean bib: ContactsFragment.getBuddyList()){
+					if(bib.getName().equalsIgnoreCase(cBean.getFromUser())) {
+						if(bib.getFirstname()!=null && bib.getLastname()!=null)
+						name = bib.getFirstname() + " " + bib.getLastname();
+						return;
+					}
+				}
+				Toast.makeText(context, name + " " + noteType, 1)
 						.show();
 			}
 			updateFileCount();

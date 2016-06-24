@@ -2486,7 +2486,6 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 //					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 //					DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
 //							CallDispatcher.sb);
-					SingleInstance.mainContext.notifyUI();
 					// }
 					if (conferenceMembers.size() == 1) {
 						isCallInitiate=false;
@@ -2496,6 +2495,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 						DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
 								CallDispatcher.sb);
+						SingleInstance.mainContext.notifyUI();
 
 						if(conferenceMembers.get(0) != null && conferenceMembers.get(0).equalsIgnoreCase(sb.getFrom())) {
 
@@ -11212,7 +11212,7 @@ private TrustManager[] get_trust_mgr() {
 	 * To upload files using webservice 
 	 */
 	public void uploadFile(String username, String password,String componenttype,
-			String filename, String contents,String componentpath,Context context1)
+			String filename, String contents,String componentpath,Object context1)
 	{
         Log.i("FileUpload", "Inside CallDisp_UploadFile---> " +componentpath);
 

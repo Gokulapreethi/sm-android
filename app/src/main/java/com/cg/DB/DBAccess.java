@@ -7579,8 +7579,9 @@ public class DBAccess extends SQLiteOpenHelper {
 			Cursor cur = null;
 			if (!db.isOpen())
 				openDatabase();
-			String query = "select distinct groupid from chat where unreadstatus='0' and username='"
-					+ username + "'";
+			String query = "select * from chat where unreadstatus='0'  and username='" + username + "'";
+//			String query = "select distinct groupid from chat where unreadstatus='0' and username='"
+//					+ username + "'";
 			cur = db.rawQuery(query, null);
 			count = cur.getCount();
 			cur.close();

@@ -496,9 +496,11 @@ public class WSRunner implements Runnable {
 							SingleInstance.mainContext.showToast("File upload suucessfully");
 							if (mServicebean.getCallBack() != null) {
 								if (mServicebean.getCallBack() instanceof sendershare) {
+									Log.i("AAAA","wsrunner send share");
 									((sendershare) mServicebean.getCallBack())
 											.sendFile();
 								} else if (mServicebean.getCallBack()instanceof FileInfoFragment) {
+									Log.i("AAAA","wsrunner send file info fragment");
 									((FileInfoFragment) mServicebean.getCallBack())
 											.sendFile();
 								}

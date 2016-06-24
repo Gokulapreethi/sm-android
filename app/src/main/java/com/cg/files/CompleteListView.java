@@ -97,6 +97,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bean.ProfileBean;
 import com.cg.snazmed.R;
 import com.cg.SlideMenu.SlideMenu;
 import com.cg.SlideMenu.SlideMenuInterface;
@@ -116,6 +117,7 @@ import com.cg.quickaction.ContactLogics;
 import com.cg.timer.ReminderService;
 import com.crashlytics.android.Crashlytics;
 import com.exchanges.ExchangesActivity;
+import com.main.ContactsFragment;
 import com.util.SingleInstance;
 import com.util.VideoPlayer;
 //import com.cg.account.R.drawable;
@@ -2475,9 +2477,16 @@ public class CompleteListView extends FragmentActivity implements
 					btn_edit.setText("Edit");
 				}
 			}
+			String name=clBean.getFromUser();
+			for(BuddyInformationBean bib: ContactsFragment.getBuddyList()){
+				if(bib.getName().equalsIgnoreCase(clBean.getFromUser())) {
+					name = bib.getFirstname() + " " + bib.getLastname();
+					return;
+				}
+			}
 			Toast.makeText(
 					SipNotificationListener.getCurrentContext(),
-					clBean.getFromUser() + " shared "
+					name + " shared "
 							+ clBean.getcomponentType() + " file with you", 1)
 					.show();
 		} catch (Exception e) {

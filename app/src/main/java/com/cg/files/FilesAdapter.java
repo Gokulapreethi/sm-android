@@ -350,7 +350,7 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
 						}
 					});
 			if (fileBean.getViewmode() == 0) {
-				holder.unreadIcon.setVisibility(View.VISIBLE);
+//				holder.unreadIcon.setVisibility(View.VISIBLE);
 			} else {
 				holder.unreadIcon.setVisibility(View.GONE);
 			}

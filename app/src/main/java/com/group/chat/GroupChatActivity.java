@@ -297,6 +297,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     int prevDay = c.get(Calendar.DAY_OF_MONTH);
     int prevMonth = c.get(Calendar.MONTH);
     int prevYear = c.get(Calendar.YEAR);
+    private RolePatientManagementBean rolePatientManagementBean;
+    private RoleAccessBean roleAccessBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -467,8 +469,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             }
                         });
                         GroupMemberBean memberbean = DBAccess.getdbHeler().getMemberDetails(groupBean.getGroupId(), CallDispatcher.LoginUser);
-                        RoleAccessBean roleAccessBean = DBAccess.getdbHeler().getRoleAccessDetails(groupBean.getGroupId(), memberbean.getRole());
-                        RolePatientManagementBean rolePatientManagementBean = DBAccess.getdbHeler().getRolePatientManagement(groupBean.getGroupId(), memberbean.getRole());
+                        roleAccessBean = DBAccess.getdbHeler().getRoleAccessDetails(groupBean.getGroupId(), memberbean.getRole());
+                        rolePatientManagementBean = DBAccess.getdbHeler().getRolePatientManagement(groupBean.getGroupId(), memberbean.getRole());
                         if (!groupBean.getOwnerName().equalsIgnoreCase(
                                 CallDispatcher.LoginUser)) {
                             edit.setEnabled(false);
@@ -1063,7 +1065,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         if(!CallDispatcher.isCallInitiate)
                         photochat();
                         else
-                            showToast("Please try...Call is in progress");
+                            showToast("Please try...Call  in progress");
                     }
                 });
 //
@@ -1113,7 +1115,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             atachlay.setVisibility(View.GONE);
                             audio_layout.setVisibility(View.VISIBLE);
                         }else
-                            showToast("Please try...Call is in progress");
+                            showToast("Please try...Call in progress");
 //                        animation.start();
                     }
                 });
@@ -1123,7 +1125,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         if(!CallDispatcher.isCallInitiate)
                         showVideoMessageDialog();
                         else
-                            showToast("Please try...Call is in progress");
+                            showToast("Please try...Call  in progress");
                     }
                 });
                 btn_sketch.setOnClickListener(new OnClickListener() {
@@ -1132,14 +1134,14 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         if(!CallDispatcher.isCallInitiate)
                         handsketch();
                         else
-                        showToast("Please try...Call is in progress");
+                        showToast("Please try...Call  in progress");
                     }
                 });
                 btn_videocall.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if(CallDispatcher.isCallignored) {
-                            showToast("Please try... Ignored Call is in progress");
+                            showToast("Please try...Call  in progress");
                         } else {
                             if (isGroup || isRounding) {
                                 Log.d("Test", "Inside Group VideoConference onclick");
@@ -1147,21 +1149,21 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     if(!CallDispatcher.GSMCallisAccepted) {
                                         groupCallMenu(2);
                                     } else {
-                                        showToast("Please try.. GSM Call is in progress");
+                                        showToast("Please try..Call in progress");
                                     }
                                 } else {
-                                    showToast("Please try...Call is in progress");
+                                    showToast("Please try...Call in progress");
                                 }
                             } else {
                                 if (!CallDispatcher.isCallInitiate) {
                                     if (!CallDispatcher.GSMCallisAccepted) {
                                         individualCallMenu(1);
                                     } else {
-                                        showToast("Please try.. GSM Call is in progress");
+                                        showToast("Please try...Call in progress");
                                     }
 
                                 } else {
-                                    showToast("Please try...Call is in progress");
+                                    showToast("Please try...Call in progress");
                                 }
 
                             }
@@ -1535,30 +1537,39 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         try {
                             final GroupChatBean b = chatList.get(position);
                             if (!b.getFrom().equals(CallDispatcher.LoginUser)) {
-                                forward = true;
-                                adapter.notifyDataSetChanged();
-                                handler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        forwardlay.setVisibility(View.VISIBLE);
-                                        audio_call.setVisibility(View.GONE);
-                                        settingnotifications.getLayoutParams().height = 100;
-                                        selectAll_container.setVisibility(View.VISIBLE);
-                                        sendLay.setVisibility(View.GONE);
-                                        header.setVisibility(View.GONE);
-                                        sidemenu.setBackgroundResource(R.drawable.navigation_close);
-                                        cancel.setVisibility(View.GONE);
-                                        dot.setVisibility(View.INVISIBLE);
-                                    }
-                                });
+                                GroupChatBean gcBean2 = adapter.getItem(position);
+                                if (gcBean2.getWithdrawn() != null && gcBean2.getWithdrawn().equals("1"))
+                                    showToast("You cannot forward withdrawn message");
+                                else {
+                                    forward = true;
+                                    adapter.notifyDataSetChanged();
+                                    handler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            forwardlay.setVisibility(View.VISIBLE);
+                                            audio_call.setVisibility(View.GONE);
+                                            settingnotifications.getLayoutParams().height = 100;
+                                            selectAll_container.setVisibility(View.VISIBLE);
+                                            sendLay.setVisibility(View.GONE);
+                                            header.setVisibility(View.GONE);
+                                            sidemenu.setBackgroundResource(R.drawable.navigation_close);
+                                            cancel.setVisibility(View.GONE);
+                                            dot.setVisibility(View.INVISIBLE);
+                                        }
+                                    });
+                                }
 
                             } else {
                                 switch (index) {
                                     case 0:
                                         Log.i("select", "position 0");
                                         GroupChatBean gcBean1 = adapter.getItem(position);
-                                        gcBean1.setWithdraw(true);
-                                        adapter.notifyDataSetChanged();
+                                        if (gcBean1.getWithdrawn() != null && gcBean1.getWithdrawn().equals("1"))
+                                        showToast("Message already withdrawn");
+                                        else {
+                                            gcBean1.setWithdraw(true);
+                                            adapter.notifyDataSetChanged();
+                                        }
 
                                         break;
                                     case 1:
@@ -1569,22 +1580,27 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                         startActivity(intent);
                                         break;
                                     case 2:
-                                        forward = true;
-                                        adapter.notifyDataSetChanged();
-                                        handler.post(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                forwardlay.setVisibility(View.VISIBLE);
-                                                audio_call.setVisibility(View.GONE);
-                                                settingnotifications.getLayoutParams().height = 100;
-                                                selectAll_container.setVisibility(View.VISIBLE);
-                                                sendLay.setVisibility(View.GONE);
-                                                header.setVisibility(View.GONE);
-                                                sidemenu.setBackgroundResource(R.drawable.navigation_close);
-                                                cancel.setVisibility(View.GONE);
-                                                dot.setVisibility(View.INVISIBLE);
-                                            }
-                                        });
+                                        GroupChatBean gcBean2 = adapter.getItem(position);
+                                        if (gcBean2.getWithdrawn() != null && gcBean2.getWithdrawn().equals("1"))
+                                            showToast("You cannot forward withdrawn message");
+                                        else {
+                                            forward = true;
+                                            adapter.notifyDataSetChanged();
+                                            handler.post(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    forwardlay.setVisibility(View.VISIBLE);
+                                                    audio_call.setVisibility(View.GONE);
+                                                    settingnotifications.getLayoutParams().height = 100;
+                                                    selectAll_container.setVisibility(View.VISIBLE);
+                                                    sendLay.setVisibility(View.GONE);
+                                                    header.setVisibility(View.GONE);
+                                                    sidemenu.setBackgroundResource(R.drawable.navigation_close);
+                                                    cancel.setVisibility(View.GONE);
+                                                    dot.setVisibility(View.INVISIBLE);
+                                                }
+                                            });
+                                        }
 
 
                                         break;
@@ -4131,7 +4147,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     } else {
 
                         if(CallDispatcher.isCallignored){
-                            showToast("Please try... Ignored Call is in progress");
+                            showToast("Please try... Call  in progress");
                         } else {
                             if (isGroup || isRounding) {
                                 Log.d("Test", "Inside Group audioconference onclick");
@@ -4142,10 +4158,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                         if(!CallDispatcher.GSMCallisAccepted) {
                                             groupCallMenu(0);
                                         } else {
-                                            showToast("Please try.. GSM Call is in progress");
+                                            showToast("Please try.. Call in progress");
                                         }
                                     } else {
-                                        showToast("Please try..Call is in progress");
+                                        showToast("Please try..Call  in progress");
                                     }
                                 } else {
                                     showToast("Sorry you dont have permission");
@@ -4155,10 +4171,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     if(!CallDispatcher.GSMCallisAccepted) {
                                         individualCallMenu(0);
                                     } else {
-                                        showToast("Please try.. GSM Call is in progress");
+                                        showToast("Please try.. Call in progress");
                                     }
                                 } else {
-                                    showToast("Please try..Call is in progress");
+                                    showToast("Please try..Call  in progress");
                                 }
 //                            ContactsFragment.getInstance(context).sipprocessCallRequest(buddy);
                             }
@@ -4783,6 +4799,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     normalcontainer.setVisibility(View.GONE);
                     join_lay.setVisibility(View.VISIBLE);
                     tv_username.setText(gcBean.getFtpPassword());
+                    if (Buddyname(gcBean.getFtpPassword()) != null && Buddyname(gcBean.getFtpPassword()).length()>0) {
+                        tv_username.setText(Buddyname(gcBean.getFtpPassword()));
+                    }
                     if(gcBean.getSubCategory()!=null &&gcBean.getSubCategory().equalsIgnoreCase("missedcall")) {
                         if (gcBean.getFtpPassword() != null) {
                             String[] mlist = (gcBean.getFtpPassword()).split(",");
@@ -4801,7 +4820,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_incoming_call));
                                 }
                                 tv_missed.setVisibility(View.GONE);
-                                tv_username.setText(gcBean.getFtpPassword());
+//                                tv_username.setText(gcBean.getFtpPassword());
                             } else {
                                 joinBtn.setVisibility(View.GONE);
                                 tv_missed.setVisibility(View.VISIBLE);
@@ -5276,9 +5295,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 .findViewById(R.id.sender_status);
                         sender_status.setText("Received");
                         sender_status.setVisibility(View.GONE);
-                        if (chatList.size() == position + 1) {
-                            sender_status.setVisibility(View.VISIBLE);
-                        }
+//                        if (chatList.size() == position + 1) {
+//                            sender_status.setVisibility(View.VISIBLE);
+//                        }
                         retryIcon.setTag(gcBean);
                         String statusicon = null;
                         if (buddyStatus != null && buddyStatus.containsKey(gcBean.getFrom())) {
@@ -6189,7 +6208,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     } else {
                         if (gcBean.getWithdrawn() != null && gcBean.getWithdrawn().equals("1")) {
 //                            message.setText("Message withdrawn");
-                            swipeposition=2;
                         }
                         withdraw.setVisibility(View.GONE);
                         xbutton.setVisibility(View.GONE);
@@ -6365,6 +6383,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         Vector<BuddyInformationBean> getBuddyList = ContactsFragment.getBuddyList();
         String name = null;
         if (getBuddyList != null) {
+            if(bname.equalsIgnoreCase(CallDispatcher.LoginUser)){
+                ProfileBean pbean=SingleInstance.myAccountBean;
+                name=pbean.getFirstname()+" "+pbean.getLastname();
+            }else
             for (int i = 0; i < getBuddyList.size(); i++) {
                 BuddyInformationBean buddyInformationBean = (BuddyInformationBean) ContactsFragment.getBuddyList().get(i);
                 if (bname.equals(buddyInformationBean.getEmailid())) {
@@ -8828,9 +8850,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         plusBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, RoundNewPatientActivity.class);
-                intent.putExtra("groupid", groupBean.getGroupId());
-                startActivity(intent);
+                if (!(groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                        rolePatientManagementBean.getAdd() != null && rolePatientManagementBean.getAdd().equalsIgnoreCase("1"))) {
+                    Intent intent = new Intent(context, RoundNewPatientActivity.class);
+                    intent.putExtra("groupid", groupBean.getGroupId());
+                    startActivity(intent);
+                }else
+                    showToast("You have ");
             }
         });
         ed_search.addTextChangedListener(new TextWatcher() {
@@ -9443,9 +9469,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         plusBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, TaskCreationActivity.class);
-                intent.putExtra("groupid", groupBean.getGroupId());
-                startActivity(intent);
+                if(!(groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                        roleAccessBean.getTaskmanagement()!=null && roleAccessBean.getTaskmanagement().equalsIgnoreCase("1"))) {
+                    Intent intent = new Intent(context, TaskCreationActivity.class);
+                    intent.putExtra("groupid", groupBean.getGroupId());
+                    startActivity(intent);
+                }
             }
         });
         Vector<TaskDetailsBean> tasklist = DBAccess.getdbHeler().getAllTaskDetails(strQuery);

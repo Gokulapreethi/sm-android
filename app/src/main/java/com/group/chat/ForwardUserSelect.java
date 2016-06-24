@@ -73,8 +73,7 @@ public class ForwardUserSelect extends Activity {
     private int total_count = 0;
     public View _rootView;
     private RelativeLayout chbox_lay1;
-    private  GroupBean groupManagementBean;
-    private int total_groupcount = 0,count=0;
+    private int total_groupcount = 0;
     private boolean contact=true;
     private boolean fromfiles = false;
 
@@ -256,10 +255,12 @@ public class ForwardUserSelect extends Activity {
 
 
                     Log.d("inside selection", "---->item position");
+                int count=0;
 
                     if ((Boolean) selectAll.getTag()) {
                         for (BuddyInformationBean buddyBean : buddylist) {
                             buddyBean.setSelected(true);
+                            count++;
                         }
                         selectAll.setTag(false);
                         countofcheckbox(count);
@@ -270,7 +271,7 @@ public class ForwardUserSelect extends Activity {
                         }
                         selectAll.setTag(true);
                         countofcheckbox(0);
-                        total_count = count;
+                        total_count = 0;
                     }
                     adapter.notifyDataSetChanged();
 
@@ -286,10 +287,12 @@ public class ForwardUserSelect extends Activity {
                    @Override
                    public void onCheckedChanged(CompoundButton compoundButton, boolean ischecked) {
                        Log.d("inside selection", "---->item position");
+                       int count=0;
 
                        if ((Boolean) selectAll_group.getTag()) {
                            for (GroupBean gbean : buddygroupList) {
                                gbean.setSelected(true);
+                               count++;
 
                            }
                            selectAll_group.setTag(false);
@@ -302,7 +305,7 @@ public class ForwardUserSelect extends Activity {
                            }
                            selectAll_group.setTag(true);
                            groupcheckbox(0);
-                           total_groupcount = count;
+                           total_groupcount = 0;
                        }
                        forwardGroupAdapter.notifyDataSetChanged();
 
@@ -318,12 +321,6 @@ public class ForwardUserSelect extends Activity {
                 @Override
                 public void onClick(View v) {
                     contact =true;
-//                    count = 0;
-                    for(BuddyInformationBean bib : buddylist) {
-                        if (bib != null) {
-                            count++;
-                        }
-                    }
                     memberListView.setVisibility(View.VISIBLE);
                     im_contact.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_profile_white));
                     tv_contact.setTextColor(getResources().getColor(R.color.white));
@@ -345,13 +342,6 @@ public class ForwardUserSelect extends Activity {
                 @Override
                 public void onClick(View v) {
                     contact = false;
-//                    count = 0;
-                    for (GroupBean groupBean : buddygroupList) {
-                        if (groupBean != null) {
-                            count++;
-                        }
-                    }
-
                     im_contact.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_profile));
                     tv_contact.setTextColor(getResources().getColor(R.color.black));
                     view_contact.setVisibility(View.GONE);
@@ -432,6 +422,7 @@ public class ForwardUserSelect extends Activity {
         private  ForwardFilter filter;
         Vector<GroupBean> grouplist = new Vector<GroupBean>();
         Vector<GroupBean> originallist;
+        boolean[] checkBoxState;
 
         public ForwardGroupAdapter(Context context, int textViewResourceId,
                             Vector<GroupBean> groupList) {
@@ -442,6 +433,7 @@ public class ForwardUserSelect extends Activity {
             grouplist.addAll(groupList);
             originallist = new Vector<GroupBean>();
             originallist.addAll(groupList);
+            checkBoxState = new boolean[grouplist.size()];
 
         }
 
@@ -501,28 +493,22 @@ public class ForwardUserSelect extends Activity {
                 }
 
 
-                holder.sel_buddygroup
-                        .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                            @Override
-                            public void onCheckedChanged(CompoundButton arg0,
-                                                         boolean isChecked) {
-                                Log.d("selecteduser", "---->entering the bean");
-                                if (isChecked) {
-                                    Log.d("selecteduser", "---->checking the values" + isChecked);
-                                    groupBean.setSelected(true);
-                                    checkBoxCounter++;
-                                        groupcheckbox(checkBoxCounter);
+                holder.sel_buddygroup.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (((CheckBox) v).isChecked()) {
+                            groupBean.setSelected(true);
+                            checkBoxCounter++;
+                            groupcheckbox(checkBoxCounter);
 
-                                } else {
-                                    groupBean.setSelected(false);
-                                    checkBoxCounter--;
-                                        Log.d("selecteduser", "---->checkboxcounter" + checkBoxCounter);
-                                        groupcheckbox(checkBoxCounter);
+                        } else {
+                            groupBean.setSelected(false);
+                            checkBoxCounter--;
+                            groupcheckbox(checkBoxCounter);
 
-                                }
-                            }
-
-                        });
+                        }
+                    }
+                });
                 if (tv_groupName == null) {
                     holder.listContainer.setVisibility(View.GONE);
                 }
@@ -632,7 +618,6 @@ public class ForwardUserSelect extends Activity {
     {
         Log.i("asdf","count"+count);
         countofselection.setText(Integer.toString(count) + " Selected");
-//        countofselection_group.setText(Integer.toOctalString(groupcount)+ " Selected");
         total_count = count;
 
     }
@@ -640,7 +625,6 @@ public class ForwardUserSelect extends Activity {
     {
         Log.i("asdf", "count" + groupcount);
         countofselection_group.setText(Integer.toString(groupcount) + " Selected");
-//        countofselection_group.setText(Integer.toOctalString(groupcount)+ " Selected");
         total_groupcount = groupcount;
 
     }

@@ -57,7 +57,7 @@ public class FileInfoFragment extends Fragment {
     private FileImageLoader fileImageLoader = null;
     private TextView tv_send;
     private String componenttype;
-    private ArrayList<String> uploadFilesList = null;
+    private ArrayList<String> uploadFilesList = new ArrayList<String>();
     private String filename1;
     CallDispatcher calldisp = new CallDispatcher(SingleInstance.mainContext);
     public static FileInfoFragment newInstance(Context context) {
@@ -414,7 +414,7 @@ public class FileInfoFragment extends Fragment {
                 Log.i("FileUpload", "password--->" + password);
                 Log.i("FileUpload", "type--->" + componenttype);
                 Log.i("FileUpload", "base64--->" + base64);
-                calldisp.uploadFile(username, password, componenttype, fname, base64, filename1, mainContext);
+                calldisp.uploadFile(username, password, componenttype, fname, base64, filename1, fileInfoFragment);
 
 
             }else if(componenttype.equalsIgnoreCase("audio")||componenttype.equalsIgnoreCase("video"))
@@ -433,9 +433,9 @@ public class FileInfoFragment extends Fragment {
                 Log.i("FileUpload", "type--->" + componenttype);
                 Log.i("FileUpload", "base64--->" + base64);
                 if(componenttype.equalsIgnoreCase("video"))
-                    calldisp.uploadFile(username, password, componenttype, fname+".mp4", base64,filename1,mainContext);
+                    calldisp.uploadFile(username, password, componenttype, fname+".mp4", base64,filename1,fileInfoFragment);
                 else
-                    calldisp.uploadFile(username, password, componenttype, fname, base64,filename1,mainContext);
+                    calldisp.uploadFile(username, password, componenttype, fname, base64,filename1,fileInfoFragment);
             }
             ProgressDialog dialog = new ProgressDialog(mainContext);
             calldisp.showprogress(dialog, mainContext);
@@ -445,6 +445,7 @@ public class FileInfoFragment extends Fragment {
         }
     }
     public void sendFile(){
+        Log.i("AAAA","send file info fragment");
         calldisp.cancelDialog();
         ArrayList<String> b_list = new ArrayList<String>();
         b_list.addAll(SendbuddyList);
@@ -453,10 +454,9 @@ public class FileInfoFragment extends Fragment {
         u_list.addAll(uploadDatas);
         calldisp.uploadData.add(filename1);
         uploadFilesList.add(filename1);
-//        calldisp.sendshare(true, username, CallDispatcher.Password, buddieslist.getText()
-//                        .toString(), b_list, u_list, componenttype, comments,
-//                filename, "sendFiles", by_time, time_spinner, ttl_result,
-//                ttl_value, time_input, stream_toggle.isChecked(), cbean);
+        calldisp.sendshare(true, CallDispatcher.LoginUser, CallDispatcher.Password, "",
+                b_list, u_list, componenttype, cbean.getComment(),
+                cbean.getContentpath(), "", null, null,null, null, null, true, cbean);
     }
 
     private String encodeAudioVideoToBase64(String path){
