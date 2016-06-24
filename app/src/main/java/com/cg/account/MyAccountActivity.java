@@ -205,12 +205,16 @@ public class MyAccountActivity extends Activity {
                     cancel.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                             dialog.dismiss();
                         }
                     });
                     save.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                             if (add_citation == null) {
                                 if (SingleInstance.myAccountBean.getCitationpublications() != null)
                                     add_citation = SingleInstance.myAccountBean.getCitationpublications();
@@ -428,6 +432,8 @@ public class MyAccountActivity extends Activity {
                     cancel1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                             dialog1.dismiss();
                         }
                     });
@@ -473,6 +479,8 @@ public class MyAccountActivity extends Activity {
                                 }
                                 tv_addr.setText(office_address);
                                 dialog1.dismiss();
+                                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                             }else
                                 showToast("Please enter mandatory fields");
 
@@ -486,6 +494,8 @@ public class MyAccountActivity extends Activity {
                     offcstate_img.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                             if(isOffcState) {
                                 isOffcState=false;
                                 state1.dismissDropDown();
@@ -546,6 +556,8 @@ public class MyAccountActivity extends Activity {
         edit_pic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 strIPath = Environment.getExternalStorageDirectory()
                         + "/COMMedia/MPD_" + getFileName()
                         + ".jpg";
@@ -676,6 +688,8 @@ public class MyAccountActivity extends Activity {
         state_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 if(isState) {
                     isState=false;
                     state.dismissDropDown();
@@ -695,6 +709,8 @@ public class MyAccountActivity extends Activity {
         hospital_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 if(isHospital) {
                     isHospital=false;
                     hospital.dismissDropDown();
@@ -714,6 +730,8 @@ public class MyAccountActivity extends Activity {
         association_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 if(isAssociation) {
                     isAssociation=false;
                     association_membership.dismissDropDown();
@@ -856,6 +874,8 @@ public class MyAccountActivity extends Activity {
         titel_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 if(isTitle) {
                     isTitle=false;
                     title.dismissDropDown();
@@ -883,6 +903,8 @@ public class MyAccountActivity extends Activity {
         usertype_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 if(isUsertype) {
                     isUsertype=false;
                     usertype.dismissDropDown();
@@ -940,6 +962,8 @@ public class MyAccountActivity extends Activity {
         medical_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 if(isMedical) {
                     isMedical=false;
                     medical_schools.dismissDropDown();
@@ -961,6 +985,8 @@ public class MyAccountActivity extends Activity {
         residency_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 if(isResidency) {
                     isResidency=false;
                     residency_pgm.dismissDropDown();
@@ -982,6 +1008,8 @@ public class MyAccountActivity extends Activity {
         fellow_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 if(isFellow) {
                     isFellow=false;
                     fellowship_pgm.dismissDropDown();
@@ -1005,6 +1033,8 @@ public class MyAccountActivity extends Activity {
         prof_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 if(isProff) {
                     isProff=false;
                     rlay_professional_org.dismissDropDown();
@@ -1025,6 +1055,8 @@ public class MyAccountActivity extends Activity {
         speciality_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 if(isSpeciality) {
                     isSpeciality=false;
                     Speciality.dismissDropDown();
