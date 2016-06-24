@@ -907,7 +907,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 					member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
 					Intent i = new Intent(AppReference.mainContext, CallActiveMembersList.class);
 					i.putExtra("timer", chTimer.getText().toString());
-					i.putExtra("calltype",calltype);
+					i.putExtra("calltype",currentcall_type);
 					i.putExtra("sessionId", strSessionId);
 					i.putExtra("host", host);
 					i.putExtra("fromscreen","audiocallscreen");
