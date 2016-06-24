@@ -121,43 +121,46 @@
                             android:layout_height="wrap_content"
                             android:textStyle="bold"
                             android:textSize="20dp"
-                            android:text="&quot;" />
+                            android:text="&quot;"
+                            android:visibility="gone"/>
 
                         <TextView
                             android:id="@+id/sen_tvquoted_msg"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_below="@+id/sen_quoted_left"
-                            android:layout_marginLeft="20dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="2dp"
                             android:layout_height="wrap_content" />
-                        <ImageView
-                            android:id="@+id/sen_fileattach_quoted"
-                            android:layout_below="@+id/sen_tvquoted_msg"
-                            android:layout_width="30dp"
-                            android:layout_marginLeft="20dp"
-                            android:visibility="gone"
-                            android:background="@drawable/dashboard_file_white"
-                            android:layout_height="26dp" />
-                        <TextView
-                            android:id="@+id/sen_fname_quoted"
-                            android:layout_toRightOf="@+id/sen_fileattach_quoted"
-                            android:layout_marginTop="3dp"
-                            android:visibility="gone"
-                            android:layout_marginLeft="20dp"
-                            android:layout_below="@+id/sen_tvquoted_msg"
-                            android:text=".png"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                        <!--<ImageView-->
+                            <!--android:id="@+id/sen_fileattach_quoted"-->
+                            <!--android:layout_below="@+id/sen_tvquoted_msg"-->
+                            <!--android:layout_width="30dp"-->
+                            <!--android:layout_marginLeft="20dp"-->
+                            <!--android:visibility="gone"-->
+                            <!--android:background="@drawable/dashboard_file_white"-->
+                            <!--android:layout_height="26dp" />-->
+                        <!--<TextView-->
+                            <!--android:id="@+id/sen_fname_quoted"-->
+                            <!--android:layout_toRightOf="@+id/sen_fileattach_quoted"-->
+                            <!--android:layout_marginTop="3dp"-->
+                            <!--android:visibility="gone"-->
+                            <!--android:layout_marginLeft="20dp"-->
+                            <!--android:layout_below="@+id/sen_tvquoted_msg"-->
+                            <!--android:text=".png"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content" />-->
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
-                            android:layout_below="@+id/sen_fname_quoted"
+                            android:layout_below="@+id/sen_tvquoted_msg"
                             android:layout_marginBottom="2dp"
                             android:textStyle="bold"
                             android:layout_marginRight="6dp"
                             android:textSize="20dp"
-                            android:text=",," />
+                            android:text=",,"
+                            android:visibility="gone"/>
 
 
 
@@ -527,8 +530,9 @@
                     android:padding="5dp"
                     android:layout_marginLeft="10dp"
                     android:visibility="gone"
-                    android:layout_toLeftOf="@+id/receiver_datetime"
+                    android:layout_alignParentLeft="true"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="50dp"
                     android:background="@color/black3">
                     <TextView
                         android:id="@+id/quoted_left"
@@ -536,43 +540,47 @@
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
                         android:textSize="20dp"
-                        android:text="&quot;" />
+                        android:text="&quot;"
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/tvquoted_msg"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_below="@+id/quoted_left"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:text=""
                         android:layout_height="wrap_content" />
-                    <ImageView
-                        android:id="@+id/fileattach_quoted"
-                        android:layout_below="@+id/tvquoted_msg"
-                        android:layout_width="30dp"
-                        android:layout_marginLeft="20dp"
-                        android:visibility="gone"
-                        android:background="@drawable/dashboard_file_white"
-                        android:layout_height="26dp" />
-                    <TextView
-                        android:id="@+id/fname_quoted"
-                        android:layout_toRightOf="@+id/fileattach_quoted"
-                        android:layout_marginTop="3dp"
-                        android:visibility="gone"
-                        android:layout_marginLeft="20dp"
-                        android:layout_below="@+id/tvquoted_msg"
-                        android:text=".png"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                    <!--<ImageView-->
+                        <!--android:id="@+id/fileattach_quoted"-->
+                        <!--android:layout_below="@+id/tvquoted_msg"-->
+                        <!--android:layout_width="30dp"-->
+                        <!--android:layout_marginLeft="20dp"-->
+                        <!--android:visibility="gone"-->
+                        <!--android:background="@drawable/dashboard_file_white"-->
+                        <!--android:layout_height="26dp" />-->
+                    <!--<TextView-->
+                        <!--android:id="@+id/fname_quoted"-->
+                        <!--android:layout_toRightOf="@+id/fileattach_quoted"-->
+                        <!--android:layout_marginTop="3dp"-->
+                        <!--android:visibility="gone"-->
+                        <!--android:layout_marginLeft="20dp"-->
+                        <!--android:layout_below="@+id/tvquoted_msg"-->
+                        <!--android:text=".png"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content" />-->
 
                     <TextView
+                        android:id="@+id/quotes_end"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_below="@+id/fname_quoted"
+                        android:layout_below="@+id/tvquoted_msg"
                         android:layout_marginBottom="2dp"
                         android:textStyle="bold"
-                        android:layout_marginRight="6dp"
+                        android:layout_marginRight="20dp"
                         android:textSize="20dp"
-                        android:text=",," />
+                        android:text="''"
+                        android:visibility="gone"/>
 
 
 

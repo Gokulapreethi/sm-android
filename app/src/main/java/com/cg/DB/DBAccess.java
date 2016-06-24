@@ -7389,12 +7389,18 @@ public class DBAccess extends SQLiteOpenHelper {
 				finalGCList.add(gcBean);
 			} else {
 				if (gcBean.getSubCategory().equalsIgnoreCase("GRB")||gcBean.getSubCategory().equalsIgnoreCase("grb_r")) {
-					if (!groupChatSet.contains(gcBean.getParentId())) {
-						Vector<GroupChatBean> tempList = groupChatListMap
-								.get(gcBean.getParentId());
-						finalGCList.addAll(tempList);
-						groupChatSet.add(gcBean.getParentId());
-					}
+					//For Reply message add list below
+					//start
+//					if (!groupChatSet.contains(gcBean.getParentId())) {
+//						Vector<GroupChatBean> tempList = groupChatListMap
+//								.get(gcBean.getParentId());
+//						finalGCList.addAll(tempList);
+//						groupChatSet.add(gcBean.getParentId());
+//					}
+					//End
+					//New Code start
+					finalGCList.add(gcBean);
+					//End
 				}else if (gcBean.getSubCategory().equalsIgnoreCase("Gc")) {
                     finalGCList.add(gcBean);
                 }else if (gcBean.getSubCategory().equalsIgnoreCase("Gu")) {

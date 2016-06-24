@@ -381,7 +381,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     if (!isGroup && !isRounding) {
                         final Dialog dialog = new Dialog(context);
                         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                        dialog.setContentView(R.layout.group_dialog);
+                        dialog.setContentView(R.layout.dialog_myacc_menu);
                         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                         lp.copyFrom(dialog.getWindow().getAttributes());
                         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -392,15 +392,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         window.setAttributes(lp);
                         window.setGravity(Gravity.BOTTOM);
                         dialog.show();
-
-                        TextView edit_grp = (TextView) dialog.findViewById(R.id.edit_grp);
-                        edit_grp.setVisibility(View.GONE);
-                        TextView sms = (TextView) dialog.findViewById(R.id.invite_grp);
-                        sms.setText("Invite User to Group");
-                        TextView clear = (TextView) dialog.findViewById(R.id.leave_grp);
-                        clear.setText("Withdraw all Mesages");
-                        TextView delet_user = (TextView) dialog.findViewById(R.id.delete_grp);
-                        delet_user.setText("Delete User from Contacts");
+                        TextView sms = (TextView) dialog.findViewById(R.id.delete_acc);
+                        sms.setText("SMS");
+                        TextView clear = (TextView) dialog.findViewById(R.id.log_out);
+                        clear.setText("Clear History");
                         TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
                         cancel.setOnClickListener(new View.OnClickListener() {
 
@@ -413,28 +408,20 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 }
                             }
                         });
-                        delet_user.setOnClickListener(new View.OnClickListener() {
+                        sms.setOnClickListener(new View.OnClickListener() {
 
                             @Override
                             public void onClick(View arg0) {
-
-                            ContactsFragment.getInstance(context).doDeleteContact(buddy);
-                }
+                                try {
+                                    dialog.dismiss();
+                                    Intent smsintent = new Intent(context, ShortMessage.class);
+                                    smsintent.putExtra("Grid", true);
+                                    startActivity(smsintent);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
                         });
-//                        sms.setOnClickListener(new View.OnClickListener() {
-//
-//                            @Override
-//                            public void onClick(View arg0) {
-//                                try {
-//                                    dialog.dismiss();
-//                                    Intent smsintent = new Intent(context, ShortMessage.class);
-//                                    smsintent.putExtra("Grid", true);
-//                                    startActivity(smsintent);
-//                                } catch (Exception e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//                        });
                         clear.setOnClickListener(new View.OnClickListener() {
 
                             @Override
@@ -1529,7 +1516,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         selectAll_container.setVisibility(View.GONE);
                         sendLay.setVisibility(View.VISIBLE);
                         header.setVisibility(View.VISIBLE);
-                        audio_call.setVisibility(View.VISIBLE);
                         sidemenu.setBackgroundResource(R.drawable.navigation_menu);
                         cancel.setVisibility(View.VISIBLE);
                         dot.setVisibility(View.VISIBLE);
@@ -2336,28 +2322,30 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 && gcBean.getParentId().length() > 0
                                 && !gcBean.getParentId().equalsIgnoreCase(
                                 "null")) {
-                            int position = -1;
-                            for (int i = 0; i < chatList.size(); i++) {
-                                GroupChatBean gcBean1 = chatList.get(i);
-
-                                if (gcBean1 != null
-                                        && gcBean1.getParentId() != null
-                                        && gcBean1.getParentId().equals(
-                                        gcBean.getParentId())) {
-                                    position = i;
-                                }
-
-                            }
-                            if (position == -1) {
+                            //Old Code cmd
+//                            int position = -1;
+//                            for (int i = 0; i < chatList.size(); i++) {
+//                                GroupChatBean gcBean1 = chatList.get(i);
+//
+//                                if (gcBean1 != null
+//                                        && gcBean1.getParentId() != null
+//                                        && gcBean1.getParentId().equals(
+//                                        gcBean.getParentId())) {
+//                                    position = i;
+//                                }
+//
+//                            }
+//                            if (position == -1) {
                                 chatList.add(gcBean);
                                 adapter.notifyDataSetChanged();
-                                maintainListPosition();
-                            } else {
-                                chatList.add(position + 1, gcBean);
-                                adapter.notifyDataSetChanged();
-                                lv.setSelection(position);
-                                maintainListPosition();
-                            }
+//                                maintainListPosition();
+//                            } else {
+//                                chatList.add(position + 1, gcBean);
+//                                adapter.notifyDataSetChanged();
+//                                lv.setSelection(position);
+//                                maintainListPosition();
+//                            }
+                            //Old Code cmd
 
                         } else {
                             chatList.add(gcBean);
@@ -2583,48 +2571,50 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                             && gcBean.getParentId().length() > 0 && !gcBean
                                             .getParentId().equalsIgnoreCase(
                                                     "null"))) {
-                                        int position = -1;
-                                        for (int i = 0; i < chatList.size(); i++) {
-                                            GroupChatBean gcBean1 = chatList
-                                                    .get(i);
-                                            if (gcBean1 != null
-                                                    && gcBean1.getParentId() != null
-                                                    && gcBean1
-                                                    .getParentId()
-                                                    .equals(gcBean
-                                                            .getParentId())) {
-                                                position = i;
-                                                if (gcBean
-                                                        .getSubCategory()
-                                                        .equalsIgnoreCase("GRB")) {
-//													showToast("Received Chain from "
-//															+ gcBean.getFrom());
-                                                }
-                                            }
-                                        }
-                                        if (position == -1) {
+                                        //Old Code cmd start
+//                                        int position = -1;
+//                                        for (int i = 0; i < chatList.size(); i++) {
+//                                            GroupChatBean gcBean1 = chatList
+//                                                    .get(i);
+//                                            if (gcBean1 != null
+//                                                    && gcBean1.getParentId() != null
+//                                                    && gcBean1
+//                                                    .getParentId()
+//                                                    .equals(gcBean
+//                                                            .getParentId())) {
+//                                                position = i;
+//                                                if (gcBean
+//                                                        .getSubCategory()
+//                                                        .equalsIgnoreCase("GRB")) {
+////													showToast("Received Chain from "
+////															+ gcBean.getFrom());
+//                                                }
+//                                            }
+//                                        }
+
+//                                        if (position == -1) {
                                             chatList.add(gcBean);
                                             adapter.notifyDataSetChanged();
-                                            maintainListPosition();
-                                        } else {
-                                            chatList.add(position + 1, gcBean);
-                                            for (int i = 0; i < chatList.size(); i++) {
-                                                GroupChatBean gcBean1 = chatList
-                                                        .get(i);
-                                                if (gcBean1.getParentId().equals(gcBean.getParentId())) {
-
-                                                }
-
-                                            }
-
-                                            // adapter = new GroupChatAdapter(
-                                            // context, chatList);
-                                            // adapter.notifyDataSetChanged();
-                                            // lv.setAdapter(adapter);
-                                            // lv.setSelection(position);
-                                            mainListPositionForSpecialMessage(position + 1);
-
-                                        }
+//                                            maintainListPosition();
+//                                        } else {
+//                                            chatList.add(position + 1, gcBean);
+//                                            for (int i = 0; i < chatList.size(); i++) {
+//                                                GroupChatBean gcBean1 = chatList
+//                                                        .get(i);
+//                                                if (gcBean1.getParentId().equals(gcBean.getParentId())) {
+//
+//                                                }
+//
+//                                            }
+//
+//                                            // adapter = new GroupChatAdapter(
+//                                            // context, chatList);
+//                                            // adapter.notifyDataSetChanged();
+//                                            // lv.setAdapter(adapter);
+//                                            // lv.setSelection(position);
+//                                            mainListPositionForSpecialMessage(position + 1);
+//
+//                                        }
 
                                     } else if (gcBean.getSubCategory()
                                             .equalsIgnoreCase("gdi")) {
@@ -4442,11 +4432,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         try {
             AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(context);
             myAlertDialog.setTitle(SingleInstance.mainContext.getResources().getString(R.string.clear_chat_history));
-            ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(groupOrBuddyName);
-            String fullname=bean.getFirstname()+" "+bean.getLastname();
             myAlertDialog
                     .setMessage(SingleInstance.mainContext.getResources().getString(R.string.are_you_sure_you_want_to_delete_entire_chat_history)
-                            +" " + fullname + "?");
+                            + groupOrBuddyName + "?");
             myAlertDialog.setPositiveButton("OK",
                     new DialogInterface.OnClickListener() {
 
@@ -5085,24 +5073,56 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 if (gcBean.getReply() != null && !gcBean.getReply().equals("") && gcBean.getReply().equalsIgnoreCase("GRB_R")) {
                                     if (gcBean.getSubCategory().equalsIgnoreCase(
                                             "GRB_R")) {
-                                        if (position > 0) {
-                                            Log.i("reply","position>0");
-                                            listrel_quoted.setVisibility(View.VISIBLE);
-                                            final GroupChatBean Bean = chatList.get(position - 1);
-                                            if(getReplyMessage(Bean)!=null) {
-                                                lvquoted_msg.setText(getReplyMessage(Bean));
-                                            }
-                                            //For withdraw message
-                                            //start
+                                        //Old Code start
+//                                        if (position > 0) {
+//                                            Log.i("reply","position>0");
+//                                            listrel_quoted.setVisibility(View.VISIBLE);
+//                                            final GroupChatBean Bean = chatList.get(position - 1);
+//                                            if(getReplyMessage(Bean)!=null) {
+//                                                lvquoted_msg.setText(getReplyMessage(Bean));
+//                                            }
+//                                            //For withdraw message
+//                                            //start
+////                                            if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+////                                                    && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+//                                            if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
+//                                                listrel_quoted.setVisibility(View.GONE);
+//                                            }else{
+//                                                listrel_quoted.setVisibility(View.VISIBLE);
+//                                            }
+//                                            //End
+//                                        }
+                                        //Old Code end
+
+                                        //New Code Start
+                                        for (int i = 0; i < chatList.size(); i++) {
+                                            GroupChatBean Bean = chatList
+                                                    .get(i);
+                                            if (Bean != null
+                                                    && Bean.getParentId() != null&& gcBean.getParentId()!=null
+                                                    && Bean
+                                                    .getParentId()
+                                                    .equals(gcBean
+                                                            .getParentId())) {
+                                                listrel_quoted.setVisibility(View.VISIBLE);
+                                                if(getReplyMessage(Bean)!=null) {
+                                                    lvquoted_msg.setText("'' "+getReplyMessage(Bean)+" ''");
+                                                }
+                                                //For withdraw message
+                                                //start
 //                                            if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
 //                                                    && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
-                                            if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
-                                                listrel_quoted.setVisibility(View.GONE);
-                                            }else{
-                                                listrel_quoted.setVisibility(View.VISIBLE);
+                                                if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
+                                                    listrel_quoted.setVisibility(View.GONE);
+                                                }else{
+                                                    listrel_quoted.setVisibility(View.VISIBLE);
+                                                }
+                                            break;
                                             }
-                                            //End
                                         }
+                                        //New Code End
+
+
                                         //For Received Reply
                                         //Start
                                         waitforreply.setVisibility(View.GONE);
@@ -5166,8 +5186,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     waitforconfir.setVisibility(View.VISIBLE);
                                     //For withdraw message
                                     //start
-                                    if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-                                            && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+//                                    if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+//                                            && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+                                    if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
                                         waitforconfir.setVisibility(View.GONE);
                                     }else{
                                         waitforconfir.setVisibility(View.VISIBLE);
@@ -5468,24 +5489,57 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                                 if(gcBean.getMimetype()!=null && gcBean.getMimetype().equalsIgnoreCase("text") &&
                                                         gcBean.getMessage()!=null){
                                                     Log.i("reply","receiver side GRB_R loginuser quote visible");
-                                                    if(position>0){
-                                                    GroupChatBean groupChatBean=chatList.get(position-1);
-                                                    receive_quotedLayout.setVisibility(View.VISIBLE);
-                                                    receiver_tvquoted_msg.setVisibility(View.VISIBLE);
-                                                    if(getReplyMessage(groupChatBean)!=null) {
-                                                        receiver_tvquoted_msg.setText(getReplyMessage(groupChatBean));
-                                                    }
-                                                        //For withdraw message
-                                                        //start
+                                                    //Old Code start
+//                                                    if(position>0){
+//                                                    GroupChatBean groupChatBean=chatList.get(position-1);
+//                                                    receive_quotedLayout.setVisibility(View.VISIBLE);
+//                                                    receiver_tvquoted_msg.setVisibility(View.VISIBLE);
+//                                                    if(getReplyMessage(groupChatBean)!=null) {
+//                                                        receiver_tvquoted_msg.setText(getReplyMessage(groupChatBean));
+//                                                    }
+//                                                        //For withdraw message
+//                                                        //start
+////                                                        if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+////                                                                && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+//                                                        if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
+//                                                            receive_quotedLayout.setVisibility(View.GONE);
+//                                                        }else{
+//                                                            receive_quotedLayout.setVisibility(View.VISIBLE);
+//                                                        }
+//                                                        //End
+//                                                    }
+                                                    //Old Code End
+
+
+                                                    //New Code Start
+                                                    for (int i = 0; i < chatList.size(); i++) {
+                                                        GroupChatBean groupChatBean = chatList
+                                                                .get(i);
+                                                        if (groupChatBean != null
+                                                                && groupChatBean.getParentId() != null&& gcBean.getParentId()!=null
+                                                                && groupChatBean
+                                                                .getParentId()
+                                                                .equals(gcBean
+                                                                        .getParentId())) {
+                                                            receive_quotedLayout.setVisibility(View.VISIBLE);
+                                                            receiver_tvquoted_msg.setVisibility(View.VISIBLE);
+                                                            if(getReplyMessage(groupChatBean)!=null) {
+                                                                receiver_tvquoted_msg.setText("'' "+getReplyMessage(groupChatBean)+" ''");
+                                                            }
+                                                            //For withdraw message
+                                                            //start
 //                                                        if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
 //                                                                && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
-                                                        if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
-                                                            receive_quotedLayout.setVisibility(View.GONE);
-                                                        }else{
-                                                            receive_quotedLayout.setVisibility(View.VISIBLE);
+                                                            if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
+                                                                receive_quotedLayout.setVisibility(View.GONE);
+                                                            }else{
+                                                                receive_quotedLayout.setVisibility(View.VISIBLE);
+                                                            }
+                                                            //End
+                                                            break;
                                                         }
-                                                        //End
                                                     }
+                                                    //New Code End
                                                 }
                                                 //End
                                             } else {
@@ -5493,8 +5547,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                                 btn_reply.setVisibility(View.VISIBLE);
                                                 //For withdraw message
                                                 //start
-                                                if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-                                                        && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+//                                                if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+//                                                        && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+                                                if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
                                                     btn_reply.setVisibility(View.GONE);
                                                 }else{
                                                     btn_reply.setVisibility(View.VISIBLE);
@@ -5929,7 +5984,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 GroupChatBean gcBean1 = (GroupChatBean) view
                                         .getTag();
                                 if(getReplyMessage(gcBean1)!=null) {
-                                    tvquoted_msg.setText(getReplyMessage(gcBean1));
+                                    tvquoted_msg.setText("'' "+getReplyMessage(gcBean1)+" ''");
                                 }
                                 rel_quoted.setVisibility(View.VISIBLE);
                                 if (gcBean1.getSubCategory() != null) {

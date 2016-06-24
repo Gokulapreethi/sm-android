@@ -309,7 +309,7 @@
 
         <RelativeLayout
             android:id="@+id/rel_quoted"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:background="@color/blue3">
@@ -321,7 +321,7 @@
                 android:background="@color/blue2">
 
                 <RelativeLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
                     android:layout_marginLeft="20dp"
@@ -334,42 +334,50 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="&quot;" />
+                        android:text="''"
+                        android:layout_marginLeft="5dp"
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/tvquoted_msg"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_below="@+id/quoted_left"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                       android:text=""
+                        android:layout_marginBottom="5dp"
+                        android:textSize="15dp"
                         android:layout_height="wrap_content" />
-                    <ImageView
-                        android:id="@+id/fileattach_quoted"
-                        android:layout_below="@+id/tvquoted_msg"
-                        android:layout_width="30dp"
-                        android:layout_marginLeft="20dp"
-                        android:visibility="gone"
-                        android:background="@drawable/dashboard_file_white"
-                        android:layout_height="26dp" />
-                    <TextView
-                        android:id="@+id/fname_quoted"
-                        android:layout_toRightOf="@+id/fileattach_quoted"
-                        android:layout_marginTop="3dp"
-                        android:visibility="gone"
-                        android:layout_marginLeft="20dp"
-                        android:layout_below="@+id/tvquoted_msg"
-                        android:text=".png"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                    <!--<ImageView-->
+                        <!--android:id="@+id/fileattach_quoted"-->
+                        <!--android:layout_below="@+id/tvquoted_msg"-->
+                        <!--android:layout_width="30dp"-->
+                        <!--android:layout_marginLeft="20dp"-->
+                        <!--android:visibility="gone"-->
+                        <!--android:background="@drawable/dashboard_file_white"-->
+                        <!--android:layout_height="26dp" />-->
+                    <!--<TextView-->
+                        <!--android:id="@+id/fname_quoted"-->
+                        <!--android:layout_toRightOf="@+id/fileattach_quoted"-->
+                        <!--android:layout_marginTop="3dp"-->
+                        <!--android:visibility="gone"-->
+                        <!--android:layout_marginLeft="20dp"-->
+                        <!--android:layout_below="@+id/tvquoted_msg"-->
+                        <!--android:text=".png"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content" />-->
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_below="@+id/fname_quoted"
-                        android:layout_marginBottom="2dp"
+                        android:layout_toRightOf="@+id/tvquoted_msg"
+                        android:layout_below="@+id/tvquoted_msg"
                         android:textStyle="bold"
+                        android:layout_marginLeft="5dp"
                         android:layout_marginRight="6dp"
-                        android:text=",," />
+                        android:layout_marginBottom="5dp"
+                        android:text=",,"
+                        android:visibility="gone"/>
 
                 </RelativeLayout>
 
