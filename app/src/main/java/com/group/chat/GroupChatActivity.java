@@ -1152,7 +1152,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                         showToast("Please Try again... GSM call in progress");
                                     }
                                 } else {
-                                    showToast("Please Try again... call in progress");
+                                    showToast("Please try...Call in progress");
                                 }
                             } else {
                                 if (!CallDispatcher.isCallInitiate) {

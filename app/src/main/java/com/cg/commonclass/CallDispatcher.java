@@ -11778,6 +11778,8 @@ private TrustManager[] get_trust_mgr() {
 						ft.commitAllowingStateLoss();
 
 					}
+					ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(sbean.getFrom());
+					String fullname=bean.getFirstname()+" "+bean.getLastname();
 					if (mdialog != null) {
 
 						if (mdialog.isShowing())
@@ -11786,7 +11788,7 @@ private TrustManager[] get_trust_mgr() {
 						mdialog = new AlertDialog.Builder(context).create();
 
 						mdialog.setMessage("(" + Integer.toString(count) + ")"
-								+ " missed call from " + sbean.getFrom());
+								+ " missed call from " + fullname);
 						mdialog.setCancelable(true);
 						mdialog.setButton("OK",
 								new DialogInterface.OnClickListener() {
@@ -11809,7 +11811,7 @@ private TrustManager[] get_trust_mgr() {
 						mdialog = new AlertDialog.Builder(context).create();
 
 						mdialog.setMessage("(" + Integer.toString(count) + ")"
-								+ "missed call from " + sbean.getFrom());
+								+ "missed call from " +fullname );
 						mdialog.setCancelable(true);
 						mdialog.setButton("OK",
 								new DialogInterface.OnClickListener() {
