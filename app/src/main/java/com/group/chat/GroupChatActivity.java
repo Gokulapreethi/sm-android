@@ -4804,18 +4804,29 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     String total_users = gcBean.getFtpUsername()+","+gcBean.getFtpPassword();
                     String[] total_users_array = total_users.split(",");
 
-                    String callbuddies = null;
+                    String callbuddies = null, call_buddy_fullnames = null;
                     for(String call_buddy : total_users_array) {
                         if(!call_buddy.equalsIgnoreCase(CallDispatcher.LoginUser)) {
+
                             if(callbuddies == null) {
                                 callbuddies = call_buddy;
+                                if( Buddyname(call_buddy) == null) {
+                                    call_buddy_fullnames = call_buddy;
+                                } else {
+                                    call_buddy_fullnames = Buddyname(call_buddy);
+                                }
                             } else {
                                 callbuddies = callbuddies+","+call_buddy;
+                                if( Buddyname(call_buddy) == null) {
+                                    call_buddy_fullnames = call_buddy_fullnames+","+call_buddy;
+                                } else {
+                                    call_buddy_fullnames = call_buddy_fullnames+","+Buddyname(call_buddy);
+                                }
                             }
                         }
                     }
 
-                    tv_username.setText(callbuddies);
+                    tv_username.setText(call_buddy_fullnames);
                     if(gcBean.getSubCategory()!=null &&gcBean.getSubCategory().equalsIgnoreCase("missedcall")) {
                         if (gcBean.getFtpPassword() != null) {
                             String[] mlist = (gcBean.getFtpPassword()).split(",");
@@ -4834,7 +4845,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_incoming_call));
                                 }
                                 tv_missed.setVisibility(View.GONE);
-                                tv_username.setText(callbuddies);
+//                                tv_username.setText(callbuddies);
                             } else {
                                 join_lay.setBackgroundColor(getResources().getColor(R.color.darkpink));
                                 call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_missed_call));

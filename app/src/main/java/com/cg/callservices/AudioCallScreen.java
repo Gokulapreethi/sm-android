@@ -615,6 +615,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 							}
 						} catch (Exception e) {
 							// TODO: handle exception
+							e.printStackTrace();
 						}
 
 					}
