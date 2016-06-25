@@ -1416,7 +1416,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     public void create(SwipeMenu menu) {
                         // Create different menus depending on the view type
 
-                        switch (swipeposition) {
+                        switch (menu.getViewType()) {
                             case 0:
                                 Log.d("Swiselect", " case 0 : " + swipeposition);
                                 createMenu1(menu);
@@ -4662,23 +4662,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             return position;
         }
 
-        public int getItemViewType(int position) {
-////            Log.d("Swipeselect","Swipeselect : "+position);
-//            // current menu type
-////            GroupChatBean gcBean = chatList.get(position);
-////            if(gcBean.getFrom().equals(CallDispatcher.LoginUser))
-////            {
-////                return 0;
-////            }else{
-            return 1;
-////            }
-        }
-
-
-//        @Override
 //        public int getItemViewType(int position) {
-////            return super.getItemViewType(position);
-////            return position % 3;
+//            Log.d("Swipeselect","Adapter Swipeselect : "+position);
+////            // current menu type
 //            GroupChatBean gcBean = chatList.get(position);
 //            if(gcBean.getFrom().equals(CallDispatcher.LoginUser))
 //            {
@@ -4687,11 +4673,28 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 //            return 1;
 //            }
 //        }
+
+
+        @Override
+        public int getItemViewType(int position) {
+//            return super.getItemViewType(position);
+//            return position % 3;
+            GroupChatBean gcBean = chatList.get(position);
+            if(gcBean.getCategory()!=null && gcBean.getCategory().equalsIgnoreCase("call"))
+            {
+                return 2;
+            }else if(gcBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)){
+                return 0;
+            }else{
+                return 1;
+            }
+        }
 //
-//        @Override
-//        public int getViewTypeCount() {
+        @Override
+        public int getViewTypeCount() {
 //            return super.getViewTypeCount();
-//        }
+            return 3;
+        }
 
         /******
          * Depends upon data size called for each row , Create each ListView row
