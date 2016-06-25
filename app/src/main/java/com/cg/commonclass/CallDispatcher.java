@@ -2444,17 +2444,23 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						}
 					});
 
-					if(CallDispatcher.sb.getStartTime() == null){
-						CallDispatcher.sb.setStartTime(getCurrentDateandTime());
-					}
-					CallDispatcher.sb.setEndTime(getCurrentDateandTime());
+
+
 					Object objCallScreen = SingleInstance.instanceTable
 							.get("callscreen");
 					if (objCallScreen == null) {
-						CallDispatcher.sb.setCallDuration("00:00:00");
+						CallDispatcher.sb.setStartTime(getCurrentDateandTime());
 						CallDispatcher.sb.setCallstatus("missedcall");
-					}else
+					} else {
 						CallDispatcher.sb.setCallstatus("callattended");
+					}
+
+					if(CallDispatcher.sb.getStartTime() == null){
+						CallDispatcher.sb.setStartTime(getCurrentDateandTime());
+					}
+
+					CallDispatcher.sb.setEndTime(getCurrentDateandTime());
+
 					CallDispatcher.sb
 							.setCallDuration(SingleInstance.mainContext
 									.getCallDuration(
@@ -14605,7 +14611,7 @@ private TrustManager[] get_trust_mgr() {
 				CallDispatcher.sb.setToSignalPort(bib.getSignalingPort());
 				CallDispatcher.sb.setChatid(CallDispatcher.LoginUser);
 				CallDispatcher.sb.setHost(CallDispatcher.LoginUser);
-				CallDispatcher.sb.setParticipants(CallDispatcher.LoginUser);
+				CallDispatcher.sb.setParticipants(username);
 				switch (operation) {
 				case 1:
 					CallDispatcher.sb.setCallType("AC");

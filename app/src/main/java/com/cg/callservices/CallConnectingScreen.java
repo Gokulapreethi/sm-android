@@ -305,6 +305,21 @@ public class CallConnectingScreen extends Fragment {
 
 			CallDispatcher.currentSessionid = null;
 
+			CallDispatcher.sb.setCallstatus("callattended");
+			CallDispatcher.sb.setStartTime(callDisp.getCurrentDateandTime());
+			CallDispatcher.sb.setEndTime(callDisp.getCurrentDateandTime());
+			CallDispatcher.sb
+					.setCallDuration(SingleInstance.mainContext
+							.getCallDuration(CallDispatcher.sb
+											.getStartTime(),
+									CallDispatcher.sb
+											.getEndTime()));
+
+			DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+			DBAccess.getdbHeler()
+					.saveOrUpdateRecordtransactiondetails(
+							CallDispatcher.sb);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			Log.d("stattus", "completed  vcvcv " + e);

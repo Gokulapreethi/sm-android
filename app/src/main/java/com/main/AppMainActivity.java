@@ -2196,7 +2196,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 //				imageLoader.DisplayImage("", profileImage,
 //						R.drawable.icon_buddy_aoffline);
 				}else
-				showToast("Please try..Call is in progress");
+				showToast("Please Try again... call in progress");
 
 			} else {
 

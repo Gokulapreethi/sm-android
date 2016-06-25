@@ -1065,7 +1065,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         if(!CallDispatcher.isCallInitiate)
                         photochat();
                         else
-                            showToast("Please try...Call  in progress");
+                            showToast("Please Try again...call  in progress");
                     }
                 });
 //
@@ -1115,7 +1115,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             atachlay.setVisibility(View.GONE);
                             audio_layout.setVisibility(View.VISIBLE);
                         }else
-                            showToast("Please try...Call in progress");
+                            showToast("Please Try again...call in progress");
 //                        animation.start();
                     }
                 });
@@ -1125,7 +1125,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         if(!CallDispatcher.isCallInitiate)
                         showVideoMessageDialog();
                         else
-                            showToast("Please try...Call  in progress");
+                            showToast("Please Try again...call in progress");
                     }
                 });
                 btn_sketch.setOnClickListener(new OnClickListener() {
@@ -1134,14 +1134,14 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         if(!CallDispatcher.isCallInitiate)
                         handsketch();
                         else
-                        showToast("Please try...Call  in progress");
+                        showToast("Please Try again... Call in progress");
                     }
                 });
                 btn_videocall.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if(CallDispatcher.isCallignored) {
-                            showToast("Please try...Call  in progress");
+                            showToast("Please Try again... Ignored call in progress");
                         } else {
                             if (isGroup || isRounding) {
                                 Log.d("Test", "Inside Group VideoConference onclick");
@@ -1149,21 +1149,21 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     if(!CallDispatcher.GSMCallisAccepted) {
                                         groupCallMenu(2);
                                     } else {
-                                        showToast("Please try..Call in progress");
+                                        showToast("Please Try again... GSM call in progress");
                                     }
                                 } else {
-                                    showToast("Please try...Call in progress");
+                                    showToast("Please Try again... call in progress");
                                 }
                             } else {
                                 if (!CallDispatcher.isCallInitiate) {
                                     if (!CallDispatcher.GSMCallisAccepted) {
                                         individualCallMenu(1);
                                     } else {
-                                        showToast("Please try...Call in progress");
+                                        showToast("Please Try again... GSM call in progress");
                                     }
 
                                 } else {
-                                    showToast("Please try...Call in progress");
+                                    showToast("Please Try again... call in progress");
                                 }
 
                             }
@@ -4147,7 +4147,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     } else {
 
                         if(CallDispatcher.isCallignored){
-                            showToast("Please try... Call  in progress");
+                            showToast("Please Try again... Ignored call in progress");
                         } else {
                             if (isGroup || isRounding) {
                                 Log.d("Test", "Inside Group audioconference onclick");
@@ -4158,10 +4158,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                         if(!CallDispatcher.GSMCallisAccepted) {
                                             groupCallMenu(0);
                                         } else {
-                                            showToast("Please try.. Call in progress");
+                                            showToast("Please Try again... GSM call  in progress");
                                         }
                                     } else {
-                                        showToast("Please try..Call  in progress");
+                                        showToast("Please Try again... call in progress");
                                     }
                                 } else {
                                     showToast("Sorry you dont have permission");
@@ -4171,10 +4171,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     if(!CallDispatcher.GSMCallisAccepted) {
                                         individualCallMenu(0);
                                     } else {
-                                        showToast("Please try.. Call in progress");
+                                        showToast("Please Try again... GSM call in progress");
                                     }
                                 } else {
-                                    showToast("Please try..Call  in progress");
+                                    showToast("Please Try again... call in progress");
                                 }
 //                            ContactsFragment.getInstance(context).sipprocessCallRequest(buddy);
                             }
@@ -4798,10 +4798,21 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     swipeposition = 2;
                     normalcontainer.setVisibility(View.GONE);
                     join_lay.setVisibility(View.VISIBLE);
-                    tv_username.setText(gcBean.getFtpPassword());
-                    if (Buddyname(gcBean.getFtpPassword()) != null && Buddyname(gcBean.getFtpPassword()).length()>0) {
-                        tv_username.setText(Buddyname(gcBean.getFtpPassword()));
+                    String total_users = gcBean.getFtpUsername()+","+gcBean.getFtpPassword();
+                    String[] total_users_array = total_users.split(",");
+
+                    String callbuddies = null;
+                    for(String call_buddy : total_users_array) {
+                        if(!call_buddy.equalsIgnoreCase(CallDispatcher.LoginUser)) {
+                            if(callbuddies == null) {
+                                callbuddies = call_buddy;
+                            } else {
+                                callbuddies = callbuddies+","+call_buddy;
+                            }
+                        }
                     }
+
+                    tv_username.setText(callbuddies);
                     if(gcBean.getSubCategory()!=null &&gcBean.getSubCategory().equalsIgnoreCase("missedcall")) {
                         if (gcBean.getFtpPassword() != null) {
                             String[] mlist = (gcBean.getFtpPassword()).split(",");
@@ -4814,31 +4825,41 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     joinBtn.setVisibility(View.GONE);
                                 }
                                 join_lay.setBackgroundColor(getResources().getColor(R.color.blue1));
-                                if(gcBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+                                if (gcBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)) {
                                     call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.iconoutgoingcall));
                                 } else {
                                     call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_incoming_call));
                                 }
                                 tv_missed.setVisibility(View.GONE);
-//                                tv_username.setText(gcBean.getFtpPassword());
+                                tv_username.setText(callbuddies);
                             } else {
+                                join_lay.setBackgroundColor(getResources().getColor(R.color.darkpink));
+                                call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_missed_call));
                                 joinBtn.setVisibility(View.GONE);
                                 tv_missed.setVisibility(View.VISIBLE);
+                                tv_missed.setText("missed");
+                                tv_missed.setTextColor(getResources().getColor(R.color.pink));
+                                time.setVisibility(View.GONE);
                             }
                         } else {
+                            join_lay.setBackgroundColor(getResources().getColor(R.color.darkpink));
+                            call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_missed_call));
                             joinBtn.setVisibility(View.GONE);
                             tv_missed.setVisibility(View.VISIBLE);
+                            tv_missed.setText("missed");
+                            tv_missed.setTextColor(getResources().getColor(R.color.pink));
+                            time.setVisibility(View.GONE);
                         }
-                    }else {
+                    } else {
                         joinBtn.setVisibility(View.GONE);
                         join_lay.setBackgroundColor(getResources().getColor(R.color.grey1));
-                        if(gcBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+                        if (gcBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)) {
                             call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.iconoutgoingcall));
                         } else {
                             call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_incoming_call));
                         }
-                        if(gcBean.getReminderTime()!=null)
-                        tv_missed.setText(gcBean.getReminderTime());
+                        if (gcBean.getReminderTime() != null)
+                            tv_missed.setText(gcBean.getReminderTime());
                         tv_missed.setTextColor(getResources().getColor(R.color.blue2));
                         time.setVisibility(View.VISIBLE);
                         String dat, tim;
