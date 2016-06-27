@@ -9015,6 +9015,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						descriptor.getStartOffset(), descriptor.getLength());
 				descriptor.close();
 				SingleInstance.mainContext.player.setLooping(true);
+				SingleInstance.mainContext.player.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
 				SingleInstance.mainContext.player.prepare();
 				SingleInstance.mainContext.player.start();
 			}
