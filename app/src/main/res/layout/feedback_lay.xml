@@ -50,6 +50,7 @@
         >
 
         <TextView
+            android:id="@+id/feedback_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/snazlgray"
@@ -102,6 +103,7 @@
         android:hint="Add your comment"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
+        android:maxLength="250"
         android:textSize="18dp"
         android:visibility="gone"
         android:textColor="@color/white"

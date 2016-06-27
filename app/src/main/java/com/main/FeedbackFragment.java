@@ -51,7 +51,7 @@ public class FeedbackFragment extends Fragment {
     private Dialog dialog;
     ProgressDialog progressDialog;
     public static CallDispatcher calldisp;
-    TextView title;
+    TextView title,feedback_text;
 
     public static FeedbackFragment newInstance(Context context){
         try{
@@ -125,6 +125,7 @@ public class FeedbackFragment extends Fragment {
                 comment = (EditText)view.findViewById(R.id.comment);
                 Button save=(Button)view.findViewById(R.id.save_button);
                 Button cancel=(Button)view.findViewById(R.id.cancel_button);
+                feedback_text = (TextView)view.findViewById(R.id.feedback_text);
 
                 if (!istoggleOff) {
                     toggle_off.setBackgroundDrawable(getResources().getDrawable(R.drawable.touch_toogle));
@@ -162,6 +163,7 @@ public class FeedbackFragment extends Fragment {
                         relay_feedback.setVisibility(View.VISIBLE);
                         comment.setVisibility(View.GONE);
                         relay_footer.setVisibility(View.GONE);
+                        feedback_text.setVisibility(View.VISIBLE);
                         comment.setText("");
                     }
                 });
@@ -181,6 +183,7 @@ public class FeedbackFragment extends Fragment {
                     public void onClick(View v) {
                         if(istoggleOff){
                             title.setText("PROVIDE FEEDBACK");
+                            feedback_text.setVisibility(View.GONE);
                             relaay1.setVisibility(View.GONE);
                             relay_feedback.setVisibility(View.GONE);
                             comment.setVisibility(View.VISIBLE);
@@ -218,6 +221,7 @@ public class FeedbackFragment extends Fragment {
                     public void onClick(View v) {
                         dialog1.dismiss();
                         title.setText("FEEDBACK");
+                        feedback_text.setVisibility(View.VISIBLE);
                         relaay1.setVisibility(View.VISIBLE);
                         relay_feedback.setVisibility(View.VISIBLE);
                         comment.setVisibility(View.GONE);

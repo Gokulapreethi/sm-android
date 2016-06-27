@@ -81,7 +81,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:textColor="@color/blue2"
-                android:text="Google Play store link"
+                android:text="https://play.google.com"
                 android:layout_weight="1"
                 android:textSize="18dp"/>
         </RelativeLayout>

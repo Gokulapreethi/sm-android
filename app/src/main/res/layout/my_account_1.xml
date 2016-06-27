@@ -729,44 +729,14 @@
                         android:visibility="visible"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:orientation="vertical"
                         android:layout_marginTop="10dp"
                         android:layout_marginRight="15dp"
                         android:layout_marginLeft="15dp">
-                        <EditText
-                            android:id="@+id/tv_addr"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="left"
-                            android:layout_weight="1"
-                            android:hint="Address"
-                            android:editable="false"
-                            android:padding="7dp"
-                            android:textColor="@color/white"
-                            android:textSize="15dp"/>
-                        <Button
-                            android:gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="16sp"
-                            android:textColor="#909090"
-                            android:layout_marginRight="15dp"
-                            android:id="@+id/addr_edit"
-                            android:background="@drawable/input_edit"
-                            android:layout_toRightOf="@id/tv_addr"
-                            />
 
-                        <Button
-                            android:id="@+id/img_close"
-                            android:gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="15dp"
-                            android:textSize="16sp"
-                            android:textColor="#909090"
-                            android:background="@drawable/input_delete"
-                            android:layout_toRightOf="@id/addr_edit"
-                            />
+
+
+
 
                     </LinearLayout>
             <LinearLayout
@@ -817,35 +787,46 @@
                         android:gravity="left"
                         android:padding="7dp"
                         android:text="Hospital Affiliation"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         android:textColor="#808080"
                         android:textSize="15dp" />
+
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:weightSum="1">
-                        <AutoCompleteTextView
+                        android:id="@+id/hospital_lay1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <LinearLayout
+                            android:id="@+id/hospital_lay"
+                            android:visibility="visible"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginLeft="15dp">
+
+
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+                        <Spinner
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:layout_marginLeft="15dp"
+                            android:layout_marginRight="15dp"
                             android:padding="7dp"
                             android:layout_weight="1"
                             android:textColor="@color/white"
                             android:visibility="visible"
-                            android:hint="Choose Association"
+                            android:hint="Add Hospital Affiliation"
                             android:textSize="15sp"
                             android:background="@color/black2"
-                            android:id="@+id/association_membership"/>
-                        <ImageView
-                            android:id="@+id/association_img"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginRight="15dp"
-                            android:background="@drawable/input_arrow"/>
-                    </LinearLayout>
-
+                            style="@style/spinner_style"
+                            android:id="@+id/rlay_hospital_affiliation"/>
+                    
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
@@ -862,34 +843,39 @@
                         android:gravity="left"
                         android:padding="7dp"
                         android:text="Associations Memberships"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         android:textColor="#808080"
                         android:textSize="15dp" />
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:weightSum="1">
-                        <AutoCompleteTextView
+                        android:id="@+id/associatio_lay1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/associatio_lay"
+                            android:visibility="visible"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginLeft="15dp">
+                            </LinearLayout>
+                    </LinearLayout>
+                        <Spinner
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:layout_marginLeft="15dp"
                             android:padding="7dp"
-                            android:hint="Add Hospital Affiliation"
+                            android:hint="Choose Association"
                             android:textSize="15sp"
                             android:textColor="@color/white"
                             android:background="@color/black2"
                             android:layout_weight="1"
-                            android:id="@+id/rlay_hospital_affiliation"/>
-                        <ImageView
-                            android:id="@+id/hospital_img"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginRight="15dp"
-                            android:background="@drawable/input_arrow"/>
-                    </LinearLayout>
-
+                            style="@style/spinner_style"
+                            android:id="@+id/association_membership"/>
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
