@@ -608,7 +608,7 @@ public class MyAccountActivity extends Activity {
                 }
             }
         });
-        optional.setOnClickListener(new View.OnClickListener() {
+        arrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -616,7 +616,7 @@ public class MyAccountActivity extends Activity {
                 if (isClicked) {
                     isClicked = false;
                     advance_lay.setVisibility(View.VISIBLE);
-                    arrow.setBackgroundResource(R.drawable.up_arrow);
+                    arrow.setBackgroundResource(R.drawable.button_arrow_up);
                 } else {
                     isClicked = true;
                     advance_lay.setVisibility(View.GONE);

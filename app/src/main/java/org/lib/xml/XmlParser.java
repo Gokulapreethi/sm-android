@@ -7322,7 +7322,7 @@ public class XmlParser {
 			is = new InputSource();
 			is.setCharacterStream(new StringReader(xml));
 			doc = (Document) db.parse(is);
-			list = doc.getElementsByTagName("Chattemplets");
+			list = doc.getElementsByTagName("ChatTemplates");
 			for (int i = 0; i < list.getLength(); i++) {
 				node = list.item(i);
 				if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -7338,18 +7338,18 @@ public class XmlParser {
 					}
 				}
 			}
-			list = doc.getElementsByTagName("Chattemplet");
+			list = doc.getElementsByTagName("item");
 			for (int i = 0; i < list.getLength(); i++) {
 				chattemplatebean bean = new chattemplatebean();
 				node = list.item(i);
 				if (node.getNodeType() == Node.ELEMENT_NODE) {
 					element = (Element) node;
 					if (element != null) {
-						String id = element.getAttribute("templetid").trim();
+						String id = element.getAttribute("id").trim();
 						if (!(id.equals(null) || id.equals(""))) {
 							bean.setTempletid(id);
 						}
-						String message = element.getAttribute("templetmessage").trim();
+						String message = element.getAttribute("template").trim();
 						if (!(message.equals(null) || message.equals(""))) {
 							bean.setTempletmessage(message);
 						}

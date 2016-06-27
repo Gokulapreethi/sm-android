@@ -51,6 +51,7 @@ import com.cg.callservices.SipCallConnectingScreen;
 import com.cg.callservices.VideoCallScreen;
 import com.cg.commonclass.BuddyListComparator;
 import com.cg.commonclass.CallDispatcher;
+import com.cg.commonclass.GroupListComparator;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.files.CompleteListBean;
 import com.cg.files.ComponentCreator;
@@ -88,6 +89,7 @@ import org.lib.webservice.Servicebean;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Vector;
 
 /**
@@ -111,6 +113,7 @@ public class ContactsFragment extends Fragment{
 	public boolean contactrecent = false;
 	private boolean grouprecent = true;
 	public boolean isazsort = true;
+	private boolean isGroupAZ=true;
 
 	private AlertDialog alert = null;
 	private ImageLoader imageLoader;
@@ -386,6 +389,20 @@ public class ContactsFragment extends Fragment{
 				final Button online_sort = (Button) _rootView.findViewById(R.id.online_sort);
 				final Button alph_sort = (Button) _rootView.findViewById(R.id.alpha_sort);
 				final EditText myFilter = (EditText)_rootView.findViewById(R.id.searchtext);
+				Button groupsort=(Button)_rootView.findViewById(R.id.groupsort);
+				groupsort.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						if(isGroupAZ) {
+							isGroupAZ = false;
+							sortGroups();
+						}else {
+							isGroupAZ = true;
+							sortGroups();
+						}
+
+					}
+				});
 				search.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View view) {
@@ -680,6 +697,41 @@ public class ContactsFragment extends Fragment{
 					lv.setAdapter(null);
 					lv.setAdapter(contactAdapter);
 					ContactsFragment.contactAdapter.notifyDataSetChanged();
+				}
+			});
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	private void sortGroups(){
+		try {
+			handler.post(new Runnable() {
+				@Override
+				public void run() {
+					Vector<GroupBean> tempList = new Vector<GroupBean>();
+					Vector<GroupBean> requestList = new Vector<GroupBean>();
+					Vector<GroupBean> acceptedList = new Vector<GroupBean>();
+					for(GroupBean bean:GroupActivity.getAllGroups()){
+						if(bean.getStatus().equalsIgnoreCase("request"))
+							requestList.add(bean);
+						else
+							acceptedList.add(bean);
+					}
+					if(!isGroupAZ)
+						Collections.reverse(requestList);
+					tempList.addAll(requestList);
+					Collections.sort(acceptedList, new GroupListComparator());
+					if(!isGroupAZ)
+						Collections.reverse(acceptedList);
+					tempList.addAll(acceptedList);
+					getGroupList().clear();
+					getGroupList().addAll(tempList);
+					lv2.setAdapter(null);
+					GroupActivity.groupAdapter = new GroupAdapter(mainContext,
+							R.layout.grouplist, tempList);
+					lv2.setAdapter(GroupActivity.groupAdapter);
+					ContactsFragment.getGroupAdapter().notifyDataSetChanged();
 				}
 			});
 		} catch (Exception e) {

@@ -157,6 +157,12 @@ abstract class ProgressView extends View implements ProgressShape {
         invalidate();
         requestLayout();
     }
+    public void setForegroundColor(int foregroundColor) {
+        this.color = foregroundColor;
+        foregroundPaint.setColor(foregroundColor);
+        invalidate();
+        requestLayout();
+    }
 
     private void initAnimator(float progres) {
         objAnimator = ObjectAnimator.ofFloat(this, PROGRESS, progres);

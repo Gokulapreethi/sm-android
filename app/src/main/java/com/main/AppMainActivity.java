@@ -822,7 +822,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				}else{
 					modifieddatetime="\"\"";
 				}
-				WebServiceReferences.webServiceClient.getChatTemplate(modifieddatetime);
+				WebServiceReferences.webServiceClient.getChatTemplate(CallDispatcher.LoginUser,modifieddatetime);
 			}
 			checkChatHistory();
 			setUnReadNotesSize();
@@ -8079,35 +8079,34 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				boolean db_delete=false;
 				for (int i = 0; i < list.size(); i++) {
 					final Object obj = list.get(i);
-					if (obj instanceof ChattemplateModifieddate) {
-						ChattemplateModifieddate chattemplateModifieddate = (ChattemplateModifieddate) list
-								.get(i);
-						if(DBAccess.getdbHeler(SingleInstance.mainContext).getChatTemplateModifieddatetime()!=null){
-							Log.i("chattemplate", "Appmain notifychatTemplate  modified DB!=null");
-							if(chattemplateModifieddate.getModifieddatetime().equalsIgnoreCase(DBAccess.getdbHeler(SingleInstance.mainContext)
-									.getChatTemplateModifieddatetime())){
-								Log.i("chattemplate","Appmain notifychatTemplate  modified DB!=null date same");
-							}else {
-								boolean db_deleteModidate = DBAccess.getdbHeler(SingleInstance.mainContext).chatTemplateModifiedDateDelete();
-								boolean db_chatTemplate = DBAccess.getdbHeler(SingleInstance.mainContext).chatTemplateDelete();
-								if(db_deleteModidate) {
-									Log.i("chattemplate","Appmain notifychatTemplate  modified DB!=null delete and new save");
-									db_delete=true;
-									DBAccess.getdbHeler(SingleInstance.mainContext).insertChatTemplateModifieddate(chattemplateModifieddate);
-								}
-							}
-						}else{
-							Log.i("chattemplate","Appmain notifychatTemplate  modified DB==null");
-							db_delete=true;
-							DBAccess.getdbHeler(SingleInstance.mainContext).insertChatTemplateModifieddate(chattemplateModifieddate);
-						}
-					} else if (obj instanceof chattemplatebean) {
+//					if (obj instanceof ChattemplateModifieddate) {
+//						ChattemplateModifieddate chattemplateModifieddate = (ChattemplateModifieddate) list
+//								.get(i);
+//						if(DBAccess.getdbHeler(SingleInstance.mainContext).getChatTemplateModifieddatetime()!=null){
+//							Log.i("chattemplate", "Appmain notifychatTemplate  modified DB!=null");
+//							if(chattemplateModifieddate.getModifieddatetime().equalsIgnoreCase(DBAccess.getdbHeler(SingleInstance.mainContext)
+//									.getChatTemplateModifieddatetime())){
+//								Log.i("chattemplate","Appmain notifychatTemplate  modified DB!=null date same");
+//							}else {
+//								boolean db_deleteModidate = DBAccess.getdbHeler(SingleInstance.mainContext).chatTemplateModifiedDateDelete();
+//								boolean db_chatTemplate = DBAccess.getdbHeler(SingleInstance.mainContext).chatTemplateDelete();
+//								if(db_deleteModidate) {
+//									Log.i("chattemplate","Appmain notifychatTemplate  modified DB!=null delete and new save");
+//									db_delete=true;
+//									DBAccess.getdbHeler(SingleInstance.mainContext).insertChatTemplateModifieddate(chattemplateModifieddate);
+//								}
+//							}
+//						}else{
+//							Log.i("chattemplate","Appmain notifychatTemplate  modified DB==null");
+//							db_delete=true;
+//							DBAccess.getdbHeler(SingleInstance.mainContext).insertChatTemplateModifieddate(chattemplateModifieddate);
+//						}
+//					}
+				 if (obj instanceof chattemplatebean) {
 						chattemplatebean chattemplatebean = (chattemplatebean) list
 								.get(i);
-						if(db_delete) {
 							Log.i("chattemplate","Appmain notifychatTemplate  chat template entry");
 							DBAccess.getdbHeler(SingleInstance.mainContext).insertChatTemplate(chattemplatebean);
-						}
 					}
 				}
 			}

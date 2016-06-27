@@ -249,7 +249,7 @@ public class TaskCreationActivity extends Activity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() > 0) {
                     patientName.setVisibility(View.VISIBLE);
-                    patient.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.up_arrow, 0);
+                    patient.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.button_arrow_up, 0);
                 } else {
                     patientName.setVisibility(View.GONE);
                     patient.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.input_arrow, 0);

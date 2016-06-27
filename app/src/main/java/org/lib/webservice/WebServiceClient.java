@@ -151,12 +151,13 @@ public class WebServiceClient {
 		}
 	}
 
-	public void getChatTemplate(String datetime) {
+	public void getChatTemplate(String userid,String datetime) {
 
 		Log.i("chattemplate","webserviceClient getchatTemplate date time--->"+datetime);
 		Servicebean servicebean = new Servicebean();
-		servicebean.setWsmethodname("Getchattemplets");
+		servicebean.setWsmethodname("GetChatTemplates");
 		HashMap<String, String> property_map = new HashMap<String, String>();
+		property_map.put("userid", userid);
 		property_map.put("date", datetime);
 		servicebean.setProperty_map(property_map);
 		servicebean.setServiceMethods(EnumWebServiceMethods.GETCHATTEMPLATE);

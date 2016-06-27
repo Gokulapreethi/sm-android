@@ -8894,13 +8894,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         plusBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!(groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
-                        rolePatientManagementBean.getAdd() != null && rolePatientManagementBean.getAdd().equalsIgnoreCase("1"))) {
+                if (groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                        (rolePatientManagementBean.getAdd() != null && rolePatientManagementBean.getAdd().equalsIgnoreCase("1"))) {
                     Intent intent = new Intent(context, RoundNewPatientActivity.class);
                     intent.putExtra("groupid", groupBean.getGroupId());
                     startActivity(intent);
                 }else
-                    showToast("You have ");
+                    showToast("You have no access to create patient ");
             }
         });
         ed_search.addTextChangedListener(new TextWatcher() {
@@ -9513,12 +9513,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         plusBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!(groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
-                        roleAccessBean.getTaskmanagement()!=null && roleAccessBean.getTaskmanagement().equalsIgnoreCase("1"))) {
+                if(groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                        (roleAccessBean.getTaskmanagement()!=null && roleAccessBean.getTaskmanagement().equalsIgnoreCase("1"))) {
                     Intent intent = new Intent(context, TaskCreationActivity.class);
                     intent.putExtra("groupid", groupBean.getGroupId());
                     startActivity(intent);
-                }
+                }else
+                    showToast("You have no access to create Task ");
             }
         });
         Vector<TaskDetailsBean> tasklist = DBAccess.getdbHeler().getAllTaskDetails(strQuery);

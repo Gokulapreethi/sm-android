@@ -2135,14 +2135,9 @@ public class WSRunner implements Runnable {
 						if (mChk) {
 							Log.i("chattemplate","parse value getchattemplate");
 							ArrayList<Object> values=mParser.parseGetchattemplate(mSp.toString());
-//							if (mServicebean.getCallBack() != null) {
 							if(SingleInstance.mainContext!=null){
 								Log.i("chattemplate","mServicebean.getCallBack() != null");
-//								if (mServicebean.getCallBack() instanceof AppMainActivity) {
-//									Log.i("chattemplate","callback Appmainactivity");
-//									AppMainActivity mainActivity=(AppMainActivity) mServicebean.getCallBack();
 									SingleInstance.mainContext.notifyChatTemplate(mChk,values);
-//								}
 							}
 						}else{
 							if(SingleInstance.mainContext!=null){
