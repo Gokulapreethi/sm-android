@@ -3,13 +3,6 @@
  */
 package com.cg.timer;
 
-import java.net.InetAddress;
-
-import org.core.AESCrypto;
-import org.core.ProprietarySignalling;
-import org.lib.model.SignalingBean;
-import org.net.udp.UDPEngine;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +12,13 @@ import com.cg.commonclass.CallDispatcher;
 import com.main.AppMainActivity;
 import com.main.ContactsFragment;
 import com.util.SingleInstance;
+
+import org.core.AESCrypto;
+import org.core.ProprietarySignalling;
+import org.lib.model.SignalingBean;
+import org.net.udp.UDPEngine;
+
+import java.net.InetAddress;
 
 
 public class KeepAliveReceiver extends BroadcastReceiver {
@@ -33,7 +33,7 @@ public class KeepAliveReceiver extends BroadcastReceiver {
 			Log.i("alarm123","Comes into KeepAliveReceiver ");
 			SingleInstance.printLog(null, "Comes into KeepAliveReceiver ", "INFO", null);
 
-			SingleInstance.mainContext.setLogWriterForCall("Timer Fired User=" + CallDispatcher.LoginUser);
+//			SingleInstance.mainContext.setLogWriterForCall("Timer Fired User=" + CallDispatcher.LoginUser);
 
 			if (CallDispatcher.LoginUser != null) {
 				ProprietarySignalling pSignalling = AppMainActivity.commEngine

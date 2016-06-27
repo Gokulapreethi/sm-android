@@ -2004,53 +2004,53 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 											selfHangup = true;
 											if (selfHangup) {
 
-                                                Log.i("AudioCall","StartTime :"+CallDispatcher.sb
+												Log.i("AudioCall", "StartTime :" + CallDispatcher.sb
 														.getStartTime());
-                                                CallDispatcher.sb
+												CallDispatcher.sb
 														.setEndTime(objCallDispatcher.getCurrentDateandTime());
-                                                CallDispatcher.sb
-                                                        .setCallDuration(SingleInstance.mainContext
+												CallDispatcher.sb
+														.setCallDuration(SingleInstance.mainContext
 																.getCallDuration(CallDispatcher.sb
 																				.getStartTime(),
 																		CallDispatcher.sb
 																				.getEndTime()));
-                                                CallDispatcher.sb.setCallstatus("callattended");
+												CallDispatcher.sb.setCallstatus("callattended");
 
-                                                //For Callhistory host and participant name entry
-                                                //Start
-                                                CallDispatcher.sb.setHost_name(host);
-                                                String participant=null;
-                                                if(CallDispatcher.conferenceMembers!=null && CallDispatcher.conferenceMembers.size()>0){
-                                                    for(String name:CallDispatcher.conferenceMembers){
-                                                        if(!name.equalsIgnoreCase(host)){
-                                                            if(participant==null){
-                                                                participant=name;
-                                                            }else{
-                                                                participant=participant+","+name;
-                                                            }
+												//For Callhistory host and participant name entry
+												//Start
+												CallDispatcher.sb.setHost_name(host);
+												String participant = null;
+												if (CallDispatcher.conferenceMembers != null && CallDispatcher.conferenceMembers.size() > 0) {
+													for (String name : CallDispatcher.conferenceMembers) {
+														if (!name.equalsIgnoreCase(host)) {
+															if (participant == null) {
+																participant = name;
+															} else {
+																participant = participant + "," + name;
+															}
 
-                                                        }
-                                                    }
-                                                }
-                                                if(participant!=null){
-                                                    CallDispatcher.sb.setParticipant_name(participant);
-                                                }
-                                                //end
+														}
+													}
+												}
+												if (participant != null) {
+													CallDispatcher.sb.setParticipant_name(participant);
+												}
+												//end
 
-                                                DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
-                                                DBAccess.getdbHeler()
-                                                        .saveOrUpdateRecordtransactiondetails(
+												DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+												DBAccess.getdbHeler()
+														.saveOrUpdateRecordtransactiondetails(
 																CallDispatcher.sb);
 
-                                                showCallHistory();
+												showCallHistory();
 
 
-                                            }
+											}
 											final String[] choiceList = returnBuddies();
 											if (choiceList.length != 0) {
-                                                isBuddyinCall = true;
-                                                selfHangup = false;
-                                            }
+												isBuddyinCall = true;
+												selfHangup = false;
+											}
 											handler.sendMessage(msg);
 										} catch (Exception e) {
 											e.printStackTrace();
@@ -2134,12 +2134,17 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	}
 
 	public void notifyGSMCallAccepted() {
+//		objCallDispatcher.whenCallHangedUp();
 		Message msg = new Message();
 		Bundle bun = new Bundle();
 		bun.putString("action", "leave");
 		msg.obj = bun;
 		handler.sendMessage(msg);
 	}
+
+//	public void notifyGSMCallRejected () {
+//		objCallDispatcher.whenCallInitiated();
+//	}
 
 	public void receiveHangUpx(final SignalingBean sb) {
 		// Log.e("test", "Call Rejected @#@##@#@#      6");

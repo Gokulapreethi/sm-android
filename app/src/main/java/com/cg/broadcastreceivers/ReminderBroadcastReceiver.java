@@ -50,7 +50,7 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
 								.containsKey("calldisp")) {
 							CallDispatcher callDisp = (CallDispatcher) WebServiceReferences.callDispatch
 									.get("calldisp");
-							callDisp.notifyGSMCallAcceted();
+							callDisp.notifyGSMCallAcceted(true);
 						}
 
 					} else if (arg1
@@ -65,11 +65,13 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
 							CallDispatcher callDisp = (CallDispatcher) WebServiceReferences.callDispatch
 									.get("calldispatch");
 							callDisp.GSMCallisAccepted = false;
+//							callDisp.notifyGSMCallAcceted(false);
 						} else if (WebServiceReferences.callDispatch
 								.containsKey("calldisp")) {
 							CallDispatcher callDisp = (CallDispatcher) WebServiceReferences.callDispatch
 									.get("calldisp");
 							callDisp.GSMCallisAccepted = false;
+//							callDisp.notifyGSMCallAcceted(false);
 						}
 					}
 				}

@@ -10944,7 +10944,7 @@ private TrustManager[] get_trust_mgr() {
 		fileDownloader = null;
 	}
 
-	public void notifyGSMCallAcceted() {
+	public void notifyGSMCallAcceted(boolean accepted) {
 		isCallInitiate = false;
 		GSMCallisAccepted = true;
 		if (WebServiceReferences.contextTable.containsKey("multimediautils"))
