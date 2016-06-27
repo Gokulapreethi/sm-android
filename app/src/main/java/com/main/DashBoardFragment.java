@@ -720,6 +720,7 @@ public class DashBoardFragment extends Fragment {
 
     public Vector<NotifyListBean> LoadFilesList(String username)
     {
+        Log.i("Multi","username : "+username);
         tempnotifylist.clear();
         seacrhnotifylist.clear();
         notifyList = DBAccess.getdbHeler()
@@ -758,7 +759,7 @@ public class DashBoardFragment extends Fragment {
                     Log.i("AAAA","NOTIFY LIST from user "+nBean.getNotifttype()+" , "+nBean.getSortdate()+" , "+nBean.getFrom());
                     Log.d("AAAA", "Notifyid" + nBean.getFileid());
                     if(nBean.getViewed()==0 && nBean.getNotifttype().equals("C")) {
-                        ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getTo());
+                        ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
                         nBean.setProfilePic(pBean.getPhoto());
                         if(pBean!=null)
                             nBean.setUsername(pBean.getFirstname()+" "+pBean.getLastname());

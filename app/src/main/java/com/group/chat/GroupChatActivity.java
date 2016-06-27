@@ -1062,10 +1062,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 btn_image.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(!CallDispatcher.isCallInitiate)
+//                        if(!CallDispatcher.isCallInitiate)
                         photochat();
-                        else
-                            showToast("Please Try again...call  in progress");
+//                        else
+//                            showToast("Please Try again...call  in progress");
                     }
                 });
 //
@@ -1122,10 +1122,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 btn_video.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(!CallDispatcher.isCallInitiate)
+//                        if(!CallDispatcher.isCallInitiate)
                         showVideoMessageDialog();
-                        else
-                            showToast("Please Try again...call in progress");
+//                        else
+//                            showToast("Please Try again...call in progress");
                     }
                 });
                 btn_sketch.setOnClickListener(new OnClickListener() {
@@ -2892,7 +2892,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             builder.setItems(items, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    multimediaType(items[which]);
+                    Log.i("Multi", "which : " + which);
+                    if( CallDispatcher.isCallInitiate && which == 0 ) {
+                        showToast("Please Try again...call  in progress");
+                    } else {
+                        multimediaType(items[which]);
+                    }
 
                 }
 
@@ -3773,19 +3778,23 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         public void onClick(DialogInterface dialog, int pos) {
                             // TODO Auto-generated method stub
                             if (pos == 0) {
-                                strIPath = Environment
-                                        .getExternalStorageDirectory()
-                                        + "/COMMedia/"
-                                        + "MVD_"
-                                        + callDisp.getFileName() + ".mp4";
-                                Intent intent = new Intent(context,
-                                        CustomVideoCamera.class);
-                                intent.putExtra("filePath", strIPath);
-                                // intent.putExtra("requestCode", 35);
-                                // intent.putExtra("action",
-                                // MediaStore.ACTION_VIDEO_CAPTURE);
-                                // intent.putExtra("createOrOpen", "create");
-                                startActivityForResult(intent, 40);
+                                if(!CallDispatcher.isCallInitiate) {
+                                    strIPath = Environment
+                                            .getExternalStorageDirectory()
+                                            + "/COMMedia/"
+                                            + "MVD_"
+                                            + callDisp.getFileName() + ".mp4";
+                                    Intent intent = new Intent(context,
+                                            CustomVideoCamera.class);
+                                    intent.putExtra("filePath", strIPath);
+                                    // intent.putExtra("requestCode", 35);
+                                    // intent.putExtra("action",
+                                    // MediaStore.ACTION_VIDEO_CAPTURE);
+                                    // intent.putExtra("createOrOpen", "create");
+                                    startActivityForResult(intent, 40);
+                                } else {
+                                    showToast("Please Try again...call  in progress");
+                                }
                                 dialog.dismiss();
                             } else if (pos == 1) {
                                 if (Build.VERSION.SDK_INT < 19) {
