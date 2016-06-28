@@ -8048,4 +8048,36 @@ public class XmlParser {
 			return fileslist;
 		}
 	}
+	public String[] parseUpdateChatTemplate(String xml) {
+		String[] result = null;
+		result=new String[4];
+		try {
+			dbf = DocumentBuilderFactory.newInstance();
+			db = dbf.newDocumentBuilder();
+			is = new InputSource();
+			is.setCharacterStream(new StringReader(xml));
+			doc = (Document) db.parse(is);
+			list = doc.getElementsByTagName("UpdateChatTemplate");
+
+			node = list.item(0);
+			nodeMap = node.getAttributes();
+
+			if (nodeMap.getNamedItem("modifieddate") != null) {
+				result[0] = nodeMap.getNamedItem("modifieddate").getNodeValue();
+			}
+			if (nodeMap.getNamedItem("type") != null) {
+				result[1] = nodeMap.getNamedItem("type").getNodeValue();
+			}
+			if (nodeMap.getNamedItem("templateid") != null) {
+				result[2] = nodeMap.getNamedItem("templateid").getNodeValue();
+			}
+			if (nodeMap.getNamedItem("message") != null) {
+				result[3] = nodeMap.getNamedItem("message").getNodeValue();
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return result;
+	}
 }

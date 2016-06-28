@@ -9653,8 +9653,7 @@ public class DBAccess extends SQLiteOpenHelper {
 				cv.put("userid", CallDispatcher.LoginUser);
 			if (isRecordExists("select * from chattemplate where userid='"
 					+ CallDispatcher.LoginUser + "'and id='" + bean.getTempletid() + "'"))
-				row = updateMemberDetails(cv,
-						"userid='" + CallDispatcher.LoginUser + "'and id='" + bean.getTempletid() + "'");
+				row = (int) db.update("chattemplate", cv, "userid='" + CallDispatcher.LoginUser + "'and id='" + bean.getTempletid() + "'",null);
 			else
 				row = (int) db.insert("chattemplate", null, cv);
 			return row;
@@ -9733,21 +9732,19 @@ public class DBAccess extends SQLiteOpenHelper {
 		return delete;
 	}
 
-	public boolean chatTemplateDelete(){
+	public boolean deleteChatTemplate(String templateId){
 		boolean delete = false;
 		try {
 			if (!db.isOpen())
 				openDatabase();
-
 			String strQuery = null;
-			strQuery = "DELETE * from chattemplate";
+			strQuery = "DELETE from chattemplate WHERE id='" + templateId
+					+ "' and userid='" + CallDispatcher.LoginUser + "'";
 			db.execSQL(strQuery);
 			delete = true;
 		} catch (Exception e) {
 			delete = false;
-			Log.e("clone",
-					"Call History message== >"
-							+ e.getMessage());
+			Log.e("clone", "Call History message== >" + e.getMessage());
 		}
 		return delete;
 	}
@@ -9761,14 +9758,15 @@ public class DBAccess extends SQLiteOpenHelper {
 			} else {
 				openDatabase();
 			}
-			String strGetQry = "select message from chattemplate";
+			String strGetQry = "select id,message from chattemplate";
 			cur = db.rawQuery(strGetQry, null);
 			int len = cur.getCount();
 			cur.moveToFirst();
 
 			while (cur.isAfterLast() == false) {
 				chattemplatebean chattemplatebean=new chattemplatebean();
-				chattemplatebean.setTempletmessage(cur.getString(0));
+				chattemplatebean.setTempletid(cur.getString(0));
+				chattemplatebean.setTempletmessage(cur.getString(1));
 				cur.moveToNext();
 				vc_chaChattemplatebeans.add(chattemplatebean);
 			}

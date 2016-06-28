@@ -42,6 +42,7 @@ import com.cg.utilities.UtilitySeller;
 import com.cg.utilities.UtilityServiceNeeder;
 import com.cg.utilities.UtilityServiceProvider;
 import com.group.GroupActivity;
+import com.group.chat.ChatTemplateActivity;
 import com.group.chat.GroupChatActivity;
 import com.group.chat.GroupChatSettings;
 import com.group.chat.ProfessionList;
@@ -1823,6 +1824,24 @@ public class WSRunner implements Runnable {
 						 SingleInstance.printLog(TAG, "Login, Callback is NULL",
 								null, null);
 					     }
+						break;
+					case UPDATECHATTEMPLATE:
+						if (mParser.getResult(mSp.toString())) {
+							String[] param = mParser.parseUpdateChatTemplate(mSp
+									.toString());
+							mServicebean.setObj(param);
+						} else {
+							webServiceBean = mParser.parseResultFromXml(mSp
+									.toString());
+							mServicebean.setObj(webServiceBean);
+						}
+						if (mServicebean.getCallBack() != null) {
+							((ChatTemplateActivity) mServicebean.getCallBack())
+									.notifyUpdateChatTemplate(mServicebean.getObj());
+						} else {
+							SingleInstance.printLog(TAG, "Login, Callback is NULL",
+									null, null);
+						}
 						break;
 					case SUBSCRIBENEW:
 						String sresult = mParser.parseResultXml(mSp.toString());

@@ -374,6 +374,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             fragmentManager.beginTransaction().replace(
                     R.id.activity_main_content_fragment, changePassword)
                     .commitAllowingStateLoss();
+
+            GroupMemberBean memberbean = DBAccess.getdbHeler().getMemberDetails(groupBean.getGroupId(), CallDispatcher.LoginUser);
+            roleAccessBean = DBAccess.getdbHeler().getRoleAccessDetails(groupBean.getGroupId(), memberbean.getRole());
+            rolePatientManagementBean = DBAccess.getdbHeler().getRolePatientManagement(groupBean.getGroupId(), memberbean.getRole());
         }
 
         dot.setOnClickListener(new OnClickListener() {
@@ -468,9 +472,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 dialog.dismiss();
                             }
                         });
-                        GroupMemberBean memberbean = DBAccess.getdbHeler().getMemberDetails(groupBean.getGroupId(), CallDispatcher.LoginUser);
-                        roleAccessBean = DBAccess.getdbHeler().getRoleAccessDetails(groupBean.getGroupId(), memberbean.getRole());
-                        rolePatientManagementBean = DBAccess.getdbHeler().getRolePatientManagement(groupBean.getGroupId(), memberbean.getRole());
+
                         if (!groupBean.getOwnerName().equalsIgnoreCase(
                                 CallDispatcher.LoginUser)) {
                             edit.setEnabled(false);

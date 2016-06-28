@@ -8076,32 +8076,23 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		if(response && object!=null){
 			if (object instanceof ArrayList) {
 				ArrayList list = (ArrayList) object;
-				boolean db_delete=false;
 				for (int i = 0; i < list.size(); i++) {
 					final Object obj = list.get(i);
-//					if (obj instanceof ChattemplateModifieddate) {
-//						ChattemplateModifieddate chattemplateModifieddate = (ChattemplateModifieddate) list
-//								.get(i);
-//						if(DBAccess.getdbHeler(SingleInstance.mainContext).getChatTemplateModifieddatetime()!=null){
-//							Log.i("chattemplate", "Appmain notifychatTemplate  modified DB!=null");
-//							if(chattemplateModifieddate.getModifieddatetime().equalsIgnoreCase(DBAccess.getdbHeler(SingleInstance.mainContext)
-//									.getChatTemplateModifieddatetime())){
-//								Log.i("chattemplate","Appmain notifychatTemplate  modified DB!=null date same");
-//							}else {
-//								boolean db_deleteModidate = DBAccess.getdbHeler(SingleInstance.mainContext).chatTemplateModifiedDateDelete();
-//								boolean db_chatTemplate = DBAccess.getdbHeler(SingleInstance.mainContext).chatTemplateDelete();
-//								if(db_deleteModidate) {
-//									Log.i("chattemplate","Appmain notifychatTemplate  modified DB!=null delete and new save");
-//									db_delete=true;
-//									DBAccess.getdbHeler(SingleInstance.mainContext).insertChatTemplateModifieddate(chattemplateModifieddate);
-//								}
-//							}
-//						}else{
-//							Log.i("chattemplate","Appmain notifychatTemplate  modified DB==null");
-//							db_delete=true;
-//							DBAccess.getdbHeler(SingleInstance.mainContext).insertChatTemplateModifieddate(chattemplateModifieddate);
-//						}
-//					}
+					if (obj instanceof ChattemplateModifieddate) {
+						ChattemplateModifieddate chattemplateModifieddate = (ChattemplateModifieddate) list
+								.get(i);
+						if(DBAccess.getdbHeler(SingleInstance.mainContext).getChatTemplateModifieddatetime()!=null){
+							Log.i("chattemplate", "Appmain notifychatTemplate  modified DB!=null");
+							if(!chattemplateModifieddate.getModifieddatetime().equalsIgnoreCase(DBAccess.getdbHeler(SingleInstance.mainContext)
+									.getChatTemplateModifieddatetime())){
+								    DBAccess.getdbHeler(SingleInstance.mainContext).chatTemplateModifiedDateDelete();
+									DBAccess.getdbHeler(SingleInstance.mainContext).insertChatTemplateModifieddate(chattemplateModifieddate);
+							}
+						}else{
+							Log.i("chattemplate","Appmain notifychatTemplate  modified DB==null");
+							DBAccess.getdbHeler(SingleInstance.mainContext).insertChatTemplateModifieddate(chattemplateModifieddate);
+						}
+					}
 				 if (obj instanceof chattemplatebean) {
 						chattemplatebean chattemplatebean = (chattemplatebean) list
 								.get(i);

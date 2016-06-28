@@ -82,7 +82,10 @@ import android.widget.Toast;
 import android.widget.VideoView;
 import android.widget.ViewFlipper;
 
+import com.Fingerprint.MainActivity;
 import com.cg.DB.DBAccess;
+import com.cg.account.PinSecurity;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.cg.snazmed.R.drawable;
 import com.cg.account.ShareByProfile;
@@ -1697,6 +1700,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 					// SingleInstance.mainContext.getResources()
 					// .getString(R.string.cannot_save_empty_file));
 					showAlert1("Please enter some content to save. Cannot save empty file");
+					return;
 				}
 
 				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -3809,6 +3813,21 @@ public class ComponentCreator extends Activity implements IMNotifier {
 //				btnIMRequest.setVisibility(View.GONE);
 //			else
 //				btnIMRequest.setVisibility(View.VISIBLE);
+			if(AppReference.mainContext.isPinEnable) {
+				if (AppReference.mainContext.openPinActivity) {
+					AppReference.mainContext.openPinActivity=false;
+					if(Build.VERSION.SDK_INT>20 && AppReference.mainContext.isTouchIdEnabled) {
+						Intent i = new Intent(ComponentCreator.this, MainActivity.class);
+						startActivity(i);
+					}else {
+						Intent i = new Intent(ComponentCreator.this, PinSecurity.class);
+						startActivity(i);
+					}
+				} else {
+					AppReference.mainContext.count=0;
+					AppReference.mainContext.registerBroadcastReceiver();
+				}
+			}
 
 			if (CallDispatcher.fromMultimediaUtils
 					|| CallDispatcher.handsketch_edit) {
@@ -4282,66 +4301,24 @@ public class ComponentCreator extends Activity implements IMNotifier {
 		try {
 			// TODO Auto-generated method stub
 			if (keyCode == KeyEvent.KEYCODE_BACK) {
-				if (ComponentPath != null) {
-					if (!isVideoPlay) {
-						if (ON_CREATE) {
-							if (GET_RESOURCES == TEXT
-									&& edNotes.getText().toString() != null
-									&& edNotes.getText().toString().length() > 0) {
-								showAlert();
-							} else if (GET_RESOURCES == AUDIO && audioExist) {
-								showAlert();
-
-							} else if ((GET_RESOURCES == CAPTURE_VIDEO
-									|| GET_RESOURCES == FROM_CAMERA
-									|| GET_RESOURCES == FROM_GALERY || GET_RESOURCES == GALLERY_KITKAT_INTENT_CALLED)
-									&& ComponentPath != null
-									&& ComponentPath.length() > 0)
-								showAlert();
-							else if (builder != null) {
-								if (send)
-									refreshList();
-							} else if (ComponentPath.length() > 0)
-								showAlert();
-							else
-								refreshList();
-						} else {
-							refreshList();
-						}
-
-					} else {
-						ShowError(SingleInstance.mainContext.getResources()
-								.getString(R.string.video),
-								SingleInstance.mainContext.getResources()
-										.getString(R.string.video_kindly_stop));
-					}
-
-				} else {
-					if (ON_CREATE) {
-						if (GET_RESOURCES == TEXT
-								&& edNotes.getText().toString() != null
-								&& edNotes.getText().toString().length() > 0) {
-							showAlert();
-						} else if (GET_RESOURCES == AUDIO && audioExist) {
-							showAlert();
-						} else if ((GET_RESOURCES == CAPTURE_VIDEO
-								|| GET_RESOURCES == FROM_CAMERA
-								|| GET_RESOURCES == FROM_GALERY || GET_RESOURCES == GALLERY_KITKAT_INTENT_CALLED)
-								&& ComponentPath != null
-								&& ComponentPath.length() > 0) {
-							showAlert();
-						} else if (builder != null)
-							if (send)
-								refreshList();
-							else if (ComponentPath.length() > 0)
-								showAlert();
-							else
-								refreshList();
-					} else
+				if (ON_CREATE) {
+					if (GET_RESOURCES == TEXT
+							&& edNotes.getText().toString() != null
+							&& edNotes.getText().toString().length() > 0)
+						showAlert();
+					else if (GET_RESOURCES == AUDIO && audioExist) {
+						showAlert();
+					} else if ((GET_RESOURCES == CAPTURE_VIDEO
+							|| GET_RESOURCES == FROM_CAMERA
+							|| GET_RESOURCES == FROM_GALERY || GET_RESOURCES == GALLERY_KITKAT_INTENT_CALLED)
+							&& ComponentPath != null
+							&& ComponentPath.length() > 0)
+						showAlert();
+					else {
 						refreshList();
-
-				}
-
+					}
+				} else
+					refreshList();
 			}
 			return super.onKeyDown(keyCode, event);
 		} catch (Exception e) {
@@ -5259,5 +5236,12 @@ public class ComponentCreator extends Activity implements IMNotifier {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	@Override
+	protected void onStop() {
+		super.onStop();
+		Log.i("pin", "Groupchatactivity Onstop");
+		AppReference.mainContext.isApplicationBroughtToBackground();
+
 	}
 }
