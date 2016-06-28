@@ -145,6 +145,12 @@ public class SecurityQuestions extends Fragment {
 
                     list_secQue1 = new ArrayList<String>();
                     list_secQue1.addAll(quesList);
+                    sec_ans1.setText(questions[3]);
+                    sec_ans2.setText(questions[4]);
+                    sec_ans3.setText(questions[5]);
+                    tv_ans1.setVisibility(View.VISIBLE);
+                    tv_ans2.setVisibility(View.VISIBLE);
+                    tv_ans3.setVisibility(View.VISIBLE);
 
                     dataAdapter_secQue1 = new ArrayAdapter<String>(mainContext, R.layout.spinner_lay, list_secQue1);
                     dataAdapter_secQue1.setDropDownViewResource(R.layout.spinner_dropdown_list);

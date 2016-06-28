@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -34,12 +35,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Fingerprint.MainActivity;
 import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.image.utils.ImageLoader;
+import com.main.AppMainActivity;
 import com.main.MyAccountFragment;
 import com.util.CustomVideoCamera;
 import com.util.SingleInstance;
@@ -463,45 +467,24 @@ public class MyAccountActivity extends Activity {
                                 String office_address = "";
                                 if (Addressline1 != null && !Addressline1.trim().equals("")) {
                                     office_address = Addressline1;
-                                    if(isEdit=true) {
-                                        add_officeaddress.replaceAll(address[0], Addressline1);
-                                    }
                                 }
                                 if (Addressline2 != null && !Addressline2.trim().equals("")) {
                                     office_address = office_address + "," + Addressline2;
-                                    if(isEdit=true) {
-                                        add_officeaddress.replaceAll(address[1], Addressline2);
-                                    }
                                 }
                                 if (zip_code != null && !zip_code.trim().equals("")) {
                                     office_address = office_address + "," + zip_code;
-                                    if(isEdit=true) {
-                                        add_officeaddress.replaceAll(address[2], zip_code);
-                                    }
                                 }
                                 if (city_value != null && !city_value.trim().equals("")) {
                                     office_address = office_address + "," + city_value;
-                                    if(isEdit=true) {
-                                        add_officeaddress.replaceAll(address[3], city_value);
-                                    }
                                 }
                                 if (state_value != null && !state_value.trim().equals("")) {
                                     office_address = office_address + "," + state_value;
-                                    if(isEdit=true) {
-                                        add_officeaddress.replaceAll(address[4], state_value);
-                                    }
                                 }
                                 if (office_phone_no != null && !office_phone_no.trim().equals("")) {
                                     office_address = office_address + "," + office_phone_no;
-                                    if(isEdit=true) {
-                                        add_officeaddress.replaceAll(address[5], office_phone_no);
-                                    }
                                 }
                                 if (office_fax != null && !office_fax.trim().equals("")) {
                                     office_address = office_address + "," + office_fax;
-                                    if(isEdit=true) {
-                                        add_officeaddress.replaceAll(address[6], office_fax);
-                                    }
                                 }
 
                                 if (Address1.length() > 0) {
@@ -509,11 +492,12 @@ public class MyAccountActivity extends Activity {
                                 }
                                 String full_officeaddress = office_address;
 //                                add_officeaddress =full_officeaddress;
-                                if(isEdit = true){
+                                if(isEdit){
                                     isEdit=false;
-//                                    Log.d("officeaddress","vale1"+office_address);
-//                                    add_officeaddress.replaceAll(spliting_address, office_address);
-//                                    Log.d("officeaddress", "vale2" + spliting_address);
+                                    Log.d("officeaddress", "vale1" + office_address);
+                                    Log.d("officeaddress", "vale2" + spliting_address);
+                                    add_officeaddress =  add_officeaddress.replace(spliting_address, "");
+                                    add_officeaddress+="###"+ office_address;
                                     Log.d("officeaddress","vale"+add_officeaddress);
                                 }else
                                 if (add_officeaddress == null) {
@@ -1787,4 +1771,34 @@ public class MyAccountActivity extends Activity {
             ll.removeAllViews();
         }
     };
+
+    @Override
+    public void onResume() {
+        // TODO Auto-generated method stub
+        super.onResume();
+        AppMainActivity.inActivity = this;
+        context = this;
+        if(AppReference.mainContext.isPinEnable) {
+            if (AppReference.mainContext.openPinActivity) {
+                AppReference.mainContext.openPinActivity=false;
+                if(Build.VERSION.SDK_INT>20 && AppReference.mainContext.isTouchIdEnabled) {
+                    Intent i = new Intent(MyAccountActivity.this, MainActivity.class);
+                    startActivity(i);
+                }else {
+                    Intent i = new Intent(MyAccountActivity.this, PinSecurity.class);
+                    startActivity(i);
+                }
+            } else {
+                AppReference.mainContext.count=0;
+                AppReference.mainContext.registerBroadcastReceiver();
+            }
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        AppReference.mainContext.isApplicationBroughtToBackground();
+
+    }
 }

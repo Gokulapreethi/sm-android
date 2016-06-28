@@ -523,7 +523,10 @@ public class RoundNewPatientActivity extends Activity {
                   int i=0;
                     addedMembers=new String();
                     for (String name : assignedMembers) {
+                        if(addedMembers.contains(","))
                         addedMembers= addedMembers+","+name;
+                        else
+                            addedMembers=name;
                         i++;
                     }
                     pBean.setGroupid(groupid);

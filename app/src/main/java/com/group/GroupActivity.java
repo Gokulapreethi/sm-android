@@ -28,6 +28,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -54,11 +55,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Fingerprint.MainActivity;
 import com.bean.ProfileBean;
 import com.bean.UserBean;
 import com.cg.DB.DBAccess;
+import com.cg.account.PinSecurity;
 import com.cg.callservices.MyAbsoluteLayout;
 import com.cg.commonclass.GroupListComparator;
+import com.cg.hostedconf.AppReference;
 import com.cg.rounding.RoundingFragment;
 import com.cg.snazmed.R;
 import com.cg.account.ShareByProfile;
@@ -545,7 +549,28 @@ public class GroupActivity extends Activity implements OnClickListener {
     protected void onResume() {
         super.onResume();
         AppMainActivity.inActivity = this;
+		if(AppReference.mainContext.isPinEnable) {
+			if (AppReference.mainContext.openPinActivity) {
+				AppReference.mainContext.openPinActivity=false;
+				if(Build.VERSION.SDK_INT>20 && AppReference.mainContext.isTouchIdEnabled) {
+					Intent i = new Intent(GroupActivity.this, MainActivity.class);
+					startActivity(i);
+				}else {
+					Intent i = new Intent(GroupActivity.this, PinSecurity.class);
+					startActivity(i);
+				}
+			} else {
+				AppReference.mainContext.count=0;
+				AppReference.mainContext.registerBroadcastReceiver();
+			}
+		}
     }
+	@Override
+	protected void onStop() {
+		super.onStop();
+		AppReference.mainContext.isApplicationBroughtToBackground();
+
+	}
 
     // protected String getMembersCount()
     // {

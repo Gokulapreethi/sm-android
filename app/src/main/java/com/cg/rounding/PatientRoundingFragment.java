@@ -1677,28 +1677,13 @@ public class PatientRoundingFragment extends Fragment {
             }
         });
         final Vector<UserBean> memberslist = new Vector<UserBean>();
-        if (gmembersbean != null) {
-            if (gmembersbean.getActiveGroupMembers() != null
-                    && gmembersbean.getActiveGroupMembers().length() > 0) {
-                String[] mlist = (gmembersbean.getActiveGroupMembers())
+        if (pBean != null) {
+            if (pBean.getAssignedmembers() != null
+                    && pBean.getAssignedmembers().length() > 0) {
+                String[] mlist = (pBean.getAssignedmembers())
                         .split(",");
-                UserBean bean = new UserBean();
-                if (gmembersbean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
-                    ProfileBean ubean = SingleInstance.myAccountBean;
-                    bean.setFirstname(ubean.getFirstname() + " " + ubean.getLastname());
-                } else {
-                    for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
-                        if (bib.getName().equalsIgnoreCase(gmembersbean.getOwnerName())) {
-                            bean.setFirstname(bib.getFirstname() + " " + bib.getLastname());
-                            break;
-                        } else
-                            bean.setFirstname(gmembersbean.getOwnerName());
-                    }
-                }
-                bean.setBuddyName(gmembersbean.getOwnerName());
-                bean.setFlag("0");
-                bean.setSelected(true);
-                memberslist.add(bean);
+
+
                 for (String tmp : mlist) {
                     UserBean uBean = new UserBean();
                     for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {

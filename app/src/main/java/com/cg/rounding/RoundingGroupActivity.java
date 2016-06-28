@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -33,12 +34,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Fingerprint.MainActivity;
 import com.bean.ProfileBean;
 import com.bean.UserBean;
 import com.cg.DB.DBAccess;
+import com.cg.account.PinSecurity;
 import com.cg.commonclass.BuddyListComparator;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
 import com.cg.quickaction.User;
 import com.cg.snazmed.R;
 import com.group.AddGroupMembers;
@@ -604,7 +608,27 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        AppMainActivity.inActivity = this;
+        if(AppReference.mainContext.isPinEnable) {
+            if (AppReference.mainContext.openPinActivity) {
+                AppReference.mainContext.openPinActivity=false;
+                if(Build.VERSION.SDK_INT>20 && AppReference.mainContext.isTouchIdEnabled) {
+                    Intent i = new Intent(RoundingGroupActivity.this, MainActivity.class);
+                    startActivity(i);
+                }else {
+                    Intent i = new Intent(RoundingGroupActivity.this, PinSecurity.class);
+                    startActivity(i);
+                }
+            } else {
+                AppReference.mainContext.count=0;
+                AppReference.mainContext.registerBroadcastReceiver();
+            }
+        }
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        AppReference.mainContext.isApplicationBroughtToBackground();
+
     }
 
     // protected String getMembersCount()

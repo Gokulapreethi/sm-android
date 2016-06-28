@@ -6539,7 +6539,7 @@ public class XmlParser {
 		return result;
 	}
 	public String[] parseGetMySecretQuestionXml(String xml) {
-		String[] result=new String[3];
+		String[] result=new String[6];
 		try {
 			dbf = DocumentBuilderFactory.newInstance();
 			db = dbf.newDocumentBuilder();
@@ -6557,6 +6557,13 @@ public class XmlParser {
 					result[1] = nodeMap.getNamedItem("secquestion2").getNodeValue();
 				if (nodeMap.getNamedItem("secquestion3") != null)
 					result[2] = nodeMap.getNamedItem("secquestion3").getNodeValue();
+				if (nodeMap.getNamedItem("secanswer1") != null)
+					result[3] = nodeMap.getNamedItem("secanswer1").getNodeValue();
+				if (nodeMap.getNamedItem("secanswer2") != null)
+					result[4] = nodeMap.getNamedItem("secanswer2").getNodeValue();
+				if (nodeMap.getNamedItem("secanswer3") != null)
+					result[5] = nodeMap.getNamedItem("secanswer3").getNodeValue();
+
 			}
 			Log.i("AAAA","notifyMySecretQuestion result "+result.length);
 

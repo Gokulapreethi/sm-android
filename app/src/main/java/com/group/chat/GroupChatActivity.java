@@ -1518,6 +1518,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         selectAll_container.setVisibility(View.GONE);
                         sendLay.setVisibility(View.VISIBLE);
                         header.setVisibility(View.VISIBLE);
+                        audio_call.setVisibility(View.VISIBLE);
                         sidemenu.setBackgroundResource(R.drawable.navigation_menu);
                         cancel.setVisibility(View.VISIBLE);
                         dot.setVisibility(View.VISIBLE);
