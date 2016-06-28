@@ -52,6 +52,8 @@ public class RoundingFragment extends Fragment {
     private ProgressDialog progressDialog = null;
     public static boolean isEmptyList=false;
 
+    Dialog dialog;
+
     public static synchronized RoundingAdapter getRoundingAdapter() {
 
         return adapter;
@@ -81,6 +83,7 @@ public class RoundingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         AppReference.bacgroundFragment=roundingFragment;
+        SingleInstance.instanceTable.put("roundingfragment", roundingFragment); SingleInstance.instanceTable.put("roundingfragment", roundingFragment);
         Button select = (Button) getActivity().findViewById(R.id.btn_brg);
         select.setVisibility(View.GONE);
         final RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
@@ -154,7 +157,7 @@ public class RoundingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 try {
-                    final Dialog dialog = new Dialog(SingleInstance.mainContext);
+                     dialog = new Dialog(SingleInstance.mainContext);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     dialog.setContentView(R.layout.dialog_myacc_menu);
                     WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -223,6 +226,24 @@ public class RoundingFragment extends Fragment {
             ((ViewGroup) _rootView.getParent()).removeView(_rootView);
         return _rootView;
     }
+
+    public void checkandcloseDialog() {
+        Log.i("AudioCall", "came to checkandcloseDialog in Rounding Fragment");
+        if(dialog != null) {
+            if(dialog.isShowing()){
+                dialog.dismiss();
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if( SingleInstance.instanceTable.containsKey("roundingfragment")) {
+            SingleInstance.instanceTable.remove("roundingfragment");
+        }
+    }
+
     public void getList()
     {
         cancelDialog();

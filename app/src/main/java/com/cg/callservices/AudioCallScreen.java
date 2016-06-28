@@ -50,6 +50,7 @@ import com.group.AddGroupMembers;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
 import com.main.ContactsFragment;
+import com.service.FloatingCallService;
 import com.util.SingleInstance;
 
 import org.audio.AudioProperties;
@@ -647,7 +648,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			if (AppMainActivity.commEngine != null) {
                 AppMainActivity.commEngine.setmDecodeFrame(true);
             }
-
+			AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
 			Activity parent = getActivity();
 			if(parent != null){
 				audio_minimize.setVisibility(View.GONE);
@@ -869,7 +870,17 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			minimize.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					addShowHideListener();
+					Log.i("Float","minimize.setOnClickListener");
+					try {
+						Intent serviceIntent = new Intent(getActivity(),FloatingCallService.class);
+						serviceIntent.putExtra("sview",2);
+						serviceIntent.putExtra("callscreen","ACS");
+						getActivity().startService(serviceIntent);
+//						getActivity().startService(new Intent(getActivity(), FloatingCallService.class));
+						addShowHideListener();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			});
 			flipcamera.setOnClickListener(new OnClickListener() {
@@ -2775,11 +2786,17 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	public void finishAudiocallScreen()
 	{
 		try {
+
 			Log.i("AudioCall","Came to finishAudiocallScreen in AudioCallScreen");
 			if (SingleInstance.instanceTable.containsKey("callactivememberslist")) {
 				CallActiveMembersList activeMembersList = (CallActiveMembersList)SingleInstance.instanceTable.get("callactivememberslist");
 				activeMembersList.finishActivity();
 			}
+			Activity parent = getActivity();
+			Log.i("AudioCall","parent : "+parent);
+//			if(parent != null) {
+			AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
+//			}
 
 			preview_hided = false;
 			currentcall_type = "AC";
@@ -2824,7 +2841,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 				handler.removeCallbacks(runnable);
 			}
 
-			Activity parent = getActivity();
+
 			if(parent != null) {
 				getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -3127,7 +3144,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 		ft.replace(R.id.activity_main_content_fragment,
 				AppReference.bacgroundFragment);
 		ft.commitAllowingStateLoss();
-		audio_minimize.setVisibility(View.VISIBLE);
+//		audio_minimize.setVisibility(View.VISIBLE);
 		mainHeader.setVisibility(View.VISIBLE);
 	}
 

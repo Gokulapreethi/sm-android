@@ -618,6 +618,8 @@
         </service>
         <service android:name="com.cg.account.PlayerService" >
         </service>
+
+        <service android:name="com.service.FloatingCallService"/>
         <!-- Goolge API Key -->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

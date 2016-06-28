@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.KeyguardManager;
 import android.app.KeyguardManager.KeyguardLock;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
@@ -31,6 +32,7 @@ import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
+import com.service.FloatingCallService;
 import com.util.SingleInstance;
 
 import org.audio.AudioProperties;
@@ -169,6 +171,10 @@ public class inCommingCallAlert extends Fragment {
 					@Override
 					public void onClick(View v) {
 						try {
+							Intent serviceIntent = new Intent(getActivity(),FloatingCallService.class);
+							serviceIntent.putExtra("sview",0);
+							getActivity().startService(serviceIntent);
+
 							FragmentManager fm =
                                     AppReference.mainContext.getSupportFragmentManager();
 							FragmentTransaction ft = fm.beginTransaction();
@@ -177,7 +183,7 @@ public class inCommingCallAlert extends Fragment {
 							ft.replace(R.id.activity_main_content_fragment,
                                     AppReference.bacgroundFragment);
 							ft.commitAllowingStateLoss();
-							min_incall.setVisibility(View.VISIBLE);
+//							min_incall.setVisibility(View.VISIBLE);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}

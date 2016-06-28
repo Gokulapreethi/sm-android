@@ -55,6 +55,7 @@ import com.group.AddGroupMembers;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
 import com.main.ContactsFragment;
+import com.service.FloatingCallService;
 import com.util.SingleInstance;
 
 import org.audio.AudioProperties;
@@ -3625,7 +3626,6 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 	boolean onIsOnpause = false;
 
-	//
 	public void onResume() {
 		Log.i("NotesVideo","onResume");
 		// if(ApplicationState.getApplicationCurrentState()!=ApplicationState.APPLICATION_STATE_ONLINE)
@@ -3634,7 +3634,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		//
 		// }
 		// else{
-
+		AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
 		Activity parent = getActivity();
 		if(parent != null){
 			video_minimize.setVisibility(View.GONE);
@@ -4080,6 +4080,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	{
 
 		try {
+			AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
 			if (SingleInstance.instanceTable.containsKey("callactivememberslist")) {
 				CallActiveMembersList activeMembersList = (CallActiveMembersList) SingleInstance.instanceTable.get("callactivememberslist");
 				activeMembersList.finishActivity();
@@ -4260,6 +4261,12 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	}
 
 	void addShowHideListener() {
+
+		Intent serviceIntent = new Intent(getActivity(),FloatingCallService.class);
+		serviceIntent.putExtra("sview",2);
+		serviceIntent.putExtra("callscreen","VCS");
+		getActivity().startService(serviceIntent);
+
 		isMinimize=true;
 		FragmentManager fm =
 				AppReference.mainContext.getSupportFragmentManager();
@@ -4269,7 +4276,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		ft.replace(R.id.activity_main_content_fragment,
 				AppReference.bacgroundFragment);
 		ft.commitAllowingStateLoss();
-		video_minimize.setVisibility(View.VISIBLE);
+//		video_minimize.setVisibility(View.VISIBLE);
 		mainHeader.setVisibility(View.VISIBLE);
 	}
     class PlaybackUpdater implements Runnable {

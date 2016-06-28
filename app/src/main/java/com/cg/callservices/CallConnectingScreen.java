@@ -33,6 +33,7 @@ import com.cg.snazmed.R;
 import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
+import com.service.FloatingCallService;
 import com.util.SingleInstance;
 
 import org.lib.model.SignalingBean;
@@ -163,6 +164,10 @@ public class CallConnectingScreen extends Fragment {
                     @Override
                     public void onClick(View v) {
 						try {
+							Intent serviceIntent = new Intent(getActivity(),FloatingCallService.class);
+							serviceIntent.putExtra("sview",1);
+							getActivity().startService(serviceIntent);
+
 							FragmentManager fm =
                                     AppReference.mainContext.getSupportFragmentManager();
 							FragmentTransaction ft = fm.beginTransaction();
@@ -171,7 +176,7 @@ public class CallConnectingScreen extends Fragment {
 							ft.replace(R.id.activity_main_content_fragment,
                                     AppReference.bacgroundFragment);
 							ft.commitAllowingStateLoss();
-							min_outcall.setVisibility(View.VISIBLE);
+//							min_outcall.setVisibility(View.VISIBLE);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}

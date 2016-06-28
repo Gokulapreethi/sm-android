@@ -3,21 +3,6 @@
  */
 package com.main;
 
-import org.core.ProprietarySignalling;
-import org.lib.PatientDetailsBean;
-import org.lib.model.FileDetailsBean;
-import org.lib.model.GroupMemberBean;
-import org.lib.model.PatientCommentsBean;
-import org.lib.model.RoleAccessBean;
-import org.lib.model.RoleCommentsViewBean;
-import org.lib.model.RoleEditRndFormBean;
-import org.lib.model.RolePatientManagementBean;
-import org.lib.model.RoleTaskMgtBean;
-import org.lib.model.PatientDescriptionBean;
-import org.lib.model.TaskDetailsBean;
-import org.lib.model.UdpMessageBean;
-import org.tcp.TCPEngine;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -31,7 +16,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -48,7 +32,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -71,23 +54,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Base64;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -112,6 +91,7 @@ import com.cg.account.MyAccountActivity;
 import com.cg.account.PinAndTouchId;
 import com.cg.account.PinSecurity;
 import com.cg.account.SecurityQuestions;
+import com.cg.account.SplashScreen;
 import com.cg.account.forgotPassword;
 import com.cg.avatar.AvatarActivity;
 import com.cg.callservices.AudioCallScreen;
@@ -120,6 +100,7 @@ import com.cg.callservices.CallConnectingScreen;
 import com.cg.callservices.SipCallConnectingScreen;
 import com.cg.callservices.VideoCallScreen;
 import com.cg.callservices.VideoPagingSRWindow;
+import com.cg.callservices.inCommingCallAlert;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.Logger;
 import com.cg.commonclass.SipNotificationListener;
@@ -168,6 +149,7 @@ import com.image.utils.ImageLoader;
 import com.process.BGProcessor;
 import com.process.MemoryProcessor;
 import com.screensharing.ScreenSharingFragment;
+import com.service.FloatingCallService;
 import com.thread.CommunicationBean;
 import com.thread.SipCommunicator;
 import com.thread.SipCommunicator.sip_operation_types;
@@ -179,11 +161,13 @@ import com.util.Utils;
 import com.util.VideoPlayer;
 
 import org.core.CommunicationEngine;
+import org.core.ProprietarySignalling;
+import org.lib.PatientDetailsBean;
 import org.lib.model.AppVersionUpdateBean;
 import org.lib.model.BuddyInformationBean;
-import org.lib.model.ChattemplateModifieddate;
 import org.lib.model.ConnectionBrokerBean;
 import org.lib.model.FieldTemplateBean;
+import org.lib.model.FileDetailsBean;
 import org.lib.model.FormAttributeBean;
 import org.lib.model.FormRecordsbean;
 import org.lib.model.FormSettingBean;
@@ -191,12 +175,23 @@ import org.lib.model.FormsBean;
 import org.lib.model.FormsListBean;
 import org.lib.model.Formsinfocontainer;
 import org.lib.model.GroupBean;
+import org.lib.model.GroupMemberBean;
 import org.lib.model.KeepAliveBean;
 import org.lib.model.OfflineRequestConfigBean;
+import org.lib.model.PatientCommentsBean;
+import org.lib.model.PatientDescriptionBean;
+import org.lib.model.RoleAccessBean;
+import org.lib.model.RoleCommentsViewBean;
+import org.lib.model.RoleEditRndFormBean;
+import org.lib.model.RolePatientManagementBean;
+import org.lib.model.RoleTaskMgtBean;
 import org.lib.model.ShareReminder;
+import org.lib.model.TaskDetailsBean;
+import org.lib.model.UdpMessageBean;
 import org.lib.model.WebServiceBean;
 import org.lib.model.chattemplatebean;
 import org.lib.webservice.Servicebean;
+import org.tcp.TCPEngine;
 import org.util.Utility;
 
 import java.io.BufferedReader;
@@ -222,7 +217,7 @@ import java.util.TimerTask;
 import java.util.Vector;
 
 
-public class AppMainActivity extends FragmentActivity implements PjsuaInterface,TCPEngine.TCPListener{
+public class AppMainActivity extends FragmentActivity implements PjsuaInterface,TCPEngine.TCPListener,FloatingCallService.CallButtonCallBack{
 
 	private MediaPlayer iplayer;
     public static boolean isLogin;
@@ -330,11 +325,13 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	public int count=0;
 	public String EidforGroup;
 	public static Chronometer ctimer,cvtimer;
+	public static CharSequence call_chronometer_time;
 
 	public String activityOnTop;
 	public boolean openPinActivity=false;
 	public boolean isTouchIdEnabled=true;
 
+	private RelativeLayout mainHeader;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -375,6 +372,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
             btMenu = (ImageView) findViewById(R.id.side_menu);
             final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+			mainHeader=(RelativeLayout)findViewById(R.id.mainheader);
             final LinearLayout menu_side = (LinearLayout) findViewById(R.id.menu_side);
 			ctimer=(Chronometer)findViewById(R.id.audio_timer);
 			cvtimer=(Chronometer)findViewById(R.id.video_timer);
@@ -383,6 +381,8 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				public void onChronometerTick(Chronometer arg0) {
 
 					CharSequence text = ctimer.getText();
+					Log.i("Chrono","text : "+text);
+					call_chronometer_time = text;
 						ctimer.setText(text);
 
 				}
@@ -392,6 +392,8 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				public void onChronometerTick(Chronometer arg0) {
 
 					CharSequence text = cvtimer.getText();
+					Log.i("Chrono","text : "+text);
+					call_chronometer_time = text;
 					cvtimer.setText(text);
 
 				}
@@ -2863,7 +2865,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 	}
 
-    class MyTimerTask extends TimerTask {
+	class MyTimerTask extends TimerTask {
 
 		@Override
 		public void run() {
@@ -8179,7 +8181,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			ArrayList<String[]> statesList = (ArrayList<String[]>) obj;
 			Log.i("AAAA", "notifyStatesWebServiceResponse " + statesList.size());
 			for (String[] state : statesList) {
-				DBAccess.getdbHeler().insertorUpdateStateDetails(state[0],state[1]);
+				DBAccess.getdbHeler().insertorUpdateStateDetails(state[0], state[1]);
 			}
 		} else if (obj instanceof WebServiceBean) {
 			showToast(((WebServiceBean) obj).getText());
@@ -8250,6 +8252,66 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			}
 		} else if (obj instanceof WebServiceBean) {
 			showToast(((WebServiceBean) obj).getText());
+		}
+	}
+
+	@Override
+	public void buttonClickState(String current_screen, String typeofcallscreen) {
+//		Log.i("Floating","AppMainAvtivity - buttonClickState");
+//		Intent intent = new Intent(context, AppMainActivity.class);
+//		intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//		startActivity(intent);
+
+		Intent intent = new Intent(context, SplashScreen.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // You need this if starting
+		//  the activity from a service
+		intent.setAction(Intent.ACTION_MAIN);
+		intent.addCategory(Intent.CATEGORY_LAUNCHER);
+		startActivity(intent);
+
+		closingActivity();
+		stopService(new Intent(getApplication(), FloatingCallService.class));
+		mainHeader.setVisibility(View.GONE);
+
+		if(current_screen.equalsIgnoreCase("callscreen")) {
+			if(typeofcallscreen.equalsIgnoreCase("ACS")) {
+				addShowHideListener(true);
+			} else {
+				addShowHideListener(false);
+			}
+		} else if(current_screen.equalsIgnoreCase("incomingalert")) {
+			inCommingCallAlert incommingCallAlert = inCommingCallAlert.getInstance(SingleInstance.mainContext);
+			FragmentManager fragmentManager = SingleInstance.mainContext
+					.getSupportFragmentManager();
+			fragmentManager.beginTransaction().replace(
+					R.id.activity_main_content_fragment, incommingCallAlert)
+					.commitAllowingStateLoss();
+		} else if(current_screen.equalsIgnoreCase("connecting")) {
+			CallConnectingScreen callConnectingScreen = CallConnectingScreen.getInstance(SingleInstance.mainContext);
+			FragmentManager fragmentManager = SingleInstance.mainContext
+					.getSupportFragmentManager();
+			fragmentManager.beginTransaction().replace(
+					R.id.activity_main_content_fragment, callConnectingScreen)
+					.commitAllowingStateLoss();
+		}
+
+	}
+
+	private void addShowHideListener( final Boolean isAudio) {
+		if (isAudio) {
+			AudioCallScreen audioCallScreen = AudioCallScreen.getInstance(SingleInstance.mainContext);
+			FragmentManager fragmentManager = SingleInstance.mainContext
+					.getSupportFragmentManager();
+			fragmentManager.beginTransaction().replace(
+					R.id.activity_main_content_fragment, audioCallScreen)
+					.commitAllowingStateLoss();
+		} else {
+			VideoCallScreen videoCallScreen = VideoCallScreen.getInstance(SingleInstance.mainContext);
+			FragmentManager fragmentManager = SingleInstance.mainContext
+					.getSupportFragmentManager();
+			fragmentManager.beginTransaction().replace(
+					R.id.activity_main_content_fragment, videoCallScreen)
+					.commitAllowingStateLoss();
 		}
 	}
 

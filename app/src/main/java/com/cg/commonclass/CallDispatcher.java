@@ -134,6 +134,7 @@ import com.cg.profiles.ViewProfiles;
 import com.cg.quickaction.ContactLogics;
 import com.cg.quickaction.QuickActionSelectcalls;
 import com.cg.rounding.NotificationReceiver;
+import com.cg.rounding.RoundingFragment;
 import com.cg.services.PlayerService;
 import com.cg.settings.MenuPage;
 import com.cg.settings.UserSettingsBean;
@@ -172,6 +173,7 @@ import com.main.Registration;
 import com.main.SettingsFragment;
 import com.main.ViewProfileFragment;
 import com.screensharing.ScreenSharingFragment;
+import com.service.FloatingCallService;
 import com.util.SingleInstance;
 
 import org.audio.AudioProperties;
@@ -2433,6 +2435,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					SingleInstance.mainContext.runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
+							AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
 							ImageView min_outcall = (ImageView) SingleInstance.mainContext.findViewById(R.id.min_outcall);
 							min_outcall.setVisibility(View.GONE);
 							ImageView min_incall = (ImageView) SingleInstance.mainContext.findViewById(R.id.min_incall);
@@ -11512,7 +11515,7 @@ private TrustManager[] get_trust_mgr() {
 				else
 					participant=participant+","+temp;
 			}
-			sbConf.setParticipants(participant+","+selectedBuddy);
+			sbConf.setParticipants(participant + "," + selectedBuddy);
 			AppMainActivity.commEngine.makeConferenceCall(sbConf);
 
 		} catch (Exception e) {
@@ -11672,6 +11675,13 @@ private TrustManager[] get_trust_mgr() {
 							appMainActivity.closingActivity();
 
 							checkandcloseDialog();
+
+							if( SingleInstance.instanceTable.containsKey("roundingfragment")) {
+								RoundingFragment roundingFragment=(RoundingFragment)SingleInstance.instanceTable.get("roundingfragment");
+								if(roundingFragment!= null){
+									roundingFragment.checkandcloseDialog();
+								}
+							}
 
 							FragmentManager fm =
 									AppReference.mainContext.getSupportFragmentManager();
