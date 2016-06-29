@@ -290,21 +290,17 @@ public class FindPeople extends Fragment {
                     } else {
                         holder.selectUser.setChecked(false);
                     }
-                    holder.selectUser
-                            .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                                @Override
-                                public void onCheckedChanged(CompoundButton arg0,
-                                                             boolean isChecked) {
-                                    if (isChecked){
-                                        bib.setSelected(true);
-                                    }
-                                    else {
-                                        bib.setSelected(false);
-                                    }
-
-                                }
-
-                            });
+                    holder.selectUser.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (((CheckBox) v).isChecked()){
+                                bib.setSelected(true);
+                            }
+                            else {
+                                bib.setSelected(false);
+                            }
+                        }
+                    });
                     if (bib.getStatus().equals("0")) {
                         holder.statusIcon.setBackgroundResource(R.drawable.offline_icon);
                     } else if (bib.getStatus().equals("1")) {

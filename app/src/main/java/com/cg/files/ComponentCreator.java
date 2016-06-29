@@ -3003,6 +3003,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
 						// showToast("Kindly choose image files");
 					} else {
 						btnDone.setVisibility(View.VISIBLE);
+						overlay.setVisibility(View.GONE);
+
 
 						Uri selectedImageUri = data.getData();
 						ComponentPath = callDisp
@@ -3091,6 +3093,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 									.getString(R.string.image_size_too_large));
 
 						}
+						overlay.setVisibility(View.GONE);
 
 					}
 				} catch (Exception e) {
@@ -3140,6 +3143,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 							// }
 						}
 					}
+					overlay.setVisibility(View.GONE);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -3224,6 +3228,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 					btn_next.setVisibility(View.GONE);
 					btn_prev.setVisibility(View.GONE);
 					btn_delete.setVisibility(View.VISIBLE);
+					overlay.setVisibility(View.GONE);
 //					btnDone.setVisibility(View.GONE);
 //					editTextNotes.setVisibility(View.GONE);
 
@@ -3303,6 +3308,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 
 			} else if (GET_RESOURCES == AUDIO) {
 				try {
+					overlay.setVisibility(View.GONE);
 					contentLayout.addView(AudioNoteView(3, ComponentPath));
 				} catch (Exception e) {
 					// TODO Auto-generated catch block

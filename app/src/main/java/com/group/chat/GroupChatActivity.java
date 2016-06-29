@@ -2219,6 +2219,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         }
                     }
                     if (isReplyBack) {
+                        Log.i("AAAA","Reply back ");
                         if (spBean == null) {
                             spBean = new SpecialMessageBean();
                         }
@@ -5259,6 +5260,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     //End
                                 } else {
                                     waitforconfir.setVisibility(View.VISIBLE);
+                                    tvprivate.setVisibility(View.GONE);
                                     //For withdraw message
                                     //start
 //                                    if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
@@ -6074,6 +6076,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     } else if (gcBean1.getSubCategory()
                                             .equalsIgnoreCase("GRB")) {
                                         if (CallDispatcher.LoginUser != null) {
+                                            Log.i("AAAA","reply back true");
                                             isReplyBack = true;
                                             // showReplyBackDialog(gcBean1);
 //										showToast(SingleInstance.mainContext.getResources().getString(R.string.pressed));
@@ -8126,6 +8129,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             spBean.setSubcategory("grb");
 
             if (isReplyBack) {
+                Log.i("AAAA","reply individual");
                 spBean.setSubcategory("grb");
                 spBean.setParentId(pId);
                 if (isGroup || isRounding) {
@@ -8158,7 +8162,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         View item = sendlistadapter.getView(i, null, null);
                         list_all.addView(item);
                     }
-                    msgoptionview.setVisibility(View.VISIBLE);
+                    msgoptionview.setVisibility(View.GONE);
                     audio_call.setBackgroundResource(R.drawable.chat_send);
                     audio_call.setTag(1);
 //                relative_send_layout.getLayoutParams().height = 90;
@@ -8191,7 +8195,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         View item = sendlistadapter.getView(i, null, null);
                         list_all.addView(item);
                     }
-                    msgoptionview.setVisibility(View.VISIBLE);
+                    msgoptionview.setVisibility(View.GONE);
                     audio_call.setBackgroundResource(R.drawable.chat_send);
                     audio_call.setTag(1);
                 }
@@ -8569,7 +8573,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     View item = sendlistadapter.getView(i, null, null);
                     list_all.addView(item);
                 }
-                msgoptionview.setVisibility(View.VISIBLE);
+                msgoptionview.setVisibility(View.GONE);
                 audio_call.setBackgroundResource(R.drawable.chat_send);
                 audio_call.setTag(1);
 //                relative_send_layout.getLayoutParams().height = 90;
@@ -8600,7 +8604,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     View item = sendlistadapter.getView(i, null, null);
                     list_all.addView(item);
                 }
-                msgoptionview.setVisibility(View.VISIBLE);
+                msgoptionview.setVisibility(View.GONE);
                 audio_call.setBackgroundResource(R.drawable.chat_send);
                 audio_call.setTag(1);
 //                relative_send_layout.getLayoutParams().height = 90;

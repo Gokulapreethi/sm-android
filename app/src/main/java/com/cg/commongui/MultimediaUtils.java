@@ -16,6 +16,7 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -41,6 +42,9 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Fingerprint.MainActivity;
+import com.cg.account.PinSecurity;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
@@ -253,6 +257,21 @@ public class MultimediaUtils extends Activity {
 	protected void onResume() {
 		super.onResume();
         AppMainActivity.inActivity = this;
+		if(AppReference.mainContext.isPinEnable) {
+			if (AppReference.mainContext.openPinActivity) {
+				AppReference.mainContext.openPinActivity=false;
+				if(Build.VERSION.SDK_INT>20 && AppReference.mainContext.isTouchIdEnabled) {
+					Intent i = new Intent(MultimediaUtils.this, MainActivity.class);
+					startActivity(i);
+				}else {
+					Intent i = new Intent(MultimediaUtils.this, PinSecurity.class);
+					startActivity(i);
+				}
+			} else {
+				AppReference.mainContext.count=0;
+				AppReference.mainContext.registerBroadcastReceiver();
+			}
+		}
 	}
 
 	@Override
@@ -1175,5 +1194,12 @@ public class MultimediaUtils extends Activity {
 			btnPause.setHint("pause");
 			btnPause.setBackgroundResource(R.drawable.btn_play_new);
 		}
+	}
+	@Override
+	protected void onStop() {
+		super.onStop();
+		Log.i("pin", "Groupchatactivity Onstop");
+		AppReference.mainContext.isApplicationBroughtToBackground();
+
 	}
 }
