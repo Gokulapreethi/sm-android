@@ -2238,7 +2238,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									@Override
 									public void run() {
 										Toast.makeText(context,
-												sb.getFrom() + " call rejected.", 3000)
+												Buddyname(sb.getFrom()) + " call rejected.", Toast.LENGTH_SHORT)
 												.show();
 									}
 								});
@@ -2406,7 +2406,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								Toast.makeText(
 										context,
 										"Unable to Receive Media from "
-												+ sb.getFrom(), 3000).show();
+												+ Buddyname(sb.getFrom()), Toast.LENGTH_LONG).show();
 								final Object objCallScreen = SingleInstance.instanceTable
 										.get("callscreen");
 								if (objCallScreen != null) {
@@ -2744,8 +2744,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								public void run() {
 									try {
 
-										Toast.makeText(context, sb.getFrom() + " Call Dropped",
-												3000).show();
+										Toast.makeText(context, Buddyname(sb.getFrom()) + " Call Dropped",
+												Toast.LENGTH_LONG).show();
 									} catch (Exception e) {
 										// TODO: handle exception
 									}
@@ -16950,6 +16950,25 @@ private TrustManager[] get_trust_mgr() {
 			e.printStackTrace();
 			stopPlayback();
 		}
+	}
+
+	public String Buddyname(String bname) {
+		Vector<BuddyInformationBean> getBuddyList = ContactsFragment.getBuddyList();
+		String name = bname;
+		if (getBuddyList != null) {
+			if(bname.equalsIgnoreCase(CallDispatcher.LoginUser)) {
+				ProfileBean pbean=SingleInstance.myAccountBean;
+				name=pbean.getFirstname()+" "+pbean.getLastname();
+			} else {
+				for (int i = 0; i < getBuddyList.size(); i++) {
+					BuddyInformationBean buddyInformationBean = (BuddyInformationBean) ContactsFragment.getBuddyList().get(i);
+					if (bname.equals(buddyInformationBean.getEmailid())) {
+						name = buddyInformationBean.getFirstname() + " " + buddyInformationBean.getLastname();
+					}
+				}
+			}
+		}
+		return name;
 	}
 
 }

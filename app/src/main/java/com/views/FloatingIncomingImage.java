@@ -110,20 +110,20 @@ public class FloatingIncomingImage extends ImageView implements OnTouchListener 
 
 		@Override
 		public boolean onDoubleTapEvent(MotionEvent e) { // perform Double tap on the ImageView
-			Toast.makeText(ctx, "Hi You Double Tap Me", Toast.LENGTH_SHORT).show();
+//			Toast.makeText(ctx, "Hi You Double Tap Me", Toast.LENGTH_SHORT).show();
 			return false;
 		}
 
 		@Override
 		public boolean onSingleTapConfirmed(MotionEvent e) { // perform single tap on the ImageView
-			Toast.makeText(ctx, "Hi You Single Tap Me", Toast.LENGTH_SHORT).show();
+//			Toast.makeText(ctx, "Hi You Single Tap Me", Toast.LENGTH_SHORT).show();
 			serviceCallbacks.incomingImageButtonClickState();
 			return true;
 		}
 
 		@Override
 		public void onLongPress(MotionEvent e) { // perform long press on the ImageView
-			Toast.makeText(ctx, "Hi You Long Tap Me", Toast.LENGTH_SHORT).show();
+//			Toast.makeText(ctx, "Hi You Long Tap Me", Toast.LENGTH_SHORT).show();
 		}
 	}
 	/**

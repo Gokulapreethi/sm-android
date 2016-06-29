@@ -165,6 +165,7 @@ import org.core.ProprietarySignalling;
 import org.lib.PatientDetailsBean;
 import org.lib.model.AppVersionUpdateBean;
 import org.lib.model.BuddyInformationBean;
+import org.lib.model.ChattemplateModifieddate;
 import org.lib.model.ConnectionBrokerBean;
 import org.lib.model.FieldTemplateBean;
 import org.lib.model.FileDetailsBean;
