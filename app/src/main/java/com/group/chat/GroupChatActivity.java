@@ -603,6 +603,15 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             @Override
                             public void onClick(View arg0) {
                                 try {
+                                    if (groupBean.getOwnerName().equalsIgnoreCase(
+                                            CallDispatcher.LoginUser)) {
+                                        Intent intent = new Intent(context.getApplicationContext(),
+                                                GroupActivity.class);
+                                        intent.putExtra("isEdit", true);
+                                        intent.putExtra("id", groupBean.getGroupId());
+                                        context.startActivity(intent);
+                                    }else
+                                    showToast("Your are not owner of the group");
                                     dialog.dismiss();
                                 } catch (Exception e) {
                                     e.printStackTrace();

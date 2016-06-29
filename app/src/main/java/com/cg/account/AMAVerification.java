@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -30,10 +31,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Fingerprint.MainActivity;
 import com.cg.DB.DBAccess;
 import com.cg.commonclass.BuddyListComparator;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
@@ -103,6 +106,7 @@ public class AMAVerification extends Activity {
                  }else {
                      txtView01.setVisibility(View.VISIBLE);
                      btn_1.setVisibility(View.GONE);
+                     btn_1.setText("");
                      search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
                  }
             }
@@ -325,6 +329,35 @@ public class AMAVerification extends Activity {
                 });
             }
         });
+
+    }
+    @Override
+    public void onResume() {
+        // TODO Auto-generated method stub
+        super.onResume();
+        AppMainActivity.inActivity = this;
+        context = this;
+        if(AppReference.mainContext.isPinEnable) {
+            if (AppReference.mainContext.openPinActivity) {
+                AppReference.mainContext.openPinActivity=false;
+                if(Build.VERSION.SDK_INT>20 && AppReference.mainContext.isTouchIdEnabled) {
+                    Intent i = new Intent(AMAVerification.this, MainActivity.class);
+                    startActivity(i);
+                }else {
+                    Intent i = new Intent(AMAVerification.this, PinSecurity.class);
+                    startActivity(i);
+                }
+            } else {
+                AppReference.mainContext.count=0;
+                AppReference.mainContext.registerBroadcastReceiver();
+            }
+        }
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        AppReference.mainContext.isApplicationBroughtToBackground();
+
     }
 
     protected Vector<BuddyInformationBean> getList(Vector<BuddyInformationBean> vectorBean){

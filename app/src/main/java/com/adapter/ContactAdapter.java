@@ -257,6 +257,7 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                                                     buddyInformationBean.getName(),
                                                     ContactsFragment.getInstance(context));
                                     deleteUser(buddyInformationBean.getName());
+                                    showprogress();
                                 } catch (Exception e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();

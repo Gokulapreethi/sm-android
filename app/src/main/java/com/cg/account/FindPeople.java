@@ -285,11 +285,11 @@ public class FindPeople extends Fragment {
 //                            imageLoader.DisplayImage(pic_Path, holder.buddyicon, R.drawable.img_user);
 //                        }
 //                    }
-//                    if (bib.isSelected()) {
-//                        holder.selectUser.setChecked(true);
-//                    } else {
-//                        holder.selectUser.setChecked(false);
-//                    }
+                    if (bib.isSelected()) {
+                        holder.selectUser.setChecked(true);
+                    } else {
+                        holder.selectUser.setChecked(false);
+                    }
                     holder.selectUser
                             .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                                 @Override

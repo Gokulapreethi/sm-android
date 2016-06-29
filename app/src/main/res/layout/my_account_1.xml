@@ -823,7 +823,6 @@
                             android:visibility="visible"
                             android:hint="Add Hospital Affiliation"
                             android:textSize="15sp"
-                            android:background="@color/black2"
                             style="@style/spinner_style"
                             android:id="@+id/rlay_hospital_affiliation"/>
                     
@@ -872,7 +871,6 @@
                             android:hint="Choose Association"
                             android:textSize="15sp"
                             android:textColor="@color/white"
-                            android:background="@color/black2"
                             android:layout_weight="1"
                             style="@style/spinner_style"
                             android:id="@+id/association_membership"/>

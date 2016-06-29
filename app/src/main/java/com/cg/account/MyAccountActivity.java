@@ -777,7 +777,8 @@ public class MyAccountActivity extends Activity {
         });
 
         hospitalList=DBAccess.getdbHeler().getHospitalDetails();
-        hospitalDetailsAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, hospitalList);
+        hospitalDetailsAdapter = new ArrayAdapter<String>(context, R.layout.spinner_lay, hospitalList);
+        hospitalDetailsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         hospital.setAdapter(hospitalDetailsAdapter);
 
         hospital.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -856,7 +857,8 @@ public class MyAccountActivity extends Activity {
 //        });
 
         medicalSocietyList=DBAccess.getdbHeler().getMedicalSocietiesDetails();
-        medicalDetailsAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, medicalSocietyList);
+        medicalDetailsAdapter = new ArrayAdapter<String>(context, R.layout.spinner_lay, medicalSocietyList);
+        medicalDetailsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         association_membership.setAdapter(medicalDetailsAdapter);
 //        association_membership.setThreshold(30);
         association_membership.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

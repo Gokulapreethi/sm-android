@@ -825,6 +825,7 @@ public class ContactsFragment extends Fragment{
 				public void run() {
 					try {
 						// TODO Auto-generated method stub
+						ContactsFragment.getContactAdapter().cancelDialog();
 						cancelDialog();
 						if (server_msg != null) {
 							if (server_msg

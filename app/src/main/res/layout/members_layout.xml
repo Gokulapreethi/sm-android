@@ -9,16 +9,6 @@
         android:weightSum="2"
         android:id="@+id/sort">
 
-        <Button
-            android:id="@+id/role_sort"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/snazlgray"
-            android:background="@color/black2"
-            android:text="ROLE"
-
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"/>
 
         <Button
             android:id="@+id/online_sort"
