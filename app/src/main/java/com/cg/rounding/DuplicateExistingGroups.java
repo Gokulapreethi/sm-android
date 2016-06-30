@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,10 +23,7 @@ import android.widget.TextView;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.snazmed.R;
 import com.group.GroupActivity;
-import com.group.GroupAdapter;
-import com.group.GroupRequestFragment;
 import com.image.utils.ImageLoader;
-import com.main.ContactsFragment;
 import com.util.SingleInstance;
 
 import org.lib.model.GroupBean;
@@ -51,6 +47,7 @@ public class DuplicateExistingGroups extends Activity {
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             setContentView(R.layout.groupaddcontact);
             context = this;
+            SingleInstance.contextTable.put("duplicateexistinggroup", context);
             final TextView txtView01 = (TextView) findViewById(R.id.tx_headingaddcontact);
             RelativeLayout chkbox_lay=(RelativeLayout)findViewById(R.id.chbox_lay);
             Button btn_done=(Button)findViewById(R.id.btn_done);
@@ -190,4 +187,11 @@ public class DuplicateExistingGroups extends Activity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(SingleInstance.contextTable.containsKey("duplicateexistinggroup")) {
+            SingleInstance.contextTable.remove("duplicateexistinggroup");
+        }
+    }
 }

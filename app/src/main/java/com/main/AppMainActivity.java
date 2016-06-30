@@ -123,6 +123,7 @@ import com.cg.ftpprocessor.FTPNotifier;
 import com.cg.ftpprocessor.FTPQueue;
 import com.cg.hostedconf.AppReference;
 import com.cg.profiles.ViewProfiles;
+import com.cg.rounding.DuplicateExistingGroups;
 import com.cg.rounding.NotificationReceiver;
 import com.cg.rounding.RoundNewPatientActivity;
 import com.cg.rounding.RoundingEditActivity;
@@ -8348,6 +8349,14 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				roundnewpatient.finish();
 			}
 		}
+
+		if(SingleInstance.contextTable.containsKey("duplicateexistinggroup")) {
+			DuplicateExistingGroups duplicateExistingGroups = (DuplicateExistingGroups)SingleInstance.contextTable.get("duplicateexistinggroup");
+			if(duplicateExistingGroups != null) {
+				duplicateExistingGroups.finish();
+			}
+		}
+
 		if (WebServiceReferences.contextTable.containsKey("roundingEdit")) {
 
 			RoundingEditActivity roundingEdit = (RoundingEditActivity) WebServiceReferences.contextTable.get("roundingEdit");
