@@ -84,35 +84,13 @@
                         android:textColor="@color/white"
                         android:textSize="15dp"
                         android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/sender_text_msg"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/sender_user_1"
-                        android:padding="5dp"
-                        android:autoLink="web"
-                        android:text="@string/this_is_the_message_view"
-                        android:textColor="@color/snazlgray"
-                        android:textSize="14dp"
-                        android:typeface="serif" />
-
-                    <ImageView
-                        android:id="@+id/sender_loc_icon"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_below="@+id/sender_text_msg"
-                        android:layout_centerHorizontal="true"
-                        android:padding="5dp"
-                        android:src="@drawable/location_icon"
-                        android:visibility="gone" />
                     <RelativeLayout
                         android:id="@+id/sen_quoted"
                         android:layout_width="wrap_content"
                         android:padding="5dp"
                         android:layout_marginLeft="10dp"
                         android:visibility="gone"
-                        android:layout_below="@+id/sender_text_msg"
+                        android:layout_below="@+id/sender_user_1"
                         android:layout_height="wrap_content"
                         android:background="@color/black3">
                         <TextView
@@ -132,23 +110,23 @@
                             android:layout_marginRight="2dp"
                             android:layout_height="wrap_content" />
                         <!--<ImageView-->
-                            <!--android:id="@+id/sen_fileattach_quoted"-->
-                            <!--android:layout_below="@+id/sen_tvquoted_msg"-->
-                            <!--android:layout_width="30dp"-->
-                            <!--android:layout_marginLeft="20dp"-->
-                            <!--android:visibility="gone"-->
-                            <!--android:background="@drawable/dashboard_file_white"-->
-                            <!--android:layout_height="26dp" />-->
+                        <!--android:id="@+id/sen_fileattach_quoted"-->
+                        <!--android:layout_below="@+id/sen_tvquoted_msg"-->
+                        <!--android:layout_width="30dp"-->
+                        <!--android:layout_marginLeft="20dp"-->
+                        <!--android:visibility="gone"-->
+                        <!--android:background="@drawable/dashboard_file_white"-->
+                        <!--android:layout_height="26dp" />-->
                         <!--<TextView-->
-                            <!--android:id="@+id/sen_fname_quoted"-->
-                            <!--android:layout_toRightOf="@+id/sen_fileattach_quoted"-->
-                            <!--android:layout_marginTop="3dp"-->
-                            <!--android:visibility="gone"-->
-                            <!--android:layout_marginLeft="20dp"-->
-                            <!--android:layout_below="@+id/sen_tvquoted_msg"-->
-                            <!--android:text=".png"-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="wrap_content" />-->
+                        <!--android:id="@+id/sen_fname_quoted"-->
+                        <!--android:layout_toRightOf="@+id/sen_fileattach_quoted"-->
+                        <!--android:layout_marginTop="3dp"-->
+                        <!--android:visibility="gone"-->
+                        <!--android:layout_marginLeft="20dp"-->
+                        <!--android:layout_below="@+id/sen_tvquoted_msg"-->
+                        <!--android:text=".png"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content" />-->
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -168,12 +146,35 @@
 
                     </RelativeLayout>
 
+                    <TextView
+                        android:id="@+id/sender_text_msg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/sen_quoted"
+                        android:padding="5dp"
+                        android:autoLink="web"
+                        android:text="@string/this_is_the_message_view"
+                        android:textColor="@color/snazlgray"
+                        android:textSize="14dp"
+                        android:typeface="serif" />
+
+                    <ImageView
+                        android:id="@+id/sender_loc_icon"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_below="@+id/sender_text_msg"
+                        android:layout_centerHorizontal="true"
+                        android:padding="5dp"
+                        android:src="@drawable/location_icon"
+                        android:visibility="gone" />
+
+
                     <RelativeLayout
                         android:id="@+id/sender_icon_container"
                         android:layout_width="150dp"
                         android:background="@drawable/lay_bg_corner"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/sen_quoted"
+                        android:layout_below="@+id/sender_text_msg"
                         android:layout_centerInParent="true"
                         android:padding="5dp"
                         android:visibility="visible" >
@@ -828,11 +829,18 @@
                     android:padding="8dp"
                     android:textSize="15dp"
                     android:textStyle="bold" />
+                <LinearLayout
+                    android:id="@+id/privatelay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:layout_below="@+id/ad_play">
                 <TextView
                     android:id="@+id/tvprivate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Waiting for Reply"
+                    android:text="Private for: "
                     android:layout_below="@+id/ad_play"
                     android:layout_marginTop="8dp"
                     android:layout_toRightOf="@+id/userDP1"
@@ -840,9 +848,24 @@
                     android:textColor="@color/green"
                     android:layout_marginLeft="13dp"
                     android:padding="8dp"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:textSize="15dp"
                     android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/privatename"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="name"
+                        android:layout_marginTop="8dp"
+                        android:layout_toRightOf="@+id/userDP1"
+                        android:textColor="@color/white"
+                        android:layout_marginLeft="5dp"
+                        android:padding="8dp"
+                        android:visibility="visible"
+                        android:textSize="15dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
                 <TextView
                     android:id="@+id/waitforconfir"
                     android:layout_width="wrap_content"

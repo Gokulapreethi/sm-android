@@ -2271,6 +2271,34 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     gcBean.setCategory("I");
                     gcBean.setSubCategory(null);
                 }
+                if (isReplyBack) {
+                    Log.i("AAAA", "Reply back ");
+                    if (spBean == null) {
+                        spBean = new SpecialMessageBean();
+                    }
+                    if (pId != null) {
+                        spBean.setParentId(pId);
+                    }
+                    spBean.setSubcategory("grb");
+                    if (privateMembers != null) {
+                        spBean.setMembers(privateMembers);
+                    }
+                }
+                if (isconfirmBack) {
+                    isconfirmBack = false;
+
+                    if (spBean == null) {
+                        spBean = new SpecialMessageBean();
+                    }
+                    if (pId != null) {
+                        spBean.setParentId(pId);
+                    }
+                    gcBean.setUnview("1");
+                    spBean.setSubcategory("gc");
+                    if (privateMembers != null) {
+                        spBean.setMembers(privateMembers);
+                    }
+                }
                 if (spBean != null) {
                     if (spBean.getSubcategory() != null) {
                         gcBean.setSubCategory(spBean.getSubcategory());
@@ -2309,6 +2337,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         GroupChatBean gcBean1 = chatList.get(i);
                         if (gcBean1.getParentId()!=null&&gcBean1.getParentId().equals(gcBean.getParentId())) {
                             gcBean.setSubCategory("GRB_R");
+                            gcBean.setComment(getReplyMessage(gcBean1));
                             gcBean1.setSubCategory("GRB_R");
                             gcBean.setReply("GRB_R");
                             gcBean1.setReply("GRB_R");
@@ -4778,6 +4807,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         .findViewById(R.id.waitforreply);
                 receiverLayout = (RelativeLayout) convertView
                         .findViewById(R.id.receiver_view);
+                LinearLayout privatelay=(LinearLayout)convertView.findViewById(R.id.privatelay);
+                TextView privatename=(TextView)convertView.findViewById(R.id.privatename);
                 RelativeLayout splmsgview = (RelativeLayout) convertView.findViewById(R.id.splmsgview);
                 TextView audio_tv;
                 TextView withdraw = (TextView) convertView.findViewById(R.id.withdrawlay);
@@ -4793,6 +4824,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 received_confirmation.setVisibility(View.GONE);
                 btn_confrm.setVisibility(View.GONE);
                 btn_private.setVisibility(View.GONE);
+                privatelay.setVisibility(View.GONE);
                 final CheckBox selectInvidual_buddy = (CheckBox) convertView
                         .findViewById(R.id.selectInvidual_buddy);
                 selectInvidual_buddy.setTag(gcBean);
@@ -5065,22 +5097,35 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         if (gcBean.getSubCategory() != null) {
                             if (gcBean.getSubCategory().equalsIgnoreCase("gp")) {
 //							tv_user.setText(gcBean.getPrivateMembers());
-                                tvprivate.setVisibility(View.VISIBLE);
+                                privatelay.setVisibility(View.VISIBLE);
                                 convertView.setBackgroundResource(R.color.gchat_bg);
                                 deadlineReplyText.setVisibility(View.GONE);
 
-                                tvprivate.setText(Html.fromHtml("<font color=\"#06F235\">"
-                                        + "Private for: "
-                                        + "</font>"
-                                        + "  "
-                                        + "<font color=\"#FFFFFF\">"
-                                        + gcBean.getPrivateMembers()));
+//                                tvprivate.setText(Html.fromHtml("<font color=\"#06F235\">"
+//                                        + "Private for: "
+//                                        + "</font>"
+//                                        + "  "
+//                                        + "<font color=\"#FFFFFF\">"
+//                                        + gcBean.getPrivateMembers()));
+                                if(gcBean.getPrivateMembers().contains(",")){
+                                    String[] names=gcBean.getPrivateMembers().split(",");
+                                    String members=null;
+                                    for(String name:names){
+                                        if(Buddyname(name)!=null)
+                                        if(members!=null )
+                                            members=members+","+Buddyname(name);
+                                        else
+                                            members=Buddyname(name);
+                                    }
+                                    privatename.setText(members);
+                                }else
+                                privatename.setText(Buddyname(gcBean.getPrivateMembers()));
                             } else if (gcBean.getSubCategory().equalsIgnoreCase(
                                     "gu")) {
                                 tv_urgent.setVisibility(View.VISIBLE);
                                 tv_urgent.setTextColor(Color.parseColor("#daa520"));
                                 tv_urgent.setText("  Urgent  !  ");
-                                tvprivate.setVisibility(View.GONE);
+                                privatelay.setVisibility(View.GONE);
 //                                if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
 //                                        && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
                                 if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
@@ -5260,7 +5305,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     //End
                                 } else {
                                     waitforconfir.setVisibility(View.VISIBLE);
-                                    tvprivate.setVisibility(View.GONE);
+                                    privatelay.setVisibility(View.GONE);
                                     //For withdraw message
                                     //start
 //                                    if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
@@ -6213,7 +6258,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                             .getQueue()
                                             .addObject(
                                                     gBean);
-                                    chatList.remove(gcBean);
+//                                    chatList.remove(gcBean);
+                                    gcBean.setWithdrawn("1");
+                                    gcBean.setMimetype("text");
+                                    gcBean.setMessage("Message withdrawn @"+getCurrentTime());
+                                    gcBean.setWithdraw(false);
                                     adapter.notifyDataSetChanged();
                                 } else {
                                     showToast("Sorry you dont have permission");

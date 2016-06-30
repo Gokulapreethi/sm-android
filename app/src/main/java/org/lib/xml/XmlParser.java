@@ -7602,6 +7602,7 @@ public class XmlParser {
 			is.setCharacterStream(new StringReader(xml));
 			doc = (Document) db.parse(is);
 			list = doc.getElementsByTagName("Roundingrights");
+			String roleid = null;
 			for (int i = 0; i < list.getLength(); i++) {
 				node = list.item(i);
 				nodeMap = node.getAttributes();
@@ -7610,6 +7611,7 @@ public class XmlParser {
 				if (nodeMap.getNamedItem("roleid") != null)
 					bean.setRoleid(nodeMap.getNamedItem("roleid")
 							.getNodeValue());
+				roleid=bean.getRoleid();
 
 				if (nodeMap.getNamedItem("groupid") != null)
 					bean.setGroupid(nodeMap.getNamedItem("groupid")
@@ -7657,9 +7659,10 @@ public class XmlParser {
 
 				if (nodeMap.getNamedItem("groupmember") != null)
 					pbean.setGroupmember(nodeMap.getNamedItem("groupmember").getNodeValue());
+				pbean.setRoleid(roleid);
 
 				if (nodeMap.getNamedItem("role") != null)
-					pbean.setProle(nodeMap.getNamedItem(
+					pbean.setRole(nodeMap.getNamedItem(
 							"role").getNodeValue());
 
 				if (nodeMap.getNamedItem("add") != null)
@@ -7694,8 +7697,10 @@ public class XmlParser {
 				if (nodeMap.getNamedItem("groupmember") != null)
 					eBean.setGroupmember(nodeMap.getNamedItem("groupmember").getNodeValue());
 
+				eBean.setRoleid(roleid);
+
 				if (nodeMap.getNamedItem("role") != null)
-					eBean.setErole(nodeMap.getNamedItem(
+					eBean.setRole(nodeMap.getNamedItem(
 							"role").getNodeValue());
 
 				if (nodeMap.getNamedItem("status") != null)
@@ -7736,8 +7741,10 @@ public class XmlParser {
 				if (nodeMap.getNamedItem("groupmember") != null)
 					tBean.setGroupmember(nodeMap.getNamedItem("groupmember").getNodeValue());
 
+				tBean.setRoleid(roleid);
+
 				if (nodeMap.getNamedItem("role") != null)
-					tBean.setTrole(nodeMap.getNamedItem(
+					tBean.setRole(nodeMap.getNamedItem(
 							"role").getNodeValue());
 
 				if (nodeMap.getNamedItem("attending") != null)
@@ -7775,9 +7782,10 @@ public class XmlParser {
 
 				if (nodeMap.getNamedItem("groupmember") != null)
 					cBean.setGroupmember(nodeMap.getNamedItem("groupmember").getNodeValue());
+				cBean.setRoleid(roleid);
 
 				if (nodeMap.getNamedItem("role") != null)
-					cBean.setCrole(nodeMap.getNamedItem(
+					cBean.setRole(nodeMap.getNamedItem(
 							"role").getNodeValue());
 
 				if (nodeMap.getNamedItem("attending") != null)

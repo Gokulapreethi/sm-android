@@ -141,7 +141,7 @@ getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.Layou
 		pencilBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				pencil_layout.setVisibility(View.GONE);
+				pencil_layout.setVisibility(View.INVISIBLE);
 			}
 		});
 
@@ -307,39 +307,39 @@ getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.Layou
 
 		if (view.getId() == R.id.draw_btn) {
 
-				if (imageSelectedOption == 0) {
-					if(StoredFilepath!=null) {
-					File file = new File(StoredFilepath);
-					if (file.exists()) {
-						Log.i("handsketch123", "file name : " + file.getPath());
-						Bitmap bitMap = callDisp.ResizeImage(StoredFilepath);
-						if (bitMap != null) {
-							Log.i("handsketch123", "bitmap not null");
-							drawView.setImage(bitMap);
-						}
-					}
-				}
-			}else if(imageSelectedOption==1) {
-					if (SelectedGallaryImage != null) {
-						Bitmap board;
-
-						String[] filePathColumn = {MediaStore.Images.Media.DATA};
-						Cursor cursor = getContentResolver().query(SelectedGallaryImage,
-								filePathColumn, null, null, null);
-						cursor.moveToFirst();
-
-						int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-						String picturePath = cursor.getString(columnIndex);
-						cursor.close();
-
-						// board=BitmapFactory.decodeFile(picturePath);
-						int h = drawView.getHeight(); // 320; // Height in pixels
-						int w = drawView.getWidth();// 480; // Width in pixels
-						board = Bitmap.createScaledBitmap(
-								BitmapFactory.decodeFile(picturePath), w, h, true);
-						drawView.setImage(board);
-					}
-				}
+//				if (imageSelectedOption == 0) {
+//					if(StoredFilepath!=null) {
+//					File file = new File(StoredFilepath);
+//					if (file.exists()) {
+//						Log.i("handsketch123", "file name : " + file.getPath());
+//						Bitmap bitMap = callDisp.ResizeImage(StoredFilepath);
+//						if (bitMap != null) {
+//							Log.i("handsketch123", "bitmap not null");
+//							drawView.setImage(bitMap);
+//						}
+//					}
+//				}
+//			}else if(imageSelectedOption==1) {
+//					if (SelectedGallaryImage != null) {
+//						Bitmap board;
+//
+//						String[] filePathColumn = {MediaStore.Images.Media.DATA};
+//						Cursor cursor = getContentResolver().query(SelectedGallaryImage,
+//								filePathColumn, null, null, null);
+//						cursor.moveToFirst();
+//
+//						int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//						String picturePath = cursor.getString(columnIndex);
+//						cursor.close();
+//
+//						// board=BitmapFactory.decodeFile(picturePath);
+//						int h = drawView.getHeight(); // 320; // Height in pixels
+//						int w = drawView.getWidth();// 480; // Width in pixels
+//						board = Bitmap.createScaledBitmap(
+//								BitmapFactory.decodeFile(picturePath), w, h, true);
+//						drawView.setImage(board);
+//					}
+//				}
 
 			drawView.setErase(false);
 			pencil_layout.setVisibility(View.VISIBLE);
