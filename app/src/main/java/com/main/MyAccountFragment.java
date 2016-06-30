@@ -502,7 +502,7 @@ public class MyAccountFragment extends Fragment {
                 add_hospital = bean.getHospitalaffiliation();
                 if(add_hospital.length()>0) {
                     hospital_lay1.removeAllViews();
-                    String[] split = add_hospital.split(",");
+                    String[] split = add_hospital.split("###");
 
                     for (int i = 0; i < split.length; i++) {
                         Log.d("citation1", "values--->" + bean.getCitationpublications());
@@ -544,7 +544,7 @@ public class MyAccountFragment extends Fragment {
                 add_association = bean.getOrganizationmembership();
                 if(add_association.length()>0) {
                     association_lay1.removeAllViews();
-                    String[] split = add_association.split(",");
+                    String[] split = add_association.split("###");
 
                     for (int i = 0; i < split.length; i++) {
                         Log.d("citation1", "values--->" + bean.getCitationpublications());
@@ -589,7 +589,7 @@ public class MyAccountFragment extends Fragment {
                 Log.d("citation", "values--->" + add_citation);
                 if(add_citation.length()>0) {
                     cite_lay1.removeAllViews();
-                    String[] split = add_citation.split(",");
+                    String[] split = add_citation.split("###");
 
                     for (int i = 0; i < split.length; i++) {
                         Log.d("citation1", "values--->" + bean.getCitationpublications());

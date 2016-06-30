@@ -1713,8 +1713,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
 
 				Log.e("NS", "ComponentPath :" + ComponentPath);
 				if(filename.getText().toString()!=null
-						&& filename.getText().toString().length()>0 && fileDesc.getText().toString()!=null
-						&& fileDesc.getText().toString().length()>0) {
+						&& filename.getText().toString().trim().length()>0 && fileDesc.getText().toString()!=null
+						&& fileDesc.getText().toString().trim().length()>0) {
 
 					if (ComponentPath != null) {
 						strIPath = ComponentPath;

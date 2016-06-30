@@ -227,8 +227,8 @@ public class MyAccountActivity extends Activity {
                                 if (SingleInstance.myAccountBean.getCitationpublications() != null)
                                     add_citation = SingleInstance.myAccountBean.getCitationpublications();
                             } else
-                                add_citation = add_citation + "," + citation_info.getText().toString().trim();
-                            String[] split = add_citation.split(",");
+                                add_citation = add_citation + "###" + citation_info.getText().toString().trim();
+                            String[] split = add_citation.split("###");
                             cite_lay.removeAllViews();
                             cite_lay1.removeAllViews();
                             for (int i = 0; i < split.length; i++) {
@@ -512,6 +512,7 @@ public class MyAccountActivity extends Activity {
                                     LinearLayout.LayoutParams dut = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                                     dut.leftMargin = 20;
                                     dut.rightMargin = 20;
+
                                     address_layout.setLayoutParams(dut);
                                     address_layout.setWeightSum(1);
 
@@ -519,6 +520,7 @@ public class MyAccountActivity extends Activity {
                                     LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                                     dim.leftMargin = 30;
                                     dim.topMargin = 5;
+                                    dim.bottomMargin = 7;
                                     dim.weight = 1;
                                     dynamicText.setLayoutParams(dim);
 
@@ -789,10 +791,10 @@ public class MyAccountActivity extends Activity {
                         if (SingleInstance.myAccountBean.getHospitalaffiliation() != null)
                             add_hospital = SingleInstance.myAccountBean.getHospitalaffiliation();
                     } else
-                        add_hospital = add_hospital + "," + hospital.getSelectedItem().toString().trim();
+                        add_hospital = add_hospital + "###" + hospital.getSelectedItem().toString().trim();
 
 
-                    String[] split = add_hospital.split(",");
+                    String[] split = add_hospital.split("###");
                     hospital_lay1.removeAllViews();
 //                    member_lay.removeAllViews();
                     for (int i = 0; i < split.length; i++) {
@@ -869,10 +871,10 @@ public class MyAccountActivity extends Activity {
                         if (SingleInstance.myAccountBean.getOrganizationmembership() != null)
                             add_association_mem = SingleInstance.myAccountBean.getOrganizationmembership();
                     } else
-                        add_association_mem = add_association_mem + "," + association_membership.getSelectedItem().toString().trim();
+                        add_association_mem = add_association_mem + "###" + association_membership.getSelectedItem().toString().trim();
 
 
-                    String[] split = add_association_mem.split(",");
+                    String[] split = add_association_mem.split("###");
                     member_lay1.removeAllViews();
 //                    member_lay.removeAllViews();
                     for (int i = 0; i < split.length; i++) {
@@ -1485,6 +1487,7 @@ public class MyAccountActivity extends Activity {
                             LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                             dim.leftMargin = 30;
                             dim.topMargin = 5;
+                            dim.bottomMargin = 7;
                             dim.weight = 1;
                             dynamicText.setLayoutParams(dim);
 
@@ -1575,7 +1578,7 @@ public class MyAccountActivity extends Activity {
                     }
                     if (bean.getHospitalaffiliation() != null) {
                         add_hospital = bean.getHospitalaffiliation();
-                        String[] split = add_hospital.split(",");
+                        String[] split = add_hospital.split("###");
                         hospital_lay1.removeAllViews();
                         for (int i = 0; i < split.length; i++) {
                             LinearLayout hospital_layout = new LinearLayout(context);
@@ -1616,7 +1619,7 @@ public class MyAccountActivity extends Activity {
                     if (bean.getCitationpublications() != null) {
 //                tv_cite.setText(bean.getCitationpublications());
                         add_citation = bean.getCitationpublications();
-                        String[] split = add_citation.split(",");
+                        String[] split = add_citation.split("###");
                         cite_lay.removeAllViews();
                         cite_lay1.removeAllViews();
                         for (int i = 0; i < split.length; i++) {
@@ -1660,7 +1663,7 @@ public class MyAccountActivity extends Activity {
                             add_association_mem = bean.getOrganizationmembership();
 
                             Log.d("association", "string1" + add_association_mem);
-                        String[] split = add_association_mem.split(",");
+                        String[] split = add_association_mem.split("###");
                         member_lay1.removeAllViews();
 //                    member_lay.removeAllViews();
                         for (int i = 0; i < split.length; i++) {
