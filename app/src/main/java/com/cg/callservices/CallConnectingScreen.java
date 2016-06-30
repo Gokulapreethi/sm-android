@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -164,9 +165,9 @@ public class CallConnectingScreen extends Fragment {
                     @Override
                     public void onClick(View v) {
 						try {
-							Intent serviceIntent = new Intent(getActivity(),FloatingCallService.class);
-							serviceIntent.putExtra("sview",1);
-							getActivity().startService(serviceIntent);
+//							Intent serviceIntent = new Intent(getActivity(),FloatingCallService.class);
+//							serviceIntent.putExtra("sview",1);
+//							getActivity().startService(serviceIntent);
 
 							FragmentManager fm =
                                     AppReference.mainContext.getSupportFragmentManager();
@@ -176,7 +177,14 @@ public class CallConnectingScreen extends Fragment {
 							ft.replace(R.id.activity_main_content_fragment,
                                     AppReference.bacgroundFragment);
 							ft.commitAllowingStateLoss();
-//							min_outcall.setVisibility(View.VISIBLE);
+							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+								min_outcall.setVisibility(View.VISIBLE);
+							} else {
+								Intent serviceIntent = new Intent(getActivity(), FloatingCallService.class);
+								serviceIntent.putExtra("sview", 1);
+								getActivity().startService(serviceIntent);
+							}
+
 						} catch (Exception e) {
 							e.printStackTrace();
 						}

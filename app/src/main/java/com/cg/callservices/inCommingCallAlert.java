@@ -6,6 +6,7 @@ import android.app.KeyguardManager.KeyguardLock;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -171,9 +172,9 @@ public class inCommingCallAlert extends Fragment {
 					@Override
 					public void onClick(View v) {
 						try {
-							Intent serviceIntent = new Intent(getActivity(),FloatingCallService.class);
-							serviceIntent.putExtra("sview",0);
-							getActivity().startService(serviceIntent);
+//							Intent serviceIntent = new Intent(getActivity(),FloatingCallService.class);
+//							serviceIntent.putExtra("sview",0);
+//							getActivity().startService(serviceIntent);
 
 							FragmentManager fm =
                                     AppReference.mainContext.getSupportFragmentManager();
@@ -183,7 +184,13 @@ public class inCommingCallAlert extends Fragment {
 							ft.replace(R.id.activity_main_content_fragment,
                                     AppReference.bacgroundFragment);
 							ft.commitAllowingStateLoss();
-//							min_incall.setVisibility(View.VISIBLE);
+							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+								min_incall.setVisibility(View.VISIBLE);
+							} else {
+								Intent serviceIntent = new Intent(getActivity(), FloatingCallService.class);
+								serviceIntent.putExtra("sview", 0);
+								getActivity().startService(serviceIntent);
+							}
 						} catch (Exception e) {
 							e.printStackTrace();
 						}

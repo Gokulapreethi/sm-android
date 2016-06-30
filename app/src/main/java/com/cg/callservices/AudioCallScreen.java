@@ -648,7 +648,11 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			if (AppMainActivity.commEngine != null) {
                 AppMainActivity.commEngine.setmDecodeFrame(true);
             }
-			AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+			} else {
+				AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
+			}
 			Activity parent = getActivity();
 			if(parent != null){
 				audio_minimize.setVisibility(View.GONE);
@@ -872,10 +876,14 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 				public void onClick(View v) {
 					Log.i("Float","minimize.setOnClickListener");
 					try {
-						Intent serviceIntent = new Intent(getActivity(),FloatingCallService.class);
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+						} else {
+						Intent serviceIntent = new Intent(AppReference.mainContext.getApplication(),FloatingCallService.class);
 						serviceIntent.putExtra("sview",2);
 						serviceIntent.putExtra("callscreen","ACS");
-						getActivity().startService(serviceIntent);
+						AppReference.mainContext.startService(serviceIntent);
+						}
 //						getActivity().startService(new Intent(getActivity(), FloatingCallService.class));
 						addShowHideListener();
 					} catch (Exception e) {
@@ -2787,17 +2795,18 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	{
 		try {
 
-			Log.i("AudioCall","Came to finishAudiocallScreen in AudioCallScreen");
+			Log.i("AudioCall", "Came to finishAudiocallScreen in AudioCallScreen");
 			if (SingleInstance.instanceTable.containsKey("callactivememberslist")) {
-				CallActiveMembersList activeMembersList = (CallActiveMembersList)SingleInstance.instanceTable.get("callactivememberslist");
+				CallActiveMembersList activeMembersList = (CallActiveMembersList) SingleInstance.instanceTable.get("callactivememberslist");
 				activeMembersList.finishActivity();
 			}
 			Activity parent = getActivity();
-			Log.i("AudioCall","parent : "+parent);
-//			if(parent != null) {
-			AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
-//			}
+			Log.i("AudioCall", "parent : " + parent);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
+			} else {
+				AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
+			}
 			preview_hided = false;
 			currentcall_type = "AC";
 			objCallDispatcher.stopRingTone();
@@ -3144,7 +3153,9 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 		ft.replace(R.id.activity_main_content_fragment,
 				AppReference.bacgroundFragment);
 		ft.commitAllowingStateLoss();
-//		audio_minimize.setVisibility(View.VISIBLE);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			audio_minimize.setVisibility(View.VISIBLE);
+		}
 		mainHeader.setVisibility(View.VISIBLE);
 	}
 

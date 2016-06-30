@@ -2435,7 +2435,11 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					SingleInstance.mainContext.runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
-							AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
+							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+							} else {
+								AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
+							}
 							ImageView min_outcall = (ImageView) SingleInstance.mainContext.findViewById(R.id.min_outcall);
 							min_outcall.setVisibility(View.GONE);
 							ImageView min_incall = (ImageView) SingleInstance.mainContext.findViewById(R.id.min_incall);
@@ -2525,12 +2529,14 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							ft.commitAllowingStateLoss();
 
 							if (!isCallignored) {
-								handlerForCall.post(new Runnable() {
-									@Override
-									public void run() {
-										showCallHistory(CallDispatcher.sb.getSessionid(), CallDispatcher.sb.getCallType());
-									}
-								});
+								if(CallDispatcher.sb.getCallstatus().equalsIgnoreCase("callattended")) {
+									handlerForCall.post(new Runnable() {
+										@Override
+										public void run() {
+											showCallHistory(CallDispatcher.sb.getSessionid(), CallDispatcher.sb.getCallType());
+										}
+									});
+								}
 							} else {
 								isCallignored =false;
 							}
@@ -2597,8 +2603,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								public void run() {
 									// TODO Auto-generated method stub
 									if (LoginUser.equals(callinitiator)) {
-										getofflineCallResponse(sb.getFrom(),
-												"No Answer");
+//										getofflineCallResponse(sb.getFrom(),
+//												"No Answer");
 
 
 //										NoAnswer(sb.getFrom());
@@ -2652,7 +2658,19 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 											handlerForCall.post(new Runnable() {
 												@Override
 												public void run() {
-													showCallHistory(CallDispatcher.sb.getSessionid(), CallDispatcher.sb.getCallType());
+//													showCallHistory(CallDispatcher.sb.getSessionid(), CallDispatcher.sb.getCallType());
+
+													Intent intentComponent = new Intent(context,
+															CallHistoryActivity.class);
+													intentComponent.putExtra("buddyname",
+															CallDispatcher.sb.getFrom());
+													intentComponent.putExtra("isDelete", true);
+													if(CallDispatcher.sb.getCallType().equalsIgnoreCase("VC"))
+														intentComponent.putExtra("audiocall",false);
+													intentComponent.putExtra("individual", true);
+													intentComponent.putExtra("sessionid",
+															CallDispatcher.sb.getSessionid());
+													context.startActivity(intentComponent);
 												}
 											});
 											showMissedcallAlert(
@@ -14612,7 +14630,7 @@ private TrustManager[] get_trust_mgr() {
 			
 
 			// bib = WebServiceReferences.buddyList.get(username);
-			if (bib != null) {
+			if (bib != null && bib.getStatus().equalsIgnoreCase("online")) {
 				CallDispatcher.sb = new SignalingBean();
 				CallDispatcher.sb.setFrom(CallDispatcher.LoginUser);
 				CallDispatcher.sb.setTo(username);
@@ -14700,6 +14718,11 @@ private TrustManager[] get_trust_mgr() {
 				CallDispatcher.isCallInitiate = true;
 				SingleInstance.parentId = null;
 				AppMainActivity.commEngine.makeCall(CallDispatcher.sb);
+			} else if (bib != null && !bib.getStatus().equalsIgnoreCase("online")) {
+					String b_name = Buddyname(username);
+				if(b_name != null) {
+					showToast(AppReference.mainContext,b_name+" is "+bib.getStatus());
+				}
 			}
 
 		} catch (Exception e) {
@@ -14722,7 +14745,7 @@ private TrustManager[] get_trust_mgr() {
 			}
 
 			// bib = WebServiceReferences.buddyList.get(username);
-			if (bib != null) {
+			if (bib != null && bib.getStatus().equalsIgnoreCase("online")) {
 
 				SignalingBean pefore_promote = null;
 				String previous_start_time = null;
@@ -14839,6 +14862,11 @@ private TrustManager[] get_trust_mgr() {
 					AppMainActivity.commEngine.makeCall(CallDispatcher.sb);
 				}
 
+			} else if (bib != null && !bib.getStatus().equalsIgnoreCase("online")) {
+				String b_name = Buddyname(username);
+				if(b_name != null) {
+					showToast(AppReference.mainContext,b_name+" is "+bib.getStatus());
+				}
 			}
 
 		} catch (Exception e) {
@@ -16774,7 +16802,11 @@ private TrustManager[] get_trust_mgr() {
 			Button delete = (Button) dialog.findViewById(R.id.delete);
 			final ImageView play_button = (ImageView) dialog.findViewById(R.id.play_button);
 			final SeekBar seekBar1 = (SeekBar) dialog.findViewById(R.id.seekBar1);
-			final TextView txt_time= (TextView)dialog.findViewById(R.id.txt_time);
+			final TextView txt_time = (TextView)dialog.findViewById(R.id.txt_time);
+			TextView txt_calltype = (TextView)dialog.findViewById(R.id.tv_firstLine);
+			if(callType.equalsIgnoreCase("AC")) {
+				txt_calltype.setText("This session was recorded\n by the Audio call initiator.");
+			}
 			if(CallDispatcher.sb.getCallDuration() != null) {
 				txt_time.setText(CallDispatcher.sb.getCallDuration());
 			}
