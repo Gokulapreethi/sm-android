@@ -9265,6 +9265,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         final ListView list = (ListView) v1.findViewById(R.id.memberslist);
         final TextView online = (TextView) v1.findViewById(R.id.online_sort);
         final TextView alpha = (TextView) v1.findViewById(R.id.alpha_sort);
+        final TextView role = (TextView) v1.findViewById(R.id.role_sort);
+        role.setVisibility(View.GONE);
+
+
         GroupBean gBean = callDisp.getdbHeler(context).getGroupAndMembers(
                 "select * from groupdetails where groupid="
                         + groupBean.getGroupId());
