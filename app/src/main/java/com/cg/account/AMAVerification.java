@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,13 +63,14 @@ public class AMAVerification extends Activity {
     private ListView searchResult;
     private EditText btn_1;
     private ImageView grid_icon;
-    private Button search, cancel;
+    private Button search, cancel,cancel1;
     private RelativeLayout RelativeLayout2, RelativeLayout3;
     Vector<BuddyInformationBean> result;
     private CallDispatcher objCallDispatcher = null;
     private Handler handler = new Handler();
     private AppMainActivity appMainActivity;
     private CallDispatcher calldisp;
+    LinearLayout relay_search;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,23 +93,32 @@ public class AMAVerification extends Activity {
         final LinearLayout groupbtn = (LinearLayout) findViewById(R.id.groupbtn);
         btn_1 = (EditText) findViewById(R.id.searchet);
         cancel  = (Button)findViewById(R.id.cancel);
+        cancel.setVisibility(View.GONE);
         search = (Button) findViewById(R.id.search);
         final Button deleteContact=(Button)findViewById(R.id.delete);
         Button chat=(Button)findViewById(R.id.chat);
         Button audiocall=(Button)findViewById(R.id.audiocall);
         Button videocall=(Button)findViewById(R.id.videocall);
+        cancel1=(Button)findViewById(R.id.cancel1);
+        relay_search = (LinearLayout)findViewById(R.id.relay_search);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 if(txtView01.getVisibility()==View.VISIBLE){
-                     txtView01.setVisibility(View.GONE);
-                     btn_1.setVisibility(View.VISIBLE);
-                     search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_close));
-                 }else {
+                 if( btn_1.getVisibility()==View.VISIBLE){
+                     Log.d("ifcondition","if");
                      txtView01.setVisibility(View.VISIBLE);
                      btn_1.setVisibility(View.GONE);
-                     btn_1.setText("");
+                     cancel.setVisibility(View.VISIBLE);
+                     relay_search.setVisibility(View.GONE);
                      search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
+                 }else {
+                     Log.d("ifcondition","else");
+                     txtView01.setVisibility(View.GONE);
+                     btn_1.setVisibility(View.VISIBLE);
+                     relay_search.setVisibility(View.VISIBLE);
+                     cancel.setVisibility(View.GONE);
+                     btn_1.setText("");
+                     search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_close));
                  }
             }
         });
@@ -229,9 +240,28 @@ public class AMAVerification extends Activity {
             }
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                        }
+                if (s.toString().length() > 0) {
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    layoutParams.weight = 1;
+                    btn_1.setLayoutParams(layoutParams);
+                    btn_1.setCursorVisible(true);
+                    cancel1.setVisibility(View.VISIBLE);
+                } else {
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    layoutParams.gravity = Gravity.CENTER;
+                    btn_1.setLayoutParams(layoutParams);
+                    btn_1.setCursorVisible(false);
+                    cancel1.setVisibility(View.GONE);
+                }
                 if (s != null && s != "")
                     adapter.getFilter().filter(s);
+            }
+        });
+        cancel1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                btn_1.setText("");
             }
         });
         selectAll_buddy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

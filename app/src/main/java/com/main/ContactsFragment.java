@@ -389,16 +389,18 @@ public class ContactsFragment extends Fragment{
 				final Button online_sort = (Button) _rootView.findViewById(R.id.online_sort);
 				final Button alph_sort = (Button) _rootView.findViewById(R.id.alpha_sort);
 				final EditText myFilter = (EditText)_rootView.findViewById(R.id.searchtext);
-				Button groupsort=(Button)_rootView.findViewById(R.id.groupsort);
+				final Button groupsort=(Button)_rootView.findViewById(R.id.groupsort);
 				groupsort.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						if(isGroupAZ) {
 							isGroupAZ = false;
+							groupsort.setText("Z>A");
 							sortGroups();
 						}else {
 							isGroupAZ = true;
 							sortGroups();
+							groupsort.setText("A>Z");
 						}
 
 					}
@@ -475,10 +477,11 @@ public class ContactsFragment extends Fragment{
 						online_sort.setTextColor(getResources().getColor(R.color.snazlgray));
 						alph_sort.setTextColor(getResources().getColor(R.color.white));
 						if(isazsort) {
-
+							alph_sort.setText("Z>A");
 							isazsort = false;
 						}else {
 							isazsort = true;
+							alph_sort.setText("A>Z");
 						}
 						SortType = "ALPH";
 							SortList();
