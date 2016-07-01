@@ -891,6 +891,22 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             TextView officeaddre = (TextView) v1.findViewById(R.id.officeaddre);
             TextView hospitalspec = (TextView) v1.findViewById(R.id.hospitalspec);
             TextView citation = (TextView) v1.findViewById(R.id.citation);
+            ImageView Statusicon = (ImageView)v1.findViewById(R.id.status_icon);
+            TextView status = (TextView) findViewById(R.id.status);
+            status.setText(temp);
+            if (temp.equalsIgnoreCase("online")) {
+                Statusicon.setBackgroundResource(R.drawable.online_icon);
+            } else if (temp.equalsIgnoreCase("offline")) {
+                Statusicon.setBackgroundResource(R.drawable.offline_icon);
+            } else if (temp.equalsIgnoreCase("Away")) {
+                Statusicon.setBackgroundResource(R.drawable.busy_icon);
+            } else if (temp.equalsIgnoreCase("Stealth")) {
+                Statusicon.setBackgroundResource(R.drawable.invisibleicon);
+            } else if (temp.equalsIgnoreCase("Airport")) {
+                Statusicon.setBackgroundResource(R.drawable.busy_icon);
+            } else {
+                Statusicon.setBackgroundResource(R.drawable.offline_icon);
+            }
             LinearLayout footer1=(LinearLayout)v1.findViewById(R.id.footer1);
             footer1.setVisibility(View.GONE);
             if (!pb.getPhoto().equals(null)) {
@@ -917,7 +933,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 if(pb.getDob()!=null&& pb.getDob().length()>0) {
                     String birthdate=pb.getDob();
                     Log.i("sss1", "Current birthdate" + birthdate);
-                    String[] str = birthdate.split("/");
+                    if(birthdate.contains("/")){
+                        birthdate=birthdate.replace("/","-");
+                        Log.d("sss1","replace brithdate"+birthdate);
+                    }
+                    String[] str = birthdate.split("-");
                     int Currentyear = Calendar.getInstance().get(Calendar.YEAR);
                     Log.i("sss1","Current year"+Currentyear);
 
@@ -949,12 +969,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             if (pb.getCitationpublications() != null && pb.getCitationpublications().length() > 0)
                 citation.setText(pb.getCitationpublications());
         }
-        for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
-            if (bib.getName().equals(buddy)) {
-                TextView status = (TextView) findViewById(R.id.status);
-                status.setText(bib.getStatus());
-            }
-        }
+
+
+
     }
 
     public void chatprocess() {

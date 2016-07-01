@@ -76,6 +76,7 @@
                         android:layout_width="15dp"
                         android:layout_height="15dp"
                         android:layout_marginRight="5dp"
+                        android:id="@+id/status_icon"
                         android:background="@drawable/checkbox_default"/>
 
                     <TextView
