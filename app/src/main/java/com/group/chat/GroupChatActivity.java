@@ -9260,12 +9260,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 sorting = "alpha";
                 Collections.sort(memberslist, new BuddyListComparator());
                 if(isatoz) {
-                    alpha.setText("Z>A");
+                    alpha.setText("A>Z");
                     isatoz = false;
                 }
                 else {
                     isatoz = true;
-                    alpha.setText("A>Z");
+                    alpha.setText("Z>A");
                     Collections.reverse(memberslist);
                 }
                 MembersAdapter adapter = new MembersAdapter(context, R.layout.rounding_member_row, memberslist);
@@ -9399,12 +9399,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 sorting = "alpha";
                 Collections.sort(memberslist, new BuddyListComparator());
                 if(isatoz) {
-                    alpha.setText("Z>A");
+                    alpha.setText("A>Z");
                     isatoz = false;
                 }
                 else {
                     isatoz = true;
-                    alpha.setText("A>Z");
+                    alpha.setText("Z>A");
                     Collections.reverse(memberslist);
                 }
                 MembersAdapter adapter = new MembersAdapter(context, R.layout.rounding_member_row, memberslist);
