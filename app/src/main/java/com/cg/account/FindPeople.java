@@ -150,6 +150,7 @@ public class FindPeople extends Fragment {
                                             .getInstance(SingleInstance.mainContext));
                             RequestFragment requestFragment = RequestFragment.newInstance(SingleInstance.mainContext);
                             requestFragment.setRequest("invite");
+                            requestFragment.setBuddyName(bib.getEmailid());
                             calldisp.showprogress(CallDispatcher.pdialog,mainContext);
 //                        final CheckBox selectUser = (CheckBox) view.findViewById(R.id.sel_buddy);
 //                        if(bib.isSelected()){

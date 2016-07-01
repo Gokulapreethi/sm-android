@@ -296,13 +296,9 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                         holder.inreq.setVisibility(View.GONE);
                         if (!buddyInformationBean.getName().equalsIgnoreCase(
                                 CallDispatcher.LoginUser)) {
-                            ProfileBean pbean= DBAccess.getdbHeler().getProfileDetails(buddyInformationBean.getName());
-                                if(pbean!=null) {
-                                    if(pbean.getPhoto()!=null)
+                                if(buddyInformationBean.getProfile_picpath()!=null) {
                                     imageLoader.DisplayImage(
-                                            Environment.getExternalStorageDirectory().getAbsolutePath()+"/COMMedia/"+
-                                                    pbean.getPhoto(),
-                                            holder.buddy_icon,
+                                            buddyInformationBean.getProfile_picpath(), holder.buddy_icon,
                                             R.drawable.icon_buddy_aoffline);
                                 }
 

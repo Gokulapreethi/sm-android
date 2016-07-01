@@ -70,6 +70,7 @@ public class AMAVerification extends Activity {
     private Handler handler = new Handler();
     private AppMainActivity appMainActivity;
     private CallDispatcher calldisp;
+    LinearLayout dialogue;
     LinearLayout relay_search;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +135,7 @@ public class AMAVerification extends Activity {
         Collections.sort(result, new BuddyListComparator());
         adapter = new AMAAdapter(context, R.layout.find_people_item, result);
         searchResult.setAdapter(adapter);
-        final LinearLayout dialogue = (LinearLayout) findViewById(R.id.dialogue);
+        dialogue = (LinearLayout) findViewById(R.id.dialogue);
         groupbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -329,14 +330,14 @@ public class AMAVerification extends Activity {
                 selectUser.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        if (finalBib.isSelected()) {
-                            selectUser.setChecked(false);
-                            finalBib.setSelected(false);
-                        } else {
-                            selectUser.setChecked(true);
-                            finalBib.setSelected(true);
-                        }
-                        adapter.notifyDataSetChanged();
+//                        if (finalBib.isSelected()) {
+//                            selectUser.setChecked(false);
+//                            finalBib.setSelected(false);
+//                        } else {
+//                            selectUser.setChecked(true);
+//                            finalBib.setSelected(true);
+//                        }
+//                        adapter.notifyDataSetChanged();
                         int count = 0;
                         for (BuddyInformationBean bib1 : result) {
                             if (bib1.isSelected()) {
@@ -679,16 +680,29 @@ public class AMAVerification extends Activity {
 
                 if(bib!=null) {
                     if (bib.getProfile_picpath() != null) {
-                        String pic_Path = Environment.getExternalStorageDirectory().getAbsolutePath()
-                                + "/COMMedia/" + bib.getProfile_picpath();
-                        File pic = new File(pic_Path);
+//                        String pic_Path = Environment.getExternalStorageDirectory().getAbsolutePath()
+//                                + "/COMMedia/" + bib.getProfile_picpath();
+                        File pic = new File(bib.getProfile_picpath());
                         if (pic.exists()) {
-                            imageLoader.DisplayImage(pic_Path, holder.buddyicon, R.drawable.img_user);
+                            imageLoader.DisplayImage(bib.getProfile_picpath(), holder.buddyicon, R.drawable.img_user);
                         }
                     }
                     holder.header_title.setVisibility(View.VISIBLE);
                     String cname1, cname2;
                     cname1 = String.valueOf(bib.getFirstname().charAt(0));
+                    holder.selectUser.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (((CheckBox) v).isChecked()) {
+                                bib.setSelected(true);
+                                RelativeLayout2.setVisibility(View.GONE);
+                                dialogue.setVisibility(View.GONE);
+                            }else {
+                                bib.setSelected(false);
+                                RelativeLayout2.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    });
 
                     holder.header_title.setText(cname1.toUpperCase());
 
@@ -749,12 +763,25 @@ public class AMAVerification extends Activity {
                 FilterResults result = new FilterResults();
                 if (constraint != null && constraint.toString().length() > 0) {
                     Vector<BuddyInformationBean> buddyInformationBeans = new Vector<BuddyInformationBean>();
-                    for(int i = 0, l = originalList.size(); i < l; i++)
-                    {
-                        BuddyInformationBean buddyInformationBean = originalList.get(i);
-                        if(buddyInformationBean.getName().toLowerCase().contains(String.valueOf(constraint)))
-                            buddyInformationBeans.add(buddyInformationBean);
-                    }
+                    if(constraint.toString().contains(",")){
+                        String[] temp=constraint.toString().split(",");
+                        for(String name:temp) {
+                            for (int i = 0, l = originalList.size(); i < l; i++) {
+                                BuddyInformationBean buddyInformationBean = originalList.get(i);
+                                String buddyname=buddyInformationBean.getFirstname()+" "+buddyInformationBean.getLastname();
+                                if (buddyname.toLowerCase().contains(String.valueOf(name)))
+                                    buddyInformationBeans.add(buddyInformationBean);
+                            }
+                        }
+                    }else
+                        for(int i = 0, l = originalList.size(); i < l; i++)
+                        {
+                            BuddyInformationBean buddyInformationBean = originalList.get(i);
+                            String buddyname=buddyInformationBean.getFirstname()+" "+buddyInformationBean.getLastname();
+                            if(buddyname.toLowerCase().contains(String.valueOf(constraint)))
+                                buddyInformationBeans.add(buddyInformationBean);
+                        }
+
                     buddyInformationBeans = GroupChatActivity.getAdapterList(buddyInformationBeans);
                     result.count = buddyInformationBeans.size();
                     result.values = buddyInformationBeans;

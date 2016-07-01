@@ -317,6 +317,13 @@ public class MyAccountActivity extends Activity {
 //                        isEdit=false;
 
                         if(spliting_address!=null) {
+                            Addresstext.setVisibility(View.VISIBLE);
+                            addresstext.setVisibility(View.VISIBLE);
+                            ziptext.setVisibility(View.VISIBLE);
+                            citytext.setVisibility(View.VISIBLE);
+                            office_phone_numbertext.setVisibility(View.VISIBLE);
+                            office_fax_numbertext.setVisibility(View.VISIBLE);
+
                             address = spliting_address.split(",");
                             Log.d("Address", "spliting_address"+spliting_address);
                             Address1.setText(address[0]);
@@ -448,6 +455,7 @@ public class MyAccountActivity extends Activity {
                             InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                             dialog1.dismiss();
+                            isEdit=false;
                         }
                     });
                     save1.setOnClickListener(new View.OnClickListener() {

@@ -165,13 +165,13 @@ public class SearchPeopleFragment extends Fragment {
                 residency = (AutoCompleteTextView) _rootView.findViewById(R.id.resi_pro);
                 fellow = (AutoCompleteTextView) _rootView.findViewById(R.id.fellow);
                 gender = (RadioGroup) _rootView.findViewById(R.id.gender);
-                advance.setOnClickListener(new View.OnClickListener() {
+                arrow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if(isClicked) {
                             isClicked=false;
                             advance_lay.setVisibility(View.VISIBLE);
-                            arrow.setBackgroundResource(R.drawable.up_arrow);
+                            arrow.setBackgroundResource(R.drawable.button_arrow_up);
                         }else {
                             isClicked=true;
                             advance_lay.setVisibility(View.GONE);
@@ -518,30 +518,30 @@ public class SearchPeopleFragment extends Fragment {
                 search.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        appMainActivity.removeFragments(searchPeopleFragment.newInstance(SingleInstance.mainContext));
-                        if (nickname.getText().toString().trim().length() > 0
-                                || fname.getText().toString().trim().length() > 0
-                                || lname.getText().toString().trim().length() > 0
-                                || usertype.getText().toString().trim().length() > 0
-                                || state.getText().toString().trim().length() > 0
-                                || speciality.getText().toString().trim().length() > 0
-                                || hospital.getText().toString().trim().length() > 0
-                                || medical.getText().toString().trim().length() > 0
-                                ||residency.getText().toString().trim().length() > 0
-                                || fellow.getText().toString().trim().length() > 0 ) {
+                        int selectedId = gender.getCheckedRadioButtonId();
+                        if(selectedId > 0)
+                            genderSelected = (RadioButton) _rootView.findViewById(selectedId);
+//                        if (nickname.getText().toString().trim().length() > 0
+//                                || fname.getText().toString().trim().length() > 0
+//                                || lname.getText().toString().trim().length() > 0
+//                                || usertype.getText().toString().trim().length() > 0
+//                                || state.getText().toString().trim().length() > 0
+//                                || speciality.getText().toString().trim().length() > 0
+//                                || hospital.getText().toString().trim().length() > 0
+//                                || medical.getText().toString().trim().length() > 0
+//                                ||residency.getText().toString().trim().length() > 0
+//                                || fellow.getText().toString().trim().length() > 0
+//                                || (genderSelected!=null && genderSelected.getText().toString()!=null)) {
 
-                            int selectedId = gender.getCheckedRadioButtonId();
                             Log.i("AAAA","Search "+gender.getCheckedRadioButtonId());
                             String[] param = new String[15];
                             param[0] = CallDispatcher.LoginUser;
                             param[1] = "";
                             param[2] = fname.getText().toString();
                             param[3] = lname.getText().toString();
-                            if(selectedId > 0) {
-                                genderSelected = (RadioButton) _rootView.findViewById(selectedId);
-                            if(genderSelected.getText().toString()!=null)
+
+                            if(genderSelected!=null && genderSelected.getText().toString()!=null)
                                 param[4] =genderSelected.getText().toString();
-                            }
                             else
                                 param[4] ="";
                                 param[5] = usertype.getText().toString().trim();
@@ -553,16 +553,15 @@ public class SearchPeopleFragment extends Fragment {
                                 param[11] = "";
                                 param[12] = hospital.getText().toString().trim();
                                 param[13] = "";
-
                                 param[14] = nickname.getText().toString();
                             WebServiceReferences.webServiceClient.SearchPeopleByAccount(param, searchPeopleFragment);
                             showDialog();
 
-                        } else {
-                            Toast.makeText(mainContext,
-                                    "Please enter any one field to search",
-                                    Toast.LENGTH_SHORT).show();
-                        }
+//                        } else {
+//                            Toast.makeText(mainContext,
+//                                    "Please enter any one field to search",
+//                                    Toast.LENGTH_SHORT).show();
+//                        }
                     }
                 });
             } catch (Exception e) {
@@ -614,6 +613,7 @@ public void onDestroy() {
         cancelDialog();
         if (obj instanceof ArrayList) {
             ArrayList<BuddyInformationBean> response = (ArrayList<BuddyInformationBean>) obj;
+            appMainActivity.removeFragments(searchPeopleFragment.newInstance(SingleInstance.mainContext));
             FindPeople findPeople = FindPeople.newInstance(SingleInstance.mainContext);
             FragmentManager fragmentManager = SingleInstance.mainContext
                     .getSupportFragmentManager();

@@ -506,33 +506,17 @@ public class PatientRoundingFragment extends Fragment {
         String status = null;
         Vector<UserBean> tempList = new Vector<UserBean>();
         Vector<UserBean> onlinelist = new Vector<UserBean>();
-        Vector<UserBean> offlinelist = new Vector<UserBean>();
-        Vector<UserBean> airplanelist = new Vector<UserBean>();
-        Vector<UserBean> awaylist = new Vector<UserBean>();
         tempList.clear();
         for (UserBean sortlistbeanstatus : vectorBean) {
             status = sortlistbeanstatus.getStatus();
             Log.i("AAAA", "online list " + status);
             if (status != null) {
-                if (status.equalsIgnoreCase("Online")) {
+                if (status.equalsIgnoreCase("Online"))
                     onlinelist.add(sortlistbeanstatus);
-                } else if (status.equalsIgnoreCase("Offline") || status.equalsIgnoreCase("Stealth")) {
-                    offlinelist.add(sortlistbeanstatus);
-                } else if (status.equalsIgnoreCase("Airport") || status.equalsIgnoreCase("busy")) {
-                    airplanelist.add(sortlistbeanstatus);
-                } else if (status.equalsIgnoreCase("Away")) {
-                    awaylist.add(sortlistbeanstatus);
-                }
             }
         }
         if (onlinelist.size() > 0)
             tempList.addAll(onlinelist);
-        if (airplanelist.size() > 0)
-            tempList.addAll(airplanelist);
-        if (awaylist.size() > 0)
-            tempList.addAll(awaylist);
-        if (offlinelist.size() > 0)
-            tempList.addAll(offlinelist);
 
         return tempList;
 

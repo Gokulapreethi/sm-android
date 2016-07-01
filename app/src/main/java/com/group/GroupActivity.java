@@ -615,7 +615,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 					}
 					for (UserBean userBean : list) {
 						if (!membersMap.containsKey(userBean.getBuddyName())) {
-							userBean.setInvite(true);
+							userBean.setAllowChecking(false);
 							membersList.add(userBean);
 						}
 					}

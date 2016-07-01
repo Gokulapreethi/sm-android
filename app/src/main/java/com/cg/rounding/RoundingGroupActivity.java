@@ -673,7 +673,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                     }
                     for (UserBean userBean : list) {
                         if (!membersMap.containsKey(userBean.getBuddyName())) {
-                            userBean.setInvite(true);
+                            userBean.setAllowChecking(false);
                             membersList.add(userBean);
                         }
                     }

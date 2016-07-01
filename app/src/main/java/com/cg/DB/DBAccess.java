@@ -727,62 +727,30 @@ public class DBAccess extends SQLiteOpenHelper {
 
 	public String getProfilePic(String userName) {
 		String profilePic = "";
-		String fieldId = "3";
-		try {
-
 			try {
 				if (db.isOpen())
 					openDatabase();
 
 				Cursor cur = null;
 				try {
-					String qry = "select fieldid from fieldtemplate where fieldname='Picture'";
+					String qry = "select photo from profiledetails where username='"+userName+"'";
+					Log.i("sss","profile pic "+qry);
 					cur = db.rawQuery(qry, null);
+					cur.moveToFirst();
 
-					if (cur != null && cur.getCount() > 0) {
-						cur.moveToFirst();
-						fieldId = Integer.toString(cur.getInt(cur
-								.getColumnIndex("fieldid")));
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				} finally {
-					if (cur != null && !cur.isClosed()) {
-						cur.close();
-						cur = null;
-					}
-				}
-
-				try {
-					cur = db.rawQuery(
-							"select fieldvalue from profilefieldvalues where userid='"
-									+ userName + "' and fieldid='" + fieldId
-									+ "'", null);
-					if (cur != null && cur.getCount() > 0) {
-						cur.moveToFirst();
+					while (cur.isAfterLast() == false) {
 						profilePic = cur.getString(0);
-
+						cur.moveToNext();
 					}
+					Log.i("sss","profile pic id "+profilePic);
 				} catch (Exception e) {
 					e.printStackTrace();
-				} finally {
-					if (cur != null && !cur.isClosed()) {
-						cur.close();
-						cur = null;
-					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				return null;
-
 			}
-
 			return profilePic;
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			return null;
-		}
 
 	}
 

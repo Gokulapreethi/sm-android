@@ -387,7 +387,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     if (!isGroup && !isRounding) {
                         final Dialog dialog = new Dialog(context);
                         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                        dialog.setContentView(R.layout.dialog_myacc_menu);
+                        dialog.setContentView(R.layout.group_dialog);
                         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                         lp.copyFrom(dialog.getWindow().getAttributes());
                         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -398,10 +398,15 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         window.setAttributes(lp);
                         window.setGravity(Gravity.BOTTOM);
                         dialog.show();
-                        TextView sms = (TextView) dialog.findViewById(R.id.delete_acc);
-                        sms.setText("SMS");
-                        TextView clear = (TextView) dialog.findViewById(R.id.log_out);
-                        clear.setText("Clear History");
+
+                        TextView edit_grp = (TextView) dialog.findViewById(R.id.edit_grp);
+                        edit_grp.setVisibility(View.GONE);
+                        TextView sms = (TextView) dialog.findViewById(R.id.invite_grp);
+                        sms.setText("Invite User to Group");
+                        TextView clear = (TextView) dialog.findViewById(R.id.leave_grp);
+                        clear.setText("Clear all Mesages");
+                        TextView delet_user = (TextView) dialog.findViewById(R.id.delete_grp);
+                        delet_user.setText("Delete User from Contacts");
                         TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
                         cancel.setOnClickListener(new View.OnClickListener() {
 
@@ -414,18 +419,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 }
                             }
                         });
-                        sms.setOnClickListener(new View.OnClickListener() {
+                        delet_user.setOnClickListener(new View.OnClickListener() {
 
                             @Override
                             public void onClick(View arg0) {
-                                try {
-                                    dialog.dismiss();
-                                    Intent smsintent = new Intent(context, ShortMessage.class);
-                                    smsintent.putExtra("Grid", true);
-                                    startActivity(smsintent);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+
+                                ContactsFragment.getInstance(context).doDeleteContact(buddy);
                             }
                         });
                         clear.setOnClickListener(new View.OnClickListener() {
@@ -583,7 +582,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         if (groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
                             delete_grp.setVisibility(View.VISIBLE);
                             leave_grp.setVisibility(View.GONE);
+                            edit_grp.setVisibility(View.VISIBLE);
                         } else {
+                            edit_grp.setVisibility(View.GONE);
                             delete_grp.setVisibility(View.GONE);
                             leave_grp.setVisibility(View.VISIBLE);
                         }
@@ -2289,7 +2290,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     gcBean.setSubCategory(null);
                 }
                 if (isReplyBack) {
-                    Log.i("AAAA", "Reply back ");
+                    Log.i("AAAA", "Reply back mixed file ");
                     if (spBean == null) {
                         spBean = new SpecialMessageBean();
                     }
@@ -2351,8 +2352,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 }
                 if (spBean != null && spBean.getSubcategory() != null && spBean.getSubcategory().equalsIgnoreCase("grb")) {
                     for (int i = 0; i < chatList.size(); i++) {
+                        Log.i("AAAA","reply back mixed file grb_r  000000");
                         GroupChatBean gcBean1 = chatList.get(i);
                         if (gcBean1.getParentId()!=null&&gcBean1.getParentId().equals(gcBean.getParentId())) {
+                            Log.i("AAAA","reply back mixed file grb_r");
                             gcBean.setSubCategory("GRB_R");
                             gcBean.setComment(getReplyMessage(gcBean1));
                             gcBean1.setSubCategory("GRB_R");
@@ -3605,7 +3608,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             else
                 e.printStackTrace();
         }
-        pId = null;
+//        pId = null;
 
     }
 
@@ -6155,8 +6158,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                                     && !gcBean1.getParentId()
                                                     .equalsIgnoreCase(
                                                             "null")) {
+                                                Log.i("AAAA","reply back true parentid");
                                                 pId = gcBean1.getParentId();
                                             } else {
+                                                Log.i("AAAA","reply back true signalid");
                                                 pId = gcBean1.getSignalid();
                                             }
                                         }
@@ -10742,7 +10747,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         tempList.clear();
         for (BuddyInformationBean sortlistbean : vectorBean) {
             status = sortlistbean.getStatus();
-            if (status.equalsIgnoreCase("Online")) {
+            if (status!=null && status.equalsIgnoreCase("Online")) {
                 onlinelist.add(sortlistbean);
 //            } else if (status.equalsIgnoreCase("Offline") || status.equalsIgnoreCase("Stealth")) {
 //                offlinelist.add(sortlistbean);
