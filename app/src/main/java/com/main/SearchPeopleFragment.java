@@ -610,9 +610,9 @@ public void onDestroy() {
     public void notifySearchPeople(Object obj)
     {
         Log.i("AAAA", "Search people ");
-        cancelDialog();
         if (obj instanceof ArrayList) {
             ArrayList<BuddyInformationBean> response = (ArrayList<BuddyInformationBean>) obj;
+            cancelDialog();
             appMainActivity.removeFragments(searchPeopleFragment.newInstance(SingleInstance.mainContext));
             FindPeople findPeople = FindPeople.newInstance(SingleInstance.mainContext);
             FragmentManager fragmentManager = SingleInstance.mainContext
@@ -623,6 +623,7 @@ public void onDestroy() {
             SingleInstance.searchedResult.clear();
             SingleInstance.searchedResult.addAll(response);
         } else if(obj instanceof WebServiceBean){
+            cancelDialog();
             final String result1 = ((WebServiceBean) obj).getText();
             handler.post(new Runnable() {
 

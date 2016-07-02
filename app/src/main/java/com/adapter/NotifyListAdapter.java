@@ -350,6 +350,8 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                                 holder.fileType.setText(notifyBean.getUsername());
                             else if (notifyBean.getType().trim().equalsIgnoreCase("sketch"))
                                 holder.fileType.setText(notifyBean.getUsername());
+                            else if(notifyBean.getType().trim().equalsIgnoreCase("document"))
+                                holder.fileType.setText(notifyBean.getUsername());
                             if (notifyBean.getType().trim().equalsIgnoreCase("text")) {
                                 if (notifyBean.getContent() != null)
                                     holder.fileName.setText(notifyBean.getContent());

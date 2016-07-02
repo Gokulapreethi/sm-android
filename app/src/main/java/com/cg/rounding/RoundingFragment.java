@@ -261,7 +261,7 @@ public class RoundingFragment extends Fragment {
                         // TODO Auto-generated method stub
                         list.setAdapter(null);
                         adapter = new RoundingAdapter(mainContext,
-                                R.layout.grouplist,grouplist);
+                                R.layout.grouplist,getRoundingList());
                         list.setAdapter(adapter);
                         RoundingFragment.getRoundingAdapter().notifyDataSetChanged();
                     } catch (Exception e) {

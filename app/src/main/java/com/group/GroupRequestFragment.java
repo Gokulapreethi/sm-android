@@ -90,7 +90,7 @@ public class GroupRequestFragment extends Fragment {
         TextView title = (TextView) getActivity().findViewById(
                 R.id.activity_main_content_title);
         title.setVisibility(View.VISIBLE);
-        title.setText(groupname);
+        title.setText(groupname.toUpperCase());
 
         Button backBtn = (Button) getActivity().findViewById(R.id.backbtn);
         backBtn.setVisibility(View.VISIBLE);
@@ -167,6 +167,7 @@ public class GroupRequestFragment extends Fragment {
                         }
                     }
                 }
+                membercount=memberslist.size();
                 members.setText("("+membercount+")");
                 MembersAdapter adapter=new MembersAdapter(SingleInstance.mainContext,R.layout.find_people_item,memberslist);
                 members_list.setAdapter(adapter);

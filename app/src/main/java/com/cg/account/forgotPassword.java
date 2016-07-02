@@ -166,6 +166,9 @@ public class forgotPassword extends Activity {
 							btn_ok.setOnClickListener(new View.OnClickListener() {
 								@Override
 								public void onClick(View view) {
+									ans1.setText("");
+									ans2.setText("");
+									ans3.setText("");
 									dialog.dismiss();
 								}
 							});

@@ -313,7 +313,11 @@ public class FindPeople extends Fragment {
                     } else {
                         holder.statusIcon.setBackgroundResource(R.drawable.offline_icon);
                     }
+                    if(bib.getFirstname()!=null && bib.getFirstname().length()>0
+                            && bib.getLastname().length()>0 && bib.getLastname()!=null)
                     holder.buddyName.setText(bib.getFirstname()+" "+bib.getLastname());
+                    else
+                        holder.buddyName.setText(bib.getEmailid());
                     holder.occupation.setText(bib.getOccupation());
                 }
             }catch(Exception e){

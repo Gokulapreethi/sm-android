@@ -2555,7 +2555,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 
     private void showToast(String msg) {
         try {
-            Toast.makeText(GroupChatActivity.this, msg, Toast.LENGTH_LONG)
+            Toast.makeText(GroupChatActivity.this, msg, Toast.LENGTH_SHORT)
                     .show();
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -5205,9 +5205,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             } else if (gcBean.getSubCategory().equalsIgnoreCase(
                                     "grb") || gcBean.getSubCategory().equalsIgnoreCase(
                                     "GRB_R")) {
-                                receiverLayout
-                                        .setBackgroundResource(R.color.lgreen);
-                                convertView.setBackgroundResource(R.color.lgreen);
+//                                receiverLayout
+//                                        .setBackgroundResource(R.color.lgreen);
+//                                convertView.setBackgroundResource(R.color.lgreen);
                                 scheduleMsg.setTag(gcBean);
 //							scheduleMsg.setImageResource(R.drawable.replybg);
 //							scheduleMsg.setVisibility(View.VISIBLE);
@@ -5613,10 +5613,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 //										 + gcBean.getPrivateMembers());
                                             Log.i("reply","receiver side grb|| GRB_R loginuser");
                                             tv_user.setText(gcBean.getFrom());
-                                            senderLayout
-                                                    .setBackgroundResource(R.color.greenlight);
-                                            convertView
-                                                    .setBackgroundResource(R.color.lgreen);
+//                                            senderLayout
+//                                                    .setBackgroundResource(R.color.greenlight);
+//                                            convertView
+//                                                    .setBackgroundResource(R.color.lgreen);
                                             scheduleMsg.setTag(gcBean);
                                             btn_reply.setTag(gcBean);
                                             scheduleMsg

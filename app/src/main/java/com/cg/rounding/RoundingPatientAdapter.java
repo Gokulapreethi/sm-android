@@ -117,7 +117,7 @@ public class RoundingPatientAdapter extends ArrayAdapter<PatientDetailsBean> {
                             dynamicTextView.setGravity(Gravity.CENTER);
                             dynamicTextView.setBackgroundDrawable(SingleInstance.mainContext.getResources().getDrawable(R.drawable.sender_border));
                             if (split[i].equalsIgnoreCase("critical"))
-                                dynamicTextView.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.red_color));
+                                dynamicTextView.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.pink_tv));
                             else if (split[i].equalsIgnoreCase("stable")) {
                                 dynamicTextView.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.green));
                             } else if (split[i].equalsIgnoreCase("sick")) {
@@ -136,7 +136,7 @@ public class RoundingPatientAdapter extends ArrayAdapter<PatientDetailsBean> {
                             dynamicTextView.setGravity(Gravity.CENTER);
                             dynamicTextView.setBackgroundDrawable(SingleInstance.mainContext.getResources().getDrawable(R.drawable.sender_border));
                             if (split[i].equalsIgnoreCase("critical"))
-                                dynamicTextView.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.red_color));
+                                dynamicTextView.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.pink_tv));
                             else if (split[i].equalsIgnoreCase("stable")) {
                                 dynamicTextView.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.green));
                             } else if (split[i].equalsIgnoreCase("sick")) {

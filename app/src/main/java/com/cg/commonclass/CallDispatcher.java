@@ -11848,6 +11848,10 @@ private TrustManager[] get_trust_mgr() {
 									public void onClick(DialogInterface dialog,
 											int which) {
 										// TODO Auto-generated method stub
+										if (WebServiceReferences.missedcallCount
+												.containsKey(sbean.getFrom()))
+											WebServiceReferences.missedcallCount
+													.remove(sbean.getFrom());
 										isCallignored = false;
 										mdialog = null;
 									}

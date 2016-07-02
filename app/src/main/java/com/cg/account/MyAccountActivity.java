@@ -45,6 +45,7 @@ import com.cg.snazmed.R;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
 import com.main.MyAccountFragment;
+import com.main.Registration;
 import com.util.CustomVideoCamera;
 import com.util.SingleInstance;
 
@@ -1175,7 +1176,8 @@ public class MyAccountActivity extends Activity {
                 });
 
                 list = new ArrayList<String>();
-                list.add("Residency Program");
+                Registration reg=new Registration();
+                list.addAll(reg.loadResidencyFiles());
                 dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list, list);
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
                 residency_pgm.setAdapter(dataAdapter);
@@ -1444,6 +1446,7 @@ public class MyAccountActivity extends Activity {
                                     SingleInstance.mainContext.notifyUI();
                                 }
                             });
+                            finish();
 
                         } else
                             Toast.makeText(MyAccountActivity.this,

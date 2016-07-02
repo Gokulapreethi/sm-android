@@ -108,7 +108,7 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 			}
 			if(position>0){
 				GroupBean gBean=(GroupBean) ContactsFragment.getGroupList().get(position - 1);
-				if(gBean.getStatus().equalsIgnoreCase("request"))
+				if(groupBean.getStatus().equalsIgnoreCase("request"))
 					holder.header_title.setVisibility(View.GONE);
 				else {
 					String name2=String.valueOf(gBean.getGroupName().charAt(0));

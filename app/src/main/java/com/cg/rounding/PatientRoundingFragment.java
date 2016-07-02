@@ -759,7 +759,7 @@ public class PatientRoundingFragment extends Fragment {
                                 dynamicTextView.setGravity(Gravity.CENTER);
                                 dynamicTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.sender_border));
                                 if (split[i].equalsIgnoreCase("critical"))
-                                    dynamicTextView.setTextColor(getResources().getColor(R.color.red_color));
+                                    dynamicTextView.setTextColor(getResources().getColor(R.color.pink_tv));
                                 else if (split[i].equalsIgnoreCase("stable")) {
                                     dynamicTextView.setTextColor(getResources().getColor(R.color.green));
                                 } else if (split[i].equalsIgnoreCase("sick")) {
@@ -777,7 +777,7 @@ public class PatientRoundingFragment extends Fragment {
                                 dynamicTextView.setGravity(Gravity.CENTER);
                                 dynamicTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.sender_border));
                                 if (split[i].equalsIgnoreCase("critical"))
-                                    dynamicTextView.setTextColor(getResources().getColor(R.color.red_color));
+                                    dynamicTextView.setTextColor(getResources().getColor(R.color.pink_tv));
                                 else if (split[i].equalsIgnoreCase("stable")) {
                                     dynamicTextView.setTextColor(getResources().getColor(R.color.green));
                                 } else if (split[i].equalsIgnoreCase("sick")) {
@@ -814,7 +814,18 @@ public class PatientRoundingFragment extends Fragment {
         tv_status = (TextView) v1.findViewById(R.id.tv_status);
         tv_assigned = (TextView) v1.findViewById(R.id.tv_assigned);
         ImageView plusBtn = (ImageView) v1.findViewById(R.id.plusBtn);
-        plusBtn.setVisibility(View.GONE);
+        plusBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                        (roleAccessBean.getTaskmanagement()!=null && roleAccessBean.getTaskmanagement().equalsIgnoreCase("1"))) {
+                    Intent intent = new Intent(mainContext, TaskCreationActivity.class);
+                    intent.putExtra("groupid", gBean.getGroupId());
+                    startActivity(intent);
+                }else
+                    showToast("You have no access to create Task ");
+            }
+        });
         LinearLayout status = (LinearLayout) v1.findViewById(R.id.status);
         LinearLayout assigned = (LinearLayout) v1.findViewById(R.id.assigned);
         tasklistView = (ListView) v1.findViewById(R.id.listview_task);
@@ -944,7 +955,7 @@ public class PatientRoundingFragment extends Fragment {
                             dynamicTextView.setGravity(Gravity.CENTER);
                             dynamicTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.sender_border));
                             if (split[i].equalsIgnoreCase("critical"))
-                                dynamicTextView.setTextColor(getResources().getColor(R.color.red_color));
+                                dynamicTextView.setTextColor(getResources().getColor(R.color.pink_tv));
                             else if (split[i].equalsIgnoreCase("stable")) {
                                 dynamicTextView.setTextColor(getResources().getColor(R.color.green));
                             } else if (split[i].equalsIgnoreCase("sick")) {
@@ -962,7 +973,7 @@ public class PatientRoundingFragment extends Fragment {
                             dynamicTextView.setGravity(Gravity.CENTER);
                             dynamicTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.sender_border));
                             if (split[i].equalsIgnoreCase("critical"))
-                                dynamicTextView.setTextColor(getResources().getColor(R.color.red_color));
+                                dynamicTextView.setTextColor(getResources().getColor(R.color.pink_tv));
                             else if (split[i].equalsIgnoreCase("stable")) {
                                 dynamicTextView.setTextColor(getResources().getColor(R.color.green));
                             } else if (split[i].equalsIgnoreCase("sick")) {
@@ -1079,7 +1090,7 @@ public class PatientRoundingFragment extends Fragment {
                                         dynamicTextView.setGravity(Gravity.CENTER);
                                         dynamicTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.sender_border));
                                         if (split[i].equalsIgnoreCase("critical"))
-                                            dynamicTextView.setTextColor(getResources().getColor(R.color.red_color));
+                                            dynamicTextView.setTextColor(getResources().getColor(R.color.pink_tv));
                                         else if (split[i].equalsIgnoreCase("stable")) {
                                             dynamicTextView.setTextColor(getResources().getColor(R.color.green));
                                         } else if (split[i].equalsIgnoreCase("sick")) {
@@ -1097,7 +1108,7 @@ public class PatientRoundingFragment extends Fragment {
                                         dynamicTextView.setGravity(Gravity.CENTER);
                                         dynamicTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.sender_border));
                                         if (split[i].equalsIgnoreCase("critical"))
-                                            dynamicTextView.setTextColor(getResources().getColor(R.color.red_color));
+                                            dynamicTextView.setTextColor(getResources().getColor(R.color.pink_tv));
                                         else if (split[i].equalsIgnoreCase("stable")) {
                                             dynamicTextView.setTextColor(getResources().getColor(R.color.green));
                                         } else if (split[i].equalsIgnoreCase("sick")) {
@@ -1495,6 +1506,10 @@ public class PatientRoundingFragment extends Fragment {
                         Map.Entry mapEntry = (Map.Entry) iterator1.next();
 
                         PatientCommentsBean bean = (PatientCommentsBean) mapEntry.getValue();
+                        for(BuddyInformationBean bib: ContactsFragment.getBuddyList()){
+                            if(bib.getName().equalsIgnoreCase(bean.getGroupmember()))
+                            bean.setMembername(bib.getFirstname()+" "+bib.getLastname());
+                        }
                         patientCommentsBeen.add(bean);
                     }
                     cadapter = new CommentsAdapter(mainContext, R.layout.comments_row, patientCommentsBeen);

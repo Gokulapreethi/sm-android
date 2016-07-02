@@ -579,16 +579,12 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                     "select * from groupdetails where groupid=" + bean.getGroupId());
             if (!gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
                 if (gBean.getInviteMembers() != null) {
-                    String[] invitelist = (gBean.getInviteMembers()).split(",");
-                    for (String temp : invitelist) {
-                        if (!temp.equalsIgnoreCase(CallDispatcher.LoginUser)) {
-                            bean.setStatus("request");
-                            requestList.add(bean);
-                        } else {
-                            bean.setStatus("accepted");
-                            acceptedList.add(bean);
-                            break;
-                        }
+                    if(!gBean.getInviteMembers().contains(CallDispatcher.LoginUser)){
+                        bean.setStatus("request");
+                        requestList.add(bean);
+                    }else {
+                        bean.setStatus("accepted");
+                        acceptedList.add(bean);
                     }
                 } else {
                     bean.setStatus("request");

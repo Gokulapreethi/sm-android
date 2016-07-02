@@ -286,6 +286,12 @@ public class FilesFragment extends Fragment implements OnClickListener {
 				final TextView alpha_sort=(TextView)view.findViewById(R.id.alpha_sort);
 				final TextView date_sort=(TextView)view.findViewById(R.id.date_sort);
 				final TextView type_sort=(TextView)view.findViewById(R.id.type_sort);
+				if(sortorder.equalsIgnoreCase("date"))
+					date_sort.setTextColor(getResources().getColor(R.color.white));
+				else if(sortorder.equalsIgnoreCase("alpha"))
+					alpha_sort.setTextColor(getResources().getColor(R.color.white));
+				else if(sortorder.equalsIgnoreCase("type"))
+					type_sort.setTextColor(getResources().getColor(R.color.white));
 				date_sort.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {

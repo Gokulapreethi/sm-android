@@ -86,9 +86,9 @@ public class CommentsAdapter extends ArrayAdapter<PatientCommentsBean> {
                         if(cBean.getGroupmember().equalsIgnoreCase(CallDispatcher.LoginUser))
                             holder.commentorName.setText("Me");
                         else
-                            holder.commentorName.setText(cBean.getGroupmember());
+                            holder.commentorName.setText(cBean.getMembername());
                     }else
-                        holder.commentorName.setText(cBean.getGroupmember());
+                        holder.commentorName.setText(cBean.getMembername());
                 }
                 if(cBean.getDateandtime()!=null) {
                     String[] time = cBean.getDateandtime().split(" ");
@@ -129,7 +129,7 @@ public class CommentsAdapter extends ArrayAdapter<PatientCommentsBean> {
                         Intent intent=new Intent(SingleInstance.mainContext,CommentsSeeAllActivity.class);
                         intent.putExtra("groupid",cBean.getGroupid());
                         intent.putExtra("patientid",cBean.getPatientid());
-                        intent.putExtra("membername",cBean.getGroupmember());
+                        intent.putExtra("membername",cBean.getMembername());
                         SingleInstance.mainContext.startActivity(intent);
                     }
                 });
