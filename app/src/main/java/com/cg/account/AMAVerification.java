@@ -83,6 +83,7 @@ public class AMAVerification extends Activity {
                     .get("calldisp");
         else
             objCallDispatcher = new CallDispatcher(context);
+        WebServiceReferences.contextTable.put("amaverification", context);
         appMainActivity=SingleInstance.mainContext;
         calldisp=new CallDispatcher(SingleInstance.mainContext);
         RelativeLayout2 = (RelativeLayout) findViewById(R.id.RelativeLayout2);
@@ -695,11 +696,11 @@ public class AMAVerification extends Activity {
                         public void onClick(View v) {
                             if (((CheckBox) v).isChecked()) {
                                 bib.setSelected(true);
-                                RelativeLayout2.setVisibility(View.GONE);
-                                dialogue.setVisibility(View.GONE);
+                                RelativeLayout2.setVisibility(View.VISIBLE);
                             }else {
                                 bib.setSelected(false);
-                                RelativeLayout2.setVisibility(View.VISIBLE);
+                                RelativeLayout2.setVisibility(View.GONE);
+                                dialogue.setVisibility(View.GONE);
                             }
                         }
                     });
@@ -869,5 +870,14 @@ public class AMAVerification extends Activity {
             }
         });
 
+    }
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        for (int i = 0; i < result.size(); i++) {
+            adapter.getItem(i).setSelected(false);
+        }
+        WebServiceReferences.contextTable.remove("amaverification");
+        super.onDestroy();
     }
 }

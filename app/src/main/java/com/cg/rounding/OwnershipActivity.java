@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,22 +20,25 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Fingerprint.MainActivity;
 import com.bean.ProfileBean;
 import com.bean.UserBean;
 import com.cg.DB.DBAccess;
+import com.cg.account.PinSecurity;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.image.utils.ImageLoader;
-import com.main.ContactsFragment;
-import com.util.SingleInstance;
+import com.main.AppMainActivity;
 
-import org.lib.model.BuddyInformationBean;
 import org.lib.model.GroupBean;
 import org.lib.model.GroupMemberBean;
 
@@ -44,6 +51,7 @@ public class OwnershipActivity extends Activity {
     Vector<UserBean> membersList=new Vector<UserBean>();
     Handler handler = new Handler();
     private ProgressDialog progress = null;
+    MembersAdapter adapter;
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
@@ -53,6 +61,9 @@ public class OwnershipActivity extends Activity {
         ListView listView=(ListView)findViewById(R.id.listview_ownership);
         Button back=(Button)findViewById(R.id.cancel);
         Button taransferBtn=(Button)findViewById(R.id.donebtn);
+        final TextView title=(TextView)findViewById(R.id.txtView01);
+        final EditText ed_search=(EditText)findViewById(R.id.ed_search);
+        final Button search=(Button)findViewById(R.id.search);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,11 +73,43 @@ public class OwnershipActivity extends Activity {
         final String groupid=getIntent().getStringExtra("groupid");
         final GroupBean gBean = DBAccess.getdbHeler().getGroupAndMembers(
                 "select * from groupdetails where groupid=" + groupid);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if( ed_search.getVisibility()==View.VISIBLE){
+                    title.setVisibility(View.VISIBLE);
+                    ed_search.setVisibility(View.GONE);
+                    search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
+                }else {
+                    title.setVisibility(View.GONE);
+                    ed_search.setVisibility(View.VISIBLE);
+                    ed_search.setText("");
+                    search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_close));
+                }
+            }
+        });
+        ed_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s != null && s != "")
+                    adapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         if (gBean != null) {
             if (gBean.getActiveGroupMembers() != null
                     && gBean.getActiveGroupMembers().length() > 0) {
                 String[] mlist = (gBean.getActiveGroupMembers())
                         .split(",");
+
                 for (String tmp : mlist) {
                     UserBean uBean = new UserBean();
                     ProfileBean pbean=DBAccess.getdbHeler().getProfileDetails(tmp);
@@ -79,7 +122,7 @@ public class OwnershipActivity extends Activity {
                 }
             }
         }
-        MembersAdapter adapter=new MembersAdapter(this,R.layout.rounding_member_row,membersList);
+        adapter=new MembersAdapter(this,R.layout.rounding_member_row,membersList);
         listView.setAdapter(adapter);
         taransferBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,12 +149,16 @@ public class OwnershipActivity extends Activity {
         private ViewHolder holder;
         private ImageLoader imageLoader;
         private Vector<UserBean> result;
+        private Vector<UserBean> originalList;
+        private  ContactsFilter filter;
 
         public MembersAdapter(Context context, int resource, Vector<UserBean> objects) {
             super(context, resource, objects);
             imageLoader=new ImageLoader(context);
             result = new Vector<UserBean>();
             result.addAll(objects);
+            originalList = new Vector<UserBean>();
+            originalList.addAll(objects);
         }
 
         @Override
@@ -173,6 +220,58 @@ public class OwnershipActivity extends Activity {
                 e.printStackTrace();
             }
             return convertView;
+        }
+        @Override
+        public Filter getFilter() {
+            if (filter == null){
+                filter  = new ContactsFilter();
+            }
+            return filter;
+        }
+        private class ContactsFilter extends Filter
+        {
+
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+
+                constraint = constraint.toString().toLowerCase();
+
+                FilterResults result = new FilterResults();
+                if (constraint != null && constraint.toString().length() > 0) {
+                    Vector<UserBean> buddyInformationBeans = new Vector<UserBean>();
+                        for(int i = 0, l = originalList.size(); i < l; i++)
+                        {
+                            UserBean buddyInformationBean = originalList.get(i);
+                            String buddyname=buddyInformationBean.getFirstname();
+                            if(buddyname.toLowerCase().contains(String.valueOf(constraint)))
+                                buddyInformationBeans.add(buddyInformationBean);
+                        }
+
+                    result.count = buddyInformationBeans.size();
+                    result.values = buddyInformationBeans;
+                } else {
+                    synchronized (this) {
+                        result.values = originalList;
+                        result.count = originalList.size();
+                    }
+                }
+                return result;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint,
+                                          FilterResults results) {
+
+                result= (Vector<UserBean>)results.values;
+                notifyDataSetChanged();
+                clear();
+                for(int i = 0, l = result.size(); i < l; i++)
+                    add(result.get(i));
+                notifyDataSetInvalidated();
+
+            }
+
         }
     }
     public static class ViewHolder {
@@ -276,4 +375,34 @@ public class OwnershipActivity extends Activity {
 
         }
     }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        AppReference.mainContext.isApplicationBroughtToBackground();
+
+    }
+    @Override
+    public void onResume() {
+        // TODO Auto-generated method stub
+        super.onResume();
+        AppMainActivity.inActivity = this;
+        context = this;
+        if(AppReference.mainContext.isPinEnable) {
+            if (AppReference.mainContext.openPinActivity) {
+                AppReference.mainContext.openPinActivity=false;
+                if(Build.VERSION.SDK_INT>20 && AppReference.mainContext.isTouchIdEnabled) {
+                    Intent i = new Intent(OwnershipActivity.this, MainActivity.class);
+                    startActivity(i);
+                }else {
+                    Intent i = new Intent(OwnershipActivity.this, PinSecurity.class);
+                    startActivity(i);
+                }
+            } else {
+                AppReference.mainContext.count=0;
+                AppReference.mainContext.registerBroadcastReceiver();
+            }
+        }
+    }
+
+
 }

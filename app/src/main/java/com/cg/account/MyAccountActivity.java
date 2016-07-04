@@ -1200,7 +1200,7 @@ public class MyAccountActivity extends Activity {
                 });
 
                 list = new ArrayList<String>();
-                list.add("Fellowship Program");
+                list.addAll(reg.loadFellowship());
                 dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list, list);
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
                 fellowship_pgm.setAdapter(dataAdapter);
