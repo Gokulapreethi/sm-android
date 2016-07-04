@@ -494,7 +494,7 @@ public class WSRunner implements Runnable {
 						String upload_result = mParser.parseResultXml(mSp.toString());
 						if(mChk) {
 							Log.d("XP WSD", "file" + mChk);
-							SingleInstance.mainContext.showToast("File upload suucessfully");
+							SingleInstance.mainContext.showToast("File upload sucessfully");
 							if (mServicebean.getCallBack() != null) {
 								if (mServicebean.getCallBack() instanceof sendershare) {
 									Log.i("AAAA","wsrunner send share");

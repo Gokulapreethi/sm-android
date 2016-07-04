@@ -72,6 +72,7 @@ public class AMAVerification extends Activity {
     private CallDispatcher calldisp;
     LinearLayout dialogue;
     LinearLayout relay_search;
+    private int total_count = 0;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -301,33 +302,33 @@ public class AMAVerification extends Activity {
                 BuddyInformationBean bib = new BuddyInformationBean();
                 final CheckBox selectUser = (CheckBox) view.findViewById(R.id.sel_buddy);
                 bib = result.get(i);
-                if (bib.isSelected()) {
-                    selectUser.setChecked(false);
-                    bib.setSelected(false);
-                } else {
-                    selectUser.setChecked(true);
-                    bib.setSelected(true);
-                }
-                adapter.notifyDataSetChanged();
-                int count = 0;
-                for (BuddyInformationBean bib1 : result) {
-                    if (bib1.isSelected()) {
-                        count++;
-                    }
-                }
-                if (count == 0) {
-                    RelativeLayout2.setVisibility(View.GONE);
-                    dialogue.setVisibility(View.GONE);
-                } else {
-                    RelativeLayout2.setVisibility(View.VISIBLE);
-                }
-                selected.setText(count + " selected");
-                if (count == result.size()) {
-                    selectAll_buddy.setChecked(true);
-                } else {
-                    selectAll_buddy.setChecked(false);
-                }
-                final BuddyInformationBean finalBib = bib;
+//                if (bib.isSelected()) {
+//                    selectUser.setChecked(false);
+//                    bib.setSelected(false);
+//                } else {
+//                    selectUser.setChecked(true);
+//                    bib.setSelected(true);
+//                }
+//                adapter.notifyDataSetChanged();
+//                int count = 0;
+//                for (BuddyInformationBean bib1 : result) {
+//                    if (bib1.isSelected()) {
+//                        count++;
+//                    }
+//                }
+//                if (count == 0) {
+//                    RelativeLayout2.setVisibility(View.GONE);
+//                    dialogue.setVisibility(View.GONE);
+//                } else {
+//                    RelativeLayout2.setVisibility(View.VISIBLE);
+//                }
+//                selected.setText(count + " selected");
+//                if (count == result.size()) {
+//                    selectAll_buddy.setChecked(true);
+//                } else {
+//                    selectAll_buddy.setChecked(false);
+//                }
+                final BuddyInformationBean finalBib = new BuddyInformationBean();
                 selectUser.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -650,6 +651,7 @@ public class AMAVerification extends Activity {
         private Vector<BuddyInformationBean> result;
         private Vector<BuddyInformationBean> originalList;
         private  ContactsFilter filter;
+        private int checkBoxCounter = 0;
 
         public AMAAdapter(Context context, int resource, Vector<BuddyInformationBean> objects) {
             super(context, resource, objects);
@@ -724,6 +726,22 @@ public class AMAVerification extends Activity {
                     } else {
                         holder.selectUser.setChecked(false);
                     }
+                    holder.selectUser.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (((CheckBox) v).isChecked()) {
+                                bib.setSelected(true);
+                                checkBoxCounter++;
+                                countofcheckbox(checkBoxCounter);
+
+                            } else {
+                                bib.setSelected(false);
+                                checkBoxCounter--;
+                                countofcheckbox(checkBoxCounter);
+
+                            }
+                        }
+                    });
                     if (bib.getStatus() != null) {
                         if (bib.getStatus().equalsIgnoreCase("offline") || bib.getStatus().equalsIgnoreCase("stealth")) {
                             holder.statusIcon.setBackgroundResource(R.drawable.offline_icon);
@@ -821,6 +839,14 @@ public class AMAVerification extends Activity {
         TextView buddyName;
         TextView occupation;
         TextView header_title;
+
+    }
+
+    public void countofcheckbox(int count)
+    {
+        Log.i("asdf","count"+count);
+        selected.setText(Integer.toString(count) + " Selected");
+        total_count = count;
 
     }
     private void showToast(final String message) {

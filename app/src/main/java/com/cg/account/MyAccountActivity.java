@@ -787,7 +787,8 @@ public class MyAccountActivity extends Activity {
             }
         });
 
-        hospitalList=DBAccess.getdbHeler().getHospitalDetails();
+        hospitalList.add("Add Hospital Affiliation");
+        hospitalList.addAll(DBAccess.getdbHeler().getHospitalDetails());
         hospitalDetailsAdapter = new ArrayAdapter<String>(context, R.layout.spinner_lay, hospitalList);
         hospitalDetailsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         hospital.setAdapter(hospitalDetailsAdapter);
@@ -795,8 +796,8 @@ public class MyAccountActivity extends Activity {
         hospital.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (hospital != null) {
-                    if (add_hospital == null) {
+                if (hospital != null&& !hospital.getSelectedItem().toString().equalsIgnoreCase("Add Hospital Affiliation")) {
+                    if (add_hospital == null ) {
                         if (SingleInstance.myAccountBean.getHospitalaffiliation() != null)
                             add_hospital = SingleInstance.myAccountBean.getHospitalaffiliation();
                     } else
@@ -867,15 +868,17 @@ public class MyAccountActivity extends Activity {
 //            }
 //        });
 
-        medicalSocietyList=DBAccess.getdbHeler().getMedicalSocietiesDetails();
+        medicalSocietyList.add("Choose Association");
+        medicalSocietyList.addAll(DBAccess.getdbHeler().getMedicalSocietiesDetails());
         medicalDetailsAdapter = new ArrayAdapter<String>(context, R.layout.spinner_lay, medicalSocietyList);
         medicalDetailsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         association_membership.setAdapter(medicalDetailsAdapter);
+        association_membership.setPrompt("Choose Association");
 //        association_membership.setThreshold(30);
         association_membership.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (association_membership != null) {
+                if (association_membership != null && !association_membership.getSelectedItem().toString().equalsIgnoreCase("Choose Association")) {
                     if (add_association_mem == null) {
                         if (SingleInstance.myAccountBean.getOrganizationmembership() != null)
                             add_association_mem = SingleInstance.myAccountBean.getOrganizationmembership();
@@ -1589,6 +1592,7 @@ public class MyAccountActivity extends Activity {
                     }
                     if (bean.getHospitalaffiliation() != null) {
                         add_hospital = bean.getHospitalaffiliation();
+                        Log.d("values","hospital"+add_hospital);
                         String[] split = add_hospital.split("###");
                         hospital_lay1.removeAllViews();
                         for (int i = 0; i < split.length; i++) {

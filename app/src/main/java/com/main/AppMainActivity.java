@@ -1288,8 +1288,15 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 							Log.d("Test",
 									"Appmain$$$$ getActiveGroupMembers 1484 @@@ "
 											+ object.getActiveGroupMembers()
-													.length());
-							showToast(object.getOwnerName()
+											.length());
+							String fullname = object.getOwnerName();
+							for(BuddyInformationBean bean:ContactsFragment.getBuddyList()){
+								if(bean.getName().equalsIgnoreCase(object.getOwnerName())) {
+									fullname = bean.getFirstname() + " " + bean.getLastname();
+									break;
+								}
+							}
+							showToast(fullname
 									+ " have added you in the "
 									+ object.getGroupName() + " Group");
 						}

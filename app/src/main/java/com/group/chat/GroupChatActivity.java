@@ -2035,6 +2035,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         replayback.setBackgroundColor(context.getResources().getColor(R.color.blue2));
                         deadline_urgent.setBackgroundColor(context.getResources().getColor(R.color.snazgray));
                         isReplyclicked = true;
+                        isconfirmclicked = false;
+                        isprivateclicked = false;
+                        isurgentclicked = false;
 
                     }
 
@@ -2052,6 +2055,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         replayback.setBackgroundColor(context.getResources().getColor(R.color.snazgray));
                         deadline_urgent.setBackgroundColor(context.getResources().getColor(R.color.snazgray));
                         isconfirmclicked = true;
+                        isprivateclicked = false;
+                        isurgentclicked = false;
+                        isReplyclicked = false;
 
                     }
                 });
@@ -2067,6 +2073,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         replayback.setBackgroundColor(context.getResources().getColor(R.color.snazgray));
                         deadline_urgent.setBackgroundColor(context.getResources().getColor(R.color.snazgray));
                         isprivateclicked = true;
+                        isconfirmclicked = false;
+                        isurgentclicked = false;
+                        isReplyclicked = false;
                         memlist_splmsg.setVisibility(View.VISIBLE);
                         try {
                             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -2090,6 +2099,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         replayback.setBackgroundColor(context.getResources().getColor(R.color.snazgray));
                         deadline_urgent.setBackgroundColor(context.getResources().getColor(R.color.blue2));
                         isurgentclicked = true;
+                        isprivateclicked = false;
+                        isconfirmclicked = false;
+                        isReplyclicked = false;
                         try {
                             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(message.getWindowToken(), 0);
