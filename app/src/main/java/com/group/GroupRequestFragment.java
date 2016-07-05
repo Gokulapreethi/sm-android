@@ -124,7 +124,7 @@ public class GroupRequestFragment extends Fragment {
                 TextView groupName=(TextView)_rootView.findViewById(R.id.groupname);
                 TextView groupdesc=(TextView)_rootView.findViewById(R.id.groupdesc);
                 TextView members=(TextView)_rootView.findViewById(R.id.members);
-                ListView members_list=(ListView)_rootView.findViewById(R.id.lv_buddylist);
+                LinearLayout members_list=(LinearLayout)_rootView.findViewById(R.id.lv_buddylist);
                 LinearLayout accept=(LinearLayout)_rootView.findViewById(R.id.accept);
                 LinearLayout reject=(LinearLayout)_rootView.findViewById(R.id.reject);
                 groupName.setText(groupname);
@@ -170,7 +170,12 @@ public class GroupRequestFragment extends Fragment {
                 membercount=memberslist.size();
                 members.setText("("+membercount+")");
                 MembersAdapter adapter=new MembersAdapter(SingleInstance.mainContext,R.layout.find_people_item,memberslist);
-                members_list.setAdapter(adapter);
+                final int adapterCount = adapter.getCount();
+
+                for (int i = 0; i < adapterCount; i++) {
+                    View item = adapter.getView(i, null, null);
+                    members_list.addView(item);
+                }
                 accept.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

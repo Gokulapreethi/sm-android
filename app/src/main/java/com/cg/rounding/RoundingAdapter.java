@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.snazmed.R;
@@ -83,8 +84,7 @@ public class RoundingAdapter extends ArrayAdapter<GroupBean> {
             tv_groupName.setTypeface(tf_regular);
             holder.edit_img.setVisibility(View.VISIBLE);
 
-            CallDispatcher callDisp=new CallDispatcher(SingleInstance.mainContext);
-            final GroupBean gBean = callDisp.getdbHeler(context) .getGroupAndMembers(
+            final GroupBean gBean = DBAccess.getdbHeler() .getGroupAndMembers(
                     "select * from groupdetails where groupid=" + groupBean.getGroupId());
             if(gBean.getActiveGroupMembers()!=null && !gBean.getActiveGroupMembers().equalsIgnoreCase("")) {
                 String[] mlist = (gBean.getActiveGroupMembers())

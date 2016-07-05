@@ -354,9 +354,13 @@ public class AddGroupMembers extends Activity {
 
 	public void countofcheckbox(int count)
 	{
-		Log.i("asdf","count"+count);
+		Log.i("asdf", "count" + count);
 		countofselection.setText(Integer.toString(count) + " selected");
 		text_memeberscount.setText( "add " + Integer.toString(count) + "members to call");
+		if(count==contactList.size())
+			selectAll.setChecked(true);
+		else
+			selectAll.setChecked(false);
 
 	}
     public void showAlert1(String title,String message) {
@@ -375,7 +379,7 @@ public class AddGroupMembers extends Activity {
 				});
 		alertCall.show();
 	}
-	private void showToast(final String message) {
+	public void showToast(final String message) {
 		handler.post(new Runnable() {
 
 			@Override

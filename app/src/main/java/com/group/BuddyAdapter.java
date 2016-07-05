@@ -45,6 +45,7 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 	private int checkboxcount;
 	private ImageLoader imageLoader;
 	boolean[] checkBoxState;
+	AddGroupMembers addGroupMembers;
 
 	public void setCheckcount(int checkboxcount) {
 		this.checkboxcount = checkboxcount;
@@ -69,6 +70,8 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		imageLoader=new ImageLoader(context);
 		checkBoxState = new boolean[userList.size()];
+		addGroupMembers = (AddGroupMembers) WebServiceReferences.contextTable
+				.get("groupcontact");
 
 		/*********** Layout inflator to call external xml layout () ***********/
 
@@ -157,8 +160,7 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 				holder.selectUser.setChecked(true);
 				holder.selectUser.setEnabled(false);
 			} else {
-				final AddGroupMembers addGroupMembers = (AddGroupMembers) WebServiceReferences.contextTable
-						.get("groupcontact");
+
 				holder.selectUser.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -257,6 +259,8 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 
 				result.count = uBeans.size();
 				result.values = uBeans;
+				if(uBeans.size()==0)
+					addGroupMembers.showToast("No results found");
 			} else {
 				synchronized (this) {
 					result.values = originallist;

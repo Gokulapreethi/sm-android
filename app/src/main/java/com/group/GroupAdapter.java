@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.cg.DB.DBAccess;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
@@ -119,8 +120,7 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 				}
 			}
 
-			CallDispatcher callDisp=new CallDispatcher(SingleInstance.mainContext);
-			final GroupBean gBean = callDisp.getdbHeler(context) .getGroupAndMembers(
+			final GroupBean gBean = DBAccess.getdbHeler() .getGroupAndMembers(
 					"select * from groupdetails where groupid=" + groupBean.getGroupId());
 
 			if(gBean.getActiveGroupMembers()!=null && !gBean.getActiveGroupMembers().equalsIgnoreCase("")) {

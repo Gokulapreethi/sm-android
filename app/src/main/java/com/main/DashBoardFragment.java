@@ -800,7 +800,6 @@ public class DashBoardFragment extends Fragment {
         }
         Collections.sort(tempnotifylist, new DateComparator());
         Collections.sort(seacrhnotifylist, new DateComparator());
-        listcount();
       return tempnotifylist;
     }
 
@@ -950,56 +949,6 @@ public class DashBoardFragment extends Fragment {
         }
     }
 
-    private void listcount(){
-        HashMap<String,Integer > fileslist = new HashMap<String,Integer>();
-        HashMap<String,Integer > chatlist = new HashMap<String,Integer>();
-        HashMap<String,Integer > calllist = new HashMap<String,Integer>();
 
-        int i=0,j=0,k=0;
-        for(NotifyListBean nbean : tempnotifylist){
-            if(nbean.getNotifttype().equalsIgnoreCase("F")){
-            if(fileslist.containsKey(nbean.getFrom()))
-                fileslist.put(nbean.getFrom(),++i);
-            else {
-                i=0;
-                fileslist.put(nbean.getFrom(), ++i);
-            }
-            }else if(nbean.getNotifttype().equalsIgnoreCase("I")){
-                Log.d("chatlist", "entry");
-                if(chatlist.containsKey(nbean.getFrom())) {
-                    Log.d("chatlist", "entries"+nbean.getFrom());
-                    Log.d("chatlist", "entry1");
-                    chatlist.put(nbean.getFrom(), ++j);
-                }
-                else{
-                    Log.d("chatlist", "entry2");
-                    j=0;
-                    chatlist.put(nbean.getFrom(),++j);
-                }
-
-            }else if(nbean.getNotifttype().equalsIgnoreCase("C")){
-                if(calllist.containsKey(nbean.getFrom())) {
-                    calllist.put(nbean.getFrom(), ++k);
-                }
-                else{
-                    k=0;
-                    calllist.put(nbean.getFrom(),++k);
-                }
-
-            }
-        }
-        for(NotifyListBean bean:tempnotifylist){
-            if(chatlist.get(bean.getFrom())!=null)
-            bean.setChatcount(String.valueOf(chatlist.get(bean.getFrom())));
-            if(calllist.get(bean.getFrom())!=null)
-            bean.setCallcount(String.valueOf(calllist.get(bean.getFrom())));
-            if(fileslist.get(bean.getFrom())!=null)
-            bean.setFilecount(String.valueOf(fileslist.get(bean.getFrom())));
-        }
-
-        Log.d("listcount","fileslist"+fileslist.size());
-        Log.d("listcount","chatlist"+chatlist.size());
-        Log.d("listcount","calllist"+calllist.size());
-    }
 }
 

@@ -38,7 +38,9 @@ import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
+import com.main.ContactsFragment;
 
+import org.lib.model.BuddyInformationBean;
 import org.lib.model.GroupBean;
 import org.lib.model.GroupMemberBean;
 
@@ -112,8 +114,15 @@ public class OwnershipActivity extends Activity {
 
                 for (String tmp : mlist) {
                     UserBean uBean = new UserBean();
-                    ProfileBean pbean=DBAccess.getdbHeler().getProfileDetails(tmp);
-                    uBean.setFirstname(pbean.getFirstname()+" "+pbean.getLastname());
+                    for(BuddyInformationBean bib: ContactsFragment.getBuddyList()){
+                        if(bib.getName().equalsIgnoreCase(tmp)){
+                            uBean.setFirstname(bib.getFirstname() + " " + bib.getLastname());
+                            uBean.setProfilePic(bib.getProfile_picpath());
+                            break;
+                        }
+                    }
+//                    ProfileBean pbean=DBAccess.getdbHeler().getProfileDetails(tmp);
+//                    uBean.setFirstname(pbean.getFirstname()+" "+pbean.getLastname());
                     GroupMemberBean bean=DBAccess.getdbHeler().getMemberDetails(groupid, tmp);
                     uBean.setRole(bean.getRole());
                     uBean.setAdmin(bean.getAdmin());
@@ -183,8 +192,8 @@ public class OwnershipActivity extends Activity {
                 final UserBean bib = result.get(i);
                 if(bib!=null) {
                     if (bib.getProfilePic() != null) {
-                        String pic_Path = Environment.getExternalStorageDirectory().getAbsolutePath()
-                                + "/COMMedia/" + bib.getProfilePic();
+                        Log.i("AAAA","profile ======"+bib.getProfilePic());
+                        String pic_Path =bib.getProfilePic();
                         File pic = new File(pic_Path);
                         if (pic.exists()) {
                             imageLoader.DisplayImage(pic_Path, holder.buddyicon, R.drawable.img_user);
@@ -194,7 +203,10 @@ public class OwnershipActivity extends Activity {
                     holder.edit.setVisibility(View.GONE);
                     holder.statusIcon.setVisibility(View.GONE);
                     holder.sel_buddy.setVisibility(View.VISIBLE);
+                    if(bib.getFirstname()!=null && bib.getFirstname().length()>0)
                     holder.buddyName.setText(bib.getFirstname());
+                    else
+                        holder.buddyName.setText(bib.getBuddyName());
                     if(bib.getRole()!=null)
                     holder.position.setText(bib.getRole());
                     Log.i("AAAA","admin "+bib.getAdmin());

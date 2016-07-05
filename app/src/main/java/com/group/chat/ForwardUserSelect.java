@@ -616,9 +616,13 @@ public class ForwardUserSelect extends Activity {
     }
     public void countofcheckbox(int count)
     {
-        Log.i("asdf","count"+count);
+        Log.i("asdf", "count" + count);
         countofselection.setText(Integer.toString(count) + " Selected");
         total_count = count;
+        if(count==buddylist.size())
+            selectAll.setChecked(true);
+        else
+            selectAll.setChecked(false);
 
     }
     public void groupcheckbox(int groupcount)
@@ -626,6 +630,10 @@ public class ForwardUserSelect extends Activity {
         Log.i("asdf", "count" + groupcount);
         countofselection_group.setText(Integer.toString(groupcount) + " Selected");
         total_groupcount = groupcount;
+        if(groupcount==buddygroupList.size())
+            selectAll_group.setChecked(true);
+        else
+            selectAll_group.setChecked(false);
 
     }
     @Override

@@ -745,6 +745,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             dot.setVisibility(View.GONE);
             search.setVisibility(View.GONE);
         }
+        if(isRounding)
+            RoundingMember();
         profilechat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -4153,116 +4155,119 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     finish();
                     break;
                 case R.id.c_audio_call:
-                    if (audio_call.getTag() == 1) {
-                        msgoptionview.setVisibility(View.GONE);
-                        if(isprivateclicked || isReplyclicked || isurgentclicked || isconfirmclicked)
-                            sendSplMsg();
-                        else {
+                    if(!CallDispatcher.myStatus.equalsIgnoreCase("0")) {
+                        if (audio_call.getTag() == 1) {
+                            msgoptionview.setVisibility(View.GONE);
+                            if (isprivateclicked || isReplyclicked || isurgentclicked || isconfirmclicked)
+                                sendSplMsg();
+                            else {
 
-                            if (SendListUI.size() == 1) {
-                                Log.i("audioplay", "path--->" + strIPath);
-                                SendListUIBean bean = SendListUI.get(0);
-                                sendMsg(message.getText().toString().trim(),
-                                        bean.getPath(), bean.getType(), null);
-                                message.setVisibility(View.VISIBLE);
-                                SendListUI.remove(0);
-                                if (SendListUI.size() == 0) {
-                                    SendListUI.clear();
-                                }
-                                sendlistadapter.notifyDataSetChanged();
-                                list_all.removeAllViews();
-                                final int adapterCount = sendlistadapter.getCount();
-
-                                for (int i = 0; i < adapterCount; i++) {
-                                    View item = sendlistadapter.getView(i, null, null);
-                                    list_all.addView(item);
-                                }
-                                audio_call.setBackgroundResource(R.drawable.chat_send);
-                                audio_call.setTag(1);
-//                                relative_send_layout.getLayoutParams().height = 90;
-                            } else if (SendListUI.size() > 1) {
-                                String path = null;
-                                for (int i = 0; i < SendListUI.size(); i++) {
-                                    SendListUIBean bean = SendListUI.get(i);
-                                    if (path == null) {
-                                        path = bean.getPath();
-                                    } else {
-                                        path = path + "," + bean.getPath();
+                                if (SendListUI.size() == 1) {
+                                    Log.i("audioplay", "path--->" + strIPath);
+                                    SendListUIBean bean = SendListUI.get(0);
+                                    sendMsg(message.getText().toString().trim(),
+                                            bean.getPath(), bean.getType(), null);
+                                    message.setVisibility(View.VISIBLE);
+                                    SendListUI.remove(0);
+                                    if (SendListUI.size() == 0) {
+                                        SendListUI.clear();
                                     }
-                                }
+                                    sendlistadapter.notifyDataSetChanged();
+                                    list_all.removeAllViews();
+                                    final int adapterCount = sendlistadapter.getCount();
 
-
-                                sendMsg(message.getText().toString().trim(),
-                                        path, "mixedfile", null);
-                                message.setVisibility(View.VISIBLE);
-                                SendListUI.remove(0);
-                                if (SendListUI.size() > 0) {
-                                    SendListUI.clear();
-                                }
-                                sendlistadapter.notifyDataSetChanged();
-                                list_all.removeAllViews();
-                                final int adapterCount = sendlistadapter.getCount();
-
-                                for (int i = 0; i < adapterCount; i++) {
-                                    View item = sendlistadapter.getView(i, null, null);
-                                    list_all.addView(item);
-                                }
-                                audio_call.setBackgroundResource(R.drawable.chat_send);
-                                audio_call.setTag(1);
-
-
-                            } else {
-                                if (message.getText().toString().trim().length() > 0) {
-                                    if (CallDispatcher.LoginUser != null) {
-                                        if (message.getText().toString().length() > 700) {
-                                            showToast("Text exceeds 700 characters");
+                                    for (int i = 0; i < adapterCount; i++) {
+                                        View item = sendlistadapter.getView(i, null, null);
+                                        list_all.addView(item);
+                                    }
+                                    audio_call.setBackgroundResource(R.drawable.chat_send);
+                                    audio_call.setTag(1);
+//                                relative_send_layout.getLayoutParams().height = 90;
+                                } else if (SendListUI.size() > 1) {
+                                    String path = null;
+                                    for (int i = 0; i < SendListUI.size(); i++) {
+                                        SendListUIBean bean = SendListUI.get(i);
+                                        if (path == null) {
+                                            path = bean.getPath();
                                         } else {
-                                            sendMsg(message.getText().toString().trim(),
-                                                    null, "text", null);
-                                            message.setText("");
+                                            path = path + "," + bean.getPath();
                                         }
-                                    } else {
-                                        showAlert1("Info", "Check Internet Connection");
+                                    }
+
+
+                                    sendMsg(message.getText().toString().trim(),
+                                            path, "mixedfile", null);
+                                    message.setVisibility(View.VISIBLE);
+                                    SendListUI.remove(0);
+                                    if (SendListUI.size() > 0) {
+                                        SendListUI.clear();
+                                    }
+                                    sendlistadapter.notifyDataSetChanged();
+                                    list_all.removeAllViews();
+                                    final int adapterCount = sendlistadapter.getCount();
+
+                                    for (int i = 0; i < adapterCount; i++) {
+                                        View item = sendlistadapter.getView(i, null, null);
+                                        list_all.addView(item);
+                                    }
+                                    audio_call.setBackgroundResource(R.drawable.chat_send);
+                                    audio_call.setTag(1);
+
+
+                                } else {
+                                    if (message.getText().toString().trim().length() > 0) {
+                                        if (CallDispatcher.LoginUser != null) {
+                                            if (message.getText().toString().length() > 700) {
+                                                showToast("Text exceeds 700 characters");
+                                            } else {
+                                                sendMsg(message.getText().toString().trim(),
+                                                        null, "text", null);
+                                                message.setText("");
+                                            }
+                                        } else {
+                                            showAlert1("Info", "Check Internet Connection");
+                                        }
                                     }
                                 }
                             }
-                        }
-                    } else {
-
-                        if(CallDispatcher.isCallignored){
-                            showToast("Please Try again... Ignored call in progress");
                         } else {
-                            if (isGroup || isRounding) {
-                                Log.d("Test", "Inside Group audioconference onclick");
-                                gcpBean = SingleInstance.mainContext
-                                        .getGroupChatPermission(groupBean);
-                                if (gcpBean.getAudioConference().equalsIgnoreCase("1")) {
-                                    if (!CallDispatcher.isCallInitiate) {
-                                        if(!CallDispatcher.GSMCallisAccepted) {
-                                            groupCallMenu(0);
+
+                            if (CallDispatcher.isCallignored) {
+                                showToast("Please Try again... Ignored call in progress");
+                            } else {
+                                if (isGroup || isRounding) {
+                                    Log.d("Test", "Inside Group audioconference onclick");
+                                    gcpBean = SingleInstance.mainContext
+                                            .getGroupChatPermission(groupBean);
+                                    if (gcpBean.getAudioConference().equalsIgnoreCase("1")) {
+                                        if (!CallDispatcher.isCallInitiate) {
+                                            if (!CallDispatcher.GSMCallisAccepted) {
+                                                groupCallMenu(0);
+                                            } else {
+                                                showToast("Please Try again... GSM call  in progress");
+                                            }
                                         } else {
-                                            showToast("Please Try again... GSM call  in progress");
+                                            showToast("Please Try again... call in progress");
+                                        }
+                                    } else {
+                                        showToast("Sorry you dont have permission");
+                                    }
+                                } else {
+                                    if (!CallDispatcher.isCallInitiate) {
+                                        if (!CallDispatcher.GSMCallisAccepted) {
+                                            individualCallMenu(0);
+                                        } else {
+                                            showToast("Please Try again... GSM call in progress");
                                         }
                                     } else {
                                         showToast("Please Try again... call in progress");
                                     }
-                                } else {
-                                    showToast("Sorry you dont have permission");
-                                }
-                            } else {
-                                if (!CallDispatcher.isCallInitiate) {
-                                    if(!CallDispatcher.GSMCallisAccepted) {
-                                        individualCallMenu(0);
-                                    } else {
-                                        showToast("Please Try again... GSM call in progress");
-                                    }
-                                } else {
-                                    showToast("Please Try again... call in progress");
-                                }
 //                            ContactsFragment.getInstance(context).sipprocessCallRequest(buddy);
+                                }
                             }
                         }
-                    }
+                    }else
+                    showToast("You are in offline");
                     break;
                 case R.id.gridview:
                     if (!isGrid) {
@@ -5640,8 +5645,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 
                                                 //For Receiver Quote
                                                 //Start
-                                                if(gcBean.getMimetype()!=null && gcBean.getMimetype().equalsIgnoreCase("text") &&
-                                                        gcBean.getMessage()!=null){
+//                                                if(gcBean.getMimetype()!=null && gcBean.getMimetype().equalsIgnoreCase("text") &&
+//                                                        gcBean.getMessage()!=null){
                                                     Log.i("reply","receiver side GRB_R loginuser quote visible");
                                                     //Old Code start
 //                                                    if(position>0){
@@ -5694,7 +5699,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                                         }
                                                     }
                                                     //New Code End
-                                                }
+//                                                }
                                                 //End
                                             } else {
                                                 Log.i("reply","receiver side GRB_R loginuser else btn_reply visble");
@@ -9513,7 +9518,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     }
                     holder.header_title.setVisibility(View.GONE);
                     holder.selectUser.setVisibility(View.GONE);
+                    if(bib.getFirstname()!=null && bib.getFirstname().length()>0)
                     holder.buddyName.setText(bib.getFirstname());
+                    else
+                        holder.buddyName.setText(bib.getName());
                     if (bib.getRole() != null)
                         holder.role.setText(bib.getRole());
                     else

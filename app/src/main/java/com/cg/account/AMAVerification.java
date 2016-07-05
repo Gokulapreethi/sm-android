@@ -804,6 +804,8 @@ public class AMAVerification extends Activity {
                     buddyInformationBeans = GroupChatActivity.getAdapterList(buddyInformationBeans);
                     result.count = buddyInformationBeans.size();
                     result.values = buddyInformationBeans;
+                    if(buddyInformationBeans.size()==0)
+                        showToast("No results Found");
                 } else {
                     synchronized (this) {
                         originalList = GroupChatActivity.getAdapterList(originalList);
@@ -844,9 +846,13 @@ public class AMAVerification extends Activity {
 
     public void countofcheckbox(int count)
     {
-        Log.i("asdf","count"+count);
+        Log.i("asdf", "count" + count);
         selected.setText(Integer.toString(count) + " Selected");
         total_count = count;
+        if(count==result.size())
+            selectAll_buddy.setChecked(true);
+        else
+            selectAll_buddy.setChecked(false);
 
     }
     private void showToast(final String message) {
