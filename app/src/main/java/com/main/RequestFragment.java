@@ -32,6 +32,7 @@ import com.cg.DB.DBAccess;
 import com.cg.account.FindPeople;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.image.utils.ImageLoader;
 import com.util.SingleInstance;
@@ -71,6 +72,7 @@ public class RequestFragment extends Fragment {
     }
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        AppReference.bacgroundFragment=requestFragment;
         Button select = (Button) getActivity().findViewById(R.id.btn_brg);
         select.setVisibility(View.GONE);
         RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);

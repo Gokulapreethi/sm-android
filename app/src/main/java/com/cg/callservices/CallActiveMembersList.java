@@ -9,8 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Message;
-import android.telecom.Call;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +21,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,7 +32,6 @@ import com.callHistory.CallHistoryActivity;
 import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
-import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.group.AddGroupMembers;
 import com.group.chat.GroupChatActivity;
@@ -51,6 +47,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 /**
@@ -68,13 +67,14 @@ public class CallActiveMembersList extends Activity {
     private RelativeLayout RelativeLayout2;
     Vector<BuddyInformationBean> result;
     private CallDispatcher objCallDispatcher;
-    private Vector<UserBean> membersList=new Vector<UserBean>();
-    private String strSessionId;
-    private Handler handler=new Handler();
+    private Vector<UserBean> membersList = new Vector<UserBean>();
+    private String strSessionId, host, activescreen;
+    private Handler handler = new Handler();
     private boolean selfHangup = false;
-    private boolean isBuddyinCall=false;
+    private boolean isBuddyinCall = false;
     private AlertDialog alert = null;
     private String timer;
+    String calltype = "";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,14 +83,25 @@ public class CallActiveMembersList extends Activity {
             setContentView(R.layout.callmembers_info);
             context = this;
 
+            SingleInstance.instanceTable.remove("callactivememberslist", context);
+
             cancel = (Button) findViewById(R.id.cancel);
 
 
-            ListView searchResult = (ListView)findViewById(R.id.searchResult);
-            ImageView hangupBtn=(ImageView)findViewById(R.id.hangupBtn);
-            ImageView addMembers=(ImageView)findViewById(R.id.addmembersBtn);
-            strSessionId=getIntent().getStringExtra("sessionId");
-            timer=getIntent().getStringExtra("timer");
+            ListView searchResult = (ListView) findViewById(R.id.searchResult);
+            ImageView hangupBtn = (ImageView) findViewById(R.id.hangupBtn);
+            ImageView addMembers = (ImageView) findViewById(R.id.addmembersBtn);
+            strSessionId = getIntent().getStringExtra("sessionId");
+            if (getIntent().getStringExtra("host") != null) {
+                host = getIntent().getStringExtra("host");
+                Log.i("AudioCall", "Host : " + host);
+            }
+
+            if (getIntent().getStringExtra("fromscreen") != null) {
+                activescreen = getIntent().getStringExtra("fromscreen");
+            }
+            timer = getIntent().getStringExtra("timer");
+            calltype = getIntent().getStringExtra("calltype");
 
             if (WebServiceReferences.callDispatch.containsKey("calldisp"))
                 objCallDispatcher = (CallDispatcher) WebServiceReferences.callDispatch
@@ -108,13 +119,25 @@ public class CallActiveMembersList extends Activity {
             hangupBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    showHangUpAlert();
+
+                    showHangUpAlert();
                 }
             });
 
-            Vector<BuddyInformationBean> objects = new Vector<BuddyInformationBean>();
 
-            ProfileBean bean= SingleInstance.myAccountBean;
+            Set mapSet = (Set) CallDispatcher.conferenceMember_Details.entrySet();
+            Iterator mapIterator = mapSet.iterator();
+            while (mapIterator.hasNext()) {
+                Map.Entry mapEntry = (Map.Entry) mapIterator.next();
+                String key = (String) mapEntry.getKey();
+                Log.i("AudioCall", "key : " + key);
+                SignalingBean pbean = (SignalingBean) mapEntry.getValue();
+            }
+
+            Vector<BuddyInformationBean> participant_objects = new Vector<BuddyInformationBean>();
+            Vector<BuddyInformationBean> total_objects = new Vector<BuddyInformationBean>();
+
+            ProfileBean bean = SingleInstance.myAccountBean;
             String user_name = CallDispatcher.LoginUser;
 
             BuddyInformationBean ownbean = new BuddyInformationBean();
@@ -122,28 +145,54 @@ public class CallActiveMembersList extends Activity {
             ownbean.setStatus(CallDispatcher.myStatus);
             ownbean.setMode("connected");
             ownbean.setProfile_picpath(bean.getPhoto());
-            objects.add(ownbean);
+
+            if (host.equalsIgnoreCase(CallDispatcher.LoginUser)) {
+                total_objects.add(ownbean);
+            } else {
+                participant_objects.add(ownbean);
+            }
 
 
-            for(String user : CallDispatcher.conferenceMembers){
-                for (BuddyInformationBean buddyInformationBean : ContactsFragment.getBuddyList()){
-                    if(user.equalsIgnoreCase(buddyInformationBean.getEmailid())){
-                        SignalingBean sb=CallDispatcher.buddySignall.get(buddyInformationBean.getEmailid());
-                        if(sb.getType().equalsIgnoreCase("2"))
-                            buddyInformationBean.setMode("connected");
-                        else if(sb.getType().equalsIgnoreCase("1") && sb.getResult().equalsIgnoreCase("1"))
-                            buddyInformationBean.setMode("connecting...");
-                        else if(sb.getType().equalsIgnoreCase("1") && sb.getResult().equalsIgnoreCase("0"))
-                            buddyInformationBean.setMode("connecting...");
-                        else
-                            buddyInformationBean.setMode("connected");
-                        ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(user);
+            for (String user : CallDispatcher.conferenceMembers) {
+                boolean havebuddy = false;
+                for (BuddyInformationBean buddyInformationBean : ContactsFragment.getBuddyList()) {
+                    if (user.equalsIgnoreCase(buddyInformationBean.getEmailid())) {
+                        havebuddy = true;
+                        SignalingBean sb = CallDispatcher.buddySignall.get(buddyInformationBean.getEmailid());
+//                        if(sb.getType().equalsIgnoreCase("2"))
+//                            buddyInformationBean.setMode("connected");
+//                        else if(sb.getType().equalsIgnoreCase("1") && sb.getResult().equalsIgnoreCase("1"))
+//                            buddyInformationBean.setMode("connecting...");
+//                        else if(sb.getType().equalsIgnoreCase("1") && sb.getResult().equalsIgnoreCase("0"))
+//                            buddyInformationBean.setMode("connecting...");
+//                        else
+                        buddyInformationBean.setMode("connected");
+                        ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(user);
                         buddyInformationBean.setProfile_picpath(pBean.getPhoto());
-                        objects.add(buddyInformationBean);
+                        Log.i("AudioCall", "");
+                        if (user.equalsIgnoreCase(host)) {
+                            total_objects.add(buddyInformationBean);
+                        } else {
+                            participant_objects.add(buddyInformationBean);
+                        }
                     }
                 }
+
+                if (havebuddy) {
+
+                } else {
+                    BuddyInformationBean informationBean = new BuddyInformationBean();
+                    informationBean.setEmailid(user);
+                    informationBean.setMode("connected");
+                    participant_objects.add(informationBean);
+                }
             }
-            CallMembersList calladapter = new CallMembersList(context, R.layout.find_people_item, objects);
+
+            if (participant_objects.size() > 0) {
+                total_objects.addAll(participant_objects);
+            }
+
+            CallMembersList calladapter = new CallMembersList(context, R.layout.find_people_item, total_objects);
             searchResult.setAdapter(calladapter);
 
             cancel.setOnClickListener(new View.OnClickListener() {
@@ -156,6 +205,7 @@ public class CallActiveMembersList extends Activity {
             e.printStackTrace();
         }
     }
+
     public class CallMembersList extends ArrayAdapter<BuddyInformationBean> {
 
         private LayoutInflater inflater = null;
@@ -163,11 +213,11 @@ public class CallActiveMembersList extends Activity {
         private ImageLoader imageLoader;
         private Vector<BuddyInformationBean> result;
         private Vector<BuddyInformationBean> originalList;
-        private  ContactsFilter filter;
+        private ContactsFilter filter;
 
         public CallMembersList(Context context, int resource, Vector<BuddyInformationBean> objects) {
             super(context, resource, objects);
-            imageLoader=new ImageLoader(context);
+            imageLoader = new ImageLoader(context);
             result = new Vector<BuddyInformationBean>();
             result.addAll(objects);
             originalList = new Vector<BuddyInformationBean>();
@@ -178,9 +228,9 @@ public class CallActiveMembersList extends Activity {
         public View getView(int i, View convertView, ViewGroup viewGroup) {
             try {
                 holder = new ViewHolder();
-                if(convertView == null) {
+                if (convertView == null) {
                     inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.rounding_member_row, null);
+                    convertView = inflater.inflate(R.layout.callmembers, null);
                     holder.selectUser = (CheckBox) convertView.findViewById(R.id.sel_buddy);
                     holder.selectUser.setVisibility(View.GONE);
                     holder.buddyicon = (ImageView) convertView.findViewById(R.id.buddyicon);
@@ -191,12 +241,20 @@ public class CallActiveMembersList extends Activity {
                     holder.position = (TextView) convertView.findViewById(R.id.position);
                     holder.occupation = (TextView) convertView.findViewById(R.id.occupation);
                     holder.header_title = (TextView) convertView.findViewById(R.id.header_title);
+                    holder.overlay_image = (ImageView) convertView.findViewById(R.id.overlay);
+                    holder.overlay_image1 = (ImageView) convertView.findViewById(R.id.overlay1);
                     convertView.setTag(holder);
-                }else
+                } else
                     holder = (ViewHolder) convertView.getTag();
                 final BuddyInformationBean bib = result.get(i);
-
-                if(bib!=null) {
+                if (calltype.equalsIgnoreCase("VC")) {
+                    holder.overlay_image.setVisibility(View.VISIBLE);
+                    holder.overlay_image1.setVisibility(View.VISIBLE);
+                } else {
+                    holder.overlay_image.setVisibility(View.GONE);
+                    holder.overlay_image1.setVisibility(View.GONE);
+                }
+                if (bib != null) {
                     if (bib.getProfile_picpath() != null) {
                         String pic_Path = Environment.getExternalStorageDirectory().getAbsolutePath()
                                 + "/COMMedia/" + bib.getProfile_picpath();
@@ -208,17 +266,17 @@ public class CallActiveMembersList extends Activity {
                     holder.header_title.setVisibility(View.VISIBLE);
                     holder.position.setVisibility(View.GONE);
                     holder.edit.setVisibility(View.GONE);
-                    if(timer!=null)
+                    if (timer != null)
                         holder.timer.setText(timer);
                     else
                         holder.timer.setText("");
                     holder.timer.setTextColor(getResources().getColor(R.color.snazash));
-                    if(i == 0) {
+                    if (i == 0) {
                         holder.header_title.setText("From");
-                    } else if (i == 1){
+                    } else if (i == 1) {
                         holder.header_title.setText("To");
-                    }else{
-                        holder.header_title.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.header_title.setVisibility(View.INVISIBLE);
                     }
                     holder.statusIcon.setVisibility(View.VISIBLE);
 
@@ -234,13 +292,21 @@ public class CallActiveMembersList extends Activity {
                         } else {
                             holder.statusIcon.setBackgroundResource(R.drawable.offline_icon);
                         }
-                    }
-                    if(bib.getFirstname().equalsIgnoreCase(CallDispatcher.LoginUser)){
-                        holder.buddyName.setText("Me");
                     } else {
-                        holder.buddyName.setText(bib.getFirstname() + " " + bib.getLastname());
+                        holder.statusIcon.setBackgroundResource(R.drawable.offline_icon);
                     }
-                    if(bib.getMode()!=null) {
+                    if (bib.getFirstname() != null) {
+                        if (bib.getFirstname().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+                            holder.buddyName.setText("Me");
+                            holder.overlay_image.setVisibility(View.GONE);
+                            holder.overlay_image1.setVisibility(View.GONE);
+                        } else {
+                            holder.buddyName.setText(bib.getFirstname() + " " + bib.getLastname());
+                        }
+                    } else {
+                        holder.buddyName.setText(bib.getEmailid());
+                    }
+                    if (bib.getMode() != null) {
                         holder.occupation.setText(bib.getMode());
                         if (bib.getMode().equalsIgnoreCase("connected"))
                             holder.occupation.setTextColor(getResources().getColor(R.color.blue2));
@@ -248,21 +314,22 @@ public class CallActiveMembersList extends Activity {
                             holder.occupation.setTextColor(getResources().getColor(R.color.yellow));
                     }
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 Log.d("RRRR", "Error FindpeopleAdapter.java => " + e.toString());
             }
             return convertView;
         }
+
         @Override
         public Filter getFilter() {
-            if (filter == null){
-                filter  = new ContactsFilter();
+            if (filter == null) {
+                filter = new ContactsFilter();
             }
             return filter;
         }
-        private class ContactsFilter extends Filter
-        {
+
+        private class ContactsFilter extends Filter {
 
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
@@ -272,10 +339,9 @@ public class CallActiveMembersList extends Activity {
                 FilterResults result = new FilterResults();
                 if (constraint != null && constraint.toString().length() > 0) {
                     Vector<BuddyInformationBean> buddyInformationBeans = new Vector<BuddyInformationBean>();
-                    for(int i = 0, l = originalList.size(); i < l; i++)
-                    {
+                    for (int i = 0, l = originalList.size(); i < l; i++) {
                         BuddyInformationBean buddyInformationBean = originalList.get(i);
-                        if(buddyInformationBean.getName().toLowerCase().startsWith(String.valueOf(constraint)))
+                        if (buddyInformationBean.getName().toLowerCase().startsWith(String.valueOf(constraint)))
                             buddyInformationBeans.add(buddyInformationBean);
                     }
                     buddyInformationBeans = GroupChatActivity.getAdapterList(buddyInformationBeans);
@@ -296,11 +362,11 @@ public class CallActiveMembersList extends Activity {
             protected void publishResults(CharSequence constraint,
                                           FilterResults results) {
 
-                result= (Vector<BuddyInformationBean>)results.values;
+                result = (Vector<BuddyInformationBean>) results.values;
                 notifyDataSetChanged();
                 clear();
                 result = GroupChatActivity.getAdapterList(result);
-                for(int i = 0, l = result.size(); i < l; i++)
+                for (int i = 0, l = result.size(); i < l; i++)
                     add(result.get(i));
                 notifyDataSetInvalidated();
 
@@ -308,14 +374,16 @@ public class CallActiveMembersList extends Activity {
 
         }
     }
+
     public static class ViewHolder {
         CheckBox selectUser;
-        ImageView buddyicon,edit;
-        ImageView statusIcon;
-        TextView buddyName,timer,position;
+        ImageView buddyicon, edit;
+        ImageView statusIcon, overlay_image, overlay_image1;
+        TextView buddyName, timer, position;
         TextView occupation;
         TextView header_title;
     }
+
     public void ShowOnlineBuddies() {
 
         try {
@@ -330,10 +398,9 @@ public class CallActiveMembersList extends Activity {
             if (memberslist.size() > 0) {
                 Intent intent = new Intent(context,
                         AddGroupMembers.class);
-                intent.putExtra("fromcall",true);
+                intent.putExtra("fromcall", true);
                 intent.putStringArrayListExtra("buddylist", memberslist);
                 startActivityForResult(intent, 3);
-//
 
             } else {
                 Toast.makeText(
@@ -346,6 +413,7 @@ public class CallActiveMembersList extends Activity {
         }
 
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         try {
@@ -366,13 +434,13 @@ public class CallActiveMembersList extends Activity {
                             membersList.add(userBean);
                         }
                     }
-                    for(UserBean bib:membersList){
+                    for (UserBean bib : membersList) {
                         if (CallDispatcher.conferenceMembers.size() < 3) {
 
                             if (objCallDispatcher != null) {
                                 SignalingBean sb = objCallDispatcher.callconfernceUpdate(
                                         bib.getBuddyName(),
-                                        "AC", strSessionId);
+                                        calltype, strSessionId);
                                 // june04-Implementation
                                 CallDispatcher.conferenceRequest
                                         .put(bib.getBuddyName(), sb);
@@ -388,10 +456,11 @@ public class CallActiveMembersList extends Activity {
                     }
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     void showHangUpAlert() {
         handler.post(new Runnable() {
             @Override
@@ -407,32 +476,19 @@ public class CallActiveMembersList extends Activity {
                                         R.string.yes),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-
-                                        Message msg = new Message();
-                                        Bundle bun = new Bundle();
-                                        bun.putString("action", "leave");
-                                        msg.obj = bun;
-                                        selfHangup = true;
-                                        if (selfHangup) {
-                                            CallDispatcher.sb
-                                                    .setEndTime(getCurrentDateandTime());
-                                            CallDispatcher.sb
-                                                    .setCallDuration(SingleInstance.mainContext
-                                                            .getCallDuration(CallDispatcher.sb
-                                                                            .getStartTime(),
-                                                                    CallDispatcher.sb
-                                                                            .getEndTime()));
-                                            DBAccess.getdbHeler()
-                                                    .saveOrUpdateRecordtransactiondetails(
-                                                            CallDispatcher.sb);
-                                            showCallHistory();
+                                        if (activescreen.equalsIgnoreCase("audiocallscreen")) {
+                                            if (SingleInstance.instanceTable.containsKey("callscreen")) {
+                                                AudioCallScreen audioCallScreen = (AudioCallScreen) SingleInstance.instanceTable.get("callscreen");
+                                                audioCallScreen.hangupCallFromCallActiveMembers();
+                                            }
+                                        } else if (activescreen.equalsIgnoreCase("videocallscreen")) {
+                                            if (SingleInstance.instanceTable.containsKey("callscreen")) {
+                                                VideoCallScreen videoCallScreen = (VideoCallScreen) SingleInstance.instanceTable.get("callscreen");
+                                                videoCallScreen.hangupCallFromCallActiveMembers();
+                                            }
                                         }
-                                        final String[] choiceList = returnBuddies();
-                                        if (choiceList.length != 0) {
-                                            isBuddyinCall = true;
-                                            selfHangup = false;
-                                        }
-                                        handler.sendMessage(msg);
+                                        dialog.cancel();
+                                        finishActivity();
                                     }
                                 })
                         .setNegativeButton(
@@ -450,12 +506,14 @@ public class CallActiveMembersList extends Activity {
         });
 
     }
+
     private String[] returnBuddies() {
 
         String arr[] = CallDispatcher.conferenceMembers
                 .toArray(new String[CallDispatcher.conferenceMembers.size()]);
         return arr;
     }
+
     public String getCurrentDateandTime() {
         try {
             Date curDate = new Date();
@@ -468,8 +526,8 @@ public class CallActiveMembersList extends Activity {
             return null;
         }
     }
-    private void showCallHistory()
-    {
+
+    private void showCallHistory() {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.call_record_dialog);
@@ -488,7 +546,7 @@ public class CallActiveMembersList extends Activity {
                 intentComponent.putExtra("buddyname",
                         CallDispatcher.sb.getFrom());
                 intentComponent.putExtra("individual", true);
-                intentComponent.putExtra("isDelete",false);
+                intentComponent.putExtra("isDelete", false);
                 intentComponent.putExtra("sessionid",
                         CallDispatcher.sb.getSessionid());
                 context.startActivity(intentComponent);
@@ -502,7 +560,7 @@ public class CallActiveMembersList extends Activity {
                         CallHistoryActivity.class);
                 intentComponent.putExtra("buddyname",
                         CallDispatcher.sb.getFrom());
-                intentComponent.putExtra("isDelete",true);
+                intentComponent.putExtra("isDelete", true);
                 intentComponent.putExtra("individual", true);
                 intentComponent.putExtra("sessionid",
                         CallDispatcher.sb.getSessionid());
@@ -510,5 +568,17 @@ public class CallActiveMembersList extends Activity {
             }
         });
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (SingleInstance.instanceTable.containsKey("callactivememberslist")) {
+            SingleInstance.instanceTable.remove("callactivememberslist");
+        }
+    }
+
+    public void finishActivity() {
+        this.finish();
     }
 }

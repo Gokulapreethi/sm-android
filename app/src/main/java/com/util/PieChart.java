@@ -47,6 +47,8 @@ public class PieChart extends View {
         bgpaint.setAntiAlias(true);
         bgpaint.setStyle(Paint.Style.FILL);
         rect = new RectF();
+        this.percentage=100;
+        invalidate();
     }
     @Override
     protected void onDraw(Canvas canvas) {

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.telecom.Call;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import com.bean.UserBean;
 import com.cg.DB.DBAccess;
+import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
@@ -36,7 +38,8 @@ public class AssignPatientActivity extends Activity{
     private int presentpatientcount=0;
     Handler handler = new Handler();
     public Vector<UserBean> membersList = new Vector<UserBean>();
-public boolean isSearch=false;
+    private boolean fromMyPatient=false;
+    public boolean isSearch=false;
 
     Vector<PatientDetailsBean> PatientList;
 
@@ -59,14 +62,26 @@ public boolean isSearch=false;
         ListView listView=(ListView)findViewById(R.id.lv_buddylist);
         PatientList=new Vector<PatientDetailsBean>();
         PatientList.clear();
-        UserBean bean=new UserBean();
+//        UserBean bean=new UserBean();
+//        bean.setBuddyName(CallDispatcher.LoginUser);
+//        membersList.add(bean);
 
-        membersList.add(bean);
-
-        String groupid=getIntent().getStringExtra("groupid");
+        final String groupid=getIntent().getStringExtra("groupid");
         String groupname=getIntent().getStringExtra("groupname");
+        fromMyPatient=getIntent().getBooleanExtra("fromMyPatient",false);
         header.setText(groupname);
-        PatientList=DBAccess.getdbHeler().getAllPatientDetails(groupid);
+        String strGetQry=null;
+        strGetQry="select * from patientdetails where (groupid='"
+                + groupid + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser + "%') or ( groupid='" + groupid + "' and assignedmembers='')";
+        PatientList=DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
+        int questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where (groupid='"
+                + groupid + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser + "%') or ( groupid='" + groupid + "' and assignedmembers='')");
+        if(questionsCount>0){
+            unassign_lay.setVisibility(View.VISIBLE);
+            assign.setText("ASSIGN PATIENTS TO");
+            unassign.setText("UNASSIGN FROM ME");
+        }
+
         Collections.sort(PatientList, new PatientNameComparator());
         GroupChatActivity.patientType="name";
         final RoundingPatientAdapter adapter=new RoundingPatientAdapter(context,R.layout.rouding_patient_row,PatientList);
@@ -74,38 +89,25 @@ public boolean isSearch=false;
         assign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                if(!isSearch) {
-                    unassign_lay.setVisibility(View.VISIBLE);
-                    assign.setText("ASSIGN PATIENTS TO");
-                    unassign.setText("UNASSIGN FROM ME");
-                    isSearch=true;
-                }else {
-//                    view.setEnabled(false);
-                    handler.postDelayed(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            view.setEnabled(true);
-
-                        }
-                    }, 1000);
                     Intent intent = new Intent(getApplicationContext(),
                             AddGroupMembers.class);
                     ArrayList<String> buddylist = new ArrayList<String>();
                     for (UserBean userBean : membersList) {
                         buddylist.add(userBean.getBuddyName());
                     }
+                    intent.putExtra("fromRounding",true);
+                    intent.putExtra("groupid",groupid);
                     intent.putStringArrayListExtra("buddylist", buddylist);
                     Log.i("AAAA", "members list " + buddylist.size());
                     startActivityForResult(intent, 3);
                     isSearch=false;
-                }
+//                }
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-             finish();
+                finish();
             }
         });
         btn_selectall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

@@ -18,6 +18,7 @@ import com.cg.account.forgotPassword;
 import com.cg.avatar.AvatarActivity;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.files.FileInfoFragment;
 import com.cg.files.sendershare;
 import com.cg.forms.AccessAndSync;
 import com.cg.forms.AddNewForm;
@@ -29,6 +30,7 @@ import com.cg.forms.FormPermissionViewer;
 import com.cg.forms.FormRecordsCreators;
 import com.cg.forms.FormViewer;
 import com.cg.rounding.AttendingRightsActivity;
+import com.cg.rounding.OwnershipActivity;
 import com.cg.rounding.PatientRoundingFragment;
 import com.cg.rounding.RoundNewPatientActivity;
 import com.cg.rounding.RoundingEditActivity;
@@ -40,6 +42,7 @@ import com.cg.utilities.UtilitySeller;
 import com.cg.utilities.UtilityServiceNeeder;
 import com.cg.utilities.UtilityServiceProvider;
 import com.group.GroupActivity;
+import com.group.chat.ChatTemplateActivity;
 import com.group.chat.GroupChatActivity;
 import com.group.chat.GroupChatSettings;
 import com.group.chat.ProfessionList;
@@ -491,10 +494,17 @@ public class WSRunner implements Runnable {
 						String upload_result = mParser.parseResultXml(mSp.toString());
 						if(mChk) {
 							Log.d("XP WSD", "file" + mChk);
-							SingleInstance.mainContext.showToast("File upload suucessfully");
+							SingleInstance.mainContext.showToast("File upload sucessfully");
 							if (mServicebean.getCallBack() != null) {
-								((sendershare) mServicebean.getCallBack())
-										.sendFile();
+								if (mServicebean.getCallBack() instanceof sendershare) {
+									Log.i("AAAA","wsrunner send share");
+									((sendershare) mServicebean.getCallBack())
+											.sendFile();
+								} else if (mServicebean.getCallBack()instanceof FileInfoFragment) {
+									Log.i("AAAA","wsrunner send file info fragment");
+									((FileInfoFragment) mServicebean.getCallBack())
+											.sendFile();
+								}
 							}
 						}else
 							SingleInstance.mainContext.showToast(upload_result);
@@ -1551,10 +1561,13 @@ public class WSRunner implements Runnable {
 						String aresult = mParser.parseResultXml(mSp.toString());
 						mServicebean.setObj(aresult);
 
-						if (mServicebean.getCallBack() != null) {
+						if (mServicebean.getCallBack() instanceof RoundingEditActivity) {
 							((RoundingEditActivity) mServicebean.getCallBack())
 									.notifyOwnership(mServicebean.getObj());
-						} else {
+						} else if (mServicebean.getCallBack()instanceof OwnershipActivity) {
+							((OwnershipActivity) mServicebean.getCallBack())
+									.notifyOwnership(mServicebean.getObj());
+						}else {
 							SingleInstance.printLog(TAG, "Login, Callback is NULL",
 									null, null);
 						}
@@ -1580,8 +1593,13 @@ public class WSRunner implements Runnable {
 						if (mParser.getResult(mSp.toString())) {
 							String[] temp = mParser.parseNewVerification(mSp
 									.toString());
-
 							mServicebean.setObj(temp);
+						}else {
+							webServiceBean = mParser.parseResultFromXml(mSp
+									.toString());
+							mServicebean.setObj(webServiceBean);
+						}
+
 							if (mServicebean.getCallBack() != null) {
 								((NewUser) mServicebean.getCallBack())
 										.notifyWebserviceResponse(mServicebean.getObj());
@@ -1589,8 +1607,6 @@ public class WSRunner implements Runnable {
 								SingleInstance.printLog(TAG, "Login, Callback is NULL",
 										null, null);
 							}
-
-						}
 						break;
 					case SETPATIENTRECORD:
 						if (mParser.getResult(mSp.toString())) {
@@ -1633,6 +1649,10 @@ public class WSRunner implements Runnable {
 									.toString());
 
 							mServicebean.setObj(temp);
+						}else {
+							webServiceBean = mParser.parseResultFromXml(mSp
+									.toString());
+							mServicebean.setObj(webServiceBean);
 						}
 						if (mServicebean.getCallBack() != null) {
 							Log.i("sss", "notifyRightsToUI of rights wsrunner ");
@@ -1804,6 +1824,24 @@ public class WSRunner implements Runnable {
 						 SingleInstance.printLog(TAG, "Login, Callback is NULL",
 								null, null);
 					     }
+						break;
+					case UPDATECHATTEMPLATE:
+						if (mParser.getResult(mSp.toString())) {
+							String[] param = mParser.parseUpdateChatTemplate(mSp
+									.toString());
+							mServicebean.setObj(param);
+						} else {
+							webServiceBean = mParser.parseResultFromXml(mSp
+									.toString());
+							mServicebean.setObj(webServiceBean);
+						}
+						if (mServicebean.getCallBack() != null) {
+							((ChatTemplateActivity) mServicebean.getCallBack())
+									.notifyUpdateChatTemplate(mServicebean.getObj());
+						} else {
+							SingleInstance.printLog(TAG, "Login, Callback is NULL",
+									null, null);
+						}
 						break;
 					case SUBSCRIBENEW:
 						String sresult = mParser.parseResultXml(mSp.toString());
@@ -2116,14 +2154,9 @@ public class WSRunner implements Runnable {
 						if (mChk) {
 							Log.i("chattemplate","parse value getchattemplate");
 							ArrayList<Object> values=mParser.parseGetchattemplate(mSp.toString());
-//							if (mServicebean.getCallBack() != null) {
 							if(SingleInstance.mainContext!=null){
 								Log.i("chattemplate","mServicebean.getCallBack() != null");
-//								if (mServicebean.getCallBack() instanceof AppMainActivity) {
-//									Log.i("chattemplate","callback Appmainactivity");
-//									AppMainActivity mainActivity=(AppMainActivity) mServicebean.getCallBack();
 									SingleInstance.mainContext.notifyChatTemplate(mChk,values);
-//								}
 							}
 						}else{
 							if(SingleInstance.mainContext!=null){

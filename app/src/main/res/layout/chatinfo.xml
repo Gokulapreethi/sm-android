@@ -15,10 +15,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Message Info"
+            android:text="MESSAGE INFO"
             android:textColor="#ffffff"
-            android:textSize="20dp"
-            android:textStyle="bold"></TextView>
+            android:textSize="20dp"></TextView>
 
         <ImageView
             android:id="@+id/side_menu"
@@ -55,9 +54,8 @@
             android:layout_marginLeft="20dp"
             android:padding="5dp"
             android:text="Message Info"
-            android:textColor="#ffffff"
-            android:textSize="20dp"
-            android:textStyle="bold"></TextView>
+            android:textColor="@color/snazlgray"
+            android:textSize="15dp"/>
 
         <TextView
             android:id="@+id/sentView"
@@ -68,7 +66,7 @@
             android:layout_marginTop="15dp"
             android:text="Message Info"
             android:layout_marginLeft="20dp"
-            android:textColor="#ffffff"
+            android:textColor="@color/snazlgray"
             android:textSize="15dp"></TextView>
 
         <TextView
@@ -80,7 +78,7 @@
             android:text="Message Info"
             android:layout_marginTop="15dp"
             android:layout_marginRight="3dp"
-            android:textColor="#ffffff"
+            android:textColor="@color/snazlgray"
             android:textSize="15dp"></TextView>
 
 
@@ -93,8 +91,9 @@
         android:layout_below="@+id/msglay"
         android:gravity="center"
         android:padding="5dp"
+        android:textColor="@color/snazlgray"
         android:text="Read "
-        android:textSize="19dp" />
+        android:textSize="15dp" />
 
     <ListView
         android:id="@+id/read"
@@ -111,8 +110,9 @@
         android:layout_below="@+id/read"
         android:gravity="center"
         android:padding="5dp"
+        android:textColor="@color/snazlgray"
         android:text="Delivered "
-        android:textSize="19dp" />
+        android:textSize="15dp" />
 
     <ListView
         android:id="@+id/deliverd"

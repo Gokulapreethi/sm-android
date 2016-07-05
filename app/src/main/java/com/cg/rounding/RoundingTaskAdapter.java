@@ -52,11 +52,12 @@ public class RoundingTaskAdapter extends ArrayAdapter<TaskDetailsBean> {
         View row = view;
 
         try {
-             ViewHolder holder;
-            holder = new ViewHolder();
+             final ViewHolder holder;
+
 
 
             if (row == null) {
+                holder = new ViewHolder();
                 LayoutInflater inflater = (LayoutInflater) this.context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 row = inflater.inflate(R.layout.round_task_row, null, false);
@@ -116,12 +117,10 @@ public class RoundingTaskAdapter extends ArrayAdapter<TaskDetailsBean> {
                             public void onCheckedChanged(CompoundButton arg0,
                                                          boolean isChecked) {
                                 if (isChecked) {
+                                    holder.chbox1.setEnabled(false);
                                     tBean.setTaskstatus("1");
                                     DBAccess.getdbHeler().insertorUpdatTaskDetails(tBean);
                                     WebServiceReferences.webServiceClient.SetTaskRecord(tBean, SingleInstance.mainContext);
-//                                    GroupChatActivity gChat = (GroupChatActivity) SingleInstance.contextTable
-//                                            .get("groupchat");
-//                                    gChat.taskSorting(tBean.getGroupid());
                                 } else {
 
                                 }

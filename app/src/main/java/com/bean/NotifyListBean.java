@@ -16,6 +16,54 @@ public class NotifyListBean{
     private int viewed=0;
     private String fileid =null;
     private String username="";
+    private String category = "";
+
+    public String getIndinvite() {
+        return Indinvite;
+    }
+
+    public void setIndinvite(String indinvite) {
+        Indinvite = indinvite;
+    }
+
+    public String getGroupinvite() {
+        return Groupinvite;
+    }
+
+    public void setGroupinvite(String groupinvite) {
+        Groupinvite = groupinvite;
+    }
+
+    private String Indinvite = "";
+    private String Groupinvite = "";
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
+    }
+
+    private String profilePic = "";
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getSetStatus() {
+        return setStatus;
+    }
+
+    public void setSetStatus(String setStatus) {
+        this.setStatus = setStatus;
+    }
+
+    private String setStatus = "";
 
     public String getFrom() {
         return from;

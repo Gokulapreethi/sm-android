@@ -89,7 +89,9 @@ public class SendChatListAdapter extends ArrayAdapter<SendListUIBean> {
                 holder.xbutton = (ImageView) convertView.findViewById(R.id.xbutton);
                 holder.buddyName = (TextView) convertView.findViewById(R.id.txt_time);
                 holder.play_button = (ImageView) convertView.findViewById(R.id.play_button);
+                holder.play_button.setTag(position);
                 holder.seekBar = (SeekBar)convertView.findViewById(R.id.seekBar1);
+                holder.seekBar.setTag(position);
                 holder.filelayout = (LinearLayout)convertView.findViewById(R.id.filelayout);
                 holder.ad_play = (RelativeLayout)convertView.findViewById(R.id.ad_play);
                 holder.tv_fname = (TextView) convertView.findViewById(R.id.tv_fname);
@@ -101,23 +103,33 @@ public class SendChatListAdapter extends ArrayAdapter<SendListUIBean> {
                 @Override
                 public void onClick(View view) {
                     groupChatActivity.tempSendList(position);
+                    stopPlayback();
                 }
             });
             holder.filexbutton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     groupChatActivity.tempSendList(position);
+                    stopPlayback();
                 }
             });
 
             final SendListUIBean gcBean = userList.get(position);
+            if (gcBean.isPlaying()) {
+                holder.play_button.setBackgroundResource(R.drawable.audiopause);
+            } else {
+                holder.play_button.setBackgroundResource(R.drawable.play);
+            }
             holder.play_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if(mPlayer.isPlaying()) {
                         mPlayer.pause();
                         holder.play_button.setBackgroundResource(R.drawable.audiopause);
+                        gcBean.setPlaying(false);
+
                     }else {
+                        gcBean.setPlaying(true);
                         holder.play_button.setBackgroundResource(R.drawable.play);
                         playAudio(gcBean.getPath(), position);
                     }
@@ -131,8 +143,10 @@ public class SendChatListAdapter extends ArrayAdapter<SendListUIBean> {
                 {
                     if (position == mPlayingPosition) {
                         //pb.setVisibility(View.VISIBLE);
+                        Log.d("Audio","seekbar");
                         mProgressUpdater.mBarToUpdate = holder.seekBar;
-                        mProgressUpdater.tvToUpdate = holder.buddyName;
+                        mProgressUpdater.tvToUpdate = holder.
+                                buddyName;
                         mHandler.postDelayed(mProgressUpdater, 100);
                     } else {
                         //pb.setVisibility(View.GONE);
@@ -251,7 +265,7 @@ public class SendChatListAdapter extends ArrayAdapter<SendListUIBean> {
             }
         }
     }
-    private void stopPlayback() {
+    public void stopPlayback() {
         mPlayingPosition = -1;
         mProgressUpdater.mBarToUpdate = null;
         mProgressUpdater.tvToUpdate = null;

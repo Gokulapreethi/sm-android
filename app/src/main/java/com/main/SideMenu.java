@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -327,15 +328,17 @@ public class SideMenu extends Fragment{
             public void run() {
                 int dashCount = 0;
                 dashCount += DBAccess.getdbHeler(mainContext)
-                        .getUnreadMsgCount(CallDispatcher.LoginUser);
-                dashCount += DBAccess.getdbHeler(mainContext)
-                        .getUnreadFileCount(CallDispatcher.LoginUser);
-                dashCount += DBAccess.getdbHeler(mainContext)
+                        .getUnreadMsgCount(CallDispatcher.LoginUser) + DBAccess.getdbHeler(mainContext)
+                        .getUnreadFileCount(CallDispatcher.LoginUser)+ DBAccess.getdbHeler(mainContext)
                         .getUnreadCallCount(CallDispatcher.LoginUser);
+
+                int cal_count = DBAccess.getdbHeler(mainContext).getUnreadCallCount(CallDispatcher.LoginUser);
+                Log.d("Callnotifi","users--->"+cal_count);
+                Log.d("Callnotifi","users--->"+dashCount);
                 if (dashCount > 0) {
                     dash_count.setText(Integer.toString(dashCount));
                     dash_count.setVisibility(View.VISIBLE);
-                } else {
+                } else if(dashCount == 0)  {
                     dash_count.setVisibility(View.GONE);
                 }
                 ProfileBean bean = SingleInstance.myAccountBean;

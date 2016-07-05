@@ -1,6 +1,7 @@
 package com.cg.rounding;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 import com.bean.GroupChatBean;
 import com.cg.snazmed.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Vector;
 
 /**
@@ -59,8 +62,14 @@ public class LinksAdapter extends ArrayAdapter<GroupChatBean> {
                 if(gcBean.getFrom()!=null)
                     holder.fromuser.setText(gcBean.getFrom());
                 if(gcBean.getSenttime()!=null) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("MM.dd.yyyy");
+                    SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
                     String[] date=gcBean.getSenttime().split(" ");
-                    holder.date.setText(date[0]);
+                    Date d1=new Date();
+                    d1=dateformat.parse(date[0]);
+                    String d = sdf.format(d1);
+                    holder.date.setText(d);
+                    Log.d("dateformat","value"+d);
                 }
             }
         } catch (Exception e) {

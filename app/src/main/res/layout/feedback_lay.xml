@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black2">
 
     <RelativeLayout
+        android:id="@+id/linear1"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginLeft="20dp"
+        android:visibility="visible"
         android:layout_marginTop="50dp"
         >
 
@@ -39,10 +41,31 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/linear1"
+        android:id="@+id/message_lay"
+        android:layout_height="80dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        >
+
+        <TextView
+            android:id="@+id/feedback_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/snazlgray"
+            android:textSize="18dp"
+            android:text="Activate Comment Mode to touch on any screen to give us your ideas on how to make SnazMed even better. "/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/relay_feedback"
+        android:layout_below="@+id/message_lay"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="20dp"
+        android:visibility="visible"
         android:background="@color/black2"
 
         >
@@ -72,5 +95,50 @@
 
 
         </RelativeLayout>
+    <EditText
+        android:id="@+id/comment"
+        android:layout_below="@+id/relay_feedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Add your comment"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:maxLength="250"
+        android:textSize="18dp"
+        android:visibility="gone"
+        android:textColor="@color/white"
+        android:layout_marginTop="13dp"
 
-</LinearLayout>
+        />
+    <LinearLayout
+        android:id="@+id/relay_footer"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:visibility="gone"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:weightSum="2">
+
+            <Button
+                android:id="@+id/cancel_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_weight="1"
+                android:text="CANCEL"
+                android:textColor="@color/white"
+                android:background="@color/snazgray"/>
+
+            <Button
+                android:id="@+id/save_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_weight="1"
+                android:text="SEND"
+                android:textColor="@color/white"
+                android:background="@color/blue2"
+                />
+    </LinearLayout>
+
+</RelativeLayout>

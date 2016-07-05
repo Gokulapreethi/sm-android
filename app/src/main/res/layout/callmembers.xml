@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#2E2F30"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#2E2F30"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/header_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="@color/black1"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="@string/header"
+            android:textColor="@color/grey3"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/member_lay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="15dp"
+            android:layout_weight="1"
+            android:focusable="false"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/sel_buddy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@drawable/checkbox_checked"
+                android:focusable="false"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/delete_mark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/input_delete"
+                android:visibility="gone" />
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+
+                <org.cryse.android.controls.RoundedImageView
+                    android:id="@+id/buddyicon"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/user_default"
+                    android:focusable="false"
+                    android:scaleType="center" />
+
+                <org.cryse.android.controls.RoundedImageView
+                    android:id="@+id/overlay"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/image_border_w"
+                    android:focusable="false"
+
+                    android:scaleType="center" />
+
+                <ImageView
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/image_border"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/overlay1"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="13dp"
+                    android:src="@drawable/ic_action_video_white"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+            <ImageView
+                android:id="@+id/statusIcon"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:background="@drawable/checkbox_default" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/buddyName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:text="@string/textview"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/occupation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:text="Prof.Designation"
+                    android:textColor="#7E8080"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/position"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:focusable="false"
+                    android:text="fellow"
+                    android:textColor="@color/snazash"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/rights"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:focusable="false"
+                    android:text="administrator"
+                    android:textColor="@color/blue2"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/input_edit" />
+
+            <LinearLayout
+                android:id="@+id/cancel_lay"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/snazlgray"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/navigation_close" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:text="CANCEL"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

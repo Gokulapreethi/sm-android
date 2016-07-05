@@ -37,17 +37,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.adapter.ContactAdapter;
+import com.adapter.NotifyListAdapter;
 import com.bean.GroupChatPermissionBean;
+import com.bean.NotifyListBean;
 import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
 import com.cg.account.AMAVerification;
 import com.cg.avatar.AnsweringMachineActivity;
 import com.cg.callservices.AudioCallScreen;
 import com.cg.callservices.CallConnectingScreen;
+import com.cg.callservices.inCommingCallAlert;
 import com.cg.callservices.SipCallConnectingScreen;
 import com.cg.callservices.VideoCallScreen;
 import com.cg.commonclass.BuddyListComparator;
 import com.cg.commonclass.CallDispatcher;
+import com.cg.commonclass.GroupListComparator;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.files.CompleteListBean;
 import com.cg.files.ComponentCreator;
@@ -55,7 +59,6 @@ import com.cg.hostedconf.AppReference;
 import com.cg.hostedconf.ContactConference;
 import com.cg.permissions.PermissionsActivity;
 import com.cg.profiles.ViewProfiles;
-import com.cg.rounding.RoundingAdapter;
 import com.cg.rounding.RoundingFragment;
 import com.cg.rounding.RoundingGroupActivity;
 import com.cg.snazmed.R;
@@ -84,9 +87,9 @@ import org.lib.model.WebServiceBean;
 import org.lib.webservice.Servicebean;
 
 import java.io.File;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Vector;
 
 /**
@@ -96,7 +99,7 @@ import java.util.Vector;
  *
  *
  */
-public class ContactsFragment extends Fragment {
+public class ContactsFragment extends Fragment{
 
 	// private Context context = null;
 
@@ -107,6 +110,10 @@ public class ContactsFragment extends Fragment {
 
 	public boolean isPendingshowing = false;
 	public boolean groupstatus = false;
+	public boolean contactrecent = false;
+	private boolean grouprecent = true;
+	public boolean isazsort = true;
+	private boolean isGroupAZ=true;
 
 	private AlertDialog alert = null;
 	private ImageLoader imageLoader;
@@ -130,6 +137,7 @@ public class ContactsFragment extends Fragment {
 	public ListView lv,lv2 = null;
 
 	private ArrayList<UtilityBean> mlist = new ArrayList<UtilityBean>();
+	public Vector<NotifyListBean> seacrhnotifylist = new Vector<NotifyListBean>();
 	private TextView tvRequest;
 
 	private TextView SwipeRequest;
@@ -163,8 +171,9 @@ public class ContactsFragment extends Fragment {
 	public Context mainContext;
 	private  GroupBean groupManagementBean;
 	private String quotes = "\"";
-	public static String SortType="ONLINE";
+	public static String SortType="ALPH";
 	boolean searchClick = false;
+
 
 
 	// public ArrayList<Databean> contactList = new ArrayList<Databean>();
@@ -175,9 +184,13 @@ public class ContactsFragment extends Fragment {
 
 	private Button plus = null; // this button plus hide in this page,this
 	// button create fragment xml
-	private static Vector<BuddyInformationBean> buddyList = new Vector<BuddyInformationBean>();
+	public static Vector<BuddyInformationBean> buddyList = new Vector<BuddyInformationBean>();
 
 	private static ContactAdapter contactAdapter;
+	public NotifyListAdapter notifyAdapter;
+	public Vector<NotifyListBean> tempnotifylist = new Vector<NotifyListBean>();
+	public Vector<NotifyListBean> contactrecentlist = new Vector<NotifyListBean>();
+	public Vector<NotifyListBean> grouprecentlist = new Vector<NotifyListBean>();
 
 
 	private Vector<FieldTemplateBean> OtherDetails = new Vector<FieldTemplateBean>();
@@ -242,7 +255,7 @@ public class ContactsFragment extends Fragment {
 //		tf_regular = Typeface.createFromAsset(mainContext.getAssets(),
 //				getResources().getString(R.string.fontfamily));
 
-
+		AppReference.bacgroundFragment=contactsFragment;
 		appMainActivity = SingleInstance.mainContext;
 		SingleInstance.instanceTable.put("contactspage", contactsFragment);
 		Button select = (Button) getActivity().findViewById(R.id.btn_brg);
@@ -260,6 +273,8 @@ public class ContactsFragment extends Fragment {
 		search.setVisibility(View.VISIBLE);
 		search.setText("");
 
+		final EditText btn_1 = (EditText) getActivity().findViewById(R.id.searchet);
+
 		final Button plusBtn = (Button) getActivity().findViewById(R.id.add_group);
 		plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_add_contact));
 		plusBtn.setVisibility(View.VISIBLE);
@@ -268,8 +283,10 @@ public class ContactsFragment extends Fragment {
 
 		Button backBtn = (Button) getActivity().findViewById(R.id.backbtn);
 		backBtn.setVisibility(View.GONE);
+		final EditText search_box = (EditText)getActivity().findViewById(R.id.search_box);
+		search_box.setVisibility(View.GONE);
 
-		TextView title = (TextView) getActivity().findViewById(
+		final TextView title = (TextView) getActivity().findViewById(
 				R.id.activity_main_content_title);
 		title.setVisibility(View.VISIBLE);
 		title.setText("CONTACTS");
@@ -282,16 +299,47 @@ public class ContactsFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				mainHeader.setVisibility(View.GONE);
-				addShowHideListener(AudioCallScreen.getInstance(SingleInstance.mainContext));
+				addShowHideListener(true);
 			}
 		});
 		video_minimize.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				mainHeader.setVisibility(View.GONE);
-				addShowHideListener(VideoCallScreen.getInstance(SingleInstance.mainContext));
+				addShowHideListener(false);
 			}
 		});
+		ImageView min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
+		ImageView min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
+		min_incall.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mainHeader.setVisibility(View.GONE);
+				inCommingCallAlert incommingCallAlert = inCommingCallAlert.getInstance(SingleInstance.mainContext);
+				FragmentManager fragmentManager = SingleInstance.mainContext
+						.getSupportFragmentManager();
+				fragmentManager.beginTransaction().replace(
+						R.id.activity_main_content_fragment, incommingCallAlert)
+						.commitAllowingStateLoss();
+			}
+		});
+		min_outcall.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mainHeader.setVisibility(View.GONE);
+				CallConnectingScreen callConnectingScreen = CallConnectingScreen.getInstance(SingleInstance.mainContext);
+				FragmentManager fragmentManager = SingleInstance.mainContext
+						.getSupportFragmentManager();
+				fragmentManager.beginTransaction().replace(
+						R.id.activity_main_content_fragment, callConnectingScreen)
+						.commitAllowingStateLoss();
+			}
+		});
+		min_incall.setOnTouchListener(new com.cg.commonclass.Touch());
+		video_minimize.setOnTouchListener(new com.cg.commonclass.Touch());
+		min_outcall.setOnTouchListener(new com.cg.commonclass.Touch());
+		audio_minimize.setOnTouchListener(new com.cg.commonclass.Touch());
+
 
 		_rootView = null;
 		if (_rootView == null) {
@@ -321,6 +369,7 @@ public class ContactsFragment extends Fragment {
 				SortList();
 
 				GroupActivity.getAllGroups();
+				loadRecents();
 
 
 
@@ -329,10 +378,6 @@ public class ContactsFragment extends Fragment {
 				GroupActivity.groupAdapter.notifyDataSetChanged();
 				Log.i("Test", "OWNER LIST>>>>>>" + getGroupList());
 				Log.i("Test", "OWNER LIST>>>>>>" + getBuddyGroupList());
-
-				GroupActivity.groupAdapter2 = new GroupAdapter2(mainContext,
-						R.layout.grouplist, getBuddyGroupList());
-				GroupActivity.groupAdapter2.notifyDataSetChanged();
 
 				Log.i("Test", "CONTACT>>>>>>>>>" + groupList);
 				lv.setAdapter(contactAdapter);
@@ -344,16 +389,58 @@ public class ContactsFragment extends Fragment {
 				final Button online_sort = (Button) _rootView.findViewById(R.id.online_sort);
 				final Button alph_sort = (Button) _rootView.findViewById(R.id.alpha_sort);
 				final EditText myFilter = (EditText)_rootView.findViewById(R.id.searchtext);
+				final Button groupsort=(Button)_rootView.findViewById(R.id.groupsort);
+				groupsort.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						if(isGroupAZ) {
+							isGroupAZ = false;
+							groupsort.setText("Z>A");
+							sortGroups();
+						}else {
+							isGroupAZ = true;
+							sortGroups();
+							groupsort.setText("A>Z");
+						}
+
+					}
+				});
 				search.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View view) {
 						if(isContact) {
 							Intent i = new Intent(getActivity(), AMAVerification.class);
-							i.putExtra("fromcall",false);
 							startActivity(i);
+						}
+						else if(!isContact){
+									if(title.getVisibility()==View.VISIBLE){
+										title.setVisibility(View.GONE);
+										btn_1.setVisibility(View.VISIBLE);
+										search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_close));
+									}else {
+										title.setVisibility(View.VISIBLE);
+										btn_1.setVisibility(View.GONE);
+										btn_1.setText("");
+										search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
+									}
 						}
 					}
 				});
+				btn_1.addTextChangedListener(new TextWatcher() {
+
+					public void afterTextChanged(Editable s) {
+					}
+
+					public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+					}
+
+					public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                        }
+						if (s != null && s != "")
+							GroupActivity.groupAdapter.getFilter().filter(s);
+					}
+				});
+
 				myFilter.addTextChangedListener(new TextWatcher() {
 
 					public void afterTextChanged(Editable s){}
@@ -389,8 +476,16 @@ public class ContactsFragment extends Fragment {
 					public void onClick(View view) {
 						online_sort.setTextColor(getResources().getColor(R.color.snazlgray));
 						alph_sort.setTextColor(getResources().getColor(R.color.white));
+						if(isazsort) {
+							alph_sort.setText("Z>A");
+							isazsort = false;
+						}else {
+							isazsort = true;
+							alph_sort.setText("A>Z");
+						}
 						SortType = "ALPH";
-						SortList();
+							SortList();
+
 					}
 				});
 
@@ -403,35 +498,78 @@ public class ContactsFragment extends Fragment {
 				final View view_mycontact = (View) _rootView.findViewById(R.id.view_mycontact);
 				final View view_mygroup = (View) _rootView.findViewById(R.id.view_mygroup);
 
+
+
+
+
+
 				//On Click Listeners
-				tv11.setOnClickListener(new OnClickListener() {
+				tv11.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						try {
-							isContact = true;
-							if(buddyList== null || buddyList.size()==0)
-								showToast("No Contacts");
-							lv.setAdapter(null);
-							lv.setAdapter(contactAdapter);
-							lv2.setVisibility(View.GONE);
-							lv.setVisibility(View.VISIBLE);
-							contactAdapter.notifyDataSetChanged();
-							EditText myFilter = (EditText)_rootView.findViewById(R.id.searchtext);
-							myFilter.setText("");
-							contacts.setTextColor(getResources().getColor(R.color.white));
-							list_1.setTextColor(getResources().getColor(R.color.white));
-							groups.setTextColor(getResources().getColor(R.color.black));
-							list_2.setTextColor(getResources().getColor(R.color.black));
-							view_mycontact.setVisibility(View.VISIBLE);
-							view_mygroup.setVisibility(View.GONE);
-							plusBtn.setVisibility(View.VISIBLE);
-							sort_lay.setVisibility(View.VISIBLE);
-							group_sort.setVisibility(View.GONE);
-							plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_add_contact));
-							search.setVisibility(View.VISIBLE);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+						title.setVisibility(View.VISIBLE);
+						btn_1.setVisibility(View.GONE);
+						btn_1.setText("");
+						search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
+							try {
+								if(contactrecent) {
+								isContact = true;
+								contactrecent = false;
+									grouprecent = true;
+								if (buddyList == null || buddyList.size() == 0)
+									showToast("No Contacts");
+								lv.setAdapter(null);
+								lv.setAdapter(contactAdapter);
+								lv2.setVisibility(View.GONE);
+								lv.setVisibility(View.VISIBLE);
+								contactAdapter.notifyDataSetChanged();
+								EditText myFilter = (EditText) _rootView.findViewById(R.id.searchtext);
+								myFilter.setText("");
+								contacts.setTextColor(getResources().getColor(R.color.white));
+									list_1.setText("LIST");
+								list_1.setTextColor(getResources().getColor(R.color.white));
+								groups.setTextColor(getResources().getColor(R.color.black));
+								list_2.setTextColor(getResources().getColor(R.color.black));
+								view_mycontact.setVisibility(View.VISIBLE);
+								view_mygroup.setVisibility(View.GONE);
+								plusBtn.setVisibility(View.VISIBLE);
+								sort_lay.setVisibility(View.VISIBLE);
+								group_sort.setVisibility(View.GONE);
+								plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_add_contact));
+								search.setVisibility(View.VISIBLE);
+								}else{
+									loadRecents();
+									contactrecent = true;
+									grouprecent = true;
+									lv2.setVisibility(View.GONE);
+									lv.setVisibility(View.VISIBLE);
+									EditText myFilter = (EditText) _rootView.findViewById(R.id.searchtext);
+									myFilter.setText("");
+
+									lv.setAdapter(null);
+									notifyAdapter = new NotifyListAdapter(mainContext, contactrecentlist);
+									notifyAdapter.isFromOther(true);
+									lv.setAdapter(notifyAdapter);
+									Log.d("Stringadapter", "values" + notifyAdapter);
+									notifyAdapter.notifyDataSetChanged();
+									contacts.setTextColor(getResources().getColor(R.color.pale_white));
+									list_1.setText("RECENT");
+									list_1.setTextColor(getResources().getColor(R.color.snazgray));
+									groups.setTextColor(getResources().getColor(R.color.black));
+									list_2.setTextColor(getResources().getColor(R.color.black));
+									view_mycontact.setVisibility(View.VISIBLE);
+									sort_lay.setVisibility(View.GONE);
+									group_sort.setVisibility(View.GONE);
+									view_mygroup.setVisibility(View.GONE);
+									plusBtn.setVisibility(View.VISIBLE);
+									plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_add_contact));
+									search.setVisibility(View.VISIBLE);
+
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+
 					}
 				});
 
@@ -439,24 +577,57 @@ public class ContactsFragment extends Fragment {
 					@Override
 					public void onClick(View v) {
 						try {
-							isContact = false;
-							lv2.setAdapter(null);
-							lv2.setAdapter(GroupActivity.groupAdapter);
-							lv.setVisibility(View.GONE);
-							lv2.setVisibility(View.VISIBLE);
-							GroupActivity.groupAdapter.notifyDataSetChanged();
-							groups.setTextColor(getResources().getColor(R.color.white));
-							plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_pluswhite));
-							list_2.setTextColor(getResources().getColor(R.color.white));
-							contacts.setTextColor(getResources().getColor(R.color.black));
-							list_1.setTextColor(getResources().getColor(R.color.black));
-							view_mycontact.setVisibility(View.GONE);
-							view_mygroup.setVisibility(View.VISIBLE);
-							plusBtn.setVisibility(View.VISIBLE);
-							sort_lay.setVisibility(View.GONE);
-							group_sort.setVisibility(View.VISIBLE);
-							main_search.setVisibility(View.GONE);
-							search.setVisibility(View.VISIBLE);
+							if(grouprecent) {
+								isContact = false;
+								contactrecent = true;
+								grouprecent = false;
+								lv2.setAdapter(null);
+								lv2.setAdapter(GroupActivity.groupAdapter);
+								lv.setVisibility(View.GONE);
+								lv2.setVisibility(View.VISIBLE);
+								GroupActivity.groupAdapter.notifyDataSetChanged();
+								groups.setTextColor(getResources().getColor(R.color.white));
+								plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_pluswhite));
+								list_2.setTextColor(getResources().getColor(R.color.white));
+								list_2.setText("LIST");
+								contacts.setTextColor(getResources().getColor(R.color.black));
+								list_1.setTextColor(getResources().getColor(R.color.black));
+								view_mycontact.setVisibility(View.GONE);
+								view_mygroup.setVisibility(View.VISIBLE);
+								plusBtn.setVisibility(View.VISIBLE);
+								sort_lay.setVisibility(View.GONE);
+								group_sort.setVisibility(View.VISIBLE);
+								main_search.setVisibility(View.GONE);
+								search.setVisibility(View.VISIBLE);
+							}else{
+								loadRecents();
+								isContact = false;
+								contactrecent = true;
+								grouprecent = true;
+								lv2.setAdapter(null);
+								lv.setVisibility(View.GONE);
+								lv2.setVisibility(View.VISIBLE);
+
+								notifyAdapter = new NotifyListAdapter(mainContext, grouprecentlist);
+								notifyAdapter.isFromOther(true);
+								lv2.setAdapter(notifyAdapter);
+								Log.d("Stringadapter", "values" + notifyAdapter);
+								notifyAdapter.notifyDataSetChanged();
+
+								groups.setTextColor(getResources().getColor(R.color.white));
+								plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_pluswhite));
+								list_2.setTextColor(getResources().getColor(R.color.pale_white));
+								list_2.setText("RECENT");
+								contacts.setTextColor(getResources().getColor(R.color.black));
+								list_1.setTextColor(getResources().getColor(R.color.black));
+								view_mycontact.setVisibility(View.GONE);
+								view_mygroup.setVisibility(View.VISIBLE);
+								plusBtn.setVisibility(View.VISIBLE);
+								sort_lay.setVisibility(View.GONE);
+								group_sort.setVisibility(View.GONE);
+								main_search.setVisibility(View.GONE);
+								search.setVisibility(View.VISIBLE);
+							}
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -536,6 +707,41 @@ public class ContactsFragment extends Fragment {
 			e.printStackTrace();
 		}
 	}
+	private void sortGroups(){
+		try {
+			handler.post(new Runnable() {
+				@Override
+				public void run() {
+					Vector<GroupBean> tempList = new Vector<GroupBean>();
+					Vector<GroupBean> requestList = new Vector<GroupBean>();
+					Vector<GroupBean> acceptedList = new Vector<GroupBean>();
+					for(GroupBean bean:GroupActivity.getAllGroups()){
+						if(bean.getStatus().equalsIgnoreCase("request"))
+							requestList.add(bean);
+						else
+							acceptedList.add(bean);
+					}
+					if(!isGroupAZ)
+						Collections.reverse(requestList);
+					tempList.addAll(requestList);
+					Collections.sort(acceptedList, new GroupListComparator());
+					if(!isGroupAZ)
+						Collections.reverse(acceptedList);
+					tempList.addAll(acceptedList);
+					getGroupList().clear();
+					getGroupList().addAll(tempList);
+					lv2.setAdapter(null);
+					GroupActivity.groupAdapter = new GroupAdapter(mainContext,
+							R.layout.grouplist, tempList);
+					lv2.setAdapter(GroupActivity.groupAdapter);
+					ContactsFragment.getGroupAdapter().notifyDataSetChanged();
+				}
+			});
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public void getList()
 	{
 		GroupActivity.getAllGroups();
@@ -605,6 +811,7 @@ public class ContactsFragment extends Fragment {
 			Button search = (Button) getActivity().findViewById(R.id.btn_settings);
 			search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
 			search.setVisibility(View.GONE);
+			SingleInstance.instanceTable.remove("contactspage");
 			// MemoryProcessor.getInstance().unbindDrawables(_rootView);
 			// _rootView = null;
 		} catch (Exception e) {
@@ -621,6 +828,7 @@ public class ContactsFragment extends Fragment {
 				public void run() {
 					try {
 						// TODO Auto-generated method stub
+						ContactsFragment.getContactAdapter().cancelDialog();
 						cancelDialog();
 						if (server_msg != null) {
 							if (server_msg
@@ -1606,7 +1814,7 @@ public class ContactsFragment extends Fragment {
 											getActivity().startActivity(intent);
 										} else {
 											Toast.makeText(mainContext,
-													"Sorry no online users", 1)
+													"Sorry no online users", Toast.LENGTH_SHORT)
 													.show();
 										}
 									} else
@@ -1731,11 +1939,19 @@ public class ContactsFragment extends Fragment {
 				// TODO Auto-generated method stub
 				try {
 					selectedBuddy=buddy;
+					Context context;
 					if (appMainActivity.isNetworkConnectionAvailable()) {
-						AlertDialog.Builder builder = new AlertDialog.Builder(mainContext);
+						GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
+						if(groupChatActivity != null) {
+							context=groupChatActivity;
+						} else
+						context=mainContext;
+						ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(buddy);
+						String fullname=bean.getFirstname()+" "+bean.getLastname();
+						AlertDialog.Builder builder = new AlertDialog.Builder(context);
 						builder.setTitle("Warning !");
 						builder.setMessage("Are you sure you want to delete "
-										+ buddy + " ?").setCancelable(false).setPositiveButton(SingleInstance.mainContext.getResources().getString(R.string.yes),
+										+ fullname + " ?").setCancelable(false).setPositiveButton(SingleInstance.mainContext.getResources().getString(R.string.yes),
 										new DialogInterface.OnClickListener() {
 											public void onClick(DialogInterface dialog, int id) {
 												if (!WebServiceReferences.running) {
@@ -3136,6 +3352,9 @@ public class ContactsFragment extends Fragment {
 								}
 							}
 						}
+						ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(buddyInformationBean
+								.getName());
+						final String fullname=bean.getFirstname()+" "+bean.getLastname();
 						handler.post(new Runnable() {
 							@Override
 							public void run() {
@@ -3144,8 +3363,7 @@ public class ContactsFragment extends Fragment {
 									Toast.makeText(
 											mainContext,
 											"You Accepted "
-													+ buddyInformationBean
-													.getName(),
+													+ fullname,
 											Toast.LENGTH_LONG).show();
                                     SortList();
 								} catch (Exception e) {
@@ -3173,15 +3391,18 @@ public class ContactsFragment extends Fragment {
 									}
 								}
 							}
+
 							handler.post(new Runnable() {
 								@Override
 								public void run() {
 									try {
+										ProfileBean bean1 = DBAccess.getdbHeler().getProfileDetails(bean.getText());
+										final String fullname=bean1.getFirstname()+" "+bean1.getLastname();
 										// TODO Auto-generated method stub
 										Toast.makeText(
 												mainContext,
 												"You Rejected "
-														+ bean.getText(),
+														+ fullname,
 												Toast.LENGTH_LONG).show();
                                         SortList();
 									} catch (Exception e) {
@@ -3340,6 +3561,15 @@ public class ContactsFragment extends Fragment {
 		} catch (Exception e) {
 			SingleInstance.printLog(null, e.getMessage(), null, e);
 		}
+	}
+
+	public static boolean isNumeric(String str) {
+		try {
+			Double.parseDouble(str);
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
+		return true;
 	}
 
 	protected void ShowView(final View v) {
@@ -3676,12 +3906,71 @@ public class ContactsFragment extends Fragment {
 			e.printStackTrace();
 		}
 	}
-	void addShowHideListener( final Fragment fragment) {
-		AudioCallScreen requestFragment = AudioCallScreen.getInstance(SingleInstance.mainContext);
-		FragmentManager fragmentManager = SingleInstance.mainContext
-				.getSupportFragmentManager();
-		fragmentManager.beginTransaction().replace(
-				R.id.activity_main_content_fragment, requestFragment)
-				.commitAllowingStateLoss();
+	void addShowHideListener( final Boolean isAudio) {
+		if(isAudio) {
+			AudioCallScreen audioCallScreen = AudioCallScreen.getInstance(SingleInstance.mainContext);
+			FragmentManager fragmentManager = SingleInstance.mainContext
+					.getSupportFragmentManager();
+			fragmentManager.beginTransaction().replace(
+					R.id.activity_main_content_fragment, audioCallScreen)
+					.commitAllowingStateLoss();
+		}else {
+			VideoCallScreen videoCallScreen = VideoCallScreen.getInstance(SingleInstance.mainContext);
+			FragmentManager fragmentManager = SingleInstance.mainContext
+					.getSupportFragmentManager();
+			fragmentManager.beginTransaction().replace(
+					R.id.activity_main_content_fragment, videoCallScreen)
+					.commitAllowingStateLoss();
+		}
+	}
+	private void loadRecents()
+	{
+		tempnotifylist.clear();
+		contactrecentlist.clear();
+		grouprecentlist.clear();
+		tempnotifylist = DashBoardFragment.newInstance(mainContext).LoadFilesList(CallDispatcher.LoginUser);
+		for(NotifyListBean bean:tempnotifylist){
+			if(bean.getNotifttype().equalsIgnoreCase("F"))
+				contactrecentlist.add(bean);
+			else if(bean.getNotifttype().equalsIgnoreCase("C")){
+				if(isNumeric(bean.getFileid()))
+					grouprecentlist.add(bean);
+				else
+					contactrecentlist.add(bean);
+			}else if(bean.getNotifttype().equalsIgnoreCase("I")) {
+				if (bean.getCategory().equalsIgnoreCase("G"))
+					grouprecentlist.add(bean);
+				else if(bean.getCategory().equalsIgnoreCase("I"))
+					contactrecentlist.add(bean);
+			}
+		}
+
+		for(BuddyInformationBean bean:ContactsFragment.getBuddyList() ){
+			if(bean.getStatus().equalsIgnoreCase("new")) {
+				NotifyListBean nBean=new NotifyListBean();
+				nBean.setUsername(bean.getFirstname()+" "+bean.getLastname());
+				nBean.setNotifttype("Invite");
+				nBean.setType("contact");
+				contactrecentlist.add(nBean);
+			}
+		}
+		for(GroupBean gbean: GroupActivity.groupList){
+			if(gbean.getStatus().equalsIgnoreCase("request")){
+				NotifyListBean nbean = new NotifyListBean();
+				ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(gbean.getOwnerName());
+				String fullname=bean.getFirstname()+" "+bean.getLastname();
+				nbean.setUsername(fullname);
+				nbean.setNotifttype("Invite");
+				nbean.setType("group");
+				grouprecentlist.add(nbean);
+			}
+		}
+	}
+	public void deleteContact(ArrayList<String> buddynames){
+		showprogress();
+		for(String name:buddynames) {
+			WebServiceReferences.webServiceClient.deletePeople(
+					CallDispatcher.LoginUser, name, contactsFragment);
+		}
 	}
 }

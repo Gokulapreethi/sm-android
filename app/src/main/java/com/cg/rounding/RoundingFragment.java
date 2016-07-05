@@ -4,12 +4,10 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,23 +17,23 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
 import com.cg.callservices.AudioCallScreen;
+import com.cg.callservices.CallConnectingScreen;
+import com.cg.callservices.inCommingCallAlert;
 import com.cg.callservices.VideoCallScreen;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
-import com.group.GroupActivity;
 import com.group.chat.GroupChatActivity;
-import com.main.ContactsFragment;
 import com.util.SingleInstance;
 
 import org.lib.model.GroupBean;
@@ -52,6 +50,9 @@ public class RoundingFragment extends Fragment {
     public static Vector<GroupBean> grouplist=new Vector<GroupBean>();
     ListView list;
     private ProgressDialog progressDialog = null;
+    public static boolean isEmptyList=false;
+
+    Dialog dialog;
 
     public static synchronized RoundingAdapter getRoundingAdapter() {
 
@@ -81,6 +82,8 @@ public class RoundingFragment extends Fragment {
     }
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        AppReference.bacgroundFragment=roundingFragment;
+        SingleInstance.instanceTable.put("roundingfragment", roundingFragment); SingleInstance.instanceTable.put("roundingfragment", roundingFragment);
         Button select = (Button) getActivity().findViewById(R.id.btn_brg);
         select.setVisibility(View.GONE);
         final RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
@@ -111,14 +114,40 @@ public class RoundingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mainHeader.setVisibility(View.GONE);
-                addShowHideListener(AudioCallScreen.getInstance(SingleInstance.mainContext));
+                addShowHideListener(true);
             }
         });
         video_minimize.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mainHeader.setVisibility(View.GONE);
-                addShowHideListener(VideoCallScreen.getInstance(SingleInstance.mainContext));
+                addShowHideListener(false);
+            }
+        });
+        ImageView min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
+        ImageView min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
+        min_incall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainHeader.setVisibility(View.GONE);
+                inCommingCallAlert incommingCallAlert = inCommingCallAlert.getInstance(SingleInstance.mainContext);
+                FragmentManager fragmentManager = SingleInstance.mainContext
+                        .getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(
+                        R.id.activity_main_content_fragment, incommingCallAlert)
+                        .commitAllowingStateLoss();
+            }
+        });
+        min_outcall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainHeader.setVisibility(View.GONE);
+                CallConnectingScreen callConnectingScreen = CallConnectingScreen.getInstance(SingleInstance.mainContext);
+                FragmentManager fragmentManager = SingleInstance.mainContext
+                        .getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(
+                        R.id.activity_main_content_fragment, callConnectingScreen)
+                        .commitAllowingStateLoss();
             }
         });
 
@@ -128,7 +157,7 @@ public class RoundingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 try {
-                    final Dialog dialog = new Dialog(SingleInstance.mainContext);
+                     dialog = new Dialog(SingleInstance.mainContext);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     dialog.setContentView(R.layout.dialog_myacc_menu);
                     WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -161,6 +190,15 @@ public class RoundingFragment extends Fragment {
                             dialog.dismiss();
                         }
                     });
+                    existing.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(getActivity().getApplicationContext(),
+                                    DuplicateExistingGroups.class);
+                            getActivity().startActivity(intent);
+                            dialog.dismiss();
+                        }
+                    });
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -174,7 +212,7 @@ public class RoundingFragment extends Fragment {
                     WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
             try {
                 RoundingGroupActivity.getallRoundingGroups();
-                if(RoundingGroupActivity.RoundingList.size()==0)
+                if(RoundingGroupActivity.RoundingList.size()==0 && !isEmptyList)
                     showDialog();
                  list=(ListView)_rootView.findViewById(R.id.listview_rounding);
                 adapter=new RoundingAdapter(mainContext,R.layout.grouplist,RoundingGroupActivity.RoundingList);
@@ -188,6 +226,24 @@ public class RoundingFragment extends Fragment {
             ((ViewGroup) _rootView.getParent()).removeView(_rootView);
         return _rootView;
     }
+
+    public void checkandcloseDialog() {
+        Log.i("AudioCall", "came to checkandcloseDialog in Rounding Fragment");
+        if(dialog != null) {
+            if(dialog.isShowing()){
+                dialog.dismiss();
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if( SingleInstance.instanceTable.containsKey("roundingfragment")) {
+            SingleInstance.instanceTable.remove("roundingfragment");
+        }
+    }
+
     public void getList()
     {
         cancelDialog();
@@ -205,7 +261,7 @@ public class RoundingFragment extends Fragment {
                         // TODO Auto-generated method stub
                         list.setAdapter(null);
                         adapter = new RoundingAdapter(mainContext,
-                                R.layout.grouplist,grouplist);
+                                R.layout.grouplist,getRoundingList());
                         list.setAdapter(adapter);
                         RoundingFragment.getRoundingAdapter().notifyDataSetChanged();
                     } catch (Exception e) {
@@ -314,14 +370,21 @@ public class RoundingFragment extends Fragment {
         }
 
     }
-    void addShowHideListener( final Fragment fragment) {
-        FragmentManager fm = AppReference.mainContext.getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        if (fragment.isHidden()) {
-            ft.show(fragment);
-        } else {
-            ft.hide(fragment);
+    void addShowHideListener( final Boolean isAudio) {
+        if(isAudio) {
+            AudioCallScreen audioCallScreen = AudioCallScreen.getInstance(SingleInstance.mainContext);
+            FragmentManager fragmentManager = SingleInstance.mainContext
+                    .getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(
+                    R.id.activity_main_content_fragment, audioCallScreen)
+                    .commitAllowingStateLoss();
+        }else {
+            VideoCallScreen videoCallScreen = VideoCallScreen.getInstance(SingleInstance.mainContext);
+            FragmentManager fragmentManager = SingleInstance.mainContext
+                    .getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(
+                    R.id.activity_main_content_fragment, videoCallScreen)
+                    .commitAllowingStateLoss();
         }
-        ft.commit();
     }
 }

@@ -16,10 +16,12 @@
             android:orientation="horizontal"
             android:layout_marginBottom="10dp">
             <ImageView
+                android:visibility="invisible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/sort_table_white"/>
             <ImageView
+                android:visibility="invisible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/sort_list"/>
@@ -39,8 +41,8 @@
                 android:drawableRight="@drawable/sort_arrow"
                 android:drawableEnd="@drawable/sort_arrow"
                 android:textColor="@color/snazlgray"
-                android:layout_marginRight="10dp"
-                android:text="Type"/>
+                android:layout_marginRight="15dp"
+                android:text="TYPE"/>
             <TextView
                 android:id="@+id/alpha_sort"
                 android:layout_width="wrap_content"

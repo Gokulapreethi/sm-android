@@ -258,6 +258,7 @@ public class LoginPageFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
+                    showToast("Please contact support desk www.snazmed.com");
 
 //							Intent i = new Intent(getActivity()
 //									.getApplicationContext(), GetEndorsement.class);
@@ -916,7 +917,7 @@ public class LoginPageFragment extends Fragment {
                 @Override
                 public void run() {
                     try {
-                        AppMainActivity.isPinEnable = true;
+
                         // TODO Auto-generated method stub
                         //cancelDialog();
                         SingleInstance.printLog("LOGIN",
@@ -1096,7 +1097,7 @@ public class LoginPageFragment extends Fragment {
                             // fragmentManager.beginTransaction()
                             // .replace(R.id.activity_main_content_fragment,
                             // contactsFragment).commitAllowingStateLoss();
-
+                            AppMainActivity.isPinEnable = true;
                             for (BuddyInformationBean bibBean : BGProcessor.ownerList) {
                                 if (bibBean.getName().equalsIgnoreCase(
                                         CallDispatcher.LoginUser)) {
@@ -1438,7 +1439,7 @@ public class LoginPageFragment extends Fragment {
                 public void run() {
                     // TODO Auto-generated method stub
                     Log.i("login098", "inside handler");
-                    edUserName.setText("");
+//                    edUserName.setText("");
                     edPswd.setText("");
                 }
             });

@@ -9,11 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cg.callservices.AudioCallScreen;
+import com.cg.callservices.CallConnectingScreen;
+import com.cg.callservices.inCommingCallAlert;
 import com.cg.callservices.VideoCallScreen;
 import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
@@ -45,6 +48,7 @@ public class InviteCodeFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         try {
+            AppReference.bacgroundFragment=inviteCodeFragment;
             Button select = (Button) getActivity().findViewById(R.id.btn_brg);
             select.setVisibility(View.GONE);
             final RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
@@ -83,6 +87,32 @@ public class InviteCodeFragment extends Fragment {
                 public void onClick(View v) {
                     mainHeader.setVisibility(View.GONE);
                     addShowHideListener(VideoCallScreen.getInstance(SingleInstance.mainContext));
+                }
+            });
+            ImageView min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
+            ImageView min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
+            min_incall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mainHeader.setVisibility(View.GONE);
+                    inCommingCallAlert incommingCallAlert = inCommingCallAlert.getInstance(SingleInstance.mainContext);
+                    FragmentManager fragmentManager = SingleInstance.mainContext
+                            .getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(
+                            R.id.activity_main_content_fragment, incommingCallAlert)
+                            .commitAllowingStateLoss();
+                }
+            });
+            min_outcall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mainHeader.setVisibility(View.GONE);
+                    CallConnectingScreen callConnectingScreen = CallConnectingScreen.getInstance(SingleInstance.mainContext);
+                    FragmentManager fragmentManager = SingleInstance.mainContext
+                            .getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(
+                            R.id.activity_main_content_fragment, callConnectingScreen)
+                            .commitAllowingStateLoss();
                 }
             });
             Button backBtn = (Button) getActivity().findViewById(R.id.backbtn);

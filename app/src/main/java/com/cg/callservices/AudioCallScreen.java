@@ -1,6 +1,69 @@
 package com.cg.callservices;
 
-import java.io.File;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
+import android.hardware.Camera;
+import android.media.MediaPlayer;
+import android.opengl.GLSurfaceView;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Chronometer;
+import android.widget.Chronometer.OnChronometerTickListener;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.adapter.ContactAdapter;
+import com.bean.ProfileBean;
+import com.bean.UserBean;
+import com.cg.DB.DBAccess;
+import com.cg.commonclass.CallDispatcher;
+import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
+import com.cg.snazmed.R;
+import com.group.AddGroupMembers;
+import com.image.utils.ImageLoader;
+import com.main.AppMainActivity;
+import com.main.ContactsFragment;
+import com.service.FloatingCallService;
+import com.util.SingleInstance;
+
+import org.audio.AudioProperties;
+import org.core.VideoCallback;
+import org.lib.model.BuddyInformationBean;
+import org.lib.model.RecordTransactionBean;
+import org.lib.model.SignalingBean;
+import org.util.GraphicsUtil;
+import org.util.Queue;
+import org.video.Preview;
+import org.video.PreviewFrameSink;
+import org.video.VideoFrameRenderer;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
@@ -14,80 +77,6 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
-import org.audio.AudioProperties;
-import org.core.VideoCallback;
-import org.lib.model.BuddyInformationBean;
-import org.lib.model.RecordTransactionBean;
-import org.lib.model.SignalingBean;
-import org.util.GraphicsUtil;
-import org.util.Queue;
-import org.video.Preview;
-import org.video.PreviewFrameSink;
-import org.video.VideoFrameRenderer;
-
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.media.MediaMetadataRetriever;
-import android.media.MediaPlayer;
-import android.opengl.GLSurfaceView;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
-import android.os.SystemClock;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.Chronometer;
-import android.widget.Chronometer.OnChronometerTickListener;
-import android.widget.Filter;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.SeekBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.adapter.ContactAdapter;
-import com.bean.ProfileBean;
-import com.bean.UserBean;
-import com.callHistory.CallHistoryActivity;
-import com.cg.DB.DBAccess;
-import com.cg.account.AMAVerification;
-import com.cg.hostedconf.AppReference;
-import com.cg.snazmed.R;
-import com.cg.commonclass.CallDispatcher;
-import com.cg.commonclass.WebServiceReferences;
-import com.group.AddGroupMembers;
-import com.group.chat.GroupChatActivity;
-import com.image.utils.ImageLoader;
-import com.main.AppMainActivity;
-import com.main.ContactsFragment;
-import com.util.SingleInstance;
-
 @SuppressWarnings("ALL")
 public class AudioCallScreen extends Fragment implements VideoCallback {
 
@@ -98,6 +87,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	Handler history_handler;
 
 	private Chronometer chTimer;
+	private int numOfCam;
 
 	private boolean isTimer_running = false;
 
@@ -112,6 +102,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	private String[] endtimearray;
 
 	private boolean isHangedUp = false;
+	TextView member_count;
 
 	private HashMap<String, Object> xmlmap = new HashMap<String, Object>();
 
@@ -133,6 +124,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 	private SignalingBean signBean;
 	private int mPlayingPosition = 0;
+	String calltype="AC";
 	private PlaybackUpdater mProgressUpdater = new PlaybackUpdater();
 	private MediaPlayer mPlayer = new MediaPlayer();
 
@@ -144,6 +136,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	private String receiver = null;
 
 	private String callerName = null;
+
+	private String host = null;
 
 	private String callTypeForServer = "101";
 
@@ -169,7 +163,10 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 	ImageView buddyimageview1, buddyimageview2, buddyimageview3, ownimageview;
 
+	private FrameLayout.LayoutParams surfaceview_layoutParams;
+
 	Preview pv = null;
+	Button flipcamera;
 
 	private String currentcall_type = "AC";
 
@@ -191,7 +188,11 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	private boolean selfHangup = false;
 	
 	private boolean isbuddyaudio=false;
+
 	private boolean isBuddyinCall = false;
+
+	private boolean preview_hided = false;
+
 	private int position=0;
 	private Vector<UserBean> membersList=new Vector<UserBean>();
 
@@ -203,7 +204,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	//For this is used to profilepictures for owner and buddies
 	private Vector<BuddyInformationBean> buddyList;
 	ImageLoader imageLoader;
-	ImageView iv_owner,iv_buddy;
+	ImageView iv_owner,iv_buddy,min_outcall,min_incall;
 	String buddyimage;
 	String ownerimage;
 	private Button minimize;
@@ -274,305 +275,359 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 //					| WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 //			win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 //					| WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-            bundlevalues=getArguments();
+			final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
+			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+			if(rootView==null) {
+				if (getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+					getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+				}
+
+				bundlevalues = getArguments();
 //			bun = getIntent().getBundleExtra("signal");
-			receiver = bundlevalues.getString("receive");
-			callerName = bundlevalues.getString("buddy");
-			isReceiver = bundlevalues.getBoolean("isreceiver", false);
-			Log.d("Audio", "Is receiver --->" + isReceiver);
-			mHandler = new Handler();
+				receiver = bundlevalues.getString("receive");
+				callerName = bundlevalues.getString("buddy");
+				host = bundlevalues.getString("host");
+				isReceiver = bundlevalues.getBoolean("isreceiver", false);
+				Log.d("Audio", "Is receiver --->" + isReceiver);
+				mHandler = new Handler();
 //			context = this;
-			DisplayMetrics displaymetrics = new DisplayMetrics();
-			getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-			int noScrHeight = displaymetrics.heightPixels;
-			int noScrWidth = displaymetrics.widthPixels;
+				preview_hided = false;
+				DisplayMetrics displaymetrics = new DisplayMetrics();
+				getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+				int noScrHeight = displaymetrics.heightPixels;
+				int noScrWidth = displaymetrics.widthPixels;
 
-			if (WebServiceReferences.callDispatch.containsKey("calldisp"))
-				objCallDispatcher = (CallDispatcher) WebServiceReferences.callDispatch
-						.get("calldisp");
-			else
-				objCallDispatcher = new CallDispatcher(context);
-			mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
-			mainHeader.setVisibility(View.GONE);
-			audio_minimize = (RelativeLayout) getActivity().findViewById(R.id.audio_minimize);
-			audio_minimize.setVisibility(View.GONE);
+				if (WebServiceReferences.callDispatch.containsKey("calldisp"))
+					objCallDispatcher = (CallDispatcher) WebServiceReferences.callDispatch
+							.get("calldisp");
+				else
+					objCallDispatcher = new CallDispatcher(context);
+				mainHeader = (RelativeLayout) getActivity().findViewById(R.id.mainheader);
+				mainHeader.setVisibility(View.GONE);
+				audio_minimize = (RelativeLayout) getActivity().findViewById(R.id.audio_minimize);
+				audio_minimize.setVisibility(View.GONE);
 
-			objCallDispatcher.setNoScrHeight(noScrHeight);
-			objCallDispatcher.setNoScrWidth(noScrWidth);
-			displaymetrics = null;
-			CallDispatcher.networkState = objCallDispatcher.connectivityType();
-			objCallDispatcher.isCalledAudiocallScreen = false;
+				objCallDispatcher.setNoScrHeight(noScrHeight);
+				objCallDispatcher.setNoScrWidth(noScrWidth);
+				displaymetrics = null;
+				CallDispatcher.networkState = objCallDispatcher.connectivityType();
+				objCallDispatcher.isCalledAudiocallScreen = false;
 
-			SingleInstance.instanceTable.put("callscreen", audioCallScreen);
-			objCallDispatcher.startPlayer(context);
-			if (objCallDispatcher.isHangUpReceived)
-				receivedHangUp();
+				SingleInstance.instanceTable.put("callscreen", audioCallScreen);
+				objCallDispatcher.startPlayer(context);
+				if (objCallDispatcher.isHangUpReceived)
+					receivedHangUp();
 
-			else if (receiver.equalsIgnoreCase("true")
-					&& CallDispatcher.conferenceMembers.size() == 0)
-				receivedHangUp();
+				else if (receiver.equalsIgnoreCase("true")
+						&& CallDispatcher.conferenceMembers.size() == 0)
+					receivedHangUp();
 
-			audioProperties = new AudioProperties(context);
+				audioProperties = new AudioProperties(context);
+				 min_outcall = (ImageView) getActivity().findViewById(R.id.min_outcall);
+				min_outcall.setVisibility(View.GONE);
+				min_incall = (ImageView) getActivity().findViewById(R.id.min_incall);
+				min_incall.setVisibility(View.GONE);
 //			setContentView(ShowaudioCallScreen());
-			if(rootView==null)
-			rootView=ShowaudioCallScreen(inflater);
-			strStartTime = objCallDispatcher.getCurrentDateTime();
-			signBean = (SignalingBean) bundlevalues.getSerializable("signal");
-			strSessionId = signBean.getSessionid();
-			CallDispatcher.currentSessionid =strSessionId;
-			handler = new Handler() {
-				@Override
-				public void handleMessage(Message msg) {
-					super.handleMessage(msg);
+//			if(rootView==null)
+				rootView = ShowaudioCallScreen(inflater);
+				strStartTime = objCallDispatcher.getCurrentDateTime();
+				signBean = (SignalingBean) bundlevalues.getSerializable("signal");
+				strSessionId = signBean.getSessionid();
+				CallDispatcher.currentSessionid = strSessionId;
+				handler = new Handler() {
+					@Override
+					public void handleMessage(Message msg) {
+						super.handleMessage(msg);
 
-					Bundle bun = (Bundle) msg.obj;
-					try {
+						Bundle bun = (Bundle) msg.obj;
+						try {
 
-						String action = bun.getString("action");
-						if(action != null) {
-						if (action.equals("leave")) {
-							Log.d("test", "Received Audio hang ");
-							objCallDispatcher.accepted_users.clear();
-							chTimer.stop();
-							AppMainActivity.ctimer.stop();
-							//
-							isHangedUp = true;
+							String action = bun.getString("action");
+							if (action != null) {
+								if (action.equals("leave")) {
+									Log.d("test", "Received Audio hang ");
+									objCallDispatcher.accepted_users.clear();
+									chTimer.stop();
+									AppMainActivity.ctimer.stop();
+									audio_minimize.setVisibility(View.GONE);
+									//
+									isHangedUp = true;
 
-							enterCallHistory();
-							// if (CallDispatcher.sb.getBs_parentid() != null) {
-							CallDispatcher.sb
-									.setEndTime(getCurrentDateandTime());
-							CallDispatcher.sb
-									.setCallDuration(SingleInstance.mainContext
-											.getCallDuration(CallDispatcher.sb
-													.getStartTime(),
-													CallDispatcher.sb
-															.getEndTime()));
-							if (selfHangup) {
-								DBAccess.getdbHeler()
-										.saveOrUpdateRecordtransactiondetails(
-												CallDispatcher.sb);
-							
-								showCallHistory();
-							
-								
-							}
-							
-							// }
-							try {
+									enterCallHistory();
+									// if (CallDispatcher.sb.getBs_parentid() != null) {
+									CallDispatcher.sb
+											.setEndTime(objCallDispatcher.getCurrentDateandTime());
+									CallDispatcher.sb
+											.setCallDuration(SingleInstance.mainContext
+													.getCallDuration(CallDispatcher.sb
+																	.getStartTime(),
+															CallDispatcher.sb
+																	.getEndTime()));
+									CallDispatcher.sb.setCallstatus("callattended");
 
-								if (CallDispatcher.conferenceRequest.size() > 0) {
+									//For Callhistory host and participant name entry
+									//Start
+									CallDispatcher.sb.setHost_name(host);
+									String participant=null;
+									if(CallDispatcher.conferenceMembers!=null && CallDispatcher.conferenceMembers.size()>0){
+										for(String name:CallDispatcher.conferenceMembers){
+											if(!name.equalsIgnoreCase(host)){
+												if(participant==null){
+													participant=name;
+												}else{
+													participant=participant+","+name;
+												}
+
+											}
+										}
+									}
+									if(participant!=null){
+										CallDispatcher.sb.setParticipant_name(participant);
+									}
+									//end
+
+									if (selfHangup) {
+										DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+										DBAccess.getdbHeler()
+												.saveOrUpdateRecordtransactiondetails(
+														CallDispatcher.sb);
+
+										showCallHistory();
+
+
+									}
+
+									// }
 									try {
-										Set<String> set = CallDispatcher.conferenceRequest
-												.keySet();
 
-										Iterator<String> iterator = set
-												.iterator();
-										while (iterator.hasNext()) {
+										if (CallDispatcher.conferenceRequest.size() > 0) {
+											try {
+												Set<String> set = CallDispatcher.conferenceRequest
+														.keySet();
 
-											String buddy = (String) iterator
-													.next();
-											SignalingBean sb = CallDispatcher.conferenceRequest
-													.get(buddy);
+												Iterator<String> iterator = set
+														.iterator();
+												while (iterator.hasNext()) {
 
-											sb.setFrom(CallDispatcher.LoginUser);
-											sb.setTo(buddy);
-											sb.setType("3");
-											sb.setCallType("VC");
-											AppMainActivity.commEngine
-													.hangupCall(sb);
+													String buddy = (String) iterator
+															.next();
+													SignalingBean sb = CallDispatcher.conferenceRequest
+															.get(buddy);
+
+													sb.setFrom(CallDispatcher.LoginUser);
+													sb.setTo(buddy);
+													sb.setType("3");
+													sb.setCallType("VC");
+													AppMainActivity.commEngine
+															.hangupCall(sb);
+
+												}
+											} catch (Exception e) {
+												// TODO: handle exception
+											}
+											enterMissedCall();
 
 										}
 									} catch (Exception e) {
-										// TODO: handle exception
-									}
-									enterMissedCall();
-
-								}
-							} catch (Exception e) {
-
-							}
-
-							CallDispatcher.conferenceRequest.clear();
-
-							Log.d("test", "Received Audio hang "
-									+ CallDispatcher.conferenceMembers.size());
-							;
-							if (CallDispatcher.conferenceMembers.size() > 0) {
-								for (int i = 0; i < CallDispatcher.conferenceMembers
-										.size(); i++) {
-									String buddyName = CallDispatcher.conferenceMembers
-											.get(i);
-									SignalingBean sb1 = CallDispatcher.buddySignall
-											.get(buddyName);
-
-									if (sb1 != null) {
-										Log.e("test",
-												"Going to Hangup the userssssss:"
-														+ sb1.getLocalip());
-										Log.e("test",
-												"Going to Hangup the userssssss:"
-														+ sb1.getPublicip());
-										Log.e("test",
-												"Going to Hangup the userssssss:"
-														+ sb1.getTolocalip());
-										Log.e("test",
-												"Going to Hangup the userssssss:"
-														+ sb1.getTopublicip());
-										sb1.setFrom(CallDispatcher.LoginUser);
-										sb1.setTo(buddyName);
-										sb1.setType("3");
-										sb1.setCallType("AC");
-										AppMainActivity.commEngine
-												.hangupCall(sb1);
-										Log.d("test",
-												"Received Audio hang send 33333333");
 
 									}
 
-								}
+									CallDispatcher.conferenceRequest.clear();
 
-								try {
-									CallDispatcher.currentSessionid = null;
-									CallDispatcher.conferenceMembers.clear();
+									Log.d("test", "Received Audio hang "
+											+ CallDispatcher.conferenceMembers.size());
 
-								} catch (Exception e) {
-									// TODO: handle exception
-								}
+									if (CallDispatcher.conferenceMembers.size() > 0) {
+										for (int i = 0; i < CallDispatcher.conferenceMembers
+												.size(); i++) {
+											String buddyName = CallDispatcher.conferenceMembers
+													.get(i);
+											SignalingBean sb1 = CallDispatcher.buddySignall
+													.get(buddyName);
+
+											if (sb1 != null) {
+												Log.e("test",
+														"Going to Hangup the userssssss:"
+																+ sb1.getLocalip());
+												Log.e("test",
+														"Going to Hangup the userssssss:"
+																+ sb1.getPublicip());
+												Log.e("test",
+														"Going to Hangup the userssssss:"
+																+ sb1.getTolocalip());
+												Log.e("test",
+														"Going to Hangup the userssssss:"
+																+ sb1.getTopublicip());
+												sb1.setFrom(CallDispatcher.LoginUser);
+												sb1.setTo(buddyName);
+												sb1.setType("3");
+												sb1.setCallType("AC");
+												AppMainActivity.commEngine
+														.hangupCall(sb1);
+												Log.d("test",
+														"Received Audio hang send 33333333");
+
+											}
+
+										}
+
+										try {
+											CallDispatcher.currentSessionid = null;
+											CallDispatcher.conferenceMembers.clear();
+
+										} catch (Exception e) {
+											// TODO: handle exception
+										}
 
 //								finish();
-								finishAudiocallScreen();
-							} else {
-
-								try {
-									CallDispatcher.currentSessionid = null;
-									CallDispatcher.conferenceMembers.clear();
-
-								} catch (Exception e) {
-									// TODO: handle exception
-								}
-
-//								finish();
-								finishAudiocallScreen();
-
-							}
-
-						} else if (action.equals("buddy")) {
-
-							Log.d("LM", "----->inside handler");
-
-							String buddy = bun.getString("buddy");
-							boolean state = bun.getBoolean("state");
-
-							Log.d("LM", "----->inside handler state " + state);
-
-							if (state) {
-
-								tvBuddies.setText(
-										 getNames());
-
-								showToast("Connected member :" + buddy);
-
-							} else {
-								// Log.e("test", "false state buddy");
-								boolean isConferencemembers = CallDispatcher.conferenceMembers
-										.contains(buddy);
-
-								CallDispatcher.buddySignall.remove(buddy);
-								CallDispatcher.conferenceMembers.remove(buddy);
-
-								if (CallDispatcher.conferenceMembers.size() == 0
-										&& CallDispatcher.conferenceRequest
-												.size() == 0) {
-
-									receiveHangUpx();
-
-								} else {
-									showToast("Disconnect  member :" + buddy);
-									// Used to show disconnected Status and
-									// message to server...
-									if (!isConferencemembers) {
-										// enterMissedCall();
-										objCallDispatcher
-												.notifyCallHistoryToServer(
-														CallDispatcher.LoginUser,
-														buddy,
-														"111",
-														objCallDispatcher.sessId,
-														objCallDispatcher
-																.getCurrentDateTime(),
-														objCallDispatcher
-																.getCurrentDateTime());
+										finishAudiocallScreen();
 									} else {
 
-										enterCallHistoryOnSingleuser(buddy);
+										try {
+											CallDispatcher.currentSessionid = null;
+											CallDispatcher.conferenceMembers.clear();
+
+										} catch (Exception e) {
+											// TODO: handle exception
+										}
+
+//								finish();
+										finishAudiocallScreen();
 
 									}
 
-									tvBuddies.setText( getNames());
+								} else if (action.equals("buddy")) {
+
+									Log.d("LM", "----->inside handler");
+
+									String buddy = bun.getString("buddy");
+									boolean state = bun.getBoolean("state");
+
+									Log.d("LM", "----->inside handler state " + state);
+
+									if (state) {
+
+										tvBuddies.setText(
+												getNames());
+
+										showToast("Connected member :" + buddy);
+
+									} else {
+										// Log.e("test", "false state buddy");
+										boolean isConferencemembers = CallDispatcher.conferenceMembers
+												.contains(buddy);
+
+										CallDispatcher.buddySignall.remove(buddy);
+										CallDispatcher.conferenceMembers.remove(buddy);
+
+										if (CallDispatcher.conferenceMembers.size() == 0
+												&& CallDispatcher.conferenceRequest
+												.size() == 0) {
+											CallDispatcher.isCallInitiate = false;
+											chTimer.stop();
+											AppMainActivity.ctimer.stop();
+											audio_minimize.setVisibility(View.GONE);
+
+											if (!isHangedUp) {
+
+
+												enterCallHistory();
+
+											}
+
+											CallDispatcher.currentSessionid = null;
+											CallDispatcher.conferenceMembers.clear();
+											finishAudiocallScreen();
+//											receiveHangUpx();
+
+										} else {
+											showToast("Disconnect  member :" + buddy);
+											// Used to show disconnected Status and
+											// message to server...
+											if (!isConferencemembers) {
+												// enterMissedCall();
+												objCallDispatcher
+														.notifyCallHistoryToServer(
+																CallDispatcher.LoginUser,
+																buddy,
+																"111",
+																objCallDispatcher.sessId,
+																objCallDispatcher
+																		.getCurrentDateTime(),
+																objCallDispatcher
+																		.getCurrentDateTime());
+											} else {
+
+												enterCallHistoryOnSingleuser(buddy);
+
+											}
+
+											tvBuddies.setText(getNames());
+
+										}
+									}
+									member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
 
 								}
+							} else if (bun.containsKey("img")) {
+								if (bun.getInt("windowid") == 0) {
+
+									frameSink.getFrameLock().lock();
+									frameBuffer.position(0);
+									frameBuffer.put(bun.getByteArray("img"));
+									frameBuffer.position(0);
+									frameSink.setNextFrame(frameBuffer);
+									frameSink.getFrameLock().unlock();
+
+									buddysurfaceview_01.requestRender();
+
+								} else if (bun.getInt("windowid") == 12) {
+									frameSink12.getFrameLock().lock();
+									frameBuffer12.position(0);
+									frameBuffer12.put(bun.getByteArray("img"));
+									frameBuffer12.position(0);
+									frameSink12.setNextFrame(frameBuffer12);
+									frameSink12.getFrameLock().unlock();
+									buddysurfaceview_0102.requestRender();
+								} else if (bun.getInt("windowid") == 1) {
+
+									frameSink2.getFrameLock().lock();
+									frameBuffer2.position(0);
+									// frameRenderer.setPreviewFrameWidth(obtainWidth);
+									// frameRenderer.setPreviewFrameHeight(obtainHeight);
+
+									frameBuffer2.put(bun.getByteArray("img"));
+									frameBuffer2.position(0);
+									frameSink2.setNextFrame(frameBuffer2);
+									frameSink2.getFrameLock().unlock();
+									buddysurfaceview_02.requestRender();
+
+								} else if (bun.getInt("windowid") == 2) {
+
+									frameSink3.getFrameLock().lock();
+									frameBuffer3.position(0);
+
+									frameBuffer3.put(bun.getByteArray("img"));
+									frameBuffer3.position(0);
+									frameSink3.setNextFrame(frameBuffer3);
+									frameSink3.getFrameLock().unlock();
+									buddysurfaceview_03.requestRender();
+								}
 							}
-
-							}
-						} else if (bun.containsKey("img")) {
-							if (bun.getInt("windowid") == 0) {
-
-								frameSink.getFrameLock().lock();
-								frameBuffer.position(0);
-								frameBuffer.put(bun.getByteArray("img"));
-								frameBuffer.position(0);
-								frameSink.setNextFrame(frameBuffer);
-								frameSink.getFrameLock().unlock();
-
-								buddysurfaceview_01.requestRender();
-
-							} else if(bun.getInt("windowid") == 12) {
-								frameSink12.getFrameLock().lock();
-								frameBuffer12.position(0);
-								frameBuffer12.put(bun.getByteArray("img"));
-								frameBuffer12.position(0);
-								frameSink12.setNextFrame(frameBuffer12);
-								frameSink12.getFrameLock().unlock();
-								buddysurfaceview_0102.requestRender();
-							} else if(bun.getInt("windowid") == 1) {
-
-								frameSink2.getFrameLock().lock();
-								frameBuffer2.position(0);
-								// frameRenderer.setPreviewFrameWidth(obtainWidth);
-								// frameRenderer.setPreviewFrameHeight(obtainHeight);
-
-								frameBuffer2.put(bun.getByteArray("img"));
-								frameBuffer2.position(0);
-								frameSink2.setNextFrame(frameBuffer2);
-								frameSink2.getFrameLock().unlock();
-								buddysurfaceview_02.requestRender();
-
-							} else if(bun.getInt("windowid") == 2) {
-
-								frameSink3.getFrameLock().lock();
-								frameBuffer3.position(0);
-
-								frameBuffer3.put(bun.getByteArray("img"));
-								frameBuffer3.position(0);
-								frameSink3.setNextFrame(frameBuffer3);
-								frameSink3.getFrameLock().unlock();
-								buddysurfaceview_03.requestRender();
-							}
+						} catch (Exception e) {
+							// TODO: handle exception
+							e.printStackTrace();
 						}
-					} catch (Exception e) {
-						// TODO: handle exception
+
 					}
+				};
 
-				}
-			};
-
-			handler.postDelayed(runnable, 1000);
-			videoQueue = new Queue();
-			videoThread = new VideoThreadMultiWindow(videoQueue);
-			videoThread.setHandler(handler);
-			videoThread.start();
-
+				handler.postDelayed(runnable, 1000);
+				videoQueue = new Queue();
+				videoThread = new VideoThreadMultiWindow(videoQueue);
+				videoThread.setHandler(handler);
+				videoThread.start();
+			}
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -588,17 +643,70 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
     public void onResume() {
         super.onResume();
 		try {
+			Log.i("Minimise","AudioCallScreen OnResume");
 			AppMainActivity.inActivity = context;
 			if (AppMainActivity.commEngine != null) {
                 AppMainActivity.commEngine.setmDecodeFrame(true);
             }
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+			} else {
+				AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
+			}
+			Activity parent = getActivity();
+			if(parent != null){
+				audio_minimize.setVisibility(View.GONE);
+				if(min_outcall != null) {
+					min_outcall.setVisibility(View.GONE);
+				}
+
+				if(min_incall != null) {
+					min_incall.setVisibility(View.GONE);
+				}
+			}
 
 			if(currentcall_type.equalsIgnoreCase("VC")){
-
+				getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 preview_frameLayout.removeView(pv);
                 pv.stopPreview();
                 pv = AppMainActivity.commEngine.getVideoPreview(context);
                 preview_frameLayout.addView(pv, 0);
+
+				buddyframelayout01.removeView(buddysurfaceview_01);
+				buddyframelayout0102.removeView(buddysurfaceview_0102);
+				buddyframelayout02.removeView(buddysurfaceview_02);
+				buddyframelayout03.removeView(buddysurfaceview_03);
+
+				buddyframelayout01.removeView(on_off1);
+				buddyframelayout0102.removeView(on_off2);
+				buddyframelayout02.removeView(on_off12);
+				buddyframelayout03.removeView(on_off3);
+
+				buddysurfaceview_01.destroyDrawingCache();
+				buddysurfaceview_0102.destroyDrawingCache();
+				buddysurfaceview_02.destroyDrawingCache();
+				buddysurfaceview_03.destroyDrawingCache();
+
+				getGLSurfaceView(context);
+				getGLSurfaceView1(context);
+				getGLSurfaceView2(context);
+				getGLSurfaceView3(context);
+
+				buddyframelayout01.addView(buddysurfaceview_01, surfaceview_layoutParams);
+				buddyframelayout0102.addView(buddysurfaceview_0102, surfaceview_layoutParams);
+				buddyframelayout02.addView(buddysurfaceview_02, surfaceview_layoutParams);
+				buddyframelayout03.addView(buddysurfaceview_03, surfaceview_layoutParams);
+
+				buddyframelayout01.addView(on_off1);
+				buddyframelayout0102.addView(on_off2);
+				buddyframelayout02.addView(on_off12);
+				buddyframelayout03.addView(on_off3);
+
+				buddysurfaceview_01.onResume();
+				buddysurfaceview_0102.onResume();
+				buddysurfaceview_02.onResume();
+				buddysurfaceview_03.onResume();
+
             }
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -612,6 +720,22 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 		if (AppMainActivity.commEngine != null) {
 			AppMainActivity.commEngine.setmDecodeFrame(true);
 		}
+		if (buddysurfaceview_01 != null) {
+			buddysurfaceview_01.onPause();
+		}
+
+		if (buddysurfaceview_0102 != null) {
+			buddysurfaceview_0102.onPause();
+		}
+
+		if (buddysurfaceview_02 != null) {
+			buddysurfaceview_02.onPause();
+		}
+
+		if(buddysurfaceview_03 != null){
+			buddysurfaceview_03.onPause();
+		}
+
 	}
 
     public String getCurrentDateandTime() {
@@ -638,26 +762,32 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 		try {
 //		final RelativeLayout  llayAudioCall = ( RelativeLayout ) View.inflate(
 //				context, R.layout.call_connecting, null);
-			llayAudioCall = inflater.inflate(R.layout.call_connecting, null);
-			final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
-			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+			llayAudioCall = inflater.inflate(R.layout.audiocallscreen, null);
+//			final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
+//			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+			audio_minimize = (RelativeLayout) getActivity().findViewById(R.id.audio_minimize);
+			audio_minimize.setVisibility(View.GONE);
 //		getActivity().getWindow().setSoftInputMode(
 //				WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 			TextView tv = (TextView) llayAudioCall.findViewById(R.id.status);
-			ImageView profilePic=(ImageView)llayAudioCall.findViewById(R.id.profilePic);
 			LinearLayout member_lay=(LinearLayout)llayAudioCall.findViewById(R.id.member_lay);
-			TextView member_count=(TextView)llayAudioCall.findViewById(R.id.members_count);
+			member_count=(TextView)llayAudioCall.findViewById(R.id.members_count);
 			Button members=(Button)llayAudioCall.findViewById(R.id.members);
 			Button btn_video=(Button)llayAudioCall.findViewById(R.id.btn_video);
 			 minimize=(Button)llayAudioCall.findViewById(R.id.minimize_btn);
 			members.setVisibility(View.VISIBLE);
-			member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()));
+			new Handler().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
+				}
+			}, 100);
 			member_lay.setVisibility(View.VISIBLE);
 			btn_video.setVisibility(View.VISIBLE);
 			tv.setText(SingleInstance.mainContext.getResources().getString(
-                    R.string.auconnected));
+					R.string.auconnected));
 			tv.setVisibility(View.GONE);
-			profilePic.setVisibility(View.GONE);
 			tvBuddies = (TextView) llayAudioCall.findViewById(R.id.my_userinfo_tv);
 			ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(getNames());
 			String Callee=pBean.getFirstname()+" "+pBean.getLastname();
@@ -677,31 +807,50 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			bottom_videowindows =(LinearLayout)llayAudioCall.findViewById(R.id.bottom_videowindowlayout);
 			video_layouts = (RelativeLayout)llayAudioCall.findViewById(R.id.video_views);
 			video_lay = (LinearLayout)llayAudioCall.findViewById(R.id.video_lay);
+
 			preview_frameLayout = (FrameLayout)llayAudioCall.findViewById(R.id.VideoView01);
 			buddyframelayout01 = (FrameLayout)llayAudioCall.findViewById(R.id.buddyvideoview01);
 			buddyframelayout0102 = (FrameLayout)llayAudioCall.findViewById(R.id.buddyvideoview0102);
 			buddyframelayout02 = (FrameLayout)llayAudioCall.findViewById(R.id.buddyvideoview02);
 			buddyframelayout03 = (FrameLayout)llayAudioCall.findViewById(R.id.buddyvideoview03);
 
-			buddysurfaceview_01	= (GLSurfaceView)llayAudioCall.findViewById(R.id.buddysurfaceview01);
-			buddysurfaceview_0102 = (GLSurfaceView)llayAudioCall.findViewById(R.id.buddysurfaceview0102);
-			buddysurfaceview_02	= (GLSurfaceView)llayAudioCall.findViewById(R.id.buddysurfaceview02);
-			buddysurfaceview_03	= (GLSurfaceView)llayAudioCall.findViewById(R.id.buddysurfaceview03);
+//			buddysurfaceview_01	= (GLSurfaceView)llayAudioCall.findViewById(R.id.buddysurfaceview01);
+//			buddysurfaceview_0102 = (GLSurfaceView)llayAudioCall.findViewById(R.id.buddysurfaceview0102);
+//			buddysurfaceview_02	= (GLSurfaceView)llayAudioCall.findViewById(R.id.buddysurfaceview02);
+//			buddysurfaceview_03	= (GLSurfaceView)llayAudioCall.findViewById(R.id.buddysurfaceview03);
+
+
+			flipcamera = (Button) llayAudioCall.findViewById(R.id.flipcamera);
 
 			getGLSurfaceView(context);
 			getGLSurfaceView1(context);
 			getGLSurfaceView2(context);
 			getGLSurfaceView3(context);
 
+			assignOnOffIcons(context);
+
+			surfaceview_layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
+					ViewGroup.LayoutParams.MATCH_PARENT);
+
+			buddyframelayout01.addView(buddysurfaceview_01, surfaceview_layoutParams);
+			buddyframelayout0102.addView(buddysurfaceview_0102, surfaceview_layoutParams);
+			buddyframelayout02.addView(buddysurfaceview_02, surfaceview_layoutParams);
+			buddyframelayout03.addView(buddysurfaceview_03, surfaceview_layoutParams);
+
+			buddyframelayout01.addView(on_off1);
+			buddyframelayout0102.addView(on_off2);
+			buddyframelayout02.addView(on_off12);
+			buddyframelayout03.addView(on_off3);
+
 			onoff_preview = (TextView)llayAudioCall.findViewById(R.id.onoffpreview);
 			onoff_preview.setTag(true);
-			on_off1 = (TextView)llayAudioCall.findViewById(R.id.onoff2);
+//			on_off1 = (TextView)llayAudioCall.findViewById(R.id.onoff2);
 			on_off1.setTag(true);
-			on_off12 = (TextView)llayAudioCall.findViewById(R.id.onoff23);
+//			on_off12 = (TextView)llayAudioCall.findViewById(R.id.onoff23);
 			on_off12.setTag(true);
-			on_off2 = (TextView)llayAudioCall.findViewById(R.id.onoff3);
+//			on_off2 = (TextView)llayAudioCall.findViewById(R.id.onoff3);
 			on_off2.setTag(true);
-			on_off3 = (TextView)llayAudioCall.findViewById(R.id.onoff4);
+//			on_off3 = (TextView)llayAudioCall.findViewById(R.id.onoff4);
 			on_off3.setTag(true);
 
 			participant_name1 = (TextView)llayAudioCall.findViewById(R.id.name2);
@@ -725,16 +874,63 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			minimize.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					addShowHideListener();
+					Log.i("Float","minimize.setOnClickListener");
+					try {
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+						} else {
+						Intent serviceIntent = new Intent(AppReference.mainContext.getApplication(),FloatingCallService.class);
+						serviceIntent.putExtra("sview",2);
+						serviceIntent.putExtra("callscreen","ACS");
+						AppReference.mainContext.startService(serviceIntent);
+						}
+//						getActivity().startService(new Intent(getActivity(), FloatingCallService.class));
+						addShowHideListener();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			flipcamera.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					if (numOfCam > 1) {
+						if (Integer.parseInt(Build.VERSION.SDK) > 8) {
+
+							if (WebServiceReferences.CAMERA_ID == 1) {
+								WebServiceReferences.CAMERA_ID = 0;
+							} else if (WebServiceReferences.CAMERA_ID == 0) {
+								WebServiceReferences.CAMERA_ID = 1;
+							}
+
+							if (pv != null) {
+								pv.stopPreview();
+								preview_frameLayout.removeView(pv);
+								pv = null;
+								AppMainActivity.commEngine.setVideoParameters(
+										WebServiceReferences.VIDEO_WIDTH,
+										WebServiceReferences.VIDEO_HEIGHT,
+										WebServiceReferences.CAMERA_ID);
+								pv = AppMainActivity.commEngine.getVideoPreview(context);
+
+								preview_frameLayout.addView(pv, 0);
+							}
+						}
+					}
+
 				}
 			});
 
 			members.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
 					Intent i = new Intent(AppReference.mainContext, CallActiveMembersList.class);
 					i.putExtra("timer", chTimer.getText().toString());
+					i.putExtra("calltype",currentcall_type);
 					i.putExtra("sessionId", strSessionId);
+					i.putExtra("host", host);
+					i.putExtra("fromscreen","audiocallscreen");
 					AppReference.mainContext.startActivity(i);
 
 				}
@@ -807,16 +1003,16 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
                     CharSequence text = chTimer.getText();
                     if (text.length() == 5) {
-                        chTimer.setText("00:" + text);
+                        chTimer.setText( text);
                     } else if (text.length() == 7) {
 
-                        chTimer.setText("0" + text);
+                        chTimer.setText( text);
                     }
 
                 }
             });
 			btnHangup = (Button) llayAudioCall.findViewById(R.id.btn_han);
-	btnHangup_video =(ImageView)llayAudioCall.findViewById(R.id.hang_video);
+			btnHangup_video =(ImageView)llayAudioCall.findViewById(R.id.hang_video);
 
 			btn_onlineb_video = (ImageView) llayAudioCall.findViewById(R.id.add_videousers);
 			btnMic_video = (ImageView) llayAudioCall.findViewById(R.id.speaker_video);
@@ -832,11 +1028,11 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
                     try {
                         if (!micmute) {
                             micmute = true;
-                            btnMic_video.setBackgroundResource(R.drawable.call_mic_active);
+                            btnMic_video.setImageResource(R.drawable.call_mic_active);
 
                         } else if (micmute) {
                             micmute = false;
-                            btnMic_video.setBackgroundResource(R.drawable.call_mic);
+                            btnMic_video.setImageResource(R.drawable.call_mic);
 
                         }
 
@@ -855,9 +1051,9 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
                     Log.i("thread", "################## speaker" + speaker);
                     if (!speaker) {
                         speaker = true;
-                        btnSpeaker_video.setBackgroundResource(R.drawable.call_video_active);
+                        btnSpeaker_video.setImageResource(R.drawable.call_speaker_active);
                     } else if (speaker) {
-                        btnSpeaker_video.setBackgroundResource(R.drawable.call_speaker);
+                        btnSpeaker_video.setImageResource(R.drawable.call_speaker);
                         speaker = false;
 
                     }
@@ -876,38 +1072,39 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			btnemergency.setVisibility(View.GONE);
 			btnemergency.setOnClickListener(new OnClickListener() {
 
-                @Override
-                public void onClick(View v) {
-                    // TODO Auto-generated method stub
-                    try {
-                        Log.i("thread", "on click of btn_loc");
-                        ArrayList<String> close_buddies = objCallDispatcher
-                                .calculateNearestLocations(callerName.trim());
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					try {
+						Log.i("thread", "on click of btn_loc");
+						ArrayList<String> close_buddies = objCallDispatcher
+								.calculateNearestLocations(callerName.trim());
 
-                        if (CallDispatcher.conferenceMembers.size() < 3) {
-                            if (alert == null) {
+						if (CallDispatcher.conferenceMembers.size() < 3) {
+							if (alert == null) {
 
-                                makeEmergencyCall("AC", close_buddies);
-                            } else if (!alert.isShowing()) {
-                                makeEmergencyCall("AC", close_buddies);
-                            }
-                        } else {
+								makeEmergencyCall("AC", close_buddies);
+							} else if (!alert.isShowing()) {
+								makeEmergencyCall("AC", close_buddies);
+							}
+						} else {
 
-                            Toast.makeText(
-                                    context,
-                                    SingleInstance.mainContext.getResources()
-                                            .getString(R.string.max_conf_members),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        e.printStackTrace();
-                        Log.i("thread",
-                                "::::::::::::::::::: exception" + e.toString());
-                    }
+							Toast.makeText(
+									context,
+									SingleInstance.mainContext.getResources()
+											.getString(R.string.max_conf_members),
+									Toast.LENGTH_SHORT).show();
+						}
+					} catch (Exception e) {
+						// TODO: handle exception
+						e.printStackTrace();
+						Log.i("thread",
+								"::::::::::::::::::: exception" + e.toString());
+					}
 
-                }
-            });
+				}
+			});
+			numOfCam = Camera.getNumberOfCameras();
 
 			btnHangup.setOnClickListener(new OnClickListener() {
 
@@ -956,13 +1153,13 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 			btn_con.setOnClickListener(new OnClickListener() {
 
-                @Override
-                public void onClick(View v) {
-                    // TODO Auto-generated method stub
-                    showConnectedBuddies();
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					showConnectedBuddies();
 
-                }
-            });
+				}
+			});
 
 			btn_onlineb.setOnClickListener(new OnClickListener() {
 
@@ -983,14 +1180,14 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
             });
 
 			promote_call.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
+				@Override
+				public void onClick(View view) {
 					try {
 						video_layouts.setVisibility(View.VISIBLE);
 						video_lay.setVisibility(View.VISIBLE);
 						audio_button_layouts.setVisibility(View.GONE);
-						audio_host_layout.setVisibility(View.GONE);
-						audio_participant_layout.setVisibility(View.GONE);
+//						audio_host_layout.setVisibility(View.GONE);
+//						audio_participant_layout.setVisibility(View.GONE);
 //						initializevideoIntent();
 						getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 						currentcall_type = "VC";
@@ -1001,18 +1198,19 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 						RecordTransactionBean transactionBean = new RecordTransactionBean();
 						transactionBean.setSessionid(strSessionId);
 						transactionBean.setHost(CallDispatcher.LoginUser);
-						transactionBean.setParticipants("");
-						processCallRequest(2, transactionBean,"promote");
+						transactionBean.setParticipants(CallDispatcher.sb.getParticipants());
+						transactionBean.setChatid(CallDispatcher.sb.getChatid());
+						processCallRequest(2, transactionBean, "promote");
 
 						for (int i = 0; i < CallDispatcher.conferenceMembers.size(); i++) {
-                            String user = CallDispatcher.conferenceMembers.get(i);
-                            onOffVideo(user, true);
-                        }
+							String user = CallDispatcher.conferenceMembers.get(i);
+							onOffVideo(user, true);
+						}
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
-            });
+			});
 
 
 			videoEnableBtn.setOnClickListener(new OnClickListener() {
@@ -1023,6 +1221,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
                     if(shown){
 
+//						videoEnableBtn.setImageResource(R.drawable.call_video);
 						RecordTransactionBean transactionBean = new RecordTransactionBean();
 						transactionBean.setSessionid(strSessionId);
 						transactionBean.setHost(CallDispatcher.LoginUser);
@@ -1030,24 +1229,25 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 						transactionBean.setDisableVideo("yes");
 						processCallRequest(2, transactionBean, "disablevideo");
 
-                        ownimageview.setVisibility(View.VISIBLE);
-                        preview_frameLayout.setVisibility(View.GONE);
-                        boolean have_image = false;
-                        for (BuddyInformationBean buddyInformationBean : buddyList) {
-                            if (buddyInformationBean.getName().equalsIgnoreCase(objCallDispatcher.LoginUser)) {
-                                String pic_path = buddyInformationBean.getProfile_picpath();
-                                if (pic_path != null) {
-                                    have_image = true;
-
-                                    imageLoader.DisplayImage(pic_path, ownimageview, R.drawable.icon_buddy_aoffline);
-
-                                }
-                            }
-                        }
-                        if (!have_image) {
-                            imageLoader.DisplayImage("", ownimageview, R.drawable.icon_buddy_aoffline);
-                        }
+//                        ownimageview.setVisibility(View.VISIBLE);
+//                        preview_frameLayout.setVisibility(View.GONE);
+//                        boolean have_image = false;
+//                        for (BuddyInformationBean buddyInformationBean : buddyList) {
+//                            if (buddyInformationBean.getName().equalsIgnoreCase(objCallDispatcher.LoginUser)) {
+//                                String pic_path = buddyInformationBean.getProfile_picpath();
+//                                if (pic_path != null) {
+//                                    have_image = true;
+//
+//                                    imageLoader.DisplayImage(pic_path, ownimageview, R.drawable.icon_buddy_aoffline);
+//
+//                                }
+//                            }
+//                        }
+//                        if (!have_image) {
+//                            imageLoader.DisplayImage("", ownimageview, R.drawable.icon_buddy_aoffline);
+//                        }
                     } else {
+//						videoEnableBtn.setImageResource(R.drawable.call_video_active);
 
 						RecordTransactionBean transactionBean = new RecordTransactionBean();
 						transactionBean.setSessionid(strSessionId);
@@ -1056,12 +1256,26 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 						transactionBean.setDisableVideo("no");
 						processCallRequest(2, transactionBean,"disablevideo");
 
-                        ownimageview.setVisibility(View.GONE);
-                        preview_frameLayout.setVisibility(View.VISIBLE);
+//                        ownimageview.setVisibility(View.GONE);
+//                        preview_frameLayout.setVisibility(View.VISIBLE);
                     }
                     videoEnableBtn.setTag(!shown);
                 }
             });
+			onoff_preview.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					preview_hided = true;
+//					own_video_layout.setVisibility(View.GONE);
+
+					own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
+					own_video_layout.getLayoutParams().width = 1;
+//						own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(1, 1, 1.0f));
+//						own_video_layout.setVisibility(View.GONE);
+//						videopreview.setVisibility(View.GONE);
+					hideOwnVideo();
+				}
+			});
 
 			on_off1.setOnClickListener(new OnClickListener() {
                 @Override
@@ -1069,16 +1283,34 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
                     boolean shown = (boolean) on_off1.getTag();
 
                     onOffVideoForSelectedUser(0, !shown);
-                    on_off1.setTag(!shown);
+//                    on_off1.setTag(!shown);
+					if(preview_hided){
+						hideOwnVideo();
+					}
                 }
             });
+			on_off12.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					boolean shown = (boolean) on_off12.getTag();
+
+					onOffVideoForSelectedUser(1, !shown);
+//					on_off12.setTag(!shown);
+					if(preview_hided){
+						hideOwnVideo();
+					}
+				}
+			});
 
 			on_off2.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     boolean shown = (boolean) on_off2.getTag();
-                    onOffVideoForSelectedUser(1,!shown);
-                    on_off2.setTag(!shown);
+                    onOffVideoForSelectedUser(1, !shown);
+//                    on_off2.setTag(!shown);
+					if(preview_hided){
+						hideOwnVideo();
+					}
                 }
             });
 
@@ -1086,8 +1318,11 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
                 @Override
                 public void onClick(View view) {
                     boolean shown = (boolean) on_off3.getTag();
-                    onOffVideoForSelectedUser(2,!shown);
-                    on_off3.setTag(!shown);
+                    onOffVideoForSelectedUser(2, !shown);
+//                    on_off3.setTag(!shown);
+					if(preview_hided){
+						hideOwnVideo();
+					}
                 }
             });
 			//For this used set Profile picture for owner and buddies
@@ -1115,6 +1350,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 	public void getGLSurfaceView(Context context) {
 		try {
+			buddysurfaceview_01 = new GLSurfaceView(context);
 			VideoFrameRenderer frameRenderer = new VideoFrameRenderer();
 			frameRenderer.setPreviewFrameSize(512,
 					WebServiceReferences.VIDEO_WIDTH,
@@ -1133,6 +1369,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 	public void getGLSurfaceView1(Context context) {
 		try {
+			buddysurfaceview_0102 = new GLSurfaceView(context);
 			VideoFrameRenderer frameRenderer = new VideoFrameRenderer();
 			frameRenderer.setPreviewFrameSize(512,
 					WebServiceReferences.VIDEO_WIDTH,
@@ -1151,6 +1388,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 	public void getGLSurfaceView2(Context context) {
 		try {
+			buddysurfaceview_02 = new GLSurfaceView(context);
 			VideoFrameRenderer frameRenderer = new VideoFrameRenderer();
 			frameRenderer.setPreviewFrameSize(512,
 					WebServiceReferences.VIDEO_WIDTH,
@@ -1168,6 +1406,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 	public void getGLSurfaceView3(Context context) {
 		try {
+			buddysurfaceview_03 = new GLSurfaceView(context);
 			VideoFrameRenderer frameRenderer = new VideoFrameRenderer();
 			frameRenderer.setPreviewFrameSize(512,
 					WebServiceReferences.VIDEO_WIDTH,
@@ -1182,6 +1421,28 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			e.printStackTrace();
 		}
 	}
+
+	private void assignOnOffIcons(Context context){
+
+		ViewGroup.LayoutParams layoutParams=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+
+		on_off1= new TextView(context);
+		on_off1.setLayoutParams(layoutParams);
+		on_off1.setBackgroundResource(R.drawable.call_close_video);
+
+		on_off12= new TextView(context);
+		on_off12.setLayoutParams(layoutParams);
+		on_off12.setBackgroundResource(R.drawable.call_close_video);
+
+		on_off2= new TextView(context);
+		on_off2.setLayoutParams(layoutParams);
+		on_off2.setBackgroundResource(R.drawable.call_close_video);
+
+		on_off3= new TextView(context);
+		on_off3.setLayoutParams(layoutParams);
+		on_off3.setBackgroundResource(R.drawable.call_close_video);
+	}
+
 
 	public void onOffVideo(final String buddyVideo, final boolean addOrRemove) {
 		Log.d("NotesVideo", "came to switchVideo " + buddyVideo);
@@ -1220,67 +1481,195 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 	}
 
+	private void hideOwnVideo() {
+		if (WebServiceReferences.videoSSRC_total_list.size() == 0) {
+			own_video_layout.getLayoutParams().height = 1;
+			own_video_layout.getLayoutParams().width = 1;
+			own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(1, 1, 1.0f));
+		} else if (WebServiceReferences.videoSSRC_total_list.size() > 0) {
+			int size = WebServiceReferences.videoSSRC_total_list.size();
+			if (size == 1) {
+				bottom_videowindows.setVisibility(View.GONE);
+				buddyframelayout01.setVisibility(View.VISIBLE);
+				buddyframelayout0102.setVisibility(View.GONE);
+				buddyframelayout02.setVisibility(View.GONE);
+				buddyframelayout03.setVisibility(View.GONE);
+				buddysurfaceview_0102.setVisibility(View.GONE);
+				if (preview_hided) {
+					own_video_layout.getLayoutParams().height = 1;
+					own_video_layout.getLayoutParams().width = 1;
+					buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.0f));
+					own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 3.0f));
+				} else {
+					buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+					own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+				}
+			} else if (size == 2) {
+				bottom_videowindows.setVisibility(View.GONE);
+				buddyframelayout01.setVisibility(View.VISIBLE);
+				buddyframelayout0102.setVisibility(View.VISIBLE);
+				buddyframelayout02.setVisibility(View.VISIBLE);
+				buddyframelayout03.setVisibility(View.GONE);
+				buddysurfaceview_0102.setVisibility(View.VISIBLE);
+				if (preview_hided) {
+					own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
+					own_video_layout.getLayoutParams().width = 1;
+
+					buddyframelayout0102.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.75f));
+					buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.75f));
+					own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+				} else {
+					buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f));
+					own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f));
+					buddyframelayout0102.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f));
+				}
+			} else if (size == 3) {
+				bottom_videowindows.setVisibility(View.VISIBLE);
+				buddyframelayout01.setVisibility(View.VISIBLE);
+				buddyframelayout0102.setVisibility(View.GONE);
+				buddyframelayout02.setVisibility(View.VISIBLE);
+				buddyframelayout03.setVisibility(View.VISIBLE);
+				buddysurfaceview_0102.setVisibility(View.GONE);
+				if (preview_hided) {
+					own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
+					own_video_layout.getLayoutParams().width = 1;
+
+					buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.0f));
+					own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 3.0f));
+				} else {
+					buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+					own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+				}
+			}
+		}
+	}
+
 	private void onOffVideoForSelectedUser(final int selectedposition, final boolean onoff){
 		if(WebServiceReferences.videoSSRC_total_list != null && WebServiceReferences.videoSSRC_total_list.size() > selectedposition){
 			int turn_ssrc =	WebServiceReferences.videoSSRC_total_list.get(selectedposition);
+			final int size = WebServiceReferences.videoSSRC_total_list.size();
+
+			WebServiceReferences.removed_videoSSRC_list.add(turn_ssrc);
+			WebServiceReferences.videoSSRC_total_list.remove(selectedposition);
+
 			final String buddy_name = (WebServiceReferences.videoSSRC_total.get(turn_ssrc)).getMember_name();
 			onOffVideo(buddy_name,onoff);
 			handler.post(new Runnable() {
 				@Override
 				public void run() {
 					if (onoff) {
-						if(selectedposition == 0) {
-							buddyimageview1.setVisibility(View.GONE);
-							buddysurfaceview_01.setVisibility(View.VISIBLE);
+						if (selectedposition == 0) {
 
-//							buddyTimerTask1 = new VideoOnOffTimerTask(buddy_name,onoff);
-//							buddytimer1 = new Timer();
-//							buddytimer1.schedule(buddyTimerTask1,2000,2000);
-
-						} else if(selectedposition == 1) {
-							buddyimageview2.setVisibility(View.GONE);
-							buddysurfaceview_02.setVisibility(View.VISIBLE);
-						} else if(selectedposition == 2) {
-							buddyimageview3.setVisibility(View.GONE);
-							buddysurfaceview_03.setVisibility(View.VISIBLE);
-						}
-					} else {
-						boolean have_image = false;
-						for (BuddyInformationBean buddyInformationBean : buddyList) {
-							if (buddyInformationBean.getName().equalsIgnoreCase(buddy_name)) {
-								String pic_path = buddyInformationBean.getProfile_picpath();
-								if (pic_path != null) {
-									have_image = true;
-									if(selectedposition == 0) {
-										imageLoader.DisplayImage(pic_path, buddyimageview1, R.drawable.icon_buddy_aoffline);
-									} else if(selectedposition == 1) {
-										imageLoader.DisplayImage(pic_path, buddyimageview2, R.drawable.icon_buddy_aoffline);
-									} else if(selectedposition == 2) {
-										imageLoader.DisplayImage(pic_path, buddyimageview3, R.drawable.icon_buddy_aoffline);
-									}
-								}
-							}
-						}
-						if(selectedposition == 0) {
-							if (!have_image) {
-								imageLoader.DisplayImage("", buddyimageview1, R.drawable.icon_buddy_aoffline);
-							}
-							buddyimageview1.setVisibility(View.VISIBLE);
+							buddyframelayout01.setVisibility(View.GONE);
 							buddysurfaceview_01.setVisibility(View.GONE);
-						} else if(selectedposition == 1) {
-							if (!have_image) {
-								imageLoader.DisplayImage("", buddyimageview2, R.drawable.icon_buddy_aoffline);
+
+						} else if (selectedposition == 1) {
+							if (size == 2) {
+								buddyframelayout02.setVisibility(View.GONE);
+								buddysurfaceview_02.setVisibility(View.GONE);
+								buddyframelayout02.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+								own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+							} else {
+								buddysurfaceview_0102.setVisibility(View.GONE);
+								buddyframelayout0102.setVisibility(View.GONE);
+								buddyframelayout0102.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+								own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
 							}
-							buddyimageview2.setVisibility(View.VISIBLE);
-							buddysurfaceview_02.setVisibility(View.GONE);
-						} else if(selectedposition == 2) {
-							if (!have_image) {
-								imageLoader.DisplayImage("", buddyimageview3, R.drawable.icon_buddy_aoffline);
-							}
-							buddyimageview3.setVisibility(View.VISIBLE);
+						} else if (selectedposition == 2) {
+							buddyframelayout03.setVisibility(View.GONE);
 							buddysurfaceview_03.setVisibility(View.GONE);
 						}
+					} else {
+
+						int changed_size = WebServiceReferences.videoSSRC_total_list.size();
+						if (changed_size == 0) {
+							bottom_videowindows.setVisibility(View.GONE);
+							buddysurfaceview_01.setVisibility(View.GONE);
+							buddyframelayout01.setVisibility(View.GONE);
+
+							buddysurfaceview_0102.setVisibility(View.GONE);
+							buddysurfaceview_02.setVisibility(View.GONE);
+							buddysurfaceview_03.setVisibility(View.GONE);
+							buddyframelayout0102.setVisibility(View.GONE);
+							buddyframelayout02.setVisibility(View.GONE);
+							buddyframelayout03.setVisibility(View.GONE);
+							//							videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
+							//							own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
+						} else if (changed_size == 1) {
+							buddysurfaceview_01.setVisibility(View.VISIBLE);
+							bottom_videowindows.setVisibility(View.GONE);
+							buddyframelayout01.setVisibility(View.VISIBLE);
+							buddysurfaceview_0102.setVisibility(View.GONE);
+							buddysurfaceview_02.setVisibility(View.GONE);
+							buddysurfaceview_03.setVisibility(View.GONE);
+							buddyframelayout0102.setVisibility(View.GONE);
+							buddyframelayout02.setVisibility(View.GONE);
+							buddyframelayout03.setVisibility(View.GONE);
+							buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+							own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+						} else if (changed_size == 2) {
+							buddysurfaceview_01.setVisibility(View.VISIBLE);
+							bottom_videowindows.setVisibility(View.GONE);
+							buddyframelayout01.setVisibility(View.VISIBLE);
+							buddysurfaceview_0102.setVisibility(View.VISIBLE);
+							buddysurfaceview_02.setVisibility(View.GONE);
+							buddysurfaceview_03.setVisibility(View.GONE);
+							buddyframelayout0102.setVisibility(View.VISIBLE);
+							buddyframelayout02.setVisibility(View.GONE);
+							buddyframelayout03.setVisibility(View.GONE);
+							buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
+							own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
+						} else if (changed_size == 3) {
+							buddysurfaceview_01.setVisibility(View.VISIBLE);
+							buddysurfaceview_02.setVisibility(View.VISIBLE);
+							buddysurfaceview_03.setVisibility(View.VISIBLE);
+							buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+							own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+							buddyframelayout03.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
+							buddysurfaceview_0102.setVisibility(View.GONE);
+							bottom_videowindows.setVisibility(View.VISIBLE);
+							buddyframelayout01.setVisibility(View.VISIBLE);
+							buddyframelayout0102.setVisibility(View.GONE);
+							buddyframelayout03.setVisibility(View.VISIBLE);
+							buddyframelayout02.setVisibility(View.VISIBLE);
+						}
 					}
+//						boolean have_image = false;
+//						for (BuddyInformationBean buddyInformationBean : buddyList) {
+//							if (buddyInformationBean.getName().equalsIgnoreCase(buddy_name)) {
+//								String pic_path = buddyInformationBean.getProfile_picpath();
+//								if (pic_path != null) {
+//									have_image = true;
+//									if(selectedposition == 0) {
+//										imageLoader.DisplayImage(pic_path, buddyimageview1, R.drawable.icon_buddy_aoffline);
+//									} else if(selectedposition == 1) {
+//										imageLoader.DisplayImage(pic_path, buddyimageview2, R.drawable.icon_buddy_aoffline);
+//									} else if(selectedposition == 2) {
+//										imageLoader.DisplayImage(pic_path, buddyimageview3, R.drawable.icon_buddy_aoffline);
+//									}
+//								}
+//							}
+//						}
+//						if(selectedposition == 0) {
+//							if (!have_image) {
+//								imageLoader.DisplayImage("", buddyimageview1, R.drawable.icon_buddy_aoffline);
+//							}
+//							buddyimageview1.setVisibility(View.VISIBLE);
+//							buddysurfaceview_01.setVisibility(View.GONE);
+//						} else if(selectedposition == 1) {
+//							if (!have_image) {
+//								imageLoader.DisplayImage("", buddyimageview2, R.drawable.icon_buddy_aoffline);
+//							}
+//							buddyimageview2.setVisibility(View.VISIBLE);
+//							buddysurfaceview_02.setVisibility(View.GONE);
+//						} else if(selectedposition == 2) {
+//							if (!have_image) {
+//								imageLoader.DisplayImage("", buddyimageview3, R.drawable.icon_buddy_aoffline);
+//							}
+//							buddyimageview3.setVisibility(View.VISIBLE);
+//							buddysurfaceview_03.setVisibility(View.GONE);
+//						}
+//					}
 				}
 			});
 		}
@@ -1301,6 +1690,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 						public void run() {
 
 							try {
+								member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+1));
 								if (WebServiceReferences.videoSSRC_total_list.size() > 0) {
 									int size = WebServiceReferences.videoSSRC_total_list.size();
 									if (size == 1) {
@@ -1310,8 +1700,18 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 										buddyframelayout02.setVisibility(View.GONE);
 										buddyframelayout03.setVisibility(View.GONE);
 										buddysurfaceview_0102.setVisibility(View.GONE);
-										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
-										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+//										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+//										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+										if(preview_hided) {
+											own_video_layout.getLayoutParams().height = 1;
+											own_video_layout.getLayoutParams().width = 1;
+											buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.0f));
+											own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 3.0f));
+										} else {
+											buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+											own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+//
+										}
 									} else if (size == 2) {
 										bottom_videowindows.setVisibility(View.GONE);
 										buddyframelayout01.setVisibility(View.VISIBLE);
@@ -1319,8 +1719,20 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 										buddyframelayout02.setVisibility(View.VISIBLE);
 										buddyframelayout03.setVisibility(View.GONE);
 										buddysurfaceview_0102.setVisibility(View.VISIBLE);
-										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
-										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
+//										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
+//										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
+										if(preview_hided ) {
+											own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
+											own_video_layout.getLayoutParams().width = 1;
+
+											buddyframelayout0102.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.75f));
+											buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.75f));
+											own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+										} else {
+											buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f));
+											own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f));
+											buddyframelayout0102.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f));
+										}
 									} else if (size == 3) {
 										bottom_videowindows.setVisibility(View.VISIBLE);
 										buddyframelayout01.setVisibility(View.VISIBLE);
@@ -1328,9 +1740,36 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 										buddyframelayout02.setVisibility(View.VISIBLE);
 										buddyframelayout03.setVisibility(View.VISIBLE);
 										buddysurfaceview_0102.setVisibility(View.GONE);
-										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
-										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+//										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+//										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+										if(preview_hided ) {
+											own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
+											own_video_layout.getLayoutParams().width = 1;
+
+											buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.0f));
+											own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 3.0f));
+										} else {
+											buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+											own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+										}
 									}
+//									if(on_off1.getTag()==false) {
+//										buddyframelayout01.setVisibility(View.GONE);
+//										buddysurfaceview_0102.setVisibility(View.GONE);
+//										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+//										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+//									}if(on_off2.getTag()==false) {
+//										buddyframelayout02.setVisibility(View.GONE);
+//										buddysurfaceview_02.setVisibility(View.GONE);
+//									}if(on_off3.getTag()==false) {
+//										buddyframelayout03.setVisibility(View.GONE);
+//										buddysurfaceview_03.setVisibility(View.GONE);
+//									}if(on_off12.getTag()==false) {
+//										buddyframelayout0102.setVisibility(View.GONE);
+//										buddysurfaceview_0102.setVisibility(View.GONE);
+//										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+//										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+//									}
 									String mem_name = "";
 									if (WebServiceReferences.videoSSRC_total.containsKey((int) (long) ssrc)) {
 //										mem_name = WebServiceReferences.videoSSRC_total.get((int) (long) ssrc);
@@ -1400,13 +1839,15 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			@Override
 			public void run() {
 				try {
-					getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+					if(getActivity() != null)
+						getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
 					currentcall_type = "VC";
 					video_layouts.setVisibility(View.VISIBLE);
 					video_lay.setVisibility(View.VISIBLE);
 					audio_button_layouts.setVisibility(View.GONE);
-					audio_host_layout.setVisibility(View.GONE);
-					audio_participant_layout.setVisibility(View.GONE);
+//					audio_host_layout.setVisibility(View.GONE);
+//					audio_participant_layout.setVisibility(View.GONE);
 //					initializevideoIntent();
 					pv = AppMainActivity.commEngine.getVideoPreview(context);
 					pv.setZOrderOnTop(false);
@@ -1469,7 +1910,20 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 								for (BuddyInformationBean buddyInformationBean : buddyList) {
 									if (buddyInformationBean.getName().equalsIgnoreCase(vidsignBean.getFrom())) {
 										String pic_path = buddyInformationBean.getProfile_picpath();
-										if (pic_path != null) {
+
+										if (pic_path == null || pic_path.length() == 0) {
+											ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(vidsignBean.getFrom());
+											if(pBean != null) {
+												pic_path = pBean.getPhoto();
+												Log.i("Join","pic_path 2 : "+pic_path);
+											}
+										}
+										if (pic_path != null && pic_path.length() > 0) {
+											if (!pic_path.contains("COMMedia")) {
+												pic_path = Environment
+														.getExternalStorageDirectory()
+														+ "/COMMedia/" + pic_path;
+											}
 											have_image = true;
 											if(selectedposition == 0) {
 												imageLoader.DisplayImage(pic_path, buddyimageview1, R.drawable.icon_buddy_aoffline);
@@ -1616,34 +2070,65 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 										R.string.yes),
 								new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog, int id) {
-										Message msg = new Message();
-										Bundle bun = new Bundle();
-										bun.putString("action", "leave");
-										msg.obj = bun;
-										selfHangup = true;
-										if (selfHangup) {
-											CallDispatcher.sb
-													.setEndTime(getCurrentDateandTime());
-											CallDispatcher.sb
-													.setCallDuration(SingleInstance.mainContext
-															.getCallDuration(CallDispatcher.sb
-																			.getStartTime(),
-																	CallDispatcher.sb
-																			.getEndTime()));
-											DBAccess.getdbHeler()
-													.saveOrUpdateRecordtransactiondetails(
-															CallDispatcher.sb);
+										try {
+											Message msg = new Message();
+											Bundle bun = new Bundle();
+											bun.putString("action", "leave");
+											msg.obj = bun;
+											selfHangup = true;
+											if (selfHangup) {
 
-											showCallHistory();
+												Log.i("AudioCall", "StartTime :" + CallDispatcher.sb
+														.getStartTime());
+												CallDispatcher.sb
+														.setEndTime(objCallDispatcher.getCurrentDateandTime());
+												CallDispatcher.sb
+														.setCallDuration(SingleInstance.mainContext
+																.getCallDuration(CallDispatcher.sb
+																				.getStartTime(),
+																		CallDispatcher.sb
+																				.getEndTime()));
+												CallDispatcher.sb.setCallstatus("callattended");
+
+												//For Callhistory host and participant name entry
+												//Start
+												CallDispatcher.sb.setHost_name(host);
+												String participant = null;
+												if (CallDispatcher.conferenceMembers != null && CallDispatcher.conferenceMembers.size() > 0) {
+													for (String name : CallDispatcher.conferenceMembers) {
+														if (!name.equalsIgnoreCase(host)) {
+															if (participant == null) {
+																participant = name;
+															} else {
+																participant = participant + "," + name;
+															}
+
+														}
+													}
+												}
+												if (participant != null) {
+													CallDispatcher.sb.setParticipant_name(participant);
+												}
+												//end
+
+												DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+												DBAccess.getdbHeler()
+														.saveOrUpdateRecordtransactiondetails(
+																CallDispatcher.sb);
+
+												showCallHistory();
 
 
+											}
+											final String[] choiceList = returnBuddies();
+											if (choiceList.length != 0) {
+												isBuddyinCall = true;
+												selfHangup = false;
+											}
+											handler.sendMessage(msg);
+										} catch (Exception e) {
+											e.printStackTrace();
 										}
-										final String[] choiceList = returnBuddies();
-										if (choiceList.length != 0) {
-											isBuddyinCall = true;
-											selfHangup = false;
-										}
-										handler.sendMessage(msg);
 									}
 								})
 						.setNegativeButton(
@@ -1662,7 +2147,68 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 	}
 
+
+	public void hangupCallFromCallActiveMembers(){
+		try {
+			Message msg = new Message();
+			Bundle bun = new Bundle();
+			bun.putString("action", "leave");
+			msg.obj = bun;
+			selfHangup = true;
+			if (selfHangup) {
+                CallDispatcher.sb
+						.setEndTime(objCallDispatcher.getCurrentDateandTime());
+                CallDispatcher.sb
+                        .setCallDuration(SingleInstance.mainContext
+								.getCallDuration(CallDispatcher.sb
+												.getStartTime(),
+										CallDispatcher.sb
+												.getEndTime()));
+                CallDispatcher.sb.setCallstatus("callattended");
+
+				//For Callhistory host and participant name entry
+				//Start
+				CallDispatcher.sb.setHost_name(host);
+				String participant=null;
+				if(CallDispatcher.conferenceMembers!=null && CallDispatcher.conferenceMembers.size()>0){
+					for(String name:CallDispatcher.conferenceMembers){
+						if(!name.equalsIgnoreCase(host)){
+							if(participant==null){
+								participant=name;
+							}else{
+								participant=participant+","+name;
+							}
+
+						}
+					}
+				}
+				if(participant!=null){
+					CallDispatcher.sb.setParticipant_name(participant);
+				}
+				//end
+
+                DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+                DBAccess.getdbHeler()
+                        .saveOrUpdateRecordtransactiondetails(
+								CallDispatcher.sb);
+
+                showCallHistory();
+
+
+            }
+			final String[] choiceList = returnBuddies();
+			if (choiceList.length != 0) {
+                isBuddyinCall = true;
+                selfHangup = false;
+            }
+			handler.sendMessage(msg);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void notifyGSMCallAccepted() {
+//		objCallDispatcher.whenCallHangedUp();
 		Message msg = new Message();
 		Bundle bun = new Bundle();
 		bun.putString("action", "leave");
@@ -1670,7 +2216,11 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 		handler.sendMessage(msg);
 	}
 
-	public void receiveHangUpx() {
+//	public void notifyGSMCallRejected () {
+//		objCallDispatcher.whenCallInitiated();
+//	}
+
+	public void receiveHangUpx(final SignalingBean sb) {
 		// Log.e("test", "Call Rejected @#@##@#@#      6");
 		if (handler != null) {
 			handler.post(new Runnable() {
@@ -1679,26 +2229,36 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 				public void run() {
 					// TODO Auto-generated method stub
 					try {
+						if (CallDispatcher.conferenceMembers.size() == 1) {
 
-						chTimer.stop();
-						AppMainActivity.ctimer.stop();
+							Log.i("callscreenfinish", "2 conferenceMembers.size()==1 name-->" + CallDispatcher.conferenceMembers.get(0));
+							Log.i("callscreenfinish", "2 sb.name-->" + sb.getFrom());
+							if (CallDispatcher.conferenceMembers.get(0).equalsIgnoreCase(sb.getFrom())) {
+								Log.i("callscreenfinish", "2.1 sb.name-->" + sb.getFrom());
+								CallDispatcher.isCallInitiate = false;
+								chTimer.stop();
+								AppMainActivity.ctimer.stop();
+								audio_minimize.setVisibility(View.GONE);
 
-						if (!isHangedUp) {
+								if (!isHangedUp) {
 
 
-							enterCallHistory();
+									enterCallHistory();
 
+								}
+
+								CallDispatcher.currentSessionid = null;
+								CallDispatcher.conferenceMembers.clear();
+								finishAudiocallScreen();
+							}
 						}
-
-						CallDispatcher.currentSessionid = null;
-						CallDispatcher.conferenceMembers.clear();
 
 					} catch (Exception e) {
 						// TODO: handle exception
 					}
 
 //					finish();
-					finishAudiocallScreen();
+
 					// Log.e("test", "size Zero");
 
 				}
@@ -1899,6 +2459,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 					memberslist.add(members[i]);
 				}
 			}
+			calltype=callType;
 
 			if (memberslist.size() > 0) {
 				Intent intent = new Intent(context,
@@ -1994,69 +2555,27 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	public void onDestroy() {
 		// HomeTabViewScreen home =null;
 		try {
-			Log.d("ZZZ", "----->callscreenactivity destroy<-----");
+			Log.d("AudioCall", "----->callscreenactivity destroy<-----");
 			Activity parent = getActivity();
 			if(parent != null) {
 				getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 			}
-
-			if (handler != null)
-				handler.removeCallbacks(runnable);
+//			if (SingleInstance.instanceTable.containsKey("callscreen")) {
+//				SingleInstance.instanceTable.remove("callscreen");
+//			}
+//			if (handler != null)
+//				handler.removeCallbacks(runnable);
 
 			mainHeader.setVisibility(View.VISIBLE);
 			final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
 			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-			objCallDispatcher.stopRingTone();
-			CallDispatcher.currentSessionid = null;
-			objCallDispatcher.alConferenceRequest.clear();
-			CallDispatcher.conferenceMembersTime.clear();
-			CallDispatcher.isCallInitiate = false;
-			if (SingleInstance.instanceTable.containsKey("callscreen")) {
-				SingleInstance.instanceTable.remove("callscreen");
-			}
 
-			WebServiceReferences.videoSSRC_total.clear();
-			WebServiceReferences.videoSSRC_total_list.clear();
-			CallDispatcher.conConference.clear();
-			CallDispatcher.issecMadeConference = false;
 
-			if (SingleInstance.instanceTable.containsKey("callscreen")) {
-				SingleInstance.instanceTable.remove("callscreen");
-				Log.e("note", "Call screen instance removed ACS!!");
-			}
 
-			objCallDispatcher.startPlayer(context);
-			if (WebServiceReferences.contextTable.containsKey("audiocall")) {
-				WebServiceReferences.contextTable.remove("audiocall");
-			}
-
-			objCallDispatcher.whenCallHangedUp();
-
-			if (WebServiceReferences.contextTable.containsKey("connection")) {
-				CallConnectingScreen screen = (CallConnectingScreen) WebServiceReferences.contextTable
-						.get("connection");
-				screen.finish();
-			}
-
-			if(videoQueue != null){
-				videoQueue.clear();
-			}
-			if (pv != null) {
-				pv.stopPreview();
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 
-		}
-
-		try {
-			objCallDispatcher.isHangUpReceived = false;
-			if (audioProperties != null) {
-				audioProperties.setSpeakerphoneOn(false);
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
 		}
 
 		super.onDestroy();
@@ -2329,16 +2848,82 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 	public void finishAudiocallScreen()
 	{
-		rootView=null;
-		FragmentManager fm =
-				AppReference.mainContext.getSupportFragmentManager();
-		FragmentTransaction ft = fm.beginTransaction();
-		ContactsFragment contactsFragment = ContactsFragment
-				.getInstance(context);
-		ft.replace(R.id.activity_main_content_fragment,
-				contactsFragment);
-		ft.commitAllowingStateLoss();
-		audio_minimize.setVisibility(View.GONE);
+		try {
+
+			Log.i("AudioCall", "Came to finishAudiocallScreen in AudioCallScreen");
+			if (SingleInstance.instanceTable.containsKey("callactivememberslist")) {
+				CallActiveMembersList activeMembersList = (CallActiveMembersList) SingleInstance.instanceTable.get("callactivememberslist");
+				activeMembersList.finishActivity();
+			}
+			Activity parent = getActivity();
+			Log.i("AudioCall", "parent : " + parent);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+			} else {
+				AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
+			}
+			preview_hided = false;
+			currentcall_type = "AC";
+			objCallDispatcher.stopRingTone();
+			CallDispatcher.currentSessionid = null;
+			objCallDispatcher.alConferenceRequest.clear();
+			CallDispatcher.conferenceMembersTime.clear();
+			WebServiceReferences.videoSSRC_total.clear();
+			WebServiceReferences.videoSSRC_total_list.clear();
+			WebServiceReferences.removed_videoSSRC_list.clear();
+			CallDispatcher.conConference.clear();
+			CallDispatcher.issecMadeConference = false;
+			objCallDispatcher.whenCallHangedUp();
+
+			if(videoQueue != null){
+                videoQueue.clear();
+            }
+			if (pv != null) {
+                pv.stopPreview();
+            }
+
+			if (SingleInstance.instanceTable.containsKey("callscreen")) {
+                SingleInstance.instanceTable.remove("callscreen");
+                Log.e("note", "Call screen instance removed ACS!!");
+            }
+
+			objCallDispatcher.startPlayer(context);
+			if (WebServiceReferences.contextTable.containsKey("audiocall")) {
+                WebServiceReferences.contextTable.remove("audiocall");
+            }
+			try {
+                objCallDispatcher.isHangUpReceived = false;
+                if (audioProperties != null) {
+                    audioProperties.setSpeakerphoneOn(false);
+                }
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+
+
+			if (handler != null) {
+				handler.removeCallbacks(runnable);
+			}
+
+
+			if(parent != null) {
+				getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+			}
+			rootView=null;
+			CallDispatcher.isCallInitiate = false;
+			FragmentManager fm =
+                    AppReference.mainContext.getSupportFragmentManager();
+			FragmentTransaction ft = fm.beginTransaction();
+//			ContactsFragment contactsFragment = ContactsFragment
+//                    .getInstance(context);
+			ft.replace(R.id.activity_main_content_fragment,
+					AppReference.bacgroundFragment);
+			ft.commitAllowingStateLoss();
+			audio_minimize.setVisibility(View.GONE);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 
@@ -2366,6 +2951,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 					for(UserBean bib:membersList){
 						if (CallDispatcher.conferenceMembers.size() < 3) {
 
+							member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+1));
+
 							if (objCallDispatcher != null) {
 								SignalingBean sb = objCallDispatcher.callconfernceUpdate(
 										bib.getBuddyName(),
@@ -2392,111 +2979,117 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	String file = "";
 	private void showCallHistory()
 	{
-
-		try {
-			final Dialog dialog = new Dialog(SingleInstance.mainContext);
-			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-			dialog.setContentView(R.layout.call_record_dialog);
-			dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-			dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
-			dialog.show();
-			Button save = (Button) dialog.findViewById(R.id.save);
-			Button delete = (Button) dialog.findViewById(R.id.delete);
-			final ImageView play_button = (ImageView) dialog.findViewById(R.id.play_button);
-			final SeekBar seekBar1 = (SeekBar) dialog.findViewById(R.id.seekBar1);
-			final TextView txt_time= (TextView)dialog.findViewById(R.id.txt_time);
-			play_button.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					file = Environment
-							.getExternalStorageDirectory()
-							+ "/COMMedia/CallRecording/"
-							+ strSessionId + ".wav";
-					Log.d("Stringpath", "mediapath--->" + file);
-
-					if (mPlayer.isPlaying()) {
-						mPlayer.pause();
-						play_button.setBackgroundResource(R.drawable.play);
-					} else {
-						play_button.setBackgroundResource(R.drawable.audiopause);
-						playAudio(file, 0);
-
-					}
-
-		if (position == mPlayingPosition) {
-			mProgressUpdater.mBarToUpdate = seekBar1;
-			mProgressUpdater.tvToUpdate = txt_time;
-			mHandler.postDelayed(mProgressUpdater, 100);
-		} else {
-
-			try {
-				Log.d("Stringpath", "mediapath--->");
-				seekBar1.setProgress(0);
-				MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-				mmr.setDataSource(file);
-				String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-				mmr.release();
-				String min, sec;
-				min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration)));
-				sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(Long.parseLong(duration)) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration))));
-				if (Integer.parseInt(min) < 10) {
-					min = 0 + String.valueOf(min);
-				}
-				if (Integer.parseInt(sec) < 10) {
-					sec = 0 + String.valueOf(sec);
-				}
-				txt_time.setText(min + ":" + sec);
-//                            audio_tv.setText(duration);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			seekBar1.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
-			seekBar1.setProgress(0);
-			if (mProgressUpdater.mBarToUpdate == seekBar1) {
-				//this progress would be updated, but this is the wrong position
-				mProgressUpdater.mBarToUpdate = null;
-			}
-		}
-				}
-
-			});
-
-
-
-			save.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					dialog.dismiss();
-					Intent intentComponent = new Intent(context,
-							CallHistoryActivity.class);
-					intentComponent.putExtra("buddyname",
-							CallDispatcher.sb.getFrom());
-					intentComponent.putExtra("individual", true);
-					intentComponent.putExtra("isDelete", false);
-					intentComponent.putExtra("sessionid",
-							CallDispatcher.sb.getSessionid());
-					context.startActivity(intentComponent);
-				}
-			});
-			delete.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					dialog.dismiss();
-					Intent intentComponent = new Intent(context,
-							CallHistoryActivity.class);
-					intentComponent.putExtra("buddyname",
-							CallDispatcher.sb.getFrom());
-					intentComponent.putExtra("isDelete", true);
-					intentComponent.putExtra("individual", true);
-					intentComponent.putExtra("sessionid",
-							CallDispatcher.sb.getSessionid());
-					context.startActivity(intentComponent);
-				}
-			});
-		}catch (Exception e){
-			e.printStackTrace();
-		}
+		objCallDispatcher.showCallHistory(strSessionId , calltype);
+//		try {
+//			final Dialog dialog = new Dialog(SingleInstance.mainContext);
+//			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//			dialog.setContentView(R.layout.call_record_dialog);
+//			dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+//			dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
+//			dialog.show();
+//			Button save = (Button) dialog.findViewById(R.id.save);
+//			Button delete = (Button) dialog.findViewById(R.id.delete);
+//			final ImageView play_button = (ImageView) dialog.findViewById(R.id.play_button);
+//			final SeekBar seekBar1 = (SeekBar) dialog.findViewById(R.id.seekBar1);
+//			final TextView txt_time= (TextView)dialog.findViewById(R.id.txt_time);
+//			play_button.setOnClickListener(new View.OnClickListener() {
+//				@Override
+//				public void onClick(View v) {
+//					file = Environment
+//							.getExternalStorageDirectory()
+//							+ "/COMMedia/CallRecording/"
+//							+ strSessionId + ".wav";
+//					Log.d("Stringpath", "mediapath--->" + file);
+//					File newfile=new File(file);
+//
+//					if (mPlayer.isPlaying()) {
+//						mPlayer.pause();
+//						play_button.setBackgroundResource(R.drawable.play);
+//					} else {
+//						play_button.setBackgroundResource(R.drawable.audiopause);
+//						if(newfile.exists())
+//						playAudio(file, 0);
+//
+//					}
+//					if(newfile.exists()){
+//
+//		if (position == mPlayingPosition) {
+//			mProgressUpdater.mBarToUpdate = seekBar1;
+//			mProgressUpdater.tvToUpdate = txt_time;
+//			mHandler.postDelayed(mProgressUpdater, 100);
+//		} else {
+//
+//			try {
+//				Log.d("Stringpath", "mediapath--->");
+//				seekBar1.setProgress(0);
+//				MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+//				mmr.setDataSource(file);
+//				String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+//				mmr.release();
+//				String min, sec;
+//				min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration)));
+//				sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(Long.parseLong(duration)) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration))));
+//				if (Integer.parseInt(min) < 10) {
+//					min = 0 + String.valueOf(min);
+//				}
+//				if (Integer.parseInt(sec) < 10) {
+//					sec = 0 + String.valueOf(sec);
+//				}
+//				txt_time.setText(min + ":" + sec);
+////                            audio_tv.setText(duration);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//
+//			seekBar1.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+//			seekBar1.setProgress(0);
+//			if (mProgressUpdater.mBarToUpdate == seekBar1) {
+//				//this progress would be updated, but this is the wrong position
+//				mProgressUpdater.mBarToUpdate = null;
+//			}
+//		}
+//		}
+//				}
+//
+//			});
+//
+//
+//
+//			save.setOnClickListener(new View.OnClickListener() {
+//				@Override
+//				public void onClick(View v) {
+//					dialog.dismiss();
+//					Intent intentComponent = new Intent(context,
+//							CallHistoryActivity.class);
+//					intentComponent.putExtra("buddyname",
+//							CallDispatcher.sb.getFrom());
+//					intentComponent.putExtra("individual", true);
+//					intentComponent.putExtra("isDelete", false);
+//					intentComponent.putExtra("sessionid",
+//							CallDispatcher.sb.getSessionid());
+//					context.startActivity(intentComponent);
+//					mPlayer.stop();
+//				}
+//			});
+//			delete.setOnClickListener(new View.OnClickListener() {
+//				@Override
+//				public void onClick(View v) {
+//					dialog.dismiss();
+//					Intent intentComponent = new Intent(context,
+//							CallHistoryActivity.class);
+//					intentComponent.putExtra("buddyname",
+//							CallDispatcher.sb.getFrom());
+//					intentComponent.putExtra("isDelete", true);
+//					intentComponent.putExtra("individual", true);
+//					intentComponent.putExtra("sessionid",
+//							CallDispatcher.sb.getSessionid());
+//					context.startActivity(intentComponent);
+//					mPlayer.stop();
+//				}
+//			});
+//		}catch (Exception e){
+//			e.printStackTrace();
+//		}
 
 	}
 	private class PlaybackUpdater implements Runnable {
@@ -2606,15 +3199,18 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 		}
 	}
 	void addShowHideListener() {
+		Log.i("Minimise", "AudioCallScreen minimise");
 		FragmentManager fm =
 				AppReference.mainContext.getSupportFragmentManager();
 		FragmentTransaction ft = fm.beginTransaction();
-		ContactsFragment contactsFragment = ContactsFragment
-				.getInstance(context);
+//		ContactsFragment contactsFragment = ContactsFragment
+//				.getInstance(context);
 		ft.replace(R.id.activity_main_content_fragment,
-				contactsFragment);
+				AppReference.bacgroundFragment);
 		ft.commitAllowingStateLoss();
-		audio_minimize.setVisibility(View.VISIBLE);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			audio_minimize.setVisibility(View.VISIBLE);
+		}
 		mainHeader.setVisibility(View.VISIBLE);
 	}
 
@@ -2645,39 +3241,39 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 					Log.d("Join", "call status--->" + state);
 
-					if (state != null && state.equalsIgnoreCase("Offline")
-							|| state.equals("Stealth")
-							|| state.equalsIgnoreCase("pending")
-							|| state.equalsIgnoreCase("Virtual")
-							|| state.equalsIgnoreCase("airport")) {
-						if (WebServiceReferences.running) {
-							CallDispatcher.pdialog = new ProgressDialog(context);
-							objCallDispatcher.showprogress(CallDispatcher.pdialog, context);
-
-							String[] res_info = new String[3];
-							res_info[0] = CallDispatcher.LoginUser;
-							res_info[1] = user;
-							if (state.equals("Offline") || state.equals("Stealth"))
-								res_info[2] = objCallDispatcher
-										.getdbHeler(context)
-										.getwheninfo(
-												"select cid from clonemaster where cdescription='Offline'");
-							else
-								res_info[2] = "";
-
-							WebServiceReferences.webServiceClient
-									.OfflineCallResponse(res_info);
-						}
-
-					} else {
-						if (state != null && !state.equalsIgnoreCase("pending")) {
+//					if (state != null && state.equalsIgnoreCase("Offline")
+//							|| state.equals("Stealth")
+//							|| state.equalsIgnoreCase("pending")
+//							|| state.equalsIgnoreCase("Virtual")
+//							|| state.equalsIgnoreCase("airport")) {
+//						if (WebServiceReferences.running) {
+//							CallDispatcher.pdialog = new ProgressDialog(context);
+//							objCallDispatcher.showprogress(CallDispatcher.pdialog, context);
+//
+//							String[] res_info = new String[3];
+//							res_info[0] = CallDispatcher.LoginUser;
+//							res_info[1] = user;
+//							if (state.equals("Offline") || state.equals("Stealth"))
+//								res_info[2] = objCallDispatcher
+//										.getdbHeler(context)
+//										.getwheninfo(
+//												"select cid from clonemaster where cdescription='Offline'");
+//							else
+//								res_info[2] = "";
+//
+//							WebServiceReferences.webServiceClient
+//									.OfflineCallResponse(res_info);
+//						}
+//
+//					} else {
+//						if (state != null && !state.equalsIgnoreCase("pending")) {
 //							SingleInstance.parentId = record_TransactionBean.getParentID();
 							objCallDispatcher.MakeCallFromCallHistory(caseid,
 									user, context, record_TransactionBean, 2, feature);
 							con_scr_opened = con_scr_opened + 1;
-						}
-
-					}
+//						}
+//
+//					}
 				}
 			}
 

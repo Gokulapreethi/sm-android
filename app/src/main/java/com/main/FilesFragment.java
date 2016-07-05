@@ -21,7 +21,6 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -47,15 +46,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.adapter.NotifyListAdapter;
 import com.cg.DB.DBAccess;
 import com.cg.callservices.AudioCallScreen;
+import com.cg.callservices.CallConnectingScreen;
+import com.cg.callservices.inCommingCallAlert;
 import com.cg.callservices.VideoCallScreen;
-import com.cg.commongui.WebView_doc;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.TextNoteDatas;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.commongui.MultimediaUtils;
+import com.cg.commongui.WebView_doc;
 import com.cg.commongui.listswipe.SwipeMenu;
 import com.cg.commongui.listswipe.SwipeMenuCreator;
 import com.cg.commongui.listswipe.SwipeMenuItem;
@@ -93,8 +93,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.Vector;
-import java.net.URL;
-import java.net.URI;
 /**
  * This screen will populate all the event entries made by the user, it may be
  * notes or call history. From here user can create notes and they can make the
@@ -175,6 +173,8 @@ public class FilesFragment extends Fragment implements OnClickListener {
 	Button clearAllBtn;
 	public static String sortorder="";
 
+	private Dialog plus_dialog;
+
 	public static FilesFragment newInstance(Context maincontext) {
 		try {
 			if (filesFragment == null) {
@@ -194,6 +194,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		AppReference.bacgroundFragment=filesFragment;
 		view = null;
 		btn_edit = (Button) getActivity().findViewById(R.id.btn_settings);
 		selectall = (Button) getActivity().findViewById(R.id.btn_brg);
@@ -270,6 +271,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 									dialog.dismiss();
 								}
 							});
+							plus_dialog = dialog;
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -284,6 +286,12 @@ public class FilesFragment extends Fragment implements OnClickListener {
 				final TextView alpha_sort=(TextView)view.findViewById(R.id.alpha_sort);
 				final TextView date_sort=(TextView)view.findViewById(R.id.date_sort);
 				final TextView type_sort=(TextView)view.findViewById(R.id.type_sort);
+				if(sortorder.equalsIgnoreCase("date"))
+					date_sort.setTextColor(getResources().getColor(R.color.white));
+				else if(sortorder.equalsIgnoreCase("alpha"))
+					alpha_sort.setTextColor(getResources().getColor(R.color.white));
+				else if(sortorder.equalsIgnoreCase("type"))
+					type_sort.setTextColor(getResources().getColor(R.color.white));
 				date_sort.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -362,14 +370,40 @@ public class FilesFragment extends Fragment implements OnClickListener {
 					@Override
 					public void onClick(View v) {
 						mainHeader.setVisibility(View.GONE);
-						addShowHideListener(AudioCallScreen.getInstance(SingleInstance.mainContext));
+						addShowHideListener(true);
 					}
 				});
 				video_minimize.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						mainHeader.setVisibility(View.GONE);
-						addShowHideListener(VideoCallScreen.getInstance(SingleInstance.mainContext));
+						addShowHideListener(false);
+					}
+				});
+				ImageView min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
+				ImageView min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
+				min_incall.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						mainHeader.setVisibility(View.GONE);
+						inCommingCallAlert incommingCallAlert = inCommingCallAlert.getInstance(SingleInstance.mainContext);
+						FragmentManager fragmentManager = SingleInstance.mainContext
+								.getSupportFragmentManager();
+						fragmentManager.beginTransaction().replace(
+								R.id.activity_main_content_fragment, incommingCallAlert)
+								.commitAllowingStateLoss();
+					}
+				});
+				min_outcall.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						mainHeader.setVisibility(View.GONE);
+						CallConnectingScreen callConnectingScreen = CallConnectingScreen.getInstance(SingleInstance.mainContext);
+						FragmentManager fragmentManager = SingleInstance.mainContext
+								.getSupportFragmentManager();
+						fragmentManager.beginTransaction().replace(
+								R.id.activity_main_content_fragment, callConnectingScreen)
+								.commitAllowingStateLoss();
 					}
 				});
 
@@ -549,7 +583,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 					text_show.setVisibility(View.GONE);
 				}
 
-				plus = (Button) getActivity().findViewById(R.id.add_group); 
+				plus = (Button) getActivity().findViewById(R.id.add_group);
 				plus.setVisibility(View.VISIBLE);
 				plus.setText("");
 				plus.setBackgroundResource(R.drawable.navigation_search);
@@ -579,7 +613,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 				if (CallDispatcher.LoginUser != null) {
 					if (username.equalsIgnoreCase(CallDispatcher.LoginUser)
 							&& !SingleInstance.myOrder) {
-						title.setText(getResources().getString(R.string.files));
+						title.setText("SNAZBOX FILES");
 					} else {
 						String localeString = Locale.getDefault().getLanguage();
 						if (localeString.equals("ta")) {
@@ -601,6 +635,14 @@ public class FilesFragment extends Fragment implements OnClickListener {
 			((ViewGroup) view.getParent()).removeView(view);
 		}
 		return view;
+	}
+
+	public void closeOpenedDialogs(){
+		if(plus_dialog != null){
+			if(plus_dialog.isShowing()) {
+				plus_dialog.dismiss();
+			}
+		}
 	}
 
 	public String getUsername(String username) {
@@ -2210,15 +2252,22 @@ public class FilesFragment extends Fragment implements OnClickListener {
 		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
 				getResources().getDisplayMetrics());
 	}
-	void addShowHideListener( final Fragment fragment) {
-		FragmentManager fm = AppReference.mainContext.getSupportFragmentManager();
-		FragmentTransaction ft = fm.beginTransaction();
-		if (fragment.isHidden()) {
-			ft.show(fragment);
-		} else {
-			ft.hide(fragment);
+	void addShowHideListener( final Boolean isAudio) {
+		if(isAudio) {
+			AudioCallScreen audioCallScreen = AudioCallScreen.getInstance(SingleInstance.mainContext);
+			FragmentManager fragmentManager = SingleInstance.mainContext
+					.getSupportFragmentManager();
+			fragmentManager.beginTransaction().replace(
+					R.id.activity_main_content_fragment, audioCallScreen)
+					.commitAllowingStateLoss();
+		}else {
+			VideoCallScreen videoCallScreen = VideoCallScreen.getInstance(SingleInstance.mainContext);
+			FragmentManager fragmentManager = SingleInstance.mainContext
+					.getSupportFragmentManager();
+			fragmentManager.beginTransaction().replace(
+					R.id.activity_main_content_fragment, videoCallScreen)
+					.commitAllowingStateLoss();
 		}
-		ft.commit();
 	}
 
 }

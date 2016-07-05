@@ -30,7 +30,8 @@
         android:layout_width="wrap_content"
         android:layout_below="@+id/viewtoday"
         android:layout_toRightOf="@+id/selectInvidual_buddy"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:visibility="visible">
 
         <RelativeLayout
             android:id="@+id/sender_view"
@@ -83,12 +84,73 @@
                         android:textColor="@color/white"
                         android:textSize="15dp"
                         android:textStyle="bold" />
+                    <RelativeLayout
+                        android:id="@+id/sen_quoted"
+                        android:layout_width="wrap_content"
+                        android:padding="5dp"
+                        android:layout_marginLeft="10dp"
+                        android:visibility="gone"
+                        android:layout_below="@+id/sender_user_1"
+                        android:layout_height="wrap_content"
+                        android:background="@color/black3">
+                        <TextView
+                            android:id="@+id/sen_quoted_left"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:textSize="20dp"
+                            android:text="&quot;"
+                            android:visibility="gone"/>
+
+                        <TextView
+                            android:id="@+id/sen_tvquoted_msg"
+                            android:layout_width="wrap_content"
+                            android:layout_below="@+id/sen_quoted_left"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="2dp"
+                            android:layout_height="wrap_content" />
+                        <!--<ImageView-->
+                        <!--android:id="@+id/sen_fileattach_quoted"-->
+                        <!--android:layout_below="@+id/sen_tvquoted_msg"-->
+                        <!--android:layout_width="30dp"-->
+                        <!--android:layout_marginLeft="20dp"-->
+                        <!--android:visibility="gone"-->
+                        <!--android:background="@drawable/dashboard_file_white"-->
+                        <!--android:layout_height="26dp" />-->
+                        <!--<TextView-->
+                        <!--android:id="@+id/sen_fname_quoted"-->
+                        <!--android:layout_toRightOf="@+id/sen_fileattach_quoted"-->
+                        <!--android:layout_marginTop="3dp"-->
+                        <!--android:visibility="gone"-->
+                        <!--android:layout_marginLeft="20dp"-->
+                        <!--android:layout_below="@+id/sen_tvquoted_msg"-->
+                        <!--android:text=".png"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content" />-->
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@+id/sen_tvquoted_msg"
+                            android:layout_marginBottom="2dp"
+                            android:textStyle="bold"
+                            android:layout_marginRight="6dp"
+                            android:textSize="20dp"
+                            android:text=",,"
+                            android:visibility="gone"/>
+
+
+
+
+
+                    </RelativeLayout>
 
                     <TextView
                         android:id="@+id/sender_text_msg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/sender_user_1"
+                        android:layout_below="@+id/sen_quoted"
                         android:padding="5dp"
                         android:autoLink="web"
                         android:text="@string/this_is_the_message_view"
@@ -105,6 +167,7 @@
                         android:padding="5dp"
                         android:src="@drawable/location_icon"
                         android:visibility="gone" />
+
 
                     <RelativeLayout
                         android:id="@+id/sender_icon_container"
@@ -468,8 +531,9 @@
                     android:padding="5dp"
                     android:layout_marginLeft="10dp"
                     android:visibility="gone"
-                    android:layout_toLeftOf="@+id/receiver_datetime"
+                    android:layout_alignParentLeft="true"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="50dp"
                     android:background="@color/black3">
                     <TextView
                         android:id="@+id/quoted_left"
@@ -477,43 +541,47 @@
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
                         android:textSize="20dp"
-                        android:text="&quot;" />
+                        android:text="&quot;"
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/tvquoted_msg"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_below="@+id/quoted_left"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:text=""
                         android:layout_height="wrap_content" />
-                    <ImageView
-                        android:id="@+id/fileattach_quoted"
-                        android:layout_below="@+id/tvquoted_msg"
-                        android:layout_width="30dp"
-                        android:layout_marginLeft="20dp"
-                        android:visibility="gone"
-                        android:background="@drawable/dashboard_file_white"
-                        android:layout_height="26dp" />
-                    <TextView
-                        android:id="@+id/fname_quoted"
-                        android:layout_toRightOf="@+id/fileattach_quoted"
-                        android:layout_marginTop="3dp"
-                        android:visibility="gone"
-                        android:layout_marginLeft="20dp"
-                        android:layout_below="@+id/tvquoted_msg"
-                        android:text=".png"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                    <!--<ImageView-->
+                        <!--android:id="@+id/fileattach_quoted"-->
+                        <!--android:layout_below="@+id/tvquoted_msg"-->
+                        <!--android:layout_width="30dp"-->
+                        <!--android:layout_marginLeft="20dp"-->
+                        <!--android:visibility="gone"-->
+                        <!--android:background="@drawable/dashboard_file_white"-->
+                        <!--android:layout_height="26dp" />-->
+                    <!--<TextView-->
+                        <!--android:id="@+id/fname_quoted"-->
+                        <!--android:layout_toRightOf="@+id/fileattach_quoted"-->
+                        <!--android:layout_marginTop="3dp"-->
+                        <!--android:visibility="gone"-->
+                        <!--android:layout_marginLeft="20dp"-->
+                        <!--android:layout_below="@+id/tvquoted_msg"-->
+                        <!--android:text=".png"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content" />-->
 
                     <TextView
+                        android:id="@+id/quotes_end"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_below="@+id/fname_quoted"
+                        android:layout_below="@+id/tvquoted_msg"
                         android:layout_marginBottom="2dp"
                         android:textStyle="bold"
-                        android:layout_marginRight="6dp"
+                        android:layout_marginRight="20dp"
                         android:textSize="20dp"
-                        android:text=",," />
+                        android:text="''"
+                        android:visibility="gone"/>
 
 
 
@@ -761,11 +829,18 @@
                     android:padding="8dp"
                     android:textSize="15dp"
                     android:textStyle="bold" />
+                <LinearLayout
+                    android:id="@+id/privatelay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:layout_below="@+id/ad_play">
                 <TextView
                     android:id="@+id/tvprivate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Waiting for Reply"
+                    android:text="Private for: "
                     android:layout_below="@+id/ad_play"
                     android:layout_marginTop="8dp"
                     android:layout_toRightOf="@+id/userDP1"
@@ -773,9 +848,24 @@
                     android:textColor="@color/green"
                     android:layout_marginLeft="13dp"
                     android:padding="8dp"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:textSize="15dp"
                     android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/privatename"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="name"
+                        android:layout_marginTop="8dp"
+                        android:layout_toRightOf="@+id/userDP1"
+                        android:textColor="@color/white"
+                        android:layout_marginLeft="5dp"
+                        android:padding="8dp"
+                        android:visibility="visible"
+                        android:textSize="15dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
                 <TextView
                     android:id="@+id/waitforconfir"
                     android:layout_width="wrap_content"
@@ -787,6 +877,21 @@
                     android:background="@drawable/tv_bgblack_color"
                     android:visibility="gone"
                     android:textColor="@color/pink_tv"
+                    android:layout_marginLeft="13dp"
+                    android:padding="8dp"
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tv_confirm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Confirmed"
+                    android:layout_below="@+id/ad_play"
+                    android:layout_marginTop="8dp"
+                    android:layout_toRightOf="@+id/userDP1"
+                    android:background="@drawable/tv_bgblack_color"
+                    android:visibility="gone"
+                    android:textColor="@color/green"
                     android:layout_marginLeft="13dp"
                     android:padding="8dp"
                     android:textSize="15dp"
@@ -858,5 +963,67 @@
             android:textSize="18dp"
             android:visibility="visible"/>
     </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/join_lay"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@+id/normalcontainer"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:orientation="horizontal"
+        android:weightSum="1"
+        android:background="@color/darkpink">
+        <ImageView
+            android:id="@+id/call_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center"
+            android:background="@drawable/icon_missed_call"
+            />
+        <TextView
+            android:id="@+id/tv_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="username"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:layout_toRightOf="@+id/call_img"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/tv_missed"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/pink"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:layout_marginRight="10dp"
+            android:text="missed"/>
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="time"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:textColor="@color/snazlgray"/>
+
+        <Button
+            android:id="@+id/joinBtn"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:visibility="gone"
+            android:background="@color/blue2"
+            android:text="JOIN"/>
+    </LinearLayout>
 
 </RelativeLayout>

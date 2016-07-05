@@ -70,6 +70,27 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="1dp"
                     android:layout_weight="1" />
+
+                <com.cg.DatePicker.LoopView
+                    android:id="@+id/picker_hour"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="1dp"
+                    android:visibility="gone"
+                    android:layout_weight="1" />
+                <com.cg.DatePicker.LoopView
+                    android:id="@+id/picker_minute"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="1dp"
+                    android:layout_weight="1" />
+                <com.cg.DatePicker.LoopView
+                    android:id="@+id/picker_am"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="1dp"
+                    android:layout_weight="1" />
+
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
+import com.cg.account.AMAVerification;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.snazmed.R;
@@ -118,9 +119,23 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
             if (contactList.size() > 0) {
             final BuddyInformationBean buddyInformationBean = (BuddyInformationBean) contactList.get(position);
                 if (!buddyInformationBean.isTitle()) {
-                    if(!buddyInformationBean.getHeader().equalsIgnoreCase("null")){
-                        holder.tv_header_title.setText(buddyInformationBean.getHeader());
-                        holder.tv_header_title.setVisibility(View.VISIBLE);
+                    holder.tv_header_title.setText(String.valueOf(buddyInformationBean.getLastname().charAt(0)).toUpperCase());
+                    holder.tv_header_title.setVisibility(View.VISIBLE);
+                    if(position>0){
+                        BuddyInformationBean bib=contactList.get(position-1);
+                        if(String.valueOf(bib.getLastname().charAt(0)).equalsIgnoreCase(String.valueOf(buddyInformationBean.getLastname().charAt(0))))
+                            holder.tv_header_title.setVisibility(View.GONE);
+                        else
+                            holder.tv_header_title.setVisibility(View.VISIBLE);
+                    }
+                    if(ContactsFragment.SortType.equalsIgnoreCase("ONLINE"))
+                        holder.tv_header_title.setVisibility(View.GONE);
+                    else if(buddyInformationBean.getStatus().equalsIgnoreCase("new")
+                            || buddyInformationBean.getStatus().equalsIgnoreCase("pending")) {
+                        if (buddyInformationBean.getHeader().equalsIgnoreCase("REQUEST"))
+                            holder.tv_header_title.setText("REQUEST");
+                        else
+                            holder.tv_header_title.setVisibility(View.GONE);
                     }
                     if (buddyInformationBean.getStatus()
                             .equalsIgnoreCase("new")) {
@@ -157,7 +172,7 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                                             .acceptRejectPeople(
                                                     CallDispatcher.LoginUser,
                                                     name,
-                                                    "1","",
+                                                    "1", "",
                                                     ContactsFragment
                                                             .getInstance(getContext()));
                                     showprogress();
@@ -242,6 +257,7 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                                                     buddyInformationBean.getName(),
                                                     ContactsFragment.getInstance(context));
                                     deleteUser(buddyInformationBean.getName());
+                                    showprogress();
                                 } catch (Exception e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
@@ -280,13 +296,9 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                         holder.inreq.setVisibility(View.GONE);
                         if (!buddyInformationBean.getName().equalsIgnoreCase(
                                 CallDispatcher.LoginUser)) {
-                            ProfileBean pbean= DBAccess.getdbHeler().getProfileDetails(buddyInformationBean.getName());
-                                if(pbean!=null) {
-                                    if(pbean.getPhoto()!=null)
+                                if(buddyInformationBean.getProfile_picpath()!=null) {
                                     imageLoader.DisplayImage(
-                                            Environment.getExternalStorageDirectory().getAbsolutePath()+"/COMMedia/"+
-                                                    pbean.getPhoto(),
-                                            holder.buddy_icon,
+                                            buddyInformationBean.getProfile_picpath(), holder.buddy_icon,
                                             R.drawable.icon_buddy_aoffline);
                                 }
 
@@ -337,6 +349,8 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                     @Override
                     public boolean onLongClick(View v) {
                         ContactsFragment.getInstance(context).doDeleteContact(buddyInformationBean.getName());
+//                        Intent i = new Intent(SingleInstance.mainContext, AMAVerification.class);
+//                        SingleInstance.mainContext.startActivity(i);
                         return true;
                     }
                 });

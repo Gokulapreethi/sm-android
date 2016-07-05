@@ -20,10 +20,9 @@ import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
-import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
-import com.main.AppMainActivity;
+import com.cg.snazmed.R;
 import com.util.SingleInstance;
 
 import java.io.File;
@@ -76,6 +75,8 @@ public class FilePicker extends Activity {
             getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
             int noScrHeight = displaymetrics.heightPixels;
             int noScrWidth = displaymetrics.widthPixels;
+
+            WebServiceReferences.contextTable.put("filepicker", context);
 
             if (WebServiceReferences.callDispatch.containsKey("calldisp"))
                 callDisp = (CallDispatcher) WebServiceReferences.callDispatch
@@ -390,6 +391,7 @@ public class FilePicker extends Activity {
             return null;
         }
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -414,4 +416,11 @@ public class FilePicker extends Activity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (WebServiceReferences.contextTable.containsKey("filepicker")) {
+            WebServiceReferences.contextTable.remove("filepicker");
+        }
+    }
 }

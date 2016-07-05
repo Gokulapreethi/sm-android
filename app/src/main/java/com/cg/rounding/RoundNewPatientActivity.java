@@ -57,6 +57,7 @@ import org.lib.model.BuddyInformationBean;
 import org.lib.model.GroupBean;
 
 import java.io.File;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -72,7 +73,7 @@ public class RoundNewPatientActivity extends Activity {
     public Vector<UserBean> membersList = new Vector<UserBean>();
     private String groupid;
     TextView membercount;
-    private String addedMembers[];
+    private String addedMembers;
     final Calendar myCalendar = Calendar.getInstance();
     private LinearLayout lv_buddylist;
     MembersAdapter adapter;
@@ -84,7 +85,9 @@ public class RoundNewPatientActivity extends Activity {
     private ProgressDialog progress = null;
     Vector<PatientDetailsBean> PatientList;
     PatientDetailsBean choosepBean=new PatientDetailsBean();
+    private ArrayList<String> assignedMembers=new ArrayList<String>();
     Boolean isClicked=false;
+    LinearLayout member_lay;
     RoundingPatientAdapter patientadapter;
 
 
@@ -93,9 +96,12 @@ public class RoundNewPatientActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.createorexistingpatient);
         context = this;
+        WebServiceReferences.contextTable.put("roundnewpatient", this);
         Button back=(Button)findViewById(R.id.cancel);
         Button save=(Button)findViewById(R.id.save_new_patient);
         Button assibnBtn=(Button)findViewById(R.id.assibnBtn);
@@ -111,7 +117,9 @@ public class RoundNewPatientActivity extends Activity {
         final TextView room=(TextView)findViewById(R.id.room);
         final TextView bed=(TextView)findViewById(R.id.bed);
         final TextView date=(TextView)findViewById(R.id.Admit_date);
+        final TextView tv_hospital=(TextView)findViewById(R.id.tv_hospital);
         membercount=(TextView)findViewById(R.id.members_count);
+        member_lay=(LinearLayout)findViewById(R.id.member_lay);
         lv_buddylist = (LinearLayout) findViewById(R.id.membersList);
         gender_patient = (RadioGroup) findViewById(R.id.gender_patient);
         groupid=getIntent().getStringExtra("groupid");
@@ -151,7 +159,9 @@ public class RoundNewPatientActivity extends Activity {
                 TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
                 ListView patient_list=(ListView)dialog.findViewById(R.id.patient_list);
                 Button create=(Button)dialog.findViewById(R.id.create_patient);
-                PatientList=DBAccess.getdbHeler().getAllPatientDetails(groupid);
+                String strGetQry = "select * from patientdetails where groupid='"
+                        + groupid + "'";
+                PatientList=DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
                 final ChoosePatientAdapter adapter=new ChoosePatientAdapter(context,R.layout.choose_patient_row,PatientList);
                 patient_list.setAdapter(adapter);
                 cancel.setOnClickListener(new View.OnClickListener() {
@@ -260,25 +270,24 @@ public class RoundNewPatientActivity extends Activity {
                 DatePickerDialog dialog = new DatePickerDialog(RoundNewPatientActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        date.setVisibility(View.VISIBLE);
                         myCalendar.set(Calendar.YEAR, i);
                         myCalendar.set(Calendar.MONTH, i1);
                         myCalendar.set(Calendar.DAY_OF_MONTH, i2);
-                        date.setVisibility(View.VISIBLE);
                         updateadmitLabel();
                     }
                 }, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH));
-                Calendar c = Calendar.getInstance();
-                dialog.getDatePicker().setMaxDate(c.getTimeInMillis());
+//                Calendar c = Calendar.getInstance();
+//                dialog.getDatePicker().setMaxDate(c.getTimeInMillis());
                 dialog.show();
             }
         });
-        UserBean bean=new UserBean();
-        ProfileBean pbean=DBAccess.getdbHeler().getProfileDetails(CallDispatcher.LoginUser);
-        bean.setBuddyName(CallDispatcher.LoginUser);
-        bean.setFirstname(pbean.getFirstname()+" "+pbean.getLastname());
-        membersList.add(bean);
-       Log.i("sss", "memberss" + membersList.toString());
+//        UserBean bean=new UserBean();
+//        ProfileBean pbean=DBAccess.getdbHeler().getProfileDetails(CallDispatcher.LoginUser);
+//        bean.setBuddyName(CallDispatcher.LoginUser);
+//        bean.setFirstname(pbean.getFirstname()+" "+pbean.getLastname());
+//        membersList.add(bean);
         adapter = new MembersAdapter(RoundNewPatientActivity.this,R.layout.rounding_member_row, membersList);
         final int adapterCount = adapter.getCount();
 
@@ -296,10 +305,27 @@ public class RoundNewPatientActivity extends Activity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.length()>0)
+                if (charSequence.length() > 0)
                     firstname.setVisibility(View.VISIBLE);
                 else
                     firstname.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        hospital.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.length()>0)
+                    tv_hospital.setVisibility(View.VISIBLE);
+                else
+                    tv_hospital.setVisibility(View.GONE);
             }
             @Override
             public void afterTextChanged(Editable editable) {
@@ -442,45 +468,24 @@ public class RoundNewPatientActivity extends Activity {
         GroupBean gBean = DBAccess.getdbHeler()
                 .getGroupAndMembers("select * from groupdetails where groupid="
                         + groupid);
-        if (gBean != null) {
-            if (gBean.getActiveGroupMembers() != null
-                    && gBean.getActiveGroupMembers().length() > 0) {
-                String[] list1 = (gBean.getActiveGroupMembers())
-                        .split(",");
-                for (String tmp : list1) {
-                    UserBean userBean = new UserBean();
-                    userBean.setBuddyName(tmp);
-                    userBean.setInvite(true);
-                    userBean.setGroupid(groupid);
-                    userBean.setSelected(true);
-                    membersList.add(userBean);
-                }
-            }
-            if (gBean.getInActiveGroupMembers() != null
-                    && gBean.getInActiveGroupMembers().length() > 0) {
-                String[] list1 = (gBean.getInActiveGroupMembers())
-                        .split(",");
-                for (String tmp : list1) {
-                    UserBean userBean = new UserBean();
-                    userBean.setBuddyName(tmp);
-                    userBean.setSelected(true);
-                    membersList.add(userBean);
-                }
-            }
-        }
-        Log.i("AAAA","members list "+membersList.size());
+//        UserBean uBean=new UserBean();
+//        uBean.setBuddyName(CallDispatcher.LoginUser);
+//        membersList.add(uBean);
+//        if (gBean != null) {
+//            if (gBean.getActiveGroupMembers() != null
+//                    && gBean.getActiveGroupMembers().length() > 0) {
+//                String[] list1 = (gBean.getActiveGroupMembers())
+//                        .split(",");
+//                for (String tmp : list1) {
+//                    UserBean userBean = new UserBean();
+//                    userBean.setBuddyName(tmp);
+//                    membersList.add(userBean);
+//                }
+//            }
+//        }
         assibnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                view.setEnabled(false);
-                handler.postDelayed(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        view.setEnabled(true);
-
-                    }
-                }, 1000);
                 Intent intent = new Intent(getApplicationContext(),
                         AddGroupMembers.class);
                 ArrayList<String> buddylist = new ArrayList<String>();
@@ -488,6 +493,8 @@ public class RoundNewPatientActivity extends Activity {
                     buddylist.add(userBean.getBuddyName());
                 }
                 intent.putStringArrayListExtra("buddylist", buddylist);
+                intent.putExtra("fromRounding", true);
+                intent.putExtra("groupid",groupid);
                 Log.i("AAAA", "members list " + buddylist.size());
                 startActivityForResult(intent, 3);
             }
@@ -514,10 +521,12 @@ public class RoundNewPatientActivity extends Activity {
                     }else
                         pBean.setSex("");
                   int i=0;
-                    addedMembers=new String[membersList.size()];
-                    for (UserBean userBean : membersList) {
-                        addedMembers[i]= userBean.getBuddyName();
-                        Log.i("sss", "members list " + addedMembers[i]);
+                    addedMembers=new String();
+                    for (String name : assignedMembers) {
+                        if(addedMembers.contains(","))
+                        addedMembers= addedMembers+","+name;
+                        else
+                            addedMembers=name;
                         i++;
                     }
                     pBean.setGroupid(groupid);
@@ -530,13 +539,15 @@ public class RoundNewPatientActivity extends Activity {
                     pBean.setHospital(hospital.getText().toString());
                     pBean.setMrn(ed_mrn.getText().toString());
                     pBean.setLocation("");
-
                     pBean.setFloor(ed_floor.getText().toString());
                     pBean.setWard(ed_ward.getText().toString());
                     pBean.setRoom(ed_room.getText().toString());
                     pBean.setBed(ed_bed.getText().toString());
                     pBean.setAdmissiondate(ed_Admitdate.getText().toString());
-                    pBean.setAssignedmembers(CallDispatcher.LoginUser);
+                    if(addedMembers!=null)
+                    pBean.setAssignedmembers(addedMembers);
+                    else
+                        pBean.setAssignedmembers("");
                     showprogress();
                 WebServiceReferences.webServiceClient.SetPatientRecord(pBean, context);
             } else {
@@ -555,24 +566,16 @@ public class RoundNewPatientActivity extends Activity {
             super.onActivityResult(requestCode, resultCode, data);
 
             // check if the request code is same as what is passed here it is 2
-            membercount.setVisibility(View.VISIBLE);
+            member_lay.setVisibility(View.VISIBLE);
             if (requestCode == 3) {
                 if (data != null) {
                     Bundle bundle = data.getExtras();
                     ArrayList<UserBean> list = (ArrayList<UserBean>) bundle
                             .get("list");
-                    HashMap<String, UserBean> membersMap = new HashMap<String, UserBean>();
-                    for (UserBean userBean : membersList) {
-                        membersMap.put(userBean.getBuddyName(), userBean);
-                    }
-                    UserBean bean=new UserBean();
-                    bean.setBuddyName(CallDispatcher.LoginUser);
-                    membersList.add(bean);
                     membersList.clear();
-                    for (UserBean userBean : list) {
-                        if (!membersMap.containsKey(userBean.getBuddyName())) {
-                            membersList.add(userBean);
-                        }
+                    membersList.addAll(list);
+                    for(UserBean uBean:list) {
+                        assignedMembers.add(uBean.getBuddyName());
                     }
                     refreshMembersList();
                 }
@@ -583,14 +586,40 @@ public class RoundNewPatientActivity extends Activity {
         }
     }
     private void updateLabel() {
-        String myFormat = "MM/dd/yyyy";
+        String myFormat = "MM-dd-yyyy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         ed_dob.setText(sdf.format(myCalendar.getTime()));
     }
     private void updateadmitLabel() {
-        String myFormat = "MM/dd/yyyy";
+        String myFormat = "MM-dd-yyyy";
+
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        ed_Admitdate.setText(sdf.format(myCalendar.getTime()));
+        String due_date =  sdf.format(myCalendar.getTime());
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        String inputString2 = dateFormat.format(date);
+        String Today = inputString2;
+//        SimpleDateFormat myFormat = new SimpleDateFormat("dd-MM-yyyy");
+        Date date1 = null;
+        Date date2 = null;
+        try {
+            date1 = dateFormat.parse(ed_dob.getText().toString());
+            date2 = dateFormat.parse(due_date);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if(date1!= null) {
+            if (date2.compareTo(date1) <0) {
+                ed_Admitdate.setText(ed_dob.getText().toString());
+
+            } else {
+                ed_Admitdate.setText(due_date);
+//   Toast.makeText(context, "Please Select the month and date within the Duedate", Toast.LENGTH_SHORT).show();
+            }
+        }else {
+            ed_Admitdate.setText(due_date);
+        }
+
     }
     private void refreshMembersList() {
         handler.post(new Runnable() {
@@ -613,6 +642,7 @@ public class RoundNewPatientActivity extends Activity {
         });
 
     }
+
     public class MembersAdapter extends ArrayAdapter<UserBean> {
 
         private LayoutInflater inflater = null;
@@ -748,7 +778,7 @@ public class RoundNewPatientActivity extends Activity {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                Toast.makeText(context, message, 1).show();
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             }
         });
 

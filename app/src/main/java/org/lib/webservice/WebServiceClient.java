@@ -151,12 +151,13 @@ public class WebServiceClient {
 		}
 	}
 
-	public void getChatTemplate(String datetime) {
+	public void getChatTemplate(String userid,String datetime) {
 
 		Log.i("chattemplate","webserviceClient getchatTemplate date time--->"+datetime);
 		Servicebean servicebean = new Servicebean();
-		servicebean.setWsmethodname("Getchattemplets");
+		servicebean.setWsmethodname("GetChatTemplates");
 		HashMap<String, String> property_map = new HashMap<String, String>();
+		property_map.put("userid", userid);
 		property_map.put("date", datetime);
 		servicebean.setProperty_map(property_map);
 		servicebean.setServiceMethods(EnumWebServiceMethods.GETCHATTEMPLATE);
@@ -1136,7 +1137,7 @@ public class WebServiceClient {
 		servicebean.setProperty_map(ws_argmap);
 		servicebean.setServiceMethods(EnumWebServiceMethods.USERSIGNIN);
 		if (wsNotifier != null) {
-//			wsNotifier.clearBGTask();
+			wsNotifier.clearBGTask();
 			wsNotifier.addTasktoExecutor(servicebean);
 		}
 	}
@@ -1635,17 +1636,26 @@ public class WebServiceClient {
 	public void FeedBack(String feedback) {
 		String feedbackxml = xmlComposer.composeFeedBackXML(feedback);
 		Servicebean servicebean = new Servicebean();
-//		servicebean.setCallBack(sb.getCallBack());
 		servicebean.setWsmethodname("SetFeedback");
 		HashMap<String, String> ws_argmap = new HashMap<String, String>();
 		ws_argmap.put("feedbackxml", feedbackxml);
-//		ws_argmap.put("key", "0");
 		servicebean.setProperty_map(ws_argmap);
 		servicebean.setServiceMethods(EnumWebServiceMethods.SETFEEDBACK);
 		if (wsNotifier != null) {
-//			wsNotifier.clearBGTask();
 			wsNotifier.addTasktoExecutor(servicebean);
 		}
+	}
+	public void UpdateChatTemplate(String[] param,Object callBack) {
+		Servicebean servicebean = new Servicebean();
+		String templatexml = xmlComposer.composeUpdateChatTemplateXML(param);
+		HashMap<String, String> property_map = new HashMap<String, String>();
+		property_map.put("templatexml", templatexml);
+		servicebean.setProperty_map(property_map);
+		servicebean.setWsmethodname("UpdateChatTemplate");
+		servicebean.setCallBack(callBack);
+		servicebean.setServiceMethods(EnumWebServiceMethods.UPDATECHATTEMPLATE);
+		if (wsNotifier != null)
+			wsNotifier.addTasktoExecutor(servicebean);
 	}
 
 }

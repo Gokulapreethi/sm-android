@@ -16,21 +16,46 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:text="CONTACTS"
+            android:visibility="visible"
             android:textColor="@color/white"
             android:layout_centerInParent="true"
             android:textSize="20sp"
             android:textStyle="bold"
             android:gravity="center"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/blue3"
+            android:id="@+id/relay_search"
+            android:layout_marginLeft="40dp"
+            android:gravity="center"
+            android:weightSum="1"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="40dp">
 
         <EditText
             android:id="@+id/searchet"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:hint="Search"
-            android:textColorHint="@color/white"
+            android:layout_height="match_parent"
+            android:cursorVisible="false"
+            android:hint=" Search Contacts"
+            android:drawableLeft="@drawable/search_icon"
+            android:textColorHint="@color/snazlgray"
             android:textColor="@color/white"
-            android:visibility="gone"/>
+            android:maxLength="20"
+            android:visibility="visible"/>
+            <Button
+                android:id="@+id/cancel1"
+                android:visibility="gone"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/deleteicon1"/>
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/cancel"
@@ -46,7 +71,7 @@
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:background="@drawable/navigation_search"/>
+            android:background="@drawable/navigation_close"/>
 
     </RelativeLayout>
 
@@ -56,7 +81,7 @@
         android:layout_height="50dp"
         android:layout_below="@+id/header"
         android:gravity="center"
-        android:background="@color/lblack">
+        android:background="#272829">
 
         <CheckBox
             android:id="@+id/selectAll_buddy"
@@ -105,9 +130,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="13sp"
-                android:drawableTop="@drawable/grid_text"
+                android:drawableTop="@drawable/icon_patient"
                 android:textColor="@color/white"
-                android:text="Text\nMessage"/>
+                android:text="Send\nNote"/>
             <Button
                 android:background="#343536"
                 android:layout_weight="1"
@@ -127,7 +152,7 @@
                 android:textSize="13sp"
                 android:drawableTop="@drawable/grid_audio"
                 android:textColor="@color/white"
-                android:text="Text\nMessage"/>
+                android:text="Audio\nMessage"/>
             <Button
                 android:background="#343536"
                 android:layout_weight="1"
@@ -137,7 +162,7 @@
                 android:textSize="13sp"
                 android:drawableTop="@drawable/memory_video"
                 android:textColor="@color/white"
-                android:text="Text\nMessage"/>
+                android:text="Video\nMessage"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -161,9 +186,10 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="13sp"
-                android:drawableTop="@drawable/memory_audio"
+                android:visibility="invisible"
+                android:drawableTop="@drawable/dashboard_invite_blue"
                 android:textColor="@color/white"
-                android:text="Photo\nMessage"/>
+                android:text="One Way\nBroadcaast"/>
             <Button
                 android:background="#343536"
                 android:layout_weight="1"
@@ -171,9 +197,10 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="13sp"
-                android:drawableTop="@drawable/grid_videobroadcast"
+                android:visibility="invisible"
+                android:drawableTop="@drawable/broadcast"
                 android:textColor="@color/white"
-                android:text="Text\nMessage"/>
+                android:text="Two Way\nBroadcaast"/>
             <Button
                 android:background="#343536"
                 android:layout_weight="1"
@@ -189,9 +216,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:background="#343536">
+            android:background="@color/black2">
             <Button
-                android:background="#343536"
+                android:id="@+id/chat"
+                android:background="@color/black2"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -201,17 +229,19 @@
                 android:textColor="@color/white"
                 android:text="Chat"/>
             <Button
-                android:background="#343536"
+                android:id="@+id/audiocall"
+                android:background="@color/black2"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="13sp"
-                android:drawableTop="@drawable/recent_calls"
+                android:drawableTop="@drawable/dashboard_call_blue"
                 android:textColor="@color/white"
                 android:text="Audio Call"/>
             <Button
-                android:background="#343536"
+                android:id="@+id/videocall"
+                android:background="@color/black2"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -221,13 +251,15 @@
                 android:textColor="@color/white"
                 android:text="Video Call"/>
             <Button
-                android:background="#343536"
+                android:id="@+id/sendfile"
+                android:background="@color/black2"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="13sp"
-                android:drawableTop="@drawable/recent_files"
+                android:visibility="gone"
+                android:drawableTop="@drawable/memory_other"
                 android:textColor="@color/white"
                 android:text="Send File"/>
         </LinearLayout>
@@ -243,24 +275,27 @@
 
         <Button
             android:id="@+id/btnGrp"
-            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="@color/lblack"
-            android:layout_alignParentLeft="true"
             android:layout_margin="5dp"
+            android:layout_marginLeft="20dp"
             android:textColor="@color/white"
             android:textSize="13sp"
+            android:visibility="gone"
+            android:gravity="center"
             android:text="Add to\nGroup"
             android:drawableTop="@drawable/dashboard_group_blue"/>
 
         <Button
+            android:id="@+id/delete"
             android:layout_toRightOf="@+id/btnGrp"
-            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="@color/lblack"
-            android:layout_margin="5dp"
+            android:gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_margin="10dp"
             android:textColor="@color/white"
             android:textSize="13sp"
             android:text="Delete\ncontacts"
@@ -268,7 +303,7 @@
 
         <LinearLayout
             android:id="@+id/groupbtn"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:padding="5dp"
@@ -276,10 +311,12 @@
             android:gravity="center">
 
             <ImageView
+                android:id="@+id/grid_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/grid_grid"
                 android:layout_margin="5dp" />
+
 
         </LinearLayout>
 
@@ -291,29 +328,5 @@
         android:layout_height="20dp"
         android:text=""
         android:textColor="@color/snazlgray"/>
-
-    <RelativeLayout
-        android:id="@+id/RelativeLayout3"
-        android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/lblack"
-        android:visibility="visible" >
-        
-
-
-        <TextView
-            android:id="@+id/addmembers_text"
-            android:layout_below="@+id/members_count"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="ADD"
-            android:background="@color/blue2"
-            android:textColor="@color/white"
-            android:textSize="20dp"
-            android:gravity="center"
-            android:visibility="gone"
-            />
-        </RelativeLayout>
 
 </RelativeLayout>

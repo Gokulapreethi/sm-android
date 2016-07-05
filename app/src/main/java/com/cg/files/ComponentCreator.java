@@ -82,7 +82,10 @@ import android.widget.Toast;
 import android.widget.VideoView;
 import android.widget.ViewFlipper;
 
+import com.Fingerprint.MainActivity;
 import com.cg.DB.DBAccess;
+import com.cg.account.PinSecurity;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.cg.snazmed.R.drawable;
 import com.cg.account.ShareByProfile;
@@ -201,6 +204,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
 	CallDispatcher calldisp;
 	private ImageView newFileImg;
 	EditText filename,fileDesc;
+	TextView tv_file;
+	ImageView file_img,overlay;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -285,10 +290,37 @@ public class ComponentCreator extends Activity implements IMNotifier {
 //
 //				}
 //			});
+			newFileImg.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if(ComponentPath!=null){
+						Log.i("group123", "icon clicked component "+ComponentPath);
+						if (ComponentPath.endsWith(".jpg")) {
+							Intent intent = new Intent(context, FullScreenImage.class);
+							intent.putExtra("image", ComponentPath);
+							context.startActivity(intent);
+						}else if(ComponentPath.endsWith(".mp4")){
+							Intent intent = new Intent(context, MultimediaUtils.class);
+							intent.putExtra("filePath", ComponentPath);
+							intent.putExtra("requestCode", AUDIO);
+							intent.putExtra("action", "audio");
+							intent.putExtra("createOrOpen", "open");
+							startActivity(intent);
+						} else {
+							Intent intent = new Intent(context, VideoPlayer.class);
+							intent.putExtra("video", ComponentPath+".mp4");
+							context.startActivity(intent);
+						}
+					}
+				}
+			});
 
 			btnBack = (Button) findViewById(R.id.btn_back);
 			filename=(EditText)findViewById(R.id.ed_createfile);
 			fileDesc=(EditText)findViewById(R.id.ed_filedesc);
+			tv_file=(TextView)findViewById(R.id.tv_file);
+			file_img=(ImageView)findViewById(R.id.file_img);
+			overlay=(ImageView)findViewById(R.id.overlay);
 			final TextView tv_filename=(TextView)findViewById(R.id.tv_filename);
 			final TextView tv_fileDesc=(TextView)findViewById(R.id.tv_filedesc);
 			btnBack.setBackgroundResource(drawable.navigation_close);
@@ -413,7 +445,11 @@ public class ComponentCreator extends Activity implements IMNotifier {
 					audio.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							openAudio();
+							if(CallDispatcher.isCallInitiate) {
+								showToast("Call is in progress, Please try later");
+							} else {
+								openAudio();
+							}
 							dialog.dismiss();
 						}
 					});
@@ -421,44 +457,48 @@ public class ComponentCreator extends Activity implements IMNotifier {
 						@Override
 						public void onClick(View v) {
 							dialog.dismiss();
-							final Dialog dialog = new Dialog(context);
-							dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-							dialog.setContentView(R.layout.dialog_myacc_menu);
-							WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-							lp.copyFrom(dialog.getWindow().getAttributes());
-							lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-							lp.height = WindowManager.LayoutParams.MATCH_PARENT;
-							lp.horizontalMargin = 15;
-							Window window = dialog.getWindow();
-							window.setBackgroundDrawableResource((R.color.lblack));
-							window.setAttributes(lp);
-							window.setGravity(Gravity.BOTTOM);
-							dialog.show();
-							TextView photo = (TextView) dialog.findViewById(R.id.delete_acc);
-							photo.setText("PHOTO");
-							TextView video = (TextView) dialog.findViewById(R.id.log_out);
-							video.setText("VIDEO");
-							TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
-							cancel.setOnClickListener(new View.OnClickListener() {
-								@Override
-								public void onClick(View arg0) {
-									dialog.dismiss();
-								}
-							});
-							photo.setOnClickListener(new OnClickListener() {
-								@Override
-								public void onClick(View v) {
-									openCamera("photo");
-									dialog.dismiss();
-								}
-							});
-							video.setOnClickListener(new OnClickListener() {
-								@Override
-								public void onClick(View v) {
-									openCamera("video");
-									dialog.dismiss();
-								}
-							});
+							if(CallDispatcher.isCallInitiate) {
+								showToast("Call is in progress, Please try later");
+							} else {
+								final Dialog dialog = new Dialog(context);
+								dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+								dialog.setContentView(R.layout.dialog_myacc_menu);
+								WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+								lp.copyFrom(dialog.getWindow().getAttributes());
+								lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+								lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+								lp.horizontalMargin = 15;
+								Window window = dialog.getWindow();
+								window.setBackgroundDrawableResource((R.color.lblack));
+								window.setAttributes(lp);
+								window.setGravity(Gravity.BOTTOM);
+								dialog.show();
+								TextView photo = (TextView) dialog.findViewById(R.id.delete_acc);
+								photo.setText("PHOTO");
+								TextView video = (TextView) dialog.findViewById(R.id.log_out);
+								video.setText("VIDEO");
+								TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
+								cancel.setOnClickListener(new View.OnClickListener() {
+									@Override
+									public void onClick(View arg0) {
+										dialog.dismiss();
+									}
+								});
+								photo.setOnClickListener(new OnClickListener() {
+									@Override
+									public void onClick(View v) {
+										openCamera("photo");
+										dialog.dismiss();
+									}
+								});
+								video.setOnClickListener(new OnClickListener() {
+									@Override
+									public void onClick(View v) {
+										openCamera("video");
+										dialog.dismiss();
+									}
+								});
+							}
 						}
 					});
 				}
@@ -1660,6 +1700,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 					// SingleInstance.mainContext.getResources()
 					// .getString(R.string.cannot_save_empty_file));
 					showAlert1("Please enter some content to save. Cannot save empty file");
+					return;
 				}
 
 				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -1672,8 +1713,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
 
 				Log.e("NS", "ComponentPath :" + ComponentPath);
 				if(filename.getText().toString()!=null
-						&& filename.getText().toString().length()>0 && fileDesc.getText().toString()!=null
-						&& fileDesc.getText().toString().length()>0) {
+						&& filename.getText().toString().trim().length()>0 && fileDesc.getText().toString()!=null
+						&& fileDesc.getText().toString().trim().length()>0) {
 
 					if (ComponentPath != null) {
 						strIPath = ComponentPath;
@@ -1792,6 +1833,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 					}
 				}else {
 					showToast("Please enter filename and description");
+					return;
 				}
 
 				if (WebServiceReferences.contextTable
@@ -2320,8 +2362,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
 			ScrollView scrollView = new ScrollView(this);
 			scrollView.setLayoutParams(lp);
 			scrollView.setFillViewport(true);
-			tvTitle.setText(SingleInstance.mainContext.getResources()
-					.getString(R.string.txt_note));
+//			tvTitle.setText(SingleInstance.mainContext.getResources()
+//					.getString(R.string.txt_note));
 			edNotes = new EditText(this);
 			edNotes.setScroller(new Scroller(this));
 			edNotes.setVerticalScrollBarEnabled(true);
@@ -2455,7 +2497,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 	private void openCamera(String type)
 	{
 		if(type.equalsIgnoreCase("photo")) {
-			tvTitle.setText("Photo");
+//			tvTitle.setText("Photo");
 			GET_RESOURCES = FROM_CAMERA;
 			Long free_size = callDisp.getExternalMemorySize();
 			if (free_size > 0 && free_size >= 5120) {
@@ -2725,6 +2767,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
 			Log.d("Test", "Audio@@ComponentCreator@@" + AudioPath.length());
 			btnAudio.setHint(Integer.toString(state));
 			btnAudio.setGravity(Gravity.CENTER);
+			tv_file.setVisibility(View.INVISIBLE);
+			file_img.setVisibility(View.INVISIBLE);
 			imageLoader.DisplayImage(AudioPath,newFileImg, drawable.audionotesnew);
 
 			btnAudio.setHintTextColor(Color.TRANSPARENT);
@@ -2774,6 +2818,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
                 iv.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
 						LayoutParams.WRAP_CONTENT));
 //                imageLoader.DisplayImage(Path, iv, R.drawable.broken);
+				tv_file.setVisibility(View.INVISIBLE);
+				file_img.setVisibility(View.INVISIBLE);
 				imageLoader.DisplayImage(Path, newFileImg, R.drawable.broken);
 //                iv.setOnClickListener(new OnClickListener() {
 //                    @Override
@@ -2957,6 +3003,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
 						// showToast("Kindly choose image files");
 					} else {
 						btnDone.setVisibility(View.VISIBLE);
+						overlay.setVisibility(View.GONE);
+
 
 						Uri selectedImageUri = data.getData();
 						ComponentPath = callDisp
@@ -3006,7 +3054,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 								.containsKey("sharenotepicker")) {
 							finish();
 						}
-						tvTitle.setText("Text Note");
+//						tvTitle.setText("Text Note");
 						// showToast("Kindly choose image files");
 					} else {
 						btnDone.setVisibility(View.VISIBLE);
@@ -3045,6 +3093,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 									.getString(R.string.image_size_too_large));
 
 						}
+						overlay.setVisibility(View.GONE);
 
 					}
 				} catch (Exception e) {
@@ -3062,7 +3111,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 								.containsKey("sharenotepicker")) {
 							finish();
 						}
-						tvTitle.setText("Text Note");
+//						tvTitle.setText("Text Note");
 					} else {
 						btnDone.setVisibility(View.VISIBLE);
 						if (img != null) {
@@ -3094,6 +3143,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 							// }
 						}
 					}
+					overlay.setVisibility(View.GONE);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -3164,6 +3214,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 							} else {
 								ComponentPath = null;
 							}
+							overlay.setVisibility(View.VISIBLE);
 						}
 					}
 				} catch (Exception e) {
@@ -3177,6 +3228,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 					btn_next.setVisibility(View.GONE);
 					btn_prev.setVisibility(View.GONE);
 					btn_delete.setVisibility(View.VISIBLE);
+					overlay.setVisibility(View.GONE);
 //					btnDone.setVisibility(View.GONE);
 //					editTextNotes.setVisibility(View.GONE);
 
@@ -3256,6 +3308,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 
 			} else if (GET_RESOURCES == AUDIO) {
 				try {
+					overlay.setVisibility(View.GONE);
 					contentLayout.addView(AudioNoteView(3, ComponentPath));
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -3527,6 +3580,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
 			if (!path.endsWith(".mp4")) {
 				path = path + ".mp4";
 			}
+			tv_file.setVisibility(View.INVISIBLE);
+			file_img.setVisibility(View.INVISIBLE);
 			imageLoader.DisplayImage(path,newFileImg, drawable.videonotesnew);
 			String thumb = "";
 			if (path.endsWith(".mp4")) {
@@ -3764,6 +3819,21 @@ public class ComponentCreator extends Activity implements IMNotifier {
 //				btnIMRequest.setVisibility(View.GONE);
 //			else
 //				btnIMRequest.setVisibility(View.VISIBLE);
+			if(AppReference.mainContext.isPinEnable) {
+				if (AppReference.mainContext.openPinActivity) {
+					AppReference.mainContext.openPinActivity=false;
+					if(Build.VERSION.SDK_INT>20 && AppReference.mainContext.isTouchIdEnabled) {
+						Intent i = new Intent(ComponentCreator.this, MainActivity.class);
+						startActivity(i);
+					}else {
+						Intent i = new Intent(ComponentCreator.this, PinSecurity.class);
+						startActivity(i);
+					}
+				} else {
+					AppReference.mainContext.count=0;
+					AppReference.mainContext.registerBroadcastReceiver();
+				}
+			}
 
 			if (CallDispatcher.fromMultimediaUtils
 					|| CallDispatcher.handsketch_edit) {
@@ -4237,66 +4307,24 @@ public class ComponentCreator extends Activity implements IMNotifier {
 		try {
 			// TODO Auto-generated method stub
 			if (keyCode == KeyEvent.KEYCODE_BACK) {
-				if (ComponentPath != null) {
-					if (!isVideoPlay) {
-						if (ON_CREATE) {
-							if (GET_RESOURCES == TEXT
-									&& edNotes.getText().toString() != null
-									&& edNotes.getText().toString().length() > 0) {
-								showAlert();
-							} else if (GET_RESOURCES == AUDIO && audioExist) {
-								showAlert();
-
-							} else if ((GET_RESOURCES == CAPTURE_VIDEO
-									|| GET_RESOURCES == FROM_CAMERA
-									|| GET_RESOURCES == FROM_GALERY || GET_RESOURCES == GALLERY_KITKAT_INTENT_CALLED)
-									&& ComponentPath != null
-									&& ComponentPath.length() > 0)
-								showAlert();
-							else if (builder != null) {
-								if (send)
-									refreshList();
-							} else if (ComponentPath.length() > 0)
-								showAlert();
-							else
-								refreshList();
-						} else {
-							refreshList();
-						}
-
-					} else {
-						ShowError(SingleInstance.mainContext.getResources()
-								.getString(R.string.video),
-								SingleInstance.mainContext.getResources()
-										.getString(R.string.video_kindly_stop));
-					}
-
-				} else {
-					if (ON_CREATE) {
-						if (GET_RESOURCES == TEXT
-								&& edNotes.getText().toString() != null
-								&& edNotes.getText().toString().length() > 0) {
-							showAlert();
-						} else if (GET_RESOURCES == AUDIO && audioExist) {
-							showAlert();
-						} else if ((GET_RESOURCES == CAPTURE_VIDEO
-								|| GET_RESOURCES == FROM_CAMERA
-								|| GET_RESOURCES == FROM_GALERY || GET_RESOURCES == GALLERY_KITKAT_INTENT_CALLED)
-								&& ComponentPath != null
-								&& ComponentPath.length() > 0) {
-							showAlert();
-						} else if (builder != null)
-							if (send)
-								refreshList();
-							else if (ComponentPath.length() > 0)
-								showAlert();
-							else
-								refreshList();
-					} else
+				if (ON_CREATE) {
+					if (GET_RESOURCES == TEXT
+							&& edNotes.getText().toString() != null
+							&& edNotes.getText().toString().length() > 0)
+						showAlert();
+					else if (GET_RESOURCES == AUDIO && audioExist) {
+						showAlert();
+					} else if ((GET_RESOURCES == CAPTURE_VIDEO
+							|| GET_RESOURCES == FROM_CAMERA
+							|| GET_RESOURCES == FROM_GALERY || GET_RESOURCES == GALLERY_KITKAT_INTENT_CALLED)
+							&& ComponentPath != null
+							&& ComponentPath.length() > 0)
+						showAlert();
+					else {
 						refreshList();
-
-				}
-
+					}
+				} else
+					refreshList();
 			}
 			return super.onKeyDown(keyCode, event);
 		} catch (Exception e) {
@@ -4419,8 +4447,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
 				cbean = null;
 			commandlayout.setVisibility(View.GONE);
 			footerlayout.setVisibility(View.GONE);
-			tvTitle.setText(SingleInstance.mainContext.getResources()
-					.getString(R.string._audio_));
+//			tvTitle.setText(SingleInstance.mainContext.getResources()
+//					.getString(R.string._audio_));
 			showAudioView();
 
 		} else {
@@ -4463,8 +4491,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
 						cbean = null;
 					commandlayout.setVisibility(View.GONE);
 					footerlayout.setVisibility(View.GONE);
-					tvTitle.setText(SingleInstance.mainContext.getResources()
-							.getString(R.string._audio_));
+//					tvTitle.setText(SingleInstance.mainContext.getResources()
+//							.getString(R.string._audio_));
 					showAudioView();
 
 				} else {
@@ -5214,5 +5242,12 @@ public class ComponentCreator extends Activity implements IMNotifier {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	@Override
+	protected void onStop() {
+		super.onStop();
+		Log.i("pin", "Groupchatactivity Onstop");
+		AppReference.mainContext.isApplicationBroughtToBackground();
+
 	}
 }

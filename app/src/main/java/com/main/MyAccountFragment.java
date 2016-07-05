@@ -14,7 +14,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
@@ -35,6 +34,8 @@ import com.bean.ProfileBean;
 import com.cg.account.MyAccountActivity;
 import com.cg.account.TermsAndAgreement;
 import com.cg.callservices.AudioCallScreen;
+import com.cg.callservices.CallConnectingScreen;
+import com.cg.callservices.inCommingCallAlert;
 import com.cg.callservices.VideoCallScreen;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
@@ -67,7 +68,7 @@ public class MyAccountFragment extends Fragment {
     CheckBox baa;
     String strIPath;
     private Context context;
-
+    private String add_citation = "",add_association = "",add_hospital = "",add_address="";
     private Handler handler = new Handler();
     private ProgressDialog progressDialog = null;
     private AlertDialog alert = null;
@@ -76,6 +77,7 @@ public class MyAccountFragment extends Fragment {
     private ImageLoader imageLoader;
     private ProfileBean pBean=null;
     String status;
+    private LinearLayout cite_lay, cite_lay1,association_lay1,hospital_lay1,address_lay1;
 
     public static MyAccountFragment newInstance(Context context) {
         try {
@@ -99,6 +101,9 @@ public class MyAccountFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         try {
+            AppReference.bacgroundFragment=myAccountFragment;
+            getActivity().getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
             Button select = (Button) getActivity().findViewById(R.id.btn_brg);
             select.setVisibility(View.GONE);
             TextView title = (TextView) getActivity().findViewById(
@@ -147,14 +152,40 @@ public class MyAccountFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     mainHeader.setVisibility(View.GONE);
-                    addShowHideListener(AudioCallScreen.getInstance(SingleInstance.mainContext));
+                    addShowHideListener(true);
                 }
             });
             video_minimize.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mainHeader.setVisibility(View.GONE);
-                    addShowHideListener(VideoCallScreen.getInstance(SingleInstance.mainContext));
+                    addShowHideListener(false);
+                }
+            });
+            ImageView min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
+            ImageView min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
+            min_incall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mainHeader.setVisibility(View.GONE);
+                    inCommingCallAlert incommingCallAlert = inCommingCallAlert.getInstance(SingleInstance.mainContext);
+                    FragmentManager fragmentManager = SingleInstance.mainContext
+                            .getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(
+                            R.id.activity_main_content_fragment, incommingCallAlert)
+                            .commitAllowingStateLoss();
+                }
+            });
+            min_outcall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mainHeader.setVisibility(View.GONE);
+                    CallConnectingScreen callConnectingScreen = CallConnectingScreen.getInstance(SingleInstance.mainContext);
+                    FragmentManager fragmentManager = SingleInstance.mainContext
+                            .getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(
+                            R.id.activity_main_content_fragment, callConnectingScreen)
+                            .commitAllowingStateLoss();
                 }
             });
             plusBtn.setOnClickListener(new View.OnClickListener() {
@@ -311,7 +342,12 @@ public class MyAccountFragment extends Fragment {
         offcAddr = (TextView)view. findViewById(R.id.offcAddress);
         hospital = (TextView)view. findViewById(R.id.hospital);
         association = (TextView)view. findViewById(R.id.association);
-        citations = (TextView)view. findViewById(R.id.citations);
+//        citations = (TextView)view. findViewById(R.id.citations);
+        cite_lay1 = (LinearLayout)view.findViewById(R.id.cite_lay1);
+        address_lay1 = (LinearLayout)view.findViewById(R.id.address_lay1);
+        hospital_lay1 = (LinearLayout)view.findViewById(R.id.hospital_lay1);
+        association_lay1 = (LinearLayout)view.findViewById(R.id.association_lay1);
+
     }
     private String encodeTobase64(Bitmap image) {
         Bitmap immagex = image;
@@ -367,8 +403,8 @@ public class MyAccountFragment extends Fragment {
         try {
             ProfileBean bean=SingleInstance.myAccountBean;
             if(bean.getUsername()!=null) {
-                if(bean.getTitle()!=null && bean.getFirstname()!=null)
-                     nicName.setText(bean.getTitle() + "" + bean.getFirstname());
+                if(bean.getTitle()!=null && bean.getLastname()!=null)
+                     nicName.setText(bean.getTitle() + "" + bean.getLastname());
                 else
                     nicName.setText( bean.getFirstname());
                 cancelDialog();
@@ -377,8 +413,49 @@ public class MyAccountFragment extends Fragment {
                 fName.setText(bean.getFirstname());
             if(bean.getLastname()!=null)
                 lName.setText(bean.getLastname());
-            if(bean.getOfficeaddress()!=null)
-                offcAddr.setText(bean.getOfficeaddress());
+            if(bean.getOfficeaddress()!=null) {
+                add_address = bean.getOfficeaddress();
+                if(add_address.length()>0) {
+                    address_lay1.removeAllViews();
+                    String[] split = add_address.split("###");
+
+                    for (int i = 0; i < split.length; i++) {
+                        Log.d("citation1", "values--->" + bean.getCitationpublications());
+                        LinearLayout llay = new LinearLayout(mainContext);
+                        LinearLayout.LayoutParams dut = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        dut.leftMargin = 20;
+                        dut.rightMargin = 20;
+                        llay.setLayoutParams(dut);
+
+
+                        ImageView button = new ImageView(mainContext);
+                        LinearLayout.LayoutParams but = new LinearLayout.LayoutParams(25, 25);
+                        but.leftMargin = 25;
+                        but.topMargin = 25;
+                        button.setLayoutParams(but);
+                        button.setBackgroundDrawable(getResources().getDrawable(R.drawable.invisibleicon));
+
+
+                        TextView dynamicText = new TextView(mainContext);
+                        LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        dim.leftMargin = 20;
+                        dim.topMargin = 5;
+
+                        dynamicText.setLayoutParams(dim);
+
+
+                        if (!split[i].equalsIgnoreCase("") && split.length > 0) {
+                            Log.d("citationvalues", "adding-->" + split[i]);
+                            dynamicText.setText(split[i]);
+                            llay.addView(button);
+                            llay.addView(dynamicText);
+                            address_lay1.addView(llay);
+                        }
+                    }
+                }
+//                offcAddr.setText(bean.getOfficeaddress());
+            }
+
             if(bean.getPhoto()!=null){
                 String profilePic=bean.getPhoto();
                 Log.i("AAAA", "MYACCOUNT "+profilePic);
@@ -397,7 +474,7 @@ public class MyAccountFragment extends Fragment {
             if(bean.getTitle()!=null)
                 title.setText(bean.getTitle());
 
-            if(bean.getSex() != null)
+            if(bean.getSex() != null &&bean.getSex().length()>0)
                 sex.setText(String.valueOf(bean.getSex().charAt(0)));
 
             if(bean.getUsertype()!=null){
@@ -422,13 +499,134 @@ public class MyAccountFragment extends Fragment {
                 fellowship.setText(bean.getFellowshipprogram());
             }
             if(bean.getHospitalaffiliation()!=null){
-                hospital.setText(bean.getHospitalaffiliation());
+                add_hospital = bean.getHospitalaffiliation();
+                if(add_hospital.length()>0) {
+                    hospital_lay1.removeAllViews();
+                    String[] split = add_hospital.split("###");
+
+                    for (int i = 0; i < split.length; i++) {
+                        Log.d("citation1", "values--->" + bean.getCitationpublications());
+                        LinearLayout llay = new LinearLayout(mainContext);
+                        LinearLayout.LayoutParams dut = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        dut.leftMargin = 20;
+                        dut.rightMargin = 20;
+                        llay.setLayoutParams(dut);
+
+
+                        ImageView button = new ImageView(mainContext);
+                        LinearLayout.LayoutParams but = new LinearLayout.LayoutParams(25, 25);
+                        but.leftMargin = 25;
+                        but.topMargin = 25;
+                        button.setLayoutParams(but);
+                        button.setBackgroundDrawable(getResources().getDrawable(R.drawable.invisibleicon));
+
+
+                        TextView dynamicText = new TextView(mainContext);
+                        LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        dim.leftMargin = 20;
+                        dim.topMargin = 5;
+
+                        dynamicText.setLayoutParams(dim);
+
+
+                        if (!split[i].equalsIgnoreCase("") && split.length > 0) {
+                            Log.d("citationvalues", "adding-->" + split[i]);
+                            dynamicText.setText(split[i]);
+                            llay.addView(button);
+                            llay.addView(dynamicText);
+                            hospital_lay1.addView(llay);
+                        }
+                    }
+                }
+//                hospital.setText(bean.getHospitalaffiliation());
             }
             if(bean.getOrganizationmembership()!=null){
-                association.setText(bean.getOrganizationmembership());
+                add_association = bean.getOrganizationmembership();
+                if(add_association.length()>0) {
+                    association_lay1.removeAllViews();
+                    String[] split = add_association.split("###");
+
+                    for (int i = 0; i < split.length; i++) {
+                        Log.d("citation1", "values--->" + bean.getCitationpublications());
+                        LinearLayout llay = new LinearLayout(mainContext);
+                        LinearLayout.LayoutParams dut = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        dut.leftMargin = 20;
+                        dut.rightMargin = 20;
+                        llay.setLayoutParams(dut);
+
+
+                        ImageView button = new ImageView(mainContext);
+                        LinearLayout.LayoutParams but = new LinearLayout.LayoutParams(25, 25);
+                        but.leftMargin = 25;
+                        but.topMargin = 25;
+                        button.setLayoutParams(but);
+                        button.setBackgroundDrawable(getResources().getDrawable(R.drawable.invisibleicon));
+
+
+                        TextView dynamicText = new TextView(mainContext);
+                        LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        dim.leftMargin = 20;
+                        dim.topMargin = 5;
+
+                        dynamicText.setLayoutParams(dim);
+
+
+                        if (!split[i].equalsIgnoreCase("") && split.length > 0) {
+                            Log.d("citationvalues", "adding-->" + split[i]);
+                            dynamicText.setText(split[i]);
+                            llay.addView(button);
+                            llay.addView(dynamicText);
+                            association_lay1.addView(llay);
+                        }
+                    }
+                }
+//                association.setText(bean.getOrganizationmembership());
             }
-            if(bean.getCitationpublications()!=null)
-                citations.setText(bean.getCitationpublications());
+            if(bean.getCitationpublications()!=null) {
+                Log.d("String","value");
+
+                add_citation = bean.getCitationpublications();
+                Log.d("citation", "values--->" + add_citation);
+                if(add_citation.length()>0) {
+                    cite_lay1.removeAllViews();
+                    String[] split = add_citation.split("###");
+
+                    for (int i = 0; i < split.length; i++) {
+                        Log.d("citation1", "values--->" + bean.getCitationpublications());
+                        LinearLayout llay = new LinearLayout(mainContext);
+                        LinearLayout.LayoutParams dut = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        dut.leftMargin = 20;
+                        dut.rightMargin = 20;
+                        llay.setLayoutParams(dut);
+
+
+                        ImageView button = new ImageView(mainContext);
+                        LinearLayout.LayoutParams but = new LinearLayout.LayoutParams(25, 25);
+                        but.leftMargin = 25;
+                        but.topMargin = 25;
+                        button.setLayoutParams(but);
+                        button.setBackgroundDrawable(getResources().getDrawable(R.drawable.invisibleicon));
+
+
+                        TextView dynamicText = new TextView(mainContext);
+                        LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        dim.leftMargin = 20;
+                        dim.topMargin = 5;
+
+                        dynamicText.setLayoutParams(dim);
+
+
+                        if (!split[i].equalsIgnoreCase("") && split.length > 0) {
+                            Log.d("citationvalues", "adding-->" + split[i]);
+                            dynamicText.setText(split[i]);
+                            llay.addView(button);
+                            llay.addView(dynamicText);
+                            cite_lay1.addView(llay);
+                        }
+                    }
+                }
+//            citations.setText(bean.getCitationpublications());
+            }
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -646,7 +844,7 @@ public class MyAccountFragment extends Fragment {
                         fellowship.setText("");
                         offcAddr.setText("");
                         hospital.setText("");
-                        citations.setText("");
+                        cite_lay1.removeAllViews();
                         tos.setChecked(false);
                         baa.setChecked(false);
                         Toast.makeText(context, Response, Toast.LENGTH_LONG).show();
@@ -678,14 +876,21 @@ public class MyAccountFragment extends Fragment {
     public void setContext(Context cxt) {
         this.mainContext = cxt;
     }
-    void addShowHideListener( final Fragment fragment) {
-        FragmentManager fm = AppReference.mainContext.getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        if (fragment.isHidden()) {
-            ft.show(fragment);
-        } else {
-            ft.hide(fragment);
+    void addShowHideListener( final Boolean isAudio) {
+        if(isAudio) {
+            AudioCallScreen audioCallScreen = AudioCallScreen.getInstance(SingleInstance.mainContext);
+            FragmentManager fragmentManager = SingleInstance.mainContext
+                    .getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(
+                    R.id.activity_main_content_fragment, audioCallScreen)
+                    .commitAllowingStateLoss();
+        }else {
+            VideoCallScreen videoCallScreen = VideoCallScreen.getInstance(SingleInstance.mainContext);
+            FragmentManager fragmentManager = SingleInstance.mainContext
+                    .getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(
+                    R.id.activity_main_content_fragment, videoCallScreen)
+                    .commitAllowingStateLoss();
         }
-        ft.commit();
     }
 }

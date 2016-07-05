@@ -103,53 +103,57 @@ public class RoundingPatientAdapter extends ArrayAdapter<PatientDetailsBean> {
                     holder.img_pad.setVisibility(View.GONE);
                 }
 
-                String[] split = pBean.getStatus().split(" ");
-                for (int i = 0; i < split.length; i++) {
-                    if(i<=5){
-                        TextView dynamicTextView = new TextView(context);
-                        LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 60);
-                        dim.leftMargin = 20;
-                        dynamicTextView.setLayoutParams(dim);
-                        dynamicTextView.setGravity(Gravity.CENTER);
-                        dynamicTextView.setBackgroundDrawable(SingleInstance.mainContext.getResources().getDrawable(R.drawable.sender_border));
-                        if (split[i].equalsIgnoreCase("critical"))
-                            dynamicTextView.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.red_color));
-                        else if(split[i].equalsIgnoreCase("stable")) {
-                            dynamicTextView.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.green));
-                        } else if(split[i].equalsIgnoreCase("sick")) {
-                            dynamicTextView.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.yellow));
-                        }
-                        if(!split[i].equalsIgnoreCase("") && split.length>0){
+                if(pBean.getStatus()!=null) {
+                    String[] split = pBean.getStatus().split(" ");
+                    Log.i("AAAA", "rounding adapter status " + pBean.getStatus());
+                    holder.currentstatus_lay.removeAllViews();
+                    holder.currentstatus_lay1.removeAllViews();
+                    for (int i = 0; i < split.length; i++) {
+                        if (i <= 5) {
+                            TextView dynamicTextView = new TextView(context);
+                            LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 60);
+                            dim.leftMargin = 20;
+                            dynamicTextView.setLayoutParams(dim);
+                            dynamicTextView.setGravity(Gravity.CENTER);
+                            dynamicTextView.setBackgroundDrawable(SingleInstance.mainContext.getResources().getDrawable(R.drawable.sender_border));
+                            if (split[i].equalsIgnoreCase("critical"))
+                                dynamicTextView.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.pink_tv));
+                            else if (split[i].equalsIgnoreCase("stable")) {
+                                dynamicTextView.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.green));
+                            } else if (split[i].equalsIgnoreCase("sick")) {
+                                dynamicTextView.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.yellow));
+                            }
+                            if (!split[i].equalsIgnoreCase("") && split.length > 0) {
+                                dynamicTextView.setText(split[i]);
+                                holder.currentstatus_lay.addView(dynamicTextView);
+                            }
+
+                        } else if (i > 5) {
+                            TextView dynamicTextView = new TextView(context);
+                            LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 60);
+                            dim.leftMargin = 20;
+                            dynamicTextView.setLayoutParams(dim);
+                            dynamicTextView.setGravity(Gravity.CENTER);
+                            dynamicTextView.setBackgroundDrawable(SingleInstance.mainContext.getResources().getDrawable(R.drawable.sender_border));
+                            if (split[i].equalsIgnoreCase("critical"))
+                                dynamicTextView.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.pink_tv));
+                            else if (split[i].equalsIgnoreCase("stable")) {
+                                dynamicTextView.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.green));
+                            } else if (split[i].equalsIgnoreCase("sick")) {
+                                dynamicTextView.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.yellow));
+                            }
                             dynamicTextView.setText(split[i]);
-                            holder.currentstatus_lay.addView(dynamicTextView);
+                            holder.currentstatus_lay1.addView(dynamicTextView);
                         }
 
-                    }else if(i>5){
-                        TextView dynamicTextView = new TextView(context);
-                        LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 60);
-                        dim.leftMargin = 20;
-                        dynamicTextView.setLayoutParams(dim);
-                        dynamicTextView.setGravity(Gravity.CENTER);
-                        dynamicTextView.setBackgroundDrawable(SingleInstance.mainContext.getResources().getDrawable(R.drawable.sender_border));
-                        if (split[i].equalsIgnoreCase("critical"))
-                            dynamicTextView.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.red_color));
-                        else if(split[i].equalsIgnoreCase("stable")) {
-                            dynamicTextView.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.green));
-                        } else if(split[i].equalsIgnoreCase("sick")) {
-                            dynamicTextView.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.yellow));
-                        }
-                        dynamicTextView.setText(split[i]);
-                        holder.currentstatus_lay1.addView(dynamicTextView);
                     }
-
                 }
                 if(pBean.getFirstname()!=null && pBean.getLastname()!=null)
                     holder.patientname.setText(pBean.getFirstname()+" "+pBean.getLastname());
                 if(pBean.getDob()!=null&& pBean.getDob().length()>0) {
                     String birthdate=pBean.getDob();
-                    Log.i("sss","Current birthdate"+birthdate);
-                    birthdate.replace("-","/");
-                    String[] str = birthdate.split("/");
+                    Log.i("sss", "Current birthdate" + birthdate);
+                    String[] str = birthdate.split("-");
                     int Currentyear = Calendar.getInstance().get(Calendar.YEAR);
                     Log.i("sss","Current year"+Currentyear);
 
@@ -177,16 +181,15 @@ public class RoundingPatientAdapter extends ArrayAdapter<PatientDetailsBean> {
                     String inputString = dateFormat.format(date);
                     String Today = inputString;
                     SimpleDateFormat myFormat = new SimpleDateFormat("dd-MM-yyyy");
-                    String str = AdmitDate.replace("/","-");
                     Log.i("patientdetails","patient adapter "+AdmitDate);
-                    String fromDate=str;
+                    String fromDate=AdmitDate;
                     String inputString1 =fromDate;
                     Log.i("sss","From Date1 : " + inputString1);
                     String inputString2 = Today;
                     Log.i("sss","Current Date1 : " + inputString2);
                     try {
-                        Date date1 = myFormat.parse(inputString1);
-                        Date date2 = myFormat.parse(inputString2);
+                        Date date1 = dateFormat.parse(inputString1);
+                        Date date2 = dateFormat.parse(inputString2);
                         long diff = date2.getTime() - date1.getTime();
                         Log.i("sss","DIFF"+diff);
                         long diffSeconds = diff / 1000 % 60;
@@ -202,7 +205,7 @@ public class RoundingPatientAdapter extends ArrayAdapter<PatientDetailsBean> {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    holder.los.setText("Los : " +Result);
+                    holder.los.setText("Los : " +Result + " days");
                 }
                 if(pBean.getBed()!=null)
                     holder.bed.setText("Bed : "+pBean.getBed());

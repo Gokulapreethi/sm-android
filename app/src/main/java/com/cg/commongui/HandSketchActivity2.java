@@ -141,7 +141,7 @@ getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.Layou
 		pencilBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				pencil_layout.setVisibility(View.GONE);
+				pencil_layout.setVisibility(View.INVISIBLE);
 			}
 		});
 
@@ -307,6 +307,40 @@ getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.Layou
 
 		if (view.getId() == R.id.draw_btn) {
 
+//				if (imageSelectedOption == 0) {
+//					if(StoredFilepath!=null) {
+//					File file = new File(StoredFilepath);
+//					if (file.exists()) {
+//						Log.i("handsketch123", "file name : " + file.getPath());
+//						Bitmap bitMap = callDisp.ResizeImage(StoredFilepath);
+//						if (bitMap != null) {
+//							Log.i("handsketch123", "bitmap not null");
+//							drawView.setImage(bitMap);
+//						}
+//					}
+//				}
+//			}else if(imageSelectedOption==1) {
+//					if (SelectedGallaryImage != null) {
+//						Bitmap board;
+//
+//						String[] filePathColumn = {MediaStore.Images.Media.DATA};
+//						Cursor cursor = getContentResolver().query(SelectedGallaryImage,
+//								filePathColumn, null, null, null);
+//						cursor.moveToFirst();
+//
+//						int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//						String picturePath = cursor.getString(columnIndex);
+//						cursor.close();
+//
+//						// board=BitmapFactory.decodeFile(picturePath);
+//						int h = drawView.getHeight(); // 320; // Height in pixels
+//						int w = drawView.getWidth();// 480; // Width in pixels
+//						board = Bitmap.createScaledBitmap(
+//								BitmapFactory.decodeFile(picturePath), w, h, true);
+//						drawView.setImage(board);
+//					}
+//				}
+
 			drawView.setErase(false);
 			pencil_layout.setVisibility(View.VISIBLE);
 			setDefault();
@@ -331,7 +365,7 @@ getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.Layou
 			selectImage();
 		}
 		else if (view.getId() == R.id.maxBtn) {
-			setDefault();
+//			setDefault();
 			maxBtn.setBackgroundColor(getResources().getColor(R.color.black));
 
 			float x=drawView.getScaleX();
@@ -342,7 +376,7 @@ getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.Layou
 			}
 		}
 		else if (view.getId() == R.id.minBtn) {
-			setDefault();
+//			setDefault();
 			minBtn.setBackgroundColor(getResources().getColor(R.color.black));
 
 			float x=drawView.getScaleX();
@@ -501,9 +535,9 @@ getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.Layou
 							dir.mkdir();
 						}
 
-						File fle = new File(folderPath, "Instruction_image"
+						File fle = new File(folderPath, "Sketch_file"
 								+ getFileName() + ".jpg");
-						String filename = folderPath + "Instruction_image"
+						String filename = folderPath + "Sketch_file"
 								+ getFileName() + ".jpg";
 						// String imgSaved =
 						// MediaStore.Images.Media.insertImage(
@@ -656,6 +690,7 @@ getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.Layou
 			if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
 				String filePath = data.getStringExtra("filePath");
 				StoredFilepath = filePath;
+				imageSelectedOption=0;
 				File file = new File(filePath);
 				if (file.exists()) {
 					Log.i("handsketch123", "file name : " + file.getPath());
@@ -673,6 +708,7 @@ getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.Layou
 				}
 			} else if (requestCode == GALLERY_REQUEST
 					&& resultCode == RESULT_OK && data != null) {
+				imageSelectedOption=1;
 				Uri selectedImage = data.getData();
 				SelectedGallaryImage = selectedImage;
 				String[] filePathColumn = { MediaStore.Images.Media.DATA };

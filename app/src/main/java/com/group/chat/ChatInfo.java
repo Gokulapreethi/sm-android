@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -12,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bean.GroupChatBean;
+import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
 import com.cg.snazmed.R;
 import com.main.ContactsFragment;
@@ -42,6 +44,40 @@ public class ChatInfo extends Activity {
             TextView tvdelivered = (TextView) findViewById(R.id.tvdelivered);
             GroupChatBean chatList = (GroupChatBean) getIntent().getSerializableExtra("chatlistindividual");
             msgView.setText(chatList.getMessage());
+            if(chatList!=null && chatList.getMediaName()!=null){
+                if(chatList.getMediaName().contains("COMMedia")){
+                    String allFiles_name=null;
+                    if(chatList.getMediaName().contains(",")){
+                        String multi_name[]=chatList.getMediaName().split(",");
+                        for(int i=0;i<multi_name.length;i++){
+                            String filename = multi_name[i].split("COMMedia/")[1];
+                            if (filename != null && !filename.equalsIgnoreCase("null")) {
+                                if (allFiles_name == null) {
+                                    allFiles_name = filename;
+                                } else {
+                                    allFiles_name = allFiles_name + "\n" + filename;
+                                }
+                            }
+
+                        }
+
+                    }else {
+                        String filename = chatList.getMediaName().split("COMMedia/")[1];
+                        if (filename != null && !filename.equalsIgnoreCase("null")) {
+                            allFiles_name=filename;
+                        }
+                    }
+                    if(chatList.getMessage()!=null && !chatList.getMessage().equalsIgnoreCase("null")&&allFiles_name!=null){
+                        msgView.setText(chatList.getMessage()+"\n"+allFiles_name);
+                    }else{
+                        if(allFiles_name!=null) {
+                            msgView.setText(allFiles_name);
+                        }
+                    }
+
+
+                }
+            }
             sentView.setText("Sent:");
 //        tvdate.setText(chatList.getSenttime());
             tvread.setText(Html.fromHtml("<font color=\"#FFFFFF\">"
@@ -69,10 +105,15 @@ public class ChatInfo extends Activity {
 
                 Vector<ChatInfoBean> chat = new Vector<ChatInfoBean>();
                 Vector<ChatInfoBean> deliveredchat = new Vector<ChatInfoBean>();
+
                 for(ChatInfoBean b:ChatInfoMap)
                 {
+                    ProfileBean profileBean = DBAccess.getdbHeler().getProfileDetails(b.getName());
+                    b.setName(profileBean.getFirstname()+" "+profileBean.getLastname());
+                    Log.d("username","string"+b.getName());
                     if(b.getStatus().equalsIgnoreCase("3"))
                     {
+
                         chat.add(b);
                     }
                     deliveredchat.add(b);
@@ -102,6 +143,9 @@ public class ChatInfo extends Activity {
                 Vector<ChatInfoBean> deliveredchat = new Vector<ChatInfoBean>();
                 for(ChatInfoBean b:ChatInfoMap)
                 {
+                    ProfileBean profileBean = DBAccess.getdbHeler().getProfileDetails(b.getName());
+                    b.setName(profileBean.getFirstname()+" "+profileBean.getLastname());
+                    Log.d("username","stringe"+b.getName());
                     if(b.getStatus().equalsIgnoreCase("3"))
                     {
                         chat.add(b);

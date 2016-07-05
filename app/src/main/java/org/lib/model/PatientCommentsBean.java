@@ -8,6 +8,7 @@ public class PatientCommentsBean {
     private String comments;
     private String dateandtime;
     private String patientid;
+    private String membername;
 
     public String getGroupid() {
         return groupid;
@@ -63,5 +64,13 @@ public class PatientCommentsBean {
 
     public void setPatientid(String patientid) {
         this.patientid = patientid;
+    }
+
+    public String getMembername() {
+        return membername;
+    }
+
+    public void setMembername(String membername) {
+        this.membername = membername;
     }
 }

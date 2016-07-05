@@ -3,6 +3,7 @@ package com.cg.callservices;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import org.util.Queue;
 
@@ -50,7 +51,7 @@ public class VideoThreadMultiWindow extends Thread {
 
         try {
             while (running) {
-                // System.out.println("videoQueue :" + videoQueue.getSize());
+                 Log.i("NotesVideo","videoQueue :" + videoQueue.getSize());
 
 //                byte data[] = (byte[]) videoQueue.getMsg();
 

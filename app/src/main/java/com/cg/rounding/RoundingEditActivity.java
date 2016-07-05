@@ -6,7 +6,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -21,12 +25,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.snazmed.R;
+import com.image.utils.ImageLoader;
+import com.main.ContactsFragment;
 import com.util.SingleInstance;
 
+import org.lib.model.BuddyInformationBean;
 import org.lib.model.GroupMemberBean;
 
 import java.util.ArrayList;
@@ -38,6 +46,7 @@ public class RoundingEditActivity extends Activity {
     private String groupid;
     private Context context;
     private String role;
+    private ImageLoader imageLoader;
 
     Handler handler = new Handler();
     private ProgressDialog progress = null;
@@ -48,12 +57,14 @@ public class RoundingEditActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.roun_edit_role);
         context=this;
-        SingleInstance.contextTable.put("roundingEdit", context);
-        final Spinner rights = (Spinner) findViewById(R.id.rights);
+        WebServiceReferences.contextTable.put("roundingEdit", context);
+        final AutoCompleteTextView rights = (AutoCompleteTextView) findViewById(R.id.rights);
         Button cancel=(Button)findViewById(R.id.cancel);
         Button save=(Button)findViewById(R.id.save);
         TextView buddy=(TextView)findViewById(R.id.buddy);
         TextView profession=(TextView)findViewById(R.id.profession);
+        ImageView buddypic=(ImageView)findViewById(R.id.riv1);
+        ImageView statusIcon=(ImageView)findViewById(R.id.imgstatus);
         final CheckBox ch=(CheckBox)findViewById(R.id.chbox1);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,6 +96,46 @@ public class RoundingEditActivity extends Activity {
                     status = "0";
             }
         });
+        String profilepic = null,status1 = null;
+        ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(buddyname);
+        profilepic= pBean.getPhoto();
+        imageLoader = new ImageLoader(SingleInstance.mainContext);
+        if(buddyname.equalsIgnoreCase(CallDispatcher.LoginUser))
+            status1=CallDispatcher.myStatus;
+        else
+        for(BuddyInformationBean bib: ContactsFragment.getBuddyList()){
+            if(bib.getName().equalsIgnoreCase(buddyname)){
+                status1=bib.getStatus();
+                break;
+            }
+        }
+        if (profilepic != null) {
+            String profilePic = profilepic;
+            if (profilePic != null && profilePic.length() > 0) {
+                if (!profilePic.contains("COMMedia")) {
+                    profilePic = Environment
+                            .getExternalStorageDirectory()
+                            + "/COMMedia/" + profilePic;
+                }
+                imageLoader.DisplayImage(profilePic, buddypic,
+                        R.drawable.img_user);
+            }
+        }
+        if(status1!=null) {
+            if (status1.equalsIgnoreCase("online")) {
+                statusIcon.setBackgroundResource(R.drawable.online_icon);
+            } else if (status1.equalsIgnoreCase("offline")) {
+                statusIcon.setBackgroundResource(R.drawable.offline_icon);
+            } else if (status1.equalsIgnoreCase("Away")) {
+                statusIcon.setBackgroundResource(R.drawable.busy_icon);
+            } else if (status1.equalsIgnoreCase("Stealth")) {
+                statusIcon.setBackgroundResource(R.drawable.invisibleicon);
+            } else if (status1.equalsIgnoreCase("Airport")) {
+                statusIcon.setBackgroundResource(R.drawable.busy_icon);
+            } else {
+                statusIcon.setBackgroundResource(R.drawable.offline_icon);
+            }
+        }
         ArrayList<String> list = new ArrayList<String>();
         list.add("Fellow");
         list.add("Attending");
@@ -95,18 +146,42 @@ public class RoundingEditActivity extends Activity {
 
         CustomAdapter dataAdapter = new CustomAdapter(this, R.layout.memberrights, list);
         rights.setAdapter(dataAdapter);
+        rights.setThreshold(1);
+        rights.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
-        if(bean.getRole()!=null){
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            rights.setSelection(dataAdapter.getPosition(bean.getRole()));
+                    rights.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.input_arrow, 0);
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
+        if(bean.getRole()!=null && bean.getRole().length()>0){
+            rights.setText(bean.getRole());
         }
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showprogress();
-               role= rights.getSelectedItem().toString();
+               role= rights.getText().toString();
                 WebServiceReferences.webServiceClient.SetMemberRights(buddyname, groupid, status,
                         role, context);
+            }
+        });
+        rights.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                rights.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.up_arrow, 0);
+                rights.showDropDown();
             }
         });
     }

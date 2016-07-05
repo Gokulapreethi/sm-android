@@ -60,7 +60,7 @@
                 android:id="@+id/tv_notification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Notification"
+                android:text="Notifications"
                 android:textColor="@color/black"
                 android:textSize="13sp"
                 android:gravity="center" />

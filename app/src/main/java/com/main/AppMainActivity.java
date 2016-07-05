@@ -3,21 +3,6 @@
  */
 package com.main;
 
-import org.core.ProprietarySignalling;
-import org.lib.PatientDetailsBean;
-import org.lib.model.FileDetailsBean;
-import org.lib.model.GroupMemberBean;
-import org.lib.model.PatientCommentsBean;
-import org.lib.model.RoleAccessBean;
-import org.lib.model.RoleCommentsViewBean;
-import org.lib.model.RoleEditRndFormBean;
-import org.lib.model.RolePatientManagementBean;
-import org.lib.model.RoleTaskMgtBean;
-import org.lib.model.PatientDescriptionBean;
-import org.lib.model.TaskDetailsBean;
-import org.lib.model.UdpMessageBean;
-import org.tcp.TCPEngine;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -31,7 +16,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -48,7 +32,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -71,23 +54,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Base64;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -104,12 +83,15 @@ import com.bean.IndividualPermission;
 import com.bean.ProfileBean;
 import com.bean.SpecialMessageBean;
 import com.bean.UploadDownloadStatusBean;
+import com.callHistory.CallHistoryActivity;
 import com.cg.DB.DBAccess;
 import com.cg.account.ChangePassword;
 import com.cg.account.FindPeople;
+import com.cg.account.MyAccountActivity;
 import com.cg.account.PinAndTouchId;
 import com.cg.account.PinSecurity;
 import com.cg.account.SecurityQuestions;
+import com.cg.account.SplashScreen;
 import com.cg.account.forgotPassword;
 import com.cg.avatar.AvatarActivity;
 import com.cg.callservices.AudioCallScreen;
@@ -128,7 +110,9 @@ import com.cg.commongui.MultimediaUtils;
 import com.cg.commongui.TestHTML5WebView;
 import com.cg.files.CompleteListBean;
 import com.cg.files.CompleteListView;
+import com.cg.files.ComponentCreator;
 import com.cg.files.Components;
+import com.cg.files.FilePicker;
 import com.cg.forms.Alert;
 import com.cg.forms.AppsView;
 import com.cg.forms.FormRecordsCreators;
@@ -139,10 +123,13 @@ import com.cg.ftpprocessor.FTPNotifier;
 import com.cg.ftpprocessor.FTPQueue;
 import com.cg.hostedconf.AppReference;
 import com.cg.profiles.ViewProfiles;
+import com.cg.rounding.DuplicateExistingGroups;
 import com.cg.rounding.NotificationReceiver;
+import com.cg.rounding.RoundNewPatientActivity;
 import com.cg.rounding.RoundingEditActivity;
 import com.cg.rounding.RoundingFragment;
 import com.cg.rounding.RoundingGroupActivity;
+import com.cg.rounding.TaskCreationActivity;
 import com.cg.settings.UserSettingsBean;
 import com.cg.snazmed.R;
 import com.cg.snazmed.R.drawable;
@@ -156,27 +143,33 @@ import com.ftp.FTPPoolManager;
 import com.group.GroupActivity;
 import com.group.GroupAdapter1;
 import com.group.GroupRequestFragment;
+import com.group.chat.ForwardUserSelect;
 import com.group.chat.GroupChatActivity;
 import com.group.chat.GroupChatBroadCastReceiver;
 import com.image.utils.ImageLoader;
 import com.process.BGProcessor;
 import com.process.MemoryProcessor;
 import com.screensharing.ScreenSharingFragment;
+import com.service.FloatingCallService;
 import com.thread.CommunicationBean;
 import com.thread.SipCommunicator;
 import com.thread.SipCommunicator.sip_operation_types;
 import com.thread.SipQueue;
+import com.util.CustomVideoCamera;
 import com.util.MyExceptionHandler;
 import com.util.SingleInstance;
 import com.util.Utils;
 import com.util.VideoPlayer;
 
 import org.core.CommunicationEngine;
+import org.core.ProprietarySignalling;
+import org.lib.PatientDetailsBean;
 import org.lib.model.AppVersionUpdateBean;
 import org.lib.model.BuddyInformationBean;
 import org.lib.model.ChattemplateModifieddate;
 import org.lib.model.ConnectionBrokerBean;
 import org.lib.model.FieldTemplateBean;
+import org.lib.model.FileDetailsBean;
 import org.lib.model.FormAttributeBean;
 import org.lib.model.FormRecordsbean;
 import org.lib.model.FormSettingBean;
@@ -184,12 +177,23 @@ import org.lib.model.FormsBean;
 import org.lib.model.FormsListBean;
 import org.lib.model.Formsinfocontainer;
 import org.lib.model.GroupBean;
+import org.lib.model.GroupMemberBean;
 import org.lib.model.KeepAliveBean;
 import org.lib.model.OfflineRequestConfigBean;
+import org.lib.model.PatientCommentsBean;
+import org.lib.model.PatientDescriptionBean;
+import org.lib.model.RoleAccessBean;
+import org.lib.model.RoleCommentsViewBean;
+import org.lib.model.RoleEditRndFormBean;
+import org.lib.model.RolePatientManagementBean;
+import org.lib.model.RoleTaskMgtBean;
 import org.lib.model.ShareReminder;
+import org.lib.model.TaskDetailsBean;
+import org.lib.model.UdpMessageBean;
 import org.lib.model.WebServiceBean;
 import org.lib.model.chattemplatebean;
 import org.lib.webservice.Servicebean;
+import org.tcp.TCPEngine;
 import org.util.Utility;
 
 import java.io.BufferedReader;
@@ -215,7 +219,7 @@ import java.util.TimerTask;
 import java.util.Vector;
 
 
-public class AppMainActivity extends FragmentActivity implements PjsuaInterface,TCPEngine.TCPListener{
+public class AppMainActivity extends FragmentActivity implements PjsuaInterface,TCPEngine.TCPListener,FloatingCallService.CallButtonCallBack{
 
 	private MediaPlayer iplayer;
     public static boolean isLogin;
@@ -320,10 +324,16 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	public static String pinNo=null;
 	public  String[] questions=null;
 	public String seccreatedDate="";
-	private int count=0;
+	public int count=0;
 	public String EidforGroup;
 	public static Chronometer ctimer,cvtimer;
+	public static CharSequence call_chronometer_time;
 
+	public String activityOnTop;
+	public boolean openPinActivity=false;
+	public boolean isTouchIdEnabled=true;
+
+	private RelativeLayout mainHeader;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -364,6 +374,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
             btMenu = (ImageView) findViewById(R.id.side_menu);
             final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+			mainHeader=(RelativeLayout)findViewById(R.id.mainheader);
             final LinearLayout menu_side = (LinearLayout) findViewById(R.id.menu_side);
 			ctimer=(Chronometer)findViewById(R.id.audio_timer);
 			cvtimer=(Chronometer)findViewById(R.id.video_timer);
@@ -372,7 +383,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				public void onChronometerTick(Chronometer arg0) {
 
 					CharSequence text = ctimer.getText();
-						ctimer.setText("0" + text);
+					Log.i("Chrono","text : "+text);
+					call_chronometer_time = text;
+						ctimer.setText(text);
 
 				}
 			});
@@ -381,7 +394,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				public void onChronometerTick(Chronometer arg0) {
 
 					CharSequence text = cvtimer.getText();
-					cvtimer.setText("0" + text);
+					Log.i("Chrono","text : "+text);
+					call_chronometer_time = text;
+					cvtimer.setText(text);
 
 				}
 			});
@@ -661,6 +676,23 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			shareScreen = false;
 		}
 		cancelDialogOnResume();
+		if(isPinEnable) {
+			if (openPinActivity) {
+				openPinActivity=false;
+				if(Build.VERSION.SDK_INT>20 && isTouchIdEnabled) {
+					Intent i = new Intent(AppMainActivity.this, MainActivity.class);
+					startActivity(i);
+				}else {
+					Intent i = new Intent(AppMainActivity.this, PinSecurity.class);
+					startActivity(i);
+				}
+			} else {
+				count=0;
+				registerBroadcastReceiver();
+			}
+		}
+
+
 	}
 
 	public void hideKeyboard() {
@@ -794,7 +826,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				}else{
 					modifieddatetime="\"\"";
 				}
-				WebServiceReferences.webServiceClient.getChatTemplate(modifieddatetime);
+				WebServiceReferences.webServiceClient.getChatTemplate(CallDispatcher.LoginUser,modifieddatetime);
 			}
 			checkChatHistory();
 			setUnReadNotesSize();
@@ -1256,8 +1288,15 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 							Log.d("Test",
 									"Appmain$$$$ getActiveGroupMembers 1484 @@@ "
 											+ object.getActiveGroupMembers()
-													.length());
-							showToast(object.getOwnerName()
+											.length());
+							String fullname = object.getOwnerName();
+							for(BuddyInformationBean bean:ContactsFragment.getBuddyList()){
+								if(bean.getName().equalsIgnoreCase(object.getOwnerName())) {
+									fullname = bean.getFirstname() + " " + bean.getLastname();
+									break;
+								}
+							}
+							showToast(fullname
 									+ " have added you in the "
 									+ object.getGroupName() + " Group");
 						}
@@ -2033,137 +2072,142 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			Log.d("Test", "Inside LogoutAppmain");
 			isPinEnable=false;
 			if (CallDispatcher.LoginUser != null) {
-                CommunicationBean bean = new CommunicationBean();
+				if(!CallDispatcher.isCallInitiate) {
+					AppMainActivity appMainActivity = (AppMainActivity) SingleInstance.contextTable
+							.get("MAIN");
+					appMainActivity.showprogress();
+					CommunicationBean bean = new CommunicationBean();
 //                bean.setOperationType(SipCommunicator.sip_operation_types.SIGNOUT_ACCOUNT);
 //                AppReference.sipQueue.addMsg(bean);
-                Log.d("droid123", "SF SIP Signout");
-				if (AppReference.isWriteInFile)
-					AppReference.logger.debug("LOGOUT : Inside LOGOUT TRUE");
-				stopHeartBeatTimer();
-				String username = CallDispatcher.LoginUser;
-				CallDispatcher.LoginUser = null;
-				changeLoginButton();
-                isLogin = false;
-				ChatFTPBean chatFTPBean = new ChatFTPBean();
-				chatFTPBean.setOperation("CANCELNOTIFY");
-				FTPPoolManager.processRequest(chatFTPBean);
-                FTPQueue obj =new FTPQueue();
-                if(obj.getSize()>0)
-                {
-                    Log.d("ABCD", "Queuw LogoutAppmain"+obj.getSize());
-                    obj.makeEmptyQueue();
-                    NotificationManager notifManager= (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                    notifManager.cancelAll();
-                }
-				if (status) {
-					SingleInstance.printLog("Signin", "SINOUT Respone send",
-							"INFO", null);
-					WebServiceReferences.webServiceClient.siginout(username);
-				} else {
-
+					Log.d("droid123", "SF SIP Signout");
 					if (AppReference.isWriteInFile)
-						AppReference.logger
-								.debug("LOGOUT : Inside LOGOUT FALSE");
-					cancelDialog();
-					callDisp.dissableUserSettings();
-					SingleInstance.printLog("Signin", "Inside else in logout",
-							"INFO", null);
-					if (callDisp.gpsloc != null) {
-						callDisp.gpsloc.Stop();
-					}
-
-					if (WebServiceReferences.contextTable
-							.containsKey("alertscreen")) {
-						((inCommingCallAlert) WebServiceReferences.contextTable
-								.get("alertscreen")).finish();
-					}
-					WebServiceReferences.missedcallCount.clear();
-					callDisp.destroySIPStack();
-					callDisp.profilePicturepath = "";
-					if (CallDispatcher.isIncomingCall) {
-						CallDispatcher.isIncomingCall = false;
-					}
-					if (ftpNotifier != null)
-						ftpNotifier.shutDowntaskmanager();
-					ftpNotifier = null;
-
-					callDisp.cancelDownloadSchedule();
-					callDisp.stopRingTone();
-					// if (WebServiceReferences.buddyList != null) {
-					// if (WebServiceReferences.buddyList.size() > 0) {
-					// WebServiceReferences.buddyList.clear();
-					// }
-					// }
-					// if (callDisp.mainbuddylist != null)
-					// callDisp.mainbuddylist.clear();
-					// CallDispatcher.adapterToShow.notifyDataSetChanged();
-					// if (callDisp.pendinglist != null)
-					// callDisp.pendinglist.clear();
-
-					// if (WebServiceReferences.tempBuddyList != null) {
-					// if (WebServiceReferences.tempBuddyList.size() > 0) {
-					// WebServiceReferences.tempBuddyList.clear();
-					// }
-					// }
-					if (!callDisp.isKeepAliveSendAfter6Sec) {
-						handler.removeCallbacks(callDisp.hb_runnable);
-						callDisp.isKeepAliveSendAfter6Sec = false;
-					}
-					WebServiceReferences.webServiceClient.stop();
-					WebServiceReferences.running = false;
-					if (AppMainActivity.commEngine != null) {
-						AppMainActivity.commEngine.stop();
-					}
-					AppMainActivity.commEngine = null;
+						AppReference.logger.debug("LOGOUT : Inside LOGOUT TRUE");
+					stopHeartBeatTimer();
+					String username = CallDispatcher.LoginUser;
 					CallDispatcher.LoginUser = null;
-					callDisp.ipaddress = null;
-					// callDisp.mainbuddylist.clear();
-					CallDispatcher.members.clear();
-					CallDispatcher.reminderArrives = false;
-					callDisp.isKeepAliveSendAfter6Sec = false;
-					CallDispatcher.conferenceMembers.clear();
-					callDisp.bitmap_table.clear();
-
-					if (HBT != null) {
-						stopHeartBeatTimer();
+					changeLoginButton();
+					isLogin = false;
+					ChatFTPBean chatFTPBean = new ChatFTPBean();
+					chatFTPBean.setOperation("CANCELNOTIFY");
+					FTPPoolManager.processRequest(chatFTPBean);
+					FTPQueue obj = new FTPQueue();
+					if (obj.getSize() > 0) {
+						Log.d("ABCD", "Queuw LogoutAppmain" + obj.getSize());
+						obj.makeEmptyQueue();
+						NotificationManager notifManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+						notifManager.cancelAll();
 					}
-					// removeMemory();
-					LoginPageFragment loginPageFragment = LoginPageFragment
-							.newInstance(context);
-					loginPageFragment.setSilentLogin(false);
-					FragmentManager fragmentManager = getSupportFragmentManager();
-					FragmentTransaction fragmentTransaction = fragmentManager
-							.beginTransaction();
-					fragmentTransaction.replace(
-							R.id.activity_main_content_fragment,
-							loginPageFragment, "loginfragment");
-					fragmentTransaction.commit();
-					removeFragments(ContactsFragment.getInstance(context));
+					if (status) {
+						SingleInstance.printLog("Signin", "SINOUT Respone send",
+								"INFO", null);
+						WebServiceReferences.webServiceClient.siginout(username);
+					} else {
 
-					removeFragments(ExchangesFragment.newInstance(context));
-					removeFragments(CreateProfileFragment.newInstance(context));
-					removeFragments(ViewProfileFragment.newInstance(context));
-					removeFragments(UtilityFragment.newInstance(context));
-					removeFragments(FilesFragment.newInstance(context));
-					removeFragments(AppsViewFragment.newInstance(context));
-					removeFragments(AvatarFragment.newInstance(context));
-					removeFragments(QuickActionFragment.newInstance(context));
-					removeFragments(FormsFragment.newInstance(context));
-					removeFragments(MyAccountFragment.newInstance(context));
-					removeFragments(SearchPeopleFragment.newInstance(context));
-					removeFragments(DashBoardFragment.newInstance(context));
-					removeFragments(CallHistoryFragment.newInstance(context));
-					removeFragments(CalendarFragment.newInstance(context));
-					removeFragments(InviteUserFragment.newInstance(context));
-					removeFragments(FindPeople.newInstance(context));
-					removeFragments(SecurityQuestions.newInstance(context));
-					removeFragments(RequestFragment.newInstance(context));
-					removeFragments(PinAndTouchId.newInstance(context));
-					removeFragments(ChangePassword.newInstance(context));
-				}
-				FTPPoolManager.closeChatFTP();
+						if (AppReference.isWriteInFile)
+							AppReference.logger
+									.debug("LOGOUT : Inside LOGOUT FALSE");
+						cancelDialog();
+						callDisp.dissableUserSettings();
+						SingleInstance.printLog("Signin", "Inside else in logout",
+								"INFO", null);
+						if (callDisp.gpsloc != null) {
+							callDisp.gpsloc.Stop();
+						}
+
+//					if (WebServiceReferences.contextTable
+//							.containsKey("alertscreen")) {
+//						((inCommingCallAlert) SingleInstance.contextTable
+//								.get("alertscreen")).finish();
+//					}
+						WebServiceReferences.missedcallCount.clear();
+						callDisp.destroySIPStack();
+						callDisp.profilePicturepath = "";
+						if (CallDispatcher.isIncomingCall) {
+							CallDispatcher.isIncomingCall = false;
+						}
+						if (ftpNotifier != null)
+							ftpNotifier.shutDowntaskmanager();
+						ftpNotifier = null;
+
+						callDisp.cancelDownloadSchedule();
+						callDisp.stopRingTone();
+						// if (WebServiceReferences.buddyList != null) {
+						// if (WebServiceReferences.buddyList.size() > 0) {
+						// WebServiceReferences.buddyList.clear();
+						// }
+						// }
+						// if (callDisp.mainbuddylist != null)
+						// callDisp.mainbuddylist.clear();
+						// CallDispatcher.adapterToShow.notifyDataSetChanged();
+						// if (callDisp.pendinglist != null)
+						// callDisp.pendinglist.clear();
+
+						// if (WebServiceReferences.tempBuddyList != null) {
+						// if (WebServiceReferences.tempBuddyList.size() > 0) {
+						// WebServiceReferences.tempBuddyList.clear();
+						// }
+						// }
+						if (!callDisp.isKeepAliveSendAfter6Sec) {
+							handler.removeCallbacks(callDisp.hb_runnable);
+							callDisp.isKeepAliveSendAfter6Sec = false;
+						}
+						WebServiceReferences.webServiceClient.stop();
+						WebServiceReferences.running = false;
+						if (AppMainActivity.commEngine != null) {
+							AppMainActivity.commEngine.stop();
+						}
+						AppMainActivity.commEngine = null;
+						CallDispatcher.LoginUser = null;
+						callDisp.ipaddress = null;
+						// callDisp.mainbuddylist.clear();
+						CallDispatcher.members.clear();
+						CallDispatcher.reminderArrives = false;
+						callDisp.isKeepAliveSendAfter6Sec = false;
+						CallDispatcher.conferenceMembers.clear();
+						callDisp.bitmap_table.clear();
+
+						if (HBT != null) {
+							stopHeartBeatTimer();
+						}
+						// removeMemory();
+						LoginPageFragment loginPageFragment = LoginPageFragment
+								.newInstance(context);
+						loginPageFragment.setSilentLogin(false);
+						FragmentManager fragmentManager = getSupportFragmentManager();
+						FragmentTransaction fragmentTransaction = fragmentManager
+								.beginTransaction();
+						fragmentTransaction.replace(
+								R.id.activity_main_content_fragment,
+								loginPageFragment, "loginfragment");
+						fragmentTransaction.commit();
+						removeFragments(ContactsFragment.getInstance(context));
+
+						removeFragments(ExchangesFragment.newInstance(context));
+						removeFragments(CreateProfileFragment.newInstance(context));
+						removeFragments(ViewProfileFragment.newInstance(context));
+						removeFragments(UtilityFragment.newInstance(context));
+						removeFragments(FilesFragment.newInstance(context));
+						removeFragments(AppsViewFragment.newInstance(context));
+						removeFragments(AvatarFragment.newInstance(context));
+						removeFragments(QuickActionFragment.newInstance(context));
+						removeFragments(FormsFragment.newInstance(context));
+						removeFragments(MyAccountFragment.newInstance(context));
+						removeFragments(SearchPeopleFragment.newInstance(context));
+						removeFragments(DashBoardFragment.newInstance(context));
+						removeFragments(CallHistoryFragment.newInstance(context));
+						removeFragments(CalendarFragment.newInstance(context));
+						removeFragments(InviteUserFragment.newInstance(context));
+						removeFragments(FindPeople.newInstance(context));
+						removeFragments(SecurityQuestions.newInstance(context));
+						removeFragments(RequestFragment.newInstance(context));
+						removeFragments(PinAndTouchId.newInstance(context));
+						removeFragments(ChangePassword.newInstance(context));
+					}
+					FTPPoolManager.closeChatFTP();
 //				imageLoader.DisplayImage("", profileImage,
 //						R.drawable.icon_buddy_aoffline);
+				}else
+				showToast("Please Try again... call in progress");
 
 			} else {
 
@@ -2805,9 +2849,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 								}
 								progress.dismiss();
 
-								Toast.makeText(SingleInstance.mainContext,
-										server_response.getText(),
-										Toast.LENGTH_LONG).show();
+//								Toast.makeText(SingleInstance.mainContext,
+//										server_response.getText(),
+//										Toast.LENGTH_LONG).show();
 
 							} else {
 								Toast.makeText(SingleInstance.mainContext,
@@ -2830,7 +2874,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 	}
 
-    class MyTimerTask extends TimerTask {
+	class MyTimerTask extends TimerTask {
 
 		@Override
 		public void run() {
@@ -3566,7 +3610,15 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					noteType = context.getResources().getString(
 							R.string.image_share);
 				}
-				Toast.makeText(context, cBean.getFromUser() + " " + noteType, 1)
+				String name=cBean.getFromUser();
+				for(BuddyInformationBean bib: ContactsFragment.getBuddyList()){
+					if(bib.getName().equalsIgnoreCase(cBean.getFromUser())) {
+						if(bib.getFirstname()!=null && bib.getLastname()!=null)
+						name = bib.getFirstname() + " " + bib.getLastname();
+						return;
+					}
+				}
+				Toast.makeText(context, name + " " + noteType, 1)
 						.show();
 			}
 			updateFileCount();
@@ -5107,9 +5159,8 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 						}
 					}
-					if (WebServiceReferences.contextTable
-							.containsKey("connection"))
-						((CallConnectingScreen) WebServiceReferences.contextTable
+					if (SingleInstance.instanceTable.containsKey("connection"))
+						((CallConnectingScreen) SingleInstance.instanceTable
 								.get("connection")).HangupCall();
 
 					showprogress();
@@ -5434,8 +5485,13 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						}
 					}
 				}
-
+				String fullname;
 				for (BuddyInformationBean bInfo : tempList) {
+					ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(buddyInformationBean.getName());
+					if((bean.getFirstname()!=null)&&(bean.getLastname()!=null))
+					fullname=bean.getFirstname()+" "+bean.getLastname();
+					else
+					fullname = buddyInformationBean.getName();
 					if (!bInfo.isTitle()) {
 						if (buddyInformationBean.getStatus().equalsIgnoreCase(
 								"delete")) {
@@ -5443,12 +5499,12 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 									buddyInformationBean.getName())) {
 								if (bInfo.getStatus().equalsIgnoreCase(
 										"pending")) {
-									showToast(buddyInformationBean.getName()
+									showToast(fullname
 											+ " reject's your request");
 								} else if (bInfo.getStatus().equalsIgnoreCase(
 										"new")) {
 									showToast("Buddy request by "
-											+ buddyInformationBean.getName()
+											+ fullname
 											+ " has been deleted");
 									if (WebServiceReferences.contextTable
 											.containsKey("viewprofileactivity")) {
@@ -5464,7 +5520,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 									}
 								} else {
 									showToast("you have been removed from "
-											+ buddyInformationBean.getName()
+											+ fullname
 											+ " contact list");
 									if (WebServiceReferences.contextTable
 											.containsKey("viewprofileactivity")) {
@@ -5489,9 +5545,12 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 							if (!bInfo.getName().equalsIgnoreCase(
 									buddyInformationBean.getName())) {
 								synchronized (ContactsFragment.getBuddyList()) {
-									buddyInformationBean.setTitle(false);
-									ContactsFragment.getBuddyList().add(
-											buddyInformationBean);
+									BuddyInformationBean bib=ContactsFragment.getBuddyList().get(ContactsFragment.getBuddyList().size() - 1);
+									if(!bib.getName().equalsIgnoreCase(buddyInformationBean.getName())) {
+										buddyInformationBean.setTitle(false);
+										ContactsFragment.getBuddyList().add(
+												buddyInformationBean);
+									}
 
 									break;
 
@@ -5552,11 +5611,17 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 						@Override
 						public void run() {
+							String fullname;
+							ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(buddyName);
+							if(buddyName!=null)
+							fullname=bean.getFirstname()+" "+bean.getLastname();
+							else
+							fullname=buddyName;
 							// TODO Auto-generated method stub
 							Toast.makeText(
 									context,
 									SingleInstance.mainContext.getResources().getString(R.string.buddy_request_sent_successfully_to1)
-											+ buddyName, 3000).show();
+											+ fullname, 3000).show();
 							ContactsFragment.getInstance(context).SortList();
 
 						}
@@ -6077,6 +6142,17 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				synchronized (RoundingFragment.getRoundingList()) {
 					RoundingFragment.getRoundingList().addAll(RoundingGroupActivity.RoundingList);
 				}
+				handler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						RoundingFragment.newInstance(context).getList();
+					}
+				});
+			}else if(obj instanceof WebServiceBean){
+				RoundingFragment.isEmptyList=true;
+				Log.d("AAA","Inside notifyRoundingGroupList webservice ");
 				handler.post(new Runnable() {
 
 					@Override
@@ -6684,9 +6760,27 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					"duration : " + String.valueOf(diffHours) + ":"
 							+ String.valueOf(diffMinutes) + ":"
 							+ String.valueOf(diffSeconds));
-			return String.valueOf(diffHours) + ":"
-					+ String.valueOf(diffMinutes) + ":"
-					+ String.valueOf(diffSeconds);
+
+			String secstr = String.valueOf(diffSeconds);
+			if(secstr.length() == 1){
+				secstr = "0"+secstr;
+			}
+			String minstr = String.valueOf(diffHours);
+			if(minstr.length() == 1){
+				minstr = "0"+minstr;
+			}
+			String hourstr = String.valueOf(diffHours);
+			if(hourstr.length() == 1){
+				hourstr = "0"+hourstr;
+			}
+
+			return hourstr + ":"
+					+ minstr + ":"
+					+ secstr;
+
+//			return String.valueOf(diffHours) + ":"
+//					+ String.valueOf(diffHours) + ":"
+//					+ String.valueOf(diffSeconds);
 			// return "0:"
 			// + String.valueOf(diffMinutes) + ":"
 			// + String.valueOf(diffSeconds);
@@ -7463,6 +7557,10 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 							}
 						});
 					}
+					for(BuddyInformationBean bib:ContactsFragment.getBuddyList()){
+						if(bib.getName().equalsIgnoreCase(pBean.getUsername()))
+							bib.setProfile_picpath(pBean.getPhoto());
+					}
 					DBAccess.getdbHeler().insertorupdateProfileDetails(pBean);
 					if(!(pBean.getPhoto().equals(null) || pBean.getPhoto().equals(""))) {
 						String[] param = new String[3];
@@ -7567,7 +7665,8 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			}
 			else{
 				FTPBean ftpBean = new FTPBean();
-				ShareReminder shareReminder = AppReference.filedownload.get(filedetails[0]);
+				ShareReminder shareReminder=new ShareReminder();
+				shareReminder = AppReference.filedownload.get(filedetails[0]);
 				Log.d("false123", "false : " + getFileName());
 
 
@@ -7581,42 +7680,44 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					directory.mkdir();
 				directory = null;
 				String file_name = directory_path + filedetails[0];
-				Log.d("decode12", "decode12 : "+file_name );
-				if(file_name.split(".", 3).equals("jpg")) {
-					byte[] imageAsBytes = Base64.decode(filedetails[1], 0);
-					File img_file = new File(file_name);
-					img_file.createNewFile();
-					FileOutputStream image_writter = new FileOutputStream(
-							img_file);
-					image_writter.write(imageAsBytes);
-					image_writter.flush();
-					image_writter.close();
+				Log.d("decode12", "decode12 : " + file_name);
+				if(file_name!=null) {
+					if (file_name.split(".", 3).equals("jpg")) {
+						byte[] imageAsBytes = Base64.decode(filedetails[1], 0);
+						File img_file = new File(file_name);
+						img_file.createNewFile();
+						FileOutputStream image_writter = new FileOutputStream(
+								img_file);
+						image_writter.write(imageAsBytes);
+						image_writter.flush();
+						image_writter.close();
 
-					Bitmap bmp = AppMainActivity.this.ShrinkBitmap(
-							file_name, 150, 150);
-					image_writter = new FileOutputStream(img_file);
-					bmp.compress(CompressFormat.JPEG, 75, image_writter);
-					bmp.recycle();
-					bmp = null;
-					image_writter.flush();
-					image_writter.close();
+						Bitmap bmp = AppMainActivity.this.ShrinkBitmap(
+								file_name, 150, 150);
+						image_writter = new FileOutputStream(img_file);
+						bmp.compress(CompressFormat.JPEG, 75, image_writter);
+						bmp.recycle();
+						bmp = null;
+						image_writter.flush();
+						image_writter.close();
 
-					// img_file = null;
-					if (img_file.exists()) {
-						shareReminder.setFilepath(file_name);
-						ftpBean.setReq_object(shareReminder);
-						ftpBean.setFile_path(filedetails[0]);
-						notifyFileDownloaded("true", ftpBean);
+						// img_file = null;
+						if (img_file.exists()) {
+							shareReminder.setFilepath(file_name);
+							ftpBean.setReq_object(shareReminder);
+							ftpBean.setFile_path(filedetails[0]);
+							notifyFileDownloaded("true", ftpBean);
+						}
+					} else {
+						if (decodeAudioVideoToBase64(file_name, filedetails[1])) {
+							shareReminder.setFilepath(file_name);
+							ftpBean.setReq_object(shareReminder);
+							ftpBean.setFile_path(filedetails[0]);
+							notifyFileDownloaded("true", ftpBean);
+						}
 					}
-				}else{
-					if(decodeAudioVideoToBase64(file_name, filedetails[1])){
-						shareReminder.setFilepath(file_name);
-						ftpBean.setReq_object(shareReminder);
-						ftpBean.setFile_path(filedetails[0]);
-						notifyFileDownloaded("true",ftpBean);
-					}
+					showToast("file downloaded successfully");
 				}
-				showToast("file downloaded successfully");
 
 			}
 			ContactsFragment.getInstance(context).SortList();
@@ -7676,28 +7777,46 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	protected void onStop() {
 		super.onStop();
 		Log.d("AAAA", "onStop ");
-		if(isPinEnable) {
-			if (isApplicationBroughtToBackground()) {
-				Intent i = new Intent(AppMainActivity.this, MainActivity.class);
-				startActivity(i);
-			} else {
-				count=0;
-				registerBroadcastReceiver();
-			}
+		isApplicationBroughtToBackground();
+//		if(isPinEnable) {
+//			if (isApplicationBroughtToBackground()) {
+//				Intent i = new Intent(AppMainActivity.this, MainActivity.class);
+//				startActivity(i);
+//			} else {
+//				count=0;
+//				registerBroadcastReceiver();
+//			}
+//		}
+
+
+	}
+	public void isApplicationBroughtToBackground() {
+		//		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+//		List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
+//		if (!tasks.isEmpty()) {
+//			ComponentName topActivity = tasks.get(0).topActivity;
+//			if (!topActivity.getPackageName().equals(context.getPackageName())) {
+//				return true;
+//			}
+//		}
+//		return false;
+		ActivityManager mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+		List<ActivityManager.RunningTaskInfo> RunningTask = mActivityManager.getRunningTasks(1);
+		ActivityManager.RunningTaskInfo ar = RunningTask.get(0);
+		activityOnTop = ar.topActivity.toString();
+		Log.i("pin", "activityOnTop " + activityOnTop);
+		Log.i("pin", "activityOnTop " + context.getPackageName());
+		if(activityOnTop.contains("com.android.documentsui")){
+			Log.i("pin", "com.android.documentsui pakage");
+			openPinActivity=false;
+		}else if (!activityOnTop.contains(context.getPackageName())) {
+			Log.i("pin", "Appmain snazmed pakage onStop openActivity=true");
+			openPinActivity=true;
+		} else{
+			openPinActivity = false;
 		}
 	}
-	private boolean isApplicationBroughtToBackground() {
-		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-		List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
-		if (!tasks.isEmpty()) {
-			ComponentName topActivity = tasks.get(0).topActivity;
-			if (!topActivity.getPackageName().equals(context.getPackageName())) {
-				return true;
-			}
-		}
-		return false;
-	}
-	private void registerBroadcastReceiver() {
+	public void registerBroadcastReceiver() {
 		final IntentFilter theFilter = new IntentFilter();
 		theFilter.addAction(Intent.ACTION_SCREEN_ON);
 		theFilter.addAction(Intent.ACTION_SCREEN_OFF);
@@ -7758,7 +7877,6 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
                         fragment = SettingsFragment.newInstance(context);
                         break;
                     case 7:
-                        appMainActivity.showprogress();
                         appMainActivity.logout(true);
                         break;
 					case 8:
@@ -7884,6 +8002,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 //			}
 //		}
 	}
+
     public  void notifySentreceived(GroupChatBean gcBean)
     {
         final GroupChatActivity groupChatActivity = (GroupChatActivity) SingleInstance.contextTable
@@ -7968,7 +8087,6 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		if(response && object!=null){
 			if (object instanceof ArrayList) {
 				ArrayList list = (ArrayList) object;
-				boolean db_delete=false;
 				for (int i = 0; i < list.size(); i++) {
 					final Object obj = list.get(i);
 					if (obj instanceof ChattemplateModifieddate) {
@@ -7976,30 +8094,21 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 								.get(i);
 						if(DBAccess.getdbHeler(SingleInstance.mainContext).getChatTemplateModifieddatetime()!=null){
 							Log.i("chattemplate", "Appmain notifychatTemplate  modified DB!=null");
-							if(chattemplateModifieddate.getModifieddatetime().equalsIgnoreCase(DBAccess.getdbHeler(SingleInstance.mainContext)
+							if(!chattemplateModifieddate.getModifieddatetime().equalsIgnoreCase(DBAccess.getdbHeler(SingleInstance.mainContext)
 									.getChatTemplateModifieddatetime())){
-								Log.i("chattemplate","Appmain notifychatTemplate  modified DB!=null date same");
-							}else {
-								boolean db_deleteModidate = DBAccess.getdbHeler(SingleInstance.mainContext).chatTemplateModifiedDateDelete();
-								boolean db_chatTemplate = DBAccess.getdbHeler(SingleInstance.mainContext).chatTemplateDelete();
-								if(db_deleteModidate) {
-									Log.i("chattemplate","Appmain notifychatTemplate  modified DB!=null delete and new save");
-									db_delete=true;
+								    DBAccess.getdbHeler(SingleInstance.mainContext).chatTemplateModifiedDateDelete();
 									DBAccess.getdbHeler(SingleInstance.mainContext).insertChatTemplateModifieddate(chattemplateModifieddate);
-								}
 							}
 						}else{
 							Log.i("chattemplate","Appmain notifychatTemplate  modified DB==null");
-							db_delete=true;
 							DBAccess.getdbHeler(SingleInstance.mainContext).insertChatTemplateModifieddate(chattemplateModifieddate);
 						}
-					} else if (obj instanceof chattemplatebean) {
+					}
+				 if (obj instanceof chattemplatebean) {
 						chattemplatebean chattemplatebean = (chattemplatebean) list
 								.get(i);
-						if(db_delete) {
 							Log.i("chattemplate","Appmain notifychatTemplate  chat template entry");
 							DBAccess.getdbHeler(SingleInstance.mainContext).insertChatTemplate(chattemplatebean);
-						}
 					}
 				}
 			}
@@ -8081,7 +8190,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			ArrayList<String[]> statesList = (ArrayList<String[]>) obj;
 			Log.i("AAAA", "notifyStatesWebServiceResponse " + statesList.size());
 			for (String[] state : statesList) {
-				DBAccess.getdbHeler().insertorUpdateStateDetails(state[0],state[1]);
+				DBAccess.getdbHeler().insertorUpdateStateDetails(state[0], state[1]);
 			}
 		} else if (obj instanceof WebServiceBean) {
 			showToast(((WebServiceBean) obj).getText());
@@ -8092,7 +8201,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			ArrayList<String[]> medicalSocietiesList = (ArrayList<String[]>) obj;
 			Log.i("AAAA", "notifyMedicalSocietiesWebServiceResponse " + medicalSocietiesList.size());
 			for (String[] medicalSociety : medicalSocietiesList) {
-				DBAccess.getdbHeler().insertorUpdateMedicalSocieties(medicalSociety[1],medicalSociety[0]);
+				DBAccess.getdbHeler().insertorUpdateMedicalSocieties(medicalSociety[1], medicalSociety[0]);
 			}
 		} else if (obj instanceof WebServiceBean) {
 			showToast(((WebServiceBean) obj).getText());
@@ -8114,7 +8223,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			ArrayList<String[]> specialitList = (ArrayList<String[]>) obj;
 			Log.i("AAAA", "notifySpecialiesRresponse " + specialitList.size());
 			for (String[] specialities : specialitList) {
-				DBAccess.getdbHeler().insertorUpdateSpecialityDetails(specialities[0],specialities[1]);
+				DBAccess.getdbHeler().insertorUpdateSpecialityDetails(specialities[0], specialities[1]);
 			}
 		} else if (obj instanceof WebServiceBean) {
 			showToast(((WebServiceBean) obj).getText());
@@ -8133,10 +8242,15 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	}
 	public void notifyGetFileDetails(Object obj){
 		if(obj instanceof Vector){
-			Log.i("patientdetails","notifyGetFileDetails ");
 			Vector<FileDetailsBean>  fBeanList=(Vector<FileDetailsBean> )obj;
 			SingleInstance.fileDetails.clear();
 			SingleInstance.fileDetails=fBeanList;
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					DashBoardFragment.newInstance(SingleInstance.mainContext).showMemoryControl();
+				}
+			});
 		}
 	}
 	public void notifyGetMemberRights(Object obj) {
@@ -8148,5 +8262,179 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		} else if (obj instanceof WebServiceBean) {
 			showToast(((WebServiceBean) obj).getText());
 		}
+	}
+
+	@Override
+	public void buttonClickState(String current_screen, String typeofcallscreen) {
+//		Log.i("Floating","AppMainAvtivity - buttonClickState");
+//		Intent intent = new Intent(context, AppMainActivity.class);
+//		intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//		startActivity(intent);
+
+		Intent intent = new Intent(context, SplashScreen.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // You need this if starting
+		//  the activity from a service
+		intent.setAction(Intent.ACTION_MAIN);
+		intent.addCategory(Intent.CATEGORY_LAUNCHER);
+		startActivity(intent);
+
+		closingActivity();
+		stopService(new Intent(getApplication(), FloatingCallService.class));
+		mainHeader.setVisibility(View.GONE);
+
+		if(current_screen.equalsIgnoreCase("callscreen")) {
+			if(typeofcallscreen.equalsIgnoreCase("ACS")) {
+				addShowHideListener(true);
+			} else {
+				addShowHideListener(false);
+			}
+		} else if(current_screen.equalsIgnoreCase("incomingalert")) {
+			inCommingCallAlert incommingCallAlert = inCommingCallAlert.getInstance(SingleInstance.mainContext);
+			FragmentManager fragmentManager = SingleInstance.mainContext
+					.getSupportFragmentManager();
+			fragmentManager.beginTransaction().replace(
+					R.id.activity_main_content_fragment, incommingCallAlert)
+					.commitAllowingStateLoss();
+		} else if(current_screen.equalsIgnoreCase("connecting")) {
+			CallConnectingScreen callConnectingScreen = CallConnectingScreen.getInstance(SingleInstance.mainContext);
+			FragmentManager fragmentManager = SingleInstance.mainContext
+					.getSupportFragmentManager();
+			fragmentManager.beginTransaction().replace(
+					R.id.activity_main_content_fragment, callConnectingScreen)
+					.commitAllowingStateLoss();
+		}
+
+	}
+
+	private void addShowHideListener( final Boolean isAudio) {
+		if (isAudio) {
+			AudioCallScreen audioCallScreen = AudioCallScreen.getInstance(SingleInstance.mainContext);
+			FragmentManager fragmentManager = SingleInstance.mainContext
+					.getSupportFragmentManager();
+			fragmentManager.beginTransaction().replace(
+					R.id.activity_main_content_fragment, audioCallScreen)
+					.commitAllowingStateLoss();
+		} else {
+			VideoCallScreen videoCallScreen = VideoCallScreen.getInstance(SingleInstance.mainContext);
+			FragmentManager fragmentManager = SingleInstance.mainContext
+					.getSupportFragmentManager();
+			fragmentManager.beginTransaction().replace(
+					R.id.activity_main_content_fragment, videoCallScreen)
+					.commitAllowingStateLoss();
+		}
+	}
+
+	public void closingActivity(){
+
+		if (SingleInstance.contextTable.containsKey("groupchat"))
+		{
+			GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
+			if(groupChatActivity != null) {
+				groupChatActivity.finish();
+			}
+
+		}
+
+		if (WebServiceReferences.contextTable.containsKey("ordermenuactivity")) {
+			CallHistoryActivity callHistoryActivity = (CallHistoryActivity) WebServiceReferences.contextTable.get("ordermenuactivity");
+			if(callHistoryActivity != null) {
+				callHistoryActivity.finish();
+			}
+		}
+
+		if (WebServiceReferences.contextTable.containsKey("myaccountactivity")) {
+
+			MyAccountActivity myaccount_activity = (MyAccountActivity) WebServiceReferences.contextTable.get("myaccountactivity");
+			if(myaccount_activity != null) {
+				myaccount_activity.finish();
+			}
+		}
+		if (WebServiceReferences.contextTable.containsKey("roundnewpatient")) {
+
+			RoundNewPatientActivity roundnewpatient = (RoundNewPatientActivity) WebServiceReferences.contextTable.get("roundnewpatient");
+			if(roundnewpatient != null) {
+				roundnewpatient.finish();
+			}
+		}
+
+		if(SingleInstance.contextTable.containsKey("duplicateexistinggroup")) {
+			DuplicateExistingGroups duplicateExistingGroups = (DuplicateExistingGroups)SingleInstance.contextTable.get("duplicateexistinggroup");
+			if(duplicateExistingGroups != null) {
+				duplicateExistingGroups.finish();
+			}
+		}
+
+		if (WebServiceReferences.contextTable.containsKey("roundingEdit")) {
+
+			RoundingEditActivity roundingEdit = (RoundingEditActivity) WebServiceReferences.contextTable.get("roundingEdit");
+			if(roundingEdit != null) {
+				roundingEdit.finish();
+			}
+		}
+		if (SingleInstance.contextTable.containsKey("roundingGroup")) {
+
+			RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable.get("roundingGroup");
+			if(roundingGroup != null) {
+				roundingGroup.finish();
+			}
+		}
+
+		if (WebServiceReferences.contextTable.containsKey("taskcreation")) {
+
+			TaskCreationActivity taskcreation = (TaskCreationActivity) WebServiceReferences.contextTable.get("taskcreation");
+			if(taskcreation != null) {
+				taskcreation.finish();
+			}
+		}
+		if (WebServiceReferences.contextTable.containsKey("forwarduser")) {
+
+			ForwardUserSelect forwarduser = (ForwardUserSelect) WebServiceReferences.contextTable.get("forwarduser");
+			if(forwarduser != null) {
+				forwarduser.finish();
+			}
+		}
+		if (WebServiceReferences.contextTable.containsKey("groupactivity")) {
+
+			GroupActivity groupactivity = (GroupActivity) WebServiceReferences.contextTable.get("groupactivity");
+			if(groupactivity != null) {
+				groupactivity.finish();
+			}
+		}
+
+		if(SingleInstance.contextTable.containsKey("customvideocallscreen")){
+			CustomVideoCamera customVideoCamera=(CustomVideoCamera)SingleInstance.contextTable.get("customvideocallscreen");
+			if(customVideoCamera!=null){
+				customVideoCamera.finish();
+			}
+		}
+
+		if(WebServiceReferences.contextTable.containsKey("customvideoplayer")) {
+			VideoPlayer videoPlayer = (VideoPlayer)WebServiceReferences.contextTable.get("customvideoplayer");
+			if(videoPlayer != null) {
+				videoPlayer.finish();
+			}
+		}
+
+		if (WebServiceReferences.contextTable.containsKey("filepicker")) {
+			FilePicker filePicker = (FilePicker)WebServiceReferences.contextTable.get("filepicker");
+			if(filePicker != null){
+				filePicker.finish();
+			}
+		}
+
+		if (WebServiceReferences.contextTable.containsKey("Component")) {
+			ComponentCreator componentCreator = (ComponentCreator) WebServiceReferences.contextTable.get("Component");
+			if(componentCreator != null){
+				componentCreator.finish();
+			}
+		}
+
+		if (WebServiceReferences.contextTable.containsKey("multimediautils")) {
+			MultimediaUtils multimediaUtils = (MultimediaUtils)WebServiceReferences.contextTable.get("multimediautils");
+			if(multimediaUtils != null) {
+				multimediaUtils.finish();
+			}
+		}
+
 	}
 }

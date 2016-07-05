@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -38,9 +39,12 @@ public class ForwardUserSelectionAdapter extends ArrayAdapter<BuddyInformationBe
     /*********** Declare Used Variables *********/
     private Context context;
     private Vector<BuddyInformationBean> userList;
+    private Vector<BuddyInformationBean> originallist;
     private LayoutInflater inflater = null;
     private static int checkBoxCounter = 0;
     private int checkboxcount;
+    private  ForwardFilter filter;
+    boolean[] checkBoxState;
 
 
     /************* CustomAdapter Constructor *****************/
@@ -49,9 +53,13 @@ public class ForwardUserSelectionAdapter extends ArrayAdapter<BuddyInformationBe
         super(context, R.layout.fwd_user_selectrow, userList);
         /********** Take passed values **********/
         this.context = context;
-        this.userList = userList;
+        this.userList = new Vector<BuddyInformationBean>();
+        this.userList.addAll(userList);
+        originallist = new Vector<BuddyInformationBean>();
+        this.originallist.addAll(userList);
         inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        checkBoxState = new boolean[userList.size()];
 
         /*********** Layout inflator to call external xml layout () ***********/
 
@@ -84,15 +92,8 @@ public class ForwardUserSelectionAdapter extends ArrayAdapter<BuddyInformationBe
             final BuddyInformationBean userBean = userList.get(position);
             if(userBean!=null) {
                 Log.d("status", "---->" + userBean.getStatus());
-
-//				if (userBean.getIsTitle()) {
-//					holder.header_title.setVisibility(View.VISIBLE);
-//					holder.header_title.setText(userBean.getHeader());
-//				} else {
-//					holder.header_title.setVisibility(View.GONE);
-//				}
                 holder.header_title.setVisibility(View.VISIBLE);
-                holder.buddyName.setText(userBean.getFirstname());
+                holder.buddyName.setText(userBean.getFirstname()+" "+userBean.getLastname());
 
                 String cname1, cname2;
                 cname1 = String.valueOf(userBean.getFirstname().charAt(0));
@@ -113,47 +114,34 @@ public class ForwardUserSelectionAdapter extends ArrayAdapter<BuddyInformationBe
 
                     holder.occupation.setText(userBean.getOccupation());
                 }
-//                Log.d("budddyname","--->");
-
-
-//                if(userBean.getInvite()){
-//                    holder.selectUser.setVisibility(View.GONE);
-//                    holder.cancel_lay.setVisibility(View.VISIBLE);
-//                    holder.occupation.setText("invite Sent");
-//                }
                 if(userBean.isSelected()){
                     holder.selectUser.setChecked(true);
                 }else{
                     holder.selectUser.setChecked(false);
                 }
+//                holder.selectUser.setChecked(checkBoxState[position]);
                 final ForwardUserSelect listmembers = (ForwardUserSelect) WebServiceReferences.contextTable
                         .get("forwarduser");
-
-                holder.selectUser
-                        .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                            @Override
-                            public void onCheckedChanged(CompoundButton arg0,
-                                                         boolean isChecked) {
-                                Log.d("selecteduser", "---->entering the bean");
-                                if (isChecked) {
-                                    Log.d("selecteduser", "---->checking the values" + isChecked);
-                                    userBean.setSelected(true);
-                                    checkBoxCounter++;
-                                    if (listmembers != null) {
-                                        Log.d("selecteduser", "---->counting values " + checkBoxCounter);
-                                        listmembers.countofcheckbox(checkBoxCounter);
-                                    }
-                                } else {
-                                    userBean.setSelected(false);
-                                    checkBoxCounter--;
-                                    if (listmembers != null) {
-                                        Log.d("selecteduser", "---->checkboxcounter " + checkBoxCounter);
-                                        listmembers.countofcheckbox(checkBoxCounter);
-                                    }
-                                }
+                holder.selectUser.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (((CheckBox) v).isChecked()) {
+                            checkBoxState[position] = true;
+                            userBean.setSelected(true);
+                            checkBoxCounter++;
+                            if (listmembers != null) {
+                                listmembers.countofcheckbox(checkBoxCounter);
                             }
-
-                        });
+                        } else {
+                            checkBoxState[position] = false;
+                            userBean.setSelected(false);
+                            checkBoxCounter--;
+                            if (listmembers != null) {
+                                listmembers.countofcheckbox(checkBoxCounter);
+                            }
+                        }
+                    }
+                });
                 if (userBean.getStatus() != null) {
                     Log.d("status1", "---->" + userBean.getStatus());
 
@@ -183,6 +171,61 @@ public class ForwardUserSelectionAdapter extends ArrayAdapter<BuddyInformationBe
             return null;
         }
     }
+    @Override
+    public Filter getFilter() {
+        if (filter == null){
+            filter  = new ForwardFilter();
+        }
+        return filter;
+    }
+
+    private class ForwardFilter extends Filter
+    {
+
+        @Override
+        protected Filter.FilterResults performFiltering(CharSequence constraint) {
+
+            constraint = constraint.toString().toLowerCase();
+
+            Filter.FilterResults result = new Filter.FilterResults();
+            if (constraint != null && constraint.toString().length() > 0) {
+                Vector<BuddyInformationBean> buddyInformationBeans = new Vector<BuddyInformationBean>();
+                for(int i = 0, l = originallist.size(); i < l; i++)
+                {
+                    BuddyInformationBean buddyInformationBean = originallist.get(i);
+                    if(buddyInformationBean.getName().toLowerCase().startsWith(String.valueOf(constraint)))
+                        buddyInformationBeans.add(buddyInformationBean);
+                }
+                buddyInformationBeans = GroupChatActivity.getAdapterList(buddyInformationBeans);
+                result.count = buddyInformationBeans.size();
+                result.values = buddyInformationBeans;
+            } else {
+                synchronized (this) {
+                    originallist = GroupChatActivity.getAdapterList(originallist);
+                    result.values = originallist;
+                    result.count = originallist.size();
+                }
+            }
+            return result;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void publishResults(CharSequence constraint,
+                                      Filter.FilterResults results) {
+
+            userList= (Vector<BuddyInformationBean>)results.values;
+            notifyDataSetChanged();
+            clear();
+            userList = GroupChatActivity.getAdapterList(userList);
+            for(int i = 0, l = userList.size(); i < l; i++)
+                add(userList.get(i));
+            notifyDataSetInvalidated();
+
+        }
+
+    }
+
     class ViewHolder {
         CheckBox selectUser;
         ImageView buddyicon;

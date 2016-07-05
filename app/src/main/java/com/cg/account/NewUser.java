@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cg.Calendar.DateView;
 import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
@@ -37,6 +38,7 @@ import com.util.SingleInstance;
 
 import org.lib.model.WebServiceBean;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -47,7 +49,7 @@ public class NewUser extends Activity {
     private Context context;
     private EditText ed_firstname=null;
     private EditText ed_lastname=null;
-    private TextView ed_dob=null;
+    public TextView ed_dob=null;
     private EditText ed_securityno=null;
     private EditText ed_hno=null;
     private EditText ed_zipcode=null;
@@ -61,6 +63,7 @@ public class NewUser extends Activity {
      private AutoCompleteTextView state;
     ArrayList<String> states=new ArrayList<String>();
     ArrayAdapter<String> stateAdapter;
+    private int age;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -96,6 +99,13 @@ public class NewUser extends Activity {
         stateAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, states);
         state.setAdapter(stateAdapter);
         state.setThreshold(1);
+        state.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                state.showDropDown();
+            }
+        });
 
         ed_firstname.addTextChangedListener(new TextWatcher() {
             @Override
@@ -147,7 +157,7 @@ public class NewUser extends Activity {
                 DatePickerDialog dialog = new DatePickerDialog(NewUser.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                        Log.i("sss","====================>date"+i+i1+i2);
+                        Log.i("sss", "====================>date" + i + i1 + i2);
                         myCalendar.set(Calendar.YEAR, i);
                         myCalendar.set(Calendar.MONTH, i1);
                         myCalendar.set(Calendar.DAY_OF_MONTH, i2);
@@ -156,8 +166,9 @@ public class NewUser extends Activity {
                     }
                 }, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH));
-                Date min = new Date(2013-1916, 0, 11);
-                dialog.getDatePicker().setMaxDate(min.getTime());
+
+//                Date min = new Date(2013-1916, 0, 11);
+//                dialog.getDatePicker().setMaxDate(min.getTime());
 //                dialog.getDatePicker().setMinDate(min.getTime());
                 dialog.show();
                 setDone();
@@ -279,66 +290,87 @@ public class NewUser extends Activity {
             public void onClick(View arg0) {
 
                 try {
-                    if ((ed_firstname.getText().toString().length() > 0) && (ed_lastname.getText().toString().length() > 0) &&
-                            (ed_dob.getText().toString().length() > 0) && (ed_securityno.getText().toString().length() > 0) &&
-                            (state.getText().toString().length() > 0) &&
-                            (ed_hno.getText().toString().length() > 0) && (ed_zipcode.getText().toString().length() > 0))
-                    {
 
-                        String[] param=new String[8];
-                        param[0]=role;
-                        param[1]=ed_firstname.getText().toString();
-                        param[2]=ed_lastname.getText().toString();
-                        param[3]=ed_dob.getText().toString();
-                        param[4]=ed_securityno.getText().toString();
-                        param[5]=state.getText().toString().trim();
-                        param[6]=ed_hno.getText().toString();
-                        param[7]=ed_zipcode.getText().toString();
-                        if (!WebServiceReferences.running) {
-                            String url = preferences.getString("url", null);
-                            String port = preferences.getString("port",
-                                    null);
-                            if (url != null && port != null)
-                                calldisp.startWebService(url, port);
-                            else
-                                calldisp.startWebService(getResources()
-                                                .getString(R.string.service_url),
-                                        "80");
-                            url = null;
-                            port = null;
-                        }
-                        WebServiceReferences.webServiceClient.NewVerification(param,context);
-                        showDialog();
+                    SimpleDateFormat sdf = new SimpleDateFormat();
+                    String due_date =  ed_dob.getText().toString();
+                    if(due_date!=null&& due_date.length()>0) {
+                        String birthdate = due_date;
 
-                    }else {
-                        final Dialog dialog = new Dialog(context);
-                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                        dialog.setContentView(R.layout.error_dialogue);
-                        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-                        dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
-                        ImageView error_img = (ImageView) dialog.findViewById(R.id.error_img);
-                        TextView tv_title = (TextView) dialog.findViewById(R.id.tv_title);
-                        tv_title.setText("SORRY!");
-                        TextView tv_firstLine = (TextView) dialog.findViewById(R.id.tv_firstLine);
-                        TextView tv_secondLine = (TextView) dialog.findViewById(R.id.tv_secondLine);
-                        TextView tv_note = (TextView) dialog.findViewById(R.id.tv_note);
-                        Button btn_ok = (Button) dialog.findViewById(R.id.btn_ok);
-                        error_img.setVisibility(View.VISIBLE);
-                        tv_title.setVisibility(View.VISIBLE);
-                        tv_firstLine.setVisibility(View.VISIBLE);
-                        tv_firstLine.setText("Unable to verify your \nprofessional credentials");
-                        tv_secondLine.setVisibility(View.GONE);
-                        tv_note.setVisibility(View.VISIBLE);
-                        tv_note.setText("Please contact the American Medical Association\nto establish your credentials");
-                        btn_ok.setText("OK");
-                        btn_ok.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                dialog.dismiss();
-                                finish();
+                        Log.i("sss", "Current birthdate" + birthdate);
+                        String[] str = birthdate.split("/");
+                        int month = Integer.parseInt(str[0]);
+                        int day = Integer.parseInt(str[1]);
+                        int year = Integer.parseInt(str[2]);
+                        Log.d("String", "agevalue" + getAge(year, month, day));
+                        int Currentyear = Calendar.getInstance().get(Calendar.YEAR);
+                        Log.i("sss", "Current year" + Currentyear);
+
+                        String BirthYear = str[2];
+                        age = Integer.parseInt(getAge(year,month,day));
+//                        age = Currentyear - (Integer.parseInt(BirthYear));
+                        Log.i("sss", "Current age" + age);
+                        if ((ed_firstname.getText().toString().length() > 0) && (ed_lastname.getText().toString().length() > 0) &&
+                                (ed_dob.getText().toString().length() > 0)  && (state.getText().toString().length() > 0)
+                                && age >= 18) {
+
+                            String[] param = new String[8];
+                            param[0] = role;
+                            param[1] = ed_firstname.getText().toString();
+                            param[2] = ed_lastname.getText().toString();
+                            param[3] = ed_dob.getText().toString();
+                            param[4] = ed_securityno.getText().toString();
+                            param[5] = state.getText().toString().trim();
+                            param[6] = ed_hno.getText().toString();
+                            param[7] = ed_zipcode.getText().toString();
+                            if (!WebServiceReferences.running) {
+                                String url = preferences.getString("url", null);
+                                String port = preferences.getString("port",
+                                        null);
+                                if (url != null && port != null)
+                                    calldisp.startWebService(url, port);
+                                else
+                                    calldisp.startWebService(getResources()
+                                                    .getString(R.string.service_url),
+                                            "80");
+                                url = null;
+                                port = null;
                             }
-                        });
-                        dialog.show();
+                            WebServiceReferences.webServiceClient.NewVerification(param, context);
+                            showDialog();
+
+                        } else if (age < 18) {
+                            Toast.makeText(context, "Sorry! Only 18 and above age persons are allowed to Create New User", Toast.LENGTH_SHORT).show();
+                        } else {
+                            showToast("Enter mandatory fields");
+//                            final Dialog dialog = new Dialog(context);
+//                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//                            dialog.setContentView(R.layout.error_dialogue);
+//                            dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+//                            dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
+//                            ImageView error_img = (ImageView) dialog.findViewById(R.id.error_img);
+//                            TextView tv_title = (TextView) dialog.findViewById(R.id.tv_title);
+//                            tv_title.setText("SORRY!");
+//                            TextView tv_firstLine = (TextView) dialog.findViewById(R.id.tv_firstLine);
+//                            TextView tv_secondLine = (TextView) dialog.findViewById(R.id.tv_secondLine);
+//                            TextView tv_note = (TextView) dialog.findViewById(R.id.tv_note);
+//                            Button btn_ok = (Button) dialog.findViewById(R.id.btn_ok);
+//                            error_img.setVisibility(View.VISIBLE);
+//                            tv_title.setVisibility(View.VISIBLE);
+//                            tv_firstLine.setVisibility(View.VISIBLE);
+//                            tv_firstLine.setText("Unable to verify your \nprofessional credentials");
+//                            tv_secondLine.setVisibility(View.GONE);
+//                            tv_note.setVisibility(View.VISIBLE);
+//                            tv_note.setText("Please contact the American Medical Association\nto establish your credentials");
+//                            btn_ok.setText("OK");
+//                            btn_ok.setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    dialog.dismiss();
+//                                    finish();
+//                                }
+//                            });
+//                            dialog.show();
+                        }
                     }
 
 
@@ -347,6 +379,31 @@ public class NewUser extends Activity {
                 }
             }
         });
+
+    }
+
+    public String getAge(int year, int month, int day) {
+
+
+            Calendar dob = Calendar.getInstance();;
+        Calendar today = Calendar.getInstance();
+
+
+            dob.set(year, month - 1, day);
+
+        int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+        if (today.get(Calendar.MONTH) < dob.get(Calendar.MONTH)) {
+            age--;
+        } else if(today.get(Calendar.MONTH) == dob.get(Calendar.MONTH)) {
+            if (today.get(Calendar.DAY_OF_MONTH) < dob.get(Calendar.DAY_OF_MONTH)) {
+                age--;
+            }
+        }
+
+        Integer ageInt = new Integer(age);
+        String ageS = ageInt.toString();
+
+        return ageS;
 
     }
 
@@ -366,6 +423,7 @@ public class NewUser extends Activity {
     private void updateLabel() {
         String myFormat = "MM/dd/yyyy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
         ed_dob.setText(sdf.format(myCalendar.getTime()));
     }
 
@@ -384,34 +442,35 @@ public class NewUser extends Activity {
                 intent.putExtra("zipcode", ed_zipcode.getText().toString());
                 startActivity(intent);
                 finish();
-            } else {
-                final Dialog dialog = new Dialog(context);
-                dialog.setContentView(R.layout.error_dialogue);
-                dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-                dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
-                ImageView error_img = (ImageView) dialog.findViewById(R.id.error_img);
-                TextView tv_title = (TextView) dialog.findViewById(R.id.tv_title);
-                tv_title.setText("SORRY!");
-                TextView tv_firstLine = (TextView) dialog.findViewById(R.id.tv_firstLine);
-                TextView tv_secondLine = (TextView) dialog.findViewById(R.id.tv_secondLine);
-                TextView tv_note = (TextView) dialog.findViewById(R.id.tv_note);
-                Button btn_ok = (Button) dialog.findViewById(R.id.btn_ok);
-                error_img.setVisibility(View.VISIBLE);
-                tv_title.setVisibility(View.VISIBLE);
-                tv_firstLine.setVisibility(View.VISIBLE);
-                tv_firstLine.setText("Unable to verify your details\nwith the American Medical\nAssociation (AMA)");
-                tv_secondLine.setVisibility(View.GONE);
-                tv_note.setVisibility(View.VISIBLE);
-                tv_note.setText("Please Contact AMA to\nresolve this problem");
-                btn_ok.setText("CONTACT AMA");
-                btn_ok.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show();
             }
+//                final Dialog dialog = new Dialog(context);
+//                dialog.setContentView(R.layout.error_dialogue);
+//                dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+//                dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
+//                ImageView error_img = (ImageView) dialog.findViewById(R.id.error_img);
+//                TextView tv_title = (TextView) dialog.findViewById(R.id.tv_title);
+//                tv_title.setText("SORRY!");
+//                TextView tv_firstLine = (TextView) dialog.findViewById(R.id.tv_firstLine);
+//                TextView tv_secondLine = (TextView) dialog.findViewById(R.id.tv_secondLine);
+//                TextView tv_note = (TextView) dialog.findViewById(R.id.tv_note);
+//                Button btn_ok = (Button) dialog.findViewById(R.id.btn_ok);
+//                error_img.setVisibility(View.VISIBLE);
+//                tv_title.setVisibility(View.VISIBLE);
+//                tv_firstLine.setVisibility(View.VISIBLE);
+//                tv_firstLine.setText("Unable to verify your details\nwith the American Medical\nAssociation (AMA)");
+//                tv_secondLine.setVisibility(View.GONE);
+//                tv_note.setVisibility(View.VISIBLE);
+//                tv_note.setText("Please Contact AMA to\nresolve this problem");
+//                btn_ok.setText("CONTACT AMA");
+//                btn_ok.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        dialog.dismiss();
+//                    }
+//                });
+//                dialog.show();
+            }else if(obj instanceof WebServiceBean) {
+            showToast(((WebServiceBean) obj).getText());
         }
 
 

@@ -51,6 +51,15 @@
         android:layout_below="@+id/tv"
         android:layout_marginTop="10dp"
         android:background="@drawable/img_user" />
+        <ImageView
+            android:id="@+id/imgstatus"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_below="@+id/tv"
+            android:layout_toRightOf="@+id/riv1"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/checkbox_default"/>
     <TextView
         android:id="@+id/buddy"
         android:layout_width="match_parent"
@@ -90,15 +99,18 @@
         android:layout_marginLeft="20dp"
         android:layout_marginStart="38dp"
         android:layout_marginTop="30dp" />
-    <Spinner
+    <AutoCompleteTextView
         android:id="@+id/rights"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:paddingLeft="10dp"
-        android:popupBackground="#202021"
-        style="@style/spinner_style"
-        android:spinnerMode="dropdown"/>
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:text="Fellow"
+        android:editable="false"
+        android:background="@drawable/edittext_style"
+        android:drawableRight="@drawable/input_arrow"
+        android:textColor="@color/white"/>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

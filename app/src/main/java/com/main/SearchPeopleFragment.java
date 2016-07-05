@@ -2,7 +2,6 @@ package com.main;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,7 +12,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -25,15 +23,14 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cg.DB.DBAccess;
 import com.cg.account.FindPeople;
-import com.cg.callservices.AudioCallScreen;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.util.SingleInstance;
 
@@ -48,7 +45,8 @@ public class SearchPeopleFragment extends Fragment {
     private static SearchPeopleFragment searchPeopleFragment;
     private static CallDispatcher calldisp = null;
     public static Context mainContext;
-    public View _rootView;EditText lname,fname,nickname;
+    public View _rootView;
+    EditText lname,fname,nickname;
     Button search,back,advsearch;
     AutoCompleteTextView usertype,state,city,speciality,hospital,medical,residency,fellow;
     private Handler handler = new Handler();
@@ -57,6 +55,8 @@ public class SearchPeopleFragment extends Fragment {
     RadioButton genderSelected;
     Boolean isClicked=true;
     AppMainActivity appMainActivity;
+    private RadioButton radioFemale;
+    private RadioButton radioMale ;
 
     ArrayList<String> stateList = new ArrayList<String>();
     ArrayList<String> specialityList = new ArrayList<String>();
@@ -80,11 +80,14 @@ public class SearchPeopleFragment extends Fragment {
     }
 
     public void setContext(Context cxt) {
+
         this.mainContext = cxt;
     }@Override
      public View onCreateView(LayoutInflater inflater, ViewGroup container,
                               Bundle savedInstanceState) {
-
+        AppReference.bacgroundFragment=searchPeopleFragment;
+        getActivity().getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         Button select = (Button) getActivity().findViewById(R.id.btn_brg);
         select.setVisibility(View.GONE);
         RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
@@ -104,7 +107,7 @@ public class SearchPeopleFragment extends Fragment {
         TextView title = (TextView) getActivity().findViewById(
                 R.id.activity_main_content_title);
         title.setVisibility(View.VISIBLE);
-        title.setText("SEARCH SNAZMED NETWORK");
+        title.setText("ADD CONTACTS");
         title.setTextSize(17);
         title.setGravity(Gravity.CENTER);
         appMainActivity = (AppMainActivity) SingleInstance.contextTable
@@ -130,7 +133,7 @@ public class SearchPeopleFragment extends Fragment {
 
             _rootView = inflater.inflate(R.layout.search_contact, null);
             getActivity().getWindow().setSoftInputMode(
-                    WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+                    WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
             try {
                 final TextView tv_nickname=(TextView)_rootView.findViewById(R.id.tv_nickname);
                 final TextView tv_fname=(TextView)_rootView.findViewById(R.id.tv_fname);
@@ -162,13 +165,13 @@ public class SearchPeopleFragment extends Fragment {
                 residency = (AutoCompleteTextView) _rootView.findViewById(R.id.resi_pro);
                 fellow = (AutoCompleteTextView) _rootView.findViewById(R.id.fellow);
                 gender = (RadioGroup) _rootView.findViewById(R.id.gender);
-                advance.setOnClickListener(new View.OnClickListener() {
+                arrow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if(isClicked) {
                             isClicked=false;
                             advance_lay.setVisibility(View.VISIBLE);
-                            arrow.setBackgroundResource(R.drawable.up_arrow);
+                            arrow.setBackgroundResource(R.drawable.button_arrow_up);
                         }else {
                             isClicked=true;
                             advance_lay.setVisibility(View.GONE);
@@ -176,8 +179,8 @@ public class SearchPeopleFragment extends Fragment {
                         }
                     }
                 });
-                final RadioButton radioMale = (RadioButton) _rootView.findViewById(R.id.radioMale);
-                final RadioButton radioFemale = (RadioButton) _rootView.findViewById(R.id.radioFemale);
+                radioMale = (RadioButton) _rootView.findViewById(R.id.radioMale);
+                radioFemale = (RadioButton) _rootView.findViewById(R.id.radioFemale);
                 radioMale.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -515,29 +518,30 @@ public class SearchPeopleFragment extends Fragment {
                 search.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (nickname.getText().toString().trim().length() > 0
-                                || fname.getText().toString().trim().length() > 0
-                                || lname.getText().toString().trim().length() > 0
-                                || usertype.getText().toString().trim().length() > 0
-                                || state.getText().toString().trim().length() > 0
-                                || speciality.getText().toString().trim().length() > 0
-                                || hospital.getText().toString().trim().length() > 0
-                                || medical.getText().toString().trim().length() > 0
-                                ||residency.getText().toString().trim().length() > 0
-                                || fellow.getText().toString().trim().length() > 0 ) {
+                        int selectedId = gender.getCheckedRadioButtonId();
+                        if(selectedId > 0)
+                            genderSelected = (RadioButton) _rootView.findViewById(selectedId);
+//                        if (nickname.getText().toString().trim().length() > 0
+//                                || fname.getText().toString().trim().length() > 0
+//                                || lname.getText().toString().trim().length() > 0
+//                                || usertype.getText().toString().trim().length() > 0
+//                                || state.getText().toString().trim().length() > 0
+//                                || speciality.getText().toString().trim().length() > 0
+//                                || hospital.getText().toString().trim().length() > 0
+//                                || medical.getText().toString().trim().length() > 0
+//                                ||residency.getText().toString().trim().length() > 0
+//                                || fellow.getText().toString().trim().length() > 0
+//                                || (genderSelected!=null && genderSelected.getText().toString()!=null)) {
 
-                            int selectedId = gender.getCheckedRadioButtonId();
                             Log.i("AAAA","Search "+gender.getCheckedRadioButtonId());
                             String[] param = new String[15];
                             param[0] = CallDispatcher.LoginUser;
                             param[1] = "";
                             param[2] = fname.getText().toString();
                             param[3] = lname.getText().toString();
-                            if(selectedId > 0) {
-                                genderSelected = (RadioButton) _rootView.findViewById(selectedId);
-                            if(genderSelected.getText().toString()!=null)
+
+                            if(genderSelected!=null && genderSelected.getText().toString()!=null)
                                 param[4] =genderSelected.getText().toString();
-                            }
                             else
                                 param[4] ="";
                                 param[5] = usertype.getText().toString().trim();
@@ -549,34 +553,67 @@ public class SearchPeopleFragment extends Fragment {
                                 param[11] = "";
                                 param[12] = hospital.getText().toString().trim();
                                 param[13] = "";
-
                                 param[14] = nickname.getText().toString();
                             WebServiceReferences.webServiceClient.SearchPeopleByAccount(param, searchPeopleFragment);
                             showDialog();
 
-                        } else {
-                            Toast.makeText(mainContext,
-                                    "Please enter any one field to search",
-                                    Toast.LENGTH_SHORT).show();
-                        }
+//                        } else {
+//                            Toast.makeText(mainContext,
+//                                    "Please enter any one field to search",
+//                                    Toast.LENGTH_SHORT).show();
+//                        }
                     }
                 });
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }else
-            ((ViewGroup) _rootView.getParent()).removeView(_rootView);
+        }
+//            ((ViewGroup) _rootView.getParent()).removeView(_rootView);
         return _rootView;
     }
     public View getParentView() {
+
         return _rootView;
     }
+
+    @Override
+    public void onDestroyView() {
+        _rootView =null;
+        super.onDestroyView();
+    }
+
+    @Override
+public void onDestroy() {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.i("AAAA", "on destroy ");
+                nickname.setText("");
+                fname.setText("");
+                lname.setText("");
+                state.setText("");
+                speciality.setText("");
+                hospital.setText("");
+                medical.setText("");
+                residency.setText("");
+                fellow.setText("");
+                usertype.setText("");
+                city.setText("");
+                radioFemale.setChecked(false);
+                radioMale.setChecked(false);
+            }
+            });
+        super.onDestroy();
+
+}
+
     public void notifySearchPeople(Object obj)
     {
         Log.i("AAAA", "Search people ");
-        cancelDialog();
         if (obj instanceof ArrayList) {
             ArrayList<BuddyInformationBean> response = (ArrayList<BuddyInformationBean>) obj;
+            cancelDialog();
+            appMainActivity.removeFragments(searchPeopleFragment.newInstance(SingleInstance.mainContext));
             FindPeople findPeople = FindPeople.newInstance(SingleInstance.mainContext);
             FragmentManager fragmentManager = SingleInstance.mainContext
                     .getSupportFragmentManager();
@@ -586,6 +623,7 @@ public class SearchPeopleFragment extends Fragment {
             SingleInstance.searchedResult.clear();
             SingleInstance.searchedResult.addAll(response);
         } else if(obj instanceof WebServiceBean){
+            cancelDialog();
             final String result1 = ((WebServiceBean) obj).getText();
             handler.post(new Runnable() {
 
@@ -594,6 +632,7 @@ public class SearchPeopleFragment extends Fragment {
                     Log.i("AAAA", "Search people " + result1);
                     Toast.makeText(mainContext,
                             result1, Toast.LENGTH_SHORT).show();
+
                 }
             });
         }

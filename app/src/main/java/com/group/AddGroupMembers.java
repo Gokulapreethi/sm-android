@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.lib.model.BuddyInformationBean;
+import org.lib.model.GroupBean;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,6 +29,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,7 +64,7 @@ public class AddGroupMembers extends Activity {
 	private TextView text_memeberscount;
 
     Vector<UserBean> contactList = new Vector<UserBean>();
-	Boolean invite;
+	Boolean fromCall,fromRounding;
 	String groupid,calltype;
 
 	@Override
@@ -80,7 +82,7 @@ public class AddGroupMembers extends Activity {
 			}
 
 			WebServiceReferences.contextTable.put("groupcontact", context);
-			invite=getIntent().getBooleanExtra("fromcall", false);
+			fromCall=getIntent().getBooleanExtra("fromcall", false);
 			groupid=getIntent().getStringExtra("groupid");
 			back = (Button) findViewById(R.id.btn_backaddcontact);
 			search = (Button) findViewById(R.id.search);
@@ -90,15 +92,19 @@ public class AddGroupMembers extends Activity {
 			countofselection=(TextView) findViewById(R.id.selected);
 			selectAll = (CheckBox) findViewById(R.id.btn_selectall);
 			final TextView txtView01 = (TextView) findViewById(R.id.tx_headingaddcontact);
-			final TextView ed_search = (TextView) findViewById(R.id.searchet);
+			final EditText ed_search = (EditText) findViewById(R.id.searchet);
 			text_memeberscount = (TextView)findViewById(R.id.text_memeberscount);
 			calltype=getIntent().getStringExtra("calltype");
+			fromRounding=getIntent().getBooleanExtra("fromRounding",false);
 
-			if(invite){
+			if(fromCall){
 				txtView01.setText("ADD MEMBERS");
 				done.setText("ADD");
 				text_memeberscount.setVisibility(View.VISIBLE);
 
+			}else if(fromRounding){
+				txtView01.setText("ASSIGN MEMBERS");
+				done.setText("ASSIGN MEMBERS TO PATIENT");
 			}
 			search.setOnClickListener(new OnClickListener() {
 				@Override
@@ -114,17 +120,7 @@ public class AddGroupMembers extends Activity {
 					}
 				}
 			});
-			search.addTextChangedListener(new TextWatcher() {
 
-				public void afterTextChanged(Editable s) {
-				}
-				public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-				}
-				public void onTextChanged(CharSequence s, int start, int before, int count) {
-					if (s != null && s != "")
-						adapter.filter(s.toString());
-				}
-			});
 
 			ArrayList<String> buddylist = getIntent().getStringArrayListExtra(
 					"buddylist");
@@ -135,7 +131,7 @@ public class AddGroupMembers extends Activity {
 					.getBuddyList();
 			
 			HashMap<String, BuddyInformationBean> bMap = new HashMap<String, BuddyInformationBean>();
-			if(!invite) {
+			if(!fromCall && !fromRounding) {
 				if (cList != null) {
 					for (BuddyInformationBean bib : cList) {
 						if (!bib.isTitle()) {
@@ -149,14 +145,10 @@ public class AddGroupMembers extends Activity {
 						}
 					}
 				}
-			}else {
-				Log.d("Onlinemembers","buddyslist");
+			} else {
 					for (BuddyInformationBean bib : cList) {
-						Log.d("Onlinemembers","buddyslist clist");
 						for(String temp:buddylist){
-							Log.d("Onlinemembers","buddyslist templist");
 							if(temp.equalsIgnoreCase(bib.getName())) {
-								Log.d("Onlinemembers","buddyslist if");
 								bMap.put(bib.getName(), bib);
 							}
 
@@ -175,7 +167,7 @@ public class AddGroupMembers extends Activity {
 			presentbuddiescount=0;
 			Log.i("AAAA","loop before"+buddies.size());
 
-				if(!invite) {
+				if(!fromCall&& !fromRounding) {
 					for (String tmp : buddies) {
 
 						if (!buddylist.contains(tmp)) {
@@ -197,7 +189,44 @@ public class AddGroupMembers extends Activity {
 
 						}
 					}
-				}else {
+				}else if(fromRounding){
+					final GroupBean gBean = DBAccess.getdbHeler() .getGroupAndMembers(
+							"select * from groupdetails where groupid=" + groupid);
+					ArrayList<String> groupList=new ArrayList<String>();
+					if(gBean.getActiveGroupMembers()!=null && !gBean.getActiveGroupMembers().equalsIgnoreCase("")) {
+						String[] mlist = (gBean.getActiveGroupMembers()).split(",");
+						for(String temp:mlist){
+							groupList.add(temp);
+						}
+						groupList.add(CallDispatcher.LoginUser);
+						Log.i("AAAA", "grouplist" + groupList.size());
+					}
+					for (String tmp : groupList) {
+							UserBean userBean = new UserBean();
+							presentbuddiescount++;
+						if(tmp.equalsIgnoreCase(CallDispatcher.LoginUser)){
+							if (buddylist.contains(tmp))
+								userBean.setSelected(true);
+							ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(tmp);
+							userBean.setProfilePic(pbean.getPhoto());
+							userBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
+						}else
+							for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
+								if (bib.getName().equalsIgnoreCase(tmp)) {
+									if (buddylist.contains(tmp))
+										userBean.setSelected(true);
+									userBean.setStatus(bib.getStatus());
+									ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(tmp);
+									userBean.setProfilePic(pbean.getPhoto());
+									userBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
+									break;
+								}
+							}
+							userBean.setBuddyName(tmp);
+							contactList.add(userBean);
+					}
+				}
+				else {
 					for (String tmp : buddies) {
 						UserBean userBean = new UserBean();
 					presentbuddiescount++;
@@ -218,6 +247,22 @@ public class AddGroupMembers extends Activity {
 			Collections.sort(contactList, new UserNameComparator());
 			adapter = new BuddyAdapter(this, contactList);
 			lv_addcontact.setAdapter(adapter);
+
+			ed_search.addTextChangedListener(new TextWatcher() {
+
+				public void afterTextChanged(Editable s) {
+				}
+
+				public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+				}
+
+				public void onTextChanged(CharSequence s, int start, int before, int count) {
+					if (s != null && s != "")
+						adapter.getFilter().filter(s);
+				}
+			});
+
+
 			done.setOnClickListener(new OnClickListener() {
                 boolean isSelectContact = false;
 
@@ -236,6 +281,7 @@ public class AddGroupMembers extends Activity {
 
                         } else {
 							Intent intent=getIntent();
+							if(fromCall)
 							intent.putExtra("calltype", calltype);
 							intent.putExtra("list", users);
                             setResult(RESULT_OK, intent);
@@ -308,9 +354,13 @@ public class AddGroupMembers extends Activity {
 
 	public void countofcheckbox(int count)
 	{
-		Log.i("asdf","count"+count);
+		Log.i("asdf", "count" + count);
 		countofselection.setText(Integer.toString(count) + " selected");
 		text_memeberscount.setText( "add " + Integer.toString(count) + "members to call");
+		if(count==contactList.size())
+			selectAll.setChecked(true);
+		else
+			selectAll.setChecked(false);
 
 	}
     public void showAlert1(String title,String message) {
@@ -329,7 +379,7 @@ public class AddGroupMembers extends Activity {
 				});
 		alertCall.show();
 	}
-	private void showToast(final String message) {
+	public void showToast(final String message) {
 		handler.post(new Runnable() {
 
 			@Override

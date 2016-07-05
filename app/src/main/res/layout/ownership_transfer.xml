@@ -20,6 +20,17 @@
             android:textColor="@color/white"
             android:textSize="20sp"
             android:gravity="center" />
+        <EditText
+            android:id="@+id/ed_search"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:hint=" Search"
+            android:layout_centerInParent="true"
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"
+            android:maxLength="20"
+            android:gravity="center"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/cancel"

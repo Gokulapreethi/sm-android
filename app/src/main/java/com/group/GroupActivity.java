@@ -28,6 +28,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -54,11 +55,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Fingerprint.MainActivity;
 import com.bean.ProfileBean;
 import com.bean.UserBean;
 import com.cg.DB.DBAccess;
+import com.cg.account.PinSecurity;
 import com.cg.callservices.MyAbsoluteLayout;
 import com.cg.commonclass.GroupListComparator;
+import com.cg.hostedconf.AppReference;
 import com.cg.rounding.RoundingFragment;
 import com.cg.snazmed.R;
 import com.cg.account.ShareByProfile;
@@ -88,6 +92,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 	private Typeface tf_bold = null;
 
 	private LinearLayout lv_buddylist;
+	LinearLayout member_lay,member_lay1;
 
 	private BuddyAdapter adapter = null;
 	LinearLayout lv_memberList;
@@ -124,7 +129,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 	private boolean isUpdateMembers = false;
 	private boolean isModify = false,fromRounding=false;
 
-	static Handler handler = new Handler();
+	Handler handler = new Handler();
 
 	private ProgressDialog progress = null;
 	
@@ -133,6 +138,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 	String strIPath;
 	String groupid;
 	AppMainActivity appMainActivity;
+	private LinearLayout Linearlay_info;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +151,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 						.getString(R.string.yes))){
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
 		}
+		WebServiceReferences.contextTable.put("groupactivity", context);
 
 		context = this;
 		tf_regular = Typeface.createFromAsset(context.getAssets(),
@@ -171,13 +178,16 @@ public class GroupActivity extends Activity implements OnClickListener {
 		ed_groupdesc= (EditText) findViewById(R.id.ed_gpdesc);
 		profile_pic = (ImageView)findViewById(R.id.riv1);
 		edit_pic = (ImageView)findViewById(R.id.capture_image_view);
+		Linearlay_info = (LinearLayout)findViewById(R.id.tv);
 		final TextView tv_gpname=(TextView)findViewById(R.id.tv_gpname);
 		final TextView tv_gpdesc=(TextView)findViewById(R.id.tv_gpdesc);
-		memberCount = (TextView) findViewById(R.id.txt_memberlist);
+		memberCount = (TextView) findViewById(R.id.members_count);
 		lv_buddylist = (LinearLayout) findViewById(R.id.lv_buddylist);
-		memberAcceptedCount = (TextView) findViewById(R.id.txt_list);
+		memberAcceptedCount = (TextView) findViewById(R.id.members_count1);
 		lv_memberList = (LinearLayout) findViewById(R.id.lv_memberlist);
 		isEdit = getIntent().getBooleanExtra("isEdit", false);
+		member_lay=(LinearLayout)findViewById(R.id.member_lay);
+		member_lay1=(LinearLayout)findViewById(R.id.member_lay1);
 //
 		if (WebServiceReferences.callDispatch.containsKey("calldisp"))
 			callDisp = (CallDispatcher) WebServiceReferences.callDispatch
@@ -248,10 +258,14 @@ public class GroupActivity extends Activity implements OnClickListener {
 		if (isEdit) {
 //			title.setText("EDIT ROUNDING GROUP");
 			 groupid = getIntent().getStringExtra("id");
+//			Linearlay_info.setVisibility(View.GONE);
 			groupBean = callDisp.getdbHeler(context).getGroup(
 					"select * from grouplist where groupid=" + groupid);
 			memberCount.setVisibility(View.VISIBLE);
 			memberAcceptedCount.setVisibility(View.VISIBLE);
+			member_lay.setVisibility(View.VISIBLE);
+			member_lay1.setVisibility(View.VISIBLE);
+			edit_pic.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_edit_photo));
 			refreshMembersList();
 			if (groupBean != null) {
 				Log.d("Test", "$$$$$GroupCreatedDate@@@@@ " + groupBean.getCreatedDate());
@@ -263,6 +277,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 				if(groupBean.getGroupIcon()!=null){
 					String profilePic=groupBean.getGroupIcon();
 					if (profilePic != null && profilePic.length() > 0) {
+						edit_pic.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_edit_photo));
 						if (!profilePic.contains("COMMedia")) {
 							profilePic = Environment.getExternalStorageDirectory()
 									+ "/COMMedia/" + profilePic;
@@ -373,8 +388,8 @@ public class GroupActivity extends Activity implements OnClickListener {
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						memberCount.setText("INVITATIONS" + " (" + String.valueOf(membersList.size()) + ")");
-						memberAcceptedCount.setText("MEMBERS" + " ("
+						memberCount.setText(" (" + String.valueOf(membersList.size()) + ")");
+						memberAcceptedCount.setText( " ("
 								+ String.valueOf(membersAcceptedList.size()) + ")");
 					}
 				});
@@ -522,7 +537,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 					buddylist.add(bean.getBuddyName());
 				}
 				intent.putStringArrayListExtra("buddylist", buddylist);
-				intent.putExtra("invite", true);
+				intent.putExtra("fromcall", false);
 				intent.putExtra("groupid",groupid);
 				startActivityForResult(intent, 3);
 			}
@@ -534,7 +549,28 @@ public class GroupActivity extends Activity implements OnClickListener {
     protected void onResume() {
         super.onResume();
         AppMainActivity.inActivity = this;
+		if(AppReference.mainContext.isPinEnable) {
+			if (AppReference.mainContext.openPinActivity) {
+				AppReference.mainContext.openPinActivity=false;
+				if(Build.VERSION.SDK_INT>20 && AppReference.mainContext.isTouchIdEnabled) {
+					Intent i = new Intent(GroupActivity.this, MainActivity.class);
+					startActivity(i);
+				}else {
+					Intent i = new Intent(GroupActivity.this, PinSecurity.class);
+					startActivity(i);
+				}
+			} else {
+				AppReference.mainContext.count=0;
+				AppReference.mainContext.registerBroadcastReceiver();
+			}
+		}
     }
+	@Override
+	protected void onStop() {
+		super.onStop();
+		AppReference.mainContext.isApplicationBroughtToBackground();
+
+	}
 
     // protected String getMembersCount()
     // {
@@ -579,6 +615,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 					}
 					for (UserBean userBean : list) {
 						if (!membersMap.containsKey(userBean.getBuddyName())) {
+							userBean.setAllowChecking(false);
 							membersList.add(userBean);
 						}
 					}
@@ -763,7 +800,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 					public void run() {
 						// TODO Auto-generated method stub
 						GroupActivity.groupAdapter.notifyDataSetChanged();
-						GroupActivity.groupAdapter2.notifyDataSetChanged();
+//						GroupActivity.groupAdapter2.notifyDataSetChanged();
 //						ll_addcontact.setVisibility(View.VISIBLE);
 //						btn_delete.setVisibility(View.VISIBLE);
 						// btn_create.setText(SingleInstance.mainContext
@@ -786,17 +823,20 @@ public class GroupActivity extends Activity implements OnClickListener {
 				});
 
 			}
+			cancelDialog();
+			finish();
 		} else if (obj instanceof String) {
 			showToast((String) obj);
+
+		// callDisp.cancelDialog();
+		cancelDialog();
 		} else {
+			cancelDialog();
 			showAlert(
 					SingleInstance.mainContext.getResources().getString(
 							R.string.response_group),
 					((WebServiceBean) obj).getText());
 		}
-		// callDisp.cancelDialog();
-		cancelDialog();
-		finish();
 	}
 	private void showAlert(final String title, final String message) {
 		handler.post(new Runnable() {
@@ -854,7 +894,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 						try {
 //							dateTime.setText(groupBean.getCreatedDate());
 							GroupActivity.groupAdapter.notifyDataSetChanged();
-							GroupActivity.groupAdapter2.notifyDataSetChanged();
+//							GroupActivity.groupAdapter2.notifyDataSetChanged();
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -928,7 +968,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 							public void run() {
 								GroupActivity.groupAdapter
 										.notifyDataSetChanged();
-								GroupActivity.groupAdapter2.notifyDataSetChanged();
+//								GroupActivity.groupAdapter2.notifyDataSetChanged();
 							}
 						});
 						break;
@@ -1052,7 +1092,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 						showToast("Special Characters -/. Are only allowed");
 					} else if (groupName.length() > 15) {
 						showToast("Groupname must be 1-15 characters");
-					} else if(membersList.size()==0){
+					} else if(membersAcceptedList.size()==0){
 						showToast("Please select group members");
 					}else {
 						Toast.makeText(getApplicationContext(),
@@ -1157,16 +1197,12 @@ public class GroupActivity extends Activity implements OnClickListener {
 					"select * from groupdetails where groupid=" + bean.getGroupId());
 			if (!gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
 				if (gBean.getInviteMembers() != null) {
-					String[] invitelist = (gBean.getInviteMembers()).split(",");
-					for (String temp : invitelist) {
-						if (!temp.equalsIgnoreCase(CallDispatcher.LoginUser)) {
-							bean.setStatus("request");
-							requestList.add(bean);
-						} else {
-							bean.setStatus("accepted");
-							acceptedList.add(bean);
-							break;
-						}
+					if(!gBean.getInviteMembers().contains(CallDispatcher.LoginUser)){
+						bean.setStatus("request");
+						requestList.add(bean);
+					}else {
+						bean.setStatus("accepted");
+						acceptedList.add(bean);
 					}
 				} else {
 					bean.setStatus("request");
@@ -1201,17 +1237,22 @@ public class GroupActivity extends Activity implements OnClickListener {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				memberCount.setText("INVITATIONS ("
+				if(membersList.size()>0)
+					member_lay.setVisibility(View.VISIBLE);
+				if(membersAcceptedList.size()>0)
+				member_lay1.setVisibility(View.VISIBLE);
+				memberCount.setText(" ("
 						+ String.valueOf(membersList.size()) + ")");
-				memberAcceptedCount.setText("MEMBERS ("
+				memberAcceptedCount.setText(" ("
 						+ String.valueOf(membersAcceptedList.size()) + ")");
 				lv_buddylist.removeAllViews();
+				adapter = new BuddyAdapter(GroupActivity.this, membersList);
 				final int adapterCount = adapter.getCount();
 
 				for (int i = 0; i < adapterCount; i++) {
 					View item = adapter.getView(i, null, null);
 					lv_buddylist.addView(item);
-				}
+			}
 				adapter.notifyDataSetChanged();
 				if(memberAdapter!=null)
 				memberAdapter.notifyDataSetChanged();

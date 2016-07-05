@@ -36,10 +36,19 @@ public class SignalingBean implements Serializable, Cloneable {
 	private String netWork = null;
 	private String deviceOs = null;
 	private String callDuration = null;
-		private String host;
+	private String host;
 	private String participants;
 	private String joincall;
-		private String videopromote = "no";
+	private String videopromote = "no";
+	private String runningcallstate;
+	private String callstatus;
+	private String chatid;
+
+
+
+	private String host_name;
+	private String participant_name;
+
 	public String getNetWork() {
 		return netWork;
 	}
@@ -572,6 +581,30 @@ public class SignalingBean implements Serializable, Cloneable {
 		this.videoStoped = videoStoped;
 	}
 
+	public String getRunningcallstate() {
+		return runningcallstate;
+	}
+
+	public void setRunningcallstate(String runningcallstate) {
+		this.runningcallstate = runningcallstate;
+	}
+
+	public String getCallstatus() {
+		return callstatus;
+	}
+
+	public void setCallstatus(String callstatus) {
+		this.callstatus = callstatus;
+	}
+
+	public String getChatid() {
+		return chatid;
+	}
+
+	public void setChatid(String chatid) {
+		this.chatid = chatid;
+	}
+
 	public Object clone() {
 		try {
 			SignalingBean cloned = (SignalingBean) super.clone();
@@ -581,6 +614,22 @@ public class SignalingBean implements Serializable, Cloneable {
 			// TODO: handle exception
 			return null;
 		}
+	}
+
+	public String getHost_name() {
+		return host_name;
+	}
+
+	public void setHost_name(String host_name) {
+		this.host_name = host_name;
+	}
+
+	public String getParticipant_name() {
+		return participant_name;
+	}
+
+	public void setParticipant_name(String participant_name) {
+		this.participant_name = participant_name;
 	}
 
 }

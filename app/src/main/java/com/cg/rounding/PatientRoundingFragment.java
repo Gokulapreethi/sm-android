@@ -7,12 +7,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
@@ -41,7 +43,9 @@ import com.cg.DB.DBAccess;
 import com.cg.commonclass.BuddyListComparator;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.quickaction.User;
 import com.cg.snazmed.R;
+import com.group.AddGroupMembers;
 import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
 import com.main.ContactsFragment;
@@ -55,15 +59,21 @@ import org.lib.model.PatientCommentsBean;
 import org.lib.model.PatientDescriptionBean;
 import org.lib.model.RoleAccessBean;
 import org.lib.model.RoleEditRndFormBean;
+import org.lib.model.RolePatientManagementBean;
+import org.lib.model.RoleTaskMgtBean;
 import org.lib.model.TaskDetailsBean;
 import org.lib.model.WebServiceBean;
 
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 public class PatientRoundingFragment extends Fragment {
@@ -73,33 +83,41 @@ public class PatientRoundingFragment extends Fragment {
     private String pastingContentCopy;
     View _rootView;
     private String groupName;
+    private Seealladapter seealladapter;
     public Boolean title = false;
-    TextView tv_rounding,tv_task,tv_comments,tv_members;
-    ImageView rounding_img,task_img,comments_img,members_img;
-    View view_rounding,view_task,view_comments,view_members;
-    GroupBean gBean=new GroupBean();
-    String patientid,patientName;
-    PatientDetailsBean pBean=new PatientDetailsBean();
-    TextView diagnosis,medications,testandvitals,hospital,consults;
+    TextView tv_rounding, tv_task, tv_comments, tv_members;
+    ImageView rounding_img, task_img, comments_img, members_img;
+    View view_rounding, view_task, view_comments, view_members;
+    GroupBean gBean = new GroupBean();
+    String patientid, patientName;
+    PatientDetailsBean pBean = new PatientDetailsBean();
+    TextView diagnosis, medications, testandvitals, hospital, consults;
     LinearLayout currentstatus_lay, currentstatus_lay1;
-    PatientDescriptionBean pcBean=new PatientDescriptionBean();
-    private int editTag=0;
+    PatientDescriptionBean pcBean = new PatientDescriptionBean();
+    private int editTag = 0;
     Handler handler = new Handler();
     private ProgressDialog progress = null;
     private String reportid;
     CommentsAdapter cadapter;
     Vector<PatientCommentsBean> CommentsList;
-    public static String commentType="mine";
+    public static String commentType = "mine";
     ListView clistView = null;
-    String statusMode,assignedMode;
+    String statusMode, assignedMode;
     ListView tasklistView;
     String strQuery = null;
-    TextView tv_status,tv_assigned;
+    TextView tv_status, tv_assigned;
     GroupBean gmembersbean;
     public boolean Edit = false;
     public String sorting = "online";
     private Button edit;
+    boolean isfromedit_diagnosis = false;
     PatientDescriptionBean pDescBean;
+    GroupMemberBean memberbean;
+    RoleAccessBean roleAccessBean;
+    RoleEditRndFormBean editRndFormBean;
+    RolePatientManagementBean rolePatientManagementBean;
+    RoleTaskMgtBean roleTaskMgtBean;
+
     public static PatientRoundingFragment newInstance(Context context) {
         try {
             if (patientRoundingFragment == null) {
@@ -131,7 +149,9 @@ public class PatientRoundingFragment extends Fragment {
         mainHeader.setVisibility(View.VISIBLE);
         LinearLayout contact_layout = (LinearLayout) getActivity().findViewById(R.id.contact_layout);
         contact_layout.setVisibility(View.GONE);
-        Button imVw = (Button) getActivity().findViewById(R.id.im_view);
+        EditText search_box = (EditText)getActivity().findViewById(R.id.search_box);
+        search_box.setVisibility(View.GONE);
+        final Button imVw = (Button) getActivity().findViewById(R.id.im_view);
         imVw.setVisibility(View.GONE);
 
 
@@ -149,9 +169,41 @@ public class PatientRoundingFragment extends Fragment {
 //            }
 //        });
 
+        memberbean = DBAccess.getdbHeler().getMemberDetails(gBean.getGroupId(), CallDispatcher.LoginUser);
+        roleAccessBean = DBAccess.getdbHeler().getRoleAccessDetails(gBean.getGroupId(), memberbean.getRole());
+        editRndFormBean = DBAccess.getdbHeler().getRoleEditRoundingDetails(gBean.getGroupId(), memberbean.getRole());
+        rolePatientManagementBean = DBAccess.getdbHeler().getRolePatientManagement(gBean.getGroupId(), memberbean.getRole());
+        roleTaskMgtBean = DBAccess.getdbHeler().getRoleTaskManagement(gBean.getGroupId(), memberbean.getRole());
         final Button plusBtn = (Button) getActivity().findViewById(R.id.add_group);
         plusBtn.setVisibility(View.VISIBLE);
         plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.dot));
+        gmembersbean = DBAccess.getdbHeler().getGroupAndMembers(
+                "select * from groupdetails where groupid="
+                        + gBean.getGroupId());
+        final Vector<UserBean> memberslist = new Vector<UserBean>();
+        if (gmembersbean != null) {
+            if (gmembersbean.getActiveGroupMembers() != null
+                    && gmembersbean.getActiveGroupMembers().length() > 0) {
+                String[] mlist = (gmembersbean.getActiveGroupMembers())
+                        .split(",");
+                for (String tmp : mlist) {
+                    UserBean uBean = new UserBean();
+
+                    for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
+                        if (bib.getName().equalsIgnoreCase(tmp)) {
+                            uBean.setFirstname(bib.getFirstname() + " " + bib.getLastname());
+                            break;
+                        } else
+                            uBean.setFirstname(tmp);
+                        uBean.setStatus(bib.getStatus());
+                        ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(tmp);
+                        uBean.setProfilePic(pbean.getPhoto());
+                    }
+                    uBean.setBuddyName(tmp);
+                    memberslist.add(uBean);
+                }
+            }
+        }
         plusBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -169,7 +221,7 @@ public class PatientRoundingFragment extends Fragment {
                 window.setGravity(Gravity.BOTTOM);
                 dialog.show();
                 TextView task = (TextView) dialog.findViewById(R.id.round_edit);
-                TextView assign = (TextView) dialog.findViewById(R.id.round_role);
+                final TextView assign = (TextView) dialog.findViewById(R.id.round_role);
                 TextView newTask = (TextView) dialog.findViewById(R.id.roun_new_task);
                 TextView newPatient = (TextView) dialog.findViewById(R.id.roun_new_patient);
                 TextView dischargePatient = (TextView) dialog.findViewById(R.id.roun_ownership);
@@ -185,6 +237,56 @@ public class PatientRoundingFragment extends Fragment {
                 cancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+                if (!(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                        rolePatientManagementBean.getModify() != null && rolePatientManagementBean.getModify().equalsIgnoreCase("1"))) {
+                    assign.setEnabled(false);
+                    assign.setBackgroundColor(mainContext.getResources().getColor(R.color.black));
+                }
+                if (!(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                        rolePatientManagementBean.getDischarge() != null && rolePatientManagementBean.getDischarge().equalsIgnoreCase("1"))) {
+                    dischargePatient.setEnabled(false);
+                    dischargePatient.setBackgroundColor(mainContext.getResources().getColor(R.color.black));
+                }
+                if (!(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                        rolePatientManagementBean.getDelete() != null && rolePatientManagementBean.getDelete().equalsIgnoreCase("1"))) {
+                    deletePatient.setEnabled(false);
+                    deletePatient.setBackgroundColor(mainContext.getResources().getColor(R.color.black));
+                }
+                if (!(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                        roleAccessBean.getTaskmanagement() != null && roleAccessBean.getTaskmanagement().equalsIgnoreCase("1"))) {
+//                    if(!(memberbean.getRole().equalsIgnoreCase(roleTaskMgtBean.getTattending())
+//                            || memberbean.getRole().equalsIgnoreCase(roleTaskMgtBean.getTchiefresident()) ||
+//                            memberbean.getRole().equalsIgnoreCase(roleTaskMgtBean.getTfellow()) || memberbean.getRole().equalsIgnoreCase(roleTaskMgtBean.getTmedstudent())
+//                            || memberbean.getRole().equalsIgnoreCase(roleTaskMgtBean.getTresident()))) {
+                    task.setEnabled(false);
+                    task.setBackgroundColor(mainContext.getResources().getColor(R.color.black));
+//                    }
+                }
+                assign.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ArrayList<String> buddylist = new ArrayList<String>();
+                        Intent intent = new Intent(SingleInstance.mainContext,
+                                AddGroupMembers.class);
+                        for (UserBean userBean : memberslist) {
+                            buddylist.add(userBean.getBuddyName());
+                        }
+                        intent.putStringArrayListExtra("buddylist", buddylist);
+                        intent.putExtra("fromcall", true);
+                        Log.i("AAAA", "members list " + buddylist.size());
+                        startActivityForResult(intent, 3);
+                        dialog.dismiss();
+                    }
+                });
+                task.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mainContext, TaskCreationActivity.class);
+                        intent.putExtra("groupid", pBean.getGroupid());
+                        startActivity(intent);
                         dialog.dismiss();
                     }
                 });
@@ -209,22 +311,25 @@ public class PatientRoundingFragment extends Fragment {
 
         TextView title = (TextView) getActivity().findViewById(
                 R.id.activity_main_content_title);
+        title.setEllipsize(TextUtils.TruncateAt.END);
+        title.setWidth(600);
+        title.setHeight(200);
+        title.setSingleLine();
         title.setVisibility(View.VISIBLE);
-        patientName=pBean.getFirstname()+" "+pBean.getLastname();
+        patientName = pBean.getFirstname() + " " + pBean.getLastname();
         title.setText(patientName);
 
-       final Button backBtn = (Button) getActivity().findViewById(R.id.backbtn);
+        final Button backBtn = (Button) getActivity().findViewById(R.id.backbtn);
         backBtn.setVisibility(View.VISIBLE);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RoundingFragment changePassword = RoundingFragment.newInstance(mainContext);
-                FragmentManager fragmentManager = SingleInstance.mainContext
-                        .getSupportFragmentManager();
-                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                fragmentManager.beginTransaction().replace(
-                        R.id.activity_main_content_fragment, changePassword)
-                        .commitAllowingStateLoss();
+                Intent intent = new Intent(SingleInstance.mainContext, GroupChatActivity.class);
+                intent.putExtra("groupid", pBean.getGroupid());
+                intent.putExtra("isRounding", true);
+                intent.putExtra("isReq", "p");
+                SingleInstance.mainContext.startActivity(intent);
+
             }
         });
         _rootView = null;
@@ -235,28 +340,26 @@ public class PatientRoundingFragment extends Fragment {
                     WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
             try {
 
-                final LinearLayout rounding = (LinearLayout)_rootView. findViewById(R.id.rounding);
-                final LinearLayout task = (LinearLayout)_rootView. findViewById(R.id.task);
-                final LinearLayout comments = (LinearLayout)_rootView. findViewById(R.id.comments);
-                final LinearLayout members = (LinearLayout)_rootView. findViewById(R.id.members);
-                tv_rounding=(TextView)_rootView.findViewById(R.id.tv_rounding);
-                tv_task=(TextView)_rootView.findViewById(R.id.tv_task);
+                final LinearLayout rounding = (LinearLayout) _rootView.findViewById(R.id.rounding);
+                final LinearLayout task = (LinearLayout) _rootView.findViewById(R.id.task);
+                final LinearLayout comments = (LinearLayout) _rootView.findViewById(R.id.comments);
+                final LinearLayout members = (LinearLayout) _rootView.findViewById(R.id.members);
+                tv_rounding = (TextView) _rootView.findViewById(R.id.tv_rounding);
+                tv_task = (TextView) _rootView.findViewById(R.id.tv_task);
                 rounding_img = (ImageView) _rootView.findViewById(R.id.rounding_img);
-                task_img = (ImageView)_rootView. findViewById(R.id.task_img);
-                view_rounding = (View)_rootView.findViewById(R.id.view_rounding);
-                view_task = (View)_rootView.findViewById(R.id.view_task);
-                view_comments = (View)_rootView.findViewById(R.id.view_comments);
-                view_members = (View)_rootView.findViewById(R.id.view_members);
-                tv_comments=(TextView)_rootView.findViewById(R.id.tv_comments);
-                tv_members=(TextView)_rootView.findViewById(R.id.tv_members);
+                task_img = (ImageView) _rootView.findViewById(R.id.task_img);
+                view_rounding = (View) _rootView.findViewById(R.id.view_rounding);
+                view_task = (View) _rootView.findViewById(R.id.view_task);
+                view_comments = (View) _rootView.findViewById(R.id.view_comments);
+                view_members = (View) _rootView.findViewById(R.id.view_members);
+                tv_comments = (TextView) _rootView.findViewById(R.id.tv_comments);
+                tv_members = (TextView) _rootView.findViewById(R.id.tv_members);
                 comments_img = (ImageView) _rootView.findViewById(R.id.comments_img);
-                members_img = (ImageView)_rootView. findViewById(R.id.members_img);
+                members_img = (ImageView) _rootView.findViewById(R.id.members_img);
 
-               patientDetails();
-                 gmembersbean = DBAccess.getdbHeler().getGroupAndMembers(
-                        "select * from groupdetails where groupid="
-                                + gBean.getGroupId());
-                patientid=pBean.getPatientid();
+                patientDetails();
+
+                patientid = pBean.getPatientid();
                 rounding.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -286,7 +389,7 @@ public class PatientRoundingFragment extends Fragment {
                         comments_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_comments_white));
                         tv_comments.setTextColor(getResources().getColor(R.color.white));
                         view_comments.setVisibility(View.VISIBLE);
-                       CommentsProcess();
+                        CommentsProcess();
                     }
                 });
                 members.setOnClickListener(new View.OnClickListener() {
@@ -310,21 +413,20 @@ public class PatientRoundingFragment extends Fragment {
     }
 
 
-    private void MembersProcess()
-    {
+    private void MembersProcess() {
         final LinearLayout content = (LinearLayout) _rootView.findViewById(R.id.content);
         LayoutInflater layoutInflater = (LayoutInflater) mainContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         content.removeAllViews();
         final View v1 = layoutInflater.inflate(R.layout.members_layout, content);
 
-        final ListView list=(ListView)v1.findViewById(R.id.memberslist);
-        final Button alpha_sort = (Button)v1.findViewById(R.id.alpha_sort);
-        final Button online_sort = (Button)v1.findViewById(R.id.online_sort);
-        final Button role_sort = (Button)v1.findViewById(R.id.role_sort);
+        final ListView list = (ListView) v1.findViewById(R.id.memberslist);
+        final Button alpha_sort = (Button) v1.findViewById(R.id.alpha_sort);
+        final Button online_sort = (Button) v1.findViewById(R.id.online_sort);
+        final Button role_sort = (Button) v1.findViewById(R.id.role_sort);
 
 
-        final Vector<UserBean> memberslist=new Vector<UserBean>();
-        if ( gmembersbean != null) {
+        final Vector<UserBean> memberslist = new Vector<UserBean>();
+        if (gmembersbean != null) {
             if (gmembersbean.getActiveGroupMembers() != null
                     && gmembersbean.getActiveGroupMembers().length() > 0) {
                 String[] mlist = (gmembersbean.getActiveGroupMembers())
@@ -332,11 +434,11 @@ public class PatientRoundingFragment extends Fragment {
                 for (String tmp : mlist) {
                     UserBean uBean = new UserBean();
 
-                    for(BuddyInformationBean bib: ContactsFragment.getBuddyList()){
-                        if(bib.getName().equalsIgnoreCase(tmp)) {
+                    for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
+                        if (bib.getName().equalsIgnoreCase(tmp)) {
                             uBean.setFirstname(bib.getFirstname() + " " + bib.getLastname());
                             break;
-                        }else
+                        } else
                             uBean.setFirstname(tmp);
                         uBean.setStatus(bib.getStatus());
                         ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(tmp);
@@ -356,7 +458,7 @@ public class PatientRoundingFragment extends Fragment {
                 alpha_sort.setTextColor(getResources().getColor(R.color.snazlgray));
                 role_sort.setTextColor(getResources().getColor(R.color.snazlgray));
                 sorting = "online";
-                MembersAdapter adapter=new MembersAdapter(mainContext, R.layout.rounding_member_row,getOnlineList(memberslist));
+                MembersAdapter adapter = new MembersAdapter(mainContext, R.layout.rounding_member_row, getOnlineList(memberslist));
                 list.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
             }
@@ -364,14 +466,14 @@ public class PatientRoundingFragment extends Fragment {
         alpha_sort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                title=true;
+                title = true;
                 alpha_sort.setTextColor(getResources().getColor(R.color.white));
                 online_sort.setTextColor(getResources().getColor(R.color.snazlgray));
                 role_sort.setTextColor(getResources().getColor(R.color.snazlgray));
 
                 sorting = "alpha";
                 Collections.sort(memberslist, new PatientListComparator());
-                MembersAdapter adapter=new MembersAdapter(mainContext, R.layout.rounding_member_row, memberslist);
+                MembersAdapter adapter = new MembersAdapter(mainContext, R.layout.rounding_member_row, memberslist);
                 list.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
             }
@@ -394,7 +496,7 @@ public class PatientRoundingFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
         });
-        MembersAdapter adapter=new MembersAdapter(mainContext, R.layout.rounding_member_row,memberslist);
+        MembersAdapter adapter = new MembersAdapter(mainContext, R.layout.rounding_member_row, memberslist);
         list.setAdapter(adapter);
 
 
@@ -404,37 +506,22 @@ public class PatientRoundingFragment extends Fragment {
         String status = null;
         Vector<UserBean> tempList = new Vector<UserBean>();
         Vector<UserBean> onlinelist = new Vector<UserBean>();
-        Vector<UserBean> offlinelist = new Vector<UserBean>();
-        Vector<UserBean> airplanelist = new Vector<UserBean>();
-        Vector<UserBean> awaylist = new Vector<UserBean>();
         tempList.clear();
         for (UserBean sortlistbeanstatus : vectorBean) {
             status = sortlistbeanstatus.getStatus();
             Log.i("AAAA", "online list " + status);
             if (status != null) {
-                if (status.equalsIgnoreCase("Online")) {
+                if (status.equalsIgnoreCase("Online"))
                     onlinelist.add(sortlistbeanstatus);
-                } else if (status.equalsIgnoreCase("Offline") || status.equalsIgnoreCase("Stealth")) {
-                    offlinelist.add(sortlistbeanstatus);
-                } else if (status.equalsIgnoreCase("Airport") || status.equalsIgnoreCase("busy")) {
-                    airplanelist.add(sortlistbeanstatus);
-                } else if (status.equalsIgnoreCase("Away")) {
-                    awaylist.add(sortlistbeanstatus);
-                }
             }
         }
-        if(onlinelist.size()>0)
+        if (onlinelist.size() > 0)
             tempList.addAll(onlinelist);
-        if(airplanelist.size()>0)
-            tempList.addAll(airplanelist);
-        if(awaylist.size()>0)
-            tempList.addAll(awaylist);
-        if(offlinelist.size()>0)
-            tempList.addAll(offlinelist);
 
         return tempList;
 
     }
+
     public class MembersAdapter extends ArrayAdapter<UserBean> {
 
         private LayoutInflater inflater = null;
@@ -444,7 +531,7 @@ public class PatientRoundingFragment extends Fragment {
 
         public MembersAdapter(Context context, int resource, Vector<UserBean> objects) {
             super(context, resource, objects);
-            imageLoader=new ImageLoader(context);
+            imageLoader = new ImageLoader(context);
             result = new Vector<UserBean>();
             result.addAll(objects);
         }
@@ -453,7 +540,7 @@ public class PatientRoundingFragment extends Fragment {
         public View getView(int i, View convertView, ViewGroup viewGroup) {
             try {
                 holder = new ViewHolder();
-                if(convertView == null) {
+                if (convertView == null) {
                     inflater = (LayoutInflater) mainContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.rounding_member_row, null);
                     holder.selectUser = (CheckBox) convertView.findViewById(R.id.sel_buddy);
@@ -465,10 +552,10 @@ public class PatientRoundingFragment extends Fragment {
                     holder.header_title = (TextView) convertView.findViewById(R.id.header_title);
                     holder.rights = (TextView) convertView.findViewById(R.id.rights);
                     convertView.setTag(holder);
-                }else
+                } else
                     holder = (ViewHolder) convertView.getTag();
                 final UserBean bib = result.get(i);
-                if(bib!=null) {
+                if (bib != null) {
                     if (bib.getProfilePic() != null) {
                         String pic_Path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/COMMedia/" + bib.getProfilePic();
                         File pic = new File(pic_Path);
@@ -490,9 +577,9 @@ public class PatientRoundingFragment extends Fragment {
                             holder.statusIcon.setBackgroundResource(R.drawable.offline_icon);
                         }
                     }
-                    if(title = false) {
+                    if (title = false) {
                         holder.header_title.setVisibility(View.GONE);
-                    }else if(title = true) {
+                    } else if (title = true) {
                         holder.header_title.setVisibility(View.VISIBLE);
                         String cname1, cname2;
                         cname1 = String.valueOf(bib.getFirstname().charAt(0));
@@ -516,33 +603,36 @@ public class PatientRoundingFragment extends Fragment {
                     holder.buddyName.setText(bib.getFirstname());
 //                    if(bib.getOccupation()!=null)
 //                     holder.occupation.setText(bib.getOccupation());
-                    if(bib.isSelected()) {
+                    if (bib.isSelected()) {
                         holder.occupation.setText("Owner");
                         holder.occupation.setTextColor(getResources().getColor(R.color.green));
                     }
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return convertView;
         }
     }
+
     public static class ViewHolder {
         CheckBox selectUser;
-        ImageView buddyicon,edit;
+        ImageView buddyicon, edit;
         ImageView statusIcon;
         TextView buddyName;
         TextView occupation;
-        TextView header_title,rights;
+        TextView header_title, rights;
     }
-    public void setGroupBean(GroupBean bean){
-        gBean=bean;
+
+    public void setGroupBean(GroupBean bean) {
+        gBean = bean;
     }
-    public void setPatientDetailsBean(PatientDetailsBean pbean){
-        pBean=pbean;
+
+    public void setPatientDetailsBean(PatientDetailsBean pbean) {
+        pBean = pbean;
     }
-    private void setDefault()
-    {
+
+    private void setDefault() {
         rounding_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_patients));
         task_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_tasks));
         comments_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_comments));
@@ -556,15 +646,26 @@ public class PatientRoundingFragment extends Fragment {
         view_rounding.setVisibility(View.GONE);
         view_task.setVisibility(View.GONE);
     }
-	private void showDiagnosisHistory()
-    {
+
+    private void showDiagnosisHistory(String edit_content, String title) {
         final Dialog dialog1 = new Dialog(mainContext);
         dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog1.setContentView(R.layout.diagnosis_history);
         dialog1.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         dialog1.getWindow().setBackgroundDrawableResource(R.color.trans_black2);
         dialog1.show();
-        Button cancel=(Button)dialog1.findViewById(R.id.cancel);
+        Button cancel = (Button) dialog1.findViewById(R.id.cancel);
+        TextView header_name = (TextView) dialog1.findViewById(R.id.header_title);
+        header_name.setText(title);
+        ListView listview = (ListView) dialog1.findViewById(R.id.listview);
+        String strGetQry = "select diagnosis,commentdate from seeallpatientdetails where groupid='"
+                + pBean.getGroupid() + "'and patientid='" + pBean.getPatientid() + "' ORDER BY commentdate DESC";
+        isfromedit_diagnosis = true;
+        Vector<PatientDescriptionBean> comments = DBAccess.getdbHeler().getseallcomments(strGetQry);
+        Log.d("listvalues","string"+comments.size());
+        seealladapter = new Seealladapter(mainContext, R.layout.seeall_row, comments);
+        listview.setAdapter(seealladapter);
+
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -573,27 +674,31 @@ public class PatientRoundingFragment extends Fragment {
         });
 
     }
-	private void editDiagnosisDescription(String editingContent,String edittitle, String edithint)
-    {
+
+    private void editDiagnosisDescription(String editingContent, String edittitle, final String edithint) {
         final Dialog dialog1 = new Dialog(mainContext);
         dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog1.setContentView(R.layout.edit_buddy_diagnosis);
         dialog1.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         dialog1.getWindow().setBackgroundDrawableResource(R.color.trans_black2);
         dialog1.show();
-        Button cancel=(Button)dialog1.findViewById(R.id.cancel);
-        Button edit_done=(Button)dialog1.findViewById(R.id.edit_diag_done);
-        TextView paste_to_text=(TextView) dialog1.findViewById(R.id.active_descrip);
-        final TextView edit_title=(TextView) dialog1.findViewById(R.id.edit_title);
+        Button cancel = (Button) dialog1.findViewById(R.id.cancel);
+        Button edit_done = (Button) dialog1.findViewById(R.id.edit_diag_done);
+        ListView listview = (ListView)dialog1.findViewById(R.id.listview);
+        final TextView edit_title = (TextView) dialog1.findViewById(R.id.edit_title);
         edit_title.setText(edittitle);
-        final TextView newDesc=(TextView) dialog1.findViewById(R.id.newDesc);
+        final TextView newDesc = (TextView) dialog1.findViewById(R.id.newDesc);
         newDesc.setText(edithint);
-        final EditText newDescription=(EditText) dialog1.findViewById(R.id.new_descrip);
+        final EditText newDescription = (EditText) dialog1.findViewById(R.id.new_descrip);
         newDescription.setHint(edithint);
-        if(editingContent!=null)
-        paste_to_text.setText(editingContent);
-        else
-            paste_to_text.setText("NULL content");
+        isfromedit_diagnosis = false;
+        String strGetQry = "select diagnosis,commentdate from seeallpatientdetails where groupid='"
+                + pBean.getGroupid() + "'and patientid='" + pBean.getPatientid() + "' ORDER BY commentdate DESC";
+
+        Vector<PatientDescriptionBean> comments = DBAccess.getdbHeler().getseallcomments(strGetQry);
+        Log.d("listvalues","string"+comments.size());
+        seealladapter = new Seealladapter(mainContext, R.layout.seeall_row, comments);
+        listview.setAdapter(seealladapter);
 
         newDescription.addTextChangedListener(new TextWatcher() {
             @Override
@@ -646,25 +751,7 @@ public class PatientRoundingFragment extends Fragment {
                         currentstatus_lay1.removeAllViews();
                         pDescBean.setCurrentstatus(pastingContentCopy);
                         for (int i = 0; i < split.length; i++) {
-                            if(i<=5){
-                            TextView dynamicTextView = new TextView(mainContext);
-                            LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 60);
-                            dim.leftMargin = 20;
-                            dynamicTextView.setLayoutParams(dim);
-                                dynamicTextView.setGravity(Gravity.CENTER);
-                            dynamicTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.sender_border));
-                            if (split[i].equalsIgnoreCase("critical"))
-                                dynamicTextView.setTextColor(getResources().getColor(R.color.red_color));
-                            else if(split[i].equalsIgnoreCase("stable")) {
-                                dynamicTextView.setTextColor(getResources().getColor(R.color.green));
-                            } else if(split[i].equalsIgnoreCase("sick")) {
-                                dynamicTextView.setTextColor(getResources().getColor(R.color.yellow));
-                            }
-                                if(!split[i].equalsIgnoreCase("") && split.length>0) {
-                                    dynamicTextView.setText(split[i]);
-                                    currentstatus_lay.addView(dynamicTextView);
-                                }
-                        }else if(i>5){
+                            if (i <= 5) {
                                 TextView dynamicTextView = new TextView(mainContext);
                                 LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 60);
                                 dim.leftMargin = 20;
@@ -672,21 +759,42 @@ public class PatientRoundingFragment extends Fragment {
                                 dynamicTextView.setGravity(Gravity.CENTER);
                                 dynamicTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.sender_border));
                                 if (split[i].equalsIgnoreCase("critical"))
-                                    dynamicTextView.setTextColor(getResources().getColor(R.color.red_color));
-                                else if(split[i].equalsIgnoreCase("stable")) {
+                                    dynamicTextView.setTextColor(getResources().getColor(R.color.pink_tv));
+                                else if (split[i].equalsIgnoreCase("stable")) {
                                     dynamicTextView.setTextColor(getResources().getColor(R.color.green));
-                                } else if(split[i].equalsIgnoreCase("sick")) {
+                                } else if (split[i].equalsIgnoreCase("sick")) {
+                                    dynamicTextView.setTextColor(getResources().getColor(R.color.yellow));
+                                }
+                                if (!split[i].equalsIgnoreCase("") && split.length > 0) {
+                                    dynamicTextView.setText(split[i]);
+                                    currentstatus_lay.addView(dynamicTextView);
+                                }
+                            } else if (i > 5) {
+                                TextView dynamicTextView = new TextView(mainContext);
+                                LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 60);
+                                dim.leftMargin = 20;
+                                dynamicTextView.setLayoutParams(dim);
+                                dynamicTextView.setGravity(Gravity.CENTER);
+                                dynamicTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.sender_border));
+                                if (split[i].equalsIgnoreCase("critical"))
+                                    dynamicTextView.setTextColor(getResources().getColor(R.color.pink_tv));
+                                else if (split[i].equalsIgnoreCase("stable")) {
+                                    dynamicTextView.setTextColor(getResources().getColor(R.color.green));
+                                } else if (split[i].equalsIgnoreCase("sick")) {
                                     dynamicTextView.setTextColor(getResources().getColor(R.color.yellow));
                                 }
                                 dynamicTextView.setText(split[i]);
                                 currentstatus_lay1.addView(dynamicTextView);
                             }
 
-                            }
+                        }
                     }
                 }
                 showprogress();
                 WebServiceReferences.webServiceClient.SetPatientDescription(pcBean, patientRoundingFragment);
+                pcBean.setDate(getCurrentDateandTime());
+                if(edithint.equalsIgnoreCase("diagnosis"))
+                DBAccess.getdbHeler().insertseallcomments(pcBean);
                 dialog1.dismiss();
             }
         });
@@ -697,21 +805,32 @@ public class PatientRoundingFragment extends Fragment {
             }
         });
     }
-    private void taskProcess()
-    {
-        final LinearLayout content = (LinearLayout)_rootView. findViewById(R.id.content);
+
+    private void taskProcess() {
+        final LinearLayout content = (LinearLayout) _rootView.findViewById(R.id.content);
         content.removeAllViews();
-        LayoutInflater layoutInflater = (LayoutInflater)getActivity(). getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v1 = layoutInflater.inflate(R.layout.round_task, content);
-        tv_status=(TextView)v1.findViewById(R.id.tv_status);
-        tv_assigned=(TextView)v1.findViewById(R.id.tv_assigned);
-        ImageView plusBtn=(ImageView)v1.findViewById(R.id.plusBtn);
-        plusBtn.setVisibility(View.GONE);
-        LinearLayout status=(LinearLayout)v1.findViewById(R.id.status);
-        LinearLayout assigned=(LinearLayout)v1.findViewById(R.id.assigned);
-        tasklistView=(ListView)v1.findViewById(R.id.listview_task);
-        statusMode="showall";
-        assignedMode="showall";
+        tv_status = (TextView) v1.findViewById(R.id.tv_status);
+        tv_assigned = (TextView) v1.findViewById(R.id.tv_assigned);
+        ImageView plusBtn = (ImageView) v1.findViewById(R.id.plusBtn);
+        plusBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                        (roleAccessBean.getTaskmanagement()!=null && roleAccessBean.getTaskmanagement().equalsIgnoreCase("1"))) {
+                    Intent intent = new Intent(mainContext, TaskCreationActivity.class);
+                    intent.putExtra("groupid", gBean.getGroupId());
+                    startActivity(intent);
+                }else
+                    showToast("You have no access to create Task ");
+            }
+        });
+        LinearLayout status = (LinearLayout) v1.findViewById(R.id.status);
+        LinearLayout assigned = (LinearLayout) v1.findViewById(R.id.assigned);
+        tasklistView = (ListView) v1.findViewById(R.id.listview_task);
+        statusMode = "showall";
+        assignedMode = "showall";
         status.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -724,11 +843,11 @@ public class PatientRoundingFragment extends Fragment {
                 assignedTaskDialog();
             }
         });
-        strQuery = "select * from taskdetails where groupid='" + gBean.getGroupId() +  "'and patientid='" + patientid +"'";
-        Vector<TaskDetailsBean> tasklist= DBAccess.getdbHeler().getAllTaskDetails(strQuery);
+        strQuery = "select * from taskdetails where groupid='" + gBean.getGroupId() + "'and patientid='" + patientid + "'";
+        Vector<TaskDetailsBean> tasklist = DBAccess.getdbHeler().getAllTaskDetails(strQuery);
         Collections.sort(tasklist, new TaskDateComparator());
-        Vector<TaskDetailsBean> taskList= GroupChatActivity.getdatelist(tasklist);
-        final RoundingTaskAdapter taskAdapter=new RoundingTaskAdapter(mainContext, R.layout.round_task_row,taskList);
+        Vector<TaskDetailsBean> taskList = GroupChatActivity.getdatelist(tasklist);
+        final RoundingTaskAdapter taskAdapter = new RoundingTaskAdapter(mainContext, R.layout.round_task_row, taskList);
         tasklistView.setAdapter(taskAdapter);
         taskAdapter.notifyDataSetChanged();
         tasklistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -752,58 +871,79 @@ public class PatientRoundingFragment extends Fragment {
         });
 
     }
+
     final String[] status = new String[1];
 
-    private  void patientDetails()
-    {
-        final LinearLayout content = (LinearLayout)_rootView. findViewById(R.id.content);
+    private void patientDetails() {
+        final LinearLayout content = (LinearLayout) _rootView.findViewById(R.id.content);
         content.removeAllViews();
-        LayoutInflater layoutInflater = (LayoutInflater)getActivity(). getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v1 = layoutInflater.inflate(R.layout.roundingforpatient, content);
 
-        TextView seeAll=(TextView) v1.findViewById(R.id.see_all);
-        final Button edit_diagnosis=(Button) v1.findViewById(R.id.edit_diagnosis);
-        final Button edit_medications=(Button) v1.findViewById(R.id.edit_medications);
-        final Button edit_tests=(Button) v1.findViewById(R.id.edit_tests);
-        final Button edit_hospital=(Button) v1.findViewById(R.id.edit_hospital);
-        final Button edit_consults=(Button) v1.findViewById(R.id.edit_consults);
+        TextView seeAll_diagnosis = (TextView) v1.findViewById(R.id.see_all);
+        TextView seeAll_medications = (TextView) v1.findViewById(R.id.see_all1);
+        TextView seeAll_test = (TextView) v1.findViewById(R.id.see_all3);
+        TextView seeAll_hospital = (TextView) v1.findViewById(R.id.see_all4);
+        TextView seeAll_consult = (TextView) v1.findViewById(R.id.see_all5);
+        final Button edit_diagnosis = (Button) v1.findViewById(R.id.edit_diagnosis);
+        final Button edit_medications = (Button) v1.findViewById(R.id.edit_medications);
+        final Button edit_tests = (Button) v1.findViewById(R.id.edit_tests);
+        final Button edit_hospital = (Button) v1.findViewById(R.id.edit_hospital);
+        final Button edit_consults = (Button) v1.findViewById(R.id.edit_consults);
         final Button edit_status = (Button) v1.findViewById(R.id.edit_status);
-        TextView tv_currentstatus=(TextView) v1.findViewById(R.id.tv_status);
-        diagnosis=(TextView) v1.findViewById(R.id.diagnosis);
-        medications=(TextView) v1.findViewById(R.id.medications);
-        testandvitals=(TextView) v1.findViewById(R.id.testandvitals);
-        hospital=(TextView) v1.findViewById(R.id.hospitalcourse);
-        consults=(TextView) v1.findViewById(R.id.consults);
-        currentstatus_lay=(LinearLayout) v1.findViewById(R.id.currentstatus_lay);
-        currentstatus_lay1=(LinearLayout) v1.findViewById(R.id.currentstatus_lay1);
+        TextView tv_currentstatus = (TextView) v1.findViewById(R.id.tv_status);
+        diagnosis = (TextView) v1.findViewById(R.id.diagnosis);
+        medications = (TextView) v1.findViewById(R.id.medications);
+        testandvitals = (TextView) v1.findViewById(R.id.testandvitals);
+        hospital = (TextView) v1.findViewById(R.id.hospitalcourse);
+        consults = (TextView) v1.findViewById(R.id.consults);
+        currentstatus_lay = (LinearLayout) v1.findViewById(R.id.currentstatus_lay);
+        currentstatus_lay1 = (LinearLayout) v1.findViewById(R.id.currentstatus_lay1);
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(!Edit){
-                    edit_diagnosis.setVisibility(View.VISIBLE);
-                    edit_medications.setVisibility(View.VISIBLE);
-                    edit_tests.setVisibility(View.VISIBLE);
-                    edit_hospital.setVisibility(View.VISIBLE);
-                    edit_consults.setVisibility(View.VISIBLE);
-                    edit_status.setVisibility(View.VISIBLE);
-                    Edit =true;
-                }else{
+                if (!Edit) {
+                    if (gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+                        edit_diagnosis.setVisibility(View.VISIBLE);
+                        edit_medications.setVisibility(View.VISIBLE);
+                        edit_tests.setVisibility(View.VISIBLE);
+                        edit_hospital.setVisibility(View.VISIBLE);
+                        edit_consults.setVisibility(View.VISIBLE);
+                        edit_status.setVisibility(View.VISIBLE);
+                        Edit = true;
+                    } else if (roleAccessBean.getEditroundingform() != null &&
+                            roleAccessBean.getEditroundingform().equalsIgnoreCase("1")) {
+                        if (editRndFormBean.getDiagnosis() != null && editRndFormBean.getDiagnosis().equalsIgnoreCase("1"))
+                            edit_diagnosis.setVisibility(View.VISIBLE);
+                        if (editRndFormBean.getNotes() != null && editRndFormBean.getNotes().equalsIgnoreCase("1"))
+                            edit_medications.setVisibility(View.VISIBLE);
+                        if (editRndFormBean.getTestandvitals() != null && editRndFormBean.getTestandvitals().equalsIgnoreCase("1"))
+                            edit_tests.setVisibility(View.VISIBLE);
+                        if (editRndFormBean.getHospitalcourse() != null && editRndFormBean.getHospitalcourse().equalsIgnoreCase("1"))
+                            edit_hospital.setVisibility(View.VISIBLE);
+                        if (editRndFormBean.getConsults() != null && editRndFormBean.getConsults().equalsIgnoreCase("1"))
+                            edit_consults.setVisibility(View.VISIBLE);
+                        if (editRndFormBean.getStatus() != null && editRndFormBean.getStatus().equalsIgnoreCase("1"))
+                            edit_status.setVisibility(View.VISIBLE);
+                        Edit = true;
+                    }
+                } else {
                     edit_diagnosis.setVisibility(View.GONE);
                     edit_medications.setVisibility(View.GONE);
                     edit_tests.setVisibility(View.GONE);
                     edit_hospital.setVisibility(View.GONE);
                     edit_consults.setVisibility(View.GONE);
                     edit_status.setVisibility(View.GONE);
-                    Edit=false;
+                    Edit = false;
                 }
             }
         });
 
-        pDescBean= DBAccess.getdbHeler().getPatientDescriptionDetails(pBean.getPatientid());
-        if(pDescBean!=null){
-            reportid=pDescBean.getReportid();
-            if(pDescBean.getCurrentstatus()!=null){
+        pDescBean = DBAccess.getdbHeler().getPatientDescriptionDetails(pBean.getPatientid());
+        if (pDescBean != null) {
+            reportid = pDescBean.getReportid();
+            if (pDescBean.getCurrentstatus() != null) {
                 if (pDescBean.getCurrentstatus().length() > 0) {
                     String[] split = pDescBean.getCurrentstatus().split(" ");
                     for (int i = 0; i < split.length; i++) {
@@ -815,13 +955,13 @@ public class PatientRoundingFragment extends Fragment {
                             dynamicTextView.setGravity(Gravity.CENTER);
                             dynamicTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.sender_border));
                             if (split[i].equalsIgnoreCase("critical"))
-                                dynamicTextView.setTextColor(getResources().getColor(R.color.red_color));
-                            else if(split[i].equalsIgnoreCase("stable")) {
+                                dynamicTextView.setTextColor(getResources().getColor(R.color.pink_tv));
+                            else if (split[i].equalsIgnoreCase("stable")) {
                                 dynamicTextView.setTextColor(getResources().getColor(R.color.green));
-                            } else if(split[i].equalsIgnoreCase("sick")) {
+                            } else if (split[i].equalsIgnoreCase("sick")) {
                                 dynamicTextView.setTextColor(getResources().getColor(R.color.yellow));
                             }
-                            if(!split[i].equalsIgnoreCase("") && split.length>0) {
+                            if (!split[i].equalsIgnoreCase("") && split.length > 0) {
                                 dynamicTextView.setText(split[i]);
                                 currentstatus_lay.addView(dynamicTextView);
                             }
@@ -833,10 +973,10 @@ public class PatientRoundingFragment extends Fragment {
                             dynamicTextView.setGravity(Gravity.CENTER);
                             dynamicTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.sender_border));
                             if (split[i].equalsIgnoreCase("critical"))
-                                dynamicTextView.setTextColor(getResources().getColor(R.color.red_color));
-                            else if(split[i].equalsIgnoreCase("stable")) {
+                                dynamicTextView.setTextColor(getResources().getColor(R.color.pink_tv));
+                            else if (split[i].equalsIgnoreCase("stable")) {
                                 dynamicTextView.setTextColor(getResources().getColor(R.color.green));
-                            } else if(split[i].equalsIgnoreCase("sick")) {
+                            } else if (split[i].equalsIgnoreCase("sick")) {
                                 dynamicTextView.setTextColor(getResources().getColor(R.color.yellow));
                             }
                             dynamicTextView.setText(split[i]);
@@ -845,83 +985,83 @@ public class PatientRoundingFragment extends Fragment {
                     }
                 }
             }
-            if(pDescBean.getDiagnosis()!=null)
+            if (pDescBean.getDiagnosis() != null)
                 diagnosis.setText(pDescBean.getDiagnosis());
-            if(pDescBean.getMedications()!=null)
+            if (pDescBean.getMedications() != null)
                 medications.setText(pDescBean.getMedications());
-            if(pDescBean.getTestandvitals()!=null)
+            if (pDescBean.getTestandvitals() != null)
                 testandvitals.setText(pDescBean.getTestandvitals());
-            if(pDescBean.getHospitalcourse()!=null)
+            if (pDescBean.getHospitalcourse() != null)
                 hospital.setText(pDescBean.getHospitalcourse());
-            if(pDescBean.getConsults()!=null)
+            if (pDescBean.getConsults() != null)
                 consults.setText(pDescBean.getConsults());
         }
-        final GroupMemberBean bean= DBAccess.getdbHeler().getMemberDetails(gBean.getGroupId(), CallDispatcher.LoginUser);
-        RoleEditRndFormBean erBean= DBAccess.getdbHeler().getRoleEditRoundingDetails(gBean.getGroupId(),bean.getRole());
+        final GroupMemberBean bean = DBAccess.getdbHeler().getMemberDetails(gBean.getGroupId(), CallDispatcher.LoginUser);
+        RoleEditRndFormBean erBean = DBAccess.getdbHeler().getRoleEditRoundingDetails(gBean.getGroupId(), bean.getRole());
 
-        if(!gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) && erBean!=null ){
-            if(erBean.getStatus()!=null) {
+        if (!gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) && erBean != null) {
+            if (erBean.getStatus() != null) {
                 if (erBean.getStatus().equalsIgnoreCase("1"))
                     edit_status.setVisibility(View.VISIBLE);
                 else
                     edit_status.setVisibility(View.GONE);
             }
-            if(erBean.getDiagnosis()!=null) {
+            if (erBean.getDiagnosis() != null) {
                 if (erBean.getDiagnosis().equalsIgnoreCase("1"))
                     edit_diagnosis.setVisibility(View.VISIBLE);
                 else
                     edit_diagnosis.setVisibility(View.GONE);
             }
-            if(erBean.getTestandvitals()!=null) {
+            if (erBean.getTestandvitals() != null) {
                 if (erBean.getTestandvitals().equalsIgnoreCase("1"))
                     edit_tests.setVisibility(View.VISIBLE);
                 else
                     edit_tests.setVisibility(View.GONE);
             }
-            if(erBean.getHospitalcourse()!=null) {
+            if (erBean.getHospitalcourse() != null) {
                 if (erBean.getHospitalcourse().equalsIgnoreCase("1"))
                     edit_hospital.setVisibility(View.VISIBLE);
                 else
                     edit_hospital.setVisibility(View.GONE);
             }
-            if(erBean.getConsults()!=null) {
+            if (erBean.getConsults() != null) {
                 if (erBean.getConsults().equalsIgnoreCase("1"))
                     edit_consults.setVisibility(View.VISIBLE);
                 else
                     edit_consults.setVisibility(View.GONE);
             }
-            if(erBean.getNotes()!=null) {
+            if (erBean.getNotes() != null) {
                 if (erBean.getNotes().equalsIgnoreCase("1"))
                     edit_medications.setVisibility(View.VISIBLE);
                 else
                     edit_medications.setVisibility(View.GONE);
             }
         }
-        final CharSequence[] items={"Fullcode","DNR","DNI","ComfortCare","Critical","Sick","Stable","Other"};
+        final CharSequence[] items = {"Fullcode", "DNR", "DNI", "ComfortCare", "Critical", "Sick", "Stable", "Other"};
 
         tv_currentstatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder3=new AlertDialog.Builder(mainContext);
+                AlertDialog.Builder builder3 = new AlertDialog.Builder(mainContext);
                 builder3.setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int position) {
-                        if(position==0)
-                            status[0] ="Fullcode";
-                        else if(position==1)
-                            status[0] ="DNR";
-                        else if(position==2)
-                            status[0] ="DNI";
-                        else if(position==3)
-                            status[0] ="ComfortCare";
-                        else if(position==4)
-                            status[0] ="Critical";
-                        else if(position==5)
-                            status[0] ="Sick";
-                        else if(position==6)
-                            status[0] ="Stable";
-                        else if(position==7)
-                            status[0] ="Other";
+                        if (position == 0)
+                            status[0] = "Fullcode";
+                        else if (position == 1)
+                            status[0] = "DNR";
+                        else if (position == 2)
+                            status[0] = "DNI";
+                        else if (position == 3)
+                            status[0] = "ComfortCare";
+                        else if (position == 4)
+                            status[0] = "Critical";
+                        else if (position == 5)
+                            status[0] = "Sick";
+                        else if (position == 6)
+                            status[0] = "Stable";
+                        else if (position == 7)
+                            status[0] = "Other";
                         String currentstatus = "";
                         pcBean.setPatientid(pBean.getPatientid());
                         pcBean.setGroupid(gBean.getGroupId());
@@ -931,55 +1071,55 @@ public class PatientRoundingFragment extends Fragment {
                         if (pDescBean.getCurrentstatus() != null)
                             currentstatus = pDescBean.getCurrentstatus();
                         if (status[0] != null) {
-                            if (currentstatus.contains(status[0])) {
-                                status[0] = "";
-                            } else {
-                                pcBean.setCurrentstatus(currentstatus + " " + status[0]);
-                                pDescBean.setCurrentstatus(currentstatus + " " + status[0]);
+//                            if (currentstatus.contains(status[0])) {
+//                                status[0] = "";
+//                            } else {
+                            pcBean.setCurrentstatus(currentstatus + " " + status[0]);
+                            pDescBean.setCurrentstatus(currentstatus + " " + status[0]);
 
-                                if (currentstatus != null) {
-                                    String[] split = pcBean.getCurrentstatus().split(" ");
-                                    currentstatus_lay.removeAllViews();
-                                    currentstatus_lay1.removeAllViews();
-                                    for (int i = 0; i < split.length; i++) {
-                                        if (i <= 5) {
-                                            TextView dynamicTextView = new TextView(mainContext);
-                                            LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 60);
-                                            dim.leftMargin = 15;
-                                            dynamicTextView.setLayoutParams(dim);
-                                            dynamicTextView.setGravity(Gravity.CENTER);
-                                            dynamicTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.sender_border));
-                                            if (split[i].equalsIgnoreCase("critical"))
-                                                dynamicTextView.setTextColor(getResources().getColor(R.color.red_color));
-                                            else if (split[i].equalsIgnoreCase("stable")) {
-                                                dynamicTextView.setTextColor(getResources().getColor(R.color.green));
-                                            } else if(split[i].equalsIgnoreCase("sick")) {
-                                                dynamicTextView.setTextColor(getResources().getColor(R.color.yellow));
-                                            }
-                                            if(!split[i].equalsIgnoreCase("") && split.length>0) {
-                                                dynamicTextView.setText(split[i]);
-                                                currentstatus_lay.addView(dynamicTextView);
-                                            }
-                                        } else if (i > 5) {
-                                            TextView dynamicTextView = new TextView(mainContext);
-                                            LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 60);
-                                            dim.leftMargin = 15;
-                                            dynamicTextView.setLayoutParams(dim);
-                                            dynamicTextView.setGravity(Gravity.CENTER);
-                                            dynamicTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.sender_border));
-                                            if (split[i].equalsIgnoreCase("critical"))
-                                                dynamicTextView.setTextColor(getResources().getColor(R.color.red_color));
-                                            else if (split[i].equalsIgnoreCase("stable")) {
-                                                dynamicTextView.setTextColor(getResources().getColor(R.color.green));
-                                            }else if(split[i].equalsIgnoreCase("sick")) {
-                                                dynamicTextView.setTextColor(getResources().getColor(R.color.yellow));
-                                            }
-                                            dynamicTextView.setText(split[i]);
-                                            currentstatus_lay1.addView(dynamicTextView);
+                            if (currentstatus != null) {
+                                String[] split = pcBean.getCurrentstatus().split(" ");
+                                currentstatus_lay.removeAllViews();
+                                currentstatus_lay1.removeAllViews();
+                                for (int i = 0; i < split.length; i++) {
+                                    if (i <= 5) {
+                                        TextView dynamicTextView = new TextView(mainContext);
+                                        LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 60);
+                                        dim.leftMargin = 15;
+                                        dynamicTextView.setLayoutParams(dim);
+                                        dynamicTextView.setGravity(Gravity.CENTER);
+                                        dynamicTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.sender_border));
+                                        if (split[i].equalsIgnoreCase("critical"))
+                                            dynamicTextView.setTextColor(getResources().getColor(R.color.pink_tv));
+                                        else if (split[i].equalsIgnoreCase("stable")) {
+                                            dynamicTextView.setTextColor(getResources().getColor(R.color.green));
+                                        } else if (split[i].equalsIgnoreCase("sick")) {
+                                            dynamicTextView.setTextColor(getResources().getColor(R.color.yellow));
                                         }
+                                        if (!split[i].equalsIgnoreCase("") && split.length > 0) {
+                                            dynamicTextView.setText(split[i]);
+                                            currentstatus_lay.addView(dynamicTextView);
+                                        }
+                                    } else if (i > 5) {
+                                        TextView dynamicTextView = new TextView(mainContext);
+                                        LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 60);
+                                        dim.leftMargin = 15;
+                                        dynamicTextView.setLayoutParams(dim);
+                                        dynamicTextView.setGravity(Gravity.CENTER);
+                                        dynamicTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.sender_border));
+                                        if (split[i].equalsIgnoreCase("critical"))
+                                            dynamicTextView.setTextColor(getResources().getColor(R.color.pink_tv));
+                                        else if (split[i].equalsIgnoreCase("stable")) {
+                                            dynamicTextView.setTextColor(getResources().getColor(R.color.green));
+                                        } else if (split[i].equalsIgnoreCase("sick")) {
+                                            dynamicTextView.setTextColor(getResources().getColor(R.color.yellow));
+                                        }
+                                        dynamicTextView.setText(split[i]);
+                                        currentstatus_lay1.addView(dynamicTextView);
                                     }
                                 }
                             }
+//                            }
                             WebServiceReferences.webServiceClient.SetPatientDescription(pcBean, patientRoundingFragment);
                         }
                     }
@@ -987,61 +1127,90 @@ public class PatientRoundingFragment extends Fragment {
                 builder3.show();
             }
         });
-        seeAll.setOnClickListener(new View.OnClickListener() {
+        seeAll_diagnosis.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDiagnosisHistory();
+                showDiagnosisHistory(diagnosis.getText().toString(), "DIAGNOSIS HISTORY");
+
+            }
+        });
+        seeAll_medications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDiagnosisHistory(medications.getText().toString(), "MEDICATIONS HISTORY");
+
+            }
+        });
+
+        seeAll_test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDiagnosisHistory(testandvitals.getText().toString(), "TEST AND VITALS HISTORY");
+
+            }
+        });
+        seeAll_hospital.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDiagnosisHistory(hospital.getText().toString(), "HOSPITAL COURSE HISTORY");
+
+            }
+        });
+        seeAll_consult.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDiagnosisHistory(consults.getText().toString(), "CONSULTS HISTORY");
 
             }
         });
         edit_diagnosis.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                editTag=0;
-                if( diagnosis.getText().toString()!=null)
-                    editDiagnosisDescription(diagnosis.getText().toString(),"EDIT DIAGNOSIS", "Diagnosis");
-                else
-                    editDiagnosisDescription("","EDIT DIAGNOSIS", "Diagonosis");
+                editTag = 0;
+                if (diagnosis.getText().toString() != null) {
+                    editDiagnosisDescription(diagnosis.getText().toString(), "EDIT DIAGNOSIS", "Diagnosis");
+                } else
+                    editDiagnosisDescription("", "EDIT DIAGNOSIS", "Diagonosis");
             }
         });
         edit_medications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                editTag=1;
-                if( medications.getText().toString()!=null)
-                    editDiagnosisDescription(medications.getText().toString(),"EDIT MEDICATIONS", "Medications");
+                editTag = 1;
+                if (medications.getText().toString() != null)
+                    editDiagnosisDescription(medications.getText().toString(), "EDIT MEDICATIONS", "Medications");
                 else
-                    editDiagnosisDescription("","EDIT MEDICATIONS", "Medications");
+                    editDiagnosisDescription("", "EDIT MEDICATIONS", "Medications");
             }
         });
         edit_tests.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            editTag=2;
-            if( testandvitals.getText().toString()!=null)
-                editDiagnosisDescription(testandvitals.getText().toString(),"EDIT TESTANDVITALS","Test and Vitals");
-            else
-                editDiagnosisDescription("","EDIT TESTANDVITALS", "Test and Vitals");
-        }
-       });
+            @Override
+            public void onClick(View view) {
+                editTag = 2;
+                if (testandvitals.getText().toString() != null)
+                    editDiagnosisDescription(testandvitals.getText().toString(), "EDIT TESTANDVITALS", "Test and Vitals");
+                else
+                    editDiagnosisDescription("", "EDIT TESTANDVITALS", "Test and Vitals");
+            }
+        });
         edit_hospital.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                editTag=3;
-                if( hospital.getText().toString()!=null)
-                    editDiagnosisDescription(hospital.getText().toString(),"EDIT HOSPITAL COURSE","Hospital Course");
+                editTag = 3;
+                if (hospital.getText().toString() != null)
+                    editDiagnosisDescription(hospital.getText().toString(), "EDIT HOSPITAL COURSE", "Hospital Course");
                 else
-                    editDiagnosisDescription("","EDIT HOSPITAL COURSE", "Hospital Course");
+                    editDiagnosisDescription("", "EDIT HOSPITAL COURSE", "Hospital Course");
             }
         });
         edit_consults.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                editTag=4;
-                if( consults.getText().toString()!=null)
-                    editDiagnosisDescription(consults.getText().toString(),"EDIT CONSULTS","Consults");
+                editTag = 4;
+                if (consults.getText().toString() != null)
+                    editDiagnosisDescription(consults.getText().toString(), "EDIT CONSULTS", "Consults");
                 else
-                    editDiagnosisDescription("","EDIT CONSULTS", "Consults");
+                    editDiagnosisDescription("", "EDIT CONSULTS", "Consults");
             }
         });
         edit_status.setOnClickListener(new View.OnClickListener() {
@@ -1049,9 +1218,9 @@ public class PatientRoundingFragment extends Fragment {
             public void onClick(View view) {
                 editTag = 5;
                 if (pDescBean.getCurrentstatus() != null)
-                    editDiagnosisDescription(pDescBean.getCurrentstatus(), "EDIT CURRENT STATUS","Current Status");
+                    editDiagnosisDescription(pDescBean.getCurrentstatus(), "EDIT CURRENT STATUS", "Current Status");
                 else
-                    editDiagnosisDescription("", "EDIT CURRENT STATUS","Current Status");
+                    editDiagnosisDescription("", "EDIT CURRENT STATUS", "Current Status");
             }
         });
 
@@ -1064,75 +1233,77 @@ public class PatientRoundingFragment extends Fragment {
         TextView room = (TextView) v1.findViewById(R.id.room);
         TextView los = (TextView) v1.findViewById(R.id.los);
         TextView bed = (TextView) v1.findViewById(R.id.bed);
-        if(pBean!=null){
-            if(pBean.getFirstname()!=null && pBean.getLastname()!=null)
-                patientname.setText(pBean.getFirstname()+" "+pBean.getLastname());
-            if(pBean.getDob()!=null && pBean.getDob().length()>0) {
-                String birthdate=pBean.getDob();
-                Log.i("sss","Current birthdate"+birthdate);
-                birthdate.replace("-","/");
-                String[] str = birthdate.split("/");
+        TextView tv_hospital = (TextView) v1.findViewById(R.id.tv_hospital);
+        if (pBean != null) {
+            if (pBean.getFirstname() != null && pBean.getLastname() != null)
+                patientname.setText(pBean.getFirstname() + " " + pBean.getLastname());
+            if (pBean.getDob() != null && pBean.getDob().length() > 0) {
+                String birthdate = pBean.getDob();
+                Log.i("sss", "Current birthdate" + birthdate);
+                String[] str = birthdate.split("-");
                 int Currentyear = Calendar.getInstance().get(Calendar.YEAR);
-                Log.i("sss","Current year"+Currentyear);
+                Log.i("sss", "Current year" + Currentyear);
 
-                String BirthYear=str[2];
-                int ages=Currentyear-(Integer.parseInt(BirthYear));
-                Log.i("sss","Current age"+ages);
+                String BirthYear = str[2];
+                int ages = Currentyear - (Integer.parseInt(BirthYear));
+                Log.i("sss", "Current age" + ages);
 
                 age.setText("Age : " + ages);
             }
-            if(pBean.getSex()!=null)
-                sex.setText("Sex : "+pBean.getSex());
-            if(pBean.getMrn()!=null)
-               mrn.setText("Mrn : "+pBean.getMrn());
-            if(pBean.getFloor()!=null)
-                floor.setText("Floor : "+pBean.getFloor());
-            if(pBean.getRoom()!=null)
-                room.setText("Room : "+pBean.getRoom());
-            if(pBean.getWard()!=null)
-                ward.setText("Ward : "+pBean.getWard());
-            if(pBean.getAdmissiondate()!=null&& pBean.getAdmissiondate().length()>0) {
-                String AdmitDate=pBean.getAdmissiondate();
+            if (pBean.getSex() != null)
+                sex.setText("Sex : " + pBean.getSex());
+            if (pBean.getMrn() != null)
+                mrn.setText("Mrn : " + pBean.getMrn());
+            if (pBean.getFloor() != null)
+                floor.setText("Floor : " + pBean.getFloor());
+            if (pBean.getRoom() != null)
+                room.setText("Room : " + pBean.getRoom());
+            if (pBean.getWard() != null)
+                ward.setText("Ward : " + pBean.getWard());
+            if (pBean.getAdmissiondate() != null && pBean.getAdmissiondate().length() > 0) {
+                String AdmitDate = pBean.getAdmissiondate();
                 long Result = 0;
                 Date date = new Date();
                 DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
                 String inputString = dateFormat.format(date);
                 String Today = inputString;
                 SimpleDateFormat myFormat = new SimpleDateFormat("dd-MM-yyyy");
-                String str = AdmitDate.replace("/", "-");
-                String fromDate=str;
-                String inputString1 =fromDate;
-                Log.i("sss","From Date1 : " + inputString1);
+                String fromDate = AdmitDate;
+                String inputString1 = fromDate;
+                Log.i("sss", "From Date1 : " + inputString1);
                 String inputString2 = Today;
-                Log.i("sss","Current Date1 : " + inputString2);
+                Log.i("sss", "Current Date1 : " + inputString2);
                 try {
-                    Date date1 = myFormat.parse(inputString1);
-                    Date date2 = myFormat.parse(inputString2);
+                    Date date1 = dateFormat.parse(inputString1);
+                    Date date2 = dateFormat.parse(inputString2);
                     long diff = date2.getTime() - date1.getTime();
-                    Log.i("sss","DIFF"+diff);
+                    Log.i("sss", "DIFF" + diff);
                     long diffSeconds = diff / 1000 % 60;
                     long diffMinutes = diff / (60 * 1000) % 60;
-                    long diffHours = diff / (60*60*1000) % 24;
-                    long diffDays = diff / (24*60*60 * 1000);
+                    long diffHours = diff / (60 * 60 * 1000) % 24;
+                    long diffDays = diff / (24 * 60 * 60 * 1000);
                     System.out.print(diffDays + " days, ");
                     System.out.print(diffHours + " hours, ");
                     System.out.print(diffMinutes + " minutes, ");
                     System.out.print(diffSeconds + " seconds.");
                     Log.i("sss", "Total Days : " + diffDays);
-                    Result=diffDays;
+                    Result = diffDays;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                los.setText("LOS : " +Result);
+                los.setText("LOS : " + Result+" days");
             }
-            if(pBean.getBed()!=null)
-                bed.setText("Bed : "+pBean.getBed());
+            if (pBean.getBed() != null)
+                bed.setText("Bed : " + pBean.getBed());
+            if (pBean.getHospital() != null)
+                tv_hospital.setText(pBean.getHospital());
         }
     }
-    public  void notifySetPatientDescription(Object obj){
+
+    public void notifySetPatientDescription(Object obj) {
         cancelDialog();
-        if(obj instanceof String[]){
-            String[] result=(String[])obj;
+        if (obj instanceof String[]) {
+            String[] result = (String[]) obj;
             pcBean.setPatientid(result[0]);
             pcBean.setReportid(result[1]);
             DBAccess.getdbHeler().insertorUpdatePatientDescriptions(pcBean);
@@ -1178,33 +1349,34 @@ public class PatientRoundingFragment extends Fragment {
         }
 
     }
+
     private void showToast(final String msg) {
         handler.post(new Runnable() {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                Toast.makeText(mainContext, msg, Toast.LENGTH_LONG).show();
+                Toast.makeText(mainContext, msg, Toast.LENGTH_SHORT).show();
             }
         });
     }
-    private void CommentsProcess()
-    {
-        final LinearLayout content = (LinearLayout)_rootView. findViewById(R.id.content);
+
+    private void CommentsProcess() {
+        final LinearLayout content = (LinearLayout) _rootView.findViewById(R.id.content);
         content.removeAllViews();
-        LayoutInflater layoutInflater = (LayoutInflater)getActivity(). getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v1 = layoutInflater.inflate(R.layout.patient_comments, content);
-        Button send=(Button) v1.findViewById(R.id.donebtn);
-        final EditText comment=(EditText)v1.findViewById(R.id.addcomment);
-        final TextView mine=(TextView)v1.findViewById(R.id.mine);
-        final TextView team=(TextView)v1.findViewById(R.id.team);
-        final TextView all=(TextView)v1.findViewById(R.id.all);
-        clistView=(ListView)v1.findViewById(R.id.listview_comments);
-        final LinearLayout send_lay=(LinearLayout)v1.findViewById(R.id.send_lay);
-        CommentsList=new Vector<PatientCommentsBean>();
+        Button send = (Button) v1.findViewById(R.id.donebtn);
+        final EditText comment = (EditText) v1.findViewById(R.id.addcomment);
+        final TextView mine = (TextView) v1.findViewById(R.id.mine);
+        final TextView team = (TextView) v1.findViewById(R.id.team);
+        final TextView all = (TextView) v1.findViewById(R.id.all);
+        clistView = (ListView) v1.findViewById(R.id.listview_comments);
+        final LinearLayout send_lay = (LinearLayout) v1.findViewById(R.id.send_lay);
+        CommentsList = new Vector<PatientCommentsBean>();
         CommentsList.clear();
-        commentType="mine";
-        CommentsList= DBAccess.getdbHeler().getPatientComments(gBean.getGroupId(),pBean.getPatientid(), CallDispatcher.LoginUser,commentType);
-        cadapter=new CommentsAdapter(mainContext, R.layout.comments_row,CommentsList);
+        commentType = "mine";
+        CommentsList = DBAccess.getdbHeler().getPatientComments(gBean.getGroupId(), pBean.getPatientid(), CallDispatcher.LoginUser, commentType);
+        cadapter = new CommentsAdapter(mainContext, R.layout.comments_row, CommentsList);
         clistView.setAdapter(cadapter);
         mine.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1217,43 +1389,42 @@ public class PatientRoundingFragment extends Fragment {
                 send_lay.setVisibility(View.VISIBLE);
             }
         });
-        final GroupMemberBean bean= DBAccess.getdbHeler().getMemberDetails(gBean.getGroupId(), CallDispatcher.LoginUser);
-        final RoleAccessBean rBean= DBAccess.getdbHeler().getRoleAccessDetails(gBean.getGroupId(), bean.getRole());
+
         team.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                if(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)
-//                        || rBean.getCommentsview()!=null &&
-//                        rBean.getCommentsview().equalsIgnoreCase("1") ) {
+                if (gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)
+                        || (roleAccessBean.getCommentsview() != null &&
+                        roleAccessBean.getCommentsview().equalsIgnoreCase("1"))) {
                     commentType = "team";
                     mine.setTextColor(getResources().getColor(R.color.snazlgray));
                     team.setTextColor(getResources().getColor(R.color.white));
                     all.setTextColor(getResources().getColor(R.color.snazlgray));
                     CommentsSort();
-//                }else
-//                    showToast("You don't have access to view these comments");
+                } else
+                    showToast("You don't have access to view these comments");
                 send_lay.setVisibility(View.GONE);
             }
         });
         all.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                if(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) || rBean.getCommentsview()!=null &&
-//                        rBean.getCommentsview().equalsIgnoreCase("1")) {
+                if (gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) || (roleAccessBean.getCommentsview() != null &&
+                        roleAccessBean.getCommentsview().equalsIgnoreCase("1"))) {
                     commentType = "all";
                     mine.setTextColor(getResources().getColor(R.color.snazlgray));
                     team.setTextColor(getResources().getColor(R.color.snazlgray));
                     all.setTextColor(getResources().getColor(R.color.white));
                     CommentsSort();
-//                }else
-//                    showToast("You don't have access to view these comments");
+                } else
+                    showToast("You don't have access to view these comments");
                 send_lay.setVisibility(View.GONE);
             }
         });
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PatientCommentsBean commentsBean=new PatientCommentsBean();
+                PatientCommentsBean commentsBean = new PatientCommentsBean();
                 commentsBean.setGroupid(pBean.getGroupid());
                 commentsBean.setGroupowner(gBean.getOwnerName());
                 commentsBean.setGroupmember(CallDispatcher.LoginUser);
@@ -1264,12 +1435,12 @@ public class PatientRoundingFragment extends Fragment {
                 WebServiceReferences.webServiceClient.SetPatientComments(commentsBean, patientRoundingFragment);
                 comment.setText("");
                 CommentsList.add(commentsBean);
-                cadapter=new CommentsAdapter(mainContext, R.layout.comments_row,CommentsList);
+                cadapter = new CommentsAdapter(mainContext, R.layout.comments_row, CommentsList);
 
                 clistView.post(new Runnable() {
                     @Override
                     public void run() {
-                        clistView.setSelection(cadapter.getCount()-1);
+                        clistView.setSelection(cadapter.getCount() - 1);
                     }
                 });
                 clistView.setAdapter(cadapter);
@@ -1283,10 +1454,11 @@ public class PatientRoundingFragment extends Fragment {
             }
         });
     }
-    public  void notifySetPatientComments(Object obj){
-        Log.i("patientdetails","notifySetPatientComments");
-        if(obj instanceof PatientCommentsBean){
-            PatientCommentsBean cBean=(PatientCommentsBean)obj;
+
+    public void notifySetPatientComments(Object obj) {
+        Log.i("patientdetails", "notifySetPatientComments");
+        if (obj instanceof PatientCommentsBean) {
+            PatientCommentsBean cBean = (PatientCommentsBean) obj;
             Log.i("patientdetails", "notifySetPatientComments if");
             DBAccess.getdbHeler().insertorUpdatePatientComments(cBean);
         }
@@ -1304,42 +1476,77 @@ public class PatientRoundingFragment extends Fragment {
             return null;
         }
     }
-    private void CommentsSort(){
+
+    private void CommentsSort() {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                CommentsList= DBAccess.getdbHeler().getPatientComments(gBean.getGroupId(),pBean.getPatientid(), CallDispatcher.LoginUser,commentType);
-                cadapter=new CommentsAdapter(mainContext, R.layout.comments_row,CommentsList);
+                CommentsList = DBAccess.getdbHeler().getPatientComments(gBean.getGroupId(), pBean.getPatientid(), CallDispatcher.LoginUser, commentType);
+
+                //For type all and team sorting
+                //start
+                if (commentType.equalsIgnoreCase("all") || commentType.equalsIgnoreCase("team")) {
+                    HashMap<String, PatientCommentsBean> list = new HashMap<String, PatientCommentsBean>();
+                    Vector<PatientCommentsBean> patientCommentsBeen = new Vector<PatientCommentsBean>();
+                    if (CommentsList != null) {
+                        for (PatientCommentsBean commentsBean : CommentsList) {
+                            if (list.containsKey(commentsBean.getGroupmember())) {
+                                list.remove(commentsBean.getGroupmember());
+                                list.put(commentsBean.getGroupmember(), commentsBean);
+                            } else {
+                                list.put(commentsBean.getGroupmember(), commentsBean);
+                            }
+                        }
+                    }
+                    Iterator iterator1 = list.entrySet()
+                            .iterator();
+
+                    while (iterator1.hasNext()) {
+
+                        Map.Entry mapEntry = (Map.Entry) iterator1.next();
+
+                        PatientCommentsBean bean = (PatientCommentsBean) mapEntry.getValue();
+                        for(BuddyInformationBean bib: ContactsFragment.getBuddyList()){
+                            if(bib.getName().equalsIgnoreCase(bean.getGroupmember()))
+                            bean.setMembername(bib.getFirstname()+" "+bib.getLastname());
+                        }
+                        patientCommentsBeen.add(bean);
+                    }
+                    cadapter = new CommentsAdapter(mainContext, R.layout.comments_row, patientCommentsBeen);
+                } else {
+                    cadapter = new CommentsAdapter(mainContext, R.layout.comments_row, CommentsList);
+                }
+                //End
                 clistView.setAdapter(null);
                 clistView.setAdapter(cadapter);
                 cadapter.notifyDataSetChanged();
             }
         });
     }
-    public void statusDialog()
-    {
+
+    public void statusDialog() {
         final Dialog dialog1 = new Dialog(mainContext);
         dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog1.setContentView(R.layout.task_status);
         dialog1.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         dialog1.getWindow().setBackgroundDrawableResource(R.color.transparent);
         final RadioButton showall = (RadioButton) dialog1.findViewById(R.id.showall);
-        final RadioButton active = (RadioButton)dialog1. findViewById(R.id.active);
-        final RadioButton completed = (RadioButton)dialog1. findViewById(R.id.completed);
-        Button apply=(Button)dialog1.findViewById(R.id.apply);
-        RadioGroup gender = (RadioGroup)dialog1. findViewById(R.id.status_group);
+        final RadioButton active = (RadioButton) dialog1.findViewById(R.id.active);
+        final RadioButton completed = (RadioButton) dialog1.findViewById(R.id.completed);
+        Button apply = (Button) dialog1.findViewById(R.id.apply);
+        RadioGroup gender = (RadioGroup) dialog1.findViewById(R.id.status_group);
         int selectedId = gender.getCheckedRadioButtonId();
-        final RadioButton statusSelected = (RadioButton)dialog1.findViewById(selectedId);
-        Button cancel=(Button)dialog1.findViewById(R.id.cancel);
+        final RadioButton statusSelected = (RadioButton) dialog1.findViewById(selectedId);
+        Button cancel = (Button) dialog1.findViewById(R.id.cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog1.dismiss();
             }
         });
-        if(statusMode.equalsIgnoreCase("showall")){
+        if (statusMode.equalsIgnoreCase("showall")) {
             showall.setChecked(true);
-        }else if(statusMode.equalsIgnoreCase("active"))
+        } else if (statusMode.equalsIgnoreCase("active"))
             active.setChecked(true);
         else
             completed.setChecked(true);
@@ -1380,37 +1587,37 @@ public class PatientRoundingFragment extends Fragment {
             }
         });
     }
-    public void assignedTaskDialog()
-    {
+
+    public void assignedTaskDialog() {
         final Dialog dialog1 = new Dialog(mainContext);
         dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog1.setContentView(R.layout.task_assigned);
         dialog1.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         dialog1.getWindow().setBackgroundDrawableResource(R.color.transparent);
         final RadioButton showall = (RadioButton) dialog1.findViewById(R.id.showall);
-        final RadioButton assignedtome = (RadioButton)dialog1. findViewById(R.id.assignedtome);
-        final RadioButton assignedbyme = (RadioButton)dialog1. findViewById(R.id.assignedbyme);
-        final RadioButton unassigned = (RadioButton)dialog1. findViewById(R.id.unassigned);
-        final RadioButton assigntoteam = (RadioButton)dialog1. findViewById(R.id.assigntoteam);
-        Button apply=(Button)dialog1.findViewById(R.id.apply);
-        LinearLayout members_list=(LinearLayout)dialog1.findViewById(R.id.members_list);
-        RadioGroup gender = (RadioGroup)dialog1. findViewById(R.id.assigned_group);
-        Button cancel=(Button)dialog1.findViewById(R.id.cancel);
+        final RadioButton assignedtome = (RadioButton) dialog1.findViewById(R.id.assignedtome);
+        final RadioButton assignedbyme = (RadioButton) dialog1.findViewById(R.id.assignedbyme);
+        final RadioButton unassigned = (RadioButton) dialog1.findViewById(R.id.unassigned);
+        final RadioButton assigntoteam = (RadioButton) dialog1.findViewById(R.id.assigntoteam);
+        Button apply = (Button) dialog1.findViewById(R.id.apply);
+        LinearLayout members_list = (LinearLayout) dialog1.findViewById(R.id.members_list);
+        RadioGroup gender = (RadioGroup) dialog1.findViewById(R.id.assigned_group);
+        Button cancel = (Button) dialog1.findViewById(R.id.cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog1.dismiss();
             }
         });
-        if(assignedMode.equalsIgnoreCase("showall")){
+        if (assignedMode.equalsIgnoreCase("showall")) {
             showall.setChecked(true);
-        }else if(assignedMode.equalsIgnoreCase("assignedtome")) {
+        } else if (assignedMode.equalsIgnoreCase("assignedtome")) {
             assignedtome.setChecked(true);
-        }else if(assignedMode.equalsIgnoreCase("assignedbyme")) {
+        } else if (assignedMode.equalsIgnoreCase("assignedbyme")) {
             assignedbyme.setChecked(true);
-        }else if(assignedMode.equalsIgnoreCase("unassigned")) {
+        } else if (assignedMode.equalsIgnoreCase("unassigned")) {
             unassigned.setChecked(true);
-        }else if(assignedMode.equalsIgnoreCase("assigntoteam")) {
+        } else if (assignedMode.equalsIgnoreCase("assigntoteam")) {
             assigntoteam.setChecked(true);
         }
         showall.setOnClickListener(new View.OnClickListener() {
@@ -1468,43 +1675,30 @@ public class PatientRoundingFragment extends Fragment {
                 assigntoteam.setTextColor(Color.parseColor("#458EDB"));
             }
         });
-        final Vector<UserBean> memberslist=new Vector<UserBean>();
-        if (gmembersbean != null) {
-            if (gmembersbean.getActiveGroupMembers() != null
-                    && gmembersbean.getActiveGroupMembers().length() > 0) {
-                String[] mlist = (gmembersbean.getActiveGroupMembers())
+        final Vector<UserBean> memberslist = new Vector<UserBean>();
+        if (pBean != null) {
+            if (pBean.getAssignedmembers() != null
+                    && pBean.getAssignedmembers().length() > 0) {
+                String[] mlist = (pBean.getAssignedmembers())
                         .split(",");
-                UserBean bean=new UserBean();
-                if(gmembersbean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)){
-                    ProfileBean ubean= SingleInstance.myAccountBean;
-                    bean.setFirstname(ubean.getFirstname() + " " + ubean.getLastname());
-                }else {
-                    for(BuddyInformationBean bib: ContactsFragment.getBuddyList()){
-                        if(bib.getName().equalsIgnoreCase(gmembersbean.getOwnerName())) {
-                            bean.setFirstname(bib.getFirstname() + " " + bib.getLastname());
-                            break;
-                        }else
-                            bean.setFirstname(gmembersbean.getOwnerName());
-                    }
-                }
-                bean.setBuddyName(gmembersbean.getOwnerName());
-                bean.setSelected(true);
-                memberslist.add(bean);
+
+
                 for (String tmp : mlist) {
                     UserBean uBean = new UserBean();
-                    for(BuddyInformationBean bib: ContactsFragment.getBuddyList()){
-                        if(bib.getName().equalsIgnoreCase(tmp)) {
+                    for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
+                        if (bib.getName().equalsIgnoreCase(tmp)) {
                             uBean.setFirstname(bib.getFirstname() + " " + bib.getLastname());
                             break;
-                        }else
+                        } else
                             uBean.setFirstname(tmp);
                     }
                     uBean.setBuddyName(tmp);
+                    uBean.setFlag("0");
                     memberslist.add(uBean);
                 }
             }
         }
-        TeamMembersAdapter adapter=new TeamMembersAdapter(mainContext, R.layout.rounding_member_row,memberslist);
+        TeamMembersAdapter adapter = new TeamMembersAdapter(mainContext, R.layout.rounding_member_row, memberslist);
         final int adapterCount = adapter.getCount();
         for (int i = 0; i < adapterCount; i++) {
             View item = adapter.getView(i, null, null);
@@ -1517,58 +1711,60 @@ public class PatientRoundingFragment extends Fragment {
                 dialog1.dismiss();
                 tv_assigned.setText(assignedMode);
 
-                String addMembers="";
-                for(UserBean bean:memberslist){
-                    if(bean.isSelected())
-                        addMembers = addMembers+"" + bean.getBuddyName() + ",";
+                String addMembers = "";
+                for (UserBean bean : memberslist) {
+                    if (bean.isSelected())
+                        addMembers = addMembers + "" + bean.getBuddyName() + ",";
                 }
             }
         });
-        dialog1.show();}
-    private void taskSorting(String groupid){
+        dialog1.show();
+    }
+
+    private void taskSorting(String groupid) {
         java.sql.Date dt1 = new java.sql.Date(System.currentTimeMillis());
         String Today = dt1.toString();
 
-        if(assignedMode.equalsIgnoreCase("showall") && statusMode.equalsIgnoreCase("showall"))
-            strQuery = "select * from taskdetails where groupid='" + groupid +  "'and patientid='" + patientid +"'";
-        else if(assignedMode.equalsIgnoreCase("showall") && statusMode.equalsIgnoreCase("active"))
-            strQuery="select * from taskdetails where groupid='" + groupid + "'and patientid='" + patientid
-                    + "'and taskstatus ='" +"0"+  "'";
-        else if(assignedMode.equalsIgnoreCase("showall") && statusMode.equalsIgnoreCase("completed"))
-            strQuery="select * from taskdetails where groupid='" + groupid + "'and patientid='" + patientid
-                    +  "'and taskstatus ='" +"1"+  "'";
-        else if(assignedMode.equalsIgnoreCase("assignedtome") && statusMode.equalsIgnoreCase("showall"))
-            strQuery="select * from taskdetails where groupid='" + groupid + "'and patientid='" + patientid
-                    +"'and assignmembers LIKE '%" + CallDispatcher.LoginUser +"%'";
-        else if(assignedMode.equalsIgnoreCase("assignedtome") && statusMode.equalsIgnoreCase("active"))
-            strQuery="select * from taskdetails where groupid='" + groupid +  "'and taskstatus ='" +"0"+ "'and patientid='"
-                    + patientid + "'and assignmembers LIKE '%" + CallDispatcher.LoginUser +"%'";
-        else if(assignedMode.equalsIgnoreCase("assignedtome") && statusMode.equalsIgnoreCase("completed"))
-            strQuery="select * from taskdetails where groupid='" + groupid +  "'and taskstatus ='" +"1"+
-                    "'and patientid='" + patientid +"'and assignmembers LIKE '%" + CallDispatcher.LoginUser +"%'";
-        else if(assignedMode.equalsIgnoreCase("assignedbyme") && statusMode.equalsIgnoreCase("showall"))
-            strQuery="select * from taskdetails where groupid='" + groupid + "'and patientid='" + patientid
-                    +"'and creatorname='" + CallDispatcher.LoginUser + "'";
-        else if(assignedMode.equalsIgnoreCase("assignedbyme") && statusMode.equalsIgnoreCase("active"))
-            strQuery="select * from taskdetails where groupid='" + groupid +  "'and taskstatus ='" +"0"+
+        if (assignedMode.equalsIgnoreCase("showall") && statusMode.equalsIgnoreCase("showall"))
+            strQuery = "select * from taskdetails where groupid='" + groupid + "'and patientid='" + patientid + "'";
+        else if (assignedMode.equalsIgnoreCase("showall") && statusMode.equalsIgnoreCase("active"))
+            strQuery = "select * from taskdetails where groupid='" + groupid + "'and patientid='" + patientid
+                    + "'and taskstatus ='" + "0" + "'";
+        else if (assignedMode.equalsIgnoreCase("showall") && statusMode.equalsIgnoreCase("completed"))
+            strQuery = "select * from taskdetails where groupid='" + groupid + "'and patientid='" + patientid
+                    + "'and taskstatus ='" + "1" + "'";
+        else if (assignedMode.equalsIgnoreCase("assignedtome") && statusMode.equalsIgnoreCase("showall"))
+            strQuery = "select * from taskdetails where groupid='" + groupid + "'and patientid='" + patientid
+                    + "'and assignmembers LIKE '%" + CallDispatcher.LoginUser + "%'";
+        else if (assignedMode.equalsIgnoreCase("assignedtome") && statusMode.equalsIgnoreCase("active"))
+            strQuery = "select * from taskdetails where groupid='" + groupid + "'and taskstatus ='" + "0" + "'and patientid='"
+                    + patientid + "'and assignmembers LIKE '%" + CallDispatcher.LoginUser + "%'";
+        else if (assignedMode.equalsIgnoreCase("assignedtome") && statusMode.equalsIgnoreCase("completed"))
+            strQuery = "select * from taskdetails where groupid='" + groupid + "'and taskstatus ='" + "1" +
+                    "'and patientid='" + patientid + "'and assignmembers LIKE '%" + CallDispatcher.LoginUser + "%'";
+        else if (assignedMode.equalsIgnoreCase("assignedbyme") && statusMode.equalsIgnoreCase("showall"))
+            strQuery = "select * from taskdetails where groupid='" + groupid + "'and patientid='" + patientid
+                    + "'and creatorname='" + CallDispatcher.LoginUser + "'";
+        else if (assignedMode.equalsIgnoreCase("assignedbyme") && statusMode.equalsIgnoreCase("active"))
+            strQuery = "select * from taskdetails where groupid='" + groupid + "'and taskstatus ='" + "0" +
                     "'and patientid='" + patientid + "'and creatorname='" + CallDispatcher.LoginUser + "'";
-        else if(assignedMode.equalsIgnoreCase("assignedbyme") && statusMode.equalsIgnoreCase("completed"))
-            strQuery="select * from taskdetails where groupid='" + groupid +  "'and taskstatus ='" +"1"+
-                    "'and patientid='" + patientid +"'and creatorname='" + CallDispatcher.LoginUser + "'";
-        else if(assignedMode.equalsIgnoreCase("unassigned") && statusMode.equalsIgnoreCase("showall"))
-            strQuery="select * from taskdetails where groupid='" + groupid +"'and patientid='" + patientid
-                    + "'and assignmembers NOT LIKE '%" + CallDispatcher.LoginUser +"%'";
-        else if(assignedMode.equalsIgnoreCase("unassigned") && statusMode.equalsIgnoreCase("active"))
-            strQuery="select * from taskdetails where groupid='" + groupid +  "'and taskstatus ='" +"0"+
-                    "'and patientid='" + patientid + "'and assignmembers NOT LIKE '%" + CallDispatcher.LoginUser +"%'";
-        else if(assignedMode.equalsIgnoreCase("unassigned") && statusMode.equalsIgnoreCase("completed"))
-            strQuery="select * from taskdetails where groupid='" + groupid + "'and taskstatus ='" +"1"+
-                    "'and patientid='" + patientid + "'and assignmembers NOT LIKE '%" + CallDispatcher.LoginUser +"%'";
+        else if (assignedMode.equalsIgnoreCase("assignedbyme") && statusMode.equalsIgnoreCase("completed"))
+            strQuery = "select * from taskdetails where groupid='" + groupid + "'and taskstatus ='" + "1" +
+                    "'and patientid='" + patientid + "'and creatorname='" + CallDispatcher.LoginUser + "'";
+        else if (assignedMode.equalsIgnoreCase("unassigned") && statusMode.equalsIgnoreCase("showall"))
+            strQuery = "select * from taskdetails where groupid='" + groupid + "'and patientid='" + patientid
+                    + "'and assignmembers NOT LIKE '%" + CallDispatcher.LoginUser + "%'";
+        else if (assignedMode.equalsIgnoreCase("unassigned") && statusMode.equalsIgnoreCase("active"))
+            strQuery = "select * from taskdetails where groupid='" + groupid + "'and taskstatus ='" + "0" +
+                    "'and patientid='" + patientid + "'and assignmembers NOT LIKE '%" + CallDispatcher.LoginUser + "%'";
+        else if (assignedMode.equalsIgnoreCase("unassigned") && statusMode.equalsIgnoreCase("completed"))
+            strQuery = "select * from taskdetails where groupid='" + groupid + "'and taskstatus ='" + "1" +
+                    "'and patientid='" + patientid + "'and assignmembers NOT LIKE '%" + CallDispatcher.LoginUser + "%'";
         Log.i("patientdetails", "statusDialog " + statusMode + " query " + strQuery);
-        Vector<TaskDetailsBean> tasklist= DBAccess.getdbHeler().getAllTaskDetails(strQuery);
+        Vector<TaskDetailsBean> tasklist = DBAccess.getdbHeler().getAllTaskDetails(strQuery);
         Collections.sort(tasklist, new TaskDateComparator());
-        Vector<TaskDetailsBean> taskList= GroupChatActivity.getdatelist(tasklist);
-        final RoundingTaskAdapter taskAdapter=new RoundingTaskAdapter(mainContext, R.layout.round_task_row,taskList);
+        Vector<TaskDetailsBean> taskList = GroupChatActivity.getdatelist(tasklist);
+        final RoundingTaskAdapter taskAdapter = new RoundingTaskAdapter(mainContext, R.layout.round_task_row, taskList);
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -1577,17 +1773,18 @@ public class PatientRoundingFragment extends Fragment {
             }
         });
     }
+
     public class TeamMembersAdapter extends ArrayAdapter<UserBean> {
 
         private LayoutInflater inflater = null;
         private ViewHolder holder;
         private ImageLoader imageLoader;
         private Vector<UserBean> result;
-        Boolean isClicked=false;
+        Boolean isClicked = false;
 
         public TeamMembersAdapter(Context context, int resource, Vector<UserBean> objects) {
             super(context, resource, objects);
-            imageLoader=new ImageLoader(context);
+            imageLoader = new ImageLoader(context);
             result = new Vector<UserBean>();
             result.addAll(objects);
         }
@@ -1595,28 +1792,29 @@ public class PatientRoundingFragment extends Fragment {
         @Override
         public View getView(int i, View convertView, ViewGroup viewGroup) {
             try {
-                final ViewHolder1 holder ;
-                if(convertView == null) {
+                final ViewHolder1 holder;
+                if (convertView == null) {
                     holder = new ViewHolder1();
                     inflater = (LayoutInflater) mainContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.rounding_member_row, null);
                     holder.buddyicon = (ImageView) convertView.findViewById(R.id.buddyicon);
                     holder.statusIcon = (ImageView) convertView.findViewById(R.id.statusIcon);
                     holder.edit = (ImageView) convertView.findViewById(R.id.edit);
+                    holder.overlay = (ImageView) convertView.findViewById(R.id.overlay);
                     holder.buddyName = (TextView) convertView.findViewById(R.id.buddyName);
                     holder.occupation = (TextView) convertView.findViewById(R.id.occupation);
                     holder.role = (TextView) convertView.findViewById(R.id.position);
                     holder.header_title = (TextView) convertView.findViewById(R.id.header_title);
                     holder.rights = (TextView) convertView.findViewById(R.id.rights);
-                    holder.member_lay=(LinearLayout)convertView.findViewById(R.id.member_lay);
+                    holder.member_lay = (LinearLayout) convertView.findViewById(R.id.member_lay);
                     convertView.setTag(holder);
-                }else
+                } else
                     holder = (ViewHolder1) convertView.getTag();
                 final UserBean bib = result.get(i);
                 holder.edit.setVisibility(View.GONE);
                 holder.rights.setVisibility(View.GONE);
                 holder.statusIcon.setVisibility(View.GONE);
-                if(bib!=null) {
+                if (bib != null) {
                     if (bib.getProfilePic() != null) {
                         String pic_Path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/COMMedia/" + bib.getProfilePic();
                         File pic = new File(pic_Path);
@@ -1626,81 +1824,84 @@ public class PatientRoundingFragment extends Fragment {
                     }
                     holder.header_title.setVisibility(View.GONE);
                     holder.buddyName.setText(bib.getFirstname());
-                    if(bib.getOccupation()!=null)
+                    if (bib.getOccupation() != null)
                         holder.occupation.setText(bib.getOccupation());
-                    if(bib.getRole()!=null){
+                    if (bib.getRole() != null) {
                         holder.role.setText(bib.getRole());
                     }
                     holder.member_lay.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if(!isClicked) {
-                                holder.buddyicon.setBackgroundDrawable(getResources().getDrawable(R.drawable.image_border));
-                                isClicked=true;
-                            }
-                            else {
-                                holder.buddyicon.setBackgroundResource(0);
-                                isClicked=false;
+                            if (bib.getFlag().equalsIgnoreCase("0")) {
+                                bib.setSelected(true);
+                                holder.overlay.setVisibility(View.VISIBLE);
+                                bib.setFlag("1");
+                            } else {
+                                bib.setSelected(false);
+                                holder.overlay.setVisibility(View.GONE);
+                                bib.setFlag("0");
                             }
                         }
                     });
 
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
-                Log.d("RRRR","Error FindpeopleAdapter.java => "+e.toString());
+                Log.d("RRRR", "Error FindpeopleAdapter.java => " + e.toString());
             }
             return convertView;
         }
     }
-    public  class ViewHolder1 {
+
+    public class ViewHolder1 {
         CheckBox selectUser;
-        ImageView buddyicon;
-        ImageView statusIcon,edit;
+        ImageView buddyicon, overlay;
+        ImageView statusIcon, edit;
         TextView buddyName;
         TextView occupation;
         TextView header_title;
         LinearLayout member_lay;
-        TextView rights,role;
+        TextView rights, role;
     }
-    public  void notifyPatientDischarge(Object obj){
+
+    public void notifyPatientDischarge(Object obj) {
         cancelDialog();
-        Log.i("patientdetails","notifyPatientDischarge");
-        if(obj instanceof String[]){
-            String[] result=(String[])obj;
-            if(result[0].equalsIgnoreCase("Patient removed Successfully")) {
+        Log.i("patientdetails", "notifyPatientDischarge");
+        if (obj instanceof String[]) {
+            String[] result = (String[]) obj;
+            if (result[0].equalsIgnoreCase("Patient removed Successfully")) {
                 DBAccess.getdbHeler().deletePatientRelatedDetails(result[1], result[2]);
-                RoundingFragment roundingFragment = RoundingFragment.newInstance(mainContext);
-                FragmentManager fragmentManager = SingleInstance.mainContext
-                        .getSupportFragmentManager();
-                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                fragmentManager.beginTransaction().replace(
-                        R.id.activity_main_content_fragment, roundingFragment)
-                        .commitAllowingStateLoss();
+                Intent intent = new Intent(SingleInstance.mainContext, GroupChatActivity.class);
+                intent.putExtra("groupid", pBean.getGroupid());
+                intent.putExtra("isRounding", true);
+                intent.putExtra("isReq", "p");
+                SingleInstance.mainContext.startActivity(intent);
             }
-        }else if(obj instanceof WebServiceBean)
+        } else if (obj instanceof WebServiceBean)
             showToast(((WebServiceBean) obj).getText());
 
     }
-    public  void notifyDeletetask(Object obj){
+
+    public void notifyDeletetask(Object obj) {
         cancelDialog();
-        Log.i("patientdetails","notifyDeletetask");
-        if(obj instanceof String[]){
-            String[] result=(String[])obj;
-            if(result[0].equalsIgnoreCase("Task removed Successfully")) {
-                String strQuery=null;
-                if(!result[2].equalsIgnoreCase(""))
-                    strQuery="DELETE from taskdetails WHERE groupid='" + result[1] + "'and taskid='" + result[2] + "'";
+        Log.i("patientdetails", "notifyDeletetask");
+        if (obj instanceof String[]) {
+            String[] result = (String[]) obj;
+            if (result[0].equalsIgnoreCase("Task removed Successfully")) {
+                String strQuery = null;
+                if (!result[2].equalsIgnoreCase(""))
+                    strQuery = "DELETE from taskdetails WHERE groupid='" + result[1] + "'and taskid='" + result[2] + "'";
                 else
-                    strQuery="DELETE from taskdetails WHERE groupid='" + result[1]  + "'";
+                    strQuery = "DELETE from taskdetails WHERE groupid='" + result[1] + "'";
                 DBAccess.getdbHeler().deleteTaskDetails(strQuery);
                 taskSorting(result[1]);
             }
-        }else if(obj instanceof WebServiceBean)
+        } else if (obj instanceof WebServiceBean)
             showToast(((WebServiceBean) obj).getText());
 
     }
-    public void deleteTask(final String taskid, final String groupid,String taskname){
+
+    public void deleteTask(final String taskid, final String groupid, String taskname) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mainContext);
         builder.setTitle("Warning !");
         builder.setMessage("Are you sure you want to delete "
@@ -1709,7 +1910,7 @@ public class PatientRoundingFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int id) {
                         if (!WebServiceReferences.running) {
                             calldisp.startWebService(getResources()
-                                            .getString(R.string.service_url), "80");
+                                    .getString(R.string.service_url), "80");
                         }
                         showprogress();
                         WebServiceReferences.webServiceClient.DeleteTask(CallDispatcher.LoginUser, taskid,
@@ -1726,7 +1927,112 @@ public class PatientRoundingFragment extends Fragment {
         AlertDialog alert1 = builder.create();
         alert1.show();
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
+            super.onActivityResult(requestCode, resultCode, data);
+
+            // check if the request code is same as what is passed here it is 2
+            if (requestCode == 3) {
+                Log.i("AAAA", "request code 1343454356");
+                if (data != null) {
+                    Bundle bundle = data.getExtras();
+                    ArrayList<UserBean> list = (ArrayList<UserBean>) bundle
+                            .get("list");
+                    String addedMembers = new String();
+                    for (UserBean temp : list) {
+                        addedMembers = addedMembers + "," + temp.getBuddyName();
+                    }
+                    pBean.setAssignedmembers(addedMembers);
+                    WebServiceReferences.webServiceClient.SetPatientRecord(pBean, mainContext);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public class Seealladapter extends ArrayAdapter<PatientDescriptionBean> {
+
+        private Context context;
+        private Typeface tf_regular = null;
+
+        private Typeface tf_bold = null;
+        ImageLoader imageLoader;
+        private int checkBoxCounter = 0;
+        Vector<PatientDescriptionBean> commentList = new Vector<PatientDescriptionBean>();
+
+
+        public Seealladapter(Context context, int textViewResourceId,
+                             Vector<PatientDescriptionBean> co) {
+
+            super(context, R.layout.seeall_row, co);
+            this.context = context;
+            imageLoader = new ImageLoader(SingleInstance.mainContext);
+            commentList.addAll(co);
+        }
+
+        @Override
+        public View getView(final int position, View view, ViewGroup arg2) {
+            View row = view;
+
+            try {
+
+                final ViewHolder holder;
+                if (row == null) {
+                    holder = new ViewHolder();
+                    LayoutInflater inflater = (LayoutInflater) this.context
+                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    row = inflater.inflate(R.layout.seeall_row, null, false);
+                    holder.old_message = (TextView) row.findViewById(R.id.old_message);
+                    holder.active = (TextView) row.findViewById(R.id.active);
+                    holder.message_date = (TextView) row.findViewById(R.id.message_date);
+                    holder.header_title = (TextView)row.findViewById(R.id.header_title);
+                    holder.relay_header= (RelativeLayout)row.findViewById(R.id.relay_header);
+                    row.setTag(holder);
+                } else {
+                    holder = (ViewHolder) row.getTag();
+                }
+                final PatientDescriptionBean pBean = (PatientDescriptionBean) commentList.get(position);
+
+
+
+                if(position==0){
+                    holder.header_title.setText("ACTIVE");
+                    holder.active.setVisibility(View.GONE);
+                }else if(position ==1) {
+                    holder.header_title.setText("PREVIOUS");
+                }else{
+                    holder.header_title.setVisibility(View.GONE);
+                    holder.relay_header.setVisibility(View.GONE);
+                }
+//                if(isfromedit_diagnosis = true) {
+//                    holder.header_title.setVisibility(View.VISIBLE);
+//                    holder.active.setVisibility(View.VISIBLE);
+//                    holder.relay_header.setVisibility(View.VISIBLE);
+//                }else if(isfromedit_diagnosis = false){
+//                    holder.header_title.setVisibility(View.GONE);
+//                    holder.active.setVisibility(View.GONE);
+//                    holder.relay_header.setVisibility(View.GONE);
+//                }
+                holder.old_message.setText(pBean.getDiagnosis());
+                holder.message_date.setText(pBean.getDate());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return row;
+        }
+
+        private class ViewHolder {
+            TextView old_message,active, message_date, header_title;
+            RelativeLayout relay_header;
+        }
+    }
 }
+
+
 
 
 

@@ -476,6 +476,10 @@ public class XmlComposer {
 					+ quotes);
 		}
 
+		if(sb.getChatid() != null){
+			buffer.append(" callChatId=" + quotes + sb.getChatid()
+					+ quotes);
+		}
 		if (sb.getGmember() != null) {
 			buffer.append(" gmember=" + quotes + sb.getGmember() + quotes);
 		}
@@ -3135,5 +3139,18 @@ public class XmlComposer {
 			// TODO: handle exception
 		}
 		return buffer.toString();
+	}
+	public String composeUpdateChatTemplateXML(String[] param) {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("<UpdateChatTemplate  ");
+
+		buffer.append(" userid=" + quotes + param[0] + quotes);
+		buffer.append(" requestid=" + quotes + param[1] + quotes);
+		buffer.append(" type=" + quotes + param[2] + quotes);
+		buffer.append(" templateid=" + quotes + param[3] + quotes);
+		buffer.append(" template=" + quotes + param[4] + quotes);
+		buffer.append(" deletetemplates=" + quotes + param[5] + quotes);
+		buffer.append(" />");
+		return "<?xml version=\"1.0\"?>" + buffer.toString();
 	}
 }

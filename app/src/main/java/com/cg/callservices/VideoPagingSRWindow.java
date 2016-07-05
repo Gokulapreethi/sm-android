@@ -1585,7 +1585,7 @@ public class VideoPagingSRWindow extends Activity implements VideoCallback,
 										selfHangup = true;
 										if (selfHangup) {
 											CallDispatcher.sb
-													.setEndTime(getCurrentDateTime());
+													.setEndTime(objCallDispatcher.getCurrentDateTime());
 											CallDispatcher.sb
 													.setCallDuration(SingleInstance.mainContext.getCallDuration(
 															CallDispatcher.sb
@@ -1599,10 +1599,11 @@ public class VideoPagingSRWindow extends Activity implements VideoCallback,
 											Log.d("Test",
 													"@@@getCallDuration@@______-->"
 															+ getCallDuration(
-																	CallDispatcher.sb
-																			.getStartTime(),
-																	CallDispatcher.sb
-																			.getEndTime()));
+															CallDispatcher.sb
+																	.getStartTime(),
+															CallDispatcher.sb
+																	.getEndTime()));
+											CallDispatcher.sb.setCallstatus("callattended");
 
 											DBAccess.getdbHeler()
 													.saveOrUpdateRecordtransactiondetails(
@@ -1749,6 +1750,7 @@ public class VideoPagingSRWindow extends Activity implements VideoCallback,
 												.clear();
 										selfHangup = true;
 										if (selfHangup) {
+											CallDispatcher.sb.setCallstatus("callattended");
 											DBAccess.getdbHeler()
 													.saveOrUpdateRecordtransactiondetails(
 															CallDispatcher.sb);
@@ -2040,11 +2042,6 @@ public class VideoPagingSRWindow extends Activity implements VideoCallback,
 
 			if (AppMainActivity.commEngine != null) {
 				AppMainActivity.commEngine.setmDecodeFrame(true);
-			}
-			if (WebServiceReferences.contextTable.containsKey("connection")) {
-				CallConnectingScreen screen = (CallConnectingScreen) WebServiceReferences.contextTable
-						.get("connection");
-				screen.finish();
 			}
 
 			if (hasRemoved && mode.equals("1")) {

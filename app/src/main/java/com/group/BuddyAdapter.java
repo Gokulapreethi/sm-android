@@ -39,10 +39,13 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 	/*********** Declare Used Variables *********/
 	private Context context;
 	private List<UserBean> userList;
+	private Vector<UserBean> originallist;
 	private LayoutInflater inflater = null;
 	private int checkBoxCounter = 0;
 	private int checkboxcount;
 	private ImageLoader imageLoader;
+	boolean[] checkBoxState;
+	AddGroupMembers addGroupMembers;
 
 	public void setCheckcount(int checkboxcount) {
 		this.checkboxcount = checkboxcount;
@@ -59,10 +62,16 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 		super(context, R.layout.find_people_item, userList);
 		/********** Take passed values **********/
 		this.context = context;
-		this.userList = userList;
+		this.userList = new Vector<UserBean>();
+		this.userList.addAll(userList);
+		this.originallist = new Vector<UserBean>();
+		this.originallist.addAll(userList);
 		inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		imageLoader=new ImageLoader(context);
+		checkBoxState = new boolean[userList.size()];
+		addGroupMembers = (AddGroupMembers) WebServiceReferences.contextTable
+				.get("groupcontact");
 
 		/*********** Layout inflator to call external xml layout () ***********/
 
@@ -106,6 +115,11 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 				} else {
 					holder.selectUser.setChecked(false);
 				}
+//				holder.selectUser.setChecked(checkBoxState[position]);
+				if(userBean.isFromchat())
+					holder.statusIcon.setVisibility(View.GONE);
+				else
+					holder.statusIcon.setVisibility(View.VISIBLE);
 				if (userBean.isOwner())
 					holder.occupation.setText("Owner");
 				else
@@ -114,6 +128,7 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 					holder.selectUser.setVisibility(View.GONE);
 					holder.cancel_lay.setVisibility(View.VISIBLE);
 					holder.occupation.setText("invite Sent");
+					holder.statusIcon.setVisibility(View.GONE);
 					holder.header_title.setVisibility(View.GONE);
 				}
 				if (userBean.getProfilePic() != null) {
@@ -145,28 +160,28 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 				holder.selectUser.setChecked(true);
 				holder.selectUser.setEnabled(false);
 			} else {
-				final AddGroupMembers addGroupMembers = (AddGroupMembers) WebServiceReferences.contextTable
-						.get("groupcontact");
-				holder.selectUser
-						.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-							@Override
-							public void onCheckedChanged(CompoundButton arg0,
-									boolean isChecked) {
-								if (isChecked) {
-									userBean.setSelected(true);
-									checkBoxCounter++;
-									if (addGroupMembers != null) {
-										addGroupMembers.countofcheckbox(checkBoxCounter);
-									}
-								} else {
-									userBean.setSelected(false);
-									checkBoxCounter--;
-									if (addGroupMembers != null) {
-										addGroupMembers.countofcheckbox(checkBoxCounter);
-									}
-								}
+
+				holder.selectUser.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						if (((CheckBox) v).isChecked()) {
+							checkBoxState[position] = true;
+							userBean.setSelected(true);
+							checkBoxCounter++;
+							if (addGroupMembers != null) {
+								addGroupMembers.countofcheckbox(checkBoxCounter);
 							}
-						});
+						} else {
+							checkBoxState[position] = false;
+							userBean.setSelected(false);
+							checkBoxCounter--;
+							if (addGroupMembers != null) {
+								addGroupMembers.countofcheckbox(checkBoxCounter);
+							}
+						}
+					}
+				});
+//
 			}
 			holder.cancel_lay.setOnClickListener(new View.OnClickListener() {
 				@Override
@@ -176,16 +191,20 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 								"select * from grouplist where groupid=" + userBean.getGroupid());
 						gBean.setDeleteGroupMembers(userBean.getBuddyName());
 						gBean.setGroupName(userBean.getGroupname());
-						if(gBean.getGrouptype().equalsIgnoreCase("Rounding")) {
-							RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable
-									.get("roundingGroup");
-							roundingGroup.showprogress();
-							WebServiceReferences.webServiceClient.createRoundingGroup(gBean, roundingGroup);
-						}else {
-							GroupActivity groupActivity = (GroupActivity) SingleInstance.contextTable
-									.get("groupActivity");
-							groupActivity.showprogress();
-							WebServiceReferences.webServiceClient.createGroup(gBean, groupActivity);
+						if(gBean.getGrouptype()!=null) {
+							if (gBean.getGrouptype().equalsIgnoreCase("Rounding")) {
+								RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable
+										.get("roundingGroup");
+								if(roundingGroup!=null)
+								roundingGroup.showprogress();
+								WebServiceReferences.webServiceClient.createRoundingGroup(gBean, roundingGroup);
+							} else {
+								GroupActivity groupActivity = (GroupActivity) SingleInstance.contextTable
+										.get("groupActivity");
+								if(groupActivity!=null)
+								groupActivity.showprogress();
+								WebServiceReferences.webServiceClient.createGroup(gBean, groupActivity);
+							}
 						}
 					}
 				}
@@ -197,7 +216,10 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 			e.printStackTrace();
 			return null;
 		}
+
+
 	}
+
 	class ViewHolder {
 		CheckBox selectUser;
 		ImageView buddyicon;
@@ -207,21 +229,61 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 		TextView header_title;
 		LinearLayout cancel_lay;
 	}
-	public void filter(String charText) {
-		// TODO Auto-generated method stub
-		charText = charText.toLowerCase(Locale.getDefault());
-		if (charText.length() == 0) {
-			userList.addAll(userList);
-		} else {
-			for (UserBean storedData : userList) {
-				if (storedData.getBuddyName()
-						.toLowerCase(Locale.getDefault()).startsWith(charText)) {
-					userList.add(storedData);
+	private  GroupFilter filter;
+	@Override
+	public Filter getFilter() {
+		if (filter == null){
+			filter  = new GroupFilter();
+		}
+		return filter;
+	}
+
+	private class GroupFilter extends Filter
+	{
+
+		@Override
+		protected Filter.FilterResults performFiltering(CharSequence constraint) {
+
+			constraint = constraint.toString().toLowerCase();
+
+			Filter.FilterResults result = new Filter.FilterResults();
+			if (constraint != null && constraint.toString().length() > 0) {
+				Vector<UserBean> uBeans = new Vector<UserBean>();
+				for(int i = 0, l = originallist.size(); i < l; i++)
+				{
+					UserBean gBean = originallist.get(i);
+					if(gBean.getFirstname()!=null)
+					if(gBean.getFirstname().toLowerCase().contains(String.valueOf(constraint)))
+						uBeans.add(gBean);
 				}
 
+				result.count = uBeans.size();
+				result.values = uBeans;
+				if(uBeans.size()==0)
+					addGroupMembers.showToast("No results found");
+			} else {
+				synchronized (this) {
+					result.values = originallist;
+					result.count = originallist.size();
+				}
 			}
+			return result;
 		}
-		notifyDataSetChanged();
+
+		@SuppressWarnings("unchecked")
+		@Override
+		protected void publishResults(CharSequence constraint,
+									  Filter.FilterResults results) {
+
+			userList= (Vector<UserBean>)results.values;
+			notifyDataSetChanged();
+			clear();
+			for(int i = 0, l = userList.size(); i < l; i++)
+				add(userList.get(i));
+			notifyDataSetInvalidated();
+
+		}
 
 	}
+
 }

@@ -21,6 +21,7 @@ import com.util.SingleInstance;
 
 import org.lib.model.FileDetailsBean;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Vector;
 
@@ -135,12 +136,15 @@ public class MemoryControlFragment extends Fragment {
                     TextView tv_others=(TextView)view.findViewById(R.id.tv_others);
                     TextView tv_chat=(TextView)view.findViewById(R.id.tv_chat);
                     TextView tv_total=(TextView)view.findViewById(R.id.tv_total);
+                    TextView tv_free=(TextView)view.findViewById(R.id.tv_free);
                     tv_audio.setText(bytesToSize(audio));
                     tv_video.setText(bytesToSize(videos));
                     tv_photo.setText(bytesToSize(image));
                     int total=audio+videos+image+other+chat;
                     tv_total.setText(bytesToSize(total));
-                    Log.i("AAAA", "Oncreate view of memorycontrol @@@@ size "+other);
+                    float num = 5368709120L;
+                    float temp1 = num - total;
+                    tv_free.setText(bytesToSize(temp1));
                     tv_others.setText(bytesToSize(other));
                     tv_chat.setText(bytesToSize(chat));
                     lineProgressbar = (LineProgressBar) view.findViewById(R.id.line_progressbar);
@@ -150,6 +154,7 @@ public class MemoryControlFragment extends Fragment {
                     lineProgressbar3 = (LineProgressBar) view.findViewById(R.id.line_progressbar3);
                     lineProgressbar4 = (LineProgressBar) view.findViewById(R.id.line_progressbar4);
                     lineProgressbar5 = (LineProgressBar) view.findViewById(R.id.line_progressbar5);
+                    lineProgressbar5.setForegroundColor(getResources().getColor(R.color.snazlgray));
                     setTimer();
                 }catch (Exception e){
                     e.printStackTrace();
@@ -190,29 +195,29 @@ public class MemoryControlFragment extends Fragment {
         }
         return hrSize;
     }
-    String bytesToSize(int bytes) {
-        int kilobyte = 1024;
-        int megabyte = kilobyte * 1024;
-        int gigabyte = megabyte * 1024;
-        int terabyte = gigabyte * 1024;
+    String bytesToSize(float bytes) {
+        float kilobyte = 1024;
+        float megabyte = kilobyte * 1024;
+        float gigabyte = megabyte * 1024;
+        float terabyte = gigabyte * 1024;
 
         if ((bytes >= 0) && (bytes < kilobyte)) {
-            return bytes + " B";
+            return  new BigDecimal(String.valueOf(bytes)).setScale(2, BigDecimal.ROUND_DOWN) + " B";
 
         } else if ((bytes >= kilobyte) && (bytes < megabyte)) {
-            return (bytes / kilobyte) + " KB";
+            return  new BigDecimal(String.valueOf((bytes / kilobyte))).setScale(2, BigDecimal.ROUND_DOWN) + " KB";
 
         } else if ((bytes >= megabyte) && (bytes < gigabyte)) {
-            return (bytes / megabyte) + " MB";
+            return  new BigDecimal(String.valueOf((bytes / megabyte))).setScale(2, BigDecimal.ROUND_DOWN) + " MB";
 
         } else if ((bytes >= gigabyte) && (bytes < terabyte)) {
-            return (bytes / gigabyte) + " GB";
+            return  new BigDecimal(String.valueOf((bytes / gigabyte))).setScale(2, BigDecimal.ROUND_DOWN) + " GB";
 
         } else if (bytes >= terabyte) {
-            return (bytes / terabyte) + " TB";
+            return  new BigDecimal(String.valueOf((bytes / terabyte))).setScale(2, BigDecimal.ROUND_DOWN) + " TB";
 
         } else {
-            return bytes + " B";
+            return  new BigDecimal(String.valueOf(bytes)).setScale(2, BigDecimal.ROUND_DOWN) + " B";
         }
     }
 

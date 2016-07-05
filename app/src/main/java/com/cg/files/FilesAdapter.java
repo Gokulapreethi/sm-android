@@ -101,6 +101,7 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
 				holder.checkbox = (CheckBox) convertView.findViewById(R.id.file_check);
 				holder.dateTime = (TextView) convertView.findViewById(R.id.date_time);
 				holder.fileIcon = (ImageView) convertView.findViewById(R.id.file_icon);
+				holder.overlay = (ImageView) convertView.findViewById(R.id.overlay);
 				holder.unreadIcon = (ImageView) convertView.findViewById(R.id.unread_icon);
 				holder.from_user = (TextView) convertView.findViewById(R.id.from_user);
 				holder.type = (TextView) convertView.findViewById(R.id.type);
@@ -236,7 +237,11 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
 				holder.ttlText.setVisibility(View.GONE);
 			}
 			holder.type.setText(fileBean.getcomponentType());
-			File file = new File(fileBean.getContentpath());
+			File file;
+			if(fileBean.getcomponentType().equalsIgnoreCase("video"))
+				file = new File(fileBean.getContentpath()+".mp4");
+			else
+				file = new File(fileBean.getContentpath());
 			long length = (int) file.length();
 			length = length/1024;
 			holder.size.setText(bytesToSize((int) length));
@@ -274,29 +279,35 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
 
 		if (fileBean.getcomponentType().trim().equals("note")) {
 				holder.fileIcon.setVisibility(View.GONE);
+			holder.overlay.setVisibility(View.GONE);
 				holder.fileIcon.setBackgroundResource(R.drawable.textnotesnew);
 
 			} else if (fileBean.getcomponentType().trim().equals("audio")) {
 				holder.fileIcon.setTag(fileBean.getComponentId());
 					holder.fileIcon.setVisibility(View.VISIBLE);
+			holder.overlay.setVisibility(View.GONE);
 				fileImageLoader.DisplayImage(fileBean.getContentpath().replace(".mp4", ".jpg"), holder.fileIcon, R.drawable.audionotesnew);
 			}
 
 		else if (fileBean.getcomponentType().trim().equals("video")) {
 				holder.fileIcon.setTag(fileBean.getComponentId());
 				holder.fileIcon.setVisibility(View.VISIBLE);
+			    holder.overlay.setVisibility(View.VISIBLE);
 			fileImageLoader.DisplayImage(fileBean.getContentpath() + ".mp4", holder.fileIcon, R.drawable.videonotesnew);
 			}
 			else if (fileBean.getcomponentType().trim().equalsIgnoreCase("sketch")) {
 				holder.fileIcon.setVisibility(View.VISIBLE);
+			holder.overlay.setVisibility(View.GONE);
 				fileImageLoader.DisplayImage(fileBean.getContentpath(), holder.fileIcon, R.drawable.handpencil);
 			}
 			else if (fileBean.getcomponentType().trim().equals("photo")) {
 				holder.fileIcon.setVisibility(View.VISIBLE);
+			holder.overlay.setVisibility(View.GONE);
 				fileImageLoader.DisplayImage(fileBean.getContentpath(), holder.fileIcon, R.drawable.photonotesnew);
 			} else if (fileBean.getcomponentType().trim()
 					.equalsIgnoreCase("document")) {
 				holder.fileIcon.setBackgroundResource(R.drawable.textnotesnew);
+			holder.overlay.setVisibility(View.GONE);
 				String[] name = fileBean.getContentpath().split("\\.");
 				holder.fileIcon.setTag(fileBean.getComponentId());
 				String extn = name[1];
@@ -339,7 +350,7 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
 						}
 					});
 			if (fileBean.getViewmode() == 0) {
-				holder.unreadIcon.setVisibility(View.VISIBLE);
+//				holder.unreadIcon.setVisibility(View.VISIBLE);
 			} else {
 				holder.unreadIcon.setVisibility(View.GONE);
 			}
@@ -361,7 +372,7 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
 		TextView ttlText;
 		TextView dateTime;
 		CheckBox checkbox;
-		ImageView fileIcon;
+		ImageView fileIcon,overlay;
 		ImageView unreadIcon;
 		TextView from_user;
 		TextView type;

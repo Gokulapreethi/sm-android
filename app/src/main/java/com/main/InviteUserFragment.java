@@ -9,10 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.cg.callservices.AudioCallScreen;
+import com.cg.callservices.VideoCallScreen;
+import com.cg.hostedconf.AppReference;
 import com.cg.rounding.RoundingFragment;
 import com.cg.snazmed.R;
 import com.util.SingleInstance;
@@ -48,6 +52,7 @@ public class InviteUserFragment extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
 
         try {
+            AppReference.bacgroundFragment=inviteUserFragment;
             Button select = (Button) getActivity().findViewById(R.id.btn_brg);
             select.setVisibility(View.GONE);
             TextView title = (TextView) getActivity().findViewById(
@@ -60,7 +65,9 @@ public class InviteUserFragment extends android.support.v4.app.Fragment {
             Button edit = (Button) getActivity().findViewById(
                     R.id.btn_settings);
             edit.setVisibility(View.GONE);
-            RelativeLayout mainHeader = (RelativeLayout) getActivity().findViewById(R.id.mainheader);
+            final EditText search_box = (EditText)getActivity().findViewById(R.id.search_box);
+            search_box.setVisibility(View.GONE);
+            final RelativeLayout mainHeader = (RelativeLayout) getActivity().findViewById(R.id.mainheader);
             mainHeader.setVisibility(View.VISIBLE);
             LinearLayout contact_layout = (LinearLayout) getActivity()
                     .findViewById(R.id.contact_layout);
@@ -70,6 +77,22 @@ public class InviteUserFragment extends android.support.v4.app.Fragment {
             plusBtn.setVisibility(View.GONE);
             Button backBtn = (Button) getActivity().findViewById(R.id.backbtn);
             backBtn.setVisibility(View.GONE);
+            RelativeLayout audio_minimize = (RelativeLayout)getActivity().findViewById(R.id.audio_minimize);
+            RelativeLayout video_minimize = (RelativeLayout)getActivity().findViewById(R.id.video_minimize);
+            audio_minimize.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mainHeader.setVisibility(View.GONE);
+                    addShowHideListener(true);
+                }
+            });
+            video_minimize.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mainHeader.setVisibility(View.GONE);
+                    addShowHideListener(false);
+                }
+            });
             view = null;
             if (view == null) {
                 view = inflater.inflate(R.layout.invite_user, null);
@@ -118,5 +141,22 @@ public class InviteUserFragment extends android.support.v4.app.Fragment {
     }
     public void setContext(Context cxt) {
         this.mainContext = cxt;
+    }
+    void addShowHideListener( final Boolean isAudio) {
+        if(isAudio) {
+            AudioCallScreen audioCallScreen = AudioCallScreen.getInstance(SingleInstance.mainContext);
+            FragmentManager fragmentManager = SingleInstance.mainContext
+                    .getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(
+                    R.id.activity_main_content_fragment, audioCallScreen)
+                    .commitAllowingStateLoss();
+        }else {
+            VideoCallScreen videoCallScreen = VideoCallScreen.getInstance(SingleInstance.mainContext);
+            FragmentManager fragmentManager = SingleInstance.mainContext
+                    .getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(
+                    R.id.activity_main_content_fragment, videoCallScreen)
+                    .commitAllowingStateLoss();
+        }
     }
 }

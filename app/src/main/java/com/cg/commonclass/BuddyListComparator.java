@@ -10,7 +10,12 @@ public class BuddyListComparator implements Comparator<BuddyInformationBean> {
 	public int compare(BuddyInformationBean oldBean,
 			BuddyInformationBean newBean) {
 		// TODO Auto-generated method stub
-		return (oldBean.getFirstname().compareToIgnoreCase(newBean.getFirstname()));
+		if(oldBean.getLastname()!=null && newBean.getLastname()!=null)
+		return (oldBean.getLastname().compareToIgnoreCase(newBean.getLastname()));
+		else if(oldBean.getFirstname()!=null && newBean.getFirstname()!=null)
+			return (oldBean.getFirstname().compareToIgnoreCase(newBean.getFirstname()));
+		else
+			return (oldBean.getName().compareToIgnoreCase(newBean.getName()));
 	}
 
 }

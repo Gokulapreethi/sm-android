@@ -1,8 +1,8 @@
 package com.bean;
 
-import java.io.Serializable;
-
 import android.graphics.Bitmap;
+
+import java.io.Serializable;
 
 public class GroupChatBean implements Serializable, Cloneable {
 	private static final long serialVersionUID = 1L;
@@ -36,6 +36,7 @@ public class GroupChatBean implements Serializable, Cloneable {
 	private String filetitle="";
 	private String comment="";
 	private boolean playing;
+	private boolean isJoin;
 
 	public boolean isPlaying() {
 		return playing;
@@ -428,4 +429,12 @@ public class GroupChatBean implements Serializable, Cloneable {
     public void setThumb(int thumb) {
         this.thumb = thumb;
     }
+
+	public boolean isJoin() {
+		return isJoin;
+	}
+
+	public void setIsJoin(boolean isJoin) {
+		this.isJoin = isJoin;
+	}
 }

@@ -8,6 +8,16 @@ public class SendListUIBean {
     private String path;
     private String user;
 
+    public boolean isPlaying() {
+        return playing;
+    }
+
+    public void setPlaying(boolean playing) {
+        this.playing = playing;
+    }
+
+    private boolean playing;
+
     public String getType() {
         return type;
     }

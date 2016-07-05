@@ -431,6 +431,8 @@ public class ProprietarySignalling implements UDPDataListener {
 
 				timerBean.setCallStatus(CallStatus.CALL_RINGING);
 				xmlComposer.composeInviteXML(sb);
+				AppMainActivity.tcpEngine.sendMessage(xml);
+				return;
 			} else if (sb.getType().equals("11") || sb.getType().equals("12")) {
 
 				xml = xmlComposer.composeInviteXML(sb);
@@ -665,7 +667,7 @@ public class ProprietarySignalling implements UDPDataListener {
 								+ " Type " + sb.getType() + " signalid "
 								+ sb.getSignalid()+ " vidssrc : "+sb.getVideossrc());
 
-				if(sb.getCallType()!=null && sb.getCallType().equalsIgnoreCase("VC") && sb.getVideossrc() != null && !sb.getVideossrc().equalsIgnoreCase("null") && sb.getVideossrc().length() > 0){
+				if(sb.getCallType()!=null && (sb.getCallType().equalsIgnoreCase("VC") || sb.getCallType().equalsIgnoreCase("AC"))&& sb.getVideossrc() != null && !sb.getVideossrc().equalsIgnoreCase("null") && sb.getVideossrc().length() > 0){
 
 					if(!WebServiceReferences.videoSSRC_total_list.contains(Integer.parseInt(sb.getVideossrc()))){
 //						WebServiceReferences.videoSSRC_total_list.add(Integer.parseInt(sb.getVideossrc()));
@@ -675,7 +677,7 @@ public class ProprietarySignalling implements UDPDataListener {
 						VideoThreadBean videoThreadBean = new VideoThreadBean();
 						videoThreadBean.setMember_name(sb.getFrom());
 						videoThreadBean.setVideoDisabled(false);
-
+						Log.i("VideoSSRC", "videoSSRC_total.put 2");
 						WebServiceReferences.videoSSRC_total.put((Integer.parseInt(sb.getVideossrc())),videoThreadBean);
 					}
 				}
@@ -1965,6 +1967,7 @@ public class ProprietarySignalling implements UDPDataListener {
                         Log.d("abcdef","IN 101 signal "+sb.getSignalid());
                         GroupChatActivity gcActivity = (GroupChatActivity) SingleInstance.contextTable
                                 .get("groupchat");
+						if(sb.getSignalid()!=null)
                         gcActivity.updateThumbs(sb.getSignalid());
                     }
 
@@ -2342,7 +2345,7 @@ public class ProprietarySignalling implements UDPDataListener {
 						// "From "+sb.getFrom()+"  to "+sb.getTo()+" Type "+sb.getType()+" signalid "+sb.getSignalid());
 						communicationEngine.startNewConferenceCall(sb);
 
-					} else if (sb.getType().equals("6")) {// Log.d("666",
+					} else if (sb.getType().equals("6")) { // Log.d("666",
 															// "Received SSrc on Type 666 ");
 
 						if (communicationEngine.getCallTable().containsKey(

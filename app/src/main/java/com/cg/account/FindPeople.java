@@ -150,6 +150,7 @@ public class FindPeople extends Fragment {
                                             .getInstance(SingleInstance.mainContext));
                             RequestFragment requestFragment = RequestFragment.newInstance(SingleInstance.mainContext);
                             requestFragment.setRequest("invite");
+                            requestFragment.setBuddyName(bib.getEmailid());
                             calldisp.showprogress(CallDispatcher.pdialog,mainContext);
 //                        final CheckBox selectUser = (CheckBox) view.findViewById(R.id.sel_buddy);
 //                        if(bib.isSelected()){
@@ -285,26 +286,22 @@ public class FindPeople extends Fragment {
 //                            imageLoader.DisplayImage(pic_Path, holder.buddyicon, R.drawable.img_user);
 //                        }
 //                    }
-//                    if (bib.isSelected()) {
-//                        holder.selectUser.setChecked(true);
-//                    } else {
-//                        holder.selectUser.setChecked(false);
-//                    }
-                    holder.selectUser
-                            .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                                @Override
-                                public void onCheckedChanged(CompoundButton arg0,
-                                                             boolean isChecked) {
-                                    if (isChecked){
-                                        bib.setSelected(true);
-                                    }
-                                    else {
-                                        bib.setSelected(false);
-                                    }
-
-                                }
-
-                            });
+                    if (bib.isSelected()) {
+                        holder.selectUser.setChecked(true);
+                    } else {
+                        holder.selectUser.setChecked(false);
+                    }
+                    holder.selectUser.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (((CheckBox) v).isChecked()){
+                                bib.setSelected(true);
+                            }
+                            else {
+                                bib.setSelected(false);
+                            }
+                        }
+                    });
                     if (bib.getStatus().equals("0")) {
                         holder.statusIcon.setBackgroundResource(R.drawable.offline_icon);
                     } else if (bib.getStatus().equals("1")) {
@@ -316,7 +313,11 @@ public class FindPeople extends Fragment {
                     } else {
                         holder.statusIcon.setBackgroundResource(R.drawable.offline_icon);
                     }
+                    if(bib.getFirstname()!=null && bib.getFirstname().length()>0
+                            && bib.getLastname().length()>0 && bib.getLastname()!=null)
                     holder.buddyName.setText(bib.getFirstname()+" "+bib.getLastname());
+                    else
+                        holder.buddyName.setText(bib.getEmailid());
                     holder.occupation.setText(bib.getOccupation());
                 }
             }catch(Exception e){

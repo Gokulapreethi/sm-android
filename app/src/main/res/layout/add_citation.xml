@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent"
+    android:background="@color/black2"
     >
 <RelativeLayout
     android:id="@+id/relay1"
@@ -32,6 +32,8 @@
         android:layout_below="@id/Text_view1"
         android:layout_marginLeft="30dp"
         android:textSize="20dp"
+        android:digits="@string/alphaNumericandspace"
+       android:inputType="textEmailAddress"
         android:background="@color/black2"
         android:textColor="@color/white"/>
     <View
@@ -39,6 +41,7 @@
         android:layout_height="1dp"
         android:layout_marginTop="5dp"
         android:background="#7E8080"
+        android:visibility="gone"
         android:layout_below="@id/Edit_text1"/>
 
 

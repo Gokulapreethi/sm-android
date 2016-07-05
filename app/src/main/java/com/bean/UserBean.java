@@ -21,6 +21,7 @@ public class UserBean implements Serializable {
 	private String role;
 	private String groupname;
 	private String firstname;
+	private boolean fromchat=false;
 
 	public boolean isAllowChecking() {
 		return allowChecking;
@@ -152,6 +153,14 @@ public class UserBean implements Serializable {
 
 	public String getGroupname() {
 		return groupname;
+	}
+
+	public boolean isFromchat() {
+		return fromchat;
+	}
+
+	public void setFromchat(boolean fromchat) {
+		this.fromchat = fromchat;
 	}
 
 	public void setGroupname(String groupname) {

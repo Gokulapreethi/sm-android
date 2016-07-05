@@ -5,6 +5,8 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -37,6 +39,7 @@ import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.media.AudioManager;
 import android.media.ExifInterface;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.net.ConnectivityManager;
@@ -71,6 +74,8 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -94,9 +99,9 @@ import com.cg.avatar.CloneActivity;
 import com.cg.callservices.AudioCallScreen;
 import com.cg.callservices.AudioPagingSRWindow;
 import com.cg.callservices.CallConnectingScreen;
+import com.cg.callservices.inCommingCallAlert;
 import com.cg.callservices.VideoCallScreen;
 import com.cg.callservices.VideoPagingSRWindow;
-import com.cg.callservices.inCommingCallAlert;
 import com.cg.commongui.MultimediaUtils;
 import com.cg.commongui.TestHTML5WebView;
 import com.cg.files.CompleteListBean;
@@ -128,6 +133,8 @@ import com.cg.profiles.BusCard;
 import com.cg.profiles.ViewProfiles;
 import com.cg.quickaction.ContactLogics;
 import com.cg.quickaction.QuickActionSelectcalls;
+import com.cg.rounding.NotificationReceiver;
+import com.cg.rounding.RoundingFragment;
 import com.cg.services.PlayerService;
 import com.cg.settings.MenuPage;
 import com.cg.settings.UserSettingsBean;
@@ -166,6 +173,7 @@ import com.main.Registration;
 import com.main.SettingsFragment;
 import com.main.ViewProfileFragment;
 import com.screensharing.ScreenSharingFragment;
+import com.service.FloatingCallService;
 import com.util.SingleInstance;
 
 import org.audio.AudioProperties;
@@ -202,7 +210,6 @@ import org.lib.webservice.Servicebean;
 import org.lib.webservice.WebServiceCallback;
 import org.lib.webservice.WebServiceClient;
 import org.net.rtp.RtpPacket;
-import org.tcp.TCPEngine;
 import org.util.Queue;
 import org.util.Utility;
 import org.wifi.NetworkBroadcastReceiver;
@@ -243,6 +250,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -362,6 +370,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	public static boolean clearAll = false;
 
+	public  static String chatId;
+
 	public static String checkMyLocation = null;
 
 	public static HashMap<Integer, ArrayList<String>> uploadDatasList = new HashMap<Integer, ArrayList<String>>();
@@ -386,6 +396,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	private static String localipaddsress;
 
 	private static String publicipaddress;
+	public static boolean isCallignored=false;
 
 	private String cbserver1 = null;
 
@@ -485,6 +496,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	 * used to store and retrive conference members.
 	 */
 	public static ArrayList<String> conferenceMembers = new ArrayList<String>();
+
+	public static HashMap<String, SignalingBean> conferenceMember_Details = new HashMap<String, SignalingBean>();
 	/**
 	 * Check video call full screen state.
 	 */
@@ -551,7 +564,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	public boolean Sipcallisconnected = false;
 
-	public boolean GSMCallisAccepted = false;
+	public static boolean GSMCallisAccepted = false;
 
 	public boolean SIPCallisAccepted = false;
 
@@ -582,6 +595,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	public HashMap<String, Bitmap> bitmap_table = new HashMap<String, Bitmap>();
 
 	public BackgroundNotification notifier = null;
+	private Handler mHandler;
 
 	/**
 	 * When the user make a call from the conference screen add that name as a
@@ -642,6 +656,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	// public HeartbeatTimer HBT = null;
 
 	public boolean isAnotherUserLogedIn = false;
+	private PlaybackUpdater mProgressUpdater = new PlaybackUpdater();
 
 	private DBAccess dbhelper = null;
 
@@ -670,6 +685,11 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	public ArrayList<String> accepted_users = new ArrayList<String>();
 
 	public ArrayList<CompleteListBean> multiple_componentlist = new ArrayList<CompleteListBean>();
+
+	final MediaPlayer mPlayer = new MediaPlayer();
+	int mPlayingPosition = 0;
+
+	private Dialog history_dialog;
 
 	public static ArrayList<InputsFields> inputFieldList = new ArrayList<InputsFields>();
 
@@ -794,7 +814,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				intentFilter);
 		NetworkBroadcastReceiver.isRegistered = true;
 		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-		ssid = wifiInfo.getSSID();
+		if(wifiInfo.getSSID()!=null) {
+			ssid = wifiInfo.getSSID();
+		}
 		uploadData = new ArrayList<String>();
 		WebServiceReferences.callDispatch.put("calldispatcher", context);
 		WebServiceReferences.callDispatch.put("calldisp", this);
@@ -2177,147 +2199,21 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 				if (sb.getType().equals("0")) {
 
-					// Incoming call
-					if (isCallInitiate
-							|| GSMCallisAccepted
-							|| WebServiceReferences.contextTable
-									.containsKey("connection")) {
-						// rejectInComingCall(sb);
-						if (currentSessionid != null
-								&& currentSessionid.equals(sb.getSessionid())) {
+					Log.i("AudioCall", " isCallInitiate :" + isCallInitiate + " GSMCallisAccepted :" + GSMCallisAccepted + " connection : " + SingleInstance.instanceTable
+							.containsKey("connection"));
+					Log.i("AudioCall", "	sb.getSessionid() : " + sb.getSessionid() + " currentSessionid : " + currentSessionid + " isCallignored : "+isCallignored);
 
-							if (!alConferenceRequest.contains(from)) {
-								alConferenceRequest.add(from);
-							}
-							sb.setFrom(to);
-							sb.setTo(from);
-							sb.setType("1");
-							sb.setResult("0");
-							AppMainActivity.commEngine.acceptCall(sb);
-
-							String buddy = getUser(sb.getFrom(), sb.getTo());
-
-							if (!conferenceMembers.contains(buddy)) {
-								conferenceMembers.add(0, buddy);
-								buddySignall.put(buddy, sb);
-								// VideoCallScreen acalObj = (VideoCallScreen)
-								// objCallScreen;
-							}
-						} else {
-							rejectInComingCall(sb);
-							Toast.makeText(context,
-									sb.getFrom() + " call rejected.", 3000)
-									.show();
-						}
-					}
-
-					else {
-						final Object objCallScreen = SingleInstance.instanceTable
-								.get("callscreen");
-						if (objCallScreen == null) {
-							if (currentSessionid == null) {
-
-								String old_sessionid = null;
-								if(sb.getJoincall() != null && sb.getJoincall().equalsIgnoreCase("yes")) {
-									rejectInComingCall(sb);
-//									String query = "select * from recordtransactiondetails ORDER BY id DESC";
-//									ArrayList<RecordTransactionBean> mlist = DBAccess.getdbHeler().getcallhistorydetails(query);
-//									for (RecordTransactionBean transactionBean : mlist) {
-//										if (transactionBean.getSessionid().equalsIgnoreCase(sb.getSessionid())) {
-//											old_sessionid = transactionBean.getSessionid();
-//											break;
-//										}
-//									}
-								} else
-								if(old_sessionid == null) {
-									currentSessionid = sb.getSessionid();
-									isCallInitiate = true;
-									String buddy = getUser(sb.getFrom(), sb.getTo());
-
-								if (!conferenceMembers.contains(sb.getFrom())) {
-									CallDispatcher.conferenceMembers.add(sb
-											.getFrom());
-									buddySignall.put(buddy, sb);
-								}
-								if (!WebServiceReferences.contextTable
-										.containsKey("sicallalert")
-										&& LoginUser != null) {
-
-									Log.i("calltest",
-											"signBean.getBs_parentid() :"
-													+ sb.getBs_parentid());
-									// if (sb.getBs_parentid() != null) {
-									sb.setStartTime(getCurrentDateandTime());
-									// DBAccess.getdbHeler()
-									// .saveOrUpdateRecordtransactiondetails(
-									// sb);
-									// }
-
-									// if (isAutoAcceptEnabled(LoginUser,
-									// buddy)) {
-									// intiateAutoAccept(sb, buddy);
-									// } else {
-									// notifyIncomingCall(sb);
-									// }
-									notifyIncomingCall(sb);
-								} else {
-
-									}
-								} else {
-									Log.i("Join","reject Call");
-									rejectInComingCall(sb);
-								}
-							} else {
-								if (sb.getCallType().equalsIgnoreCase("AP")
-										|| sb.getCallType().equalsIgnoreCase(
-												"VP")) {
-									rejectInComingCall(sb);
-								} else {
-									sb.setFrom(to);
-									sb.setTo(from);
-									sb.setType("1");
-									sb.setResult("0");
-									AppMainActivity.commEngine.acceptCall(sb);
-									final String buddy = getUser(sb.getFrom(),
-											sb.getTo());
-									if (!conferenceMembers.contains(buddy)) {
-										conferenceMembers.add(0, buddy);
-										buddySignall.put(buddy, sb);
-									}
-									callQueue.addMsg(buddy);
-								}
-							}
-
-						} else if (objCallScreen instanceof AudioCallScreen) {
-
+					if(isCallignored) {
+						rejectInComingCall(sb);
+					} else {
+						// Incoming call
+						if (isCallInitiate
+								|| GSMCallisAccepted
+								|| SingleInstance.instanceTable
+								.containsKey("connection")) {
+							// rejectInComingCall(sb);
 							if (currentSessionid != null
-									&& currentSessionid.equals(sb
-											.getSessionid())) {
-								if (!alConferenceRequest.contains(from))
-									alConferenceRequest.add(from);
-
-								sb.setFrom(to);
-								sb.setTo(from);
-								sb.setType("1");
-								sb.setResult("0");
-								AppMainActivity.commEngine.acceptCall(sb);
-
-								String buddy = getUser(sb.getFrom(), sb.getTo());
-
-								if (!conferenceMembers.contains(buddy)) {
-									conferenceMembers.add(0, buddy);
-									buddySignall.put(buddy, sb);
-									AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
-									acalObj.UpdateConferenceMembers(buddy, true);
-								}
-							} else
-								rejectInComingCall(sb);
-
-						} else if (objCallScreen instanceof VideoCallScreen) {
-
-							if (currentSessionid != null
-									&& currentSessionid.equals(sb
-											.getSessionid())) {
+									&& currentSessionid.equals(sb.getSessionid())) {
 
 								if (!alConferenceRequest.contains(from)) {
 									alConferenceRequest.add(from);
@@ -2333,34 +2229,172 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								if (!conferenceMembers.contains(buddy)) {
 									conferenceMembers.add(0, buddy);
 									buddySignall.put(buddy, sb);
-									VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
-									acalObj.UpdateConferenceMembers(buddy, true);
+									// VideoCallScreen acalObj = (VideoCallScreen)
+									// objCallScreen;
 								}
 							} else {
 								rejectInComingCall(sb);
+								handlerForCall.post(new Runnable() {
+									@Override
+									public void run() {
+										Toast.makeText(context,
+												Buddyname(sb.getFrom()) + " call rejected.", Toast.LENGTH_SHORT)
+												.show();
+									}
+								});
+
 							}
+						} else {
+							final Object objCallScreen = SingleInstance.instanceTable
+									.get("callscreen");
+							if (objCallScreen == null) {
+								Log.i("AudioCall", "callscreen object null");
+								if (currentSessionid == null) {
 
-						} else if (objCallScreen instanceof AudioPagingSRWindow) {
-							if (currentSessionid != null
-									&& currentSessionid.equals(sb
-											.getSessionid())) {
+									String old_sessionid = null;
+									if (sb.getJoincall() != null && sb.getJoincall().equalsIgnoreCase("yes")) {
+										rejectInComingCall(sb);
+//									String query = "select * from recordtransactiondetails ORDER BY id DESC";
+//									ArrayList<RecordTransactionBean> mlist = DBAccess.getdbHeler().getcallhistorydetails(query);
+//									for (RecordTransactionBean transactionBean : mlist) {
+//										if (transactionBean.getSessionid().equalsIgnoreCase(sb.getSessionid())) {
+//											old_sessionid = transactionBean.getSessionid();
+//											break;
+//										}
+//									}
+									} else if (old_sessionid == null) {
+										currentSessionid = sb.getSessionid();
+										isCallInitiate = true;
+										String buddy = getUser(sb.getFrom(), sb.getTo());
 
-							} else {
-								rejectInComingCall(sb);
-							}
+										if (!conferenceMembers.contains(sb.getFrom())) {
+											CallDispatcher.conferenceMembers.add(sb
+													.getFrom());
+											buddySignall.put(buddy, sb);
+										}
+										if (!WebServiceReferences.contextTable
+												.containsKey("sicallalert")
+												&& LoginUser != null) {
 
-						} else if (objCallScreen instanceof VideoPagingSRWindow) {
+											Log.i("calltest",
+													"signBean.getBs_parentid() :"
+															+ sb.getBs_parentid());
+											// if (sb.getBs_parentid() != null) {
+											sb.setStartTime(getCurrentDateandTime());
+											// DBAccess.getdbHeler()
+											// .saveOrUpdateRecordtransactiondetails(
+											// sb);
+											// }
 
-							if (currentSessionid != null
-									&& currentSessionid.equals(sb
-											.getSessionid())) {
+											// if (isAutoAcceptEnabled(LoginUser,
+											// buddy)) {
+											// intiateAutoAccept(sb, buddy);
+											// } else {
+											// notifyIncomingCall(sb);
+											// }
+											notifyIncomingCall(sb);
+										} else {
 
-							} else {
-								rejectInComingCall(sb);
+										}
+									} else {
+										Log.i("Join", "reject Call");
+										rejectInComingCall(sb);
+									}
+								} else {
+									if (sb.getCallType().equalsIgnoreCase("AP")
+											|| sb.getCallType().equalsIgnoreCase(
+											"VP")) {
+										rejectInComingCall(sb);
+									} else {
+										sb.setFrom(to);
+										sb.setTo(from);
+										sb.setType("1");
+										sb.setResult("0");
+										AppMainActivity.commEngine.acceptCall(sb);
+										final String buddy = getUser(sb.getFrom(),
+												sb.getTo());
+										if (!conferenceMembers.contains(buddy)) {
+											conferenceMembers.add(0, buddy);
+											buddySignall.put(buddy, sb);
+										}
+										callQueue.addMsg(buddy);
+									}
+								}
+
+							} else if (objCallScreen instanceof AudioCallScreen) {
+								Log.i("AudioCall", "callscreen object AudioCallScreen");
+								if (currentSessionid != null
+										&& currentSessionid.equals(sb
+										.getSessionid())) {
+									if (!alConferenceRequest.contains(from))
+										alConferenceRequest.add(from);
+
+									sb.setFrom(to);
+									sb.setTo(from);
+									sb.setType("1");
+									sb.setResult("0");
+									AppMainActivity.commEngine.acceptCall(sb);
+
+									String buddy = getUser(sb.getFrom(), sb.getTo());
+
+									if (!conferenceMembers.contains(buddy)) {
+										conferenceMembers.add(0, buddy);
+										buddySignall.put(buddy, sb);
+										AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
+										acalObj.UpdateConferenceMembers(buddy, true);
+									}
+								} else
+									rejectInComingCall(sb);
+
+							} else if (objCallScreen instanceof VideoCallScreen) {
+								Log.i("AudioCall", "callscreen object VideoCallScreen");
+								if (currentSessionid != null
+										&& currentSessionid.equals(sb
+										.getSessionid())) {
+
+									if (!alConferenceRequest.contains(from)) {
+										alConferenceRequest.add(from);
+									}
+									sb.setFrom(to);
+									sb.setTo(from);
+									sb.setType("1");
+									sb.setResult("0");
+									AppMainActivity.commEngine.acceptCall(sb);
+
+									String buddy = getUser(sb.getFrom(), sb.getTo());
+
+									if (!conferenceMembers.contains(buddy)) {
+										conferenceMembers.add(0, buddy);
+										buddySignall.put(buddy, sb);
+										VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
+										acalObj.UpdateConferenceMembers(buddy, true);
+									}
+								} else {
+									rejectInComingCall(sb);
+								}
+
+							} else if (objCallScreen instanceof AudioPagingSRWindow) {
+								if (currentSessionid != null
+										&& currentSessionid.equals(sb
+										.getSessionid())) {
+
+								} else {
+									rejectInComingCall(sb);
+								}
+
+							} else if (objCallScreen instanceof VideoPagingSRWindow) {
+
+								if (currentSessionid != null
+										&& currentSessionid.equals(sb
+										.getSessionid())) {
+
+								} else {
+									rejectInComingCall(sb);
+								}
+
 							}
 
 						}
-
 					}
 
 				} else if (sb.getType().equals("15")) {
@@ -2372,7 +2406,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								Toast.makeText(
 										context,
 										"Unable to Receive Media from "
-												+ sb.getFrom(), 3000).show();
+												+ Buddyname(sb.getFrom()), Toast.LENGTH_LONG).show();
 								final Object objCallScreen = SingleInstance.instanceTable
 										.get("callscreen");
 								if (objCallScreen != null) {
@@ -2396,36 +2430,131 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 				else if (sb.getType().equals("3")) {
 					// Hang up
-
+					Log.i("callscreenfinish", "calldispatcher type=3");
 					// if (CallDispatcher.sb.getBs_parentid() != null) {
-					CallDispatcher.sb.setEndTime(getCurrentDateandTime());
+					SingleInstance.mainContext.runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+							} else {
+								AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
+							}
+							ImageView min_outcall = (ImageView) SingleInstance.mainContext.findViewById(R.id.min_outcall);
+							min_outcall.setVisibility(View.GONE);
+							ImageView min_incall = (ImageView) SingleInstance.mainContext.findViewById(R.id.min_incall);
+							min_incall.setVisibility(View.GONE);
+							RelativeLayout audio_minimize = (RelativeLayout) SingleInstance.mainContext.findViewById(R.id.audio_minimize);
+							audio_minimize.setVisibility(View.GONE);
+							RelativeLayout video_minimize = (RelativeLayout) SingleInstance.mainContext.findViewById(R.id.video_minimize);
+							video_minimize.setVisibility(View.GONE);
+						}
+					});
+
+
+
 					Object objCallScreen = SingleInstance.instanceTable
 							.get("callscreen");
 					if (objCallScreen == null) {
-						CallDispatcher.sb.setCallDuration("0:0:0");
-					}else
+						CallDispatcher.sb.setStartTime(getCurrentDateandTime());
+						CallDispatcher.sb.setCallstatus("missedcall");
+					} else {
+						CallDispatcher.sb.setCallstatus("callattended");
+					}
+
+					if(CallDispatcher.sb.getStartTime() == null){
+						CallDispatcher.sb.setStartTime(getCurrentDateandTime());
+					}
+
+					CallDispatcher.sb.setEndTime(getCurrentDateandTime());
+
 					CallDispatcher.sb
 							.setCallDuration(SingleInstance.mainContext
 									.getCallDuration(
 											CallDispatcher.sb.getStartTime(),
 											CallDispatcher.sb.getEndTime()));
-					Log.d("Test","TimeDuration inside callDispatcher"+CallDispatcher.sb.getStartTime()+""+CallDispatcher.sb.getEndTime());
-					
+					Log.d("Test", "TimeDuration inside callDispatcher" + CallDispatcher.sb.getStartTime() + "" + CallDispatcher.sb.getEndTime());
 
-					DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
-							CallDispatcher.sb);
+//For Callhistory host and participant name entry
+					//Start
+					CallDispatcher.sb.setHost_name(CallDispatcher.sb.getHost());
+					String participant=null;
+					if(CallDispatcher.conferenceMembers!=null && CallDispatcher.conferenceMembers.size()>0){
+						for(String name:CallDispatcher.conferenceMembers){
+							if(!name.equalsIgnoreCase(CallDispatcher.sb.getHost())){
+								if(participant==null){
+									participant=name;
+								}else{
+									participant=participant+","+name;
+								}
+
+							}
+						}
+					}
+					if(participant!=null){
+						CallDispatcher.sb.setParticipant_name(participant);
+					}
+					//end
+
+//					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+//					DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
+//							CallDispatcher.sb);
 					// }
 					if (conferenceMembers.size() == 1) {
-						handlerForCall.post(new Runnable() {
-							@Override
-							public void run() {
-								showCallHistory();
+						isCallInitiate=false;
+						Log.i("callscreenfinish","conferenceMembers.size()==1 name-->"+conferenceMembers.get(0));
+						Log.i("callscreenfinish", "sb.name-->" + sb.getFrom() + " sb.getTo() :" + sb.getTo());
+
+						DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+						DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
+								CallDispatcher.sb);
+						SingleInstance.mainContext.notifyUI();
+
+						if(conferenceMembers.get(0) != null && conferenceMembers.get(0).equalsIgnoreCase(sb.getFrom())) {
+
+							if (SingleInstance.instanceTable.containsKey("alertscreen")) {
+								inCommingCallAlert inCommingcallAlert = (inCommingCallAlert)SingleInstance.instanceTable.get("alertscreen");
+								if(inCommingcallAlert != null) {
+									inCommingcallAlert.removeInstance();
+								}
 							}
-						});
+
+							FragmentManager fm =
+									AppReference.mainContext.getSupportFragmentManager();
+							FragmentTransaction ft = fm.beginTransaction();
+							ContactsFragment contactsFragment = ContactsFragment
+									.getInstance(context);
+							ft.replace(R.id.activity_main_content_fragment,
+									contactsFragment);
+							ft.commitAllowingStateLoss();
+
+							if (!isCallignored) {
+								if(CallDispatcher.sb.getCallstatus().equalsIgnoreCase("callattended")) {
+									handlerForCall.post(new Runnable() {
+										@Override
+										public void run() {
+											showCallHistory(CallDispatcher.sb.getSessionid(), CallDispatcher.sb.getCallType());
+										}
+									});
+								}
+							} else {
+								isCallignored =false;
+							}
+						}
+
+						if(conferenceMembers.get(0) != null && sb.getFrom() != null && conferenceMembers.get(0).equalsIgnoreCase(sb.getFrom()) ) {
+							if (isCallignored) {
+								isCallignored = false;
+							}
+						} else if(conferenceMembers.get(0) != null && sb.getTo() != null && conferenceMembers.get(0).equalsIgnoreCase(sb.getTo())) {
+							if (isCallignored) {
+								isCallignored = false;
+							}
+						}
 					}
 					if (SingleInstance.instanceTable
 							.containsKey("callscreen")
-							|| WebServiceReferences.contextTable
+							|| SingleInstance.instanceTable
 									.containsKey("connection")
 							|| isIncomingAlert) {
 						Object objCallScreen1 = SingleInstance.instanceTable
@@ -2439,7 +2568,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						}
 
 						if (sb.getResult() != null) {
-							if (WebServiceReferences.contextTable
+							if (SingleInstance.instanceTable
 									.containsKey("connection")
 									&& LoginUser.equals(callinitiator)) {
 
@@ -2474,15 +2603,15 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								public void run() {
 									// TODO Auto-generated method stub
 									if (LoginUser.equals(callinitiator)) {
-										getofflineCallResponse(sb.getFrom(),
-												"No Answer");
+//										getofflineCallResponse(sb.getFrom(),
+//												"No Answer");
 
 
-										NoAnswer(sb.getFrom());
-//										closeDialWindow(
-//												"No Answer from "
-//														+ sb.getFrom(), "0",
-//												"3");
+//										NoAnswer(sb.getFrom());
+										closeDialWindow(
+												"No Answer from "
+														+ sb.getFrom(), "0",
+												"3");
 									}
 
 									// have to call no Answer avatar here
@@ -2507,7 +2636,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									buddySignall.clear();
 									currentSessionid = null;
 									isCallInitiate = false;
-									if (!WebServiceReferences.contextTable
+									if (!SingleInstance.instanceTable
 											.containsKey("connection")) {
 										if (WebServiceReferences.missedcallCount
 												.containsKey(sb.getFrom())) {
@@ -2523,12 +2652,34 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 //										DBAccess.getdbHeler()
 //												.saveOrUpdateRecordtransactiondetails(
 //														sb);
-										showMissedcallAlert(
-												sb,
-												SipNotificationListener
-														.getCurrentContext(),
-												WebServiceReferences.missedcallCount
-														.get(sb.getFrom()));
+										if(!isCallignored) {
+//											isCallignored=true;
+											CallDispatcher.sb.setStartTime(getCurrentDateandTime());
+											handlerForCall.post(new Runnable() {
+												@Override
+												public void run() {
+//													showCallHistory(CallDispatcher.sb.getSessionid(), CallDispatcher.sb.getCallType());
+
+													Intent intentComponent = new Intent(context,
+															CallHistoryActivity.class);
+													intentComponent.putExtra("buddyname",
+															CallDispatcher.sb.getFrom());
+													intentComponent.putExtra("isDelete", true);
+													if(CallDispatcher.sb.getCallType().equalsIgnoreCase("VC"))
+														intentComponent.putExtra("audiocall",false);
+													intentComponent.putExtra("individual", true);
+													intentComponent.putExtra("sessionid",
+															CallDispatcher.sb.getSessionid());
+													context.startActivity(intentComponent);
+												}
+											});
+											showMissedcallAlert(
+													sb,
+													SipNotificationListener
+															.getCurrentContext(),
+													WebServiceReferences.missedcallCount
+															.get(sb.getFrom()));
+										}
 									}
 									isIncomingCall = false;
 								}
@@ -2578,17 +2729,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							acalObj.UpdateConferenceMembers(from, false);
 						}
 
-						handlerForCall.post(new Runnable() {
 
-							@Override
-							public void run() {
-								// TODO Auto-generated method stub
-								if (WebServiceReferences.contextTable
-										.containsKey("connection"))
-									((CallConnectingScreen) WebServiceReferences.contextTable
-											.get("connection")).finish();
-							}
-						});
 						try {
 
 							final String signalId = sb.getSignalid();
@@ -2621,8 +2762,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								public void run() {
 									try {
 
-										Toast.makeText(context, sb.getFrom()+" Call Dropped",
-												3000).show();
+										Toast.makeText(context, Buddyname(sb.getFrom()) + " Call Dropped",
+												Toast.LENGTH_LONG).show();
 									} catch (Exception e) {
 										// TODO: handle exception
 									}
@@ -2667,9 +2808,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									@Override
 									public void run() {
 										// TODO Auto-generated method stub
-										if (WebServiceReferences.contextTable
+										if (SingleInstance.instanceTable
 												.containsKey("connection"))
-											((CallConnectingScreen) WebServiceReferences.contextTable
+											((CallConnectingScreen) SingleInstance.instanceTable
 													.get("connection"))
 													.notifyState("Connecting");
 									}
@@ -2695,20 +2836,28 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 											groupChatActivity.finish();
 										}
 
-										if (WebServiceReferences.contextTable.containsKey("connection")) {
-											CallConnectingScreen connectingScreen = (CallConnectingScreen)WebServiceReferences.contextTable.get("connection");
-											connectingScreen.finish();
-										}
-
 										if (WebServiceReferences.contextTable.containsKey("ordermenuactivity")) {
 											CallHistoryActivity callHistoryActivity = (CallHistoryActivity) WebServiceReferences.contextTable.get("ordermenuactivity");
 											callHistoryActivity.finish();
 										}
 
-										if (SingleInstance.contextTable.containsKey("groupchat")) {
-											GroupChatActivity groupChatActivity = (GroupChatActivity) SingleInstance.contextTable.get("groupchat");
-											groupChatActivity.finish();
+										AppMainActivity appMainActivity = (AppMainActivity) SingleInstance.contextTable
+												.get("MAIN");
+										appMainActivity.closingActivity();
+
+										if (SingleInstance.instanceTable.containsKey("connection")) {
+											CallConnectingScreen connectingScreen = (CallConnectingScreen)SingleInstance.instanceTable.get("connection");
+											connectingScreen.removeInstance();
 										}
+
+										if (SingleInstance.instanceTable.containsKey("alertscreen")) {
+											inCommingCallAlert inCommingcallAlert = (inCommingCallAlert)SingleInstance.instanceTable.get("alertscreen");
+											inCommingcallAlert.removeInstance();
+										}
+
+										CallDispatcher.conferenceMember_Details = new HashMap<String,SignalingBean>();
+										sb.setRunningcallstate("Connected");
+										CallDispatcher.conferenceMember_Details.put(from, (SignalingBean) sb.clone());
 
 										FragmentManager fm =
 												AppReference.mainContext.getSupportFragmentManager();
@@ -2720,6 +2869,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 //										i.putExtra("signal", bundle);
 										bundle.putString("buddy", from);
 										bundle.putString("receive", "false");
+										bundle.putString("host",CallDispatcher.LoginUser);
 										audioCallScreen.setArguments(bundle);
 										ft.replace(R.id.activity_main_content_fragment,
 												audioCallScreen);
@@ -2756,16 +2906,28 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 //										i.putExtra("buddy", from);
 //										context.startActivity(i);
 
+										AppMainActivity appMainActivity = (AppMainActivity) SingleInstance.contextTable
+												.get("MAIN");
+										appMainActivity.closingActivity();
 										if (SingleInstance.contextTable.containsKey("groupchat"))
 										{
 											GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
 											groupChatActivity.finish();
 										}
 
-										if (WebServiceReferences.contextTable.containsKey("connection")) {
-											CallConnectingScreen connectingScreen = (CallConnectingScreen)WebServiceReferences.contextTable.get("connection");
-											connectingScreen.finish();
+										if (SingleInstance.instanceTable.containsKey("connection")) {
+											CallConnectingScreen connectingScreen = (CallConnectingScreen)SingleInstance.instanceTable.get("connection");
+											connectingScreen.removeInstance();
 										}
+
+										if (SingleInstance.instanceTable.containsKey("alertscreen")) {
+											inCommingCallAlert inCommingcallAlert = (inCommingCallAlert)SingleInstance.instanceTable.get("alertscreen");
+											inCommingcallAlert.removeInstance();
+										}
+
+										CallDispatcher.conferenceMember_Details = new HashMap<String,SignalingBean>();
+										sb.setRunningcallstate("Connected");
+										CallDispatcher.conferenceMember_Details.put(from, (SignalingBean) sb.clone());
 
 										FragmentManager fm =
 												AppReference.mainContext.getSupportFragmentManager();
@@ -2777,6 +2939,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 												sb.getSessionid());
 										bundle.putString("buddyName", from);
 										bundle.putString("receive", "false");
+										bundle.putString("host",CallDispatcher.LoginUser);
 //										i.putExtras(bundle);
 									//	bundle.putString("buddy", from);
 										videoCallScreen.setArguments(bundle);
@@ -2807,11 +2970,6 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 										ScreenSharingFragment ssFragment = ScreenSharingFragment
 												.newInstance(context);
 										ssFragment.startProjection();
-										if (WebServiceReferences.contextTable
-												.containsKey("connection"))
-											((CallConnectingScreen) WebServiceReferences.contextTable
-													.get("connection"))
-													.finish();
 
 										Log.i("ssharing123",
 												"sender view commited");
@@ -2849,6 +3007,10 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 										sb.setType("2");
 										sb.setFrom(to);
 										sb.setTo(from);
+
+										sb.setRunningcallstate("Connected");
+										CallDispatcher.conferenceMember_Details.put(from, (SignalingBean) sb.clone());
+
 										AppMainActivity.commEngine
 												.acceptCall(sb);
 										Log.e("test",
@@ -2875,6 +3037,10 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									sb.setType("2");
 									sb.setFrom(to);
 									sb.setTo(from);
+
+									sb.setRunningcallstate("Connected");
+									CallDispatcher.conferenceMember_Details.put(from, (SignalingBean) sb.clone());
+
 									AppMainActivity.commEngine.acceptCall(sb);
 									Log.e("test",
 											"Comes to Accept call Open new audio call window 3");
@@ -2943,6 +3109,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 				} else if (sb.getType().equals("1")
 						&& sb.getResult().equals("1")) {
+					Log.i("callscreenfinish","calldispatcher type=1 and result=1");
 					stopRingTone();
 					CallDispatcher.sb.setStartTime(getCurrentDateandTime());
 					handlerForCall.post(new Runnable() {
@@ -2969,6 +3136,30 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									.getCallDuration(
 											CallDispatcher.sb.getStartTime(),
 											CallDispatcher.sb.getEndTime()));
+					CallDispatcher.sb.setCallstatus("callattended");
+
+					//For Callhistory host and participant name entry
+					//Start
+					CallDispatcher.sb.setHost_name(CallDispatcher.sb.getHost());
+					String participant=null;
+					if(CallDispatcher.conferenceMembers!=null && CallDispatcher.conferenceMembers.size()>0){
+						for(String name:CallDispatcher.conferenceMembers){
+							if(!name.equalsIgnoreCase(CallDispatcher.sb.getHost())){
+								if(participant==null){
+									participant=name;
+								}else{
+									participant=participant+","+name;
+								}
+
+							}
+						}
+					}
+					if(participant!=null){
+						CallDispatcher.sb.setParticipant_name(participant);
+					}
+					//end
+
+					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 					DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
 							CallDispatcher.sb);
 					// }
@@ -2977,7 +3168,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					handlerForCall.post(new Runnable() {
 						@Override
 						public void run() {
-							showCallHistory();
+							showCallHistory(CallDispatcher.sb.getSessionid(),CallDispatcher.sb.getCallType());
 						}
 					});
 
@@ -2992,10 +3183,10 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						if (objCallScreen != null) {
 							if (objCallScreen instanceof AudioCallScreen) {
 								AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
-								acalObj.receiveHangUpx();
+								acalObj.receiveHangUpx(sb);
 							} else if (objCallScreen instanceof VideoCallScreen) {
 								VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
-								acalObj.receiveHAngUpx();
+								acalObj.receiveHAngUpx(sb);
 
 							} else if (objCallScreen instanceof AudioPagingSRWindow) {
 								AudioPagingSRWindow acalObj = (AudioPagingSRWindow) objCallScreen;
@@ -3034,10 +3225,35 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					}
 					Log.i("call","end "+AppMainActivity.connectedbuddies);
 					if (AppMainActivity.connectedbuddies == null) {
-						if(WebServiceReferences.contextTable.containsKey("connection")) {
-							CallConnectingScreen screen = (CallConnectingScreen) WebServiceReferences.contextTable
-									.get("connection");
-							screen.finish();
+						if(conferenceMembers != null) {
+							Log.i("callscreenfinish", "conferenceMembers size" + conferenceMembers.size());
+
+							if (conferenceMembers.size() == 1) {
+								isCallInitiate = false;
+								Log.i("callscreenfinish", "1 conferenceMembers.size()==1 name-->" + conferenceMembers.get(0));
+								Log.i("callscreenfinish", "1 sb.name-->" + sb.getFrom());
+								if (conferenceMembers.get(0).equalsIgnoreCase(sb.getFrom())) {
+									Log.i("callscreenfinish", "1.1 sb.name-->" + sb.getFrom());
+
+									if (SingleInstance.instanceTable.containsKey("alertscreen")) {
+										inCommingCallAlert inCommingcallAlert = (inCommingCallAlert) SingleInstance.instanceTable.get("alertscreen");
+										if (inCommingcallAlert != null) {
+											inCommingcallAlert.removeInstance();
+										}
+									}
+
+									FragmentManager fm =
+											AppReference.mainContext.getSupportFragmentManager();
+									FragmentTransaction ft = fm.beginTransaction();
+									ContactsFragment contactsFragment = ContactsFragment
+											.getInstance(context);
+									ft.replace(R.id.activity_main_content_fragment,
+											contactsFragment);
+									ft.commitAllowingStateLoss();
+								}
+							} else if (conferenceMembers.size() == 0) {
+
+							}
 						}
 					}
 
@@ -3054,9 +3270,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						@Override
 						public void run() {
 							// TODO Auto-generated method stub
-							if (WebServiceReferences.contextTable
+							if (SingleInstance.instanceTable
 									.containsKey("connection"))
-								((CallConnectingScreen) WebServiceReferences.contextTable
+								((CallConnectingScreen) SingleInstance.instanceTable
 										.get("connection"))
 										.notifyState("Ringing");
 						}
@@ -3067,9 +3283,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				else if (sb.getType().equals("2")) {
 					Log.d("test",
 							"type 2 conf size " + conferenceMembers.size());
-					if (WebServiceReferences.contextTable
+					if (SingleInstance.instanceTable
 							.containsKey("connection")) {
-						((CallConnectingScreen) WebServiceReferences.contextTable
+						((CallConnectingScreen) SingleInstance.instanceTable
 								.get("connection")).notifyType2Received();
 					} else {
 						String buddyx = getUser(sb.getFrom(), sb.getTo());
@@ -3120,9 +3336,33 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									.getCallDuration(
 											CallDispatcher.sb.getStartTime(),
 											CallDispatcher.sb.getEndTime()));
+
+//For Callhistory host and participant name entry
+					//Start
+					CallDispatcher.sb.setHost_name(CallDispatcher.sb.getHost());
+					String participant=null;
+					if(CallDispatcher.conferenceMembers!=null && CallDispatcher.conferenceMembers.size()>0){
+						for(String name:CallDispatcher.conferenceMembers){
+							if(!name.equalsIgnoreCase(CallDispatcher.sb.getHost())){
+								if(participant==null){
+									participant=name;
+								}else{
+									participant=participant+","+name;
+								}
+
+							}
+						}
+					}
+					if(participant!=null){
+						CallDispatcher.sb.setParticipant_name(participant);
+					}
+					//end
+
+					CallDispatcher.sb.setCallstatus("callattended");
+					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 					DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
 							CallDispatcher.sb);
-					NoAnswer(sb.getTo());
+					NoAnswer(sb.getTo(),sb.getCallType());
 
 //					closeDialWindow("No Answer from " + sb.getTo(), "", "");
 					accepted_users.add(sb.getTo());
@@ -3158,10 +3398,10 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						if (objCallScreen != null) {
 							if (objCallScreen instanceof AudioCallScreen) {
 								AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
-								acalObj.receiveHangUpx();
+								acalObj.receiveHangUpx(sb);
 							} else if (objCallScreen instanceof VideoCallScreen) {
 								VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
-								acalObj.receiveHAngUpx();
+								acalObj.receiveHAngUpx(sb);
 
 							} else if (objCallScreen instanceof AudioPagingSRWindow) {
 								AudioPagingSRWindow acalObj = (AudioPagingSRWindow) objCallScreen;
@@ -3214,10 +3454,10 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						if (objCallScreen != null) {
 							if (objCallScreen instanceof AudioCallScreen) {
 								AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
-								acalObj.receiveHangUpx();
+								acalObj.receiveHangUpx(sb);
 							} else if (objCallScreen instanceof VideoCallScreen) {
 								VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
-								acalObj.receiveHAngUpx();
+								acalObj.receiveHAngUpx(sb);
 
 							} else if (objCallScreen instanceof AudioPagingSRWindow) {
 								AudioPagingSRWindow acalObj = (AudioPagingSRWindow) objCallScreen;
@@ -3575,13 +3815,14 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 		}
 
 	}
-	private void NoAnswer(final String Username){
+	private void NoAnswer(final String Username, final String Calltype){
 
 
 		noanswerhandler.post(new Runnable() {
 
 			@Override
 			public void run() {
+
 				Context context = null;
 				if (SingleInstance.contextTable.get("groupchat") != null) {
 					context = SingleInstance.contextTable.get("groupchat");
@@ -3598,6 +3839,34 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				TextView do_lay = (TextView) dialog.findViewById(R.id.do_lay);
 				TextView username = (TextView)dialog.findViewById(R.id.username);
 				ImageView profile_pic = (ImageView)dialog. findViewById(R.id.riv1);
+				TextView send_messagelay = (TextView)dialog.findViewById(R.id.send_messagelay);
+				TextView callback_messagelay = (TextView)dialog.findViewById(R.id.callback_messagelay);
+
+				callback_messagelay.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						if(Calltype.equalsIgnoreCase("AC")){
+							Log.d("string", "Calltype"+Calltype);
+							MakeCall(1, Username, SingleInstance.mainContext);
+						}
+						else if(Calltype.equalsIgnoreCase("VC")) {
+							MakeCall(2, Username,
+									SingleInstance.mainContext);
+						}
+						dialog.dismiss();
+
+					}
+				});
+
+				send_messagelay.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+
+
+					}
+				});
+
+
 				ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(Username);
 				if(bean.getFirstname()!= null && bean.getLastname()!= null){
 					username.setText(bean.getFirstname()+ " "+bean.getLastname());
@@ -3613,6 +3882,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					}
 
 				}
+
 
 
 
@@ -3680,19 +3950,35 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				public void run() {
 					// TODO Auto-generated method stub
 
-					showAlert("", ErrMsg);
-					if (WebServiceReferences.contextTable
+//					showAlert("", ErrMsg);
+					Log.i("calltest", "showBusyMessage" +SingleInstance.instanceTable
+							.containsKey("connection") +SingleInstance.instanceTable.containsKey("callscreen")+issecMadeConference);
+					if (SingleInstance.instanceTable
 							.containsKey("connection")) {
-						if (!issecMadeConference) {
-							CallConnectingScreen connect = (CallConnectingScreen) WebServiceReferences.contextTable
-									.get("connection");
-							connect.finish();
-						} else if (issecMadeConference
+						if (!SingleInstance.instanceTable.containsKey("callscreen")) {
+							if (!issecMadeConference) {
+								((CallConnectingScreen) SingleInstance.instanceTable
+										.get("connection")).finishConnectingScreen();
+							}
+//							else if (issecMadeConference
+//									&& CallDispatcher.contConferencemembers
+//									.size() == 0) {
+//								if(CallDispatcher.sb != null && CallDispatcher.sb.getParticipants() != null) {
+//									String mam_bers = CallDispatcher.sb.getParticipants();
+//									String[] mam_bers_array = mam_bers.split("'");
+//									if (mam_bers_array.length == 1 && !SingleInstance.instanceTable.containsKey("callscreen")) {
+//										((CallConnectingScreen) SingleInstance.instanceTable
+//												.get("connection")).finishConnectingScreen();
+//									}
+//								}
+//							}
+						}
+					} else if (issecMadeConference
 								&& CallDispatcher.contConferencemembers
 										.size() == 0) {
-							CallConnectingScreen connect = (CallConnectingScreen) WebServiceReferences.contextTable
-									.get("connection");
-							connect.finish();
+						if (!SingleInstance.instanceTable.containsKey("callscreen")) {
+							((CallConnectingScreen) SingleInstance.instanceTable
+									.get("connection")).finishConnectingScreen();
 						}
 					}
 
@@ -5369,9 +5655,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 								}
 
-								Toast.makeText(cntxt,
-										server_response.getText(),
-										Toast.LENGTH_LONG).show();
+//								Toast.makeText(cntxt,
+//										server_response.getText(),
+//										Toast.LENGTH_LONG).show();
 
 							} else {
 								Toast.makeText(cntxt,
@@ -8750,6 +9036,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						descriptor.getStartOffset(), descriptor.getLength());
 				descriptor.close();
 				SingleInstance.mainContext.player.setLooping(true);
+				SingleInstance.mainContext.player.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
 				SingleInstance.mainContext.player.prepare();
 				SingleInstance.mainContext.player.start();
 			}
@@ -8969,7 +9256,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 		Log.i("SSID", "New SSID:" + wifiInfo.getSSID());
 		Log.i("SSID", "network info isconnected:" + networkInfo.isConnected());
 
-		if (ssid != null) {
+		if (ssid != null && wifiInfo != null) {
 			if (!ssid.equals(wifiInfo.getSSID()) && networkInfo.isConnected()) {
 				ssid = wifiInfo.getSSID();
 				// LoginPageFragment loginPageFragment = LoginPageFragment
@@ -10009,9 +10296,9 @@ private TrustManager[] get_trust_mgr() {
 						quickActionFragment.cancelDialog();
 						quickActionFragment.showToast();
 					}
-					if (WebServiceReferences.contextTable
+					if (SingleInstance.instanceTable
 							.containsKey("connection"))
-						((CallConnectingScreen) WebServiceReferences.contextTable
+						((CallConnectingScreen) SingleInstance.instanceTable
 								.get("connection"))
 								.showWifiStateChangedAlert("Internet Connection lost,can not continue this call");
 					// if (WebServiceReferences.contextTable
@@ -10678,9 +10965,9 @@ private TrustManager[] get_trust_mgr() {
 		fileDownloader = null;
 	}
 
-	public void notifyGSMCallAcceted() {
+	public void notifyGSMCallAcceted(boolean accepted) {
 		isCallInitiate = false;
-		GSMCallisAccepted = false;
+		GSMCallisAccepted = true;
 		if (WebServiceReferences.contextTable.containsKey("multimediautils"))
 			((MultimediaUtils) WebServiceReferences.contextTable
 					.get("multimediautils")).notifyGSMCallAccepted();
@@ -10712,8 +10999,8 @@ private TrustManager[] get_trust_mgr() {
 
 			}
 		}
-		if (WebServiceReferences.contextTable.containsKey("connection"))
-			((CallConnectingScreen) WebServiceReferences.contextTable
+		if (SingleInstance.instanceTable.containsKey("connection"))
+			((CallConnectingScreen) SingleInstance.instanceTable
 					.get("connection")).HangupCall();
 
 		// if (WebServiceReferences.contextTable.containsKey("sipcallscreen")) {
@@ -10953,7 +11240,7 @@ private TrustManager[] get_trust_mgr() {
 	 * To upload files using webservice 
 	 */
 	public void uploadFile(String username, String password,String componenttype,
-			String filename, String contents,String componentpath,Context context1)
+			String filename, String contents,String componentpath,Object context1)
 	{
         Log.i("FileUpload", "Inside CallDisp_UploadFile---> " +componentpath);
 
@@ -11237,7 +11524,16 @@ private TrustManager[] get_trust_mgr() {
 			sbConf.setTopublicip(bib.getExternalipaddress());
 			sbConf.setTolocalip(bib.getLocalipaddress());
 			sbConf.setToSignalPort(bib.getSignalingPort());
-
+			sbConf.setChatid(CallDispatcher.LoginUser);
+			sbConf.setHost(CallDispatcher.LoginUser);
+			String participant=null;
+			for(String temp:CallDispatcher.conferenceMembers){
+				if(participant==null)
+					participant=temp;
+				else
+					participant=participant+","+temp;
+			}
+			sbConf.setParticipants(participant + "," + selectedBuddy);
 			AppMainActivity.commEngine.makeConferenceCall(sbConf);
 
 		} catch (Exception e) {
@@ -11379,10 +11675,47 @@ private TrustManager[] get_trust_mgr() {
 							// signBean);
 							// }
 							//
-							Intent intent = new Intent(context,
-									inCommingCallAlert.class);
-							intent.putExtra("bean", signBean);
-							context.startActivity(intent);
+							Intent intent = new Intent(SingleInstance.mainContext, NotificationReceiver.class);
+							PendingIntent pIntent = PendingIntent.getActivity(SingleInstance.mainContext, (int) System.currentTimeMillis(), intent, 0);
+							Notification n  = new Notification.Builder(SingleInstance.mainContext)
+									.setContentTitle(" Call from " + signBean.getFrom())
+									.setSmallIcon(R.drawable.logo_snazmed)
+									.setContentIntent(pIntent)
+									.setAutoCancel(true).build();
+
+
+							NotificationManager notificationManager =
+									(NotificationManager) SingleInstance.mainContext.getSystemService(SingleInstance.mainContext.NOTIFICATION_SERVICE);
+
+							notificationManager.notify(0, n);
+							AppMainActivity appMainActivity=(AppMainActivity) SingleInstance.contextTable
+									.get("MAIN");
+							appMainActivity.closingActivity();
+
+							checkandcloseDialog();
+
+							if( SingleInstance.instanceTable.containsKey("roundingfragment")) {
+								RoundingFragment roundingFragment=(RoundingFragment)SingleInstance.instanceTable.get("roundingfragment");
+								if(roundingFragment!= null){
+									roundingFragment.checkandcloseDialog();
+								}
+							}
+
+							FragmentManager fm =
+									AppReference.mainContext.getSupportFragmentManager();
+							FragmentTransaction ft = fm.beginTransaction();
+							inCommingCallAlert incommingCallAlert = inCommingCallAlert
+									.getInstance(context);
+							Bundle bundle = new Bundle();
+							bundle.putSerializable("bean", signBean);
+							incommingCallAlert.setArguments(bundle);
+							ft.replace(R.id.activity_main_content_fragment, incommingCallAlert);
+							ft.commitAllowingStateLoss();
+
+//							Intent intent = new Intent(context,
+//									inCommingCallAlert.class);
+//							intent.putExtra("bean", signBean);
+//							context.startActivity(intent);
 							Log.i("call123", "incoming call3");
 						}
 						Log.i("call123", "incoming call");
@@ -11404,7 +11737,7 @@ private TrustManager[] get_trust_mgr() {
 				public void run() {
 					// TODO Auto-generated method stub
 
-					if (WebServiceReferences.contextTable
+					if (SingleInstance.contextTable
 							.containsKey("IncomingCallAlert")) {
 
 						isCallInitiate = false;
@@ -11414,9 +11747,17 @@ private TrustManager[] get_trust_mgr() {
 						rejectInComingCall(signBean);
 						stopRingTone();
 						currentSessionid = null;
-						inCommingCallAlert ICA = (inCommingCallAlert) WebServiceReferences.contextTable
-								.get("IncomingCallAlert");
-						ICA.finish();
+//						inCommingCallAlert ICA = (inCommingCallAlert) SingleInstance.contextTable
+//								.get("IncomingCallAlert");
+//						ICA.finish();
+						FragmentManager fm =
+								AppReference.mainContext.getSupportFragmentManager();
+						FragmentTransaction ft = fm.beginTransaction();
+						ContactsFragment contactsFragment = ContactsFragment
+								.getInstance(context);
+						ft.replace(R.id.activity_main_content_fragment,
+								contactsFragment);
+						ft.commitAllowingStateLoss();
 						CallDispatcher.conferenceMembers.clear();
 						CallDispatcher.buddySignall.clear();
 					}
@@ -11451,13 +11792,23 @@ private TrustManager[] get_trust_mgr() {
 			public void run() {
 				// TODO Auto-generated method stub
 				try {
-					if (WebServiceReferences.contextTable
+					if (SingleInstance.instanceTable
 							.containsKey("alertscreen")) {
-						inCommingCallAlert alert = (inCommingCallAlert) WebServiceReferences.contextTable
-								.get("alertscreen");
-						alert.finishactivity();
+//						inCommingCallAlert alert = (inCommingCallAlert) SingleInstance.contextTable
+//								.get("alertscreen");
+//						alert.finishactivity();
+						FragmentManager fm =
+								AppReference.mainContext.getSupportFragmentManager();
+						FragmentTransaction ft = fm.beginTransaction();
+						ContactsFragment contactsFragment = ContactsFragment
+								.getInstance(context);
+						ft.replace(R.id.activity_main_content_fragment,
+								contactsFragment);
+						ft.commitAllowingStateLoss();
 
 					}
+					ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(sbean.getFrom());
+					String fullname=bean.getFirstname()+" "+bean.getLastname();
 					if (mdialog != null) {
 
 						if (mdialog.isShowing())
@@ -11466,7 +11817,7 @@ private TrustManager[] get_trust_mgr() {
 						mdialog = new AlertDialog.Builder(context).create();
 
 						mdialog.setMessage("(" + Integer.toString(count) + ")"
-								+ " missed call from " + sbean.getFrom());
+								+ " missed call from " + fullname);
 						mdialog.setCancelable(true);
 						mdialog.setButton("OK",
 								new DialogInterface.OnClickListener() {
@@ -11478,7 +11829,7 @@ private TrustManager[] get_trust_mgr() {
 												.containsKey(sbean.getFrom()))
 											WebServiceReferences.missedcallCount
 													.remove(sbean.getFrom());
-
+										isCallignored = false;
 										mdialog.cancel();
 										mdialog = null;
 									}
@@ -11489,7 +11840,7 @@ private TrustManager[] get_trust_mgr() {
 						mdialog = new AlertDialog.Builder(context).create();
 
 						mdialog.setMessage("(" + Integer.toString(count) + ")"
-								+ "missed call from " + sbean.getFrom());
+								+ "missed call from " +fullname );
 						mdialog.setCancelable(true);
 						mdialog.setButton("OK",
 								new DialogInterface.OnClickListener() {
@@ -11497,6 +11848,11 @@ private TrustManager[] get_trust_mgr() {
 									public void onClick(DialogInterface dialog,
 											int which) {
 										// TODO Auto-generated method stub
+										if (WebServiceReferences.missedcallCount
+												.containsKey(sbean.getFrom()))
+											WebServiceReferences.missedcallCount
+													.remove(sbean.getFrom());
+										isCallignored = false;
 										mdialog = null;
 									}
 								});
@@ -11641,9 +11997,9 @@ private TrustManager[] get_trust_mgr() {
 			public void run() {
 				// TODO Auto-generated method stub
 				Log.d("AAAA", "notifyType2Received  ==> " );
-				if (WebServiceReferences.contextTable.containsKey("connection")) {
+				if (SingleInstance.instanceTable.containsKey("connection")) {
 					Log.d("AAAA", "notifyType2Received ifpart ==> " );
-					((CallConnectingScreen) WebServiceReferences.contextTable
+					((CallConnectingScreen) SingleInstance.instanceTable
 							.get("connection")).notifyType2Received();
 				} else {
 					Log.d("AAAA", "notifyType2Received elsepart ==> " );
@@ -13163,7 +13519,7 @@ private TrustManager[] get_trust_mgr() {
 					CallDispatcher.sb.setHost(CallDispatcher.LoginUser);
 					CallDispatcher.sb.setParticipants(total_participants);
 				}
-
+				CallDispatcher.sb.setChatid(CallDispatcher.chatId);
 				CallDispatcher.dialChecker = true;
 				CallDispatcher.isCallInitiate = true;
 				SignalingBean sb = (SignalingBean) CallDispatcher.sb.clone();
@@ -13218,6 +13574,7 @@ private TrustManager[] get_trust_mgr() {
 									CallDispatcher.sb.setHost(CallDispatcher.LoginUser);
 									CallDispatcher.sb.setParticipants(total_participants);
 								}
+								CallDispatcher.sb.setChatid(CallDispatcher.chatId);
 								// SignalingBean sb1 = (SignalingBean)
 								// CallDispatcher.sb.clone();
 								AppMainActivity.commEngine
@@ -13250,16 +13607,32 @@ private TrustManager[] get_trust_mgr() {
 	public void ShowConnectionScreen(SignalingBean sbean, String username,
 			Context context, boolean isconf) {
 		try {
-			if (!WebServiceReferences.contextTable.containsKey("connection")) {
-				Intent intent = new Intent(context, CallConnectingScreen.class);
+			if (!SingleInstance.instanceTable.containsKey("connection")) {
+				appMainActivity.closingActivity();
+				FragmentManager fm =
+						AppReference.mainContext.getSupportFragmentManager();
 				Bundle bundle = new Bundle();
 				bundle.putString("name", username);
 				bundle.putString("type", sbean.getCallType());
 				bundle.putBoolean("status", false);
 				bundle.putSerializable("bean", sbean);
 				bundle.putBoolean("bconf", isconf);
-				intent.putExtras(bundle);
-				context.startActivity(intent);
+				FragmentTransaction ft = fm.beginTransaction();
+				CallConnectingScreen callConnectingScreen = CallConnectingScreen
+						.getInstance(context);
+				callConnectingScreen.setArguments(bundle);
+				ft.replace(R.id.activity_main_content_fragment,
+						callConnectingScreen);
+				ft.commitAllowingStateLoss();
+//				Intent intent = new Intent(context, CallConnectingScreen.class);
+//				Bundle bundle = new Bundle();
+//				bundle.putString("name", username);
+//				bundle.putString("type", sbean.getCallType());
+//				bundle.putBoolean("status", false);
+//				bundle.putSerializable("bean", sbean);
+//				bundle.putBoolean("bconf", isconf);
+//				intent.putExtras(bundle);
+//				context.startActivity(intent);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -13856,7 +14229,7 @@ private TrustManager[] get_trust_mgr() {
 				Log.i("Action", action);
 				if (!SingleInstance.instanceTable
 						.containsKey("callscreen")
-						&& !WebServiceReferences.contextTable
+						&& !SingleInstance.instanceTable
 								.containsKey("alertscreen")
 						&& !WebServiceReferences.contextTable
 								.containsKey("sicallalert")
@@ -13884,7 +14257,7 @@ private TrustManager[] get_trust_mgr() {
 			} else if (action.equalsIgnoreCase("VCF")) {
 				if (!SingleInstance.instanceTable
 						.containsKey("callscreen")
-						&& !WebServiceReferences.contextTable
+						&& !SingleInstance.instanceTable
 								.containsKey("alertscreen")
 						&& !WebServiceReferences.contextTable
 								.containsKey("sicallalert")
@@ -14041,7 +14414,7 @@ private TrustManager[] get_trust_mgr() {
 		Log.d("Test","audioconf inside requestAudioConference calldisp");
 
 		if (!SingleInstance.instanceTable.containsKey("callscreen")
-				&& !WebServiceReferences.contextTable
+				&& !SingleInstance.instanceTable
 						.containsKey("alertscreen")
 				&& !WebServiceReferences.contextTable
 						.containsKey("sicallalert")
@@ -14109,9 +14482,24 @@ private TrustManager[] get_trust_mgr() {
 				Toast.makeText(context, offlinenames + " is Offline", 2).show();
 			}
 			if (online != null) {
-				CallConnectingScreen cc = new CallConnectingScreen();
-				cc.setTitle(online);
+					Log.d("AAAA", "notifyType2Received ifpart ==> ");
+				if(SingleInstance.instanceTable
+						.containsKey("connection")) {
+					CallConnectingScreen connectingScreen = (CallConnectingScreen) SingleInstance.instanceTable
+							.get("connection");
+					if(connectingScreen != null) {
+						connectingScreen.setTitle(online);
+					}
+				}
 			}
+		} else {
+			Log.i("AudioCall", "Call Screen :" + SingleInstance.instanceTable.containsKey("callscreen") +
+					" Alert Screen :" + SingleInstance.instanceTable
+					.containsKey("alertscreen") + " Sip Call Alert :" +
+					WebServiceReferences.contextTable
+							.containsKey("sicallalert") + " Sip Call Screen :" +
+					WebServiceReferences.contextTable
+							.containsKey("sipcallscreen"));
 		}
 
 	}
@@ -14119,7 +14507,7 @@ private TrustManager[] get_trust_mgr() {
 	public void requestVideoConference(String to) {
 
 		if (!SingleInstance.instanceTable.containsKey("callscreen")
-				&& !WebServiceReferences.contextTable
+				&& !SingleInstance.instanceTable
 						.containsKey("alertscreen")
 				&& !WebServiceReferences.contextTable
 						.containsKey("sicallalert")
@@ -14179,7 +14567,7 @@ private TrustManager[] get_trust_mgr() {
 
 	public void requestVideoBroadCast(String to) {
 		if (!SingleInstance.instanceTable.containsKey("callscreen")
-				&& !WebServiceReferences.contextTable
+				&& !SingleInstance.instanceTable
 						.containsKey("alertscreen")
 				&& !WebServiceReferences.contextTable
 						.containsKey("sicallalert")
@@ -14246,7 +14634,7 @@ private TrustManager[] get_trust_mgr() {
 			
 
 			// bib = WebServiceReferences.buddyList.get(username);
-			if (bib != null) {
+			if (bib != null && bib.getStatus().equalsIgnoreCase("online")) {
 				CallDispatcher.sb = new SignalingBean();
 				CallDispatcher.sb.setFrom(CallDispatcher.LoginUser);
 				CallDispatcher.sb.setTo(username);
@@ -14256,6 +14644,9 @@ private TrustManager[] get_trust_mgr() {
 				CallDispatcher.sb.setTopublicip(bib.getExternalipaddress());
 				CallDispatcher.sb.setTolocalip(bib.getLocalipaddress());
 				CallDispatcher.sb.setToSignalPort(bib.getSignalingPort());
+				CallDispatcher.sb.setChatid(CallDispatcher.LoginUser);
+				CallDispatcher.sb.setHost(CallDispatcher.LoginUser);
+				CallDispatcher.sb.setParticipants(username);
 				switch (operation) {
 				case 1:
 					CallDispatcher.sb.setCallType("AC");
@@ -14331,6 +14722,11 @@ private TrustManager[] get_trust_mgr() {
 				CallDispatcher.isCallInitiate = true;
 				SingleInstance.parentId = null;
 				AppMainActivity.commEngine.makeCall(CallDispatcher.sb);
+			} else if (bib != null && !bib.getStatus().equalsIgnoreCase("online")) {
+					String b_name = Buddyname(username);
+				if(b_name != null) {
+					showToast(AppReference.mainContext,b_name+" is "+bib.getStatus());
+				}
 			}
 
 		} catch (Exception e) {
@@ -14353,7 +14749,15 @@ private TrustManager[] get_trust_mgr() {
 			}
 
 			// bib = WebServiceReferences.buddyList.get(username);
-			if (bib != null) {
+			if (bib != null && bib.getStatus().equalsIgnoreCase("online")) {
+
+				SignalingBean pefore_promote = null;
+				String previous_start_time = null;
+				if(promote_feature != null && promote_feature.equalsIgnoreCase("promote")) {
+					previous_start_time = sb.getStartTime();
+					pefore_promote = (SignalingBean) sb.clone();
+				}
+
 				CallDispatcher.sb = new SignalingBean();
 				CallDispatcher.sb.setFrom(CallDispatcher.LoginUser);
 				CallDispatcher.sb.setTo(username);
@@ -14367,8 +14771,12 @@ private TrustManager[] get_trust_mgr() {
 				CallDispatcher.sb.setHost(transaction_Bean.getHost());
 				CallDispatcher.sb.setParticipants(transaction_Bean.getParticipants());
 
+				if(transaction_Bean.getChatid()!=null)
+					CallDispatcher.sb.setChatid(transaction_Bean.getChatid());
+
 				if(promote_feature.equalsIgnoreCase("promote")) {
 					CallDispatcher.sb.setVideopromote("yes");
+					CallDispatcher.sb.setStartTime(previous_start_time);
 				} else if(promote_feature.equalsIgnoreCase("disablevideo")){
 					CallDispatcher.sb.setVideoStoped(transaction_Bean.getDisableVideo());
 				} else {
@@ -14458,6 +14866,11 @@ private TrustManager[] get_trust_mgr() {
 					AppMainActivity.commEngine.makeCall(CallDispatcher.sb);
 				}
 
+			} else if (bib != null && !bib.getStatus().equalsIgnoreCase("online")) {
+				String b_name = Buddyname(username);
+				if(b_name != null) {
+					showToast(AppReference.mainContext,b_name+" is "+bib.getStatus());
+				}
 			}
 
 		} catch (Exception e) {
@@ -16320,7 +16733,7 @@ private TrustManager[] get_trust_mgr() {
 	public void requestAudioBroadCast(String to) {
 
 		if (!SingleInstance.instanceTable.containsKey("callscreen")
-				&& !WebServiceReferences.contextTable
+				&& !SingleInstance.instanceTable
 						.containsKey("alertscreen")
 				&& !WebServiceReferences.contextTable
 						.containsKey("sicallalert")
@@ -16376,17 +16789,94 @@ private TrustManager[] get_trust_mgr() {
 
 	}
 
-	private void showCallHistory()
+	public void showCallHistory(final String strSessionId, final String callType)
 	{
 		try {
+			checkandcloseDialog();
+			Log.i("AudioCall","came to showCallHistory");
 			final Dialog dialog = new Dialog(SingleInstance.mainContext);
 			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 			dialog.setContentView(R.layout.call_record_dialog);
 			dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 			dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
 			dialog.show();
+			history_dialog = dialog;
+			mHandler=new Handler();
 			Button save = (Button) dialog.findViewById(R.id.save);
 			Button delete = (Button) dialog.findViewById(R.id.delete);
+			final ImageView play_button = (ImageView) dialog.findViewById(R.id.play_button);
+			final SeekBar seekBar1 = (SeekBar) dialog.findViewById(R.id.seekBar1);
+			final TextView txt_time = (TextView)dialog.findViewById(R.id.txt_time);
+			TextView txt_calltype = (TextView)dialog.findViewById(R.id.tv_firstLine);
+			if(callType.equalsIgnoreCase("AC")) {
+				txt_calltype.setText("This session was recorded\n by the Audio call initiator.");
+			}
+			if(CallDispatcher.sb.getCallDuration() != null) {
+				txt_time.setText(CallDispatcher.sb.getCallDuration());
+			}
+			Log.i("AudioCall","came to showCallHistory 1");
+			play_button.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					String file = Environment
+							.getExternalStorageDirectory()
+							+ "/COMMedia/CallRecording/"
+							+ strSessionId + ".wav";
+					Log.d("Stringpath", "mediapath--->" + file);
+					File newfile=new File(file);
+
+					if (mPlayer.isPlaying()) {
+						mPlayer.pause();
+						play_button.setBackgroundResource(R.drawable.play);
+					} else {
+						play_button.setBackgroundResource(R.drawable.audiopause);
+						if(newfile.exists())
+						playAudio(file, 0);
+
+					}
+					if(newfile.exists()) {
+
+						int position = 0;
+						if (position == mPlayingPosition) {
+							mProgressUpdater.mBarToUpdate = seekBar1;
+							mProgressUpdater.tvToUpdate = txt_time;
+							mHandler.postDelayed(mProgressUpdater, 100);
+						} else {
+
+							try {
+								Log.d("Stringpath", "mediapath--->");
+								seekBar1.setProgress(0);
+								MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+								mmr.setDataSource(file);
+								String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+								mmr.release();
+								String min, sec;
+								min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration)));
+								sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(Long.parseLong(duration)) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration))));
+								if (Integer.parseInt(min) < 10) {
+									min = 0 + String.valueOf(min);
+								}
+								if (Integer.parseInt(sec) < 10) {
+									sec = 0 + String.valueOf(sec);
+								}
+								txt_time.setText(min + ":" + sec);
+//                            audio_tv.setText(duration);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+
+							seekBar1.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+							seekBar1.setProgress(0);
+							if (mProgressUpdater.mBarToUpdate == seekBar1) {
+								//this progress would be updated, but this is the wrong position
+								mProgressUpdater.mBarToUpdate = null;
+							}
+						}
+					}
+				}
+
+			});
+
 
 			save.setOnClickListener(new View.OnClickListener() {
 				@Override
@@ -16397,11 +16887,13 @@ private TrustManager[] get_trust_mgr() {
 					intentComponent.putExtra("buddyname",
 							CallDispatcher.sb.getFrom());
 					intentComponent.putExtra("individual", true);
+					if(callType.equalsIgnoreCase("VC"))
 					intentComponent.putExtra("audiocall",false);
 					intentComponent.putExtra("isDelete", false);
 					intentComponent.putExtra("sessionid",
 							CallDispatcher.sb.getSessionid());
 					context.startActivity(intentComponent);
+					mPlayer.stop();
 				}
 			});
 			delete.setOnClickListener(new View.OnClickListener() {
@@ -16413,11 +16905,13 @@ private TrustManager[] get_trust_mgr() {
 					intentComponent.putExtra("buddyname",
 							CallDispatcher.sb.getFrom());
 					intentComponent.putExtra("isDelete", true);
-					intentComponent.putExtra("audiocall",false);
+					if(callType.equalsIgnoreCase("VC"))
+						intentComponent.putExtra("audiocall",false);
 					intentComponent.putExtra("individual", true);
 					intentComponent.putExtra("sessionid",
 							CallDispatcher.sb.getSessionid());
 					context.startActivity(intentComponent);
+					mPlayer.stop();
 				}
 			});
 		}catch (Exception e){
@@ -16425,4 +16919,92 @@ private TrustManager[] get_trust_mgr() {
 		}
 
 	}
+
+
+	public void checkandcloseDialog() {
+		Log.i("AudioCall","came to checkandcloseDialog");
+		if(history_dialog != null) {
+			if(history_dialog.isShowing()){
+				history_dialog.dismiss();
+			}
+		}
+	}
+
+	private class PlaybackUpdater implements Runnable {
+		public SeekBar mBarToUpdate = null;
+		public TextView tvToUpdate = null;
+
+		@Override
+		public void run() {
+			if ((mPlayingPosition != -1) && (null != mBarToUpdate)) {
+				Log.d("Mposition","seekbar---->");
+				double tElapsed = mPlayer.getCurrentPosition();
+				int fTime = mPlayer.getDuration();
+				double timeRemaining = fTime - tElapsed;
+				double sTime = mPlayer.getCurrentPosition();
+
+				String min, sec;
+				min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes((long) sTime));
+				sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds((long) sTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) sTime)));
+				if (Integer.parseInt(min) < 10) {
+					min = 0 + String.valueOf(min);
+				}
+				if (Integer.parseInt(sec) < 10) {
+					sec = 0 + String.valueOf(sec);
+				}
+				tvToUpdate.setText(min + ":" + sec);
+				mBarToUpdate.setProgress((100 * mPlayer.getCurrentPosition() / mPlayer.getDuration()));
+//                tvToUpdate.setText(String.format("%d:%d ",TimeUnit.MILLISECONDS.toMinutes((long) fTime),TimeUnit.MILLISECONDS.toSeconds((long) fTime) -TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) fTime))));
+				mHandler.postDelayed(this, 500);
+
+			} else {
+				//not playing so stop updating
+			}
+		}
+	}
+
+	private void stopPlayback() {
+		mPlayingPosition = 0;
+		mProgressUpdater.mBarToUpdate = null;
+		mProgressUpdater.tvToUpdate = null;
+		if (mPlayer != null && mPlayer.isPlaying())
+			mPlayer.stop();
+	}
+
+	public void playAudio(String fname,  int position) {
+		try {
+			mPlayer.reset();
+			mPlayer.setDataSource(fname);
+			mPlayer.prepare();
+			mPlayer.start();
+			mPlayingPosition = position;
+
+			mHandler.postDelayed(mProgressUpdater, 500);
+
+		} catch (IOException e) {
+
+			e.printStackTrace();
+			stopPlayback();
+		}
+	}
+
+	public String Buddyname(String bname) {
+		Vector<BuddyInformationBean> getBuddyList = ContactsFragment.getBuddyList();
+		String name = bname;
+		if (getBuddyList != null) {
+			if(bname.equalsIgnoreCase(CallDispatcher.LoginUser)) {
+				ProfileBean pbean=SingleInstance.myAccountBean;
+				name=pbean.getFirstname()+" "+pbean.getLastname();
+			} else {
+				for (int i = 0; i < getBuddyList.size(); i++) {
+					BuddyInformationBean buddyInformationBean = (BuddyInformationBean) ContactsFragment.getBuddyList().get(i);
+					if (bname.equals(buddyInformationBean.getEmailid())) {
+						name = buddyInformationBean.getFirstname() + " " + buddyInformationBean.getLastname();
+					}
+				}
+			}
+		}
+		return name;
+	}
+
 }

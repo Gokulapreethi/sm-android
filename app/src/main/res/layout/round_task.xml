@@ -27,7 +27,7 @@
                 android:id="@+id/tv_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="All"
+                android:text="ALL"
                 android:textColor="@color/white" />
 
         </LinearLayout>
@@ -47,7 +47,7 @@
                 android:id="@+id/tv_assigned"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="All"
+                android:text="ALL"
                 android:textColor="@color/white"
                 />
         </LinearLayout>

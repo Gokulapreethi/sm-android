@@ -6,7 +6,10 @@
     <string name="buddy_group">Other Groups(s)</string>
     <string name="alphaNumeric">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</string>
     <string name="emailId">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.</string>
+    <string name="numbersvalue">012345678-9</string>
     <string name="alpha">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+    <string name="alphaNumericandspace">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_ .:/</string>
+    <string name="numbers">0123456789+</string>
     <string name="numeric">0123456789</string>
     <string name="my_group">My Group(s)</string>
     <string name="my_contact">My Contact(s)</string>
@@ -97,9 +100,9 @@
     <string name="connected_buddies1">Connected  </string>
     <string name="connected_buddies">Connected Buddies :  </string>
     <string name="screen_share">Screen Sharing</string>
-    <string name="call_types1">Call Type.....................</string>
+    <string name="call_types1">Call Type: .....</string>
     <string name="call_contents1">Content:</string>
-    <string name="durations">Duration: .....................</string>
+    <string name="durations">Duration: .....</string>
     <string name="previews">Recording:</string>
     <!-- Call Types End -->
 
@@ -266,7 +269,7 @@
     <string name="members">Members</string>
     <string name="update_members">Update Members</string>
     <string name="modify_group">Modify</string>
-    <string name="group_created_success">Group Created Successfully</string>
+    <string name="group_created_success">Group Created or modified Successfully</string>
     <string name="clear_history1">Clear History</string>
     <string name="no_profile_for1">No Profile For</string>
     <string name="chat_options">Chat options</string>
@@ -361,6 +364,7 @@
     <!-- <string name="service_url"> https://172.16.1.92:8443/AlphaServices/Service</string> -->
     <!--<string name="service_url">https://122.165.92.35:443/SNAZMEDServices/Service</string>-->
     <string name="service_url">https://66.36.228.47:443/SNAZMEDServices/Service</string>
+    <!--<string name="service_url">https://www.snazevents.com/SNAZMEDServices/Service</string>-->
     <!--<string name="service_url">https://10.20.95.201:443/SNAZMEDServices/Service</string>-->
     <!--<string name="service_url">https://172.16.1.92:8443/SNAZMEDServices/Service</string>-->
        <string name="error">Sorry, unable to continue with Notes. Please try again later.
@@ -1232,9 +1236,9 @@
     
     <!-- newly -->
      <string name="feed_back">Feedback</string>
-     <string name="from_call">From: ......................</string>
-     <string name="to_call">To: .........................</string>
-     <string name="time_call">Time: .....................</string>
+     <string name="from_call">From: .....</string>
+     <string name="to_call">To: .....</string>
+     <string name="time_call">Time: .....</string>
      <string name="with_draw">Withdraw</string>
      <string name="view_group1">View Group</string>
       <string name="leave_group1">Leave Group</string>

@@ -1,6 +1,5 @@
 package com.main;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +7,6 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -33,6 +31,8 @@ import com.bean.NotifyListBean;
 import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
 import com.cg.callservices.AudioCallScreen;
+import com.cg.callservices.CallConnectingScreen;
+import com.cg.callservices.inCommingCallAlert;
 import com.cg.callservices.VideoCallScreen;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.DateComparator;
@@ -48,11 +48,13 @@ import com.util.SingleInstance;
 import org.lib.model.FileDetailsBean;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Vector;
 
@@ -89,6 +91,7 @@ public class DashBoardFragment extends Fragment {
     public static CallDispatcher callDisp;
     int audio=0, videos=0,other=0,image=0,chat=0;
     Vector<FileDetailsBean> fBeanList;
+    RelativeLayout mainHeader;
     public static DashBoardFragment newInstance(Context context) {
         try {
             if (dashBoardFragment == null) {
@@ -114,11 +117,12 @@ public class DashBoardFragment extends Fragment {
                     R.id.activity_main_content_title);
             title.setText("DASHBOARD");
             title.setVisibility(View.VISIBLE);
+            AppReference.bacgroundFragment=dashBoardFragment;
 
             Button imVw = (Button) getActivity().findViewById(R.id.im_view);
             imVw.setVisibility(View.GONE);
 
-            final RelativeLayout mainHeader = (RelativeLayout) getActivity().findViewById(R.id.mainheader);
+            mainHeader = (RelativeLayout) getActivity().findViewById(R.id.mainheader);
             mainHeader.setVisibility(View.VISIBLE);
             LinearLayout contact_layout = (LinearLayout) getActivity()
                     .findViewById(R.id.contact_layout);
@@ -171,14 +175,40 @@ public class DashBoardFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     mainHeader.setVisibility(View.GONE);
-                    addShowHideListener(AudioCallScreen.getInstance(SingleInstance.mainContext));
+                    addShowHideListener(true);
                 }
             });
             video_minimize.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mainHeader.setVisibility(View.GONE);
-                    addShowHideListener(VideoCallScreen.getInstance(SingleInstance.mainContext));
+                    addShowHideListener(false);
+                }
+            });
+            ImageView min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
+            ImageView min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
+            min_incall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mainHeader.setVisibility(View.GONE);
+                    inCommingCallAlert incommingCallAlert = inCommingCallAlert.getInstance(SingleInstance.mainContext);
+                    FragmentManager fragmentManager = SingleInstance.mainContext
+                            .getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(
+                            R.id.activity_main_content_fragment, incommingCallAlert)
+                            .commitAllowingStateLoss();
+                }
+            });
+            min_outcall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mainHeader.setVisibility(View.GONE);
+                    CallConnectingScreen callConnectingScreen = CallConnectingScreen.getInstance(SingleInstance.mainContext);
+                    FragmentManager fragmentManager = SingleInstance.mainContext
+                            .getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(
+                            R.id.activity_main_content_fragment, callConnectingScreen)
+                            .commitAllowingStateLoss();
                 }
             });
             final AppMainActivity appMainActivity = (AppMainActivity) SingleInstance.contextTable
@@ -218,21 +248,7 @@ public class DashBoardFragment extends Fragment {
                     piechart = (PieChart) v1.findViewById(R.id.piechart);
                     freeSpace= (TextView) v1.findViewById(R.id.freeSpace);
                     totalSize= (TextView) v1.findViewById(R.id.totalSize);
-                    if(externalMemoryAvailable()){
-                        float free = getAvailableExternalMemorySize();
-                        float total = getTotalExternalMemorySize();
-                        totalSize.setText(formatSize(total));
-                        freeSpace.setText(formatSize(free));
-                        float temp = free/total;
-                        piechart.setPercentage(temp*100);
-                    }else{
-                        float free = getAvailableInternalMemorySize();
-                        float total = getTotalInternalMemorySize();
-                        totalSize.setText(formatSize(total));
-                        freeSpace.setText(formatSize(free));
-                        float temp = free/total;
-                        piechart.setPercentage(temp*100);
-                    }
+                    showMemoryControl();
                     ll_warn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -365,21 +381,7 @@ public class DashBoardFragment extends Fragment {
                             piechart = (PieChart) v1.findViewById(R.id.piechart);
                             freeSpace= (TextView) v1.findViewById(R.id.freeSpace);
                             totalSize= (TextView) v1.findViewById(R.id.totalSize);
-                            if(externalMemoryAvailable()){
-                                float free = getAvailableExternalMemorySize();
-                                float total = getTotalExternalMemorySize();
-                                totalSize.setText(formatSize(total));
-                                freeSpace.setText(formatSize(free));
-                                float temp = free/total;
-                                piechart.setPercentage(temp*100);
-                            }else{
-                                float free = getAvailableInternalMemorySize();
-                                float total = getTotalInternalMemorySize();
-                                totalSize.setText(formatSize(total));
-                                freeSpace.setText(formatSize(free));
-                                float temp = free/total;
-                                piechart.setPercentage(temp*100);
-                            }
+                            showMemoryControl();
                             ll_warn.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -392,8 +394,8 @@ public class DashBoardFragment extends Fragment {
                                 public void onClick(View view) {
                                     setType = "ll_msg";
                                     notification.performClick();
-                                    DBAccess.getdbHeler(mainContext)
-                                            .setReadAllCount(CallDispatcher.LoginUser, "");
+//                                    DBAccess.getdbHeler(mainContext)
+//                                            .setReadAllCount(CallDispatcher.LoginUser, "");
                                 }
                             });
                             ll_call.setOnClickListener(new View.OnClickListener() {
@@ -500,6 +502,7 @@ public class DashBoardFragment extends Fragment {
                         public void onClick(View view) {
                             try {
                                 rl.removeAllViews();
+                                SingleInstance.mainContext.notifyUI();
                                 plusBtn.setVisibility(View.VISIBLE);
 //                                clearAllBtn.setVisibility(View.VISIBLE);
                                 im_summary.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_summary));
@@ -522,6 +525,7 @@ public class DashBoardFragment extends Fragment {
                                 }
                                 notifyAdapter = new NotifyListAdapter(mainContext, tempnotifylist);
                                 notifylistview.setAdapter(notifyAdapter);
+                                notifyAdapter.isFromOther(false);
                                 notifyAdapter.notifyDataSetChanged();
                                 clearAllBtn.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -593,7 +597,7 @@ public class DashBoardFragment extends Fragment {
                                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                                         NotifyListBean notifyBean = (NotifyListBean) notifyAdapter
                                                 .getItem(position);
-                                        Log.i("AAAA", "NOTIFY LIST from user " + notifyBean.getFileid());
+                                        Log.i("AAAA", "NOTIFY LIST from user1 " + notifyBean.getFileid());
                                         if (notifyBean.getNotifttype().equalsIgnoreCase("C")) {
 //                                            appMainActivity.historyfragment();
                                         } else if (notifyBean.getNotifttype().equalsIgnoreCase("I")) {
@@ -715,8 +719,9 @@ public class DashBoardFragment extends Fragment {
         return resultBuffer.toString();
     }
 
-    public void LoadFilesList(String username)
+    public Vector<NotifyListBean> LoadFilesList(String username)
     {
+        Log.i("Multi","username : "+username);
         tempnotifylist.clear();
         seacrhnotifylist.clear();
         notifyList = DBAccess.getdbHeler()
@@ -725,8 +730,10 @@ public class DashBoardFragment extends Fragment {
             if (setType.equals("ll_warn")) {
                 for(NotifyListBean nBean:notifyList) {
                     Log.i("AAAA","NOTIFY LIST from user "+nBean.getNotifttype()+" , "+nBean.getSortdate()+" , "+nBean.getFrom());
+                    Log.d("AAAA", "Notifyid"+nBean.getFileid());
                     if(nBean.getViewed()==0 && nBean.getNotifttype().equals("F")) {
                         ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+                        nBean.setProfilePic(pBean.getPhoto());
                         if(pBean!=null)
                             nBean.setUsername(pBean.getFirstname()+" "+pBean.getLastname());
                         tempnotifylist.add(nBean);
@@ -736,19 +743,25 @@ public class DashBoardFragment extends Fragment {
             } else if (setType.equals("ll_msg")) {
                 for(NotifyListBean nBean:notifyList) {
                     Log.i("AAAA","NOTIFY LIST from user "+nBean.getNotifttype()+" , "+nBean.getSortdate()+" , "+nBean.getFrom());
+                    Log.d("AAAA", "Notifyid" + nBean.getFileid());
                     if(nBean.getViewed()==0 && nBean.getNotifttype().equals("I")) {
-                        ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
-                        if(pBean!=null)
-                            nBean.setUsername(pBean.getFirstname()+" "+pBean.getLastname());
-                        tempnotifylist.add(nBean);
-                        seacrhnotifylist.add(nBean);
+                        if(!nBean.getCategory().equalsIgnoreCase("call")) {
+                            ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+                            nBean.setProfilePic(pBean.getPhoto());
+                            if (pBean != null)
+                                nBean.setUsername(pBean.getFirstname() + " " + pBean.getLastname());
+                            tempnotifylist.add(nBean);
+                            seacrhnotifylist.add(nBean);
+                        }
                     }
                 }
             } else if (setType.equals("ll_call")) {
                 for(NotifyListBean nBean:notifyList) {
                     Log.i("AAAA","NOTIFY LIST from user "+nBean.getNotifttype()+" , "+nBean.getSortdate()+" , "+nBean.getFrom());
+                    Log.d("AAAA", "Notifyid" + nBean.getFileid());
                     if(nBean.getViewed()==0 && nBean.getNotifttype().equals("C")) {
-                        ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getTo());
+                        ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+                        nBean.setProfilePic(pBean.getPhoto());
                         if(pBean!=null)
                             nBean.setUsername(pBean.getFirstname()+" "+pBean.getLastname());
                         tempnotifylist.add(nBean);
@@ -758,8 +771,10 @@ public class DashBoardFragment extends Fragment {
             } else if (setType.equals("ll_file")) {
                 for(NotifyListBean nBean:notifyList) {
                     Log.i("AAAA","NOTIFY LIST from user "+nBean.getNotifttype()+" , "+nBean.getSortdate()+" , "+nBean.getFrom());
+                    Log.d("AAAA", "Notifyid" + nBean.getFileid());
                     if(nBean.getViewed()==0 && nBean.getNotifttype().equals("F")) {
                         ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+                        nBean.setProfilePic(pBean.getPhoto());
                         if(pBean!=null)
                             nBean.setUsername(pBean.getFirstname()+" "+pBean.getLastname());
                         tempnotifylist.add(nBean);
@@ -769,19 +784,23 @@ public class DashBoardFragment extends Fragment {
             } else {
                 for(NotifyListBean nBean:notifyList) {
                     Log.i("AAAA","NOTIFY LIST from user "+nBean.getNotifttype()+" , "+nBean.getSortdate()+" , "+nBean.getFrom());
+                    Log.d("AAAA", "Notifyid" + nBean.getFileid());
                     if(nBean.getViewed()==0) {
-                        ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
-                        if(pBean!=null)
-                        nBean.setUsername(pBean.getFirstname()+" "+pBean.getLastname());
-                        tempnotifylist.add(nBean);
-                        seacrhnotifylist.add(nBean);
+                        if(nBean.getCategory()!=null&&!nBean.getCategory().equalsIgnoreCase("call")) {
+                            ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+                            nBean.setProfilePic(pBean.getPhoto());
+                            if (pBean != null)
+                                nBean.setUsername(pBean.getFirstname() + " " + pBean.getLastname());
+                            tempnotifylist.add(nBean);
+                            seacrhnotifylist.add(nBean);
+                        }
                     }
                 }
             }
         }
         Collections.sort(tempnotifylist, new DateComparator());
         Collections.sort(seacrhnotifylist, new DateComparator());
-
+      return tempnotifylist;
     }
 
     private void viewFileInfo(CompleteListBean cBean, int position) {
@@ -818,7 +837,7 @@ public class DashBoardFragment extends Fragment {
         return view;
     }
 
-    private void updateCount()
+    public void updateCount()
     {
         int count1=0, count2=0, count3=0;
         count1 = DBAccess.getdbHeler(mainContext)
@@ -856,7 +875,6 @@ public class DashBoardFragment extends Fragment {
     {
         fBeanList=SingleInstance.fileDetails;
         for(FileDetailsBean fBean:fBeanList) {
-            Log.i("AAAA", "Omorycontrol &************ size " +fBean.getBranchtype());
             if (fBean.getBranchtype().equalsIgnoreCase("file")) {
                 if (fBean.getAudiofiles() != null)
                     audio = Integer.parseInt(fBean.getAudiofiles());
@@ -868,47 +886,69 @@ public class DashBoardFragment extends Fragment {
                 if (fBean.getTotalsize() != null)
                     chat = Integer.parseInt(fBean.getTotalsize());
             }else if(fBean.getBranchtype().equalsIgnoreCase("other")) {
-                Log.i("AAAA", "Omorycontrol &************ size ");
                 if (fBean.getTotalsize() != null)
                     other = Integer.parseInt(fBean.getTotalsize());
             }
         }
         int total=audio+videos+image+other+chat;
+        Log.i("AAAA", "Omorycontrol &************ size " + total);
         return total;
     }
-    String bytesToSize(int bytes) {
-        int kilobyte = 1024;
-        int megabyte = kilobyte * 1024;
-        int gigabyte = megabyte * 1024;
-        int terabyte = gigabyte * 1024;
+    String bytesToSize(float bytes) {
+        float kilobyte = 1024;
+        float megabyte = kilobyte * 1024;
+        float gigabyte = megabyte * 1024;
+        float terabyte = gigabyte * 1024;
 
         if ((bytes >= 0) && (bytes < kilobyte)) {
-            return bytes + " B";
+            return  new BigDecimal(String.valueOf(bytes)).setScale(2, BigDecimal.ROUND_DOWN) + " B";
 
         } else if ((bytes >= kilobyte) && (bytes < megabyte)) {
-            return (bytes / kilobyte) + " KB";
+            return  new BigDecimal(String.valueOf((bytes / kilobyte))).setScale(2, BigDecimal.ROUND_DOWN) + " KB";
 
         } else if ((bytes >= megabyte) && (bytes < gigabyte)) {
-            return (bytes / megabyte) + " MB";
+            return  new BigDecimal(String.valueOf((bytes / megabyte))).setScale(2, BigDecimal.ROUND_DOWN) + " MB";
 
         } else if ((bytes >= gigabyte) && (bytes < terabyte)) {
-            return (bytes / gigabyte) + " GB";
+            return  new BigDecimal(String.valueOf((bytes / gigabyte))).setScale(2, BigDecimal.ROUND_DOWN) + " GB";
 
         } else if (bytes >= terabyte) {
-            return (bytes / terabyte) + " TB";
+            return  new BigDecimal(String.valueOf((bytes / terabyte))).setScale(2, BigDecimal.ROUND_DOWN) + " TB";
 
         } else {
-            return bytes + " B";
+            return  new BigDecimal(String.valueOf(bytes)).setScale(2, BigDecimal.ROUND_DOWN) + " B";
         }
     }
-    void addShowHideListener( final Fragment fragment) {
-        FragmentManager fm = AppReference.mainContext.getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        if (fragment.isHidden()) {
-            ft.show(fragment);
-        } else {
-            ft.hide(fragment);
+    void addShowHideListener( Boolean isAudio ) {
+        if(isAudio) {
+            AudioCallScreen audioCallScreen = AudioCallScreen.getInstance(SingleInstance.mainContext);
+            FragmentManager fragmentManager = SingleInstance.mainContext
+                    .getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(
+                    R.id.activity_main_content_fragment, audioCallScreen)
+                    .commitAllowingStateLoss();
+        }else {
+            VideoCallScreen videoCallScreen = VideoCallScreen.getInstance(SingleInstance.mainContext);
+            FragmentManager fragmentManager = SingleInstance.mainContext
+                    .getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(
+                    R.id.activity_main_content_fragment, videoCallScreen)
+                    .commitAllowingStateLoss();
         }
-        ft.commit();
     }
+    public void showMemoryControl()
+    {
+        if(getMemorySize()>0) {
+            float total = 1048576L;
+            float free = total-getMemorySize();
+            float num = 5368709120L;
+            float temp1 = num - getMemorySize();
+            freeSpace.setText(bytesToSize(temp1));
+            float temp = free / total;
+            piechart.setPercentage(temp * 100);
+        }
+    }
+
+
 }
+

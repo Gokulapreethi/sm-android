@@ -25,6 +25,7 @@ public class QuickActionBroadCastReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		try {
 			// TODO Auto-generated method stub
+			Log.i("BroadCast","inside QuickActionBroadCastReceiver");
 			String userName = intent.getExtras().getString("fromuser");
 			if (CallDispatcher.LoginUser != null && userName != null
 					&& CallDispatcher.LoginUser.equalsIgnoreCase(userName)) {

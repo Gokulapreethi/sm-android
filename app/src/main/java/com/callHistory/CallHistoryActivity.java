@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import org.lib.model.BuddyInformationBean;
 import org.lib.model.RecordTransactionBean;
 
 import android.app.Activity;
@@ -38,6 +39,7 @@ import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.commongui.MultimediaUtils;
 import com.main.AppMainActivity;
+import com.main.ContactsFragment;
 import com.util.SingleInstance;
 
 public class CallHistoryActivity extends Activity {
@@ -73,6 +75,7 @@ public class CallHistoryActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		try {
 
 			Log.i("Test", "CallHistoryActivity>>>>>>>>>>");
 			context = this;
@@ -98,8 +101,8 @@ public class CallHistoryActivity extends Activity {
 			TextView to = (TextView) findViewById(R.id.touser_title);
 			TextView date = (TextView) findViewById(R.id.date_title);
 			TextView duration = (TextView) findViewById(R.id.duration_title);
-			isDelete=getIntent().getBooleanExtra("isDelete",false);
-		    isfromaudio=getIntent().getBooleanExtra("audiocall",true);
+			isDelete = getIntent().getBooleanExtra("isDelete", false);
+			isfromaudio = getIntent().getBooleanExtra("audiocall", true);
 
 			TextView callstate = (TextView) findViewById(R.id.cstate_title);
 			final ImageView preview = (ImageView) findViewById(R.id.play_button);
@@ -107,23 +110,19 @@ public class CallHistoryActivity extends Activity {
 			seekProgress.setClickable(false);
 			tvTimer = (TextView) findViewById(R.id.txt_time);
 			final ImageView delete_icon = (ImageView) findViewById(R.id.delete_icon);
-			final TextView text_recording = (TextView)findViewById(R.id.text_recording);
-			btnPause = (ImageView)findViewById(R.id.btn_pause);
-			final RelativeLayout recoding_layout = (RelativeLayout)findViewById(R.id.recoding_layout);
-		final FrameLayout frameLayout = (FrameLayout)findViewById(R.id.frame_lay);
-		if(!isfromaudio){
-			recoding_layout.setVisibility(View.GONE);
-			frameLayout.setVisibility(View.VISIBLE);
-		}else{
-			recoding_layout.setVisibility(View.VISIBLE);
-			frameLayout.setVisibility(View.GONE);
-		}
-		if(isDelete){
-			if(isfromaudio) {
-				text_recording.setVisibility(View.GONE);
-				recoding_layout.setVisibility(View.GONE);
-			}else
-				frameLayout.setVisibility(View.GONE);
+			final TextView text_recording = (TextView) findViewById(R.id.text_recording);
+			btnPause = (ImageView) findViewById(R.id.btn_pause);
+			ImageView owner_img=(ImageView)findViewById(R.id.own_image);
+			final RelativeLayout recoding_layout = (RelativeLayout) findViewById(R.id.recoding_layout);
+			if (!isfromaudio) {
+				owner_img.setVisibility(View.VISIBLE);
+			} else {
+				owner_img.setVisibility(View.GONE);
+			}
+			if (isDelete) {
+					text_recording.setVisibility(View.GONE);
+					recoding_layout.setVisibility(View.GONE);
+					owner_img.setVisibility(View.GONE);
 			}
 
 
@@ -151,178 +150,370 @@ public class CallHistoryActivity extends Activity {
 						public void onClick(View v) {
 							text_recording.setVisibility(View.GONE);
 							recoding_layout.setVisibility(View.GONE);
+							delete_icon.setVisibility(View.GONE);
 							dialog.dismiss();
 							mPlayer.pause();
 						}
 					});
 
 
+				}
+			});
+
+
+			back.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View arg0) {
+					SingleInstance.orderToastShow = false;
+					// TODO Auto-generated method stub
+					finish();
+				}
+			});
+
+			sessionId = getIntent().getStringExtra("sessionid");
+			isViewed = getIntent().getBooleanExtra("isviewed", false);
+
+			position = 0;
+
+			String query = "";
+
+			query = "select * from recordtransactiondetails where sessionid='"
+					+ sessionId + "'";
+
+			int pos = 0;
+			Log.i("CH", "Query" + query);
+			mlist = DBAccess.getdbHeler().getcallhistorydetails(query);
+			RecordTransactionBean recordTransactionBean = mlist
+					.get(pos);
+
+			if (recordTransactionBean.getCalltype() != null) {
+				String callType = "";
+				if (recordTransactionBean.getCalltype().equalsIgnoreCase(
+						"AC")) {
+					callType = "Audio Call";
+				} else if (recordTransactionBean.getCalltype()
+						.equalsIgnoreCase("VC")) {
+					callType = "Video Call";
+				} else if (recordTransactionBean.getCalltype()
+						.equalsIgnoreCase("ABC")) {
+					callType = "Audio Broadcast";
+				} else if (recordTransactionBean.getCalltype()
+						.equalsIgnoreCase("VBC")) {
+					callType = "Video Broadcast";
+				} else if (recordTransactionBean.getCalltype()
+						.equalsIgnoreCase("AP")) {
+					callType = "Audio Unicast";
+				} else if (recordTransactionBean.getCalltype()
+						.equalsIgnoreCase("VP")) {
+					callType = "Video Unicast";
+				}
+				calltype.setText(callType);
+			}
+			if (recordTransactionBean.getCalltype() != null) {
+				callcontent.setText(recordTransactionBean.getCalltype());
+			}
+
+			//For this set From and To name
+			//start
+
+			if (recordTransactionBean.getFromName() != null) {
+				Log.i("callhistory","fromname-->"+recordTransactionBean.getFromName());
+				Log.i("callhistory","LoginUser-->"+CallDispatcher.LoginUser);
+				if(ContactsFragment.buddyList!=null && ContactsFragment.buddyList.size()>0){
+					for(BuddyInformationBean bean:ContactsFragment.buddyList){
+						if(bean.getEmailid()!=null) {
+							if (bean.getEmailid().equalsIgnoreCase(recordTransactionBean.getFromName())) {
+								if (bean.getFirstname() != null && bean.getLastname() != null) {
+									from.setText(bean.getFirstname() + " " + bean.getLastname());
+									break;
+								} else if (bean.getFirstname() != null) {
+									from.setText(bean.getFirstname());
+									break;
+								}
+							}
+						}
+
+					}
+
+					if(recordTransactionBean.getFromName().trim().equalsIgnoreCase(CallDispatcher.LoginUser.trim())){
+						from.setText("Me");
+					}
+				}else {
+					from.setText(recordTransactionBean.getFromName());
+				}
+			}
+
+			if(recordTransactionBean.getHost_emailid()!=null){
+				Log.i("callhistory","fromname-->"+recordTransactionBean.getHost_emailid());
+				Log.i("callhistory","LoginUser-->"+CallDispatcher.LoginUser);
+				if(ContactsFragment.buddyList!=null && ContactsFragment.buddyList.size()>0){
+					for(BuddyInformationBean bean:ContactsFragment.buddyList){
+						if(bean.getEmailid()!=null) {
+							if (bean.getEmailid().equalsIgnoreCase(recordTransactionBean.getHost_emailid())) {
+								if (bean.getFirstname() != null && bean.getLastname() != null) {
+									from.setText(bean.getFirstname() + " " + bean.getLastname());
+									break;
+								} else if (bean.getFirstname() != null) {
+									from.setText(bean.getFirstname());
+									break;
+								}
+							}
+						}
+
+					}
+
+					if(recordTransactionBean.getHost_emailid().trim().equalsIgnoreCase(CallDispatcher.LoginUser.trim())){
+						from.setText("Me");
+					}
+				}else {
+					from.setText(recordTransactionBean.getHost_emailid());
+				}
+			}
+
+			if (recordTransactionBean.getToName() != null) {
+				if(ContactsFragment.buddyList!=null && ContactsFragment.buddyList.size()>0){
+					for(BuddyInformationBean bean:ContactsFragment.buddyList){
+						if(bean.getEmailid()!=null) {
+							if (bean.getEmailid().equalsIgnoreCase(recordTransactionBean.getToName())) {
+								if (bean.getFirstname() != null && bean.getLastname() != null) {
+									to.setText(bean.getFirstname() + " " + bean.getLastname());
+									break;
+								} else if (bean.getFirstname() != null) {
+									to.setText(bean.getFirstname());
+									break;
+								}
+							}
+						}
+
+					}
+					if(recordTransactionBean.getHost_emailid()!=null) {
+						if (recordTransactionBean.getToName().equalsIgnoreCase(recordTransactionBean.getHost_emailid())) {
+							to.setText("Me");
+						}
+					}
+				}else {
+					to.setText(recordTransactionBean.getToName());
+				}
+			}
+
+			if (recordTransactionBean.getTot_participant() != null) {
+				if(ContactsFragment.buddyList!=null && ContactsFragment.buddyList.size()>0){
+					String buddies=null;
+					if(recordTransactionBean.getToName().equalsIgnoreCase(CallDispatcher.LoginUser)){
+						to.setText("Me");
+					}
+
+					if(recordTransactionBean.getTot_participant().contains(",")) {
+						String s[] = recordTransactionBean.getTot_participant().split(",");
+						for (int i=0;i<s.length;i++) {
+							for (BuddyInformationBean bean : ContactsFragment.buddyList) {
+								if (bean.getEmailid() != null) {
+									if (bean.getEmailid().equalsIgnoreCase(s[i])) {
+										if (bean.getFirstname() != null && bean.getLastname() != null) {
+											if (buddies == null) {
+												buddies = bean.getFirstname() + " " + bean.getLastname();
+											} else {
+												buddies = buddies + "," + bean.getFirstname() + " " + bean.getLastname();
+											}
+
+										} else if (bean.getFirstname() != null) {
+											if (buddies == null) {
+												buddies = bean.getFirstname();
+											} else {
+												buddies = buddies + "," + bean.getFirstname();
+											}
+										}
+									}
+								}
+
+							}
+						}
+					}else{
+						for (BuddyInformationBean bean : ContactsFragment.buddyList) {
+							if (bean.getEmailid() != null) {
+								if (bean.getEmailid().equalsIgnoreCase(recordTransactionBean.getTot_participant())) {
+									if (bean.getFirstname() != null && bean.getLastname() != null) {
+										if (buddies == null) {
+											buddies = bean.getFirstname() + " " + bean.getLastname();
+										} else {
+											buddies = buddies + "," + bean.getFirstname() + " " + bean.getLastname();
+										}
+
+
+									} else if (bean.getFirstname() != null) {
+										if (buddies == null) {
+											buddies = bean.getFirstname();
+										} else {
+											buddies = buddies + "," + bean.getFirstname();
+										}
+									}
+								}
+							}
+
+						}
+					}
+					if(buddies!=null){
+						to.setText(buddies);
+					}
+
+				}else {
+					to.setText(recordTransactionBean.getToName());
+				}
+			}
+
+			if(recordTransactionBean.getCall_state()!=null){
+				if(recordTransactionBean.getCall_state().equalsIgnoreCase("missedcall")){
+					if(recordTransactionBean.getHost()!=null){
+						if(ContactsFragment.buddyList!=null && ContactsFragment.buddyList.size()>0){
+							for(BuddyInformationBean bean:ContactsFragment.buddyList){
+								if(bean.getEmailid()!=null) {
+									if (bean.getEmailid().equalsIgnoreCase(recordTransactionBean.getHost())) {
+										if (bean.getFirstname() != null && bean.getLastname() != null) {
+											from.setText(bean.getFirstname() + " " + bean.getLastname());
+											break;
+										} else if (bean.getFirstname() != null) {
+											from.setText(bean.getFirstname());
+											break;
+										}
+									}
+								}
+
+							}
+							to.setText("Me");
+						}
+
+					}
+				}
+			}
+			//End
+			if (recordTransactionBean.getStartTime() != null) {
+				date.setText(recordTransactionBean.getStartTime());
+			}
+			if (recordTransactionBean.getCallDuration() != null) {
+				if(recordTransactionBean.getCallDuration().contains(":")){
+					String hour=recordTransactionBean.getCallDuration().split(":")[0];
+					String min=recordTransactionBean.getCallDuration().split(":")[1];
+					String sec=recordTransactionBean.getCallDuration().split(":")[2];
+					if(hour.length()==1){
+						hour="0"+hour;
+					}
+					if(min.length()==1){
+						min="0"+min;
+					}
+					if(sec.length()==1){
+						sec="0"+sec;
+					}
+					String totTime=hour+":"+min+":"+sec;
+					duration.setText(totTime);
+					tvTimer.setText(hour+":"+min+":"+sec);
+				}else {
+					duration.setText(recordTransactionBean
+							.getCallDuration());
+				}
+//							tvTimer.setText(recordTransactionBean
+//									.getCallDuration());
+
+
+			}else{
+				duration.setText("00:00:00");
+			}
+
+			if (recordTransactionBean.getSessionid() != null) {
+				preview.setTag(recordTransactionBean.getSessionid());
+			}
+
+			if (isViewed) {
+				String strUpdateNote = "update recordtransactiondetails set status='" + 1
+						+ "' where sessionid='" + sessionId
+						+ "'";
+				if (DBAccess.getdbHeler().ExecuteQuery(strUpdateNote)) {
+					recordTransactionBean.setStatus(1);
+				}
+			}
+
+
+			preview.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					try {
+
+
+						String file = Environment
+								.getExternalStorageDirectory()
+								+ "/COMMedia/CallRecording/"
+								+ v.getTag().toString() + ".wav";
+						Log.d("Stringpath", "mediapath--->" + file);
+
+
+//									File path = new File(file);
+//									mPlayer.setDataSource(file.getPath());
+						int CountFiles = new File(Environment
+								.getExternalStorageDirectory()
+								+ "/COMMedia/CallRecording/").listFiles().length;
+						Log.d("Test", "Length of the files@@@----->");
+						File newfile=new File(file);
+
+						if (mPlayer.isPlaying()) {
+							mPlayer.pause();
+							preview.setBackgroundResource(R.drawable.play);
+						} else {
+							preview.setBackgroundResource(R.drawable.audiopause);
+							if(newfile.exists())
+							playAudio(file, 0);
+
+						}
+						if(newfile.exists()) {
+
+							if (position == mPlayingPosition) {
+								mProgressUpdater.mBarToUpdate = seekProgress;
+								mProgressUpdater.tvToUpdate = tvTimer;
+								mHandler.postDelayed(mProgressUpdater, 100);
+							} else {
+
+								try {
+									Log.d("Stringpath", "mediapath--->");
+									seekProgress.setProgress(0);
+									MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+									mmr.setDataSource(file);
+									String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+									mmr.release();
+									String min, sec;
+									min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration)));
+									sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(Long.parseLong(duration)) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration))));
+									if (Integer.parseInt(min) < 10) {
+										min = 0 + String.valueOf(min);
+									}
+									if (Integer.parseInt(sec) < 10) {
+										sec = 0 + String.valueOf(sec);
+									}
+									tvTimer.setText(min + ":" + sec);
+//                            audio_tv.setText(duration);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+
+								seekProgress.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+								seekProgress.setProgress(0);
+								if (mProgressUpdater.mBarToUpdate == seekProgress) {
+									//this progress would be updated, but this is the wrong position
+									mProgressUpdater.mBarToUpdate = null;
+								}
+							}
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 
 
 				}
 			});
 
-
-					back.setOnClickListener(new OnClickListener() {
-
-						@Override
-						public void onClick(View arg0) {
-							SingleInstance.orderToastShow = false;
-							// TODO Auto-generated method stub
-							finish();
-						}
-					});
-
-					sessionId = getIntent().getStringExtra("sessionid");
-					isViewed = getIntent().getBooleanExtra("isviewed", false);
-
-					position = 0;
-
-						String query = "";
-
-						query = "select * from recordtransactiondetails where sessionid='"
-								+ sessionId + "'";
-
-						Log.i("CH", "Query" + query);
-						mlist = DBAccess.getdbHeler().getcallhistorydetails(query);
-						RecordTransactionBean recordTransactionBean = mlist
-								.get(position);
-
-						if (recordTransactionBean.getCalltype() != null) {
-							String callType = "";
-							if (recordTransactionBean.getCalltype().equalsIgnoreCase(
-									"AC")) {
-								callType = "Audio Call";
-							} else if (recordTransactionBean.getCalltype()
-									.equalsIgnoreCase("VC")) {
-								callType = "Video Call";
-							} else if (recordTransactionBean.getCalltype()
-									.equalsIgnoreCase("ABC")) {
-								callType = "Audio Broadcast";
-							} else if (recordTransactionBean.getCalltype()
-									.equalsIgnoreCase("VBC")) {
-								callType = "Video Broadcast";
-							} else if (recordTransactionBean.getCalltype()
-									.equalsIgnoreCase("AP")) {
-								callType = "Audio Unicast";
-							} else if (recordTransactionBean.getCalltype()
-									.equalsIgnoreCase("VP")) {
-								callType = "Video Unicast";
-							}
-							calltype.setText(callType);
-						}
-						if (recordTransactionBean.getCalltype() != null) {
-							callcontent.setText(recordTransactionBean.getCalltype());
-						}
-						if (recordTransactionBean.getFromName() != null) {
-							from.setText(recordTransactionBean.getFromName());
-						}
-						if (recordTransactionBean.getToName() != null) {
-							to.setText(recordTransactionBean.getToName());
-						}
-						if (recordTransactionBean.getStartTime() != null) {
-							date.setText(recordTransactionBean.getStartTime());
-						}
-						if (recordTransactionBean.getCallDuration() != null) {
-							duration.setText(recordTransactionBean
-									.getCallDuration());
-//							tvTimer.setText(recordTransactionBean
-//									.getCallDuration());
-
-
-						}
-
-						if (recordTransactionBean.getSessionid() != null) {
-							preview.setTag(recordTransactionBean.getSessionid());
-						}
-
-						if (isViewed) {
-							String strUpdateNote = "update recordtransactiondetails set status='" + 1
-									+ "' where sessionid='" + sessionId
-									+ "'";
-							if (DBAccess.getdbHeler().ExecuteQuery(strUpdateNote)) {
-								recordTransactionBean.setStatus(1);
-							}
-						}
-
-
-
-						preview.setOnClickListener(new OnClickListener() {
-
-							@Override
-							public void onClick(View v) {
-								// TODO Auto-generated method stub
-								try {
-
-
-									String file = Environment
-											.getExternalStorageDirectory()
-											+ "/COMMedia/CallRecording/"
-											+ v.getTag().toString() + ".wav";
-									Log.d("Stringpath", "mediapath--->"+file);
-
-
-//									File path = new File(file);
-//									mPlayer.setDataSource(file.getPath());
-									int CountFiles = new File(Environment
-											.getExternalStorageDirectory()
-											+ "/COMMedia/CallRecording/").listFiles().length;
-									Log.d("Test", "Length of the files@@@----->");
-
-
-									if(mPlayer.isPlaying())
-									{
-										mPlayer.pause();
-										preview.setBackgroundResource(R.drawable.play);
-									}else
-									{
-										preview.setBackgroundResource(R.drawable.audiopause);
-										playAudio(file, 0);
-
-									}
-
-									if (position == mPlayingPosition) {
-										mProgressUpdater.mBarToUpdate = seekProgress;
-										mProgressUpdater.tvToUpdate = tvTimer;
-										mHandler.postDelayed(mProgressUpdater, 100);
-									} else {
-
-										try {
-											Log.d("Stringpath", "mediapath--->");
-											seekProgress.setProgress(0);
-											MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-											mmr.setDataSource(file);
-											String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-											mmr.release();
-											String min, sec;
-											min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration)));
-											sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(Long.parseLong(duration)) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration))));
-											if (Integer.parseInt(min) < 10) {
-												min = 0 + String.valueOf(min);
-											}
-											if (Integer.parseInt(sec) < 10) {
-												sec = 0 + String.valueOf(sec);
-											}
-											tvTimer.setText(min + ":" + sec);
-//                            audio_tv.setText(duration);
-										} catch (Exception e) {
-											e.printStackTrace();
-										}
-
-										seekProgress.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
-										seekProgress.setProgress(0);
-										if (mProgressUpdater.mBarToUpdate == seekProgress) {
-											//this progress would be updated, but this is the wrong position
-											mProgressUpdater.mBarToUpdate = null;
-										}
-									}
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-
-
-							}
-						});
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 
 
 
@@ -487,6 +678,7 @@ private Runnable UpdateSongTime = new Runnable() {
 		if (WebServiceReferences.contextTable.containsKey("ordermenuactivity")) {
 			WebServiceReferences.contextTable.remove("ordermenuactivity");
 		}
+		mPlayer.stop();
 		super.onDestroy();
 		}
 

@@ -14,6 +14,16 @@ public class PatientDescriptionBean {
     private String reportmodifier;
     private String groupid;
 
+    public String getDate() {
+        return Date;
+    }
+
+    public void setDate(String date) {
+        Date = date;
+    }
+
+    private String Date;
+
     public String getPatientid() {
         return patientid;
     }

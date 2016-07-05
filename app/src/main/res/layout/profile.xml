@@ -76,6 +76,7 @@
                         android:layout_width="15dp"
                         android:layout_height="15dp"
                         android:layout_marginRight="5dp"
+                        android:id="@+id/status_icon"
                         android:background="@drawable/checkbox_default"/>
 
                     <TextView
@@ -460,7 +461,7 @@
                 <TextView
                     android:id="@+id/hospitalspec"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginLeft="15dp"
@@ -485,7 +486,7 @@
                 <TextView
                     android:id="@+id/association"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginLeft="15dp"
@@ -511,7 +512,7 @@
                 <TextView
                     android:id="@+id/citation"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginLeft="15dp"

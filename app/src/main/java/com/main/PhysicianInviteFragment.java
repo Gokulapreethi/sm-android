@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.util.SingleInstance;
 
@@ -28,8 +29,8 @@ public class PhysicianInviteFragment extends Fragment {
     private static Context mainContext;
     public View view;
     Boolean isFrom=false;
-    private LinearLayout sender_layout;
-    private TextView textinfo_1, textinfo_2, textinfo_3;
+    private RelativeLayout sender_layout;
+    private TextView textinfo_1, textinfo_2, textinfo_3, textinfo_5,textinfo_4;
     private Button share;
 
     public static PhysicianInviteFragment newInstance(Context context) {
@@ -56,6 +57,7 @@ public class PhysicianInviteFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         try {
+            AppReference.bacgroundFragment=physicianInviteFragment;
             Button select = (Button) getActivity().findViewById(R.id.btn_brg);
             select.setVisibility(View.GONE);
             TextView title = (TextView) getActivity().findViewById(
@@ -66,16 +68,13 @@ public class PhysicianInviteFragment extends Fragment {
 
             Button imVw = (Button) getActivity().findViewById(R.id.im_view);
             imVw.setVisibility(View.GONE);
-            Button edit = (Button) getActivity().findViewById(
-                    R.id.btn_settings);
+            Button edit = (Button) getActivity().findViewById(R.id.btn_settings);
             edit.setVisibility(View.GONE);
             RelativeLayout mainHeader = (RelativeLayout) getActivity().findViewById(R.id.mainheader);
             mainHeader.setVisibility(View.VISIBLE);
-            LinearLayout contact_layout = (LinearLayout) getActivity()
-                    .findViewById(R.id.contact_layout);
+            LinearLayout contact_layout = (LinearLayout) getActivity().findViewById(R.id.contact_layout);
             contact_layout.setVisibility(View.GONE);
-            Button plusBtn = (Button) getActivity()
-                    .findViewById(R.id.add_group);
+            Button plusBtn = (Button) getActivity().findViewById(R.id.add_group);
             plusBtn.setVisibility(View.GONE);
             Button backBtn = (Button) getActivity().findViewById(R.id.backbtn);
             backBtn.setVisibility(View.VISIBLE);
@@ -85,42 +84,31 @@ public class PhysicianInviteFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     InviteUserFragment inviteUserFragment = InviteUserFragment.newInstance(mainContext);
-                    FragmentManager fragmentManager = SingleInstance.mainContext
-                            .getSupportFragmentManager();
+                    FragmentManager fragmentManager = SingleInstance.mainContext.getSupportFragmentManager();
                     fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    fragmentManager.beginTransaction().replace(
-                            R.id.activity_main_content_fragment, inviteUserFragment)
-                            .commitAllowingStateLoss();
+                    fragmentManager.beginTransaction().replace(R.id.activity_main_content_fragment, inviteUserFragment).commitAllowingStateLoss();
                 }
             });
             view = null;
             if (view == null) {
                 view = inflater.inflate(R.layout.otheruser_invite, null);
-                textinfo_1 = (TextView)view.findViewById(R.id.textinfo_1);
+                textinfo_5 = (TextView)view.findViewById(R.id.textinfo_5);
+                textinfo_4 = (TextView)view.findViewById(R.id.textinfo_4);
                 textinfo_2 = (TextView)view.findViewById(R.id.textinfo_2);
                 textinfo_3 = (TextView)view.findViewById(R.id.textinfo_3);
                 share = (Button)view.findViewById(R.id.share_button);
-                sender_layout = (LinearLayout)view.findViewById(R.id.sender_layout);
+                sender_layout = (RelativeLayout)view.findViewById(R.id.sender_layout);
 
                 if (isFrom){
-                    textinfo_1.setText("Download the app");
-                    textinfo_2.setText("play.google.com");
-
-                    textinfo_2.setTextColor(mainContext.getResources().getColor(R.color.blue2));
-                    textinfo_2.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent i = new Intent(Intent.ACTION_VIEW);
-                            i.setData(Uri.parse("https://play.google.com"));
-                            startActivity(i);
-                        }
-                        });
-
-                    textinfo_3.setVisibility(View.GONE);
-                }else{
-                    sender_layout.setWeightSum(3);
-                    textinfo_1.setText("play.google.com");
-                    textinfo_1.setOnClickListener(new View.OnClickListener() {
+//                    textinfo_1.setText("Hi. I am using SnazMed.  An amazing \n" +
+//                            "healthcare communication app. Please \n" +
+//                            "download it using the links below so we \n" +
+//                            "can start exchanging HIPAA-compliant, \n" +
+//                            "secure communications and much more." );
+//                    textinfo_2.setText("play.google.com");
+//
+//                    textinfo_2.setTextColor(mainContext.getResources().getColor(R.color.blue2));
+                    textinfo_5.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent i = new Intent(Intent.ACTION_VIEW);
@@ -128,14 +116,30 @@ public class PhysicianInviteFragment extends Fragment {
                             startActivity(i);
                         }
                     });
-                    textinfo_1.setTextColor(mainContext.getResources().getColor(R.color.blue2));
+                    textinfo_2.setVisibility(View.GONE);
+                    textinfo_3.setVisibility(View.GONE);
+                    textinfo_4.setVisibility(View.GONE);
+//                    textinfo_3.setVisibility(View.GONE);
+                }else{
+//                    sender_layout.setWeightSum(3);
+//                    textinfo_1.setText("play.google.com");
+                    textinfo_5.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent(Intent.ACTION_VIEW);
+                            i.setData(Uri.parse("https://play.google.com"));
+                            startActivity(i);
+                        }
+                    });
+//                    textinfo_1.setTextColor(mainContext.getResources().getColor(R.color.blue2));
 //                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
 //                    startActivity(browserIntent);
-                    textinfo_2.setText("Download the app\n and enter this code:");
-                    textinfo_3.setVisibility(View.VISIBLE);
+//                    textinfo_2.setText("Download the app\n and enter this code:");
+//                    textinfo_3.setVisibility(View.VISIBLE);
+
                     String code = UUID.randomUUID().toString().trim().substring(0, 8).toUpperCase();
 
-                    textinfo_3.setText(code);
+                    textinfo_4.setText(code);
                 }
 
 

@@ -1,5 +1,6 @@
 package org.lib.xml;
 
+import android.telecom.Call;
 import android.util.Base64;
 import android.util.Log;
 
@@ -280,6 +281,15 @@ public class XmlParser {
 			if (nodeMap.getNamedItem("callsubtype") != null) {
 				sb.setCallSubType(nodeMap.getNamedItem("callsubtype")
 						.getNodeValue());
+			}
+			if (nodeMap.getNamedItem("callChatId") != null) {
+				String chatid=nodeMap.getNamedItem("callChatId")
+						.getNodeValue();
+				if(chatid.contains(CallDispatcher.LoginUser)) {
+					String temp = chatid.replace(CallDispatcher.LoginUser, "");
+					sb.setChatid(temp);
+				}else
+					sb.setChatid(chatid);
 			}
 			/*
 			 * 04-19 16:46:43.940: D/XML_PARSER(7285): SignalBean Parser : <?xml
@@ -6529,7 +6539,7 @@ public class XmlParser {
 		return result;
 	}
 	public String[] parseGetMySecretQuestionXml(String xml) {
-		String[] result=new String[3];
+		String[] result=new String[6];
 		try {
 			dbf = DocumentBuilderFactory.newInstance();
 			db = dbf.newDocumentBuilder();
@@ -6547,6 +6557,13 @@ public class XmlParser {
 					result[1] = nodeMap.getNamedItem("secquestion2").getNodeValue();
 				if (nodeMap.getNamedItem("secquestion3") != null)
 					result[2] = nodeMap.getNamedItem("secquestion3").getNodeValue();
+				if (nodeMap.getNamedItem("secanswer1") != null)
+					result[3] = nodeMap.getNamedItem("secanswer1").getNodeValue();
+				if (nodeMap.getNamedItem("secanswer2") != null)
+					result[4] = nodeMap.getNamedItem("secanswer2").getNodeValue();
+				if (nodeMap.getNamedItem("secanswer3") != null)
+					result[5] = nodeMap.getNamedItem("secanswer3").getNodeValue();
+
 			}
 			Log.i("AAAA","notifyMySecretQuestion result "+result.length);
 
@@ -7312,7 +7329,7 @@ public class XmlParser {
 			is = new InputSource();
 			is.setCharacterStream(new StringReader(xml));
 			doc = (Document) db.parse(is);
-			list = doc.getElementsByTagName("Chattemplets");
+			list = doc.getElementsByTagName("ChatTemplates");
 			for (int i = 0; i < list.getLength(); i++) {
 				node = list.item(i);
 				if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -7328,18 +7345,18 @@ public class XmlParser {
 					}
 				}
 			}
-			list = doc.getElementsByTagName("Chattemplet");
+			list = doc.getElementsByTagName("item");
 			for (int i = 0; i < list.getLength(); i++) {
 				chattemplatebean bean = new chattemplatebean();
 				node = list.item(i);
 				if (node.getNodeType() == Node.ELEMENT_NODE) {
 					element = (Element) node;
 					if (element != null) {
-						String id = element.getAttribute("templetid").trim();
+						String id = element.getAttribute("id").trim();
 						if (!(id.equals(null) || id.equals(""))) {
 							bean.setTempletid(id);
 						}
-						String message = element.getAttribute("templetmessage").trim();
+						String message = element.getAttribute("template").trim();
 						if (!(message.equals(null) || message.equals(""))) {
 							bean.setTempletmessage(message);
 						}
@@ -7585,6 +7602,7 @@ public class XmlParser {
 			is.setCharacterStream(new StringReader(xml));
 			doc = (Document) db.parse(is);
 			list = doc.getElementsByTagName("Roundingrights");
+			String roleid = null;
 			for (int i = 0; i < list.getLength(); i++) {
 				node = list.item(i);
 				nodeMap = node.getAttributes();
@@ -7593,6 +7611,7 @@ public class XmlParser {
 				if (nodeMap.getNamedItem("roleid") != null)
 					bean.setRoleid(nodeMap.getNamedItem("roleid")
 							.getNodeValue());
+				roleid=bean.getRoleid();
 
 				if (nodeMap.getNamedItem("groupid") != null)
 					bean.setGroupid(nodeMap.getNamedItem("groupid")
@@ -7640,9 +7659,10 @@ public class XmlParser {
 
 				if (nodeMap.getNamedItem("groupmember") != null)
 					pbean.setGroupmember(nodeMap.getNamedItem("groupmember").getNodeValue());
+				pbean.setRoleid(roleid);
 
 				if (nodeMap.getNamedItem("role") != null)
-					pbean.setProle(nodeMap.getNamedItem(
+					pbean.setRole(nodeMap.getNamedItem(
 							"role").getNodeValue());
 
 				if (nodeMap.getNamedItem("add") != null)
@@ -7677,8 +7697,10 @@ public class XmlParser {
 				if (nodeMap.getNamedItem("groupmember") != null)
 					eBean.setGroupmember(nodeMap.getNamedItem("groupmember").getNodeValue());
 
+				eBean.setRoleid(roleid);
+
 				if (nodeMap.getNamedItem("role") != null)
-					eBean.setErole(nodeMap.getNamedItem(
+					eBean.setRole(nodeMap.getNamedItem(
 							"role").getNodeValue());
 
 				if (nodeMap.getNamedItem("status") != null)
@@ -7719,8 +7741,10 @@ public class XmlParser {
 				if (nodeMap.getNamedItem("groupmember") != null)
 					tBean.setGroupmember(nodeMap.getNamedItem("groupmember").getNodeValue());
 
+				tBean.setRoleid(roleid);
+
 				if (nodeMap.getNamedItem("role") != null)
-					tBean.setTrole(nodeMap.getNamedItem(
+					tBean.setRole(nodeMap.getNamedItem(
 							"role").getNodeValue());
 
 				if (nodeMap.getNamedItem("attending") != null)
@@ -7758,9 +7782,10 @@ public class XmlParser {
 
 				if (nodeMap.getNamedItem("groupmember") != null)
 					cBean.setGroupmember(nodeMap.getNamedItem("groupmember").getNodeValue());
+				cBean.setRoleid(roleid);
 
 				if (nodeMap.getNamedItem("role") != null)
-					cBean.setCrole(nodeMap.getNamedItem(
+					cBean.setRole(nodeMap.getNamedItem(
 							"role").getNodeValue());
 
 				if (nodeMap.getNamedItem("attending") != null)
@@ -8030,5 +8055,37 @@ public class XmlParser {
 		} finally {
 			return fileslist;
 		}
+	}
+	public String[] parseUpdateChatTemplate(String xml) {
+		String[] result = null;
+		result=new String[4];
+		try {
+			dbf = DocumentBuilderFactory.newInstance();
+			db = dbf.newDocumentBuilder();
+			is = new InputSource();
+			is.setCharacterStream(new StringReader(xml));
+			doc = (Document) db.parse(is);
+			list = doc.getElementsByTagName("UpdateChatTemplate");
+
+			node = list.item(0);
+			nodeMap = node.getAttributes();
+
+			if (nodeMap.getNamedItem("modifieddate") != null) {
+				result[0] = nodeMap.getNamedItem("modifieddate").getNodeValue();
+			}
+			if (nodeMap.getNamedItem("type") != null) {
+				result[1] = nodeMap.getNamedItem("type").getNodeValue();
+			}
+			if (nodeMap.getNamedItem("templateid") != null) {
+				result[2] = nodeMap.getNamedItem("templateid").getNodeValue();
+			}
+			if (nodeMap.getNamedItem("message") != null) {
+				result[3] = nodeMap.getNamedItem("message").getNodeValue();
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return result;
 	}
 }

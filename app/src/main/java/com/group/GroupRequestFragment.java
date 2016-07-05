@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.bean.ProfileBean;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
 import com.cg.rounding.RoundingFragment;
 import com.cg.snazmed.R;
 import com.image.utils.ImageLoader;
@@ -69,6 +70,7 @@ public class GroupRequestFragment extends Fragment {
     }
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        AppReference.bacgroundFragment=groupRequestFragment;
         Button select = (Button) getActivity().findViewById(R.id.btn_brg);
         select.setVisibility(View.GONE);
         RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
@@ -88,7 +90,7 @@ public class GroupRequestFragment extends Fragment {
         TextView title = (TextView) getActivity().findViewById(
                 R.id.activity_main_content_title);
         title.setVisibility(View.VISIBLE);
-        title.setText(groupname);
+        title.setText(groupname.toUpperCase());
 
         Button backBtn = (Button) getActivity().findViewById(R.id.backbtn);
         backBtn.setVisibility(View.VISIBLE);
@@ -122,7 +124,7 @@ public class GroupRequestFragment extends Fragment {
                 TextView groupName=(TextView)_rootView.findViewById(R.id.groupname);
                 TextView groupdesc=(TextView)_rootView.findViewById(R.id.groupdesc);
                 TextView members=(TextView)_rootView.findViewById(R.id.members);
-                ListView members_list=(ListView)_rootView.findViewById(R.id.lv_buddylist);
+                LinearLayout members_list=(LinearLayout)_rootView.findViewById(R.id.lv_buddylist);
                 LinearLayout accept=(LinearLayout)_rootView.findViewById(R.id.accept);
                 LinearLayout reject=(LinearLayout)_rootView.findViewById(R.id.reject);
                 groupName.setText(groupname);
@@ -165,9 +167,15 @@ public class GroupRequestFragment extends Fragment {
                         }
                     }
                 }
+                membercount=memberslist.size();
                 members.setText("("+membercount+")");
                 MembersAdapter adapter=new MembersAdapter(SingleInstance.mainContext,R.layout.find_people_item,memberslist);
-                members_list.setAdapter(adapter);
+                final int adapterCount = adapter.getCount();
+
+                for (int i = 0; i < adapterCount; i++) {
+                    View item = adapter.getView(i, null, null);
+                    members_list.addView(item);
+                }
                 accept.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -279,7 +287,7 @@ public class GroupRequestFragment extends Fragment {
         TextView occupation;
         TextView header_title;
     }
-    private void showDialog() {
+    public void showDialog() {
         handler.post(new Runnable() {
 
             @Override

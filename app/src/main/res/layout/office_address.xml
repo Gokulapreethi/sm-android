@@ -5,22 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/relayLay1"
-    android:background="@color/transparent">
+    android:background="@color/black2"
+    >
 
     <ScrollView
         android:id="@+id/Scroll_address"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="#272829"
         android:scrollbars="none"
-        android:layout_above="@+id/relay_bottom1"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        android:layout_above="@+id/relay_bottom1">
 
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black2"
         >
 
     <TextView
@@ -30,6 +29,7 @@
         android:layout_marginTop="10dp"
         android:text="Address 1"
         android:textSize="15dp"
+        android:visibility="gone"
         android:textColor="@color/grey3"
         android:layout_marginLeft="20dp"
         />
@@ -42,7 +42,7 @@
             android:layout_marginTop="10dp"
             android:textSize="20dp"
             android:hint="Address 1"
-            android:inputType="textPersonName"
+            android:digits="@string/alphaNumericandspace"
             android:background="@color/black2"
             android:textColor="@color/white"
             android:layout_marginBottom="10dp"
@@ -62,6 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Address 2"
+            android:visibility="gone"
             android:textSize="15dp"
             android:layout_marginTop="10dp"
             android:textColor="@color/grey3"
@@ -74,7 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:inputType="textPersonName"
+            android:digits="@string/alphaNumericandspace"
             android:textSize="20dp"
             android:background="@color/black2"
             android:textColor="@color/white"
@@ -99,6 +100,7 @@
             android:layout_marginTop="10dp"
             android:textColor="@color/grey3"
             android:layout_marginLeft="20dp"
+            android:visibility="gone"
             />
 
         <EditText
@@ -108,7 +110,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:textSize="20dp"
-            android:inputType="number"
+            android:maxLength="10"
+            android:digits="@string/numbersvalue"
             android:background="@color/black2"
             android:textColor="@color/white"
             android:hint="zip"
@@ -133,6 +136,7 @@
             android:layout_marginTop="10dp"
             android:textColor="@color/grey3"
             android:layout_marginLeft="20dp"
+            android:visibility="gone"
             />
 
         <EditText
@@ -143,7 +147,7 @@
             android:layout_marginTop="10dp"
             android:textSize="20dp"
             android:hint="city"
-            android:inputType="text"
+            android:digits="@string/alphaNumericandspace"
             android:background="@color/black2"
             android:textColor="@color/white"
             android:layout_marginLeft="20dp"
@@ -156,24 +160,38 @@
             android:layout_height="1dp"
             android:layout_marginTop="5dp"
             android:background="@color/snazgray" />
-
-        <AutoCompleteTextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="15dp"
-            android:layout_marginLeft="15dp"
-            android:id="@+id/state_of_practice"
-            android:textColor="@color/white"
-            android:hint="State"
-            android:textSize="20dp"
-            android:padding="7dp"
-            android:layout_below="@+id/address_view4"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/edittext_style"
-            android:drawableRight="@drawable/input_arrow"/>
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:id="@+id/linearlay"
+            android:layout_below="@+id/address_view4">
+
+
+            <AutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:id="@+id/state_of_practice"
+                android:textColor="@color/white"
+                android:hint="State"
+                android:textSize="20dp"
+                android:padding="7dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/black2"
+                android:layout_weight="1"/>
+            <ImageView
+                android:id="@+id/offcstate_img"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/input_arrow"/>
+        </LinearLayout>
         <View
             android:id="@+id/address_view5"
-            android:layout_below="@+id/state_of_practice"
+            android:layout_below="@+id/linearlay"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="5dp"
@@ -188,6 +206,7 @@
             android:textSize="15dp"
             android:layout_marginTop="10dp"
             android:textColor="@color/grey3"
+            android:visibility="gone"
             android:layout_marginLeft="20dp"
             />
 
@@ -201,7 +220,8 @@
             android:background="@color/black2"
             android:textColor="@color/white"
             android:hint="Office phone number"
-            android:inputType="number"
+            android:digits="@string/numbersvalue"
+            android:maxLength="15"
             android:layout_marginLeft="20dp"
             android:layout_marginBottom="10dp"
             />
@@ -220,7 +240,7 @@
             android:layout_height="wrap_content"
             android:text="Office fax number"
             android:textSize="15dp"
-
+            android:visibility="gone"
             android:layout_marginTop="10dp"
             android:textColor="@color/grey3"
             android:layout_marginLeft="20dp"

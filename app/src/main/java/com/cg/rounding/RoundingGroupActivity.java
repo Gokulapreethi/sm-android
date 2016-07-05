@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -33,17 +34,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Fingerprint.MainActivity;
 import com.bean.ProfileBean;
 import com.bean.UserBean;
 import com.cg.DB.DBAccess;
+import com.cg.account.PinSecurity;
+import com.cg.commonclass.BuddyListComparator;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
+import com.cg.quickaction.User;
 import com.cg.snazmed.R;
 import com.group.AddGroupMembers;
 import com.group.BuddyAdapter;
 import com.group.GroupAdapter;
 import com.group.GroupAdapter1;
 import com.group.GroupAdapter2;
+import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
 import com.main.ContactsFragment;
@@ -61,6 +68,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
@@ -91,6 +100,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
 
     private CallDispatcher callDisp = null;
     private ImageLoader imageLoader;
+    public String sorting = "online";
 
 
     // private ArrayList<String> buddylist = null;
@@ -99,7 +109,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
 
     private TextView memberCount = null,memberAcceptedCount;
 
-    private boolean isEdit = false;
+    private boolean isEdit = false,isduplicate;
 
     private GroupBean groupBean = null;
 
@@ -115,7 +125,8 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
     private boolean isUpdateMembers = false;
     private boolean isModify = false,fromRounding=false;
 
-     Handler handler = new Handler();
+    Handler handler = new Handler();
+    LinearLayout member_lay,member_lay1,sort;
 
     private ProgressDialog progress = null;
     private ImageView profile_pic,edit_pic;
@@ -123,6 +134,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
     String groupid;
     GroupBean gBean;
     AppMainActivity appMainActivity;
+    boolean isatoz=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,13 +171,21 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
         edit_pic = (ImageView)findViewById(R.id.capture_image_view);
         final TextView tv_gpname=(TextView)findViewById(R.id.tv_gpname);
         final TextView tv_gpdesc=(TextView)findViewById(R.id.tv_gpdesc);
-        memberCount = (TextView) findViewById(R.id.txt_memberlist);
+        final LinearLayout tv_text=(LinearLayout)findViewById(R.id.tv);
+        memberCount = (TextView) findViewById(R.id.members_count);
         lv_buddylist = (LinearLayout) findViewById(R.id.lv_buddylist);
-        memberAcceptedCount = (TextView) findViewById(R.id.txt_list);
+        memberAcceptedCount = (TextView) findViewById(R.id.members_count1);
         lv_memberList = (LinearLayout) findViewById(R.id.lv_memberlist);
         isEdit = getIntent().getBooleanExtra("isEdit", false);
+        isduplicate = getIntent().getBooleanExtra("isduplicate", false);
         fromRounding=getIntent().getBooleanExtra("fromRounding",false);
         SingleInstance.contextTable.put("roundingGroup", context);
+        member_lay=(LinearLayout)findViewById(R.id.member_lay);
+        member_lay1=(LinearLayout)findViewById(R.id.member_lay1);
+        sort=(LinearLayout)findViewById(R.id.sort);
+        final Button online=(Button)findViewById(R.id.online_sort);
+        final Button alpha=(Button)findViewById(R.id.alpha_sort);
+        final Button role=(Button)findViewById(R.id.role_sort);
 
         if (WebServiceReferences.callDispatch.containsKey("calldisp"))
             callDisp = (CallDispatcher) WebServiceReferences.callDispatch
@@ -182,6 +202,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
         }
         appMainActivity = (AppMainActivity) SingleInstance.contextTable
                 .get("MAIN");
+        btn_addMemberFromContact.setText("INVITE NEW MEMBERS");
 
         edit_pic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,6 +214,71 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                 intent.putExtra("filePath", strIPath);
                 intent.putExtra("isPhoto", true);
                 startActivityForResult(intent, 1);
+            }
+        });
+        online.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                online.setTextColor(getResources().getColor(R.color.white));
+                alpha.setTextColor(getResources().getColor(R.color.snazlgray));
+                role.setTextColor(getResources().getColor(R.color.snazlgray));
+                sorting = "online";
+                Vector<UserBean> buddylist=new Vector<UserBean>();
+                buddylist=getOnlineList(membersAcceptedList);
+                memberAdapter = new MembersAdapter(context,R.layout.rounding_member_row,buddylist);
+                lv_memberList.removeAllViews();
+                final int adapterCount = memberAdapter.getCount();
+                for (int i = 0; i < adapterCount; i++) {
+                    View item = memberAdapter.getView(i, null, null);
+                    lv_memberList.addView(item);
+                }
+                memberAdapter.notifyDataSetChanged();
+            }
+        });
+        alpha.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alpha.setTextColor(getResources().getColor(R.color.white));
+                online.setTextColor(getResources().getColor(R.color.snazlgray));
+                role.setTextColor(getResources().getColor(R.color.snazlgray));
+                sorting = "alpha";
+                Collections.sort(membersAcceptedList, new BuddiesListComparator());
+                if(isatoz)
+                    isatoz=false;
+                else {
+                    isatoz = true;
+                    Collections.reverse(membersAcceptedList);
+                }
+                memberAdapter = new MembersAdapter(context,R.layout.rounding_member_row,membersAcceptedList);
+                lv_memberList.removeAllViews();
+                final int adapterCount = memberAdapter.getCount();
+                for (int i = 0; i < adapterCount; i++) {
+                    View item = memberAdapter.getView(i, null, null);
+                    lv_memberList.addView(item);
+                }
+                memberAdapter.notifyDataSetChanged();
+            }
+        });
+        role.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alpha.setTextColor(getResources().getColor(R.color.snazlgray));
+                online.setTextColor(getResources().getColor(R.color.snazlgray));
+                role.setTextColor(getResources().getColor(R.color.white));
+                sorting = "role";
+                Vector<UserBean> templist=new Vector<UserBean>();
+                for(UserBean bib:membersAcceptedList){
+                    if(bib.getRole()!=null && !bib.getRole().equalsIgnoreCase(""))
+                        templist.add(bib);
+                }
+                memberAdapter = new MembersAdapter(context,R.layout.rounding_member_row,templist);
+                lv_memberList.removeAllViews();
+                final int adapterCount = memberAdapter.getCount();
+                for (int i = 0; i < adapterCount; i++) {
+                    View item = memberAdapter.getView(i, null, null);
+                    lv_memberList.addView(item);
+                }
+                memberAdapter.notifyDataSetChanged();
             }
         });
         ed_groupname.addTextChangedListener(new TextWatcher() {
@@ -233,15 +319,19 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
         });
 
         if (isEdit) {
-                title.setText("EDIT ROUNDING GROUP");
+            title.setText("EDIT ROUNDING GROUP");
+            tv_text.setVisibility(View.GONE);
             groupid = getIntent().getStringExtra("id");
             groupBean = callDisp.getdbHeler(context).getGroup(
                     "select * from grouplist where groupid=" + groupid);
-            memberCount.setVisibility(View.VISIBLE);
+            sort.setVisibility(View.VISIBLE);
             memberAcceptedCount.setVisibility(View.VISIBLE);
+            member_lay.setVisibility(View.VISIBLE);
+            member_lay1.setVisibility(View.VISIBLE);
+            edit_pic.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_edit_photo));
             refreshMembersList();
             if (groupBean != null) {Log.d("Test",
-                        "$$$$$GroupCreatedDate@@@@@ " + groupBean.getCreatedDate());
+                    "$$$$$GroupCreatedDate@@@@@ " + groupBean.getCreatedDate());
                 btn_create.setTag(groupBean.getGroupId());
                 ed_groupname.setText(groupBean.getGroupName());
                 ed_groupname.setTypeface(tf_regular);
@@ -251,6 +341,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                 if(groupBean.getGroupIcon()!=null){
                     String profilePic=groupBean.getGroupIcon();
                     if (profilePic != null && profilePic.length() > 0) {
+                        edit_pic.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_edit_photo));
                         if (!profilePic.contains("COMMedia")) {
                             profilePic = Environment
                                     .getExternalStorageDirectory()
@@ -263,7 +354,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                     }
                 }
 
-                 gBean = callDisp.getdbHeler(context)
+                gBean = callDisp.getdbHeler(context)
                         .getGroupAndMembers(
                                 "select * from groupdetails where groupid="
                                         + groupBean.getGroupId());
@@ -279,10 +370,10 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                             UserBean userBean = new UserBean();
                             ProfileBean pbean=DBAccess.getdbHeler().getProfileDetails(tmp);
                             if(pbean!=null)
-                            if(pbean.getTitle()!=null &&pbean.getTitle().equalsIgnoreCase("Dr.") || pbean.getTitle().equalsIgnoreCase("Prof."))
-                                userBean.setFirstname(pbean.getTitle() +pbean.getFirstname());
-                            else
-                                userBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
+                                if(pbean.getTitle()!=null &&pbean.getTitle().equalsIgnoreCase("Dr.") || pbean.getTitle().equalsIgnoreCase("Prof."))
+                                    userBean.setFirstname(pbean.getTitle() +pbean.getFirstname());
+                                else
+                                    userBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
                             userBean.setProfilePic(pbean.getPhoto());
                             userBean.setBuddyName(tmp);
                             userBean.setSelected(true);
@@ -366,8 +457,8 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                     @Override
                     public void run() {
                         // TODO Auto-generated method stub
-                        memberCount.setText("INVITATIONS" + " (" + String.valueOf(membersList.size()) + ")");
-                        memberAcceptedCount.setText("MEMBERS" + " ("
+                        memberCount.setText( " (" + String.valueOf(membersList.size()) + ")");
+                        memberAcceptedCount.setText( " ("
                                 + String.valueOf(membersAcceptedList.size()) + ")");
                     }
                 });
@@ -488,16 +579,12 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                     "select * from groupdetails where groupid=" + bean.getGroupId());
             if (!gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
                 if (gBean.getInviteMembers() != null) {
-                    String[] invitelist = (gBean.getInviteMembers()).split(",");
-                    for (String temp : invitelist) {
-                        if (!temp.equalsIgnoreCase(CallDispatcher.LoginUser)) {
-                            bean.setStatus("request");
-                            requestList.add(bean);
-                        } else {
-                            bean.setStatus("accepted");
-                            acceptedList.add(bean);
-                            break;
-                        }
+                    if(!gBean.getInviteMembers().contains(CallDispatcher.LoginUser)){
+                        bean.setStatus("request");
+                        requestList.add(bean);
+                    }else {
+                        bean.setStatus("accepted");
+                        acceptedList.add(bean);
                     }
                 } else {
                     bean.setStatus("request");
@@ -517,7 +604,27 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        AppMainActivity.inActivity = this;
+        if(AppReference.mainContext.isPinEnable) {
+            if (AppReference.mainContext.openPinActivity) {
+                AppReference.mainContext.openPinActivity=false;
+                if(Build.VERSION.SDK_INT>20 && AppReference.mainContext.isTouchIdEnabled) {
+                    Intent i = new Intent(RoundingGroupActivity.this, MainActivity.class);
+                    startActivity(i);
+                }else {
+                    Intent i = new Intent(RoundingGroupActivity.this, PinSecurity.class);
+                    startActivity(i);
+                }
+            } else {
+                AppReference.mainContext.count=0;
+                AppReference.mainContext.registerBroadcastReceiver();
+            }
+        }
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        AppReference.mainContext.isApplicationBroughtToBackground();
+
     }
 
     // protected String getMembersCount()
@@ -528,10 +635,10 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
         UserBean uBean = new UserBean();
         ProfileBean pbean=DBAccess.getdbHeler().getProfileDetails(groupBean.getOwnerName());
         if(pbean!=null && pbean.getTitle()!=null)
-        if(pbean.getTitle().equalsIgnoreCase("Dr.") || pbean.getTitle().equalsIgnoreCase("Prof."))
-            uBean.setFirstname(pbean.getTitle() +pbean.getFirstname());
-        else
-            uBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
+            if(pbean.getTitle().equalsIgnoreCase("Dr.") || pbean.getTitle().equalsIgnoreCase("Prof."))
+                uBean.setFirstname(pbean.getTitle() +pbean.getFirstname());
+            else
+                uBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
         uBean.setBuddyName(groupBean.getOwnerName());
         uBean.setProfilePic(pbean.getPhoto());
         String status_1 = appMainActivity.loadCurrentStatus();
@@ -562,6 +669,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                     }
                     for (UserBean userBean : list) {
                         if (!membersMap.containsKey(userBean.getBuddyName())) {
+                            userBean.setAllowChecking(false);
                             membersList.add(userBean);
                         }
                     }
@@ -685,19 +793,23 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
         // TODO Auto-generated method stub
         if (WebServiceReferences.contextTable.containsKey("creategroup"))
             WebServiceReferences.contextTable.remove("creategroup");
+        if(SingleInstance.contextTable.containsKey("roundingGroup")){
+            SingleInstance.contextTable.remove("roundingGroup");
+        }
         super.onDestroy();
     }
 
     @Override
     public void onClick(View view) {
-        String groupName = ed_groupname.getText().toString();
+//        String groupName = ed_groupname.getText().toString();
         switch (view.getId()) {
 
             case R.id.save_group:
+                String groupName = ed_groupname.getText().toString();
                 if (SingleInstance.mainContext.isNetworkConnectionAvailable()) {
 
                     if (groupName.length() > 0 && groupName.length() <= 15
-                            && isGroupNameValidate(groupName) && membersList.size()>0) {
+                            && isGroupNameValidate(groupName) && (membersList.size()>0 || membersAcceptedList.size()>0)) {
                         hideKeyboard();
                         // callDisp.showprogress(CallDispatcher.pdialog, context);
                         groupBean=new GroupBean();
@@ -718,7 +830,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                             showToast("Special Characters -/. Are only allowed");
                         } else if (groupName.length() > 15) {
                             showToast("Groupname must be 1-15 characters");
-                        } else if(membersList.size()==0){
+                        } else if(membersAcceptedList.size()==0){
                             showToast("Please select group members");
                         } else {
                             Toast.makeText(getApplicationContext(),
@@ -745,6 +857,8 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
         try {
             if (groupBean != null) {
                 if(groupid!=null) groupBean.setGroupId(groupid);
+                if(isduplicate)
+                    groupBean.setGroupId("");
                 groupBean.setGroupStatus("1");
                 if (membersList.size() != 0) {
                     String deleteMembers = "";
@@ -778,7 +892,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                     groupBean.setDeleteGroupMembers("");
                 }
                 groupBean.setCallback(this);
-                    WebServiceReferences.webServiceClient.createRoundingGroup(groupBean, this);
+                WebServiceReferences.webServiceClient.createRoundingGroup(groupBean, context);
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -796,20 +910,20 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
 
     }
     public static Vector<GroupBean> loadNewGroupsFromDB() {
-            try {
-                RoundingList = new Vector<GroupBean>();
-                Vector<GroupBean> gList = DBAccess.getdbHeler()
-                        .getAllGroups(CallDispatcher.LoginUser,"Rounding");
+        try {
+            RoundingList = new Vector<GroupBean>();
+            Vector<GroupBean> gList = DBAccess.getdbHeler()
+                    .getAllGroups(CallDispatcher.LoginUser,"Rounding");
 
-                if (gList != null && gList.size() > 0) {
-                    RoundingList.clear();
-                    RoundingList.addAll(gList);
-                }
-                return RoundingList;
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (gList != null && gList.size() > 0) {
+                RoundingList.clear();
+                RoundingList.addAll(gList);
             }
             return RoundingList;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return RoundingList;
 
     }
 
@@ -830,11 +944,16 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                memberCount.setText("INVITATIONS ("
+                if(membersList.size()>0)
+                    member_lay.setVisibility(View.VISIBLE);
+                if(membersAcceptedList.size()>0)
+                    member_lay1.setVisibility(View.VISIBLE);
+                memberCount.setText("("
                         + String.valueOf(membersList.size()) + ")");
-                memberAcceptedCount.setText("MEMBERS ("
+                memberAcceptedCount.setText("("
                         + String.valueOf(membersAcceptedList.size()) + ")");
                 lv_buddylist.removeAllViews();
+                adapter = new BuddyAdapter(RoundingGroupActivity.this, membersList);
                 final int adapterCount = adapter.getCount();
 
                 for (int i = 0; i < adapterCount; i++) {
@@ -931,6 +1050,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                     convertView = inflater.inflate(R.layout.rounding_member_row, null);
                     holder.buddyicon = (ImageView) convertView.findViewById(R.id.buddyicon);
                     holder.statusIcon = (ImageView) convertView.findViewById(R.id.statusIcon);
+                    holder.delete_mark = (ImageView) convertView.findViewById(R.id.delete_mark);
                     holder.edit = (ImageView) convertView.findViewById(R.id.edit);
                     holder.buddyName = (TextView) convertView.findViewById(R.id.buddyName);
                     holder.occupation = (TextView) convertView.findViewById(R.id.occupation);
@@ -951,7 +1071,9 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                             imageLoader.DisplayImage(pic_Path, holder.buddyicon, R.drawable.img_user);
                         }
                     }
+                    holder.statusIcon.setVisibility(View.GONE);
                     holder.header_title.setVisibility(View.GONE);
+                    holder.delete_mark.setVisibility(View.VISIBLE);
                     if(bib.getStatus()!=null) {
                         Log.i("AAAA","Buddy adapter status "+bib.getStatus());
                         if (bib.getStatus().equalsIgnoreCase("offline") || bib.getStatus().equalsIgnoreCase("stealth")) {
@@ -970,6 +1092,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
 
                     if(bib.getBuddyName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
                         holder.rights.setText("Owner");
+                        holder.delete_mark.setVisibility(View.GONE);
                         holder.rights.setTextColor(getResources().getColor(R.color.green));
                     }else {
                         if(bib.getAdmin()!=null){
@@ -985,17 +1108,29 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                         holder.occupation.setText(bib.getOccupation());
                     if(bib.getRole()!=null){
                         holder.role.setText(bib.getRole());
-                    }
+                    }else
+                        holder.role.setVisibility(View.GONE);
+                    holder.delete_mark.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+//                            if(gBean.getGroupId()!=null) {
+//                                GroupBean groupBean = DBAccess.getdbHeler().getGroupAndMembers(
+//                                        "select * from grouplist where groupid=" + gBean.getGroupId());
+                                gBean.setDeleteGroupMembers(bib.getBuddyName());
+                                gBean.setGroupName(groupBean.getGroupName());
+                                showprogress();
+                                WebServiceReferences.webServiceClient.createRoundingGroup(gBean, context);
+//                            }
+                        }
+                    });
                     holder.edit.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-//                            if(!bib.isSelected()) {
-                                Intent intent = new Intent(context, RoundingEditActivity.class);
-                                intent.putExtra("buddyname", bib.getBuddyName());
-                                intent.putExtra("firstname", bib.getFirstname());
-                                intent.putExtra("groupid", groupid);
-                                startActivity(intent);
-//                            }
+                            Intent intent = new Intent(context, RoundingEditActivity.class);
+                            intent.putExtra("buddyname", bib.getBuddyName());
+                            intent.putExtra("firstname", bib.getFirstname());
+                            intent.putExtra("groupid", groupid);
+                            startActivity(intent);
                         }
                     });
 
@@ -1009,7 +1144,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
     }
     public static class ViewHolder {
         CheckBox selectUser;
-        ImageView buddyicon;
+        ImageView buddyicon,delete_mark;
         ImageView statusIcon,edit;
         TextView buddyName;
         TextView occupation;
@@ -1108,14 +1243,17 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                 });
 
             }
+            cancelDialog();
+            finish();
         } else if (obj instanceof String) {
             showToast((String) obj);
+
+        cancelDialog();
         } else {
+            cancelDialog();
             showAlert(SingleInstance.mainContext.getResources().getString(R.string.response_group),
                     ((WebServiceBean) obj).getText());
         }
-        cancelDialog();
-        finish();
     }
     public  void refreshInviteMembers()
     {
@@ -1155,5 +1293,34 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                 }
             }
         });
+    }
+    private class BuddiesListComparator implements Comparator<UserBean> {
+
+        @Override
+        public int compare(UserBean oldBean,
+                           UserBean newBean) {
+            // TODO Auto-generated method stub
+            return (oldBean.getFirstname().compareToIgnoreCase(newBean.getFirstname()));
+        }
+
+    }
+    public static Vector<UserBean> getOnlineList(Vector<UserBean> vectorBean) {
+        String status = null;
+        Vector<UserBean> tempList = new Vector<UserBean>();
+        Vector<UserBean> onlinelist = new Vector<UserBean>();
+        tempList.clear();
+        for (UserBean sortlistbean : vectorBean) {
+            if(sortlistbean.getStatus()!=null) {
+                status = sortlistbean.getStatus();
+                if (status.equalsIgnoreCase("Online")) {
+                    onlinelist.add(sortlistbean);
+                }
+            }
+        }
+        if(onlinelist.size()>0)
+            tempList.addAll(onlinelist);
+
+        return tempList;
+
     }
 }

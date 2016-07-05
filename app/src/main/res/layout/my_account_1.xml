@@ -110,6 +110,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/relative1"
                     android:layout_centerHorizontal="true"
+                    android:background="@color/black2"
                     android:layout_gravity="center">
 
                     <TextView
@@ -126,8 +127,8 @@
                         android:layout_marginBottom="10dp"/>
                     <ImageView
                         android:id="@+id/dot"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
                         android:layout_marginTop="10dp"
                         android:layout_toLeftOf="@+id/statusTxt1"
                         android:src="@drawable/checkbox_default"
@@ -155,20 +156,30 @@
                     android:visibility="visible"
                     android:textColor="#808080"
                     android:textSize="15dp" />
-
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
                 <AutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:layout_marginRight="15dp"
                     android:layout_marginLeft="15dp"
                     android:paddingLeft="13dp"
                     android:textColor="@color/white"
                     android:hint="Title"
-                    android:popupBackground="#202021"
-                    style="@style/spinner_style"
-                    android:spinnerMode="dropdown"
+                    android:background="#272829"
+                    android:layout_weight="1"
                     android:id="@+id/rlay_tilte"/>
+                    <ImageView
+                        android:id="@+id/title_img"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/input_arrow"/>
+                </LinearLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -273,35 +284,86 @@
                     android:layout_height="1dp"
                     android:layout_marginTop="5dp"
                     android:background="#7E8080" />
-                <AutoCompleteTextView
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/usertype"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginLeft="15dp"
-                    android:paddingLeft="13dp"
-                    android:popupBackground="#202021"
-                    style="@style/spinner_style"
-                    android:textColor="@color/white"
-                    android:hint="User Type"
-                    android:id="@+id/rlay_user_type"/>
+                    android:gravity="left"
+                    android:visibility="gone"
+                    android:padding="7dp"
+                    android:text="User Type"
+                    android:textColor="#808080"
+                    android:textSize="15dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+                    <AutoCompleteTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="15dp"
+                        android:paddingLeft="13dp"
+                        android:background="@color/black2"
+                        android:textColor="@color/white"
+                        android:hint="User Type"
+                        android:layout_weight="1"
+                        android:id="@+id/rlay_user_type"/>
+                    <ImageView
+                        android:id="@+id/usertype_img"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/input_arrow"/>
+                </LinearLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="5dp"
                     android:background="#7E8080" />
-                <AutoCompleteTextView
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/profDesc"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginLeft="15dp"
-                    android:paddingLeft="13dp"
-                    android:popupBackground="#202021"
-                    style="@style/spinner_style"
-                    android:textColor="@color/white"
-                    android:hint="Professional Designation"
-                    android:id="@+id/prof_desgn"/>
+                    android:gravity="left"
+                    android:visibility="gone"
+                    android:padding="7dp"
+                    android:text="Professional Designation"
+                    android:textColor="#808080"
+                    android:textSize="15dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+                    <AutoCompleteTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="15dp"
+                        android:paddingLeft="13dp"
+                        android:background="@color/black2"
+                        android:textColor="@color/white"
+                        android:layout_weight="1"
+                        android:hint="Professional Designation"
+                        android:id="@+id/prof_desgn"/>
+                    <ImageView
+                        android:id="@+id/prof_img"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/input_arrow"/>
+                </LinearLayout>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -321,37 +383,76 @@
                     android:visibility="gone"
                     android:textColor="#808080"
                     android:textSize="15dp" />
-
-                <AutoCompleteTextView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginLeft="15dp"
-                    android:id="@+id/rlay_state_of_practice"
-                    android:textColor="@color/white"
-                    android:hint="State Of Practice"
-                    android:textSize="15sp"
-                    android:padding="7dp"
-                    android:layout_marginTop="10dp"
-                    style="@style/spinner_style"/>
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+                    <AutoCompleteTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:id="@+id/rlay_state_of_practice"
+                        android:textColor="@color/white"
+                        android:hint="State Of Practice"
+                        android:layout_weight="1"
+                        android:textSize="15sp"
+                        android:padding="7dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/black2"/>
+                    <ImageView
+                        android:id="@+id/state_img"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/input_arrow"/>
+                </LinearLayout>
+
+
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="5dp"
                     android:background="#7E8080" />
-                <AutoCompleteTextView
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/tv_speciality"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginLeft="15dp"
-                    android:paddingLeft="13dp"
-                    android:popupBackground="#202021"
-                    style="@style/spinner_style"
-                    android:textColor="@color/white"
-                    android:hint="Specialty"
-                    android:id="@+id/speciality"/>
+                    android:gravity="left"
+                    android:visibility="gone"
+                    android:padding="7dp"
+                    android:text="Specialty"
+                    android:textColor="#808080"
+                    android:textSize="15dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+                    <AutoCompleteTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="15dp"
+                        android:paddingLeft="13dp"
+                        android:layout_weight="1"
+                        android:background="@color/black2"
+                        android:textColor="@color/white"
+                        android:hint="Specialty"
+                        android:id="@+id/speciality"/>
+                    <ImageView
+                        android:id="@+id/speciality_img"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/input_arrow"/>
+                </LinearLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -379,8 +480,8 @@
                         android:textColor="#458EDB" />
                     <Button
                         android:id="@+id/arrow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginRight="15dp"
                         android:background="@drawable/input_arrow" />
@@ -491,24 +592,38 @@
                         android:text="Medical Schools"
                         android:textColor="#808080"
                         android:textSize="15dp" />
-
-                    <AutoCompleteTextView
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="1dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginLeft="15dp"
-                        android:padding="7dp"
-                        style="@style/spinner_style"
-                        android:textColor="@color/white"
-                        android:hint="Medical School"
-                        android:id="@+id/medical_scl"/>
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+                        <AutoCompleteTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
+                            android:layout_marginLeft="15dp"
+                            android:padding="7dp"
+                            android:layout_weight="1"
+                            android:background="@color/black2"
+                            android:textColor="@color/white"
+                            android:hint="Medical School"
+                            android:id="@+id/medical_scl"/>
+                        <ImageView
+                            android:id="@+id/medical_img"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginRight="15dp"
+                            android:background="@drawable/input_arrow"/>
+                    </LinearLayout>
+
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="5dp"
                         android:background="#7E8080" />
                     <TextView
+                        android:id="@+id/tv_residency"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.00"
@@ -521,24 +636,38 @@
                         android:textColor="#808080"
                         android:visibility="gone"
                         android:textSize="15dp" />
-
-                    <AutoCompleteTextView
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="1dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginLeft="15dp"
-                        android:padding="7dp"
-                        android:textColor="@color/white"
-                        android:hint="residency Program"
-                        style="@style/spinner_style"
-                        android:id="@+id/resi_pro"/>
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+                        <AutoCompleteTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
+                            android:layout_marginLeft="15dp"
+                            android:padding="7dp"
+                            android:layout_weight="1"
+                            android:textColor="@color/white"
+                            android:hint="residency Program"
+                            android:background="@color/black2"
+                            android:id="@+id/resi_pro"/>
+                        <ImageView
+                            android:id="@+id/residency_img"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginRight="15dp"
+                            android:background="@drawable/input_arrow"/>
+                    </LinearLayout>
+
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="5dp"
                         android:background="#7E8080" />
                     <TextView
+                        android:id="@+id/tv_fellow"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.00"
@@ -549,20 +678,33 @@
                         android:padding="7dp"
                         android:visibility="gone"
                         android:text="Fellowship Program"
-                        android:textColor="@color/black"
+                        android:textColor="#808080"
                         android:textSize="15dp" />
-
-                    <AutoCompleteTextView
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="1dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginLeft="15dp"
-                        android:padding="7dp"
-                        android:textColor="@color/white"
-                        android:hint="Fellowship Program"
-                        style="@style/spinner_style"
-                        android:id="@+id/fellow"/>
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+                        <AutoCompleteTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
+                            android:layout_marginLeft="15dp"
+                            android:padding="7dp"
+                            android:layout_weight="1"
+                            android:textColor="@color/white"
+                            android:hint="Fellowship Program"
+                            android:background="@color/black2"
+                            android:id="@+id/fellow"/>
+                        <ImageView
+                            android:id="@+id/fellow_img"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginRight="15dp"
+                            android:background="@drawable/input_arrow"/>
+                    </LinearLayout>
+
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
@@ -587,43 +729,14 @@
                         android:visibility="visible"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:orientation="vertical"
                         android:layout_marginTop="10dp"
                         android:layout_marginRight="15dp"
                         android:layout_marginLeft="15dp">
-                        <EditText
-                            android:id="@+id/tv_addr"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="left"
-                            android:layout_weight="1"
-                            android:hint="Address"
-                            android:padding="7dp"
-                            android:textColor="@color/white"
-                            android:textSize="15dp"/>
-                        <Button
-                            android:gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="16sp"
-                            android:textColor="#909090"
-                            android:layout_marginRight="15dp"
-                            android:id="@+id/addr_edit"
-                            android:background="@drawable/input_edit"
-                            android:layout_toRightOf="@id/tv_addr"
-                            />
 
-                        <Button
-                            android:id="@+id/img_addr"
-                            android:gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="15dp"
-                            android:textSize="16sp"
-                            android:textColor="#909090"
-                            android:background="@drawable/input_delete"
-                            android:layout_toRightOf="@id/addr_edit"
-                            />
+
+
+
 
                     </LinearLayout>
             <LinearLayout
@@ -674,19 +787,45 @@
                         android:gravity="left"
                         android:padding="7dp"
                         android:text="Hospital Affiliation"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         android:textColor="#808080"
                         android:textSize="15dp" />
-                    <AutoCompleteTextView
-                        android:layout_width="match_parent"
+
+                    <LinearLayout
+                        android:id="@+id/hospital_lay1"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginLeft="15dp"
-                        android:padding="7dp"
-                        android:hint="Add Hospital Affiliation"
-                        android:textSize="15sp"
-                        android:textColor="@color/white" android:background="@drawable/edittext_style" android:drawableRight="@drawable/input_arrow" android:id="@+id/rlay_hospital_affiliation"/>
+                        android:orientation="vertical">
+                        <LinearLayout
+                            android:id="@+id/hospital_lay"
+                            android:visibility="visible"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginLeft="15dp">
+
+
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+                        <Spinner
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginRight="15dp"
+                            android:padding="7dp"
+                            android:layout_weight="1"
+                            android:textColor="@color/white"
+                            android:visibility="visible"
+                            android:hint="Add Hospital Affiliation"
+                            android:textSize="15sp"
+                            style="@style/spinner_style"
+                            android:id="@+id/rlay_hospital_affiliation"/>
+                    
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
@@ -703,22 +842,38 @@
                         android:gravity="left"
                         android:padding="7dp"
                         android:text="Associations Memberships"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         android:textColor="#808080"
                         android:textSize="15dp" />
-                    <AutoCompleteTextView
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:id="@+id/associatio_lay1"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginLeft="15dp"
-                        android:padding="7dp"
-                        android:textColor="@color/white"
-                        android:visibility="visible"
-                        android:hint="Choose Association"
-                        android:textSize="15sp"
-                        style="@style/spinner_style"
-                        android:id="@+id/association_membership"/>
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/associatio_lay"
+                            android:visibility="visible"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginLeft="15dp">
+                            </LinearLayout>
+                    </LinearLayout>
+                        <Spinner
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginLeft="15dp"
+                            android:padding="7dp"
+                            android:hint="Choose Association"
+                            android:textSize="15sp"
+                            android:textColor="@color/white"
+                            android:layout_weight="1"
+                            style="@style/spinner_style"
+                            android:id="@+id/association_membership"/>
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
@@ -740,6 +895,11 @@
                         android:textColor="#808080"
                         android:textSize="15dp" />
                     <LinearLayout
+                        android:id="@+id/cite_lay1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                    <LinearLayout
                         android:id="@+id/cite_lay"
                         android:visibility="visible"
                         android:layout_width="fill_parent"
@@ -748,28 +908,10 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginRight="15dp"
                         android:layout_marginLeft="15dp">
-                        <EditText
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="left"
-                            android:layout_weight="1"
-                            android:padding="7dp"
-                            android:inputType="text"
-                            android:hint="Carpathian mathematical Publications"
-                            android:textColor="@color/white"
-                            android:textSize="15dp"
-                            android:id="@+id/tv_cite"/>
-                        <Button
-                            android:gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="16sp"
-                            android:textColor="#909090"
-                            android:id="@+id/img_cite"
-                            android:layout_marginRight="15dp"
-                            android:background="@drawable/input_delete"
-                            android:layout_toRightOf="@id/tv_cite"
-                            />
+
+
+
+                    </LinearLayout>
 
                     </LinearLayout>
                     <LinearLayout
@@ -803,9 +945,17 @@
                             android:layout_marginRight="15dp"
                             android:id="@+id/cite_plus"
                             android:background="@drawable/input_plus"
-                            android:layout_toRightOf="@id/citation"
+                            android:layout_toRightOf="@+id/citation"
                             />
+
+
+
                         </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="5dp"
+                        android:background="#7E8080" />
                 </LinearLayout>
                 <TextView
                     android:layout_width="match_parent"

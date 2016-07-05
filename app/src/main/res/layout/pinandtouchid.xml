@@ -127,11 +127,19 @@
                     android:textSize="20sp" />
 
                 <ImageView
+                    android:id="@+id/toggle_off"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/touch_toogle"
+                    android:visibility="visible"/>
+                <ImageView
                     android:id="@+id/btn_touch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:visibility="gone"
                     android:background="@drawable/toggle_dummy" />
 
             </RelativeLayout>

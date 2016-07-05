@@ -2,6 +2,7 @@ package com.group;
 
 import java.util.Vector;
 
+import org.lib.model.BuddyInformationBean;
 import org.lib.model.GroupBean;
 
 import android.app.Dialog;
@@ -21,12 +22,17 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.cg.DB.DBAccess;
+import com.cg.commonclass.WebServiceReferences;
 import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
+import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
 import com.main.ContactsFragment;
 import com.util.SingleInstance;
@@ -38,12 +44,19 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 
 	private Typeface tf_bold = null;
 	ImageLoader imageLoader;
+	private Vector<GroupBean> grouplist;
+	private Vector<GroupBean> originalList;
+	private  GroupFilter filter;
 
 	public GroupAdapter(Context context, int textViewResourceId,
 			Vector<GroupBean> groupList) {
 
 		super(context, R.layout.grouplist, groupList);
 		this.context = context;
+		grouplist = new Vector<GroupBean>();
+		grouplist.addAll(ContactsFragment.getGroupList());
+		originalList = new Vector<GroupBean>();
+		this.originalList.addAll(ContactsFragment.getGroupList());
 		imageLoader=new ImageLoader(SingleInstance.mainContext);
 
 	}
@@ -64,6 +77,10 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 				row = inflater.inflate(R.layout.grouplist, null, false);
 				holder.listContainer = (LinearLayout) row
 						.findViewById(R.id.list_container);
+				holder.accept_lay = (LinearLayout) row
+						.findViewById(R.id.ll_accept);
+				holder.reject_lay = (LinearLayout) row
+						.findViewById(R.id.ll_reject);
 				holder.grouplist = (TextView) row.findViewById(R.id.group_name);
 				holder.header_title = (TextView) row.findViewById(R.id.header_title);
 				holder.members = (TextView) row.findViewById(R.id.members);
@@ -91,8 +108,8 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 				holder.header_title.setText(name.toUpperCase());
 			}
 			if(position>0){
-				GroupBean gBean=(GroupBean) ContactsFragment.getGroupList().get(position-1);
-				if(gBean.getStatus().equalsIgnoreCase("request"))
+				GroupBean gBean=(GroupBean) ContactsFragment.getGroupList().get(position - 1);
+				if(groupBean.getStatus().equalsIgnoreCase("request"))
 					holder.header_title.setVisibility(View.GONE);
 				else {
 					String name2=String.valueOf(gBean.getGroupName().charAt(0));
@@ -103,8 +120,7 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 				}
 			}
 
-			CallDispatcher callDisp=new CallDispatcher(SingleInstance.mainContext);
-			final GroupBean gBean = callDisp.getdbHeler(context) .getGroupAndMembers(
+			final GroupBean gBean = DBAccess.getdbHeler() .getGroupAndMembers(
 					"select * from groupdetails where groupid=" + groupBean.getGroupId());
 
 			if(gBean.getActiveGroupMembers()!=null && !gBean.getActiveGroupMembers().equalsIgnoreCase("")) {
@@ -163,6 +179,20 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 
 					}
 				});
+			holder.accept_lay.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					GroupRequestFragment.newInstance(SingleInstance.mainContext).showDialog();
+					WebServiceReferences.webServiceClient.AcceptRejectGroupmember(groupBean.getGroupId(), CallDispatcher.LoginUser, "1",SingleInstance.mainContext);
+				}
+			});
+			holder.reject_lay.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					GroupRequestFragment.newInstance(SingleInstance.mainContext).showDialog();
+					WebServiceReferences.webServiceClient.AcceptRejectGroupmember(groupBean.getGroupId(), CallDispatcher.LoginUser, "0",SingleInstance.mainContext);
+				}
+			});
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -172,11 +202,60 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 	}
 
 	public static class ViewHolder {
-		LinearLayout listContainer;
+		LinearLayout listContainer,accept_lay,reject_lay;
 		TextView grouplist,members,header_title;
 		LinearLayout contact_history;
 		LinearLayout inreq;
 		ImageView buddy_icon;
+	}
+	public Filter getFilter() {
+		if (filter == null){
+			filter  = new GroupFilter();
+		}
+		return filter;
+	}
+	private class GroupFilter extends Filter
+	{
+
+		@Override
+		protected FilterResults performFiltering(CharSequence constraint) {
+
+			constraint = constraint.toString().toLowerCase();
+
+			FilterResults result = new FilterResults();
+			if (constraint != null && constraint.toString().length() > 0) {
+				Vector<GroupBean> gBeans = new Vector<GroupBean>();
+				for(int i = 0, l = originalList.size(); i < l; i++)
+				{
+					GroupBean groupBean = originalList.get(i);
+					if(groupBean.getGroupName().toLowerCase().startsWith(String.valueOf(constraint)))
+						gBeans.add(groupBean);
+				}
+				result.count = gBeans.size();
+				result.values = gBeans;
+			} else {
+				synchronized (this) {
+					result.values = originalList;
+					result.count = originalList.size();
+				}
+			}
+			return result;
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		protected void publishResults(CharSequence constraint,
+									  FilterResults results) {
+
+			grouplist= (Vector<GroupBean>)results.values;
+			notifyDataSetChanged();
+			clear();
+			for(int i = 0, l = grouplist.size(); i < l; i++)
+				add(grouplist.get(i));
+			notifyDataSetInvalidated();
+
+		}
+
 	}
 
 }

@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -68,12 +69,14 @@ public class ForwardUserSelect extends Activity {
     private  int presentbuddiescount=0;
     private ForwardUserSelectionAdapter adapter;
     private ForwardGroupAdapter forwardGroupAdapter;
-    private CheckBox selectAll, selectgroup;
+    private CheckBox selectAll, selectAll_group;
     private int total_count = 0;
     public View _rootView;
-    private  GroupBean groupManagementBean;
-    private int total_groupcount = 0,count=0;
+    private RelativeLayout chbox_lay1;
+    private int total_groupcount = 0;
     private boolean contact=true;
+    private boolean fromfiles = false;
+
 
     Vector<BuddyInformationBean> buddylist = new Vector<BuddyInformationBean>();
     Vector<GroupBean> buddygroupList = new Vector<GroupBean>();
@@ -87,11 +90,29 @@ public class ForwardUserSelect extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.fwd_user_select);
         context = this;
+        final Bundle bndl = getIntent().getExtras();
+        fromfiles = bndl.getBoolean("fromfile",false);
+
 
         final Button search = (Button) findViewById(R.id.btnRegisterOk);
         final EditText searchet = (EditText) findViewById(R.id.searchet);
         selectAll = (CheckBox) findViewById(R.id.btn_selectall);
+        selectAll_group = (CheckBox)findViewById(R.id.btn_selectall1);
         final TextView txtView01 = (TextView) findViewById(R.id.txtView01);
+        Button send = (Button) findViewById(R.id.Sendbtn);
+        ImageView tick_mark = (ImageView)findViewById(R.id.tick_mark);
+
+
+        if(fromfiles){
+            txtView01.setText("SHARE WITH");
+            send.setText("DONE");
+            tick_mark.setVisibility(View.VISIBLE);
+
+        }else{
+            txtView01.setText("FORWARD TO");
+            send.setText("SEND");
+            tick_mark.setVisibility(View.GONE);
+        }
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,23 +130,9 @@ public class ForwardUserSelect extends Activity {
         });
 
 
-        searchet.addTextChangedListener(new TextWatcher() {
-
-            public void afterTextChanged(Editable s) {
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s != null && s != "")
-                    adapter.getFilter().filter(s);
-                forwardGroupAdapter.getFilter().filter(s);
-            }
-        });
 
 
-        Button send = (Button) findViewById(R.id.Sendbtn);
+
         Button close = (Button) findViewById(R.id.cancel);
         LinearLayout Mycontact_forward = (LinearLayout) findViewById(R.id.Mycontact_forward);
         LinearLayout Mygroups_forward = (LinearLayout) findViewById(R.id.Mygroups_forward);
@@ -151,6 +158,7 @@ public class ForwardUserSelect extends Activity {
                             groupMembers=groupMembers+gBean.getGroupId()+",";
                         }
                     }
+                    Log.i("activityresult","ForwardUserSelect Call FileInfoFragment");
                     Intent resultIntent = new Intent();
                     if(members.length()>0)
                     resultIntent.putExtra("SELECTED_MEMBERS", members.substring(0,members.length()-1));
@@ -185,6 +193,7 @@ public class ForwardUserSelect extends Activity {
                         btn_ok.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                dialog.dismiss();
                                 finish();
                             }
                         });
@@ -212,7 +221,7 @@ public class ForwardUserSelect extends Activity {
         final View view_Group = (View) findViewById(R.id.view_Group);
         final ListView memberListView = (ListView) findViewById(R.id.listViews1);
         final RelativeLayout chbox_lay = (RelativeLayout) findViewById(R.id.chbox_lay);
-
+        chbox_lay1 = (RelativeLayout)findViewById(R.id.chbox_lay1);
 
         Collections.sort(ContactsFragment.getBuddyList(), new BuddyListComparator());
         for(BuddyInformationBean bib:ContactsFragment.getBuddyList()){
@@ -230,9 +239,11 @@ public class ForwardUserSelect extends Activity {
         memberListView.setAdapter(adapter);
 
         countofselection = (TextView) findViewById(R.id.selected);
+        countofselection_group = (TextView) findViewById(R.id.selected1);
 
 
         WebServiceReferences.contextTable.put("forwarduser", context);
+
 
 
 
@@ -240,14 +251,16 @@ public class ForwardUserSelect extends Activity {
         selectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean ischecked) {
-                if (contact == true) {
+//                if (contact == true) {
 
 
                     Log.d("inside selection", "---->item position");
+                int count=0;
 
                     if ((Boolean) selectAll.getTag()) {
                         for (BuddyInformationBean buddyBean : buddylist) {
                             buddyBean.setSelected(true);
+                            count++;
                         }
                         selectAll.setTag(false);
                         countofcheckbox(count);
@@ -258,41 +271,48 @@ public class ForwardUserSelect extends Activity {
                         }
                         selectAll.setTag(true);
                         countofcheckbox(0);
-                        total_count = count;
+                        total_count = 0;
                     }
                     adapter.notifyDataSetChanged();
 
 
-                } else {
+//                }
 
-                    Log.d("inside selection", "---->item position");
+        }
 
-                    if ((Boolean) selectAll.getTag()) {
-                        for (GroupBean gbean : buddygroupList) {
-                            gbean.setSelected(true);
+    });
+        selectAll_group.setTag(true);
 
-                        }
-                        selectAll.setTag(false);
-                        groupcheckbox(count);
-                        total_groupcount = count;
-                    } else {
-                        for (GroupBean groupBean : buddygroupList) {
-                            groupBean.setSelected(false);
+               selectAll_group.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                   @Override
+                   public void onCheckedChanged(CompoundButton compoundButton, boolean ischecked) {
+                       Log.d("inside selection", "---->item position");
+                       int count=0;
 
-                        }
-                        selectAll.setTag(true);
-                        groupcheckbox(0);
-                        total_groupcount = count;
-                    }
-                    forwardGroupAdapter.notifyDataSetChanged();
+                       if ((Boolean) selectAll_group.getTag()) {
+                           for (GroupBean gbean : buddygroupList) {
+                               gbean.setSelected(true);
+                               count++;
+
+                           }
+                           selectAll_group.setTag(false);
+                           groupcheckbox(count);
+                           total_groupcount = count;
+                       } else {
+                           for (GroupBean groupBean : buddygroupList) {
+                               groupBean.setSelected(false);
+
+                           }
+                           selectAll_group.setTag(true);
+                           groupcheckbox(0);
+                           total_groupcount = 0;
+                       }
+                       forwardGroupAdapter.notifyDataSetChanged();
+
+                   }
+               });
 
 
-
-
-                }
-            }
-
-        });
 
 
 //        if (!contact) {
@@ -301,13 +321,6 @@ public class ForwardUserSelect extends Activity {
                 @Override
                 public void onClick(View v) {
                     contact =true;
-                    selectAll.setChecked(false);
-                    count = 0;
-                    for(BuddyInformationBean bib : buddylist) {
-                        if (bib != null) {
-                            count++;
-                        }
-                    }
                     memberListView.setVisibility(View.VISIBLE);
                     im_contact.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_profile_white));
                     tv_contact.setTextColor(getResources().getColor(R.color.white));
@@ -316,6 +329,7 @@ public class ForwardUserSelect extends Activity {
                     tv_Group.setTextColor(getResources().getColor(R.color.black));
                     view_Group.setVisibility(View.GONE);
                     chbox_lay.setVisibility(View.VISIBLE);
+                    chbox_lay1.setVisibility(View.GONE);
 
                     adapter = new ForwardUserSelectionAdapter(ForwardUserSelect.this, buddylist);
                     memberListView.setAdapter(null);
@@ -327,34 +341,46 @@ public class ForwardUserSelect extends Activity {
             Mygroups_forward.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    forwardGroupAdapter = new ForwardGroupAdapter(ForwardUserSelect.this, R.layout.group_list, buddygroupList);
-                    memberListView.setAdapter(null);
-                    memberListView.setAdapter(forwardGroupAdapter);
                     contact = false;
-                    selectAll.setChecked(false);
-                    count = 0;
-                    for(GroupBean groupBean : buddygroupList) {
-                        if (groupBean != null) {
-                            count++;
-                        }
-                    }
-
                     im_contact.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_profile));
                     tv_contact.setTextColor(getResources().getColor(R.color.black));
                     view_contact.setVisibility(View.GONE);
                     im_Group.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_members_white));
                     tv_Group.setTextColor(getResources().getColor(R.color.white));
                     view_Group.setVisibility(View.VISIBLE);
-
                     memberListView.setVisibility(View.VISIBLE);
-                    chbox_lay.setVisibility(View.VISIBLE);
-
+                    chbox_lay.setVisibility(View.GONE);
+                    chbox_lay1.setVisibility(View.VISIBLE);
+                    Log.d("String","value--->1");
+                    forwardGroupAdapter = new ForwardGroupAdapter(ForwardUserSelect.this, R.layout.group_list, buddygroupList);
+                    memberListView.setAdapter(null);
+                    memberListView.setAdapter(forwardGroupAdapter);
 
                 }
             });
+        searchet.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s != null && s != "")
+                    if(contact == true) {
+                        adapter.getFilter().filter(s);
+                    }
+                else if(contact==false){
+                        forwardGroupAdapter.getFilter().filter(s);
+                    }
+            }
+
+        });
 
 //        }
     }
+
 
 
     private void showToast(final String message) {
@@ -393,7 +419,10 @@ public class ForwardUserSelect extends Activity {
         private Typeface tf_bold = null;
         ImageLoader imageLoader;
         private int checkBoxCounter = 0;
+        private  ForwardFilter filter;
         Vector<GroupBean> grouplist = new Vector<GroupBean>();
+        Vector<GroupBean> originallist;
+        boolean[] checkBoxState;
 
         public ForwardGroupAdapter(Context context, int textViewResourceId,
                             Vector<GroupBean> groupList) {
@@ -401,7 +430,10 @@ public class ForwardUserSelect extends Activity {
             super(context, R.layout.grouplist, groupList);
             this.context = context;
             imageLoader=new ImageLoader(SingleInstance.mainContext);
-            grouplist = groupList;
+            grouplist.addAll(groupList);
+            originallist = new Vector<GroupBean>();
+            originallist.addAll(groupList);
+            checkBoxState = new boolean[grouplist.size()];
 
         }
 
@@ -461,28 +493,22 @@ public class ForwardUserSelect extends Activity {
                 }
 
 
-                holder.sel_buddygroup
-                        .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                            @Override
-                            public void onCheckedChanged(CompoundButton arg0,
-                                                         boolean isChecked) {
-                                Log.d("selecteduser", "---->entering the bean");
-                                if (isChecked) {
-                                    Log.d("selecteduser", "---->checking the values" + isChecked);
-                                    groupBean.setSelected(true);
-                                    checkBoxCounter++;
-                                        groupcheckbox(checkBoxCounter);
+                holder.sel_buddygroup.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (((CheckBox) v).isChecked()) {
+                            groupBean.setSelected(true);
+                            checkBoxCounter++;
+                            groupcheckbox(checkBoxCounter);
 
-                                } else {
-                                    groupBean.setSelected(false);
-                                    checkBoxCounter--;
-                                        Log.d("selecteduser", "---->checkboxcounter" + checkBoxCounter);
-                                        groupcheckbox(checkBoxCounter);
+                        } else {
+                            groupBean.setSelected(false);
+                            checkBoxCounter--;
+                            groupcheckbox(checkBoxCounter);
 
-                                }
-                            }
-
-                        });
+                        }
+                    }
+                });
                 if (tv_groupName == null) {
                     holder.listContainer.setVisibility(View.GONE);
                 }
@@ -522,6 +548,61 @@ public class ForwardUserSelect extends Activity {
             }
             return row;
         }
+        @Override
+        public Filter getFilter() {
+            if (filter == null){
+                filter  = new ForwardFilter();
+            }
+            return filter;
+        }
+
+        private class ForwardFilter extends Filter
+        {
+
+            @Override
+            protected Filter.FilterResults performFiltering(CharSequence constraint) {
+
+                constraint = constraint.toString().toLowerCase();
+
+                Filter.FilterResults result = new Filter.FilterResults();
+                if (constraint != null && constraint.toString().length() > 0) {
+                    Vector<GroupBean> gBeans = new Vector<GroupBean>();
+                    for(int i = 0, l = originallist.size(); i < l; i++)
+                    {
+                        GroupBean gBean = originallist.get(i);
+                        if(gBean.getGroupName().toLowerCase().startsWith(String.valueOf(constraint)))
+                            gBeans.add(gBean);
+                    }
+                    gBeans =GroupActivity.getGroupList(gBeans);
+                    result.count = gBeans.size();
+                    result.values = gBeans;
+                } else {
+                    synchronized (this) {
+                        originallist = GroupActivity.getGroupList(originallist);
+                        result.values = originallist;
+                        result.count = originallist.size();
+                    }
+                }
+                return result;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint,
+                                          Filter.FilterResults results) {
+
+                grouplist= (Vector<GroupBean>)results.values;
+                notifyDataSetChanged();
+                clear();
+                grouplist = GroupActivity.getGroupList(grouplist);
+                for(int i = 0, l = grouplist.size(); i < l; i++)
+                    add(grouplist.get(i));
+                notifyDataSetInvalidated();
+
+            }
+
+        }
+
 
         private class ViewHolder {
             LinearLayout listContainer;
@@ -529,24 +610,30 @@ public class ForwardUserSelect extends Activity {
             LinearLayout contact_history;
             LinearLayout inreq;
             ImageView buddy_icon;
-            CheckBox sel_buddygroup;
+            CheckBox sel_buddygroup, sel_buddygroup1;
         }
 
     }
     public void countofcheckbox(int count)
     {
-        Log.i("asdf","count"+count);
+        Log.i("asdf", "count" + count);
         countofselection.setText(Integer.toString(count) + " Selected");
-//        countofselection_group.setText(Integer.toOctalString(groupcount)+ " Selected");
         total_count = count;
+        if(count==buddylist.size())
+            selectAll.setChecked(true);
+        else
+            selectAll.setChecked(false);
 
     }
     public void groupcheckbox(int groupcount)
     {
         Log.i("asdf", "count" + groupcount);
-        countofselection.setText(Integer.toString(groupcount) + " Selected");
-//        countofselection_group.setText(Integer.toOctalString(groupcount)+ " Selected");
+        countofselection_group.setText(Integer.toString(groupcount) + " Selected");
         total_groupcount = groupcount;
+        if(groupcount==buddygroupList.size())
+            selectAll_group.setChecked(true);
+        else
+            selectAll_group.setChecked(false);
 
     }
     @Override

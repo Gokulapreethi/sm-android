@@ -44,7 +44,7 @@
                 android:id="@+id/temp1"
                 android:layout_width="213dp"
                 android:layout_height="99dp"
-                android:background="@drawable/img_logo"
+                android:background="@drawable/img_logo1"
                 android:layout_centerHorizontal="true"
                 android:layout_margin="30dp"/>
 
@@ -61,7 +61,7 @@
                 android:layout_below="@id/temp2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="We take the authenticity of our users very seriously. In order to verify your credentials as a doctor or medical student we verify each user through the AMA (American Medical Association) and third party verification services.\n\nWe kindly request you to fill in the mandatory fields on the next screen in order to be verified."
+                android:text="We take the authenticity of our users very seriously. In order to verify your credentials as a doctor or medical student we verify each user through professional and third party verification services.\n\nWe kindly request you to fill in the mandatory fields on the next screen in order to be verified."
                 android:layout_marginTop="20dp"
                 android:textSize="16sp"
                 android:textColor="#808282" />

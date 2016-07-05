@@ -70,27 +70,9 @@
             android:layout_marginBottom="15dp"
             android:background="@color/grey3" />
 </LinearLayout>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="D60-D64 Aplastic and other animias and other bone marrow failure syndromes"
-        android:textSize="17dp"
-        android:textColor="@color/white"
-        android:layout="@+id/age"
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop="1dp"
-        android:id="@+id/active_descrip" />
-    <TextView
-        android:layout_width = "wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:textColor="@color/white"
-        android:textSize="15sp"
-        android:text="12 Feb 2016"
-        android:id="@+id/see_all"
-        android:layout_gravity="right"
-        android:layout_below="@+id/active_descrip"
-        android:layout_alignRight="@+id/active_descrip"
-        android:layout_alignEnd="@+id/active_descrip"
-        android:layout_marginTop="10dp"/>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/listview"/>
+
 </LinearLayout>

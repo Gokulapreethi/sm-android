@@ -17,6 +17,7 @@
 package com.Fingerprint;
 
 import android.app.Application;
+import android.os.Build;
 import android.util.Log;
 
 import dagger.ObjectGraph;
@@ -35,6 +36,7 @@ public class InjectedApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        if(Build.VERSION.SDK_INT>19)
         initObjectGraph(new FingerprintModule(this));
     }
 
