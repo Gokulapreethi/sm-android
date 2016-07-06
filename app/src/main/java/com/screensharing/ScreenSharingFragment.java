@@ -1,17 +1,5 @@
 package com.screensharing;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.util.Iterator;
-import java.util.Set;
-
-import org.core.VideoCallback;
-import org.lib.model.SignalingBean;
-import org.util.Queue;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -42,13 +30,25 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.cg.snazmed.R;
 import com.cg.callservices.VideoThread;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.snazmed.R;
 import com.main.AppMainActivity;
 import com.util.FullScreenImage;
 import com.util.SingleInstance;
+
+import org.core.VideoCallback;
+import org.lib.model.SignalingBean;
+import org.util.Queue;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.util.Iterator;
+import java.util.Set;
 
 public class ScreenSharingFragment extends Fragment implements VideoCallback,
 		com.cg.callservices.AnimationListener {
@@ -60,9 +60,19 @@ public class ScreenSharingFragment extends Fragment implements VideoCallback,
 	Button imView;
 	Button settings;
 
-	private int mWidth = 176;
+//	private int mWidth = 176;
+//
+//	private int mHeight = 144;
 
-	private int mHeight = 144;
+//	private int mWidth = 640;
+//	private int mWidth = 480;
+
+//	private int mHeight = 320;
+//	private int mHeight = 480;
+
+	private int mWidth = 320;
+
+	private int mHeight = 240;
 
 	Button plus = null;
 
@@ -93,8 +103,11 @@ public class ScreenSharingFragment extends Fragment implements VideoCallback,
 
 	ImageProcessing imageProcessor;
 
-	public static int mRenderWidth = 176;
-	public static int mRenderHeight = 144;
+	public static int mRenderWidth = 480;
+	public static int mRenderHeight = 360;
+
+//	public static int mRenderWidth = 320;
+//	public static int mRenderHeight = 240;
 	private byte[] lastData;
 	public boolean background;
 

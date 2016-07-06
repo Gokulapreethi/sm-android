@@ -49,13 +49,18 @@ public class WebServiceReferences {
 	/**
 	 * width of the video frame size
 	 */
-	public final static int VIDEO_WIDTH = 176;
+//	public final static int VIDEO_WIDTH = 176;
 //	public final static int VIDEO_WIDTH = 360;
+//	public final static int VIDEO_WIDTH = 640;
+	public final static int VIDEO_WIDTH = 320;
+//	public final static int VIDEO_WIDTH = 480;
 	/**
 	 * Height of the video frame
 	 */
-	public final static int VIDEO_HEIGHT = 144;
+//	public final static int VIDEO_HEIGHT = 144;
+//	public final static int VIDEO_HEIGHT = 320;
 //	public final static int VIDEO_HEIGHT = 480;
+	public final static int VIDEO_HEIGHT = 240;
 
 	// For web services
 

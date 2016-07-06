@@ -2920,7 +2920,8 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			e.printStackTrace();
 		}
 	}
-	int count=0;
+	int count=0,vidid = 0;
+	String STORE_DIRECTORY;
 
 	@Override
 	public void notifyDecodedVideoCallback(final byte[] data, final long ssrc) {
@@ -3148,6 +3149,21 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 								}
 							}
 						});
+
+//					if(vidid == 0) {
+//						vidid = 1;
+//						STORE_DIRECTORY = Environment.getExternalStorageDirectory()
+//								.getAbsolutePath() + "/screenshots/";
+//						File vid = new File(STORE_DIRECTORY
+//								+ "/myscreen_" + "vid1"
+//								+ ".mp4");
+//						vid.createNewFile();
+//
+//						DataOutputStream fos1 = new DataOutputStream(new FileOutputStream(vid));
+//						fos1.write(data);
+//						fos1.flush();
+//						fos1.close();
+//					}
 
 						int size = WebServiceReferences.videoSSRC_total_list.size();
 						VideoThreadBean videoThreadBean = new VideoThreadBean();
@@ -3946,7 +3962,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	@Override
 	public void notifyResolution(int w, int h) {
 		// TODO Auto-generated method stub
-
+		Log.i("VideoCall","width : "+w+" height :"+h);
 	}
 
 	@SuppressWarnings("unused")

@@ -198,7 +198,7 @@ public class CallConnectingScreen extends Fragment {
                     callDisp = new CallDispatcher(context);
 
 
-                if (isBConf && calltype.equalsIgnoreCase("VC")) {
+                if (isBConf && (calltype.equalsIgnoreCase("VC") || calltype.equalsIgnoreCase("AC"))) {
                     setTitle();
                     frameLayout.setVisibility(View.VISIBLE);
                     profilePicture.setVisibility(View.INVISIBLE);

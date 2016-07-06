@@ -75,11 +75,17 @@ public class CommunicationEngine implements AudioRecorderListener,
 	/**
 	 * Width of the Preview to capture Video Data.
 	 */
-	private int width = 176;
+//	private int width = 176;
+//	private int width = 480;
+//	private int width = 640;
+	private int width = 320;
 	/**
 	 * Height of the Preview to capture Video Data.
 	 */
-	private int height = 144;
+//	private int height = 144;
+//	private int height = 320;
+//	private int height = 480;
+	private int height = 240;
 	/**
 	 * This enum Defines the communication Protocol constant.
 	 */
@@ -2734,8 +2740,8 @@ public class CommunicationEngine implements AudioRecorderListener,
 			preview = new Preview(context);
 			preview.setCameraid(this.camaera_id);
 			/* Height and width commented for NOTE III fix */
-			// preview.setWidth(width);
-			// preview.setHeight(height);
+			 preview.setWidth(width);
+			 preview.setHeight(height);
 			preview.setVideoFrameCallback(this);
 
 			return preview;
@@ -2943,6 +2949,7 @@ public class CommunicationEngine implements AudioRecorderListener,
 		byte[] yuvdata = null;
 		byte[] rgbdata = null;
 		try {
+			Log.i("Resolution","Before Decoding : Size : "+frame.length+" time : "+new Date());
 				if(WebServiceReferences.videoSSRC_total_list != null ) {
 
 					if (WebServiceReferences.videoSSRC_total_list.contains((int) (long) ssrc)) {
@@ -2998,6 +3005,7 @@ public class CommunicationEngine implements AudioRecorderListener,
 								Log.d("VDO", "going to notify decoded video frame");
 								videoCodec.convertYUV4202RGB24(yuvdata, rgbdata,
 										mPreviewWidth, mPreviewHeight);
+								Log.i("Resolution", "After Decoding : Size : " + rgbdata.length + " time : " + new Date());
 								videoCallback.notifyDecodedVideoCallback(rgbdata,
 										ssrc);
 
@@ -3510,6 +3518,8 @@ public class CommunicationEngine implements AudioRecorderListener,
 			try {
 				// Log.d("call",new Date()+"Video......");
 				if (videoCodec != null && video_preview) {
+
+					Log.i("Resolution","Before Encoding : Size : "+arg0.length+" time : "+new Date());
 					if (encodeVideo) {
 						byte[] yuvdata = new byte[width * height
 								+ (width * height) / 2];
@@ -3518,8 +3528,15 @@ public class CommunicationEngine implements AudioRecorderListener,
 								.getEnumVideoCodec();
 						switch (enumVideoCodec) {
 						case H264:
-							int outW = 176;
-							int outH = 144;
+//							int outW = 176;
+//							int outH = 144;
+//							int outW = 480;
+//							int outH = 320;
+//							int outW = 640;
+//							int outH = 480;
+
+							int outW = 320;
+							int outH = 240;
 							byte[] rgbdata = new byte[width * height * 3];
 							byte[] outRGB = new byte[outW * outH * 3];
 							byte[] yuv420p = null;
@@ -3580,7 +3597,7 @@ public class CommunicationEngine implements AudioRecorderListener,
 						}
 
 						if (encoded_data != null) {
-
+							Log.i("Resolution","After Encoding : Size : "+encoded_data.length+" time : "+new Date());
 							if (key_frame == 1) {
 
 								System.out.println("EEE" + key_frame);
@@ -3836,8 +3853,16 @@ public class CommunicationEngine implements AudioRecorderListener,
 							.getEnumVideoCodec();
 					switch (enumVideoCodec) {
 					case H264:
-						int outW = 176;
-						int outH = 144;
+//						int outW = 176;
+//						int outH = 144;
+//						int outW = 640;
+//						int outW = 480;
+//						int outH = 320;
+//						int outH = 480;
+
+						int outW = 320;
+						int outH = 240;
+
 						byte[] rgbdata = new byte[width * height * 3];
 						byte[] outRGB = new byte[outW * outH * 3];
 						byte[] yuv420p = null;

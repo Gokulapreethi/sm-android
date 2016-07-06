@@ -13444,7 +13444,7 @@ private TrustManager[] get_trust_mgr() {
 	//
 	// }
 
-	public void ConMadeConference(String calltype, Context context) {
+	public void  ConMadeConference(String calltype, Context context) {
 
 		if (calltype.equalsIgnoreCase("HC")) {
 			calltype = "ACF";
@@ -14447,15 +14447,15 @@ private TrustManager[] get_trust_mgr() {
 
 								CallDispatcher.conConference.add(str[i]);
 								if (online == null) {
-									online = str[i];
+									online = Buddyname(str[i]);
 								} else {
-									online = online + "," + str[i];
+									online = online + "," + Buddyname(str[i]);
 								}
 							} else {
 								if (offlinenames == null) {
-									offlinenames = str[i];
+									offlinenames = Buddyname(str[i]);
 								} else {
-									offlinenames = offlinenames + "," + str[i];
+									offlinenames = offlinenames + "," + Buddyname(str[i]);
 								}
 
 							}
@@ -14532,9 +14532,9 @@ private TrustManager[] get_trust_mgr() {
 								CallDispatcher.conConference.add(str[i]);
 							} else {
 								if (offlinenames == null) {
-									offlinenames = str[i];
+									offlinenames = Buddyname(str[i]);
 								} else {
-									offlinenames = offlinenames + "," + str[i];
+									offlinenames = offlinenames + "," + Buddyname(str[i]);
 								}
 
 							}
@@ -14586,9 +14586,9 @@ private TrustManager[] get_trust_mgr() {
 								CallDispatcher.conConference.add(str[i]);
 							} else {
 								if (offlinenames == null) {
-									offlinenames = str[i];
+									offlinenames = Buddyname(str[i]);
 								} else {
-									offlinenames = offlinenames + "," + str[i];
+									offlinenames = offlinenames + "," + Buddyname(str[i]);
 								}
 
 							}
