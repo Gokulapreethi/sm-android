@@ -219,7 +219,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     private String pId;
     public boolean isGroup, isRounding;
     public ProgressBar progress, progressBar1;
-    public LinearLayout list_all;
+    public LinearLayout list_all,multi_send;
     private RelativeLayout audio_layout, ad_play, selectAll_container, settingnotifications, forwardlay;
     public static RelativeLayout relative_send_layout;
     public TextView tvquoted_msg, percentage, sender_status, receiver_status, txt_time,countofselection;
@@ -1407,6 +1407,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 // lv = (ListView) v1.findViewById(R.id.chat_listview);
                 lv = (SwipeMenuListView) v1.findViewById(R.id.chat_listview);
                 list_all = (LinearLayout) v1.findViewById(R.id.list_sll);
+                multi_send=(LinearLayout) v1.findViewById(R.id.sendlay);
                 selectAll_container = (RelativeLayout) v1.findViewById(R.id.selectAll_container);
                 settingnotifications = (RelativeLayout) v1.findViewById(R.id.settingnotifications);
                 selectAll_container.setVisibility(View.GONE);
@@ -1421,6 +1422,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 for (int i = 0; i < adapterCount; i++) {
                     View item = sendlistadapter.getView(i, null, null);
                     list_all.addView(item);
+                }
+                if(adapterCount>=2){
+                    multi_send.getLayoutParams().height=280;
                 }
 //                list_all.setAdapter(sendlistadapter);
                 lv.setOnSwipeListener(new SwipeMenuListView.OnSwipeListener() {
@@ -2140,10 +2144,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             @Override
             public void run() {
                 Log.d("DCBA", "Alpha beeta gama " + userName + bibStatus);
+                Log.i("status","updateBuddy method username-->"+userName+"  bibstatus---->"+bibStatus);
                 buddyStatus.put(userName, bibStatus);
 
                 if (userName.equalsIgnoreCase(buddy)) {
-                    if (img_status != null)
+                    if (img_status != null) {
                         if (bibStatus.equals("0")) {
                             img_status.setBackgroundResource(R.drawable.offline_icon);
                         } else if (bibStatus.equals("1")) {
@@ -2160,6 +2165,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         } else {
                             img_status.setBackgroundResource(R.drawable.offline_icon);
                         }
+                        adapter.notifyDataSetChanged();
+                    }
+
+
                 }
             }
         });
@@ -3181,6 +3190,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                         View item = sendlistadapter.getView(i, null, null);
                                         list_all.addView(item);
                                     }
+                                    if(adapterCount>=2){
+                                        multi_send.getLayoutParams().height=280;
+                                    }
                                     msgoptionview.setVisibility(View.VISIBLE);
                                     audio_call.setBackgroundResource(R.drawable.chat_send);
                                     audio_call.setTag(1);
@@ -3251,6 +3263,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 View item = sendlistadapter.getView(i, null, null);
                                 list_all.addView(item);
                             }
+                            if(adapterCount>=2){
+                                multi_send.getLayoutParams().height=280;
+                            }
                             msgoptionview.setVisibility(View.VISIBLE);
                             audio_call.setBackgroundResource(R.drawable.chat_send);
                             audio_call.setTag(1);
@@ -3292,6 +3307,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             View item = sendlistadapter.getView(i, null, null);
                             list_all.addView(item);
                         }
+                        if(adapterCount>=2){
+                            multi_send.getLayoutParams().height=280;
+                        }
                         msgoptionview.setVisibility(View.VISIBLE);
                         audio_call.setBackgroundResource(R.drawable.chat_send);
                         audio_call.setTag(1);
@@ -3318,6 +3336,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         for (int i = 0; i < adapterCount; i++) {
                             View item = sendlistadapter.getView(i, null, null);
                             list_all.addView(item);
+                        }
+                        if(adapterCount>=2){
+                            multi_send.getLayoutParams().height=280;
                         }
                         msgoptionview.setVisibility(View.VISIBLE);
                         audio_call.setBackgroundResource(R.drawable.chat_send);
@@ -3409,6 +3430,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 View item = sendlistadapter.getView(i, null, null);
                                 list_all.addView(item);
                             }
+                            if(adapterCount>=2){
+                                multi_send.getLayoutParams().height=280;
+                            }
                             msgoptionview.setVisibility(View.VISIBLE);
                             audio_call.setBackgroundResource(R.drawable.chat_send);
                             audio_call.setTag(1);
@@ -3450,6 +3474,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             View item = sendlistadapter.getView(i, null, null);
                             list_all.addView(item);
                         }
+                        if(adapterCount>=2){
+                            multi_send.getLayoutParams().height=280;
+                        }
                         msgoptionview.setVisibility(View.VISIBLE);
                         audio_call.setBackgroundResource(R.drawable.chat_send);
                         audio_call.setTag(1);
@@ -3487,6 +3514,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         for (int i = 0; i < adapterCount; i++) {
                             View item = sendlistadapter.getView(i, null, null);
                             list_all.addView(item);
+                        }
+                        if(adapterCount>=2){
+                            multi_send.getLayoutParams().height=280;
                         }
                         msgoptionview.setVisibility(View.VISIBLE);
                         audio_call.setBackgroundResource(R.drawable.chat_send);
@@ -3688,6 +3718,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     for (int i = 0; i < adapterCount; i++) {
                         View item = sendlistadapter.getView(i, null, null);
                         list_all.addView(item);
+                    }
+                    if(adapterCount>=2){
+                        multi_send.getLayoutParams().height=280;
                     }
                     msgoptionview.setVisibility(View.VISIBLE);
                     audio_call.setBackgroundResource(R.drawable.chat_send);
@@ -4176,12 +4209,15 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     list_all.removeAllViews();
                                     final int adapterCount = sendlistadapter.getCount();
 
-                                    for (int i = 0; i < adapterCount; i++) {
-                                        View item = sendlistadapter.getView(i, null, null);
-                                        list_all.addView(item);
-                                    }
-                                    audio_call.setBackgroundResource(R.drawable.chat_send);
-                                    audio_call.setTag(1);
+                                for (int i = 0; i < adapterCount; i++) {
+                                    View item = sendlistadapter.getView(i, null, null);
+                                    list_all.addView(item);
+                                }
+                                if(adapterCount>=2){
+                                    multi_send.getLayoutParams().height=280;
+                                }
+                                audio_call.setBackgroundResource(R.drawable.chat_send);
+                                audio_call.setTag(1);
 //                                relative_send_layout.getLayoutParams().height = 90;
                                 } else if (SendListUI.size() > 1) {
                                     String path = null;
@@ -4206,31 +4242,35 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     list_all.removeAllViews();
                                     final int adapterCount = sendlistadapter.getCount();
 
-                                    for (int i = 0; i < adapterCount; i++) {
-                                        View item = sendlistadapter.getView(i, null, null);
-                                        list_all.addView(item);
-                                    }
-                                    audio_call.setBackgroundResource(R.drawable.chat_send);
-                                    audio_call.setTag(1);
+                                for (int i = 0; i < adapterCount; i++) {
+                                    View item = sendlistadapter.getView(i, null, null);
+                                    list_all.addView(item);
+                                }
+                                if(adapterCount>=2){
+                                    multi_send.getLayoutParams().height=280;
+                                }
+                                audio_call.setBackgroundResource(R.drawable.chat_send);
+                                audio_call.setTag(1);
 
 
-                                } else {
-                                    if (message.getText().toString().trim().length() > 0) {
-                                        if (CallDispatcher.LoginUser != null) {
-                                            if (message.getText().toString().length() > 700) {
-                                                showToast("Text exceeds 700 characters");
-                                            } else {
-                                                sendMsg(message.getText().toString().trim(),
-                                                        null, "text", null);
-                                                message.setText("");
-                                            }
+                            } else {
+                                if (message.getText().toString().trim().length() > 0) {
+                                    if (CallDispatcher.LoginUser != null) {
+                                        if (message.getText().toString().length() > 700) {
+                                            showToast("Text exceeds 700 characters");
                                         } else {
-                                            showAlert1("Info", "Check Internet Connection");
+                                            sendMsg(message.getText().toString().trim(),
+                                                    null, "text", null);
+                                            message.setText("");
                                         }
+                                    } else {
+                                        showAlert1("Info", "Check Internet Connection");
                                     }
                                 }
                             }
-                        } else {
+                        }
+                        multi_send.getLayoutParams().height= ViewGroup.LayoutParams.WRAP_CONTENT;
+                    } else {
 
                             if (CallDispatcher.isCallignored) {
                                 showToast("Please Try again... Ignored call in progress");
@@ -5442,6 +5482,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         String statusicon = null;
                         if (buddyStatus != null && buddyStatus.containsKey(gcBean.getFrom())) {
                             statusicon = buddyStatus.get(gcBean.getFrom());
+                            Log.i("status","getFrom-->"+gcBean.getFrom());
+                            Log.i("status","status-->"+statusicon);
                         }
                         if (gcBean.getUnreadStatus() == 0) {
                             senderLayout.setBackgroundResource(R.color.greendark);
@@ -5451,15 +5493,15 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             SingleInstance.mainContext.ReadMessageAck(bean);
                         }
                         if (statusicon != null) {
-                            if (statusicon.equalsIgnoreCase("online")) {
+                            if (statusicon.equalsIgnoreCase("online") || statusicon.equalsIgnoreCase("1")) {
                                 img_status.setBackgroundResource(R.drawable.online_icon);
-                            } else if (statusicon.equalsIgnoreCase("offline")) {
+                            } else if (statusicon.equalsIgnoreCase("offline") || statusicon.equalsIgnoreCase("0")) {
                                 img_status.setBackgroundResource(R.drawable.offline_icon);
-                            } else if (statusicon.equalsIgnoreCase("Away")) {
+                            } else if (statusicon.equalsIgnoreCase("Away") || statusicon.equalsIgnoreCase("2")) {
                                 img_status.setBackgroundResource(R.drawable.busy_icon);
-                            } else if (statusicon.equalsIgnoreCase("Stealth")) {
+                            } else if (statusicon.equalsIgnoreCase("Stealth") || statusicon.equalsIgnoreCase("3")) {
                                 img_status.setBackgroundResource(R.drawable.invisibleicon);
-                            } else if (statusicon.equalsIgnoreCase("Airport")) {
+                            } else if (statusicon.equalsIgnoreCase("Airport") || statusicon.equalsIgnoreCase("4")) {
                                 img_status.setBackgroundResource(R.drawable.busy_icon);
                             } else {
                                 img_status.setBackgroundResource(R.drawable.offline_icon);
@@ -6519,6 +6561,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         if (getBuddyList != null) {
             for (int i = 0; i < getBuddyList.size(); i++) {
                 BuddyInformationBean buddyInformationBean = (BuddyInformationBean) ContactsFragment.getBuddyList().get(i);
+                Log.i("status","BuddyStatus method username-->"+buddyInformationBean.getEmailid()+"  status---->"+buddyInformationBean.getStatus());
                 buddyStatus.put(buddyInformationBean.getEmailid(), buddyInformationBean.getStatus());
                 Log.i("log", "----download---");
             }
@@ -8250,6 +8293,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         View item = sendlistadapter.getView(i, null, null);
                         list_all.addView(item);
                     }
+                    if(adapterCount>=2){
+                        multi_send.getLayoutParams().height=280;
+                    }
                     msgoptionview.setVisibility(View.GONE);
                     audio_call.setBackgroundResource(R.drawable.chat_send);
                     audio_call.setTag(1);
@@ -8282,6 +8328,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     for (int i = 0; i < adapterCount; i++) {
                         View item = sendlistadapter.getView(i, null, null);
                         list_all.addView(item);
+                    }
+                    if(adapterCount>=2){
+                        multi_send.getLayoutParams().height=280;
                     }
                     msgoptionview.setVisibility(View.GONE);
                     audio_call.setBackgroundResource(R.drawable.chat_send);
@@ -8417,6 +8466,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     for (int i = 0; i < adapterCount; i++) {
                         View item = sendlistadapter.getView(i, null, null);
                         list_all.addView(item);
+                    }
+                    if(adapterCount>=2){
+                        multi_send.getLayoutParams().height=280;
                     }
                     msgoptionview.setVisibility(View.VISIBLE);
                     audio_call.setBackgroundResource(R.drawable.chat_send);
@@ -8554,6 +8606,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         View item = sendlistadapter.getView(i, null, null);
                         list_all.addView(item);
                     }
+                    if(adapterCount>=2){
+                        multi_send.getLayoutParams().height=280;
+                    }
                     msgoptionview.setVisibility(View.VISIBLE);
                     audio_call.setBackgroundResource(R.drawable.chat_send);
                     audio_call.setTag(1);
@@ -8661,6 +8716,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     View item = sendlistadapter.getView(i, null, null);
                     list_all.addView(item);
                 }
+                if(adapterCount>=2){
+                    multi_send.getLayoutParams().height=280;
+                }
                 msgoptionview.setVisibility(View.GONE);
                 audio_call.setBackgroundResource(R.drawable.chat_send);
                 audio_call.setTag(1);
@@ -8691,6 +8749,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 for (int i = 0; i < adapterCount; i++) {
                     View item = sendlistadapter.getView(i, null, null);
                     list_all.addView(item);
+                }
+                if(adapterCount>=2){
+                    multi_send.getLayoutParams().height=280;
                 }
                 msgoptionview.setVisibility(View.GONE);
                 audio_call.setBackgroundResource(R.drawable.chat_send);
@@ -9770,6 +9831,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             View item = sendlistadapter.getView(i, null, null);
                             list_all.addView(item);
                         }
+                        if(adapterCount>=2){
+                            multi_send.getLayoutParams().height=280;
+                        }
                         msgoptionview.setVisibility(View.VISIBLE);
                         audio_call.setBackgroundResource(R.drawable.chat_send);
                         audio_call.setTag(1);
@@ -10128,6 +10192,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             View item = sendlistadapter.getView(i, null, null);
             list_all.addView(item);
         }
+        if(adapterCount>=2){
+            multi_send.getLayoutParams().height=280;
+        }
         if (SendListUI.size() == 0) {
             SendListUI.clear();
             msgoptionview.setVisibility(View.GONE);
@@ -10140,6 +10207,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             for (int i = 0; i < adapterCount1; i++) {
                 View item = sendlistadapter.getView(i, null, null);
                 list_all.addView(item);
+            }
+            if(adapterCount>=2){
+                multi_send.getLayoutParams().height=280;
             }
 //            relative_send_layout.getLayoutParams().height = 90;
         }

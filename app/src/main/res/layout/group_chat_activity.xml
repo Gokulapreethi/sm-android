@@ -431,8 +431,15 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_toLeftOf="@+id/send_image"
-                            android:orientation="vertical">
-
+                            android:orientation="vertical"
+                            android:id="@+id/sendlay">
+                            <ScrollView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
 
                             <EditText
                                 android:id="@+id/txt_msg"
@@ -445,14 +452,19 @@
                                 android:textColorHint="@color/snazash" />
 
 
+
                             <LinearLayout
                                 android:id="@+id/list_sll"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_below="@+id/txt_msg"
                                 android:layout_marginRight="22dp"
                                 android:layout_marginTop="20dp"
-                                android:orientation="vertical" android:background="@color/blue2"></LinearLayout>
+                                android:orientation="vertical" android:background="@color/blue2">
+                                </LinearLayout>
+                            </LinearLayout>
+                            </ScrollView>
+
                         </LinearLayout>
 
 

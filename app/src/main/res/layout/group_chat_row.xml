@@ -314,12 +314,13 @@
                 <LinearLayout
                     android:id="@+id/sendlintest"
                     android:layout_toRightOf="@+id/userDP"
-                    android:layout_below="@+id/userDP"
+                    android:layout_below="@+id/msg_container"
                     android:layout_marginRight="10dp"
                     android:layout_marginLeft="20dp"
                     android:layout_width="wrap_content"
                     android:orientation="vertical"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    >
                 </LinearLayout>
                 <TextView
                     android:id="@+id/sender_deadline_reply_txt"
@@ -363,14 +364,14 @@
                 <RelativeLayout
                     android:id="@+id/splmsgview"
                     android:layout_width="wrap_content"
-                    android:layout_below="@+id/msg_container"
+                    android:layout_below="@+id/sendlintest"
                     android:layout_height="wrap_content">
 
                     <Button
                         android:id="@+id/btn_reply"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/sendad_play"
+
                         android:layout_marginTop="8dp"
                         android:text="Reply"
                         android:layout_marginLeft="60dp"
@@ -384,7 +385,7 @@
                         android:id="@+id/btn_private"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/sendad_play"
+
                         android:layout_marginTop="8dp"
                         android:text="Private Reply"
                         android:layout_marginLeft="60dp"
@@ -398,7 +399,7 @@
                         android:id="@+id/btn_confrm"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/sendad_play"
+
                         android:layout_marginTop="8dp"
                         android:text="Confirm"
                         android:layout_marginLeft="60dp"
@@ -411,7 +412,7 @@
                     <TextView
                         android:id="@+id/tv_replied"
                         android:layout_width="wrap_content"
-                        android:layout_below="@+id/sendad_play"
+
                         android:layout_marginTop="8dp"
                         android:layout_height="wrap_content"
                         android:background="@drawable/tv_bgblack_color"
@@ -773,7 +774,8 @@
                     android:layout_marginLeft="20dp"
                     android:layout_width="wrap_content"
                     android:orientation="vertical"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/ad_play">
                 </LinearLayout>
 
                 <TextView
@@ -820,7 +822,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Waiting for Reply"
-                    android:layout_below="@+id/ad_play"
+                    android:layout_below="@+id/lintest"
                     android:layout_marginTop="8dp"
                     android:layout_toRightOf="@+id/userDP1"
                     android:background="@drawable/tv_bgblack_color"
@@ -835,13 +837,13 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:visibility="gone"
-                    android:layout_below="@+id/ad_play">
+                    android:layout_below="@+id/lintest">
                 <TextView
                     android:id="@+id/tvprivate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Private for: "
-                    android:layout_below="@+id/ad_play"
+                    android:layout_below="@+id/lintest"
                     android:layout_marginTop="8dp"
                     android:layout_toRightOf="@+id/userDP1"
                     android:background="@drawable/tv_bgblack_color"
