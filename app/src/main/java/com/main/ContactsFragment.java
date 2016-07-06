@@ -598,7 +598,7 @@ public class ContactsFragment extends Fragment{
 									grouprecent = true;
 								if (buddyList == null || buddyList.size() == 0)
 									showToast("No Contacts");
-								lv.setAdapter(null);
+//								lv.setAdapter(null);
 								lv.setAdapter(contactAdapter);
 								lv2.setVisibility(View.GONE);
 								lv.setVisibility(View.VISIBLE);
@@ -626,7 +626,7 @@ public class ContactsFragment extends Fragment{
 									EditText myFilter = (EditText) _rootView.findViewById(R.id.searchtext);
 									myFilter.setText("");
 
-									lv.setAdapter(null);
+//									lv.setAdapter(null);
 									notifyAdapter = new NotifyListAdapter(mainContext, contactrecentlist);
 									notifyAdapter.isFromOther(true);
 									lv.setAdapter(notifyAdapter);

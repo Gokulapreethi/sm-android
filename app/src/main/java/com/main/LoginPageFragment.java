@@ -66,6 +66,7 @@ import org.lib.model.GroupBean;
 import org.lib.model.SiginBean;
 import org.lib.model.WebServiceBean;
 import org.lib.webservice.WSRunner;
+import org.lib.xml.XmlParser;
 import org.net.AndroidInsecureKeepAliveHttpsTransportSE;
 
 import java.text.SimpleDateFormat;
@@ -326,6 +327,15 @@ public class LoginPageFragment extends Fragment {
                             quotes + namespace + "GetCities"
                                     + quotes, mEnvelope);
                     SoapPrimitive mSp = (SoapPrimitive) mEnvelope.getResponse();
+                        XmlParser mParser = new XmlParser();
+                        boolean mChk = false;
+                        mChk = mParser.getResult(mSp.toString());
+                        Log.d("AAAA", "loginpage Server response size   ---->" );
+                        if(mChk){
+                            ArrayList<String>cityList = mParser.parsecities(mSp.toString());
+                            Log.d("AAAA", "loginpage Server response size---->" + cityList.size());
+                            SingleInstance.mainContext.notifycityWebServiceResponse(cityList);
+                        }
 
                     Log.d("webservice1", "loginpage Server response---->" + mSp.toString());
                     } catch (Exception e) {

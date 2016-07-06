@@ -6914,7 +6914,7 @@ public class XmlParser {
 				is = new InputSource();
 				is.setCharacterStream(new StringReader(xml));
 				doc = (Document)db.parse(is);
-				list = doc.getElementsByTagName("Cities");
+				list = doc.getElementsByTagName("City");
 				if(list.getLength()>0){
 					for(int i=0;i<list.getLength();i++){
 						city = new String();

@@ -601,12 +601,21 @@ public class DashBoardFragment extends Fragment {
                                         if (notifyBean.getNotifttype().equalsIgnoreCase("C")) {
 //                                            appMainActivity.historyfragment();
                                         } else if (notifyBean.getNotifttype().equalsIgnoreCase("I")) {
-                                            Intent intent = new Intent(mainContext,
-                                                    GroupChatActivity.class);
-                                            intent.putExtra("isGroup", false);
-                                            intent.putExtra("buddy",
-                                                    notifyBean.getFileid());
-                                            startActivity(intent);
+                                            if(notifyBean.getCategory().equalsIgnoreCase("G")){
+                                                Intent intent = new Intent(mainContext,
+                                                        GroupChatActivity.class);
+                                                intent.putExtra("isGroup", true);
+                                                intent.putExtra("groupid",
+                                                        notifyBean.getFileid());
+                                                startActivity(intent);
+                                            }else {
+                                                Intent intent = new Intent(mainContext,
+                                                        GroupChatActivity.class);
+                                                intent.putExtra("isGroup", false);
+                                                intent.putExtra("buddy",
+                                                        notifyBean.getFileid());
+                                                startActivity(intent);
+                                            }
                                         } else if (notifyBean.getNotifttype().equalsIgnoreCase("F")) {
                                             appMainActivity.fileFragment();
                                         }

@@ -159,15 +159,6 @@ public class PatientRoundingFragment extends Fragment {
         edit.setVisibility(View.VISIBLE);
         edit.setBackgroundResource(R.drawable.navigation_edit);
         edit.setText("");
-//        edit.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//             public void onClick(View v) {
-//                        if(isEdit = true){
-//
-//                        }
-//
-//            }
-//        });
 
         memberbean = DBAccess.getdbHeler().getMemberDetails(gBean.getGroupId(), CallDispatcher.LoginUser);
         roleAccessBean = DBAccess.getdbHeler().getRoleAccessDetails(gBean.getGroupId(), memberbean.getRole());
@@ -1945,8 +1936,12 @@ public class PatientRoundingFragment extends Fragment {
                     for (UserBean temp : list) {
                         addedMembers = addedMembers + "," + temp.getBuddyName();
                     }
-                    pBean.setAssignedmembers(addedMembers);
+                    if(pBean.getAssignedmembers()!=null)
+                        pBean.setAssignedmembers(pBean.getAssignedmembers()+","+addedMembers);
+                    else
+                        pBean.setAssignedmembers(addedMembers);
                     WebServiceReferences.webServiceClient.SetPatientRecord(pBean, mainContext);
+                    DBAccess.getdbHeler().insertorUpdatePatientDetails(pBean);
                 }
             }
         } catch (Exception e) {

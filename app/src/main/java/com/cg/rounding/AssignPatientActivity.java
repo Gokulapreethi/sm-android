@@ -216,4 +216,41 @@ public class AssignPatientActivity extends Activity{
 
         }
     }
+    @SuppressWarnings("unchecked")
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
+            super.onActivityResult(requestCode, resultCode, data);
+
+            // check if the request code is same as what is passed here it is 2
+            if (requestCode == 3) {
+                Log.i("AAAA", "request code 1343454356");
+                if (data != null) {
+                    Bundle bundle = data.getExtras();
+                    ArrayList<UserBean> list = (ArrayList<UserBean>) bundle
+                            .get("list");
+                    String addedMembers = new String();
+                    for (UserBean temp : list) {
+                        addedMembers = addedMembers + "," + temp.getBuddyName();
+                    }
+                    boolean isSelect=false;
+                    for(PatientDetailsBean bean:PatientList) {
+                        if(bean.isSelected()) {
+                            isSelect=true;
+                            if(bean.getAssignedmembers()!=null)
+                            bean.setAssignedmembers(bean.getAssignedmembers()+","+addedMembers);
+                            else
+                                bean.setAssignedmembers(addedMembers);
+                            WebServiceReferences.webServiceClient.SetPatientRecord(bean, context);
+                            DBAccess.getdbHeler().insertorUpdatePatientDetails(bean);
+                        }
+                    }
+                    if(isSelect)
+                        showprogress();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
