@@ -149,10 +149,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:background="#404142"
+                android:background="@color/black3"
                 android:padding="15dp"
                 android:layout_marginBottom="2dp"
                 android:text="FEEDBACK"
+                android:textColor="@color/white"
+                android:drawableRight="@drawable/button_arrow_right"/>
+            <TextView
+                android:id="@+id/about"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:background="@color/black3"
+                android:padding="15dp"
+                android:layout_marginBottom="2dp"
+                android:text="ABOUT"
                 android:textColor="@color/white"
                 android:drawableRight="@drawable/button_arrow_right"/>
 

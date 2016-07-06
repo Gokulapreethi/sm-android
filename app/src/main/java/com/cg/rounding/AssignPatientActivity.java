@@ -1,6 +1,7 @@
 package com.cg.rounding;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.group.AddGroupMembers;
 import com.group.chat.GroupChatActivity;
+import com.util.SingleInstance;
 
 import org.lib.PatientDetailsBean;
 
@@ -40,6 +42,7 @@ public class AssignPatientActivity extends Activity{
     public Vector<UserBean> membersList = new Vector<UserBean>();
     private boolean fromMyPatient=false;
     public boolean isSearch=false;
+    private ProgressDialog progress = null;
 
     Vector<PatientDetailsBean> PatientList;
 
@@ -62,9 +65,6 @@ public class AssignPatientActivity extends Activity{
         ListView listView=(ListView)findViewById(R.id.lv_buddylist);
         PatientList=new Vector<PatientDetailsBean>();
         PatientList.clear();
-//        UserBean bean=new UserBean();
-//        bean.setBuddyName(CallDispatcher.LoginUser);
-//        membersList.add(bean);
 
         final String groupid=getIntent().getStringExtra("groupid");
         String groupname=getIntent().getStringExtra("groupname");
@@ -75,7 +75,7 @@ public class AssignPatientActivity extends Activity{
                 + groupid + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser + "%') or ( groupid='" + groupid + "' and assignedmembers='')";
         PatientList=DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
         int questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where (groupid='"
-                + groupid + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser + "%') or ( groupid='" + groupid + "' and assignedmembers='')");
+                + groupid + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser +"'");
         if(questionsCount>0){
             unassign_lay.setVisibility(View.VISIBLE);
             assign.setText("ASSIGN PATIENTS TO");
@@ -89,19 +89,36 @@ public class AssignPatientActivity extends Activity{
         assign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                    Intent intent = new Intent(getApplicationContext(),
-                            AddGroupMembers.class);
-                    ArrayList<String> buddylist = new ArrayList<String>();
-                    for (UserBean userBean : membersList) {
-                        buddylist.add(userBean.getBuddyName());
+                Intent intent = new Intent(getApplicationContext(),
+                        AddGroupMembers.class);
+                ArrayList<String> buddylist = new ArrayList<String>();
+                for (UserBean userBean : membersList) {
+                    buddylist.add(userBean.getBuddyName());
+                }
+                intent.putExtra("fromRounding", true);
+                intent.putExtra("groupid", groupid);
+                intent.putStringArrayListExtra("buddylist", buddylist);
+                Log.i("AAAA", "members list " + buddylist.size());
+                startActivityForResult(intent, 3);
+                isSearch = false;
+            }
+        });
+        unassign.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isselect=false;
+                for(PatientDetailsBean bean: PatientList){
+                    if(bean.isSelected()) {
+                        isselect=true;
+                        String members=bean.getAssignedmembers().replace(CallDispatcher.LoginUser,"");
+                        Log.i("AAAA","selected members "+members);
+                        bean.setAssignedmembers(members);
+                        WebServiceReferences.webServiceClient.SetPatientRecord(bean, context);
+                        DBAccess.getdbHeler().insertorUpdatePatientDetails(bean);
                     }
-                    intent.putExtra("fromRounding",true);
-                    intent.putExtra("groupid",groupid);
-                    intent.putStringArrayListExtra("buddylist", buddylist);
-                    Log.i("AAAA", "members list " + buddylist.size());
-                    startActivityForResult(intent, 3);
-                    isSearch=false;
-//                }
+                }
+                if(isselect)
+                showprogress();
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
@@ -146,5 +163,57 @@ public class AssignPatientActivity extends Activity{
     {
         Log.i("asdf", "count" + count);
         selectedCount.setText(Integer.toString(count) + " selected");
+    }
+    public void showprogress() {
+        handler.post(new Runnable() {
+
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                try {
+                    progress = new ProgressDialog(AssignPatientActivity.this);
+                    if (progress != null) {
+                        progress.setCancelable(false);
+                        progress.setMessage("Progress ...");
+                        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                        progress.setProgress(0);
+                        progress.setMax(100);
+                        progress.show();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+
+    }
+
+    public void cancelDialog() {
+        try {
+            if (progress != null && progress.isShowing()) {
+                Log.i("register", "--progress bar end-----");
+                progress.dismiss();
+                progress = null;
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+    public void notifySetPatientRecord(Object obj)
+    {
+        cancelDialog();
+        if(obj instanceof String[]){
+            Log.i("patientdetails", "notifySetPatientRecord ");
+            GroupChatActivity gChat = (GroupChatActivity) SingleInstance.contextTable
+                    .get("groupchat");
+            gChat.refreshPatient();
+
+            finish();
+
+        }
     }
 }

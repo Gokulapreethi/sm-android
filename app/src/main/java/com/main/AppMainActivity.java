@@ -821,13 +821,13 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			}
             if(WebServiceReferences.webServiceClient!=null){
 				Log.i("chattemplate", "Appmain loginrespponse WebServiceReferences.webServiceClient!=null");
-				String modifieddatetime=null;
-                if(DBAccess.getdbHeler(SingleInstance.mainContext).getChatTemplateModifieddatetime()!=null){
-					modifieddatetime=DBAccess.getdbHeler(SingleInstance.mainContext).getChatTemplateModifieddatetime();
-				}else{
-					modifieddatetime="\"\"";
-				}
-				WebServiceReferences.webServiceClient.getChatTemplate(CallDispatcher.LoginUser,modifieddatetime);
+//				String modifieddatetime=null;
+//                if(DBAccess.getdbHeler(SingleInstance.mainContext).getChatTemplateModifieddatetime()!=null){
+//					modifieddatetime=DBAccess.getdbHeler(SingleInstance.mainContext).getChatTemplateModifieddatetime();
+//				}else{
+//					modifieddatetime="\"\"";
+//				}
+				WebServiceReferences.webServiceClient.getChatTemplate(CallDispatcher.LoginUser,"");
 			}
 			checkChatHistory();
 			setUnReadNotesSize();

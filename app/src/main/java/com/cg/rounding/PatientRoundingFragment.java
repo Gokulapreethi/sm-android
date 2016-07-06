@@ -312,7 +312,7 @@ public class PatientRoundingFragment extends Fragment {
         TextView title = (TextView) getActivity().findViewById(
                 R.id.activity_main_content_title);
         title.setEllipsize(TextUtils.TruncateAt.END);
-        title.setWidth(600);
+        title.setWidth(450);
         title.setHeight(200);
         title.setSingleLine();
         title.setVisibility(View.VISIBLE);

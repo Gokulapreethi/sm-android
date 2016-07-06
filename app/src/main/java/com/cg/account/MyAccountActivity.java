@@ -224,9 +224,8 @@ public class MyAccountActivity extends Activity {
                         public void onClick(View v) {
                             InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                            if (add_citation == null) {
-                                if (SingleInstance.myAccountBean.getCitationpublications() != null)
-                                    add_citation = SingleInstance.myAccountBean.getCitationpublications();
+                            if (add_citation.length()<=0) {
+                                add_citation=citation_info.getText().toString().trim();
                             } else
                                 add_citation = add_citation + "###" + citation_info.getText().toString().trim();
                             String[] split = add_citation.split("###");
@@ -315,7 +314,6 @@ public class MyAccountActivity extends Activity {
                     Button cancel1 = (Button) dialog1.findViewById(R.id.cancel_button2);
 
                     if(isEdit){
-//                        isEdit=false;
 
                         if(spliting_address!=null) {
                             Addresstext.setVisibility(View.VISIBLE);
@@ -496,22 +494,16 @@ public class MyAccountActivity extends Activity {
                                     office_address = office_address + "," + office_fax;
                                 }
 
-                                if (Address1.length() > 0) {
-                                    Address1.append(",");
-                                }
                                 String full_officeaddress = office_address;
-//                                add_officeaddress =full_officeaddress;
                                 if(isEdit){
                                     isEdit=false;
                                     Log.d("officeaddress", "vale1" + office_address);
                                     Log.d("officeaddress", "vale2" + spliting_address);
                                     add_officeaddress =  add_officeaddress.replace(spliting_address, "");
                                     add_officeaddress+="###"+ office_address;
-                                    Log.d("officeaddress","vale"+add_officeaddress);
                                 }else
-                                if (add_officeaddress == null) {
-                                    if (SingleInstance.myAccountBean.getOfficeaddress() != null)
-                                        add_officeaddress = SingleInstance.myAccountBean.getOfficeaddress();
+                                if (add_officeaddress.length()<0) {
+                                    add_officeaddress= full_officeaddress;
                                 } else
                                     add_officeaddress = add_officeaddress + "###" + full_officeaddress;
                                 String[] split = add_officeaddress.split("###");
@@ -797,16 +789,13 @@ public class MyAccountActivity extends Activity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (hospital != null&& !hospital.getSelectedItem().toString().equalsIgnoreCase("Add Hospital Affiliation")) {
-                    if (add_hospital == null ) {
-                        if (SingleInstance.myAccountBean.getHospitalaffiliation() != null)
-                            add_hospital = SingleInstance.myAccountBean.getHospitalaffiliation();
+                    if (add_hospital.length()<=0 ) {
+                        add_hospital=hospital.getSelectedItem().toString().trim();
                     } else
                         add_hospital = add_hospital + "###" + hospital.getSelectedItem().toString().trim();
 
-
                     String[] split = add_hospital.split("###");
                     hospital_lay1.removeAllViews();
-//                    member_lay.removeAllViews();
                     for (int i = 0; i < split.length; i++) {
 
                         LinearLayout hospital_layout = new LinearLayout(context);
@@ -874,21 +863,17 @@ public class MyAccountActivity extends Activity {
         medicalDetailsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         association_membership.setAdapter(medicalDetailsAdapter);
         association_membership.setPrompt("Choose Association");
-//        association_membership.setThreshold(30);
         association_membership.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (association_membership != null && !association_membership.getSelectedItem().toString().equalsIgnoreCase("Choose Association")) {
-                    if (add_association_mem == null) {
-                        if (SingleInstance.myAccountBean.getOrganizationmembership() != null)
-                            add_association_mem = SingleInstance.myAccountBean.getOrganizationmembership();
+                    if (add_association_mem.length()<0) {
+                        add_association_mem=association_membership.getSelectedItem().toString().trim();
                     } else
                         add_association_mem = add_association_mem + "###" + association_membership.getSelectedItem().toString().trim();
 
-
                     String[] split = add_association_mem.split("###");
                     member_lay1.removeAllViews();
-//                    member_lay.removeAllViews();
                     for (int i = 0; i < split.length; i++) {
 
                         LinearLayout hospital_layout = new LinearLayout(context);

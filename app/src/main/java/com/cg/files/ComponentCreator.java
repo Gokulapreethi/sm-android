@@ -4093,7 +4093,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 									dialog.dismiss();
 									audioExist = false;
 
-									refreshList();
+//									refreshList();
 								}
 							})
 					.setNegativeButton("No",

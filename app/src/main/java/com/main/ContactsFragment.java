@@ -20,6 +20,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -53,6 +55,10 @@ import com.cg.commonclass.BuddyListComparator;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.GroupListComparator;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.commongui.listswipe.SwipeMenu;
+import com.cg.commongui.listswipe.SwipeMenuCreator;
+import com.cg.commongui.listswipe.SwipeMenuItem;
+import com.cg.commongui.listswipe.SwipeMenuListView;
 import com.cg.files.CompleteListBean;
 import com.cg.files.ComponentCreator;
 import com.cg.hostedconf.AppReference;
@@ -134,7 +140,8 @@ public class ContactsFragment extends Fragment{
 	public static ArrayList<Integer> buddyRequestCount = new ArrayList<Integer>();
 
 	//	public IndexableListView lv = null;
-	public ListView lv,lv2 = null;
+	public ListView lv2 = null;
+	private SwipeMenuListView lv;
 
 	private ArrayList<UtilityBean> mlist = new ArrayList<UtilityBean>();
 	public Vector<NotifyListBean> seacrhnotifylist = new Vector<NotifyListBean>();
@@ -360,7 +367,7 @@ public class ContactsFragment extends Fragment{
 						mainContext);
 
 //				lv = (IndexableListView) _rootView.findViewById(R.id.listview_coontact);
-				lv = (ListView) _rootView.findViewById(R.id.listview_coontact);
+				lv = (SwipeMenuListView) _rootView.findViewById(R.id.listview_coontact);
 				lv2 = (ListView) _rootView.findViewById(R.id.listview_group);
 
 				contactAdapter = new ContactAdapter(mainContext, ContactsFragment.getBuddyList());
@@ -370,8 +377,82 @@ public class ContactsFragment extends Fragment{
 
 				GroupActivity.getAllGroups();
 				loadRecents();
+				lv.setAdapter(contactAdapter);
+				lv.setOnSwipeListener(new SwipeMenuListView.OnSwipeListener() {
+					@Override
+					public void onSwipeStart(int position) {
+						Log.d("Swiselect", "onSwipeStart : " + position);
+					}
+
+					@Override
+					public void onSwipeEnd(int position) {
+
+					}
+				});
+				SwipeMenuCreator creator = new SwipeMenuCreator() {
+
+					@Override
+					public void create(SwipeMenu menu) {
+						// Create different menus depending on the view type
+						createMenu(menu);
+
+					}
+					private void createMenu(SwipeMenu menu) {
+						SwipeMenuItem forwared = new SwipeMenuItem(mainContext);
+						forwared.setBackground(R.color.blue2);
+						forwared.setWidth(dp2px(90));
+						forwared.setIcon(R.drawable.withdraw_line_white);
+						forwared.setTitleSize(10);
+						forwared.setTitle("DELETE");
+						forwared.setTitleColor(Color.WHITE);
+						menu.addMenuItem(forwared);
+					}
+				};
+				lv.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+					@Override
+					public boolean onMenuItemClick(int position,
+												   SwipeMenu menu, int index) {
+
+						try {
+							BuddyInformationBean bean = ContactsFragment.contactAdapter
+									.getItem(position);
+							doDeleteContact(bean.getName());
+
+							return false;
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							return false;
+						}
+					}
+				});
+				lv.setMenuCreator(creator);
 
 
+				lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+					@Override
+					public void onItemClick(AdapterView<?> arg0, View arg1,
+											int position, long arg3) {
+						try {
+							BuddyInformationBean bean = ContactsFragment.contactAdapter
+									.getItem(position);
+							Intent intent = new Intent(SingleInstance.mainContext, GroupChatActivity.class);
+							intent.putExtra("groupid", CallDispatcher.LoginUser
+									+ bean.getName());
+							intent.putExtra("isGroup", false);
+							intent.putExtra("isReq", "C");
+							intent.putExtra("buddy", bean.getName());
+							intent.putExtra("buddystatus", bean.getStatus());
+							intent.putExtra("nickname", bean.getFirstname()+" "+bean.getLastname());
+							SingleInstance.mainContext.startActivity(intent);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+					}
+				});
 
 				GroupActivity.groupAdapter = new GroupAdapter(mainContext,
 						R.layout.grouplist,getGroupList());
@@ -380,8 +461,7 @@ public class ContactsFragment extends Fragment{
 				Log.i("Test", "OWNER LIST>>>>>>" + getBuddyGroupList());
 
 				Log.i("Test", "CONTACT>>>>>>>>>" + groupList);
-				lv.setAdapter(contactAdapter);
-				lv.setDivider(null);
+
 
 				final LinearLayout sort_lay = (LinearLayout) _rootView.findViewById(R.id.sort_lay);
 				final LinearLayout group_sort = (LinearLayout) _rootView.findViewById(R.id.group_sort);
@@ -697,7 +777,7 @@ public class ContactsFragment extends Fragment{
 				@Override
 				public void run() {
 					contactAdapter = new ContactAdapter(mainContext, GroupChatActivity.getAdapterList(ContactsFragment.getBuddyList()));
-					lv.setAdapter(null);
+//					lv.setAdapter(null);
 					lv.setAdapter(contactAdapter);
 					ContactsFragment.contactAdapter.notifyDataSetChanged();
 				}
@@ -3875,6 +3955,10 @@ public class ContactsFragment extends Fragment{
 			}
 		});
 
+	}
+	private int dp2px(int dp) {
+		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+				getResources().getDisplayMetrics());
 	}
 
 	public void notifyGetAllProfile(Object obj) {

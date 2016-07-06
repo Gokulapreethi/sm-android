@@ -29,6 +29,7 @@ import com.cg.forms.FormFieldAccessActivity;
 import com.cg.forms.FormPermissionViewer;
 import com.cg.forms.FormRecordsCreators;
 import com.cg.forms.FormViewer;
+import com.cg.rounding.AssignPatientActivity;
 import com.cg.rounding.AttendingRightsActivity;
 import com.cg.rounding.OwnershipActivity;
 import com.cg.rounding.PatientRoundingFragment;
@@ -1632,10 +1633,13 @@ public class WSRunner implements Runnable {
 									.toString());
 							mServicebean.setObj(webServiceBean);
 						}
-						if (mServicebean.getCallBack() != null) {
+						if (mServicebean.getCallBack() instanceof RoundNewPatientActivity) {
 							((RoundNewPatientActivity) mServicebean.getCallBack())
 									.notifySetPatientRecord(mServicebean.getObj());
-						} else {
+						} else if(mServicebean.getCallBack() instanceof AssignPatientActivity){
+							((AssignPatientActivity) mServicebean.getCallBack())
+									.notifySetPatientRecord(mServicebean.getObj());
+					}else {
 							SingleInstance.printLog(TAG, "Login, Callback is NULL",
 									null, null);
 						}

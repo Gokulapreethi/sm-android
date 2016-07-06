@@ -204,13 +204,16 @@
                             android:layout_marginRight="5dp" />
 
                 </LinearLayout>
-
-                    <ListView
-                        android:id="@+id/listview_coontact"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_toLeftOf="@+id/sidebar"
-                        android:scrollbars="none"/>
+                <com.cg.commongui.listswipe.SwipeMenuListView
+                    android:id="@+id/listview_coontact"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toLeftOf="@+id/sidebar"
+                    android:background="@color/black2"
+                    android:cacheColorHint="@color/gchat_bg"
+                    android:divider="@null"
+                    android:listSelector="@android:color/transparent"
+                    android:visibility="visible" />
                 <ListView
                     android:id="@+id/listview_group"
                     android:layout_width="match_parent"

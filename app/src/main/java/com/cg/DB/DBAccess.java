@@ -9726,7 +9726,7 @@ public class DBAccess extends SQLiteOpenHelper {
 			} else {
 				openDatabase();
 			}
-			String strGetQry = "select id,message from chattemplate";
+			String strGetQry = "select id,message from chattemplate WHERE userid='" + CallDispatcher.LoginUser+ "'";
 			cur = db.rawQuery(strGetQry, null);
 			int len = cur.getCount();
 			cur.moveToFirst();

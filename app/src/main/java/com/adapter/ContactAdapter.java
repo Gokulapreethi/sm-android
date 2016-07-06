@@ -304,20 +304,20 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
 
                             holder.buddyName.setText(buddyInformationBean.getFirstname() + " " + buddyInformationBean.getLastname());
 
-                            holder.main_content.setOnClickListener(new OnClickListener() {
-								@Override
-								public void onClick(View v) {
-									Intent intent = new Intent(SingleInstance.mainContext, GroupChatActivity.class);
-									intent.putExtra("groupid", CallDispatcher.LoginUser
-											+ buddyInformationBean.getName());
-									intent.putExtra("isGroup", false);
-                                    intent.putExtra("isReq", "C");
-									intent.putExtra("buddy", buddyInformationBean.getName());
-                                    intent.putExtra("buddystatus", buddyInformationBean.getStatus());
-                                    intent.putExtra("nickname", buddyInformationBean.getFirstname()+" "+buddyInformationBean.getLastname());
-									SingleInstance.mainContext.startActivity(intent);
-								}
-							});
+//                            holder.main_content.setOnClickListener(new OnClickListener() {
+//								@Override
+//								public void onClick(View v) {
+//									Intent intent = new Intent(SingleInstance.mainContext, GroupChatActivity.class);
+//									intent.putExtra("groupid", CallDispatcher.LoginUser
+//											+ buddyInformationBean.getName());
+//									intent.putExtra("isGroup", false);
+//                                    intent.putExtra("isReq", "C");
+//									intent.putExtra("buddy", buddyInformationBean.getName());
+//                                    intent.putExtra("buddystatus", buddyInformationBean.getStatus());
+//                                    intent.putExtra("nickname", buddyInformationBean.getFirstname()+" "+buddyInformationBean.getLastname());
+//									SingleInstance.mainContext.startActivity(intent);
+//								}
+//							});
                             holder.occupation.setText(buddyInformationBean.getOccupation());
                             if (buddyInformationBean.getStatus().equalsIgnoreCase("online")) {
                                 holder.status.setBackgroundResource(R.drawable.online_icon);
@@ -345,15 +345,6 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                     holder.tv_header_title.setVisibility(View.VISIBLE);
                     holder.main_content.setVisibility(View.GONE);
                 }
-                holder.main_content.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        ContactsFragment.getInstance(context).doDeleteContact(buddyInformationBean.getName());
-//                        Intent i = new Intent(SingleInstance.mainContext, AMAVerification.class);
-//                        SingleInstance.mainContext.startActivity(i);
-                        return true;
-                    }
-                });
             }
 		} catch (Exception e) {
 			e.printStackTrace();

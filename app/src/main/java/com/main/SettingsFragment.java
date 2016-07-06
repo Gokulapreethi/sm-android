@@ -42,6 +42,7 @@ import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.files.CompleteListView;
 import com.cg.hostedconf.AppReference;
+import com.cg.settings.About;
 import com.cg.settings.UserSettingsBean;
 import com.cg.snazmed.R;
 import com.image.utils.ImageLoader;
@@ -224,6 +225,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 					TextView endorse=(TextView)view.findViewById(R.id.endrose);
 					TextView userid=(TextView)view.findViewById(R.id.userid);
 					TextView feedback = (TextView)view.findViewById(R.id.feedback);
+					TextView about = (TextView)view.findViewById(R.id.about);
 					userid.setText(CallDispatcher.LoginUser);
 					password.setOnClickListener(new View.OnClickListener() {
 						@Override
@@ -292,6 +294,18 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 									R.id.activity_main_content_fragment, feedbackFragment)
 									.commitAllowingStateLoss();
 
+						}
+					});
+					about.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View view) {
+
+							About aboutfragment = About.newInstance(mainContext);
+							FragmentManager fragmentManager = SingleInstance.mainContext
+									.getSupportFragmentManager();
+							fragmentManager.beginTransaction().replace(
+									R.id.activity_main_content_fragment, aboutfragment)
+									.commitAllowingStateLoss();
 						}
 					});
 

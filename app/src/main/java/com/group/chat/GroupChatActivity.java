@@ -746,8 +746,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             dot.setVisibility(View.GONE);
             search.setVisibility(View.GONE);
         }
-        if(isRounding)
+        if(isRounding) {
+            setDefault();
+            profile_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_members_white));
+            tv_profie.setTextColor(getResources().getColor(R.color.white));
+            view_profile.setVisibility(View.VISIBLE);
             RoundingMember();
+        }
         profilechat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

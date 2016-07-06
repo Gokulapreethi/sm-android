@@ -59,31 +59,24 @@ public class AMAVerification extends Activity {
     public AMAAdapter adapter;
     private CheckBox selectAll_buddy;
     private TextView selected;
-    private TextView txtView01, addmembers_text;
+    private TextView txtView01;
     private ListView searchResult;
     private EditText btn_1;
     private ImageView grid_icon;
     private Button search, cancel,cancel1;
-    private RelativeLayout RelativeLayout2, RelativeLayout3;
+    private RelativeLayout RelativeLayout2;
     Vector<BuddyInformationBean> result;
-    private CallDispatcher objCallDispatcher = null;
     private Handler handler = new Handler();
     private AppMainActivity appMainActivity;
     private CallDispatcher calldisp;
     LinearLayout dialogue;
     LinearLayout relay_search;
-    private int total_count = 0;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.ama_verification);
 
-        if (WebServiceReferences.callDispatch.containsKey("calldisp"))
-            objCallDispatcher = (CallDispatcher) WebServiceReferences.callDispatch
-                    .get("calldisp");
-        else
-            objCallDispatcher = new CallDispatcher(context);
         WebServiceReferences.contextTable.put("amaverification", context);
         appMainActivity=SingleInstance.mainContext;
         calldisp=new CallDispatcher(SingleInstance.mainContext);
@@ -299,47 +292,10 @@ public class AMAVerification extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d("RRRR", "TITLE VALUE " + result.get(i).isSelected());
-                BuddyInformationBean bib = new BuddyInformationBean();
                 final CheckBox selectUser = (CheckBox) view.findViewById(R.id.sel_buddy);
-                bib = result.get(i);
-//                if (bib.isSelected()) {
-//                    selectUser.setChecked(false);
-//                    bib.setSelected(false);
-//                } else {
-//                    selectUser.setChecked(true);
-//                    bib.setSelected(true);
-//                }
-//                adapter.notifyDataSetChanged();
-//                int count = 0;
-//                for (BuddyInformationBean bib1 : result) {
-//                    if (bib1.isSelected()) {
-//                        count++;
-//                    }
-//                }
-//                if (count == 0) {
-//                    RelativeLayout2.setVisibility(View.GONE);
-//                    dialogue.setVisibility(View.GONE);
-//                } else {
-//                    RelativeLayout2.setVisibility(View.VISIBLE);
-//                }
-//                selected.setText(count + " selected");
-//                if (count == result.size()) {
-//                    selectAll_buddy.setChecked(true);
-//                } else {
-//                    selectAll_buddy.setChecked(false);
-//                }
-                final BuddyInformationBean finalBib = new BuddyInformationBean();
                 selectUser.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//                        if (finalBib.isSelected()) {
-//                            selectUser.setChecked(false);
-//                            finalBib.setSelected(false);
-//                        } else {
-//                            selectUser.setChecked(true);
-//                            finalBib.setSelected(true);
-//                        }
-//                        adapter.notifyDataSetChanged();
                         int count = 0;
                         for (BuddyInformationBean bib1 : result) {
                             if (bib1.isSelected()) {
@@ -347,17 +303,6 @@ public class AMAVerification extends Activity {
                             }
                         }
                         selected.setText(count + " selected");
-                        if (count == 0) {
-                            RelativeLayout2.setVisibility(View.GONE);
-                            dialogue.setVisibility(View.GONE);
-                        } else {
-                            RelativeLayout2.setVisibility(View.VISIBLE);
-                        }
-                        if (count == result.size()) {
-                            selectAll_buddy.setChecked(true);
-                        } else {
-                            selectAll_buddy.setChecked(false);
-                        }
                     }
                 });
             }
@@ -693,19 +638,6 @@ public class AMAVerification extends Activity {
                     holder.header_title.setVisibility(View.VISIBLE);
                     String cname1, cname2;
                     cname1 = String.valueOf(bib.getFirstname().charAt(0));
-                    holder.selectUser.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (((CheckBox) v).isChecked()) {
-                                bib.setSelected(true);
-                                RelativeLayout2.setVisibility(View.VISIBLE);
-                            }else {
-                                bib.setSelected(false);
-                                RelativeLayout2.setVisibility(View.GONE);
-                                dialogue.setVisibility(View.GONE);
-                            }
-                        }
-                    });
 
                     holder.header_title.setText(cname1.toUpperCase());
 
@@ -848,7 +780,12 @@ public class AMAVerification extends Activity {
     {
         Log.i("asdf", "count" + count);
         selected.setText(Integer.toString(count) + " Selected");
-        total_count = count;
+        if (count<=0) {
+            RelativeLayout2.setVisibility(View.GONE);
+            dialogue.setVisibility(View.GONE);
+        } else {
+            RelativeLayout2.setVisibility(View.VISIBLE);
+        }
         if(count==result.size())
             selectAll_buddy.setChecked(true);
         else
