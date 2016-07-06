@@ -74,6 +74,7 @@ import com.process.MemoryProcessor;
 import com.util.SingleInstance;
 import com.util.VideoPlayer;
 
+import org.lib.model.BuddyInformationBean;
 import org.lib.model.CallHistoryBean;
 import org.lib.model.KeepAliveBean;
 import org.lib.model.ShareReminder;
@@ -775,7 +776,13 @@ public class FilesFragment extends Fragment implements OnClickListener {
 				if (share.getType().equalsIgnoreCase("video")) {
 					if (callDisp.notifier == null)
 						callDisp.notifier = new BackgroundNotification(context);
-					callDisp.notifier.ShowNotification(share.getFrom()
+					String Fullname = "";
+					for(BuddyInformationBean bean:ContactsFragment.getBuddyList()){
+						if(bean.getName().equalsIgnoreCase(share.getFrom())){
+							Fullname = bean.getFirstname()+" "+bean.getLastname();
+						}
+					}
+					callDisp.notifier.ShowNotification(Fullname
 							+ " Shared Video note with you", context
 							.getResources().getString(R.string.app_name),
 							"share");

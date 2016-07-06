@@ -34,6 +34,7 @@ import com.main.AppMainActivity;
 import com.main.ContactsFragment;
 import com.main.FilesFragment;
 import com.main.RequestFragment;
+import com.main.SearchPeopleFragment;
 import com.util.SingleInstance;
 
 import org.lib.model.BuddyInformationBean;
@@ -100,6 +101,18 @@ public class FindPeople extends Fragment {
 
          Button backBtn = (Button) getActivity().findViewById(R.id.backbtn);
          backBtn.setVisibility(View.VISIBLE);
+         backBtn.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 SearchPeopleFragment searchPeopleFragment = SearchPeopleFragment.newInstance(SingleInstance.mainContext);
+                 FragmentManager fragmentManager = SingleInstance.mainContext
+                         .getSupportFragmentManager();
+                 fragmentManager.beginTransaction().replace(
+                         R.id.activity_main_content_fragment, searchPeopleFragment)
+                         .commitAllowingStateLoss();
+
+             }
+         });
         _rootView = null;
         if (_rootView == null) {
             _rootView = inflater.inflate(R.layout.findpeople, null);

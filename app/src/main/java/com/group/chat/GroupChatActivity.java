@@ -69,6 +69,7 @@ import com.bean.GroupTempBean;
 import com.bean.ProfileBean;
 import com.bean.SpecialMessageBean;
 import com.bean.UserBean;
+import com.callHistory.CallHistoryActivity;
 import com.cg.Calendar.DateView;
 import com.cg.DB.DBAccess;
 import com.cg.account.PinSecurity;
@@ -1363,6 +1364,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 buddyName = (TextView) v1.findViewById(R.id.buddyname);
                 btn_grid = (ImageView) v1.findViewById(R.id.gridview);
                 btn_grid.setOnClickListener(this);
+
                 audio_call = (Button) v1.findViewById(R.id.c_audio_call);
                 audio_call.setOnClickListener(this);
                 audio_call.setTag(0);
@@ -4310,15 +4312,21 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     showToast("You are in offline");
                     break;
                 case R.id.gridview:
-                    if (!isGrid) {
-                        btn_grid.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_close));
-                        atachlay.setVisibility(View.VISIBLE);
-                        isGrid = true;
-                    } else {
-                        btn_grid.setBackgroundDrawable(getResources().getDrawable(R.drawable.grid_grid));
-                        atachlay.setVisibility(View.GONE);
-                        audio_layout.setVisibility(View.GONE);
-                        isGrid = false;
+                    InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    if(!CallDispatcher.myStatus.equalsIgnoreCase("0")) {
+                        if (!isGrid) {
+                            btn_grid.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_close));
+                            atachlay.setVisibility(View.VISIBLE);
+                            isGrid = true;
+                        } else {
+                            btn_grid.setBackgroundDrawable(getResources().getDrawable(R.drawable.grid_grid));
+                            atachlay.setVisibility(View.GONE);
+                            audio_layout.setVisibility(View.GONE);
+                            isGrid = false;
+                        }
+                    }else{
+                        showToast("You are in offline");
                     }
                     break;
 
@@ -4932,6 +4940,22 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     swipeposition = 2;
                     normalcontainer.setVisibility(View.GONE);
                     join_lay.setVisibility(View.VISIBLE);
+                    String dat, tim;
+                    dat = gcBean.getSenttime().split(" ")[1].split(":")[0] + ":" + gcBean.getSenttime().split(" ")[1].split(":")[1];
+                    tim = gcBean.getSenttime().split(" ")[2].toUpperCase();
+
+                    time.setText(dat + " " + tim);
+                    join_lay.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(context,
+                                    CallHistoryActivity.class);
+                            intent.putExtra("isviewed",true);
+                            intent.putExtra("sessionid",
+                                    gcBean.getSessionid());
+                            startActivity(intent);
+                        }
+                    });
                     String total_users = gcBean.getFtpUsername()+","+gcBean.getFtpPassword();
                     String[] total_users_array = total_users.split(",");
 
@@ -4984,7 +5008,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 tv_missed.setVisibility(View.VISIBLE);
                                 tv_missed.setText("missed");
                                 tv_missed.setTextColor(getResources().getColor(R.color.pink));
-                                time.setVisibility(View.GONE);
+                                time.setVisibility(View.VISIBLE);
                             }
                         } else {
                             join_lay.setBackgroundColor(getResources().getColor(R.color.darkpink));
@@ -4993,7 +5017,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             tv_missed.setVisibility(View.VISIBLE);
                             tv_missed.setText("missed");
                             tv_missed.setTextColor(getResources().getColor(R.color.pink));
-                            time.setVisibility(View.GONE);
+                            time.setVisibility(View.VISIBLE);
                         }
                     } else {
                         joinBtn.setVisibility(View.GONE);
@@ -5007,11 +5031,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             tv_missed.setText(gcBean.getReminderTime());
                         tv_missed.setTextColor(getResources().getColor(R.color.blue2));
                         time.setVisibility(View.VISIBLE);
-                        String dat, tim;
-                        dat = gcBean.getSenttime().split(" ")[1].split(":")[0] + ":" + gcBean.getSenttime().split(" ")[1].split(":")[1];
-                        tim = gcBean.getSenttime().split(" ")[2].toUpperCase();
 
-                        time.setText(dat + " " + tim);
                     }
                     joinBtn.setOnClickListener(new OnClickListener() {
                         @Override

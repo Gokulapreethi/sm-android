@@ -94,15 +94,15 @@ import java.util.Vector;
 
 public class WSRunner implements Runnable {
 
-	private Servicebean mServicebean;
+	public Servicebean mServicebean;
 
-	private String mServer_ip;
+	public String mServer_ip;
 
-	private int mPort;
+	public int mPort;
 
-	private String mWsdl_link;
+	public String mWsdl_link;
 
-	private String mNamespace;
+	public String mNamespace;
 
 	private WebServiceCallback mService_callback;
 
@@ -114,7 +114,7 @@ public class WSRunner implements Runnable {
 
 	private SoapPrimitive mSp = null;
 
-	private String quotes = "\"";
+	public String quotes = "\"";
 
 	private XmlParser mParser = new XmlParser();
 
@@ -1280,6 +1280,20 @@ public class WSRunner implements Runnable {
 									.notifyStatesWebServiceResponse(mServicebean.getObj());
 						}
 
+						break;
+					case GETCITIES:
+						Log.d("Cityvalue","x---->");
+						mChk = mParser.getResult(mSp.toString());
+						if(mChk){
+							ArrayList<String>cityList = mParser.parsecities(mSp.toString());
+							mServicebean.setObj(cityList);
+						}else{
+							webServiceBean = mParser.parseResultFromXml(mSp.toString());
+							mServicebean.setObj(webServiceBean);
+						}if (mServicebean.getCallBack()instanceof AppMainActivity){
+						((AppMainActivity)mServicebean.getCallBack())
+								.notifycityWebServiceResponse(mServicebean.getObj());
+					}
 						break;
 					case GETHOSPITALDETAILS:
 						mChk = mParser.getResult(mSp.toString());

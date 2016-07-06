@@ -293,8 +293,9 @@ public class SearchPeopleFragment extends Fragment {
                     }
                 });
 
+
                 list = new ArrayList<String>();
-                list.add("City");
+                list.addAll(SingleInstance.mainContext.cityList);
 
                 dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list,list);
 

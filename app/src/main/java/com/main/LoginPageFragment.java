@@ -57,14 +57,22 @@ import com.util.SingleInstance;
 
 import org.core.CommunicationEngine;
 import org.core.EnumSignallingType;
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.lib.model.BuddyInformationBean;
 import org.lib.model.GroupBean;
 import org.lib.model.SiginBean;
 import org.lib.model.WebServiceBean;
+import org.lib.webservice.WSRunner;
+import org.net.AndroidInsecureKeepAliveHttpsTransportSE;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginPageFragment extends Fragment {
 
@@ -250,7 +258,60 @@ public class LoginPageFragment extends Fragment {
                 WebServiceReferences.webServiceClient.GetHospitalDetails("", SingleInstance.mainContext);
                 WebServiceReferences.webServiceClient.GetSpecialities("", SingleInstance.mainContext);
                 WebServiceReferences.webServiceClient.GetMedicalSchools("", SingleInstance.mainContext);
+//                WebServiceReferences.webServiceClient.GetCities("", SingleInstance.mainContext);
             }
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    WSRunner wsRunner=AppReference.wsRunnerThread;
+                    String parse="";
+                    try {
+                        Log.i("webservice","Getcities method called");
+
+                        parse= wsRunner.mWsdl_link.substring(wsRunner.mWsdl_link.indexOf("://") + 3);
+
+                        parse = parse.substring(parse.indexOf(":") + 1);
+
+                        parse = parse.substring(parse.indexOf("/"),
+                                parse.indexOf("?"));
+
+                    AndroidInsecureKeepAliveHttpsTransportSE androidHttpTransport = new AndroidInsecureKeepAliveHttpsTransportSE(
+                            wsRunner.mServer_ip, wsRunner.mPort, parse, 1*60*30000);
+
+                    SoapObject mRequest = new SoapObject(wsRunner.mNamespace, "GetCities");
+                    String date="";
+                    HashMap<String,String> propert_map = new HashMap<String,String>();
+                    propert_map.put("date", date);
+
+                    if (propert_map != null) {
+                        for (Map.Entry<String, String> set : propert_map.entrySet()) {
+                            mRequest.addProperty(set.getKey().trim(), set
+                                    .getValue().trim());
+                        }
+//                        HashMap<String, String> map = propert_map;
+//                        map = null;
+                    }
+
+                    Log.d("webservice", "My Server Requset  :" + mRequest);
+
+                    SoapSerializationEnvelope mEnvelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+
+                    mEnvelope.setOutputSoapObject(mRequest);
+
+                    androidHttpTransport.call(
+                            wsRunner.quotes + wsRunner.mNamespace + "GetCities"
+                                    + wsRunner.quotes, mEnvelope);
+                    SoapPrimitive mSp = (SoapPrimitive) mEnvelope.getResponse();
+
+                    Log.d("webservice1", "loginpage Server response---->" + mSp.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                    }
+
+                }
+            }).start();
 
             TextView forgetid = (TextView) view.findViewById(R.id.btnforgotuserid);
             forgetid.setOnClickListener(new OnClickListener() {

@@ -1340,6 +1340,18 @@ public class WebServiceClient {
 			wsNotifier.addTasktoExecutor(servicebean);
 		}
 	}
+	public void GetCities(String date ,Object obj){
+		Servicebean servicebean = new Servicebean();
+		HashMap<String,String> propert_map = new HashMap<String,String>();
+		propert_map.put("date",date);
+		servicebean.setProperty_map(propert_map);
+		servicebean.setWsmethodname("GetCities");
+		servicebean.setServiceMethods(EnumWebServiceMethods.GETCITIES);
+		servicebean.setCallBack(obj);
+		if ((wsNotifier !=null)){
+			wsNotifier.addTasktoExecutor(servicebean);
+		}
+	}
 	public void GetHospitalDetails(String date,Object obj) {
 		Servicebean servicebean = new Servicebean();
 		HashMap<String, String> property_map = new HashMap<String, String>();

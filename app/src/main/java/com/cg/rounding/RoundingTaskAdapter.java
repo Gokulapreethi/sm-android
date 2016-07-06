@@ -96,10 +96,21 @@ public class RoundingTaskAdapter extends ArrayAdapter<TaskDetailsBean> {
                    int Duetime=Integer.parseInt(tBean.getDuetime());
                     Log.i("sss", "Due time"+Duetime);
 
-                    if(Duetime<=0)
-                    holder.pending_hours.setText(tBean.getDuedate());
+                    if(Duetime<=0) {
+//                    holder.pending_hours.setText(tBean.getDuedate());
+
+                        SimpleDateFormat dateformat = new SimpleDateFormat("dd-MM-yyyy");
+                        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd");
+                        Date d1 = new Date();
+                        String datevalue = tBean.getDuedate();
+                        d1 = dateformat.parse(datevalue);
+                        String date = sdf.format(d1);
+//                    String[] time = month[1].split(":");
+                        holder.pending_hours.setText(date);
+                    }
+
                     else
-                        holder.pending_hours.setText(tBean.getDuetime()+" hours");
+                        holder.pending_hours.setText(tBean.getDuetime() + " hours");
 
                 }
                 if(tBean.getHeader()!=null){

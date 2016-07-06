@@ -6904,6 +6904,37 @@ public class XmlParser {
 		}
 		return stateList;
 	}
+	public ArrayList<String> parsecities(String xml){
+		ArrayList<String> cityList = new ArrayList<String>();
+		String city=null;
+		if(getResult(xml)){
+			try{
+				dbf = DocumentBuilderFactory.newInstance();
+				db = dbf.newDocumentBuilder();
+				is = new InputSource();
+				is.setCharacterStream(new StringReader(xml));
+				doc = (Document)db.parse(is);
+				list = doc.getElementsByTagName("Cities");
+				if(list.getLength()>0){
+					for(int i=0;i<list.getLength();i++){
+						city = new String();
+						node = list.item(i);
+						nodeMap = node.getAttributes();
+						if(nodeMap.getNamedItem("cityName")!=null){
+							city=nodeMap.getNamedItem("cityName").getNodeValue();
+						}
+						cityList.add(city);
+						Log.d("listvalue","parsecities"+cityList.size());
+					}
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+
+
+		return cityList;
+	}
 	public ArrayList<String> parseHospitalDetails(String xml){
 		ArrayList<String> hospitaldetailsList = new ArrayList<String>();
 		String hospitaldetails=null;

@@ -3959,6 +3959,7 @@ public class ContactsFragment extends Fragment{
 				NotifyListBean nbean = new NotifyListBean();
 				ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(gbean.getOwnerName());
 				String fullname=bean.getFirstname()+" "+bean.getLastname();
+				nbean.setSortdate(gbean.getCreatedDate());
 				nbean.setUsername(fullname);
 				nbean.setNotifttype("Invite");
 				nbean.setType("group");

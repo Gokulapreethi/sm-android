@@ -15,7 +15,7 @@
         android:text="Share the message below with the \n person you would like to invite"/>
 
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/sender_layout"
         android:layout_width="390dp"
         android:layout_height="330dp"
@@ -23,11 +23,13 @@
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         android:padding="30dp"
+        android:weightSum="2"
         android:orientation="vertical"
         android:background="@drawable/new_2" >
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:id="@+id/sender_layout2">
 
 
@@ -74,18 +76,19 @@
             android:id="@+id/sender_layout1"
             android:layout_below="@+id/sender_layout2"
             android:layout_width="wrap_content"
+            android:layout_weight="1"
             android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/textinfo_5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:textColor="@color/blue2"
                 android:text="https://play.google.com"
                 android:layout_weight="1"
                 android:textSize="18dp"/>
         </RelativeLayout>
-    </RelativeLayout>
+    </LinearLayout>
 
 
 

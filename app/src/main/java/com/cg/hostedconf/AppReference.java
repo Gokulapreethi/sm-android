@@ -15,6 +15,7 @@ import com.thread.SipCommunicator;
 import com.thread.SipQueue;
 
 import org.lib.model.ShareReminder;
+import org.lib.webservice.WSRunner;
 
 
 public class AppReference {
@@ -82,6 +83,8 @@ public class AppReference {
 	}
 
 	public static HashMap<String,ShareReminder> filedownload=new HashMap<String,ShareReminder>();
+
+	public static WSRunner wsRunnerThread=null;
 
 	@SuppressLint("ShowToast")
 	public static void toastdisp(Context context, String name) {

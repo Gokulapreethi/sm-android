@@ -313,6 +313,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	private volatile SipCommunicator sipCommunicator;
 
 	public static SipClientWrapper sipClientWrapper = new SipClientWrapper();
+	public ArrayList<String> cityList=new ArrayList<String>();
 
 	private String toUserName;
 
@@ -1301,7 +1302,14 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 									+ object.getGroupName() + " Group");
 						}
 					} else {
-						showToast(object.getDeleteGroupMembers()
+						String Fullname=object.getDeleteGroupMembers();
+						for(BuddyInformationBean bean:ContactsFragment.getBuddyList()){
+							if(bean.getName().equalsIgnoreCase(object.getDeleteGroupMembers())){
+								Fullname = bean.getFirstname() + " " + bean.getLastname();
+								break;
+							}
+						}
+						showToast(Fullname
 								+ " left from the " + object.getGroupName()
 								+ " Group");
 					}
@@ -8196,6 +8204,15 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			showToast(((WebServiceBean) obj).getText());
 		}
 	}
+	public void notifycityWebServiceResponse(Object obj){
+		if(obj instanceof  ArrayList) {
+			ArrayList<String> citylist = (ArrayList<String>) obj;
+			cityList.addAll(citylist);
+		}else if(obj instanceof WebServiceBean){
+			showToast(((WebServiceBean)obj).getText());
+		}
+	}
+
 	public void notifyMedicalSocietiesWebServiceResponse(Object obj) {
 		if (obj instanceof ArrayList) {
 			ArrayList<String[]> medicalSocietiesList = (ArrayList<String[]>) obj;
