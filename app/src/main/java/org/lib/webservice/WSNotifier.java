@@ -67,7 +67,6 @@ public class WSNotifier {
 			WSRunner runnable_task = new WSRunner();
 			runnable_task.setserviceInfo(server_ip, connect_ort, wsdl_link,
 					namespace, service_callback);
-			AppReference.wsRunnerThread=runnable_task;
 			taskmanager.execute(runnable_task);
 		}
 	}

@@ -264,12 +264,35 @@ public class LoginPageFragment extends Fragment {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    WSRunner wsRunner=AppReference.wsRunnerThread;
                     String parse="";
+
+                    String url=SingleInstance.mainContext.getResources().getString(R.string.service_url);
+
+                    String loginIP = url.substring(url.indexOf("://") + 3);
+
+                    loginIP = loginIP.substring(0, loginIP.indexOf(":"));
+
+                    loginIP = loginIP.trim();
+
+                    String urlPort = url.substring(url.indexOf("://") + 3);
+
+                    urlPort = urlPort.substring(urlPort.indexOf(":") + 1);
+
+                    urlPort = urlPort.substring(0, urlPort.indexOf("/"));
+
+
+                    String server_ip = loginIP;
+                    int connect_ort = Integer.parseInt(urlPort);
+                    String namespace = "http://ltws.com/";
+                    String wsdl_link = url.trim()+"?wsdl";
+                    String quotes = "\"";
+
+
                     try {
                         Log.i("webservice","Getcities method called");
-
-                        parse= wsRunner.mWsdl_link.substring(wsRunner.mWsdl_link.indexOf("://") + 3);
+//                        Log.i("webservice","wsrunner obj-->"+wsRunner);
+                        Log.i("webservice","wsrunner mWsdl_link-->"+wsdl_link);
+                        parse= wsdl_link.substring(wsdl_link.indexOf("://") + 3);
 
                         parse = parse.substring(parse.indexOf(":") + 1);
 
@@ -277,9 +300,9 @@ public class LoginPageFragment extends Fragment {
                                 parse.indexOf("?"));
 
                     AndroidInsecureKeepAliveHttpsTransportSE androidHttpTransport = new AndroidInsecureKeepAliveHttpsTransportSE(
-                            wsRunner.mServer_ip, wsRunner.mPort, parse, 1*60*30000);
+                            server_ip, connect_ort, parse, 1*60*30000);
 
-                    SoapObject mRequest = new SoapObject(wsRunner.mNamespace, "GetCities");
+                    SoapObject mRequest = new SoapObject(namespace, "GetCities");
                     String date="";
                     HashMap<String,String> propert_map = new HashMap<String,String>();
                     propert_map.put("date", date);
@@ -300,8 +323,8 @@ public class LoginPageFragment extends Fragment {
                     mEnvelope.setOutputSoapObject(mRequest);
 
                     androidHttpTransport.call(
-                            wsRunner.quotes + wsRunner.mNamespace + "GetCities"
-                                    + wsRunner.quotes, mEnvelope);
+                            quotes + namespace + "GetCities"
+                                    + quotes, mEnvelope);
                     SoapPrimitive mSp = (SoapPrimitive) mEnvelope.getResponse();
 
                     Log.d("webservice1", "loginpage Server response---->" + mSp.toString());
