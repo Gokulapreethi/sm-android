@@ -73,6 +73,12 @@ public class ChatTemplateActivity extends Activity {
                 for (chattemplatebean chattemplatebean : templateList) {
                     if (chattemplatebean.getTempletmessage().equalsIgnoreCase(bean.getTempletmessage())) {
                         chattemplatebean.setSelected(true);
+                                String message=chattemplatebean.getTempletmessage();
+                                Intent intent=new Intent();
+                                intent.putExtra("MESSAGE", message);
+                                setResult(12, intent);
+                                finish();//finishing activity
+
                     } else {
                         chattemplatebean.setSelected(false);
                     }
@@ -82,6 +88,7 @@ public class ChatTemplateActivity extends Activity {
 
             }
         });
+
         im_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,17 +99,6 @@ public class ChatTemplateActivity extends Activity {
             @Override
             public void onClick(View view) {
                 boolean edit=false;
-                for(chattemplatebean chattemplatebean:templateList){
-                    if(chattemplatebean.isSelected()){
-                        edit=true;
-                        String message=chattemplatebean.getTempletmessage();
-                        Intent intent=new Intent();
-                        intent.putExtra("MESSAGE", message);
-                        setResult(12, intent);
-                        finish();//finishing activity
-                        break;
-                    }
-                }
                 if(!edit)
                     showTemplates();
             }
@@ -182,7 +178,7 @@ public class ChatTemplateActivity extends Activity {
         dialog1.show();
         ListView chatlist=(ListView)dialog1.findViewById(R.id.chatlist);
         Button cancel=(Button)dialog1.findViewById(R.id.cancel);
-        Vector<chattemplatebean> templist=templateList;
+        Vector<chattemplatebean> templist=DBAccess.getdbHeler(context).getChatTemplates();
         chattemplatebean cBean=new chattemplatebean();
         cBean.setTempletmessage("Add New");
         templist.add(cBean);
@@ -250,6 +246,12 @@ public class ChatTemplateActivity extends Activity {
                     @Override
                     public void onClick(View v) {
                         showEditTemplate(bean.getTempletmessage(),bean.getTempletid(),"update");
+                    }
+                });
+                messages.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
                     }
                 });
                 deleteview.setOnClickListener(new View.OnClickListener() {
