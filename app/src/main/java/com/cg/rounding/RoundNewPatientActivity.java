@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -93,6 +94,7 @@ public class RoundNewPatientActivity extends Activity {
 
     private TextView ed_dob=null;
     private TextView ed_Admitdate=null;
+    private boolean isHospital=false;
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
@@ -122,6 +124,7 @@ public class RoundNewPatientActivity extends Activity {
         member_lay=(LinearLayout)findViewById(R.id.member_lay);
         lv_buddylist = (LinearLayout) findViewById(R.id.membersList);
         gender_patient = (RadioGroup) findViewById(R.id.gender_patient);
+        final ImageView hospital_img=(ImageView)findViewById(R.id.title_img);
         groupid=getIntent().getStringExtra("groupid");
 
         final EditText ed_firstname=(EditText)findViewById(R.id.ed_firstname);
@@ -278,8 +281,9 @@ public class RoundNewPatientActivity extends Activity {
                     }
                 }, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH));
-//                Calendar c = Calendar.getInstance();
-//                dialog.getDatePicker().setMaxDate(c.getTimeInMillis());
+                Calendar c = Calendar.getInstance();
+//                dialog.getDatePicker().setMinDate(c.getTimeInMillis());
+                dialog.getDatePicker().setMaxDate(c.getTimeInMillis());
                 dialog.show();
             }
         });
@@ -458,11 +462,21 @@ public class RoundNewPatientActivity extends Activity {
 
         hospital.setAdapter(dataAdapter);
         hospital.setThreshold(1);
-        hospital.setOnClickListener(new View.OnClickListener() {
+        hospital_img.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                hospital.showDropDown();
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                if (isHospital) {
+                    isHospital = false;
+                    hospital.dismissDropDown();
+                    hospital_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                } else {
+                    isHospital = true;
+                    hospital_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    hospital.showDropDown();
+                }
             }
         });
         GroupBean gBean = DBAccess.getdbHeler()

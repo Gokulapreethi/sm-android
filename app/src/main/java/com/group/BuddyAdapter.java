@@ -41,10 +41,9 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 	private List<UserBean> userList;
 	private Vector<UserBean> originallist;
 	private LayoutInflater inflater = null;
-	private int checkBoxCounter = 0;
+	public int checkBoxCounter = 0;
 	private int checkboxcount;
 	private ImageLoader imageLoader;
-	boolean[] checkBoxState;
 	AddGroupMembers addGroupMembers;
 
 	public void setCheckcount(int checkboxcount) {
@@ -69,7 +68,6 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 		inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		imageLoader=new ImageLoader(context);
-		checkBoxState = new boolean[userList.size()];
 		addGroupMembers = (AddGroupMembers) WebServiceReferences.contextTable
 				.get("groupcontact");
 
@@ -165,14 +163,12 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 					@Override
 					public void onClick(View v) {
 						if (((CheckBox) v).isChecked()) {
-							checkBoxState[position] = true;
 							userBean.setSelected(true);
 							checkBoxCounter++;
 							if (addGroupMembers != null) {
 								addGroupMembers.countofcheckbox(checkBoxCounter);
 							}
 						} else {
-							checkBoxState[position] = false;
 							userBean.setSelected(false);
 							checkBoxCounter--;
 							if (addGroupMembers != null) {
@@ -188,10 +184,11 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 				public void onClick(View view) {
 					if(userBean.getGroupid()!=null) {
 						GroupBean gBean = DBAccess.getdbHeler().getGroupAndMembers(
-								"select * from grouplist where groupid=" + userBean.getGroupid());
+								"select * from groupdetails where groupid=" + userBean.getGroupid());
 						gBean.setDeleteGroupMembers(userBean.getBuddyName());
 						gBean.setGroupName(userBean.getGroupname());
 						if(gBean.getGrouptype()!=null) {
+							Log.i("AAAA","group -----"+gBean.getGrouptype());
 							if (gBean.getGrouptype().equalsIgnoreCase("Rounding")) {
 								RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable
 										.get("roundingGroup");
@@ -199,11 +196,19 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 								roundingGroup.showprogress();
 								WebServiceReferences.webServiceClient.createRoundingGroup(gBean, roundingGroup);
 							} else {
-								GroupActivity groupActivity = (GroupActivity) SingleInstance.contextTable
-										.get("groupActivity");
-								if(groupActivity!=null)
-								groupActivity.showprogress();
-								WebServiceReferences.webServiceClient.createGroup(gBean, groupActivity);
+								RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable
+										.get("roundingGroup");
+								if(roundingGroup!=null){
+									roundingGroup.membersList.remove(userBean);
+									roundingGroup.refreshMembersList();
+								}else {
+									GroupActivity groupActivity = (GroupActivity) SingleInstance.contextTable
+											.get("groupActivity");
+									if (groupActivity != null)
+										groupActivity.showprogress();
+									WebServiceReferences.webServiceClient.createGroup(gBean, groupActivity);
+								}
+
 							}
 						}
 					}

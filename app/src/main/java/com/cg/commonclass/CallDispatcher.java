@@ -3121,6 +3121,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									"Call Rejected");
 						}
 					});
+					NoAnswer(sb.getTo(),sb.getCallType());
 					// Call rejected response
 					isCallInitiate = false;
 					closeDialWindow("Call rejected " + sb.getFrom(), "1", "1");

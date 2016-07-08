@@ -6123,6 +6123,15 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						GroupActivity.groupAdapter.notifyDataSetChanged();
 					}
 				});
+				for(GroupBean gbean:GroupActivity.groupList) {
+					if (!(gbean.getGroupIcon().equals(null) || gbean.getGroupIcon().equals(""))) {
+						String[] param = new String[3];
+						param[0] = CallDispatcher.LoginUser;
+						param[1] = CallDispatcher.Password;
+						param[2] = gbean.getGroupIcon();
+						WebServiceReferences.webServiceClient.FileDownload(param);
+					}
+				}
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -6143,7 +6152,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					DBAccess.getdbHeler(context).insertorUpdateGroupMembers(
 							groupBean);
 				}
-				Log.d("AAA","Inside notifyRoundingGroupList ");
+				Log.d("AAA", "Inside notifyRoundingGroupList ");
 
 				RoundingGroupActivity.getallRoundingGroups();
 				RoundingFragment.getRoundingList().clear();
@@ -6158,6 +6167,15 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						RoundingFragment.newInstance(context).getList();
 					}
 				});
+				for(GroupBean gbean:RoundingGroupActivity.RoundingList) {
+					if (!(gbean.getGroupIcon().equals(null) || gbean.getGroupIcon().equals(""))) {
+						String[] param = new String[3];
+						param[0] = CallDispatcher.LoginUser;
+						param[1] = CallDispatcher.Password;
+						param[2] = gbean.getGroupIcon();
+						WebServiceReferences.webServiceClient.FileDownload(param);
+					}
+				}
 			}else if(obj instanceof WebServiceBean){
 				RoundingFragment.isEmptyList=true;
 				Log.d("AAA","Inside notifyRoundingGroupList webservice ");
@@ -7997,6 +8015,13 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					.updateGroupMembers(cv, "groupid=" + bean.getGroupId());
 			ContactsFragment.getInstance(SingleInstance.mainContext).getList();
 			RoundingFragment.newInstance(SingleInstance.mainContext).getList();
+				if (!(bean.getGroupIcon().equals(null) || bean.getGroupIcon().equals(""))) {
+					String[] param = new String[3];
+					param[0] = CallDispatcher.LoginUser;
+					param[1] = CallDispatcher.Password;
+					param[2] = bean.getGroupIcon();
+					WebServiceReferences.webServiceClient.FileDownload(param);
+				}
 		}
 //		else if(obj instanceof String[]){
 //			String[] result=(String[])obj;

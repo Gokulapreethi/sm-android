@@ -900,6 +900,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             TextView officeaddre = (TextView) v1.findViewById(R.id.officeaddre);
             TextView hospitalspec = (TextView) v1.findViewById(R.id.hospitalspec);
             TextView citation = (TextView) v1.findViewById(R.id.citation);
+            TextView association = (TextView) v1.findViewById(R.id.association);
             ImageView Statusicon = (ImageView)v1.findViewById(R.id.status_icon);
             TextView status = (TextView) findViewById(R.id.status);
             status.setText(temp);
@@ -977,6 +978,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 hospitalspec.setText(pb.getHospitalaffiliation());
             if (pb.getCitationpublications() != null && pb.getCitationpublications().length() > 0)
                 citation.setText(pb.getCitationpublications());
+            if (pb.getOrganizationmembership() != null && pb.getOrganizationmembership().length() > 0)
+                citation.setText(pb.getOrganizationmembership());
         }
 
 

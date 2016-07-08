@@ -264,36 +264,36 @@ public class AddGroupMembers extends Activity {
 
 
 			done.setOnClickListener(new OnClickListener() {
-                boolean isSelectContact = false;
+				boolean isSelectContact = false;
 
-                public void onClick(View arg0) {
-                    if (SingleInstance.mainContext.isNetworkConnectionAvailable()) {
-                        ArrayList<UserBean> users = new ArrayList<UserBean>();
-                        for (UserBean userBean : contactList) {
-                            userBean.setFlag("1");
-                            if (userBean.isSelected()) {
-                                isSelectContact = true;
-                                users.add(userBean);
-                            }
-                        }
-                        if (!isSelectContact) {
-                            showToast("Buddy not selected");
+				public void onClick(View arg0) {
+					if (SingleInstance.mainContext.isNetworkConnectionAvailable()) {
+						ArrayList<UserBean> users = new ArrayList<UserBean>();
+						for (UserBean userBean : contactList) {
+							userBean.setFlag("1");
+							if (userBean.isSelected()) {
+								isSelectContact = true;
+								users.add(userBean);
+							}
+						}
+						if (!isSelectContact) {
+							showToast("Buddy not selected");
 
-                        } else {
-							Intent intent=getIntent();
-							if(fromCall)
-							intent.putExtra("calltype", calltype);
+						} else {
+							Intent intent = getIntent();
+							if (fromCall)
+								intent.putExtra("calltype", calltype);
 							intent.putExtra("list", users);
-                            setResult(RESULT_OK, intent);
-                            finish();
-                        }
-                    } else {
-                        showAlert1("Info", "Check internet connection Unable to connect server");
-                        finish();
+							setResult(RESULT_OK, intent);
+							finish();
+						}
+					} else {
+						showAlert1("Info", "Check internet connection Unable to connect server");
+						finish();
 
-                    }
-                }
-            });
+					}
+				}
+			});
 
 			back.setOnClickListener(new OnClickListener() {
 
@@ -303,6 +303,14 @@ public class AddGroupMembers extends Activity {
 					finish();
 				}
 			});
+			int count=0;
+			for (UserBean userBean : contactList) {
+				if(userBean.isSelected()) {
+					count++;
+					adapter.checkBoxCounter=count;
+				}
+			}
+			countofcheckbox(count);
 			selectAll.setTag(true);
 			selectAll.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 

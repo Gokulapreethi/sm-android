@@ -516,13 +516,6 @@ public class DashBoardFragment extends Fragment {
                                 LinearLayout no_notify=(LinearLayout)v2.findViewById(R.id.no_notify);
                                 notifylistview = (ListView) v2.findViewById(R.id.notify_list);
                                 LoadFilesList(CallDispatcher.LoginUser);
-                                if(tempnotifylist.size()>0) {
-                                    notifylistview.setVisibility(View.VISIBLE);
-                                    no_notify.setVisibility(View.GONE);
-                                }else {
-                                    notifylistview.setVisibility(View.GONE);
-                                    no_notify.setVisibility(View.VISIBLE);
-                                }
                                 notifyAdapter = new NotifyListAdapter(mainContext, tempnotifylist);
                                 notifylistview.setAdapter(notifyAdapter);
                                 notifyAdapter.isFromOther(false);
@@ -530,6 +523,7 @@ public class DashBoardFragment extends Fragment {
                                 clearAllBtn.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
+
                                         DBAccess.getdbHeler(mainContext)
                                                 .setReadAllCount(CallDispatcher.LoginUser,"");
                                         notifyAdapter.notifyDataSetChanged();
@@ -541,6 +535,14 @@ public class DashBoardFragment extends Fragment {
                                 rl_notify.setVisibility(View.VISIBLE);
                                 tv_rl_notify.setVisibility(View.VISIBLE);
                                 bt_rl_notify.setVisibility(View.VISIBLE);
+                                if(tempnotifylist.size()>0) {
+                                    notifylistview.setVisibility(View.VISIBLE);
+                                    no_notify.setVisibility(View.GONE);
+                                }else {
+                                    notifylistview.setVisibility(View.GONE);
+                                    no_notify.setVisibility(View.VISIBLE);
+                                    rl_notify.setVisibility(View.GONE);
+                                }
                                 int count1 = DBAccess.getdbHeler(mainContext)
                                         .getUnreadMsgCount(CallDispatcher.LoginUser);
                                 int count2 = DBAccess.getdbHeler(mainContext)

@@ -938,7 +938,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
         }
     }
 
-    private void refreshMembersList() {
+    public void refreshMembersList() {
         handler.post(new Runnable() {
 
             @Override

@@ -172,6 +172,19 @@ public class PatientRoundingFragment extends Fragment {
                 "select * from groupdetails where groupid="
                         + gBean.getGroupId());
         final Vector<UserBean> memberslist = new Vector<UserBean>();
+        UserBean ubean=new UserBean();
+        ubean.setBuddyName(gmembersbean.getOwnerName());
+        if(gmembersbean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+            ubean.setFirstname(SingleInstance.myAccountBean.getFirstname() + " " + SingleInstance.myAccountBean.getLastname());
+            ubean.setProfilePic(SingleInstance.myAccountBean.getPhoto());
+        }else
+        for(BuddyInformationBean bib:ContactsFragment.getBuddyList()){
+            if(bib.getName().equalsIgnoreCase(gmembersbean.getOwnerName())) {
+                ubean.setFirstname(bib.getFirstname() + " " + bib.getLastname());
+                ubean.setProfilePic(bib.getProfile_picpath());
+                break;
+            }
+        }
         if (gmembersbean != null) {
             if (gmembersbean.getActiveGroupMembers() != null
                     && gmembersbean.getActiveGroupMembers().length() > 0) {
