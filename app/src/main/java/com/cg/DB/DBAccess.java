@@ -7033,6 +7033,32 @@ public class DBAccess extends SQLiteOpenHelper {
         }
 
     }
+
+
+	public int updatePrivateReply(GroupChatBean groupChatBean) {
+		int row = 0;
+		try {
+			if (!db.isOpen())
+				openDatabase();
+			ContentValues cv = new ContentValues();
+			cv.put("reply", "GPRB_R");
+			if (isRecordExists("select * from chat where signalid='"
+					+ groupChatBean.getSignalid() + "'")) {
+				row = (int) db.update("chat", cv,
+						"signalid='" + groupChatBean.getSignalid() + "'", null);
+			}
+			return row;
+		} catch (Exception e) {
+			if (AppReference.isWriteInFile)
+				AppReference.logger.error(e.getMessage(), e);
+			else
+				e.printStackTrace();
+			return 0;
+		}
+
+	}
+
+
     public int pidChatReply(GroupChatBean groupChatBean) {
         int row = 0;
         try {
@@ -7373,7 +7399,10 @@ public class DBAccess extends SQLiteOpenHelper {
                     finalGCList.add(gcBean);
                 }else if (gcBean.getSubCategory().equalsIgnoreCase("Gu")) {
                     finalGCList.add(gcBean);
-                }else
+                }else if(gcBean.getSubCategory().equalsIgnoreCase("gp") || gcBean.getSubCategory().equalsIgnoreCase("gprb_r")){
+					finalGCList.add(gcBean);
+				}
+				else
                 if (gcBean.getSubCategory().equalsIgnoreCase("GD")
 						|| gcBean.getSubCategory().equalsIgnoreCase("GDI")) {
 

@@ -301,6 +301,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     private RolePatientManagementBean rolePatientManagementBean;
     private RoleAccessBean roleAccessBean;
 
+    //For this boolean used for private button click
+    boolean isPrivateBack=false;
+    View PrivateReply_view=null;
+    String privateParentID=null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -2380,6 +2385,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 gcBean.setParentId(spBean.getParentId());
                             } else
                                 gcBean.setParentId(Utility.getSessionID());
+                        }else if(spBean.getSubcategory().equalsIgnoreCase("gp")){
+                            if (spBean.getParentId() != null) {
+                                gcBean.setParentId(spBean.getParentId());
+                            } else
+                                gcBean.setParentId(Utility.getSessionID());
                         }
                     }
                 }
@@ -2411,6 +2421,22 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             gcBean1.setReplied("reply");
                         }
                     }
+                }else if (spBean != null && spBean.getSubcategory() != null && spBean.getSubcategory().equalsIgnoreCase("GPRB_R")) {
+                    if(privateParentID!=null)
+                    gcBean.setParentId(privateParentID);
+                    gcBean.setReply("GPRB_R");
+                    for (int i = 0; i < chatList.size(); i++) {
+                        GroupChatBean gcBean1 = chatList.get(i);
+                        if (gcBean1.getParentId()!=null&&gcBean1.getParentId().equalsIgnoreCase(gcBean.getParentId())) {
+                            gcBean1.setReply("GPRB_R");
+//                            int row = DBAccess.getdbHeler(
+//                                    SipNotificationListener.getCurrentContext())
+//                                    .updatePrivateReply(gcBean1);
+                            break;
+
+                        }
+                    }
+
                 }
                 if (type.equals("text") || type.equals("location")) {
                     Log.i("group0123", "message2 : " + gcBean.getMessage());
@@ -2427,6 +2453,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 
                     uploadFile(gcBean);
                 }
+
+
                 if (gcBean.getSubCategory() != null) {
                     if (gcBean.getSubCategory().equalsIgnoreCase("grb") || gcBean.getSubCategory().equalsIgnoreCase("GRB_R")) {
                         if (gcBean.getParentId() != null
@@ -2532,6 +2560,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         pId = null;
         privateMembers = null;
         isReplyBack = false;
+        isPrivateBack=false;
+        PrivateReply_view=null;
+        privateParentID=null;
     }
 
     private void uploadFile(GroupChatBean gBean) {
@@ -2625,6 +2656,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         if (SingleInstance.contextTable.containsKey("groupchat"))
             SingleInstance.contextTable.remove("groupchat");
         mediaPlayer.stop();
+        isPrivateBack=false;
+        PrivateReply_view=null;
         super.onDestroy();
     }
 
@@ -4203,6 +4236,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             msgoptionview.setVisibility(View.GONE);
                             if (isprivateclicked || isReplyclicked || isurgentclicked || isconfirmclicked)
                                 sendSplMsg();
+                            else if(isPrivateBack) {
+                                if(PrivateReply_view!=null) {
+                                    PrivateReplyBack(PrivateReply_view);
+                                }
+                            }
                             else {
 
                                 if (SendListUI.size() == 1) {
@@ -5202,9 +5240,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         if (gcBean.getSubCategory() != null) {
                             if (gcBean.getSubCategory().equalsIgnoreCase("gp")) {
 //							tv_user.setText(gcBean.getPrivateMembers());
-                                privatelay.setVisibility(View.VISIBLE);
-                                convertView.setBackgroundResource(R.color.gchat_bg);
-                                deadlineReplyText.setVisibility(View.GONE);
+
+                                    privatelay.setVisibility(View.VISIBLE);
+                                    convertView.setBackgroundResource(R.color.gchat_bg);
+                                    deadlineReplyText.setVisibility(View.GONE);
 
 //                                tvprivate.setText(Html.fromHtml("<font color=\"#06F235\">"
 //                                        + "Private for: "
@@ -5212,19 +5251,20 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 //                                        + "  "
 //                                        + "<font color=\"#FFFFFF\">"
 //                                        + gcBean.getPrivateMembers()));
-                                if(gcBean.getPrivateMembers().contains(",")){
-                                    String[] names=gcBean.getPrivateMembers().split(",");
-                                    String members=null;
-                                    for(String name:names){
-                                        if(Buddyname(name)!=null)
-                                        if(members!=null )
-                                            members=members+","+Buddyname(name);
-                                        else
-                                            members=Buddyname(name);
-                                    }
-                                    privatename.setText(members);
-                                }else
-                                privatename.setText(Buddyname(gcBean.getPrivateMembers()));
+                                    if (gcBean.getPrivateMembers().contains(",")) {
+                                        String[] names = gcBean.getPrivateMembers().split(",");
+                                        String members = null;
+                                        for (String name : names) {
+                                            if (Buddyname(name) != null)
+                                                if (members != null)
+                                                    members = members + "," + Buddyname(name);
+                                                else
+                                                    members = Buddyname(name);
+                                        }
+                                        privatename.setText(members);
+                                    } else
+                                        privatename.setText(Buddyname(gcBean.getPrivateMembers()));
+
                             } else if (gcBean.getSubCategory().equalsIgnoreCase(
                                     "gu")) {
                                 tv_urgent.setVisibility(View.VISIBLE);
@@ -5551,17 +5591,23 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         if (gcBean.getSubCategory() != null) {
                             if (gcBean.getSubCategory().equalsIgnoreCase("gp")) {
                                 // deadLineReply.setVisibility(View.GONE);
-                                tv_user.setText(gcBean.getFrom());
-                                if (gcBean.getReply() != null && gcBean.getReply().equals("private")) {
+                                if(gcBean.getReply()!=null && (gcBean.getReply().equalsIgnoreCase("GPRB_R") || gcBean.getReply().equalsIgnoreCase("gp"))){
                                     btn_private.setVisibility(View.GONE);
-                                    tv_replied.setText("Private Reply to :" + gcBean.getFrom());
-                                } else {
-                                    btn_private.setVisibility(View.VISIBLE);
+                                }else {
+                                    tv_user.setText(gcBean.getFrom());
+                                    if (gcBean.getReply() != null && gcBean.getReply().equals("private")) {
+                                        btn_private.setVisibility(View.GONE);
+                                        tv_replied.setText("Private Reply to :" + gcBean.getFrom());
+                                    } else {
+                                        btn_private.setVisibility(View.VISIBLE);
+                                    }
+                                    convertView.setBackgroundResource(R.color.gchat_bg);
+                                    deadlineReplyText.setVisibility(View.GONE);
+                                    btn_private.setTag(gcBean);
                                 }
-                                convertView.setBackgroundResource(R.color.gchat_bg);
-                                deadlineReplyText.setVisibility(View.GONE);
-                                btn_private.setTag(gcBean);
-                            } else if (gcBean.getSubCategory().equalsIgnoreCase(
+                            }else if(gcBean.getSubCategory()!=null && gcBean.getSubCategory().equalsIgnoreCase("GPRB_R")){
+//
+                            }else if (gcBean.getSubCategory().equalsIgnoreCase(
                                     "gs")) {
                                 // deadLineReply.setVisibility(View.GONE);
                                 deadlineReplyText.setVisibility(View.GONE);
@@ -6193,13 +6239,17 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     btn_private.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            GroupChatBean gcBean1 = (GroupChatBean) view
-                                    .getTag();
-                            gcBean1.setReply("private");
-                            sendSpecialMessage("gp", gcBean1.getFrom());
-                            int row = DBAccess.getdbHeler(
-                                    SipNotificationListener.getCurrentContext())
-                                    .updateChatReply(gcBean1);
+                            Log.i("privatemsg","btn_private click");
+                            isPrivateBack=true;
+                            PrivateReply_view=view;
+//                            GroupChatBean gcBean1 = (GroupChatBean) view
+//                                    .getTag();
+//                            gcBean1.setReply("private");
+//                            sendSpecialMessage("gp", gcBean1.getFrom());
+//                            int row = DBAccess.getdbHeler(
+//                                    SipNotificationListener.getCurrentContext())
+//                                    .updateChatReply(gcBean1);
+
 
                         }
                     });
@@ -11302,6 +11352,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         pId = null;
         privateMembers = null;
         isReplyBack = false;
+
     }
     String sortorder="";
     private void FilesProcess()
@@ -11754,6 +11805,19 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             }
         }
         return message;
+    }
+
+
+    public void PrivateReplyBack(View view){
+        GroupChatBean gcBean1 = (GroupChatBean) view
+                .getTag();
+//        gcBean1.setReply("private");
+        Log.i("privaterpl","parentID-->"+gcBean1.getParentId());
+        privateParentID=gcBean1.getParentId();
+        sendSpecialMessage("GPRB_R", gcBean1.getFrom());
+        int row = DBAccess.getdbHeler(
+                SipNotificationListener.getCurrentContext())
+                .updateChatReply(gcBean1);
     }
 
 
