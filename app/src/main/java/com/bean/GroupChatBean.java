@@ -38,6 +38,8 @@ public class GroupChatBean implements Serializable, Cloneable {
 	private boolean playing;
 	private boolean isJoin;
 
+	private String senderWithdraw;
+
 	public boolean isPlaying() {
 		return playing;
 	}
@@ -436,5 +438,13 @@ public class GroupChatBean implements Serializable, Cloneable {
 
 	public void setIsJoin(boolean isJoin) {
 		this.isJoin = isJoin;
+	}
+
+	public String getSenderWithdraw() {
+		return senderWithdraw;
+	}
+
+	public void setSenderWithdraw(String senderWithdraw) {
+		this.senderWithdraw = senderWithdraw;
 	}
 }

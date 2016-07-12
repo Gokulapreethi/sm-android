@@ -128,7 +128,7 @@ public class DBAccess extends SQLiteOpenHelper {
 	String user_services = "create table if not exists UserServices(Id INTEGER PRIMARY KEY AUTOINCREMENT,servicename nvarchar(30),serviceid nvarchar(30))";
 	String create_group = "create table if not exists grouplist(id INTEGER PRIMARY KEY AUTOINCREMENT, groupid int(100), groupname varchar(225),groupowner varchar(100), createddate varchar(45), modifieddate varchar(45),username varchar(45),lastmsg varchar(100),category varchar(25),recentdate varchar(100),groupdescription varchar(100),groupicon varchar(200),grouptype varchar(45),adminmembers varchar(255))";
 	String create_group_members = "create table if not exists groupdetails(id INTEGER PRIMARY KEY AUTOINCREMENT, groupid int(100), active_members varchar(255), inactive_members varchar(255), createddate varchar(45) NOT NULL, modifieddate varchar(45) NOT NULL,groupowner varchar(100) NOT NULL,username varchar(45) NOT NULL,groupdescription varchar(100),groupicon varchar(200),invitemembers varchar(100),grouptype varchar(45), adminmembers varchar(255))";
-	String chat = "create table if not exists chat(id INTEGER PRIMARY KEY AUTOINCREMENT, category varchar(20), subcategory varchar(45), groupid int(100), username varchar(100), mimetype varchar(45), fromuser varchar(100), touser varchar(100), message varchar(200), media varchar(200), ftpusername varchar(100), ftppassword varchar(200), sessionid varchar(200), signalid varchar(200) unique, senttime varchar(200), senttimezone varchar(200),privatemembers varchar(200),parentid varchar(200),remindertime varchar(200),status tinyint(1),unreadstatus tinyint(1), thumb tinyint(1) DEFAULT 0,reply varchar(20),replied varchar(20),confirm varchar(20),urgent varchar(20),unview varchar(20),withdrawn varchar(20))";
+	String chat = "create table if not exists chat(id INTEGER PRIMARY KEY AUTOINCREMENT, category varchar(20), subcategory varchar(45), groupid int(100), username varchar(100), mimetype varchar(45), fromuser varchar(100), touser varchar(100), message varchar(200), media varchar(200), ftpusername varchar(100), ftppassword varchar(200), sessionid varchar(200), signalid varchar(200) unique, senttime varchar(200), senttimezone varchar(200),privatemembers varchar(200),parentid varchar(200),remindertime varchar(200),status tinyint(1),unreadstatus tinyint(1), thumb tinyint(1) DEFAULT 0,reply varchar(20),replied varchar(20),confirm varchar(20),urgent varchar(20),unview varchar(20),withdrawn varchar(20),senderwithdraw varchar(20))";
 	String imchat = "create table if not exists imchat(id INTEGER PRIMARY KEY AUTOINCREMENT, groupid int(100), groupname varchar(225),groupowner varchar(100), createddate varchar(45), modifieddate varchar(45),username varchar(45),lastmsg varchar(100),category varchar(25),recentdate varchar(100))";
 	String schedulemsg = "create table if not exists schedulemsg(id INTEGER PRIMARY KEY AUTOINCREMENT, category varchar(20), subcategory varchar(45), groupid int(100), username varchar(100), mimetype varchar(45), fromuser varchar(100), touser varchar(100), message varchar(200), media varchar(200), ftpusername varchar(100), ftppassword varchar(100), sessionid varchar(200), signalid varchar(200), senttime varchar(200), senttimezone varchar(200),privatemembers varchar(200))";
 	String uploaddownload = "create table if not exists uploaddownload(id INTEGER PRIMARY KEY AUTOINCREMENT, username varchar(100), media varchar(200), ftpusername varchar(100), ftppassword varchar(100), status tinyint(2), operations varchar(50),modules varchar(50),othervalues varchar(100))";
@@ -302,28 +302,37 @@ public class DBAccess extends SQLiteOpenHelper {
             Log.d("abcdef","novalue in DB for "+signalID+" returns with error "+e.toString());
         }
     }
-    public void updateWithdraw(String signalID){
+    public void updateWithdraw(GroupChatBean groupChatBean){
         try {
-            String s = "update chat set withdrawn='1' and mimetype='text' where signalid='" + signalID + "'";
+            String s = "update chat set withdrawn='1' and mimetype='text' where signalid='" + groupChatBean.getpSingnalId() + "'";
             Log.d("abcdef","SQL => "+s);
                 Log.i("withdraw","DbAccess updatewothdraw mathod");
 			//For withdraw message
 			//start
 			    ContentValues contentValues =new ContentValues();
 //			    contentValues.put("subcategory","null");
+			if(groupChatBean.getFrom()!=null && !groupChatBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)){
 				contentValues.put("mimetype","text");
 				contentValues.put("message","Message withdrawn @"+getCurrentTime());
-			    contentValues.put("media","null");
+				contentValues.put("media","null");
+			}else{
+//				if(groupChatBean.getMimetype()!=null && groupChatBean.getMimetype().equalsIgnoreCase("text")) {
+//					contentValues.put("message",groupChatBean.getMessage()+" @"+getCurrentTime());
+//				}else{
+//					contentValues.put("message","@"+getCurrentTime());
+//				}
+				contentValues.put("senderwithdraw","Message withdrawn @"+getCurrentTime());
+			}
 			contentValues.put("withdrawn","1");
 //			contentValues.put("withdrawtime",getCurrentTime());
-				int row_id = updateChatWithdraw_row(contentValues, "signalid='" + signalID
+				int row_id = updateChatWithdraw_row(contentValues, "signalid='" + groupChatBean.getpSingnalId()
 						+ "'");
 
           //end
 
 //            db.execSQL(s);
         }catch(Exception e){
-            Log.d("abcdef","novalue in DB for "+signalID+" returns with error "+e.toString());
+            Log.d("abcdef","novalue in DB for "+groupChatBean.getpSingnalId()+" returns with error "+e.toString());
         }
     }
 	@Override
@@ -7298,6 +7307,8 @@ public class DBAccess extends SQLiteOpenHelper {
 					groupChatBean.setIsJoin(false);
 				}
                 groupChatBean.setWithdrawn(cur.getString(27));
+				if(cur.getString(28)!=null)
+				groupChatBean.setSenderWithdraw(cur.getString(28));
 				groupChatList.add(groupChatBean);
 				cur.moveToNext();
 				Log.i("group123", "chat list size in db: " + groupChatBean.getMessage());

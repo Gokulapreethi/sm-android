@@ -247,11 +247,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     private String temp, buddy_temp;
     private PermissionBean permissionBean = null;
     private boolean isUnderPatient = false;
-    private LinearLayout msgoptionview;
+    private LinearLayout msgoptionview,LL_privateReply,ll_privateReplyclose;
     private TextView schedule_confirmation;
     private TextView private1;
     private TextView deadline_urgent;
     private TextView replayback;
+    private TextView tv_privateReplyUsername;
     protected String parentId;
     private LinearLayout dateLayout;
     private TextView dateTime;
@@ -306,6 +307,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     boolean isPrivateBack=false;
     View PrivateReply_view=null;
     String privateParentID=null;
+    String privateReply_username=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1027,6 +1029,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 //                pen= "\uD83D\uDD89";
                 typingstatus.setText(nickname + " is typing " + Html.fromHtml(pen));
                 msgoptionview = (LinearLayout) v1.findViewById(R.id.splmsglay1);
+                LL_privateReply=(LinearLayout) v1.findViewById(R.id.rl_private);
                 settingsBtn.setOnClickListener(this);
                 status = (TextView) v1.findViewById(R.id.buddy_status);
                 status.setText(temp);
@@ -1391,6 +1394,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 video_call.setOnClickListener(this);
                 schedule_confirmation = (TextView) v1.findViewById(R.id.schedule);
                 private1 = (TextView) v1.findViewById(R.id.private_chk);
+                tv_privateReplyUsername=(TextView)v1.findViewById(R.id.tv_privateUsername);
+                ll_privateReplyclose=(LinearLayout)v1.findViewById(R.id.ll_close);
                 replayback = (TextView) v1.findViewById(R.id.reply_back);
                 deadline_urgent = (TextView) v1.findViewById(R.id.deadLine);
                 dateLayout = (LinearLayout) v1.findViewById(R.id.date_layout);
@@ -1677,7 +1682,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     @Override
                     public void afterTextChanged(Editable s) {
                         if (s.length() == 0) {
-                            msgoptionview.setVisibility(View.GONE);
+                            if(isPrivateBack){
+                                LL_privateReply.setVisibility(View.GONE);
+                            }else {
+                                msgoptionview.setVisibility(View.GONE);
+                            }
                             audio_call.setTag(0);
                             audio_call.setBackgroundResource(R.drawable.dashboard_call_white);
                             schedule_confirmation.setBackgroundColor(context.getResources().getColor(R.color.snazgray));
@@ -1743,7 +1752,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         if (s.length() != 0) {
                             audio_call.setBackgroundResource(R.drawable.chat_send);
                             audio_call.setTag(1);
-                            msgoptionview.setVisibility(View.VISIBLE);
+                            if(isPrivateBack){
+                                LL_privateReply.setVisibility(View.VISIBLE);
+                            }else {
+                                msgoptionview.setVisibility(View.VISIBLE);
+                            }
 
                         }
 
@@ -1943,7 +1956,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     @Override
                     public void onClick(View arg0) {
                         try {
-                            msgoptionview.setVisibility(View.GONE);
+                            if(isPrivateBack){
+                                LL_privateReply.setVisibility(View.GONE);
+                            }else {
+                                msgoptionview.setVisibility(View.GONE);
+                            }
 
                             // TODO Auto-generated method stub
 
@@ -2120,6 +2137,17 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     }
                 });
 
+                ll_privateReplyclose.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        isPrivateBack=false;
+                        PrivateReply_view=null;
+                        privateParentID=null;
+                        privateReply_username=null;
+                        LL_privateReply.setVisibility(View.GONE);
+                    }
+                });
+
 
                 deadline_urgent.setOnClickListener(new OnClickListener() {
 
@@ -2242,7 +2270,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         SpecialMessageBean spBean) {
 
         try {
-            msgoptionview.setVisibility(View.GONE);
+            if(isPrivateBack){
+                LL_privateReply.setVisibility(View.GONE);
+            }else {
+                msgoptionview.setVisibility(View.GONE);
+            }
             rel_quoted.setVisibility(View.GONE);
 
             audio_call.setTag(0);
@@ -2572,6 +2604,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         isPrivateBack=false;
         PrivateReply_view=null;
         privateParentID=null;
+        privateReply_username=null;
     }
 
     private void uploadFile(GroupChatBean gBean) {
@@ -2667,6 +2700,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         mediaPlayer.stop();
         isPrivateBack=false;
         PrivateReply_view=null;
+        privateReply_username=null;
         super.onDestroy();
     }
 
@@ -3245,7 +3279,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     if(adapterCount>=2){
                                         multi_send.getLayoutParams().height=280;
                                     }
-                                    msgoptionview.setVisibility(View.VISIBLE);
+                                    if(isPrivateBack){
+                                        LL_privateReply.setVisibility(View.VISIBLE);
+                                    }else {
+                                        msgoptionview.setVisibility(View.VISIBLE);
+                                    }
                                     audio_call.setBackgroundResource(R.drawable.chat_send);
                                     audio_call.setTag(1);
                                     // scaleImage(strIPath);
@@ -3318,7 +3356,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             if(adapterCount>=2){
                                 multi_send.getLayoutParams().height=280;
                             }
-                            msgoptionview.setVisibility(View.VISIBLE);
+                            if(isPrivateBack){
+                                LL_privateReply.setVisibility(View.VISIBLE);
+                            }else {
+                                msgoptionview.setVisibility(View.VISIBLE);
+                            }
                             audio_call.setBackgroundResource(R.drawable.chat_send);
                             audio_call.setTag(1);
                             // sendMsg("", strIPath, "image", null);
@@ -3362,7 +3404,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         if(adapterCount>=2){
                             multi_send.getLayoutParams().height=280;
                         }
-                        msgoptionview.setVisibility(View.VISIBLE);
+                        if(isPrivateBack){
+                            LL_privateReply.setVisibility(View.VISIBLE);
+                        }else {
+                            msgoptionview.setVisibility(View.VISIBLE);
+                        }
                         audio_call.setBackgroundResource(R.drawable.chat_send);
                         audio_call.setTag(1);
                     }
@@ -3392,7 +3438,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         if(adapterCount>=2){
                             multi_send.getLayoutParams().height=280;
                         }
-                        msgoptionview.setVisibility(View.VISIBLE);
+                        if(isPrivateBack){
+                            LL_privateReply.setVisibility(View.VISIBLE);
+                        }else {
+                            msgoptionview.setVisibility(View.VISIBLE);
+                        }
                         audio_call.setBackgroundResource(R.drawable.chat_send);
                         audio_call.setTag(1);
                         FileInputStream fin = (FileInputStream) getContentResolver()
@@ -3485,7 +3535,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             if(adapterCount>=2){
                                 multi_send.getLayoutParams().height=280;
                             }
-                            msgoptionview.setVisibility(View.VISIBLE);
+                            if(isPrivateBack){
+                                LL_privateReply.setVisibility(View.VISIBLE);
+                            }else {
+                                msgoptionview.setVisibility(View.VISIBLE);
+                            }
                             audio_call.setBackgroundResource(R.drawable.chat_send);
                             audio_call.setTag(1);
                             // sendMsg("", strIPath, "video", null);
@@ -3529,7 +3583,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         if(adapterCount>=2){
                             multi_send.getLayoutParams().height=280;
                         }
-                        msgoptionview.setVisibility(View.VISIBLE);
+                        if(isPrivateBack){
+                            LL_privateReply.setVisibility(View.VISIBLE);
+                        }else {
+                            msgoptionview.setVisibility(View.VISIBLE);
+                        }
                         audio_call.setBackgroundResource(R.drawable.chat_send);
                         audio_call.setTag(1);
                         // sendMsg("", strIPath, "image", null);
@@ -3570,7 +3628,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         if(adapterCount>=2){
                             multi_send.getLayoutParams().height=280;
                         }
-                        msgoptionview.setVisibility(View.VISIBLE);
+                        if(isPrivateBack){
+                            LL_privateReply.setVisibility(View.VISIBLE);
+                        }else {
+                            msgoptionview.setVisibility(View.VISIBLE);
+                        }
                         audio_call.setBackgroundResource(R.drawable.chat_send);
                         audio_call.setTag(1);
                         // sendMsg("", strIPath, "image", null);
@@ -3626,7 +3688,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     String members = data.getStringExtra("SELECTED_MEMBERS");
                     Log.d("XYZ", "Selected Members : " + members);
                     sendSpecialMessage("GP", members);
-                    msgoptionview.setVisibility(View.GONE);
+                    if(isPrivateBack){
+                        LL_privateReply.setVisibility(View.GONE);
+                    }else {
+                        msgoptionview.setVisibility(View.GONE);
+                    }
                 }
             }
 
@@ -3637,7 +3703,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     String members = data.getStringExtra("SELECTED_MEMBERS");
                     Log.d("XYZ", "Selected Members : " + members);
                     sendSpecialMessage("GRB", members);
-                    msgoptionview.setVisibility(View.GONE);
+                    if(isPrivateBack){
+                        LL_privateReply.setVisibility(View.GONE);
+                    }else {
+                        msgoptionview.setVisibility(View.GONE);
+                    }
                 }
             }
             if (requestCode == 103) {
@@ -3646,7 +3716,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     String members = data.getStringExtra("SELECTED_MEMBERS");
                     Log.d("XYZ", "Selected Members : " + members);
                     sendWithSchedule(members);
-                    msgoptionview.setVisibility(View.GONE);
+                    if(isPrivateBack){
+                        LL_privateReply.setVisibility(View.GONE);
+                    }else {
+                        msgoptionview.setVisibility(View.GONE);
+                    }
                 }
             }
             if (requestCode == 104) {
@@ -3655,7 +3729,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     String members = data.getStringExtra("SELECTED_MEMBERS");
                     Log.d("XYZ", "Selected Members : " + members);
                     sendWithDeadline(members);
-                    msgoptionview.setVisibility(View.GONE);
+                    if(isPrivateBack){
+                        LL_privateReply.setVisibility(View.GONE);
+                    }else {
+                        msgoptionview.setVisibility(View.GONE);
+                    }
                 }
             }
             if (requestCode == 112) {
@@ -3774,7 +3852,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     if(adapterCount>=2){
                         multi_send.getLayoutParams().height=280;
                     }
-                    msgoptionview.setVisibility(View.VISIBLE);
+                    if(isPrivateBack){
+                        LL_privateReply.setVisibility(View.VISIBLE);
+                    }else {
+                        msgoptionview.setVisibility(View.VISIBLE);
+                    }
                     audio_call.setBackgroundResource(R.drawable.chat_send);
                     audio_call.setTag(1);
 //					Intent pMsgIntent = new Intent(context,
@@ -4242,7 +4324,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 case R.id.c_audio_call:
                     if(!CallDispatcher.myStatus.equalsIgnoreCase("0")) {
                         if (audio_call.getTag() == 1) {
-                            msgoptionview.setVisibility(View.GONE);
+                            if(isPrivateBack){
+                                LL_privateReply.setVisibility(View.GONE);
+                            }else {
+                                msgoptionview.setVisibility(View.GONE);
+                            }
                             if (isprivateclicked || isReplyclicked || isurgentclicked || isconfirmclicked)
                                 sendSplMsg();
                             else if(isPrivateBack) {
@@ -4903,7 +4989,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 ImageView thumbsUp, thumbsDown;
                 final GroupChatBean gcBean = chatList.get(position);
 
-                TextView tv_user, message, dateTime, deadlineReplyText, tv_urgent;
+                TextView tv_user, message=null, dateTime, deadlineReplyText, tv_urgent;
                 RelativeLayout senderLayout = null,normalcontainer,receive_quotedLayout;
                 LinearLayout join_lay;
                 TextView tv_username,tv_missed,time,receiver_tvquoted_msg;
@@ -4947,6 +5033,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         .findViewById(R.id.waitforreply);
                 receiverLayout = (RelativeLayout) convertView
                         .findViewById(R.id.receiver_view);
+                TextView tv_senderwithdraw=(TextView)convertView.findViewById(R.id.tv_senderwithdraw);
+                tv_senderwithdraw.setVisibility(View.GONE);
                 LinearLayout privatelay=(LinearLayout)convertView.findViewById(R.id.privatelay);
                 TextView privatename=(TextView)convertView.findViewById(R.id.privatename);
                 RelativeLayout splmsgview = (RelativeLayout) convertView.findViewById(R.id.splmsgview);
@@ -6248,8 +6336,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             Log.i("privatemsg","btn_private click");
                             isPrivateBack=true;
                             PrivateReply_view=view;
-//                            GroupChatBean gcBean1 = (GroupChatBean) view
-//                                    .getTag();
+                            GroupChatBean gcBean1 = (GroupChatBean) view
+                                    .getTag();
+                            if(tv_privateReplyUsername!=null){
+                                if(gcBean1.getFrom()!=null && Buddyname(gcBean1.getFrom())!=null) {
+                                    tv_privateReplyUsername.setText("Private Reply : " +Buddyname(gcBean1.getFrom()));
+                                }
+                            }
 //                            gcBean1.setReply("private");
 //                            sendSpecialMessage("gp", gcBean1.getFrom());
 //                            int row = DBAccess.getdbHeler(
@@ -6425,8 +6518,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                                     gBean);
 //                                    chatList.remove(gcBean);
                                     gcBean.setWithdrawn("1");
-                                    gcBean.setMimetype("text");
-                                    gcBean.setMessage("Message withdrawn @"+getCurrentTime());
+//                                    gcBean.setMimetype("text");
+                                    gcBean.setSenderWithdraw("Message withdrawn @"+getCurrentTime());
                                     gcBean.setWithdraw(false);
                                     adapter.notifyDataSetChanged();
                                 } else {
@@ -6440,8 +6533,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                                 gBean);
 //                            chatList.remove(gcBean);
                                 gcBean.setWithdrawn("1");
-                                gcBean.setMimetype("text");
-                                gcBean.setMessage("Message withdrawn @"+getCurrentTime());
+//                                gcBean.setMimetype("text");
+                                gcBean.setSenderWithdraw("Message withdrawn @"+getCurrentTime());
                                 gcBean.setWithdraw(false);
 
                                 adapter.notifyDataSetChanged();
@@ -6475,7 +6568,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     if (gcBean.isWithdraw()) {
                         withdraw.setVisibility(View.VISIBLE);
                         xbutton.setVisibility(View.VISIBLE);
-                        mainlayout.setBackgroundColor(Color.parseColor("#3D2831"));
+                        mainlayout.setBackgroundColor(Color.parseColor("#FFFFFF"));
                         withdraw.setTextColor(Color.parseColor("#99004c"));
                         xbutton.setTextColor(Color.parseColor("#99004c"));
                     } else {
@@ -6627,6 +6720,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     } else {
                         chat_view.setVisibility(View.GONE);
                     }
+                }
+
+                if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1") && gcBean.getSenderWithdraw()!=null){
+                    tv_senderwithdraw.setVisibility(View.VISIBLE);
+                    tv_senderwithdraw.setText(gcBean.getSenderWithdraw());
+
                 }
 
             } catch (Exception e) {
@@ -8380,7 +8479,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     if(adapterCount>=2){
                         multi_send.getLayoutParams().height=280;
                     }
-                    msgoptionview.setVisibility(View.GONE);
+                    if(isPrivateBack){
+                        LL_privateReply.setVisibility(View.GONE);
+                    }else {
+                        msgoptionview.setVisibility(View.GONE);
+                    }
                     audio_call.setBackgroundResource(R.drawable.chat_send);
                     audio_call.setTag(1);
 //                relative_send_layout.getLayoutParams().height = 90;
@@ -8416,7 +8519,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     if(adapterCount>=2){
                         multi_send.getLayoutParams().height=280;
                     }
-                    msgoptionview.setVisibility(View.GONE);
+                    if(isPrivateBack){
+                        LL_privateReply.setVisibility(View.GONE);
+                    }else {
+                        msgoptionview.setVisibility(View.GONE);
+                    }
                     audio_call.setBackgroundResource(R.drawable.chat_send);
                     audio_call.setTag(1);
                 }
@@ -8554,7 +8661,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     if(adapterCount>=2){
                         multi_send.getLayoutParams().height=280;
                     }
-                    msgoptionview.setVisibility(View.VISIBLE);
+                    if(isPrivateBack){
+                        LL_privateReply.setVisibility(View.VISIBLE);
+                    }else {
+                        msgoptionview.setVisibility(View.VISIBLE);
+                    }
                     audio_call.setBackgroundResource(R.drawable.chat_send);
                     audio_call.setTag(1);
 //                    relative_send_layout.getLayoutParams().height = 90;
@@ -8693,7 +8804,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     if(adapterCount>=2){
                         multi_send.getLayoutParams().height=280;
                     }
-                    msgoptionview.setVisibility(View.VISIBLE);
+                    if(isPrivateBack){
+                        LL_privateReply.setVisibility(View.VISIBLE);
+                    }else {
+                        msgoptionview.setVisibility(View.VISIBLE);
+                    }
                     audio_call.setBackgroundResource(R.drawable.chat_send);
                     audio_call.setTag(1);
 //                    relative_send_layout.getLayoutParams().height = 90;
@@ -8803,7 +8918,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 if(adapterCount>=2){
                     multi_send.getLayoutParams().height=280;
                 }
-                msgoptionview.setVisibility(View.GONE);
+                if(isPrivateBack){
+                    LL_privateReply.setVisibility(View.GONE);
+                }else {
+                    msgoptionview.setVisibility(View.GONE);
+                }
                 audio_call.setBackgroundResource(R.drawable.chat_send);
                 audio_call.setTag(1);
 //                relative_send_layout.getLayoutParams().height = 90;
@@ -8837,7 +8956,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 if(adapterCount>=2){
                     multi_send.getLayoutParams().height=280;
                 }
-                msgoptionview.setVisibility(View.GONE);
+                if(isPrivateBack){
+                    LL_privateReply.setVisibility(View.GONE);
+                }else {
+                    msgoptionview.setVisibility(View.GONE);
+                }
                 audio_call.setBackgroundResource(R.drawable.chat_send);
                 audio_call.setTag(1);
 //                relative_send_layout.getLayoutParams().height = 90;
@@ -9918,7 +10041,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         if(adapterCount>=2){
                             multi_send.getLayoutParams().height=280;
                         }
-                        msgoptionview.setVisibility(View.VISIBLE);
+                        if(isPrivateBack){
+                            LL_privateReply.setVisibility(View.VISIBLE);
+                        }else {
+                            msgoptionview.setVisibility(View.VISIBLE);
+                        }
                         audio_call.setBackgroundResource(R.drawable.chat_send);
                         audio_call.setTag(1);
 //                        relative_send_layout.getLayoutParams().height = 400;
@@ -10281,7 +10408,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         }
         if (SendListUI.size() == 0) {
             SendListUI.clear();
-            msgoptionview.setVisibility(View.GONE);
+            if(isPrivateBack){
+                LL_privateReply.setVisibility(View.GONE);
+            }else {
+                msgoptionview.setVisibility(View.GONE);
+            }
             audio_call.setBackgroundResource(R.drawable.dashboard_call_white);
             audio_call.setTag(0);
             sendlistadapter.notifyDataSetChanged();
@@ -10759,7 +10890,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 
     private void sendSplMsg() {
         memlist_splmsg.setVisibility(View.GONE);
-        msgoptionview.setVisibility(View.GONE);
+        if(isPrivateBack){
+            LL_privateReply.setVisibility(View.GONE);
+        }else {
+            msgoptionview.setVisibility(View.GONE);
+        }
         String members = null;
 
 
@@ -11097,7 +11232,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                SpecialMessageBean spBean,String member,Boolean fromgroup) {
 
         try {
-            msgoptionview.setVisibility(View.GONE);
+            if(isPrivateBack){
+                LL_privateReply.setVisibility(View.GONE);
+            }else {
+                msgoptionview.setVisibility(View.GONE);
+            }
             rel_quoted.setVisibility(View.GONE);
 
             audio_call.setTag(0);
@@ -11820,6 +11959,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 //        gcBean1.setReply("private");
         Log.i("privaterpl","parentID-->"+gcBean1.getParentId());
         privateParentID=gcBean1.getParentId();
+        privateReply_username=gcBean1.getFrom();
         sendSpecialMessage("GPRB_R", gcBean1.getFrom());
         int row = DBAccess.getdbHeler(
                 SipNotificationListener.getCurrentContext())

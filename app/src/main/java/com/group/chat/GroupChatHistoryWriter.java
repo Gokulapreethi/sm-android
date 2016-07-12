@@ -263,7 +263,7 @@ public class GroupChatHistoryWriter extends Thread {
 						SingleInstance.mainContext.notifyMessageCount();
 
 					} else if (groupChatBean.getType().equals("104")) {
-                        DBAccess.getdbHeler().updateWithdraw(groupChatBean.getpSingnalId());
+                        DBAccess.getdbHeler().updateWithdraw(groupChatBean);
 //						DBAccess.getdbHeler(
 //								SipNotificationListener.getCurrentContext())
 //								.deleteGroupChatEntry(

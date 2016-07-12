@@ -305,7 +305,54 @@
 
 
             </LinearLayout>
+
         </HorizontalScrollView>
+        <LinearLayout
+            android:id="@+id/rl_private"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_above="@+id/sending_layout"
+            android:layout_marginBottom="10dp"
+            android:background="@color/black"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tv_privateUsername"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="5dp"
+                android:background="@color/snazgray"
+                android:padding="8dp"
+                android:text="Private Reply : "
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:textColor="#FFFFFF"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:layout_weight="1.75"/>
+            <LinearLayout
+                android:id="@+id/ll_close"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.25"
+                >
+                <TextView
+                    android:layout_width="10dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/close_2"
+                    android:padding="8dp"
+                    android:layout_weight="0.25"
+                    android:textColor="#FFFFFF" />
+            </LinearLayout>
+
+
+
+        </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/rel_quoted"
