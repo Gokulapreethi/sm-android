@@ -21,8 +21,10 @@ import com.util.SingleInstance;
 import org.lib.model.PatientCommentsBean;
 import org.lib.model.TaskDetailsBean;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Vector;
 
 public class CommentsAdapter extends ArrayAdapter<PatientCommentsBean> {
@@ -93,7 +95,13 @@ public class CommentsAdapter extends ArrayAdapter<PatientCommentsBean> {
                 if(cBean.getDateandtime()!=null) {
                     String[] time = cBean.getDateandtime().split(" ");
                     String[] times=time[1].split(":");
-                    holder.time.setText(times[0]+":"+times[1]);
+                    try {
+                        final SimpleDateFormat sdf = new SimpleDateFormat("H:mm");
+                        final Date dateObj = sdf.parse(times[0] + ":" + times[1]);
+                        holder.time.setText(new SimpleDateFormat("hh:mm a").format(dateObj));
+                    } catch (final ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
                 if(cBean.getComments()!=null)
                     holder.comments.setText(cBean.getComments());
@@ -129,7 +137,8 @@ public class CommentsAdapter extends ArrayAdapter<PatientCommentsBean> {
                         Intent intent=new Intent(SingleInstance.mainContext,CommentsSeeAllActivity.class);
                         intent.putExtra("groupid",cBean.getGroupid());
                         intent.putExtra("patientid",cBean.getPatientid());
-                        intent.putExtra("membername",cBean.getMembername());
+                        intent.putExtra("membername",cBean.getGroupmember());
+                        intent.putExtra("firstname",cBean.getMembername());
                         SingleInstance.mainContext.startActivity(intent);
                     }
                 });

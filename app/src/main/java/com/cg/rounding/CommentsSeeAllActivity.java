@@ -24,15 +24,17 @@ import com.util.SingleInstance;
 
 import org.lib.model.PatientCommentsBean;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Vector;
 
 public class CommentsSeeAllActivity extends Activity {
 
     private Context context;
     Vector<PatientCommentsBean> CommentsList;
-    String groupid,patientid,membername;
+    String groupid,patientid,membername,firstname;
 
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -52,7 +54,8 @@ public class CommentsSeeAllActivity extends Activity {
         groupid=getIntent().getStringExtra("groupid");
         patientid=getIntent().getStringExtra("patientid");
         membername=getIntent().getStringExtra("membername");
-        tv_member.setText(membername);
+        firstname=getIntent().getStringExtra("firstname");
+        tv_member.setText(firstname);
         CommentsList= DBAccess.getdbHeler().getParticularPatientComments(groupid, patientid, membername);
         ListView listView=(ListView)findViewById(R.id.listview_seeallcomments);
         CommentsAdapter adapter=new CommentsAdapter(context,R.layout.comments_row,CommentsList);
@@ -107,7 +110,13 @@ public class CommentsSeeAllActivity extends Activity {
                     if(cBean.getDateandtime()!=null) {
                         String[] time = cBean.getDateandtime().split(" ");
                         String[] times=time[1].split(":");
-                        holder.time.setText(times[0] + ":" + times[1]);
+                        try {
+                            final SimpleDateFormat sdf = new SimpleDateFormat("H:mm");
+                            final Date dateObj = sdf.parse(times[0] + ":" + times[1]);
+                            holder.time.setText(new SimpleDateFormat("hh:mm a").format(dateObj));
+                        } catch (final ParseException e) {
+                            e.printStackTrace();
+                        }
                     }
                     if(cBean.getComments()!=null)
                         holder.comments.setText(cBean.getComments());

@@ -91,6 +91,16 @@
                 android:textSize="12sp"
                 android:text="@string/textview"
                 android:textColor="#7E8080" />
+            <TextView
+                android:id="@+id/invite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="@string/textview"
+                android:visibility="gone"
+                android:textColor="@color/snazash" />
 
         </LinearLayout>
 

@@ -153,7 +153,11 @@ public class RoundingPatientAdapter extends ArrayAdapter<PatientDetailsBean> {
                 if(pBean.getDob()!=null&& pBean.getDob().length()>0) {
                     String birthdate=pBean.getDob();
                     Log.i("sss", "Current birthdate" + birthdate);
-                    String[] str = birthdate.split("-");
+                    String[] str;
+                    if(birthdate.contains("/"))
+                        str = birthdate.split("/");
+                    else
+                    str = birthdate.split("-");
                     int Currentyear = Calendar.getInstance().get(Calendar.YEAR);
                     Log.i("sss","Current year"+Currentyear);
 

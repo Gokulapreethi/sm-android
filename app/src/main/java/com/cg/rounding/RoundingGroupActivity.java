@@ -41,6 +41,7 @@ import com.cg.DB.DBAccess;
 import com.cg.account.PinSecurity;
 import com.cg.commonclass.BuddyListComparator;
 import com.cg.commonclass.CallDispatcher;
+import com.cg.commonclass.GroupListComparator;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.hostedconf.AppReference;
 import com.cg.quickaction.User;
@@ -596,6 +597,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
             }
         }
         tempList.addAll(requestList);
+        Collections.sort(acceptedList, new GroupListComparator());
         tempList.addAll(acceptedList);
         return tempList;
 

@@ -282,7 +282,7 @@ public class RoundNewPatientActivity extends Activity {
                 }, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH));
                 Calendar c = Calendar.getInstance();
-//                dialog.getDatePicker().setMinDate(c.getTimeInMillis());
+                dialog.getDatePicker().setMinDate(c.getTimeInMillis()-10000);
                 dialog.getDatePicker().setMaxDate(c.getTimeInMillis());
                 dialog.show();
             }
@@ -534,14 +534,9 @@ public class RoundNewPatientActivity extends Activity {
                         pBean.setSex(genderSelected.getText().toString());
                     }else
                         pBean.setSex("");
-                  int i=0;
-                    addedMembers=new String();
+                    addedMembers="";
                     for (String name : assignedMembers) {
-                        if(addedMembers.contains(","))
-                        addedMembers= addedMembers+","+name;
-                        else
-                            addedMembers=name;
-                        i++;
+                        addedMembers= addedMembers+name+",";
                     }
                     pBean.setGroupid(groupid);
                     pBean.setPatientid("");
@@ -558,8 +553,9 @@ public class RoundNewPatientActivity extends Activity {
                     pBean.setRoom(ed_room.getText().toString());
                     pBean.setBed(ed_bed.getText().toString());
                     pBean.setAdmissiondate(ed_Admitdate.getText().toString());
-                    if(addedMembers!=null)
-                    pBean.setAssignedmembers(addedMembers);
+                    if(addedMembers.length()>0)
+                    pBean.setAssignedmembers(addedMembers.substring(0,
+                            addedMembers.length() - 1));
                     else
                         pBean.setAssignedmembers("");
                     showprogress();
@@ -779,8 +775,8 @@ public class RoundNewPatientActivity extends Activity {
             showToast("Successfully details updated");
             GroupChatActivity gChat = (GroupChatActivity) SingleInstance.contextTable
                     .get("groupchat");
+            if(gChat!=null)
             gChat.refreshPatient();
-
             finish();
 
         }

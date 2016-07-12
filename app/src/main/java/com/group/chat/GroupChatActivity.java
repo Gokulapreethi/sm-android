@@ -300,6 +300,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     int prevYear = c.get(Calendar.YEAR);
     private RolePatientManagementBean rolePatientManagementBean;
     private RoleAccessBean roleAccessBean;
+    private GroupMemberBean memberbean;
 
     //For this boolean used for private button click
     boolean isPrivateBack=false;
@@ -381,7 +382,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     R.id.activity_main_content_fragment, changePassword)
                     .commitAllowingStateLoss();
 
-            GroupMemberBean memberbean = DBAccess.getdbHeler().getMemberDetails(groupBean.getGroupId(), CallDispatcher.LoginUser);
+            memberbean = DBAccess.getdbHeler().getMemberDetails(groupBean.getGroupId(), CallDispatcher.LoginUser);
             roleAccessBean = DBAccess.getdbHeler().getRoleAccessDetails(groupBean.getGroupId(), memberbean.getRole());
             rolePatientManagementBean = DBAccess.getdbHeler().getRolePatientManagement(groupBean.getGroupId(), memberbean.getRole());
         }
@@ -496,6 +497,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 rolePatientManagementBean.getAdd()!=null && rolePatientManagementBean.getAdd().equalsIgnoreCase("1"))){
                             newPatient.setEnabled(false);
                             newPatient.setBackgroundColor(context.getResources().getColor(R.color.black));
+                        }
+                        if(!groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                                (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("0")) ){
+                            ownership.setEnabled(false);
+                            ownership.setBackgroundColor(context.getResources().getColor(R.color.black));
                         }
                         edit.setOnClickListener(new OnClickListener() {
                             @Override
@@ -1546,17 +1552,16 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 adapter.notifyDataSetChanged();
                             }
                         });
-
-                        int count = 0;
-                        for (GroupChatBean Gcb : chatList) {
-                            if (Gcb.isSelect()) {
-                                count++;
+                        if (((CheckBox) view).isChecked()) {
+                            int count = 0;
+                            for (GroupChatBean Gcb : chatList) {
+                                if (Gcb.isSelect()) {
+                                    count++;
+                                }
                             }
-                        }
-
-                        countofselection.setText(count + " Selected");
-
-
+                            countofselection.setText(count + " Selected");
+                        }else
+                            countofselection.setText(0 + " Selected");
                     }
                 });
 
@@ -1752,6 +1757,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 //					if (chatList != null && chatList.size() > 0) {
 //						mainListPositionForSpecialMessage(chatList.size() - 1);
 //					}
+                        btn_grid.setBackgroundDrawable(getResources().getDrawable(R.drawable.grid_grid));
+                        atachlay.setVisibility(View.GONE);
+                        audio_layout.setVisibility(View.GONE);
+                        isGrid = false;
                         lv.setSelection(lv.getAdapter().getCount() - 1);
                         processAttachmentView();
                         return false;
@@ -5138,11 +5147,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     } else {
                         selectInvidual_buddy.setVisibility(View.GONE);
                     }
-                    selectInvidual_buddy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    selectInvidual_buddy.setOnClickListener(new OnClickListener() {
                         @Override
-                        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                            if (isChecked) {
-                                Log.d("selecteduser", "---->checking the values" + isChecked);
+                        public void onClick(View v) {
+                            if (((CheckBox) v).isChecked()) {
                                 gcBean.setSelect(true);
                                 checkBoxCounter++;
                                 countofcheckbox(checkBoxCounter);
@@ -5150,11 +5158,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             } else {
                                 gcBean.setSelect(false);
                                 checkBoxCounter--;
-
                                 countofcheckbox(checkBoxCounter);
                             }
                         }
-
                     });
 //				senderLayout.setBackgroundResource(R.color.gchat_bg);
 //				receiverLayout.setBackgroundResource(R.color.gchat_bg);
@@ -5291,10 +5297,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 deadlineReplyText.setVisibility(View.GONE);
                             } else if (gcBean.getSubCategory().equalsIgnoreCase(
                                     "gd")) {
-                                receiverLayout
-                                        .setBackgroundResource(R.color.deadlingclr);
-                                convertView
-                                        .setBackgroundResource(R.color.deadlingclr);
+//                                receiverLayout
+//                                        .setBackgroundResource(R.color.deadlingclr);
+//                                convertView
+//                                        .setBackgroundResource(R.color.deadlingclr);
                                 scheduleMsg
                                         .setImageResource(R.drawable.icon_footer_reminder);
                                 scheduleMsg.setVisibility(View.VISIBLE);
@@ -5611,9 +5617,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     "gs")) {
                                 // deadLineReply.setVisibility(View.GONE);
                                 deadlineReplyText.setVisibility(View.GONE);
-                                convertView.setBackgroundResource(R.color.gchat_bg);
-                                senderLayout
-                                        .setBackgroundResource(R.color.gchat_bg);
+//                                convertView.setBackgroundResource(R.color.gchat_bg);
+//                                senderLayout
+//                                        .setBackgroundResource(R.color.gchat_bg);
                                 if (SingleInstance.scheduledMsg.containsKey(gcBean
                                         .getSignalid())) {
                                     senderLayout.setVisibility(View.GONE);
@@ -5628,10 +5634,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 }
                             } else if (gcBean.getSubCategory().equalsIgnoreCase(
                                     "gd")) {
-                                senderLayout
-                                        .setBackgroundResource(R.color.deadlingclr);
-                                convertView
-                                        .setBackgroundResource(R.color.deadlingclr);
+//                                senderLayout
+//                                        .setBackgroundResource(R.color.deadlingclr);
+//                                convertView
+//                                        .setBackgroundResource(R.color.deadlingclr);
                                 scheduleMsg.setVisibility(View.VISIBLE);
                                 scheduleMsg
                                         .setImageResource(R.drawable.icon_footer_reminder);
@@ -9657,7 +9663,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     }
                     holder.header_title.setVisibility(View.GONE);
                     holder.selectUser.setVisibility(View.GONE);
-                    if(bib.getFirstname()!=null && bib.getFirstname().length()>0)
+                    if(bib.getFirstname()!=null && bib.getFirstname().length()>1)
                     holder.buddyName.setText(bib.getFirstname());
                     else
                         holder.buddyName.setText(bib.getName());
@@ -9806,7 +9812,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     public void countofcheckbox(int count)
     {
         Log.i("asdf","count"+count);
-        countofselection.setText(Integer.toString(count) + " selected");
+        countofselection.setText(Integer.toString(count) + " Selected");
 
     }
 

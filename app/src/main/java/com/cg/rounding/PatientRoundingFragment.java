@@ -316,7 +316,7 @@ public class PatientRoundingFragment extends Fragment {
         TextView title = (TextView) getActivity().findViewById(
                 R.id.activity_main_content_title);
         title.setEllipsize(TextUtils.TruncateAt.END);
-        title.setWidth(450);
+        title.setWidth(420);
         title.setHeight(200);
         title.setSingleLine();
         title.setVisibility(View.VISIBLE);
@@ -430,26 +430,32 @@ public class PatientRoundingFragment extends Fragment {
 
 
         final Vector<UserBean> memberslist = new Vector<UserBean>();
-        if (gmembersbean != null) {
-            if (gmembersbean.getActiveGroupMembers() != null
-                    && gmembersbean.getActiveGroupMembers().length() > 0) {
-                String[] mlist = (gmembersbean.getActiveGroupMembers())
+        if (pBean != null) {
+            if (pBean.getAssignedmembers() != null
+                    && pBean.getAssignedmembers().length() > 0) {
+                String[] mlist = (pBean.getAssignedmembers())
                         .split(",");
                 for (String tmp : mlist) {
-                    UserBean uBean = new UserBean();
+                    if (!tmp.equalsIgnoreCase("") && tmp.length() > 0) {
+                        UserBean uBean = new UserBean();
 
-                    for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
-                        if (bib.getName().equalsIgnoreCase(tmp)) {
-                            uBean.setFirstname(bib.getFirstname() + " " + bib.getLastname());
-                            break;
-                        } else
-                            uBean.setFirstname(tmp);
-                        uBean.setStatus(bib.getStatus());
-                        ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(tmp);
-                        uBean.setProfilePic(pbean.getPhoto());
+                        if (tmp.equalsIgnoreCase(CallDispatcher.LoginUser)) {
+                            ProfileBean bean = SingleInstance.myAccountBean;
+                            uBean.setFirstname(bean.getFirstname() + " " + bean.getLastname());
+                            uBean.setStatus(CallDispatcher.onlineStatus);
+                            String pic_Path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/COMMedia/" + bean.getPhoto();
+                            uBean.setProfilePic(pic_Path);
+                        }else
+                        for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
+                            if (bib.getName().equalsIgnoreCase(tmp)) {
+                                uBean.setFirstname(bib.getFirstname() + " " + bib.getLastname());
+                                uBean.setStatus(bib.getStatus());
+                                uBean.setProfilePic(bib.getProfile_picpath());
+                            }
+                        }
+                        uBean.setBuddyName(tmp);
+                        memberslist.add(uBean);
                     }
-                    uBean.setBuddyName(tmp);
-                    memberslist.add(uBean);
                 }
             }
         }
@@ -561,7 +567,7 @@ public class PatientRoundingFragment extends Fragment {
                 final UserBean bib = result.get(i);
                 if (bib != null) {
                     if (bib.getProfilePic() != null) {
-                        String pic_Path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/COMMedia/" + bib.getProfilePic();
+                        String pic_Path = bib.getProfilePic();
                         File pic = new File(pic_Path);
                         if (pic.exists()) {
                             imageLoader.DisplayImage(pic_Path, holder.buddyicon, R.drawable.img_user);
@@ -1244,7 +1250,11 @@ public class PatientRoundingFragment extends Fragment {
             if (pBean.getDob() != null && pBean.getDob().length() > 0) {
                 String birthdate = pBean.getDob();
                 Log.i("sss", "Current birthdate" + birthdate);
-                String[] str = birthdate.split("-");
+                String[] str;
+                if(birthdate.contains("/"))
+                    str = birthdate.split("/");
+                else
+                    str = birthdate.split("-");
                 int Currentyear = Calendar.getInstance().get(Calendar.YEAR);
                 Log.i("sss", "Current year" + Currentyear);
 
@@ -1472,7 +1482,7 @@ public class PatientRoundingFragment extends Fragment {
         try {
             Date curDate = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat(
-                    "yyyy-MM-dd hh:mm:ss a");
+                    "yyyy-MM-dd HH:mm:ss");
             return sdf.format(curDate).toString();
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -1510,6 +1520,10 @@ public class PatientRoundingFragment extends Fragment {
                         Map.Entry mapEntry = (Map.Entry) iterator1.next();
 
                         PatientCommentsBean bean = (PatientCommentsBean) mapEntry.getValue();
+                        if(bean.getGroupmember().equalsIgnoreCase(CallDispatcher.LoginUser)){
+                            ProfileBean pbean=SingleInstance.myAccountBean;
+                            bean.setMembername(pbean.getFirstname()+" "+pbean.getLastname());
+                        }else
                         for(BuddyInformationBean bib: ContactsFragment.getBuddyList()){
                             if(bib.getName().equalsIgnoreCase(bean.getGroupmember()))
                             bean.setMembername(bib.getFirstname()+" "+bib.getLastname());

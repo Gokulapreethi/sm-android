@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
@@ -22,6 +23,7 @@ import com.image.utils.ImageLoader;
 import com.main.ContactsFragment;
 import com.util.SingleInstance;
 
+import org.lib.model.BuddyInformationBean;
 import org.lib.model.GroupBean;
 
 import java.util.Vector;
@@ -66,6 +68,7 @@ public class RoundingAdapter extends ArrayAdapter<GroupBean> {
                         .findViewById(R.id.ll_reject);
                 holder.grouplist = (TextView) row.findViewById(R.id.group_name);
                 holder.members = (TextView) row.findViewById(R.id.members);
+                holder.invite = (TextView) row.findViewById(R.id.invite);
                 holder.contact_history = (LinearLayout) row.findViewById(R.id.contact_history);
                 holder.inreq = (LinearLayout) row.findViewById(R.id.inreq);
                 holder.buddy_icon = (ImageView) row.findViewById(R.id.iv_icon);
@@ -96,7 +99,10 @@ public class RoundingAdapter extends ArrayAdapter<GroupBean> {
                 holder.members.setText(Integer.toString(1) + " members");
                 if (groupBean.getStatus().equalsIgnoreCase("request")) {
                     holder.inreq.setVisibility(View.VISIBLE);
+                    holder.invite.setVisibility(View.VISIBLE);
+                    holder.invite.setText("invite from " + Buddyname(groupBean.getOwnerName()) );
                 } else {
+                    holder.invite.setVisibility(View.GONE);
                     holder.inreq.setVisibility(View.GONE);
                 }
 
@@ -168,9 +174,18 @@ public class RoundingAdapter extends ArrayAdapter<GroupBean> {
 
     public static class ViewHolder {
         LinearLayout listContainer,accept_lay,reject_lay;
-        TextView grouplist,members;
+        TextView grouplist,members,invite;
         LinearLayout contact_history;
         LinearLayout inreq;
         ImageView buddy_icon,edit_img;
+    }
+    public String Buddyname(String bname) {
+        String name = null;
+                for (BuddyInformationBean buddyInformationBean:ContactsFragment.getBuddyList()) {
+                    if (bname.equals(buddyInformationBean.getEmailid())) {
+                        name = buddyInformationBean.getFirstname() + " " + buddyInformationBean.getLastname();
+                    }
+                }
+        return name;
     }
 }

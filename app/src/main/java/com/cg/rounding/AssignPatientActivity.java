@@ -74,8 +74,8 @@ public class AssignPatientActivity extends Activity{
         strGetQry="select * from patientdetails where (groupid='"
                 + groupid + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser + "%') or ( groupid='" + groupid + "' and assignedmembers='')";
         PatientList=DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
-        int questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where (groupid='"
-                + groupid + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser +"'");
+        int questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where groupid='"
+                + groupid + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser +"%'");
         if(questionsCount>0){
             unassign_lay.setVisibility(View.VISIBLE);
             assign.setText("ASSIGN PATIENTS TO");

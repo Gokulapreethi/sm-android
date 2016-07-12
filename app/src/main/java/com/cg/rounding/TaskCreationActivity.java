@@ -216,10 +216,29 @@ public class TaskCreationActivity extends Activity {
                     taskbean.setTaskstatus("0");
                     WebServiceReferences.webServiceClient.SetTaskRecord(taskbean, context);
                     showprogress();
-                } else {
+                }
+                else if(ed_taskDesc.getText().toString().trim().length() == 0) {
                     Toast.makeText(context,
-                            "Please enter all mandatory fields",
-                            Toast.LENGTH_SHORT).show();
+                            "Please fill task description...", Toast.LENGTH_SHORT).show();
+                } else if(patient.getText().toString().trim().length() == 0) {
+                    Toast.makeText(context,
+                            "Please assign patient...", Toast.LENGTH_SHORT).show();
+                }else if(ed_dueDate.getText().toString().trim().length() == 0) {
+                    Toast.makeText(context,
+                            "Please select due date ...", Toast.LENGTH_SHORT).show();
+                } else if(ed_dueTime.getText().toString().trim().length() == 0) {
+                    Toast.makeText(context,
+                            "Please select due time...", Toast.LENGTH_SHORT).show();
+                } else if(remindTime.getText().toString().trim().length() == 0) {
+                    Toast.makeText(context,
+                            "Please choose reminder time...", Toast.LENGTH_SHORT).show();
+                } else if(PatientList.size() == 0){
+                    Toast.makeText(context, "Please create patient before creating new task...", Toast.LENGTH_SHORT).show();
+                } else if(remainderTag == 0){
+                    Toast.makeText(context, "Please set reminder...", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(context,
+                            "Please enter all mandatory fields", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -468,7 +487,6 @@ public class TaskCreationActivity extends Activity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 patient.showDropDown();
-//                patient.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.up_arrow, 0);
                 if(PatientList.size() == 0){
                     Toast.makeText(context, "Please create patient before creating new task...", Toast.LENGTH_SHORT).show();
                 }
@@ -486,12 +504,7 @@ public class TaskCreationActivity extends Activity {
                         .split(",");
                 BuddyInformationBean bean=new BuddyInformationBean();
                 ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(gBean.getOwnerName());
-
-                if(pBean.getTitle()!= null && pBean.getTitle() != "") {
-                    bean.setFirstname(pBean.getTitle() + " " + pBean.getFirstname());
-                }else
-                    bean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname());
-//                bean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname());
+                bean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname());
                 bean.setName(gBean.getOwnerName());
                 bean.setProfile_picpath(pBean.getPhoto());
                 bean.setType("0");
@@ -499,11 +512,7 @@ public class TaskCreationActivity extends Activity {
                 for (String tmp : mlist) {
                     BuddyInformationBean uBean = new BuddyInformationBean();
                     ProfileBean pbean=DBAccess.getdbHeler().getProfileDetails(tmp);
-                    if(pbean.getTitle()!= null && pbean.getTitle() != "") {
-                        uBean.setFirstname(pbean.getTitle() + " " + pbean.getFirstname());
-                    }else
-                        uBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
-//                    uBean.setFirstname(pbean.getFirstname()+" "+pbean.getLastname());
+                    uBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
                     uBean.setName(tmp);
                     uBean.setProfile_picpath(pbean.getPhoto());
                     uBean.setType("0");

@@ -33,44 +33,44 @@
             android:id="@+id/sender_layout2">
 
 
-        <TextView
-            android:id="@+id/textinfo_1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:text="Hi. I am using SnazMed. An amazing healthcare communication app. Please download it using the links below so we can start exchanging HIPAA-compliant,secure communications and much more."
-            android:textSize="20dp"/>
+            <TextView
+                android:id="@+id/textinfo_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="Hi. I am using SnazMed. An amazing healthcare communication app. Please download it using the links below so we can start exchanging HIPAA-compliant,secure communications and much more."
+                android:textSize="20dp"/>
 
-        <TextView
-            android:id="@+id/textinfo_2"
-            android:layout_below="@+id/textinfo_1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:text="Use the following Invite Code during "
-            android:textSize="20dp"/>
+            <TextView
+                android:id="@+id/textinfo_2"
+                android:layout_below="@+id/textinfo_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="Use the following Invite Code during "
+                android:textSize="20dp"/>
 
-        <TextView
-            android:id="@+id/textinfo_3"
-            android:layout_below="@+id/textinfo_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:text="New User sign-up: "
-            android:textSize="20dp"/>
+            <TextView
+                android:id="@+id/textinfo_3"
+                android:layout_below="@+id/textinfo_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="New User sign-up: "
+                android:textSize="20dp"/>
 
 
-        <TextView
-            android:id="@+id/textinfo_4"
-            android:layout_alignBaseline="@+id/textinfo_3"
-            android:layout_marginLeft="170dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:visibility="visible"
-            android:text="2456GHT234"
-            android:textColor="@color/blue2"
-            android:textSize="18dp"/>
+            <TextView
+                android:id="@+id/textinfo_4"
+                android:layout_alignBaseline="@+id/textinfo_3"
+                android:layout_marginLeft="170dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:visibility="visible"
+                android:text="2456GHT234"
+                android:textColor="@color/blue2"
+                android:textSize="18dp"/>
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/sender_layout1"
@@ -82,10 +82,8 @@
                 android:id="@+id/textinfo_5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
                 android:textColor="@color/blue2"
                 android:text="https://play.google.com"
-                android:layout_weight="1"
                 android:textSize="18dp"/>
         </RelativeLayout>
     </LinearLayout>

@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,8 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -24,6 +28,7 @@ import com.cg.commonclass.CallDispatcher;
 import com.cg.snazmed.R;
 import com.group.GroupActivity;
 import com.image.utils.ImageLoader;
+import com.main.ContactsFragment;
 import com.util.SingleInstance;
 
 import org.lib.model.GroupBean;
@@ -49,6 +54,8 @@ public class DuplicateExistingGroups extends Activity {
             context = this;
             SingleInstance.contextTable.put("duplicateexistinggroup", context);
             final TextView txtView01 = (TextView) findViewById(R.id.tx_headingaddcontact);
+            final EditText ed_search = (EditText) findViewById(R.id.searchet);
+            final Button search = (Button) findViewById(R.id.search);
             RelativeLayout chkbox_lay=(RelativeLayout)findViewById(R.id.chbox_lay);
             Button btn_done=(Button)findViewById(R.id.btn_done);
             Button backBtn=(Button)findViewById(R.id.btn_backaddcontact);
@@ -56,6 +63,24 @@ public class DuplicateExistingGroups extends Activity {
             btn_done.setVisibility(View.GONE);
             chkbox_lay.setVisibility(View.GONE);
             txtView01.setText("GROUP(S)");
+
+            search.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (txtView01.getVisibility() == View.VISIBLE) {
+                        txtView01.setVisibility(View.GONE);
+                        ed_search.setVisibility(View.VISIBLE);
+                        search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_close));
+                    } else {
+                        txtView01.setVisibility(View.VISIBLE);
+                        ed_search.setVisibility(View.GONE);
+                        ed_search.setText("");
+                        search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
+                    }
+                }
+            });
+
+
             for(GroupBean gBean: GroupActivity.groupList){
                 if(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
                     groupslist.add(gBean);
@@ -63,6 +88,20 @@ public class DuplicateExistingGroups extends Activity {
             }
             groupAdapter=new ExistingGroupAdapter(this,R.layout.grouplist,groupslist);
             groupListView.setAdapter(groupAdapter);
+
+            ed_search.addTextChangedListener(new TextWatcher() {
+
+                public void afterTextChanged(Editable s) {
+                }
+
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s != null && s != "")
+                        groupAdapter.getFilter().filter(s);
+                }
+            });
 
             backBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -95,12 +134,17 @@ public class DuplicateExistingGroups extends Activity {
         ImageLoader imageLoader;
         Vector<GroupBean> groupslist=new Vector<GroupBean>();
 
+        private Vector<GroupBean> originalList;
+        private  GroupFilter filter;
+
         public ExistingGroupAdapter(Context context, int textViewResourceId,
                             Vector<GroupBean> groupList) {
             super(context, R.layout.grouplist, groupList);
             this.context = context;
             groupslist=groupList;
             imageLoader=new ImageLoader(SingleInstance.mainContext);
+            originalList = new Vector<GroupBean>();
+            this.originalList.addAll(ContactsFragment.getGroupList());
         }
         @Override
         public View getView(final int position, View view, ViewGroup arg2) {
@@ -184,6 +228,55 @@ public class DuplicateExistingGroups extends Activity {
             LinearLayout inreq;
             ImageView buddy_icon;
         }
+        public Filter getFilter() {
+            if (filter == null){
+                filter  = new GroupFilter();
+            }
+            return filter;
+        }
+        private class GroupFilter extends Filter
+        {
+
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+
+                constraint = constraint.toString().toLowerCase();
+
+                FilterResults result = new FilterResults();
+                if (constraint != null && constraint.toString().length() > 0) {
+                    Vector<GroupBean> gBeans = new Vector<GroupBean>();
+                    for(int i = 0, l = originalList.size(); i < l; i++)
+                    {
+                        GroupBean groupBean = originalList.get(i);
+                        if(groupBean.getGroupName().toLowerCase().startsWith(String.valueOf(constraint)))
+                            gBeans.add(groupBean);
+                    }
+                    result.count = gBeans.size();
+                    result.values = gBeans;
+                } else {
+                    synchronized (this) {
+                        result.values = originalList;
+                        result.count = originalList.size();
+                    }
+                }
+                return result;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint,
+                                          FilterResults results) {
+
+                groupslist= (Vector<GroupBean>)results.values;
+                notifyDataSetChanged();
+                clear();
+                for(int i = 0, l = groupslist.size(); i < l; i++)
+                    add(groupslist.get(i));
+                notifyDataSetInvalidated();
+
+            }
+
+        }
 
     }
 
@@ -194,4 +287,6 @@ public class DuplicateExistingGroups extends Activity {
             SingleInstance.contextTable.remove("duplicateexistinggroup");
         }
     }
+
+
 }
