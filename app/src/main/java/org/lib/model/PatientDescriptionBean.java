@@ -14,6 +14,16 @@ public class PatientDescriptionBean {
     private String reportmodifier;
     private String groupid;
 
+    public String getActiveID() {
+        return activeID;
+    }
+
+    public void setActiveID(String activeID) {
+        this.activeID = activeID;
+    }
+
+    private String activeID;
+
     public String getDate() {
         return Date;
     }

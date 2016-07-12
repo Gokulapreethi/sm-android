@@ -28,6 +28,16 @@ public class RecordTransactionBean {
 	private String callstatus;
 	private String chatid;
 
+	public String getRecordedfile() {
+		return recordedfile;
+	}
+
+	public void setRecordedfile(String recordedfile) {
+		this.recordedfile = recordedfile;
+	}
+
+	private String recordedfile;
+
 
 	private String host_emailid;
 

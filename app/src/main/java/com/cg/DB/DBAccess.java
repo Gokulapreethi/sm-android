@@ -158,7 +158,7 @@ public class DBAccess extends SQLiteOpenHelper {
 	String specialitydetails ="create table if not exists specialitydetails(speciality nvarchar(200),code nvarchar(25))";
 	String hospitaldetails ="create table if not exists hospitaldetails(hospitalname nvarchar(200))";
 	String medicalsocieties ="create table if not exists medicalsocieties(id nvarchar(25),medicalsociety nvarchar(200))";
-	String seeallpatientdetails = "create table if not exists seeallpatientdetails(groupid nvarchar(25), patientid nvarchar(100), diagnosis nvarchar(100), commentdate nvarchar(100))";
+	String seeallpatientdetails = "create table if not exists seeallpatientdetails(groupid nvarchar(25), patientid nvarchar(100), diagnosis nvarchar(100), active nvarchar(100), commentdate nvarchar(100))";
 	private CallDispatcher callDisp;
 
 	public DBAccess(Context context) {
@@ -8703,6 +8703,15 @@ public class DBAccess extends SQLiteOpenHelper {
 		}
 	}
 
+	public void updaterecordtransaction(String sessionID){
+		try {
+			String s = "update recordtransactiondetails set recordedfile=1 where sessionid='" + sessionID + "'";
+			Log.d("record","callhistory--> "+s);
+			db.execSQL(s);
+		}catch(Exception e){
+			Log.d("record","novalue in DB for "+sessionID+" returns with error "+e.toString());
+		}
+	}
 	public int countrecordtransactiondetails() {
 		int cnt = 0;
 		String countQuery = "SELECT  * FROM recordtransactiondetails";
@@ -8790,6 +8799,7 @@ public class DBAccess extends SQLiteOpenHelper {
 
 		}
 	}
+
 	public boolean deleteFromCallHistory(String userid) {
 		boolean delete = false;
 		try {
@@ -8905,6 +8915,7 @@ public class DBAccess extends SQLiteOpenHelper {
 				Log.i("CH", "End Time :" + cur.getString(7));
 				hDetails.setCallDuration(cur.getString(8));
 				Log.i("CH", "Duration :" + cur.getString(8));
+				hDetails.setRecordedfile(cur.getString(12));
 				hDetails.setCalltype(cur.getString(13));
 				Log.i("CH", "CallType :" + cur.getString(13));
 				hDetails.setSessionid(cur.getString(4));
@@ -10880,6 +10891,7 @@ public class DBAccess extends SQLiteOpenHelper {
 			ContentValues cv = new ContentValues();
 			cv.put("groupid", pbean.getGroupid());
 			cv.put("patientid", pbean.getPatientid());
+			cv.put("active",pbean.getActiveID());
 			if(pbean.getDiagnosis()!=null)
 			cv.put("diagnosis", pbean.getDiagnosis());
 			if(pbean.getDate()!=null)
@@ -10891,6 +10903,21 @@ public class DBAccess extends SQLiteOpenHelper {
 		return comment_id;
 	}
 
+	public void updateseallcomments(String value, String commentdate,String patientID){
+		try{
+			Log.d("updateseeall", "incoming");
+			Log.d("updateseeall", "incoming1"+value+commentdate+patientID);
+			String s = "update seeallpatientdetails set active=1 where diagnosis='"+value+ "' and commentdate='"+commentdate+"' and patientid='"+patientID+"'";
+			String s1 = "update seeallpatientdetails set active=0 where diagnosis!='"+value+ "' and commentdate!='"+commentdate+"' and patientid='"+patientID+"'";
+			db.execSQL(s);
+			db.execSQL(s1);
+			Log.d("updateseeall", "SQL => " + s);
+		}catch(Exception e){
+			Log.d("updateseeall","novalue in DB for "+value+ commentdate+patientID+" returns with error "+e.toString());
+		}
+
+	}
+
 	public Vector<PatientDescriptionBean> getseallcomments(String strGetQry){
 		Vector<PatientDescriptionBean> seeallcomment = new Vector<PatientDescriptionBean>();
 		try {
@@ -10900,14 +10927,17 @@ public class DBAccess extends SQLiteOpenHelper {
 
 			cur = db.rawQuery(strGetQry, null);
 			int length = cur.getCount();
-			Log.d("Stringvalue", "dbvalue0"+strGetQry);
+			Log.d("Stringvalue", "dbvalue0" + strGetQry);
 			cur.moveToFirst();
 			Log.d("Stringvalue", "dbvalue1");
 			while (cur.isAfterLast() == false) {
 				Log.d("Stringvalue", "dbvalue2");
 				PatientDescriptionBean pBean = new PatientDescriptionBean();
-				pBean.setDiagnosis(cur.getString(0));
-				pBean.setDate(cur.getString(1));
+				pBean.setGroupid(cur.getString(0));
+				pBean.setDiagnosis(cur.getString(2));
+				pBean.setActiveID(cur.getString(3));
+				pBean.setDate(cur.getString(4));
+				pBean.setPatientid(cur.getString(1));
 				cur.moveToNext();
 				seeallcomment.add(pBean);
 				Log.d("Stringvalue","dbvalue"+pBean.getDiagnosis());

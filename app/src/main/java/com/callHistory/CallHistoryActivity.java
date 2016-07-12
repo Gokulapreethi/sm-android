@@ -150,6 +150,7 @@ public class CallHistoryActivity extends Activity {
 						public void onClick(View v) {
 							text_recording.setVisibility(View.GONE);
 							recoding_layout.setVisibility(View.GONE);
+							DBAccess.getdbHeler().updaterecordtransaction(sessionId);
 							delete_icon.setVisibility(View.GONE);
 							dialog.dismiss();
 							mPlayer.pause();
@@ -186,6 +187,12 @@ public class CallHistoryActivity extends Activity {
 			mlist = DBAccess.getdbHeler().getcallhistorydetails(query);
 			RecordTransactionBean recordTransactionBean = mlist
 					.get(pos);
+			if(recordTransactionBean.getRecordedfile() != null){
+				text_recording.setVisibility(View.GONE);
+				recoding_layout.setVisibility(View.GONE);
+				owner_img.setVisibility(View.GONE);
+
+			}
 
 			if (recordTransactionBean.getCalltype() != null) {
 				String callType = "";

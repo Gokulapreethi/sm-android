@@ -16901,11 +16901,13 @@ private TrustManager[] get_trust_mgr() {
 				@Override
 				public void onClick(View v) {
 					dialog.dismiss();
+					DBAccess.getdbHeler().updaterecordtransaction(CallDispatcher.sb.getSessionid());
 					Intent intentComponent = new Intent(context,
 							CallHistoryActivity.class);
 					intentComponent.putExtra("buddyname",
 							CallDispatcher.sb.getFrom());
 					intentComponent.putExtra("isDelete", true);
+
 					if(callType.equalsIgnoreCase("VC"))
 						intentComponent.putExtra("audiocall",false);
 					intentComponent.putExtra("individual", true);

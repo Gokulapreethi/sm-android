@@ -23,26 +23,33 @@
         android:text="Publication or Citation"
         android:textColor="@color/grey3"
         android:layout_marginTop="50dp"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/Text_view1"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="30dp"
+        android:scrollbars="vertical"
+        android:id="@+id/scroll">
+
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="2000dp"
         android:id="@+id/Edit_text1"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/Text_view1"
-        android:layout_marginLeft="30dp"
         android:textSize="20dp"
         android:digits="@string/alphaNumericandspace"
-       android:inputType="textEmailAddress"
+        android:inputType="textEmailAddress"
         android:background="@color/black2"
         android:textColor="@color/white"/>
+    </ScrollView>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="5dp"
         android:background="#7E8080"
         android:visibility="gone"
-        android:layout_below="@id/Edit_text1"/>
+        android:layout_below="@+id/scroll"/>
 
 
 

@@ -117,6 +117,7 @@ public class PatientRoundingFragment extends Fragment {
     RoleEditRndFormBean editRndFormBean;
     RolePatientManagementBean rolePatientManagementBean;
     RoleTaskMgtBean roleTaskMgtBean;
+    Dialog dialog1;
 
     public static PatientRoundingFragment newInstance(Context context) {
         try {
@@ -658,7 +659,7 @@ public class PatientRoundingFragment extends Fragment {
     }
 
     private void showDiagnosisHistory(String edit_content, String title) {
-        final Dialog dialog1 = new Dialog(mainContext);
+       dialog1 = new Dialog(mainContext);
         dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog1.setContentView(R.layout.diagnosis_history);
         dialog1.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
@@ -668,8 +669,8 @@ public class PatientRoundingFragment extends Fragment {
         TextView header_name = (TextView) dialog1.findViewById(R.id.header_title);
         header_name.setText(title);
         ListView listview = (ListView) dialog1.findViewById(R.id.listview);
-        String strGetQry = "select diagnosis,commentdate from seeallpatientdetails where groupid='"
-                + pBean.getGroupid() + "'and patientid='" + pBean.getPatientid() + "' ORDER BY commentdate DESC";
+        String strGetQry = "select * from seeallpatientdetails where groupid='"
+                + pBean.getGroupid() + "'and patientid='" + pBean.getPatientid() + "' ORDER BY active DESC";
         isfromedit_diagnosis = true;
         Vector<PatientDescriptionBean> comments = DBAccess.getdbHeler().getseallcomments(strGetQry);
         Log.d("listvalues","string"+comments.size());
@@ -702,8 +703,8 @@ public class PatientRoundingFragment extends Fragment {
         final EditText newDescription = (EditText) dialog1.findViewById(R.id.new_descrip);
         newDescription.setHint(edithint);
         isfromedit_diagnosis = false;
-        String strGetQry = "select diagnosis,commentdate from seeallpatientdetails where groupid='"
-                + pBean.getGroupid() + "'and patientid='" + pBean.getPatientid() + "' ORDER BY commentdate DESC";
+        String strGetQry = "select * from seeallpatientdetails where groupid='"
+                + pBean.getGroupid() + "'and patientid='" + pBean.getPatientid() + "' ORDER BY active DESC";
 
         Vector<PatientDescriptionBean> comments = DBAccess.getdbHeler().getseallcomments(strGetQry);
         Log.d("listvalues","string"+comments.size());
@@ -1321,6 +1322,7 @@ public class PatientRoundingFragment extends Fragment {
             pcBean.setPatientid(result[0]);
             pcBean.setReportid(result[1]);
             DBAccess.getdbHeler().insertorUpdatePatientDescriptions(pcBean);
+            DBAccess.getdbHeler().updateseallcomments(pcBean.getDiagnosis(), pcBean.getDate(), pcBean.getPatientid());
         }
     }
 
@@ -2041,6 +2043,19 @@ public class PatientRoundingFragment extends Fragment {
 //                }
                 holder.old_message.setText(pBean.getDiagnosis());
                 holder.message_date.setText(pBean.getDate());
+
+                holder.active.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d("updateseeall", "clickevent1");
+                        DBAccess.getdbHeler().updateseallcomments(pBean.getDiagnosis(), pBean.getDate(), pBean.getPatientid());
+                        Log.d("updateseeall", "clickevent" + pBean.getDiagnosis() + pBean.getDate() + pBean.getPatientid());
+                        showprogress();
+                        WebServiceReferences.webServiceClient.SetPatientDescription(pcBean, patientRoundingFragment);
+                        diagnosis.setText(pBean.getDiagnosis());
+                        dialog1.dismiss();
+                    }
+                });
             } catch (Exception e) {
                 e.printStackTrace();
             }
