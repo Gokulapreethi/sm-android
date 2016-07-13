@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,7 @@ public class PhysicianInviteFragment extends Fragment {
     private static Context mainContext;
     public View view;
     Boolean isFrom=false;
-    private RelativeLayout sender_layout;
+    private LinearLayout sender_layout;
     private TextView textinfo_1, textinfo_2, textinfo_3, textinfo_5,textinfo_4;
     private Button share;
 
@@ -97,7 +98,7 @@ public class PhysicianInviteFragment extends Fragment {
                 textinfo_2 = (TextView)view.findViewById(R.id.textinfo_2);
                 textinfo_3 = (TextView)view.findViewById(R.id.textinfo_3);
                 share = (Button)view.findViewById(R.id.share_button);
-                sender_layout = (RelativeLayout)view.findViewById(R.id.sender_layout);
+                sender_layout = (LinearLayout)view.findViewById(R.id.sender_layout);
 
                 if (isFrom){
 //                    textinfo_1.setText("Hi. I am using SnazMed.  An amazing \n" +
@@ -123,11 +124,14 @@ public class PhysicianInviteFragment extends Fragment {
                 }else{
 //                    sender_layout.setWeightSum(3);
 //                    textinfo_1.setText("play.google.com");
+                    String Code = UUID.randomUUID().toString().trim().substring(0, 8).toUpperCase();
+                    Log.d("value","code"+Code);
+                    textinfo_4.setText(Code);
+
                     textinfo_5.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent i = new Intent(Intent.ACTION_VIEW);
-                            i.setData(Uri.parse("https://play.google.com"));
+                            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com"));
                             startActivity(i);
                         }
                     });
@@ -137,9 +141,7 @@ public class PhysicianInviteFragment extends Fragment {
 //                    textinfo_2.setText("Download the app\n and enter this code:");
 //                    textinfo_3.setVisibility(View.VISIBLE);
 
-                    String code = UUID.randomUUID().toString().trim().substring(0, 8).toUpperCase();
 
-                    textinfo_4.setText(code);
                 }
 
 

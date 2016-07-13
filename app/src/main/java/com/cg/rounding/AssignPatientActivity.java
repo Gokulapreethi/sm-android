@@ -61,7 +61,7 @@ public class AssignPatientActivity extends Activity{
         final Button back=(Button)findViewById(R.id.btn_backaddcontact);
         final Button unassign=(Button)findViewById(R.id.btn_unassign);
         final LinearLayout unassign_lay=(LinearLayout)findViewById(R.id.unassign_lay);
-        assign.setText("ASSIGN PATIENTS TO...");
+        assign.setText("ASSIGN MEMBERS");
         ListView listView=(ListView)findViewById(R.id.lv_buddylist);
         PatientList=new Vector<PatientDetailsBean>();
         PatientList.clear();
@@ -81,7 +81,7 @@ public class AssignPatientActivity extends Activity{
         PatientList=DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
         if(GroupChatActivity.patientType.equalsIgnoreCase("mypatient")){
             unassign_lay.setVisibility(View.VISIBLE);
-            assign.setText("ASSIGN PATIENTS TO");
+            assign.setText("ASSIGN MEMBERS");
             unassign.setText("UNASSIGN FROM ME");
         }
 

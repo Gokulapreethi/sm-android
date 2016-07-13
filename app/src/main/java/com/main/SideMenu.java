@@ -265,6 +265,7 @@ public class SideMenu extends Fragment{
                 online.setBackgroundColor(mainContext.getResources().getColor(R.color.green));
                 online.setCompoundDrawablesWithIntrinsicBounds(R.drawable.navigation_check, 0, 0, 0);
                 temp = 1;
+                CallDispatcher.onlineStatus = "online";
             }
         });
         busy.setOnClickListener(new View.OnClickListener() {
@@ -274,6 +275,7 @@ public class SideMenu extends Fragment{
                 busy.setBackgroundColor(mainContext.getResources().getColor(R.color.yellow));
                 busy.setCompoundDrawablesWithIntrinsicBounds(R.drawable.navigation_check, 0, 0, 0);
                 temp = 2;
+                CallDispatcher.onlineStatus = "busy";
             }
         });
         offline.setOnClickListener(new View.OnClickListener() {
@@ -283,6 +285,7 @@ public class SideMenu extends Fragment{
                 offline.setBackgroundColor(mainContext.getResources().getColor(R.color.pink));
                 offline.setCompoundDrawablesWithIntrinsicBounds(R.drawable.navigation_check, 0, 0, 0);
                 temp = 0;
+                CallDispatcher.onlineStatus = "offline";
             }
         });
         invisible.setOnClickListener(new View.OnClickListener() {
@@ -292,6 +295,7 @@ public class SideMenu extends Fragment{
                 invisible.setBackgroundColor(mainContext.getResources().getColor(R.color.ash));
                 invisible.setCompoundDrawablesWithIntrinsicBounds(R.drawable.navigation_check, 0, 0, 0);
                 temp = 3;
+                CallDispatcher.onlineStatus = "invisible";
             }
         });
         savepswd.setOnClickListener(new View.OnClickListener() {
@@ -302,6 +306,7 @@ public class SideMenu extends Fragment{
                     notifyUI();
                     temp = 10;
                 }
+
                 setDefaultStatus();
                 dialog.dismiss();
                 MyAccountFragment.newInstance(SingleInstance.mainContext).loadCurrentStatus();

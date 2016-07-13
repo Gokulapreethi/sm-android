@@ -8152,7 +8152,8 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	}
 	public void notifyGetPatientRecords(Object obj){
 		if(obj instanceof Vector){
-			Log.i("patientdetails","notifyGetPatientRecords");
+			Log.i("patientdetails", "notifyGetPatientRecords");
+
 			Vector<PatientDetailsBean> pBeanList=(Vector<PatientDetailsBean>)obj;
 			for(PatientDetailsBean pBean:pBeanList){
 				DBAccess.getdbHeler().insertorUpdatePatientDetails(pBean);
@@ -8176,6 +8177,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			Vector<PatientDescriptionBean> pBeanList=(Vector<PatientDescriptionBean>)obj;
 			for(PatientDescriptionBean pBean:pBeanList){
 				DBAccess.getdbHeler().insertorUpdatePatientDescriptions(pBean);
+				Log.d("rose", "value--->" + pBean.getPatientid());
 			}
 
 		}

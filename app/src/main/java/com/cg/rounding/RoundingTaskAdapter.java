@@ -99,7 +99,7 @@ public class RoundingTaskAdapter extends ArrayAdapter<TaskDetailsBean> {
                     if(Duetime<=0) {
 //                    holder.pending_hours.setText(tBean.getDuedate());
 
-                        SimpleDateFormat dateformat = new SimpleDateFormat("dd-MM-yyyy");
+                        SimpleDateFormat dateformat = new SimpleDateFormat("MM-dd-yyyy");
                         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd");
                         Date d1 = new Date();
                         String datevalue = tBean.getDuedate();

@@ -82,6 +82,7 @@ public class PatientRoundingFragment extends Fragment {
     private static CallDispatcher calldisp = null;
     private String pastingContentCopy;
     View _rootView;
+    private boolean islistAZ=true;
     private String groupName;
     private Seealladapter seealladapter;
     public Boolean title = false;
@@ -430,6 +431,7 @@ public class PatientRoundingFragment extends Fragment {
         final Button role_sort = (Button) v1.findViewById(R.id.role_sort);
 
 
+
         final Vector<UserBean> memberslist = new Vector<UserBean>();
         if (pBean != null) {
             if (pBean.getAssignedmembers() != null
@@ -477,6 +479,8 @@ public class PatientRoundingFragment extends Fragment {
         alpha_sort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 title = true;
                 alpha_sort.setTextColor(getResources().getColor(R.color.white));
                 online_sort.setTextColor(getResources().getColor(R.color.snazlgray));
@@ -484,6 +488,14 @@ public class PatientRoundingFragment extends Fragment {
 
                 sorting = "alpha";
                 Collections.sort(memberslist, new PatientListComparator());
+                if(islistAZ) {
+                    islistAZ = false;
+                    alpha_sort.setText("A>Z");
+                }else {
+                    islistAZ = true;
+                    alpha_sort.setText("Z>A");
+                    Collections.reverse(memberslist);
+                }
                 MembersAdapter adapter = new MembersAdapter(mainContext, R.layout.rounding_member_row, memberslist);
                 list.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
@@ -678,7 +690,7 @@ public class PatientRoundingFragment extends Fragment {
                 + pBean.getGroupid() + "'and patientid='" + pBean.getPatientid() + "' ORDER BY active DESC";
         isfromedit_diagnosis = true;
         Vector<PatientDescriptionBean> comments = DBAccess.getdbHeler().getseallcomments(strGetQry);
-        Log.d("listvalues","string"+comments.size());
+        Log.d("listvalues", "string" + comments.size());
         seealladapter = new Seealladapter(mainContext, R.layout.seeall_row, comments);
         listview.setAdapter(seealladapter);
 
@@ -706,7 +718,11 @@ public class PatientRoundingFragment extends Fragment {
         final TextView newDesc = (TextView) dialog1.findViewById(R.id.newDesc);
         newDesc.setText(edithint);
         final EditText newDescription = (EditText) dialog1.findViewById(R.id.new_descrip);
-        newDescription.setHint(edithint);
+        if(editingContent.length()>0){
+            newDescription.setText(editingContent);
+        }else {
+            newDescription.setHint(edithint);
+        }
         isfromedit_diagnosis = false;
         String strGetQry = "select * from seeallpatientdetails where groupid='"
                 + pBean.getGroupid() + "'and patientid='" + pBean.getPatientid() + "' ORDER BY active DESC";
@@ -809,8 +825,8 @@ public class PatientRoundingFragment extends Fragment {
                 showprogress();
                 WebServiceReferences.webServiceClient.SetPatientDescription(pcBean, patientRoundingFragment);
                 pcBean.setDate(getCurrentDateandTime());
-                if(edithint.equalsIgnoreCase("diagnosis"))
-                DBAccess.getdbHeler().insertseallcomments(pcBean);
+                if (edithint.equalsIgnoreCase("diagnosis"))
+                    DBAccess.getdbHeler().insertseallcomments(pcBean);
                 dialog1.dismiss();
             }
         });
@@ -908,6 +924,7 @@ public class PatientRoundingFragment extends Fragment {
         final Button edit_consults = (Button) v1.findViewById(R.id.edit_consults);
         final Button edit_status = (Button) v1.findViewById(R.id.edit_status);
         TextView tv_currentstatus = (TextView) v1.findViewById(R.id.tv_status);
+        LinearLayout status_click = (LinearLayout)v1.findViewById(R.id.status_click);
         diagnosis = (TextView) v1.findViewById(R.id.diagnosis);
         medications = (TextView) v1.findViewById(R.id.medications);
         testandvitals = (TextView) v1.findViewById(R.id.testandvitals);
@@ -1055,7 +1072,7 @@ public class PatientRoundingFragment extends Fragment {
         }
         final CharSequence[] items = {"Fullcode", "DNR", "DNI", "ComfortCare", "Critical", "Sick", "Stable", "Other"};
 
-        tv_currentstatus.setOnClickListener(new View.OnClickListener() {
+        status_click.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder3 = new AlertDialog.Builder(mainContext);
@@ -1608,7 +1625,8 @@ public class PatientRoundingFragment extends Fragment {
             public void onClick(View view) {
                 taskSorting(gBean.getGroupId());
                 dialog1.dismiss();
-                tv_status.setText(statusMode);
+                tv_status.setText(statusMode.toUpperCase());
+
             }
         });
     }
@@ -1625,7 +1643,7 @@ public class PatientRoundingFragment extends Fragment {
         final RadioButton unassigned = (RadioButton) dialog1.findViewById(R.id.unassigned);
         final RadioButton assigntoteam = (RadioButton) dialog1.findViewById(R.id.assigntoteam);
         Button apply = (Button) dialog1.findViewById(R.id.apply);
-        LinearLayout members_list = (LinearLayout) dialog1.findViewById(R.id.members_list);
+        final LinearLayout members_list = (LinearLayout) dialog1.findViewById(R.id.members_list);
         RadioGroup gender = (RadioGroup) dialog1.findViewById(R.id.assigned_group);
         Button cancel = (Button) dialog1.findViewById(R.id.cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -1710,16 +1728,22 @@ public class PatientRoundingFragment extends Fragment {
 
                 for (String tmp : mlist) {
                     UserBean uBean = new UserBean();
-                    for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
-                        if (bib.getName().equalsIgnoreCase(tmp)) {
-                            uBean.setFirstname(bib.getFirstname() + " " + bib.getLastname());
-                            break;
-                        } else
-                            uBean.setFirstname(tmp);
+                    Log.d("listvalue", "listsize" + tmp);
+                    if(tmp.length()>0) {
+                        Log.d("listvalue", "listsize1" + tmp);
+                        for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
+                            if (bib.getName().equalsIgnoreCase(tmp)) {
+                                uBean.setFirstname(bib.getFirstname() + " " + bib.getLastname());
+                                break;
+                            } else
+                                uBean.setFirstname(tmp);
+                        }
+
+                        uBean.setBuddyName(tmp);
+                        uBean.setFlag("0");
+                        memberslist.add(uBean);
                     }
-                    uBean.setBuddyName(tmp);
-                    uBean.setFlag("0");
-                    memberslist.add(uBean);
+
                 }
             }
         }
@@ -1728,13 +1752,25 @@ public class PatientRoundingFragment extends Fragment {
         for (int i = 0; i < adapterCount; i++) {
             View item = adapter.getView(i, null, null);
             members_list.addView(item);
+
         }
         apply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 taskSorting(gBean.getGroupId());
                 dialog1.dismiss();
-                tv_assigned.setText(assignedMode);
+                if (assignedMode.equalsIgnoreCase("showall")) {
+                    tv_assigned.setText(" ALL");
+                } else if (assignedMode.equalsIgnoreCase("assignedtome")) {
+                    tv_assigned.setText(" TO ME");
+                } else if (assignedMode.equalsIgnoreCase("assignedbyme")) {
+                    tv_assigned.setText(" BY ME");
+                } else if (assignedMode.equalsIgnoreCase("unassigned")) {
+                    tv_assigned.setText(" UNASSIGNED");
+                } else if (assignedMode.equalsIgnoreCase("assigntoteam")) {
+                    tv_assigned.setText(" TO " +adapterCount+" MEMBERS" );
+                }
+//                tv_assigned.setText(assignedMode);
 
                 String addMembers = "";
                 for (UserBean bean : memberslist) {
@@ -2056,7 +2092,7 @@ public class PatientRoundingFragment extends Fragment {
                         DBAccess.getdbHeler().updateseallcomments(pBean.getDiagnosis(), pBean.getDate(), pBean.getPatientid());
                         Log.d("updateseeall", "clickevent" + pBean.getDiagnosis() + pBean.getDate() + pBean.getPatientid());
                         showprogress();
-                        WebServiceReferences.webServiceClient.SetPatientDescription(pcBean, patientRoundingFragment);
+                        WebServiceReferences.webServiceClient.SetPatientDescription(pBean, patientRoundingFragment);
                         diagnosis.setText(pBean.getDiagnosis());
                         dialog1.dismiss();
                     }

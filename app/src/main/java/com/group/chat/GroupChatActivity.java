@@ -10472,7 +10472,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             public void onClick(View view) {
                 taskSorting(groupBean.getGroupId());
                 dialog1.dismiss();
-                tv_status.setText(statusMode);
+                tv_status.setText(statusMode.toUpperCase());
             }
         });
     }
@@ -10613,7 +10613,18 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             public void onClick(View view) {
                 taskSorting(groupBean.getGroupId());
                 dialog1.dismiss();
-                tv_assigned.setText(assignedMode);
+                if (assignedMode.equalsIgnoreCase("showall")) {
+                    tv_assigned.setText(" ALL");
+                } else if (assignedMode.equalsIgnoreCase("assignedtome")) {
+                    tv_assigned.setText(" TO ME");
+                } else if (assignedMode.equalsIgnoreCase("assignedbyme")) {
+                    tv_assigned.setText(" BY ME");
+                } else if (assignedMode.equalsIgnoreCase("unassigned")) {
+                    tv_assigned.setText(" UNASSIGNED");
+                } else if (assignedMode.equalsIgnoreCase("assigntoteam")) {
+                    tv_assigned.setText(" TO " +adapterCount+" MEMBERS" );
+                }
+//                tv_assigned.setText(assignedMode);
 
                 String addMembers = "";
                 for (UserBean bean : memberslist) {

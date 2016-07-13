@@ -7894,7 +7894,7 @@ public class XmlParser {
 					bean.setHospitalcourse(nodeMap.getNamedItem("hospitalcourse")
 							.getNodeValue());
 				if (nodeMap.getNamedItem("consults") != null)
-					bean.setPatientid(nodeMap.getNamedItem("consults")
+					bean.setConsults(nodeMap.getNamedItem("consults")
 							.getNodeValue());
 				response_list.add(bean);
 			}

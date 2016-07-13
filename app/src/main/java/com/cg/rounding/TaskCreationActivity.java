@@ -352,7 +352,7 @@ public class TaskCreationActivity extends Activity {
                                 remindTime.setText(todayDate.toString() + " " + correcttime);
                             }
                             else {
-                                remindTime.setText(dateDesc+" "+correcttime);
+                                remindTime.setText(dateDesc);
                             }
 
                         }
@@ -564,10 +564,10 @@ public class TaskCreationActivity extends Activity {
             }
             String[] time=timevalue.split(":");
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            Intent intent = new Intent(context, ScheduleManager.class);
+            Intent intent = new Intent(SingleInstance.mainContext, ScheduleManager.class);
             intent.putExtra("patientname", patient.getText().toString());
             intent.putExtra("Duedate",ed_dueDate.getText().toString());
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1,
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(SingleInstance.mainContext, 0,
                     intent, 0);
             Calendar cal  = Calendar.getInstance();
             cal.setTime(tmpDate);
@@ -585,7 +585,9 @@ public class TaskCreationActivity extends Activity {
             DBAccess.getdbHeler().insertorUpdatTaskDetails(taskbean);
             GroupChatActivity gChat = (GroupChatActivity) SingleInstance.contextTable
                     .get("groupchat");
-            gChat.refreshTask();
+            if(gChat!=null) {
+                gChat.refreshTask();
+            }
 
             finish();
         }
