@@ -54,6 +54,7 @@ public class OwnershipActivity extends Activity {
     Handler handler = new Handler();
     private ProgressDialog progress = null;
     MembersAdapter adapter;
+    private boolean islast=false;
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
@@ -121,12 +122,11 @@ public class OwnershipActivity extends Activity {
                             break;
                         }
                     }
-//                    ProfileBean pbean=DBAccess.getdbHeler().getProfileDetails(tmp);
-//                    uBean.setFirstname(pbean.getFirstname()+" "+pbean.getLastname());
                     GroupMemberBean bean=DBAccess.getdbHeler().getMemberDetails(groupid, tmp);
                     uBean.setRole(bean.getRole());
                     uBean.setAdmin(bean.getAdmin());
                     uBean.setBuddyName(tmp);
+                    uBean.setGroupid(gBean.getGroupId());
                     membersList.add(uBean);
                 }
             }
@@ -146,6 +146,10 @@ public class OwnershipActivity extends Activity {
                         status="0";
                     if(uBean.getRole()!=null)
                     role=uBean.getRole();
+                    uBean.setAdmin(status);
+                    UserBean ubean=(UserBean)membersList.get(membersList.size()-1);
+                    if(ubean.getBuddyName().equalsIgnoreCase(uBean.getBuddyName()))
+                        islast=true;
                     WebServiceReferences.webServiceClient.SetMemberRights(uBean.getBuddyName(), gBean.getGroupId(), status,
                             role, context);
                 }
@@ -381,6 +385,7 @@ public class OwnershipActivity extends Activity {
                         DBAccess.getdbHeler().insertorUpdateMemberDetails(bean);
                     }
                 }
+                if(islast)
                 finish();
             }else
                 showToast(result);

@@ -483,27 +483,29 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 
                         if (!groupBean.getOwnerName().equalsIgnoreCase(
                                 CallDispatcher.LoginUser)) {
-                            edit.setEnabled(false);
-                            edit.setBackgroundColor(context.getResources().getColor(R.color.black));
                             delete.setEnabled(false);
                             delete.setBackgroundColor(context.getResources().getColor(R.color.black));
-                            role.setEnabled(false);
-                            role.setBackgroundColor(context.getResources().getColor(R.color.black));
+                            ownership.setEnabled(false);
+                            ownership.setBackgroundColor(context.getResources().getColor(R.color.black));
+                            edit.setEnabled(false);
+                            edit.setBackgroundColor(context.getResources().getColor(R.color.black));
                         }
                         if(!(groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                                (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("0"))||
                                 roleAccessBean.getTaskmanagement()!=null && roleAccessBean.getTaskmanagement().equalsIgnoreCase("1"))){
                             newTask.setEnabled(false);
                             newTask.setBackgroundColor(context.getResources().getColor(R.color.black));
                         }
                         if(!(groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                                (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("0")) ||
                                 rolePatientManagementBean.getAdd()!=null && rolePatientManagementBean.getAdd().equalsIgnoreCase("1"))){
                             newPatient.setEnabled(false);
                             newPatient.setBackgroundColor(context.getResources().getColor(R.color.black));
                         }
                         if(!groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
                                 (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("0")) ){
-                            ownership.setEnabled(false);
-                            ownership.setBackgroundColor(context.getResources().getColor(R.color.black));
+                            role.setEnabled(false);
+                            role.setBackgroundColor(context.getResources().getColor(R.color.black));
                         }
                         edit.setOnClickListener(new OnClickListener() {
                             @Override
@@ -761,10 +763,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         }
         if(isRounding) {
             setDefault();
-            profile_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_members_white));
-            tv_profie.setTextColor(getResources().getColor(R.color.white));
-            view_profile.setVisibility(View.VISIBLE);
-            RoundingMember();
+            file_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_patients_white));
+            tv_file.setTextColor(getResources().getColor(R.color.white));
+            view_snazbox.setVisibility(View.VISIBLE);
+            PatientDetails();
         }
         profilechat.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -9270,7 +9272,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         plusBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                if (groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)||
+                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("0")) ||
                         (rolePatientManagementBean.getAdd() != null && rolePatientManagementBean.getAdd().equalsIgnoreCase("1"))) {
                     Intent intent = new Intent(context, RoundNewPatientActivity.class);
                     intent.putExtra("groupid", groupBean.getGroupId());
@@ -9314,6 +9317,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 int questionsCount;
                 if (groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("0"))||
                         (rolePatientManagementBean.getAdd() != null && rolePatientManagementBean.getAdd().equalsIgnoreCase("1"))) {
                 if(patientType.equalsIgnoreCase("mypatient"))
                  questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where groupid='"
@@ -9327,9 +9331,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     intent.putExtra("groupname", groupBean.getGroupName());
                     startActivity(intent);
                 } else
-                    showToast("Members already assigned and this patient is not assigned to you");
+                    showToast("Members already assigned to these patient ");
                 }else
-                    showToast("You have no access to create patient ");
+                    showToast("You have no access to assign members to these patient ");
                 return true;
             }
         });
@@ -9425,7 +9429,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         });
     }
 
-    private void RoundingMember() {
+    public void RoundingMember() {
+        setDefault();
+        profile_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_members_white));
+        tv_profie.setTextColor(getResources().getColor(R.color.white));
+        view_profile.setVisibility(View.VISIBLE);
         final LinearLayout content = (LinearLayout) findViewById(R.id.content);
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         content.removeAllViews();
@@ -9599,7 +9607,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         }
     }
 
-    private void MembersProcess() {
+    public void MembersProcess() {
         final LinearLayout content = (LinearLayout) findViewById(R.id.content);
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         content.removeAllViews();
@@ -9881,7 +9889,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         plusBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                if(groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)||
+                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("0")) ||
                         (roleAccessBean.getTaskmanagement()!=null && roleAccessBean.getTaskmanagement().equalsIgnoreCase("1"))) {
                     Intent intent = new Intent(context, TaskCreationActivity.class);
                     intent.putExtra("groupid", groupBean.getGroupId());
@@ -9898,11 +9907,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 TaskDetailsBean tBean = (TaskDetailsBean) taskAdapter.getItem(i);
-                Intent intent = new Intent(context, TaskCreationActivity.class);
-                intent.putExtra("groupid", tBean.getGroupid());
-                intent.putExtra("taskid", tBean.getTaskId());
-                intent.putExtra("isEdit", true);
-                SingleInstance.mainContext.startActivity(intent);
+                if(tBean.getTaskstatus().equalsIgnoreCase("0")) {
+                    Intent intent = new Intent(context, TaskCreationActivity.class);
+                    intent.putExtra("groupid", tBean.getGroupid());
+                    intent.putExtra("taskid", tBean.getTaskId());
+                    intent.putExtra("isEdit", true);
+                    SingleInstance.mainContext.startActivity(intent);
+                }
             }
         });
         tasklistView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {

@@ -1246,6 +1246,18 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
 
             }
             cancelDialog();
+            final GroupChatActivity gChat = (GroupChatActivity) SingleInstance.contextTable
+                    .get("groupchat");
+            if(gChat!=null)
+                handler.post(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        // TODO Auto-generated method stub
+                        gChat.RoundingMember();
+                    }
+                });
+
             finish();
         } else if (obj instanceof String) {
             showToast((String) obj);

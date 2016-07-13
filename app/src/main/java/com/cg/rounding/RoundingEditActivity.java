@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -50,6 +51,7 @@ public class RoundingEditActivity extends Activity {
 
     Handler handler = new Handler();
     private ProgressDialog progress = null;
+    private boolean isTitle=false;
 
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -66,6 +68,7 @@ public class RoundingEditActivity extends Activity {
         ImageView buddypic=(ImageView)findViewById(R.id.riv1);
         ImageView statusIcon=(ImageView)findViewById(R.id.imgstatus);
         final CheckBox ch=(CheckBox)findViewById(R.id.chbox1);
+        final ImageView title_img=(ImageView)findViewById(R.id.title_img);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -146,19 +149,20 @@ public class RoundingEditActivity extends Activity {
 
         CustomAdapter dataAdapter = new CustomAdapter(this, R.layout.memberrights, list);
         rights.setAdapter(dataAdapter);
-        rights.setThreshold(1);
+        rights.setThreshold(30);
         rights.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                    rights.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.input_arrow, 0);
-
+                if(charSequence.toString().equalsIgnoreCase("fellow")||charSequence.toString().equalsIgnoreCase("Attending")
+                        || charSequence.toString().equalsIgnoreCase("Resident") || charSequence.toString().equalsIgnoreCase("Chief Residence")
+                        || charSequence.toString().equalsIgnoreCase("Med Student"))
+                    rights.setEnabled(false);
+                else
+                    rights.setEnabled(true);
             }
-
             @Override
             public void afterTextChanged(Editable editable) {
             }
@@ -176,12 +180,21 @@ public class RoundingEditActivity extends Activity {
                         role, context);
             }
         });
-        rights.setOnClickListener(new View.OnClickListener() {
+        title_img.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                rights.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.up_arrow, 0);
-                rights.showDropDown();
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                if (isTitle) {
+                    isTitle = false;
+                    rights.dismissDropDown();
+                    title_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                } else {
+                    isTitle = true;
+                    title_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    rights.showDropDown();
+                }
             }
         });
     }
