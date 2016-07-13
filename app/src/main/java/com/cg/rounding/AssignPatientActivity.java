@@ -71,12 +71,15 @@ public class AssignPatientActivity extends Activity{
         fromMyPatient=getIntent().getBooleanExtra("fromMyPatient",false);
         header.setText(groupname);
         String strGetQry=null;
-        strGetQry="select * from patientdetails where (groupid='"
-                + groupid + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser + "%') or ( groupid='" + groupid + "' and assignedmembers='')";
+        if(GroupChatActivity.patientType.equalsIgnoreCase("mypatient"))
+        strGetQry="select * from patientdetails where groupid='"
+                + groupid + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser + "%'";
+
+        else
+            strGetQry="select * from patientdetails where groupid='" + groupid + "' and assignedmembers=''";
+
         PatientList=DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
-        int questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where groupid='"
-                + groupid + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser +"%'");
-        if(questionsCount>0){
+        if(GroupChatActivity.patientType.equalsIgnoreCase("mypatient")){
             unassign_lay.setVisibility(View.VISIBLE);
             assign.setText("ASSIGN PATIENTS TO");
             unassign.setText("UNASSIGN FROM ME");

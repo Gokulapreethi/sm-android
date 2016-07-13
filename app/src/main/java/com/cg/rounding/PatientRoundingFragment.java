@@ -593,17 +593,22 @@ public class PatientRoundingFragment extends Fragment {
                     } else if (title = true) {
                         holder.header_title.setVisibility(View.VISIBLE);
                         String cname1, cname2;
-                        cname1 = String.valueOf(bib.getFirstname().charAt(0));
 
-                        holder.header_title.setText(cname1.toUpperCase());
+                        if( bib.getFirstname()!=null) {
+                            cname1 = String.valueOf(bib.getFirstname().charAt(0));
+                            holder.header_title.setText(cname1.toUpperCase());
+                        }
 
                         if (i > 0) {
-                            final GroupBean groupbean1 = ContactsFragment.getGroupList().get(i - 1);
-                            cname2 = String.valueOf(groupbean1.getGroupName().charAt(0));
-                            if (cname1.equalsIgnoreCase(cname2)) {
-                                holder.header_title.setVisibility(View.GONE);
-                            } else {
-                                holder.header_title.setVisibility(View.VISIBLE);
+                            final BuddyInformationBean bean = ContactsFragment.getBuddyList().get(i - 1);
+                            if(bean.getFirstname()!=null && bib.getFirstname()!=null) {
+                                cname1 = String.valueOf(bib.getFirstname().charAt(0));
+                                cname2 = String.valueOf(bean.getFirstname().charAt(0));
+                                if (cname1.equalsIgnoreCase(cname2)) {
+                                    holder.header_title.setVisibility(View.GONE);
+                                } else {
+                                    holder.header_title.setVisibility(View.VISIBLE);
+                                }
                             }
 
                         }

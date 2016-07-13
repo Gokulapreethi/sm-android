@@ -119,7 +119,7 @@ public class SearchPeopleFragment extends Fragment {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                appMainActivity.removeFragments(searchPeopleFragment.newInstance(SingleInstance.mainContext));
+//                appMainActivity.removeFragments(searchPeopleFragment.newInstance(SingleInstance.mainContext));
                 ContactsFragment contactsFragment = ContactsFragment.getInstance(mainContext);
                 FragmentManager fragmentManager = SingleInstance.mainContext
                         .getSupportFragmentManager();
@@ -582,9 +582,9 @@ public class SearchPeopleFragment extends Fragment {
         _rootView =null;
         super.onDestroyView();
     }
-
     @Override
-public void onDestroy() {
+    public void onResume() {
+        super.onResume();
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -603,10 +603,8 @@ public void onDestroy() {
                 radioFemale.setChecked(false);
                 radioMale.setChecked(false);
             }
-            });
-        super.onDestroy();
-
-}
+        });
+    }
 
     public void notifySearchPeople(Object obj)
     {

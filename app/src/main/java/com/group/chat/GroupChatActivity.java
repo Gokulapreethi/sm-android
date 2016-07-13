@@ -9099,119 +9099,123 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     }
 
     public static Vector<BuddyInformationBean> getAdapterList(Vector<BuddyInformationBean> vectorBean) {
-        String status = null;
-        Log.i("AAAA", "group chat getAdapterList ");
         Vector<BuddyInformationBean> tempList = new Vector<BuddyInformationBean>();
-        if (ContactsFragment.SortType.equalsIgnoreCase("ONLINE")) {
-            Log.i("AAAA", "group chat getAdapterList online ");
-            Vector<BuddyInformationBean> newlist = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> onlinelist = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> individualList = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> pending = new Vector<BuddyInformationBean>();
-            tempList.clear();
-            for (BuddyInformationBean sortlistbean : vectorBean) {
-                sortlistbean.setHeader("NULL");
-                status = sortlistbean.getStatus();
-                String profilePic = "";
-                profilePic = DBAccess.getdbHeler().getProfilePic(
-                        sortlistbean.getName());
-                GroupBean gBean = DBAccess.getdbHeler()
-                        .getAllIndividualChatByBuddyName(
-                                CallDispatcher.LoginUser,
-                                sortlistbean.getName());
-                if (gBean.getLastMsg() != null
-                        && gBean.getLastMsg().equalsIgnoreCase("null")) {
-                    sortlistbean.setLastMessage(gBean.getLastMsg());
-                }
-                if (profilePic != null && !profilePic.contains("/COMMedia/")
-                        && profilePic.length() > 0) {
-                    profilePic = Environment.getExternalStorageDirectory()
-                            + "/COMMedia/" + profilePic;
-                }
-                if (profilePic != null) {
-                    sortlistbean.setProfile_picpath(profilePic);
-                }
-                if (!sortlistbean.isTitle()) {
-                    if (status.equalsIgnoreCase("new")) {
-                        newlist.add(sortlistbean);
-                    } else if (status.equalsIgnoreCase("Online")) {
-                        onlinelist.add(sortlistbean);
-                    } else if (status.equalsIgnoreCase("Pending")) {
-                        pending.add(sortlistbean);
+        try {
+            String status = null;
+            Log.i("AAAA", "group chat getAdapterList ");
+            if (ContactsFragment.SortType.equalsIgnoreCase("ONLINE")) {
+                Log.i("AAAA", "group chat getAdapterList online ");
+                Vector<BuddyInformationBean> newlist = new Vector<BuddyInformationBean>();
+                Vector<BuddyInformationBean> onlinelist = new Vector<BuddyInformationBean>();
+                Vector<BuddyInformationBean> individualList = new Vector<BuddyInformationBean>();
+                Vector<BuddyInformationBean> pending = new Vector<BuddyInformationBean>();
+                tempList.clear();
+                for (BuddyInformationBean sortlistbean : vectorBean) {
+                    sortlistbean.setHeader("NULL");
+                    status = sortlistbean.getStatus();
+                    String profilePic = "";
+                    profilePic = DBAccess.getdbHeler().getProfilePic(
+                            sortlistbean.getName());
+                    GroupBean gBean = DBAccess.getdbHeler()
+                            .getAllIndividualChatByBuddyName(
+                                    CallDispatcher.LoginUser,
+                                    sortlistbean.getName());
+                    if (gBean.getLastMsg() != null
+                            && gBean.getLastMsg().equalsIgnoreCase("null")) {
+                        sortlistbean.setLastMessage(gBean.getLastMsg());
+                    }
+                    if (profilePic != null && !profilePic.contains("/COMMedia/")
+                            && profilePic.length() > 0) {
+                        profilePic = Environment.getExternalStorageDirectory()
+                                + "/COMMedia/" + profilePic;
+                    }
+                    if (profilePic != null) {
+                        sortlistbean.setProfile_picpath(profilePic);
+                    }
+                    if (!sortlistbean.isTitle()) {
+                        if (status.equalsIgnoreCase("new")) {
+                            newlist.add(sortlistbean);
+                        } else if (status.equalsIgnoreCase("Online")) {
+                            onlinelist.add(sortlistbean);
+                        } else if (status.equalsIgnoreCase("Pending")) {
+                            pending.add(sortlistbean);
+                        }
                     }
                 }
-            }
 
-            Collections.sort(newlist, new BuddyListComparator());
-            tempList.addAll(newlist);
-            Collections.sort(pending, new BuddyListComparator());
-            tempList.addAll(pending);
-            Collections.sort(onlinelist, new BuddyListComparator());
-            tempList.addAll(onlinelist);
-
-            for (BuddyInformationBean bBean : tempList) {
-                individualList.add(bBean);
-            }
-            tempList.clear();
-
-            tempList.addAll(individualList);
-
-        } else if (ContactsFragment.SortType.equalsIgnoreCase("ALPH")) {
-            Log.i("AAAA", "group chat getAdapterList alpha ");
-            Vector<BuddyInformationBean> newlist = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> pending = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> numbers = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> individualList = new Vector<BuddyInformationBean>();
-            tempList.clear();
-            for (BuddyInformationBean sortlistbean : vectorBean) {
-                sortlistbean.setHeader("NULL");
-                status = sortlistbean.getStatus();
-                String profilePic = "";
-                profilePic = DBAccess.getdbHeler().getProfilePic(
-                        sortlistbean.getName());
-                GroupBean gBean = DBAccess.getdbHeler()
-                        .getAllIndividualChatByBuddyName(
-                                CallDispatcher.LoginUser,
-                                sortlistbean.getName());
-                if (gBean.getLastMsg() != null
-                        && gBean.getLastMsg().equalsIgnoreCase("null")) {
-                    sortlistbean.setLastMessage(gBean.getLastMsg());
-                }
-                if (profilePic != null && !profilePic.contains("/COMMedia/")
-                        && profilePic.length() > 0) {
-                    profilePic = Environment.getExternalStorageDirectory()
-                            + "/COMMedia/" + profilePic;
-                }
-                if (profilePic != null) {
-                    sortlistbean.setProfile_picpath(profilePic);
-                }
-                if (!sortlistbean.isTitle()) {
-                    if (status.equalsIgnoreCase("new")) {
-                        newlist.add(sortlistbean);
-                    } else if (status.equalsIgnoreCase("Pending")) {
-                        pending.add(sortlistbean);
-                    }else
-                        numbers.add(sortlistbean);
-                }
-            }
-            if(newlist.size()>0) {
-                newlist.get(0).setHeader("REQUEST");
+                Collections.sort(newlist, new BuddyListComparator());
                 tempList.addAll(newlist);
-            }
-            if(pending.size()>0) {
-                if (!(newlist.size() > 0)) {
-                    pending.get(0).setHeader("REQUEST");
-                }
+                Collections.sort(pending, new BuddyListComparator());
                 tempList.addAll(pending);
-            }
-            if (numbers.size() > 0) {
-                Collections.sort(numbers, new BuddyListComparator());
-                if(!ContactsFragment.getInstance(context).isazsort) {
-                    Collections.reverse(numbers);
-                }
-                tempList.addAll(numbers);
+                Collections.sort(onlinelist, new BuddyListComparator());
+                tempList.addAll(onlinelist);
 
+                for (BuddyInformationBean bBean : tempList) {
+                    individualList.add(bBean);
+                }
+                tempList.clear();
+
+                tempList.addAll(individualList);
+
+            } else if (ContactsFragment.SortType.equalsIgnoreCase("ALPH")) {
+                Log.i("AAAA", "group chat getAdapterList alpha ");
+                Vector<BuddyInformationBean> newlist = new Vector<BuddyInformationBean>();
+                Vector<BuddyInformationBean> pending = new Vector<BuddyInformationBean>();
+                Vector<BuddyInformationBean> numbers = new Vector<BuddyInformationBean>();
+                Vector<BuddyInformationBean> individualList = new Vector<BuddyInformationBean>();
+                tempList.clear();
+                for (BuddyInformationBean sortlistbean : vectorBean) {
+                    sortlistbean.setHeader("NULL");
+                    status = sortlistbean.getStatus();
+                    String profilePic = "";
+                    profilePic = DBAccess.getdbHeler().getProfilePic(
+                            sortlistbean.getName());
+                    GroupBean gBean = DBAccess.getdbHeler()
+                            .getAllIndividualChatByBuddyName(
+                                    CallDispatcher.LoginUser,
+                                    sortlistbean.getName());
+                    if (gBean.getLastMsg() != null
+                            && gBean.getLastMsg().equalsIgnoreCase("null")) {
+                        sortlistbean.setLastMessage(gBean.getLastMsg());
+                    }
+                    if (profilePic != null && !profilePic.contains("/COMMedia/")
+                            && profilePic.length() > 0) {
+                        profilePic = Environment.getExternalStorageDirectory()
+                                + "/COMMedia/" + profilePic;
+                    }
+                    if (profilePic != null) {
+                        sortlistbean.setProfile_picpath(profilePic);
+                    }
+                    if (!sortlistbean.isTitle()) {
+                        if (status.equalsIgnoreCase("new")) {
+                            newlist.add(sortlistbean);
+                        } else if (status.equalsIgnoreCase("Pending")) {
+                            pending.add(sortlistbean);
+                        } else
+                            numbers.add(sortlistbean);
+                    }
+                }
+                if (newlist.size() > 0) {
+                    newlist.get(0).setHeader("REQUEST");
+                    tempList.addAll(newlist);
+                }
+                if (pending.size() > 0) {
+                    if (!(newlist.size() > 0)) {
+                        pending.get(0).setHeader("REQUEST");
+                    }
+                    tempList.addAll(pending);
+                }
+                if (numbers.size() > 0) {
+                    Collections.sort(numbers, new BuddyListComparator());
+                    if (!ContactsFragment.getInstance(context).isazsort) {
+                        Collections.reverse(numbers);
+                    }
+                    tempList.addAll(numbers);
+
+                }
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
         return tempList;
@@ -9308,8 +9312,15 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         listViewPatient.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                int questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where (groupid='"
-                        + groupId + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser + "%') or ( groupid='" + groupId + "' and assignedmembers='')");
+                int questionsCount;
+                if (groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                        (rolePatientManagementBean.getAdd() != null && rolePatientManagementBean.getAdd().equalsIgnoreCase("1"))) {
+                if(patientType.equalsIgnoreCase("mypatient"))
+                 questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where groupid='"
+                        + groupId + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser + "%'");
+                else
+                    questionsCount=DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where groupid='" + groupId + "' and assignedmembers=''");
+
                 if (questionsCount > 0) {
                     Intent intent = new Intent(context, AssignPatientActivity.class);
                     intent.putExtra("groupid", groupId);
@@ -9317,6 +9328,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     startActivity(intent);
                 } else
                     showToast("Members already assigned and this patient is not assigned to you");
+                }else
+                    showToast("You have no access to create patient ");
                 return true;
             }
         });
@@ -9333,16 +9346,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-//                        PatientList.clear();
-//                        String strGetQry = "select * from patientdetails where groupid='"
-//                                + groupBean.getGroupId() + "'";
-//                        PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
-//                        Collections.sort(PatientList, new PatientNameComparator());
-//                        tempPatientList.clear();
-//                        tempPatientList = PatientList;
-//                        for (PatientDetailsBean bean : PatientList) {
-//                            bean.setIsFromPatienttab(true);
-//                        }
                         patientadapter = new RoundingPatientAdapter(context, R.layout.rouding_patient_row, PatientList);
                         listViewPatient.setAdapter(null);
                         listViewPatient.setAdapter(patientadapter);
@@ -9364,16 +9367,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-//                        PatientList.clear();
-//                        String strGetQry = "select * from patientdetails where groupid='"
-//                                + groupBean.getGroupId() + "'";
-//                        PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
-//                        Collections.sort(PatientList, new PatientLocationComparator());
-//                        tempPatientList.clear();
-//                        tempPatientList = PatientList;
-//                        for (PatientDetailsBean bean : PatientList) {
-//                            bean.setIsFromPatienttab(true);
-//                        }
                         patientadapter = new RoundingPatientAdapter(context, R.layout.rouding_patient_row, PatientList);
                         listViewPatient.setAdapter(null);
                         listViewPatient.setAdapter(patientadapter);
@@ -9395,16 +9388,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-//                        PatientList.clear();
-//                        String strGetQry = "select * from patientdetails where groupid='"
-//                                + groupBean.getGroupId() + "'";
-//                        PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
-//                        Collections.sort(PatientList, new PatientStatusComparator());
-//                        tempPatientList.clear();
-//                        tempPatientList = PatientList;
-//                        for (PatientDetailsBean bean : PatientList) {
-//                            bean.setIsFromPatienttab(true);
-//                        }
                         patientadapter = new RoundingPatientAdapter(context, R.layout.rouding_patient_row, PatientList);
                         listViewPatient.setAdapter(null);
                         listViewPatient.setAdapter(patientadapter);
@@ -9417,14 +9400,14 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         mypatients.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                patientType = "name";
+                patientType = "mypatient";
                 mypatients.setTextColor(getResources().getColor(R.color.white));
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
                         PatientList.clear();
                         String strGetQry = "select * from patientdetails where groupid='"
-                                + groupId + "' and assignedmembers='"+CallDispatcher.LoginUser+"'";
+                                + groupId + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser +"%'";
                         PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
                         Collections.sort(PatientList, new PatientStatusComparator());
                         tempPatientList.clear();

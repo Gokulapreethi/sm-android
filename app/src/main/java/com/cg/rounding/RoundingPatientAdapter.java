@@ -216,7 +216,7 @@ public class RoundingPatientAdapter extends ArrayAdapter<PatientDetailsBean> {
                 holder.header.setVisibility(View.VISIBLE);
 
                 String floor1,floor2;
-                if(GroupChatActivity.patientType.equalsIgnoreCase("name")) {
+                if(GroupChatActivity.patientType.equalsIgnoreCase("name") || GroupChatActivity.patientType.equalsIgnoreCase("mypatient")) {
                     floor1 = String.valueOf(pBean.getFirstname().charAt(0));
                     holder.headertext.setText(floor1.toUpperCase());
                 }else if(GroupChatActivity.patientType.equalsIgnoreCase("loc")) {

@@ -123,10 +123,12 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                     holder.tv_header_title.setVisibility(View.VISIBLE);
                     if(position>0){
                         BuddyInformationBean bib=contactList.get(position-1);
-                        if(String.valueOf(bib.getLastname().charAt(0)).equalsIgnoreCase(String.valueOf(buddyInformationBean.getLastname().charAt(0))))
-                            holder.tv_header_title.setVisibility(View.GONE);
-                        else
-                            holder.tv_header_title.setVisibility(View.VISIBLE);
+                        if(bib.getLastname()!=null && buddyInformationBean.getLastname()!=null) {
+                            if (String.valueOf(bib.getLastname().charAt(0)).equalsIgnoreCase(String.valueOf(buddyInformationBean.getLastname().charAt(0))))
+                                holder.tv_header_title.setVisibility(View.GONE);
+                            else
+                                holder.tv_header_title.setVisibility(View.VISIBLE);
+                        }
                     }
                     if(ContactsFragment.SortType.equalsIgnoreCase("ONLINE"))
                         holder.tv_header_title.setVisibility(View.GONE);
@@ -139,6 +141,7 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                     }
                     if (buddyInformationBean.getStatus()
                             .equalsIgnoreCase("new")) {
+                        ContactsFragment.swipeposition=1;
                         holder.contact_history.setVisibility(View.GONE);
                         holder.occupation.setText("invite recieved");
                         holder.status.setBackgroundResource(R.drawable.checkbox_default);
@@ -152,12 +155,8 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                                 // TODO Auto-generated method stub
                                 if (SingleInstance.mainContext
                                         .isNetworkConnectionAvailable()) {
-                                    String name = buddyInformationBean
-                                            .getName();
-                                    Toast.makeText(
-                                            context,
-                                            "Processing Request "
-                                                    + name,
+                                    String name = buddyInformationBean.getName();
+                                    Toast.makeText(context, "Processing Request " + name,
                                             Toast.LENGTH_SHORT).show();
 
                                     if (!WebServiceReferences.running) {
@@ -169,16 +168,12 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                                     }
 
                                     WebServiceReferences.webServiceClient
-                                            .acceptRejectPeople(
-                                                    CallDispatcher.LoginUser,
-                                                    name,
-                                                    "1", "",
-                                                    ContactsFragment
+                                            .acceptRejectPeople(CallDispatcher.LoginUser,
+                                                    name, "1", "", ContactsFragment
                                                             .getInstance(getContext()));
                                     showprogress();
                                 } else {
-                                    ContactsFragment
-                                            .getInstance(context)
+                                    ContactsFragment.getInstance(context)
                                             .showAlert1("Info",
                                                     "Check Internet Connection,Unable to Connect Server");
                                 }
@@ -203,36 +198,13 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                                 }
                             }
                         });
-
+                        if(buddyInformationBean.getFirstname()!=null && buddyInformationBean.getFirstname().length()>0)
                         holder.buddyName.setText(buddyInformationBean.getFirstname() + " " + buddyInformationBean.getLastname());
-
-                        holder.main_content.setOnClickListener(new OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(buddyInformationBean.getName());
-                                Log.i("AAAA", "Adapter ");
-                                if(pBean!=null && pBean.getUsername()!=null) {
-                                    Log.i("AAAA", "Adapter if");
-                                    RequestFragment requestFragment = RequestFragment.newInstance(SingleInstance.mainContext);
-                                    requestFragment.setBuddyName(buddyInformationBean.getName());
-                                    requestFragment.setRequest("accept");
-                                    FragmentManager fragmentManager = SingleInstance.mainContext
-                                            .getSupportFragmentManager();
-                                    fragmentManager.beginTransaction().replace(R.id.activity_main_content_fragment, requestFragment)
-                                            .commitAllowingStateLoss();
-                                }else {
-                                    Log.i("AAAA", "Adapter else");
-                                    WebServiceReferences.webServiceClient.GetAllProfile(
-                                            CallDispatcher.LoginUser, buddyInformationBean.getName(), ContactsFragment
-                                                    .getInstance(SingleInstance.mainContext));
-                                    RequestFragment requestFragment = RequestFragment.newInstance(SingleInstance.mainContext);
-                                    requestFragment.setBuddyName(buddyInformationBean.getName());
-                                    requestFragment.setRequest("accept");
-                                }
-                            }
-                        });
+                        else
+                            holder.buddyName.setText(buddyInformationBean.getName());
 
                     } else if (buddyInformationBean.getStatus().equalsIgnoreCase("pending")) {
+                        ContactsFragment.swipeposition=1;
                         holder.occupation.setText("invite sent");
                         holder.contact_history.setVisibility(View.GONE);
                         holder.inreq.setVisibility(View.VISIBLE);
@@ -265,34 +237,13 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                             }
                         });
 
-                        holder.buddyName.setText(buddyInformationBean.getFirstname() + " " + buddyInformationBean.getLastname());
-
-                        holder.main_content.setOnClickListener(new OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(buddyInformationBean.getName());
-                                if(pBean!=null && pBean.getUsername()!=null) {
-                                    Log.i("AAAA", "Adapter if");
-                                    RequestFragment requestFragment = RequestFragment.newInstance(SingleInstance.mainContext);
-                                    requestFragment.setBuddyName(buddyInformationBean.getName());
-                                    requestFragment.setRequest("cancel");
-                                    FragmentManager fragmentManager = SingleInstance.mainContext
-                                            .getSupportFragmentManager();
-                                    fragmentManager.beginTransaction().replace(R.id.activity_main_content_fragment, requestFragment)
-                                            .commitAllowingStateLoss();
-                                }else {
-                                    Log.i("AAAA", "Adapter else");
-                                    WebServiceReferences.webServiceClient.GetAllProfile(
-                                            CallDispatcher.LoginUser, buddyInformationBean.getName(), ContactsFragment
-                                                    .getInstance(SingleInstance.mainContext));
-                                    RequestFragment requestFragment = RequestFragment.newInstance(SingleInstance.mainContext);
-                                    requestFragment.setBuddyName(buddyInformationBean.getName());
-                                    requestFragment.setRequest("cancel");
-                                }
-                            }
-                        });
+                        if(buddyInformationBean.getFirstname()!=null && buddyInformationBean.getFirstname().length()>0)
+                            holder.buddyName.setText(buddyInformationBean.getFirstname() + " " + buddyInformationBean.getLastname());
+                        else
+                            holder.buddyName.setText(buddyInformationBean.getName());
 
                     } else {
+                        ContactsFragment.swipeposition=0;
                         holder.inreq.setVisibility(View.GONE);
                         if (!buddyInformationBean.getName().equalsIgnoreCase(
                                 CallDispatcher.LoginUser)) {
@@ -302,22 +253,10 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                                             R.drawable.icon_buddy_aoffline);
                                 }
 
-                            holder.buddyName.setText(buddyInformationBean.getFirstname() + " " + buddyInformationBean.getLastname());
-
-//                            holder.main_content.setOnClickListener(new OnClickListener() {
-//								@Override
-//								public void onClick(View v) {
-//									Intent intent = new Intent(SingleInstance.mainContext, GroupChatActivity.class);
-//									intent.putExtra("groupid", CallDispatcher.LoginUser
-//											+ buddyInformationBean.getName());
-//									intent.putExtra("isGroup", false);
-//                                    intent.putExtra("isReq", "C");
-//									intent.putExtra("buddy", buddyInformationBean.getName());
-//                                    intent.putExtra("buddystatus", buddyInformationBean.getStatus());
-//                                    intent.putExtra("nickname", buddyInformationBean.getFirstname()+" "+buddyInformationBean.getLastname());
-//									SingleInstance.mainContext.startActivity(intent);
-//								}
-//							});
+                            if(buddyInformationBean.getFirstname()!=null && buddyInformationBean.getFirstname().length()>0)
+                                holder.buddyName.setText(buddyInformationBean.getFirstname() + " " + buddyInformationBean.getLastname());
+                            else
+                                holder.buddyName.setText(buddyInformationBean.getName());
                             holder.occupation.setText(buddyInformationBean.getOccupation());
                             if (buddyInformationBean.getStatus().equalsIgnoreCase("online")) {
                                 holder.status.setBackgroundResource(R.drawable.online_icon);

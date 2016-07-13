@@ -180,6 +180,7 @@ public class ContactsFragment extends Fragment{
 	private String quotes = "\"";
 	public static String SortType="ALPH";
 	boolean searchClick = false;
+	public static int swipeposition;
 
 
 
@@ -394,10 +395,20 @@ public class ContactsFragment extends Fragment{
 					@Override
 					public void create(SwipeMenu menu) {
 						// Create different menus depending on the view type
-						createMenu(menu);
+						switch (menu.getViewType()) {
+							case 0:
+								Log.d("Swiselect", " case 0 : " + swipeposition);
+								createMenu1(menu);
+								break;
+							case 1:
+								Log.d("Swiselect", " case 1 : " + swipeposition);
+								createMenu2(menu);
+								break;
+
+						}
 
 					}
-					private void createMenu(SwipeMenu menu) {
+					private void createMenu1(SwipeMenu menu) {
 						SwipeMenuItem forwared = new SwipeMenuItem(mainContext);
 						forwared.setBackground(R.color.blue2);
 						forwared.setWidth(dp2px(90));
@@ -406,6 +417,10 @@ public class ContactsFragment extends Fragment{
 						forwared.setTitle("DELETE");
 						forwared.setTitleColor(Color.WHITE);
 						menu.addMenuItem(forwared);
+					}
+					private void createMenu2(SwipeMenu menu) {
+						SwipeMenuItem calllay = new SwipeMenuItem(mainContext);
+						menu.addMenuItem(calllay);
 					}
 				};
 				lv.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
@@ -435,17 +450,53 @@ public class ContactsFragment extends Fragment{
 					public void onItemClick(AdapterView<?> arg0, View arg1,
 											int position, long arg3) {
 						try {
-							BuddyInformationBean bean = ContactsFragment.contactAdapter
-									.getItem(position);
-							Intent intent = new Intent(SingleInstance.mainContext, GroupChatActivity.class);
-							intent.putExtra("groupid", CallDispatcher.LoginUser
-									+ bean.getName());
-							intent.putExtra("isGroup", false);
-							intent.putExtra("isReq", "C");
-							intent.putExtra("buddy", bean.getName());
-							intent.putExtra("buddystatus", bean.getStatus());
-							intent.putExtra("nickname", bean.getFirstname()+" "+bean.getLastname());
-							SingleInstance.mainContext.startActivity(intent);
+							BuddyInformationBean bean = contactAdapter.getItem(position);
+							Log.i("sss","status --------"+bean.getStatus());
+							if(bean.getStatus().equalsIgnoreCase("new")) {
+								ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(bean.getName());
+								if(pBean!=null && pBean.getUsername()!=null) {
+									RequestFragment requestFragment = RequestFragment.newInstance(SingleInstance.mainContext);
+									requestFragment.setBuddyName(bean.getName());
+									requestFragment.setRequest("accept");
+									FragmentManager fragmentManager = SingleInstance.mainContext
+											.getSupportFragmentManager();
+									fragmentManager.beginTransaction().replace(R.id.activity_main_content_fragment, requestFragment)
+											.commitAllowingStateLoss();
+								}else {
+									WebServiceReferences.webServiceClient.GetAllProfile(
+											CallDispatcher.LoginUser, bean.getName(), contactsFragment);
+									RequestFragment requestFragment = RequestFragment.newInstance(SingleInstance.mainContext);
+									requestFragment.setBuddyName(bean.getName());
+									requestFragment.setRequest("accept");
+								}
+							}else if(bean.getStatus().equalsIgnoreCase("pending")){
+								ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(bean.getName());
+								if(pBean!=null && pBean.getUsername()!=null) {
+									RequestFragment requestFragment = RequestFragment.newInstance(SingleInstance.mainContext);
+									requestFragment.setBuddyName(bean.getName());
+									requestFragment.setRequest("cancel");
+									FragmentManager fragmentManager = SingleInstance.mainContext
+											.getSupportFragmentManager();
+									fragmentManager.beginTransaction().replace(R.id.activity_main_content_fragment, requestFragment)
+											.commitAllowingStateLoss();
+								}else {
+									WebServiceReferences.webServiceClient.GetAllProfile(
+											CallDispatcher.LoginUser, bean.getName(), contactsFragment);
+									RequestFragment requestFragment = RequestFragment.newInstance(SingleInstance.mainContext);
+									requestFragment.setBuddyName(bean.getName());
+									requestFragment.setRequest("cancel");
+								}
+							}else {
+								Intent intent = new Intent(SingleInstance.mainContext, GroupChatActivity.class);
+								intent.putExtra("groupid", CallDispatcher.LoginUser
+										+ bean.getName());
+								intent.putExtra("isGroup", false);
+								intent.putExtra("isReq", "C");
+								intent.putExtra("buddy", bean.getName());
+								intent.putExtra("buddystatus", bean.getStatus());
+								intent.putExtra("nickname", bean.getFirstname() + " " + bean.getLastname());
+								SingleInstance.mainContext.startActivity(intent);
+							}
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
