@@ -7410,7 +7410,7 @@ public class DBAccess extends SQLiteOpenHelper {
                     finalGCList.add(gcBean);
                 }else if (gcBean.getSubCategory().equalsIgnoreCase("Gu")) {
                     finalGCList.add(gcBean);
-                }else if(gcBean.getSubCategory().equalsIgnoreCase("gp") || gcBean.getSubCategory().equalsIgnoreCase("gprb_r")){
+                }else if(gcBean.getSubCategory().equalsIgnoreCase("gp") || gcBean.getSubCategory().equalsIgnoreCase("gp_r")){
 					finalGCList.add(gcBean);
 				}
 				else

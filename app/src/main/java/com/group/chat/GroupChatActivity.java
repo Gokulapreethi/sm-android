@@ -2462,14 +2462,14 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             gcBean1.setReplied("reply");
                         }
                     }
-                }else if (spBean != null && spBean.getSubcategory() != null && spBean.getSubcategory().equalsIgnoreCase("GPRB_R")) {
+                }else if (spBean != null && spBean.getSubcategory() != null && spBean.getSubcategory().equalsIgnoreCase("gp_r")) {
                     if(privateParentID!=null)
                     gcBean.setParentId(privateParentID);
-                    gcBean.setReply("GPRB_R");
+                    gcBean.setReply("gp_r");
                     for (int i = 0; i < chatList.size(); i++) {
                         GroupChatBean gcBean1 = chatList.get(i);
                         if (gcBean1.getParentId()!=null&&gcBean1.getParentId().equalsIgnoreCase(gcBean.getParentId())) {
-                            gcBean1.setReply("GPRB_R");
+                            gcBean1.setReply("gp_r");
 //                            int row = DBAccess.getdbHeler(
 //                                    SipNotificationListener.getCurrentContext())
 //                                    .updatePrivateReply(gcBean1);
@@ -5685,7 +5685,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         if (gcBean.getSubCategory() != null) {
                             if (gcBean.getSubCategory().equalsIgnoreCase("gp")) {
                                 // deadLineReply.setVisibility(View.GONE);
-                                if(gcBean.getReply()!=null && (gcBean.getReply().equalsIgnoreCase("GPRB_R") || gcBean.getReply().equalsIgnoreCase("gp"))){
+                                if(gcBean.getReply()!=null && (gcBean.getReply().equalsIgnoreCase("gp_r") || gcBean.getReply().equalsIgnoreCase("gp"))){
                                     btn_private.setVisibility(View.GONE);
                                 }else {
                                     tv_user.setText(gcBean.getFrom());
@@ -5699,7 +5699,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     deadlineReplyText.setVisibility(View.GONE);
                                     btn_private.setTag(gcBean);
                                 }
-                            }else if(gcBean.getSubCategory()!=null && gcBean.getSubCategory().equalsIgnoreCase("GPRB_R")){
+                            }else if(gcBean.getSubCategory()!=null && gcBean.getSubCategory().equalsIgnoreCase("gp_r")){
 //
                             }else if (gcBean.getSubCategory().equalsIgnoreCase(
                                     "gs")) {
@@ -11943,7 +11943,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         Log.i("privaterpl","parentID-->"+gcBean1.getParentId());
         privateParentID=gcBean1.getParentId();
         privateReply_username=gcBean1.getFrom();
-        sendSpecialMessage("GPRB_R", gcBean1.getFrom());
+        sendSpecialMessage("gp_r", gcBean1.getFrom());
         int row = DBAccess.getdbHeler(
                 SipNotificationListener.getCurrentContext())
                 .updateChatReply(gcBean1);
