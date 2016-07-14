@@ -56,11 +56,11 @@ public class ScheduleManager extends BroadcastReceiver {
                 .setNegativeButton("DONE", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         try {
-                            if (isLogout) {
+//                            if (isLogout) {
 //                                appMainActivity.showprogress();
 //                                ((AppMainActivity) SingleInstance.contextTable
 //                                        .get("MAIN")).logout(true);
-                            }
+//                            }
                         } catch (Exception e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();

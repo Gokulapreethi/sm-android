@@ -138,7 +138,7 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 			}
 
 
-				if (groupBean.getMessageCount() > 0) {
+				if (groupBean.getMessageCount() > 0 && !groupBean.getStatus().equalsIgnoreCase("request")) {
 					holder.contact_history.setVisibility(View.VISIBLE);
 				} else {
 					holder.contact_history.setVisibility(View.GONE);

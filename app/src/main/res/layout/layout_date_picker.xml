@@ -55,7 +55,7 @@
                     android:id="@+id/picker_year"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1" />
+                    android:layout_weight="1.2" />
 
                 <com.cg.DatePicker.LoopView
                     android:id="@+id/picker_month"

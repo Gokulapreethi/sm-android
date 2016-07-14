@@ -564,22 +564,25 @@ public class TaskCreationActivity extends Activity {
             }
             String[] time=timevalue.split(":");
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            Intent intent = new Intent(SingleInstance.mainContext, ScheduleManager.class);
+            Intent intent = new Intent(context, ScheduleManager.class);
             intent.putExtra("patientname", patient.getText().toString());
             intent.putExtra("Duedate",ed_dueDate.getText().toString());
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(SingleInstance.mainContext, 0,
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1,
                     intent, 0);
             Calendar cal  = Calendar.getInstance();
             cal.setTime(tmpDate);
 
             cal.set(Calendar.HOUR, Integer.parseInt(time[0]));
             cal.set(Calendar.MINUTE, Integer.parseInt(time[1]));
+            Log.i("Calender", "value0" + Integer.parseInt(time[0]));
+            Log.i("Calender","value1"+Integer.parseInt(time[1]));
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
                 Log.i("schedulemanager", "build version kitkat and below");
                 alarmManager.set(AlarmManager.RTC_WAKEUP,cal.getTimeInMillis(),pendingIntent);
             } else {
                 Log.i("schedulemanager", "build version kitkat above");
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+                Log.i("Calender", "value2" + cal.getTimeInMillis());
             }
             taskbean.setTaskId(result[0]);
             DBAccess.getdbHeler().insertorUpdatTaskDetails(taskbean);

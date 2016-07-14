@@ -142,7 +142,7 @@
     <string name="choose_existing_audio1">Choose the existing audio</string>
     <string name="audio_note_picker_screen1">Audio note picker screen</string>
     <string name="record_video">Record video</string>
-    <string name="choose_existing_video1">Choose the existing video</string>
+    <string name="choose_existing_video1">Choose from library</string>
     <string name="video_note_picker_screen1">Video note picker screen</string>
     <string name="add_photo">Add photo !</string>
     <string name="take_photo">Take photo</string>
@@ -315,8 +315,8 @@
     
     <string name="is_offline">is offline</string>
     <string name="stealth">Stealth</string>
-    <string name="open_camera">Open Camera</string>
-    <string name="select_from_gallery">Choose from gallery</string>
+    <string name="open_camera">Take Photo</string>
+    <string name="select_from_gallery">Choose from library</string>
     <string name="offline">Offline</string>
     <string name="make_your_selection">Make your selection</string>
     

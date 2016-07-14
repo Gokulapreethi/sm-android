@@ -180,7 +180,7 @@ public class ChatTemplateActivity extends Activity {
         Button cancel=(Button)dialog1.findViewById(R.id.cancel);
         Vector<chattemplatebean> templist=DBAccess.getdbHeler(context).getChatTemplates();
         chattemplatebean cBean=new chattemplatebean();
-        cBean.setTempletmessage("Add New");
+        cBean.setTempletmessage(" ");
         templist.add(cBean);
         chattemplateAdapter = new ChatListtemplateAdpater(ChatTemplateActivity.this, templist);
         chatlist.setAdapter(chattemplateAdapter);
