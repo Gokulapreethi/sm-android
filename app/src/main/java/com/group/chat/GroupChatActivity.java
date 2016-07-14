@@ -491,13 +491,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             edit.setBackgroundColor(context.getResources().getColor(R.color.black));
                         }
                         if(!(groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
-                                (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("0"))||
+                                (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1"))||
                                 roleAccessBean.getTaskmanagement()!=null && roleAccessBean.getTaskmanagement().equalsIgnoreCase("1"))){
                             newTask.setEnabled(false);
                             newTask.setBackgroundColor(context.getResources().getColor(R.color.black));
                         }
                         if(!(groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
-                                (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("0")) ||
+                                (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1")) ||
                                 rolePatientManagementBean.getAdd()!=null && rolePatientManagementBean.getAdd().equalsIgnoreCase("1"))){
                             newPatient.setEnabled(false);
                             newPatient.setBackgroundColor(context.getResources().getColor(R.color.black));
@@ -9273,7 +9273,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             @Override
             public void onClick(View view) {
                 if (groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)||
-                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("0")) ||
+                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1")) ||
                         (rolePatientManagementBean.getAdd() != null && rolePatientManagementBean.getAdd().equalsIgnoreCase("1"))) {
                     Intent intent = new Intent(context, RoundNewPatientActivity.class);
                     intent.putExtra("groupid", groupBean.getGroupId());
@@ -9317,7 +9317,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 int questionsCount;
                 if (groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
-                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("0"))||
+                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1"))||
                         (rolePatientManagementBean.getAdd() != null && rolePatientManagementBean.getAdd().equalsIgnoreCase("1"))) {
                 if(patientType.equalsIgnoreCase("mypatient"))
                  questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where groupid='"
@@ -9890,7 +9890,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             @Override
             public void onClick(View view) {
                 if(groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)||
-                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("0")) ||
+                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1")) ||
                         (roleAccessBean.getTaskmanagement()!=null && roleAccessBean.getTaskmanagement().equalsIgnoreCase("1"))) {
                     Intent intent = new Intent(context, TaskCreationActivity.class);
                     intent.putExtra("groupid", groupBean.getGroupId());
@@ -9907,7 +9907,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 TaskDetailsBean tBean = (TaskDetailsBean) taskAdapter.getItem(i);
-                if(tBean.getTaskstatus().equalsIgnoreCase("0")) {
+                if(groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)&&
+                        tBean.getTaskstatus().equalsIgnoreCase("0")) {
                     Intent intent = new Intent(context, TaskCreationActivity.class);
                     intent.putExtra("groupid", tBean.getGroupid());
                     intent.putExtra("taskid", tBean.getTaskId());

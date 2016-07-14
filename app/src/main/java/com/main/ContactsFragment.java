@@ -458,6 +458,7 @@ public class ContactsFragment extends Fragment{
 									RequestFragment requestFragment = RequestFragment.newInstance(SingleInstance.mainContext);
 									requestFragment.setBuddyName(bean.getName());
 									requestFragment.setRequest("accept");
+									requestFragment.setFrom(false);
 									FragmentManager fragmentManager = SingleInstance.mainContext
 											.getSupportFragmentManager();
 									fragmentManager.beginTransaction().replace(R.id.activity_main_content_fragment, requestFragment)
@@ -468,6 +469,7 @@ public class ContactsFragment extends Fragment{
 									RequestFragment requestFragment = RequestFragment.newInstance(SingleInstance.mainContext);
 									requestFragment.setBuddyName(bean.getName());
 									requestFragment.setRequest("accept");
+									requestFragment.setFrom(false);
 								}
 							}else if(bean.getStatus().equalsIgnoreCase("pending")){
 								ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(bean.getName());
@@ -475,6 +477,7 @@ public class ContactsFragment extends Fragment{
 									RequestFragment requestFragment = RequestFragment.newInstance(SingleInstance.mainContext);
 									requestFragment.setBuddyName(bean.getName());
 									requestFragment.setRequest("cancel");
+									requestFragment.setFrom(false);
 									FragmentManager fragmentManager = SingleInstance.mainContext
 											.getSupportFragmentManager();
 									fragmentManager.beginTransaction().replace(R.id.activity_main_content_fragment, requestFragment)
@@ -485,6 +488,7 @@ public class ContactsFragment extends Fragment{
 									RequestFragment requestFragment = RequestFragment.newInstance(SingleInstance.mainContext);
 									requestFragment.setBuddyName(bean.getName());
 									requestFragment.setRequest("cancel");
+									requestFragment.setFrom(false);
 								}
 							}else {
 								Intent intent = new Intent(SingleInstance.mainContext, GroupChatActivity.class);

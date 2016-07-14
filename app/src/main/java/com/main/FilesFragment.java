@@ -283,6 +283,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 				View view = layoutInflater.inflate(R.layout.files_list, content);
 				getlist = 0;
 				final RelativeLayout rl_file=(RelativeLayout)view.findViewById(R.id.rl_file);
+				final ImageView file_img=(ImageView)view.findViewById(R.id.file_img);
 				final TextView tv_file=(TextView)view.findViewById(R.id.tv_file);
 				final TextView alpha_sort=(TextView)view.findViewById(R.id.alpha_sort);
 				final TextView date_sort=(TextView)view.findViewById(R.id.date_sort);
@@ -479,15 +480,19 @@ public class FilesFragment extends Fragment implements OnClickListener {
 						if(text.contains("a")) {
 							rl_file.setVisibility(View.VISIBLE);
 							tv_file.setText("Audio Files");
+							file_img.setBackgroundResource(R.drawable.audio_p);
 						}else if(text.contains("p")) {
 							rl_file.setVisibility(View.VISIBLE);
 							tv_file.setText("Photo Files");
+							file_img.setBackgroundResource(R.drawable.photo_p);
 						}else if(text.contains("v")) {
 							rl_file.setVisibility(View.VISIBLE);
 							tv_file.setText("Video Files");
+							file_img.setBackgroundResource(R.drawable.video_p);
 						}else{
 							rl_file.setVisibility(View.VISIBLE);
 							tv_file.setText("Other Files");
+							file_img.setBackgroundResource(R.drawable.other_p);
 						}
 						if(text.length()==0)
 							rl_file.setVisibility(View.GONE);

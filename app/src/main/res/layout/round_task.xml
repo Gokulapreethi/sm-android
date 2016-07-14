@@ -75,7 +75,7 @@
             android:layout_marginBottom="20dp"
             android:textSize="18sp"
             android:layout_marginRight="20dp"
-            android:src="@drawable/button_photo"
+            android:src="@drawable/floating_plus_green"
             android:layout_gravity="right" />
 
     </LinearLayout>

@@ -247,26 +247,25 @@ public class PatientRoundingFragment extends Fragment {
                     }
                 });
                 if (!(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)||
-                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("0")) ||
+                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1")) ||
                         rolePatientManagementBean.getModify() != null && rolePatientManagementBean.getModify().equalsIgnoreCase("1"))) {
                     assign.setEnabled(false);
                     assign.setBackgroundColor(mainContext.getResources().getColor(R.color.black));
                 }
                 if (!(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
-                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("0"))||
-                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("0"))||
+                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1"))||
                         rolePatientManagementBean.getDischarge() != null && rolePatientManagementBean.getDischarge().equalsIgnoreCase("1"))) {
                     dischargePatient.setEnabled(false);
                     dischargePatient.setBackgroundColor(mainContext.getResources().getColor(R.color.black));
                 }
                 if (!(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
-                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("0"))||
+                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1"))||
                         rolePatientManagementBean.getDelete() != null && rolePatientManagementBean.getDelete().equalsIgnoreCase("1"))) {
                     deletePatient.setEnabled(false);
                     deletePatient.setBackgroundColor(mainContext.getResources().getColor(R.color.black));
                 }
                 if (!(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
-                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("0"))||
+                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1"))||
                         roleAccessBean.getTaskmanagement() != null && roleAccessBean.getTaskmanagement().equalsIgnoreCase("1"))) {
 //                    if(!(memberbean.getRole().equalsIgnoreCase(roleTaskMgtBean.getTattending())
 //                            || memberbean.getRole().equalsIgnoreCase(roleTaskMgtBean.getTchiefresident()) ||
@@ -855,7 +854,7 @@ public class PatientRoundingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
-                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("0"))||
+                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1"))||
                         (roleAccessBean.getTaskmanagement()!=null && roleAccessBean.getTaskmanagement().equalsIgnoreCase("1"))) {
                     Intent intent = new Intent(mainContext, TaskCreationActivity.class);
                     intent.putExtra("groupid", gBean.getGroupId());
@@ -892,7 +891,8 @@ public class PatientRoundingFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 TaskDetailsBean tBean = (TaskDetailsBean) taskAdapter.getItem(i);
-                if (tBean.getTaskstatus().equalsIgnoreCase("0")) {
+                if(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)&&
+                        tBean.getTaskstatus().equalsIgnoreCase("0")) {
                     Intent intent = new Intent(SingleInstance.mainContext, TaskCreationActivity.class);
                     intent.putExtra("groupid", tBean.getGroupid());
                     intent.putExtra("taskid", tBean.getTaskId());
@@ -945,7 +945,8 @@ public class PatientRoundingFragment extends Fragment {
             public void onClick(View v) {
 
                 if (!Edit) {
-                    if (gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+                    if (gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                            (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1"))) {
                         edit_diagnosis.setVisibility(View.VISIBLE);
                         edit_medications.setVisibility(View.VISIBLE);
                         edit_tests.setVisibility(View.VISIBLE);

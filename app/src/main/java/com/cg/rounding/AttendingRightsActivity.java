@@ -3,6 +3,7 @@ package com.cg.rounding;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -107,6 +109,187 @@ public class AttendingRightsActivity extends Activity {
             title.setText("RESIDENT RIGHTS");
         else if(Role.equalsIgnoreCase("medical student"))
             title.setText("MEDICAL STUDENT RIGHTS");
+
+        ch_add.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    ch_add.setTextColor(Color.parseColor("#458EDB"));
+                else
+                    ch_add.setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
+        ch_modify.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    ch_modify.setTextColor(Color.parseColor("#458EDB"));
+                else
+                    ch_modify.setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
+        ch_delete.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    ch_delete.setTextColor(Color.parseColor("#458EDB"));
+                else
+                    ch_delete.setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
+        ch_discharge.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    ch_discharge.setTextColor(Color.parseColor("#458EDB"));
+                else
+                    ch_discharge.setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
+        ch_status.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    ch_status.setTextColor(Color.parseColor("#458EDB"));
+                else
+                    ch_status.setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
+        ch_diagnosis.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    ch_diagnosis.setTextColor(Color.parseColor("#458EDB"));
+                else
+                    ch_diagnosis.setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
+        ch_test.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    ch_test.setTextColor(Color.parseColor("#458EDB"));
+                else
+                    ch_test.setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
+        ch_hospital.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    ch_hospital.setTextColor(Color.parseColor("#458EDB"));
+                else
+                    ch_hospital.setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
+        ch_notes.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    ch_notes.setTextColor(Color.parseColor("#458EDB"));
+                else
+                    ch_notes.setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
+        ch_consults.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    ch_consults.setTextColor(Color.parseColor("#458EDB"));
+                else
+                    ch_consults.setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
+        ch_tmattending.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    ch_tmattending.setTextColor(Color.parseColor("#458EDB"));
+                else
+                    ch_tmattending.setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
+        ch_tmfellow.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    ch_tmfellow.setTextColor(Color.parseColor("#458EDB"));
+                else
+                    ch_tmfellow.setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
+        ch_tmchief.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    ch_tmchief.setTextColor(Color.parseColor("#458EDB"));
+                else
+                    ch_tmchief.setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
+        ch_tmresident.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    ch_tmresident.setTextColor(Color.parseColor("#458EDB"));
+                else
+                    ch_tmresident.setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
+        ch_tmmedstudent.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    ch_tmmedstudent.setTextColor(Color.parseColor("#458EDB"));
+                else
+                    ch_tmmedstudent.setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
+        ch_attending.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    ch_attending.setTextColor(Color.parseColor("#458EDB"));
+                else
+                    ch_attending.setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
+        ch_fellow.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    ch_fellow.setTextColor(Color.parseColor("#458EDB"));
+                else
+                    ch_fellow.setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
+        ch_chief.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    ch_chief.setTextColor(Color.parseColor("#458EDB"));
+                else
+                    ch_chief.setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
+        ch_resident.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    ch_resident.setTextColor(Color.parseColor("#458EDB"));
+                else
+                    ch_resident.setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
+        ch_medstudent.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    ch_medstudent.setTextColor(Color.parseColor("#458EDB"));
+                else
+                    ch_medstudent.setTextColor(Color.parseColor("#ffffff"));
+            }
+        });
         final RoleAccessBean rBean=DBAccess.getdbHeler().getRoleAccessDetails(groupId,Role);
         if(rBean!=null){
             if(rBean.getPatientmanagement()!=null )
@@ -340,14 +523,15 @@ public class AttendingRightsActivity extends Activity {
         }
 
 
-        ch_pm.setOnClickListener(new View.OnClickListener() {
+        ch_pm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                if (ch_pm.isChecked()) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
                     ch_add.setEnabled(true);
                     ch_modify.setEnabled(true);
                     ch_delete.setEnabled(true);
                     ch_discharge.setEnabled(true);
+                    ch_pm.setTextColor(Color.parseColor("#458EDB"));
                 } else {
                     ch_add.setEnabled(false);
                     ch_modify.setEnabled(false);
@@ -357,19 +541,21 @@ public class AttendingRightsActivity extends Activity {
                     ch_modify.setChecked(false);
                     ch_delete.setChecked(false);
                     ch_discharge.setChecked(false);
+                    ch_pm.setTextColor(Color.parseColor("#ffffff"));
                 }
             }
         });
-        ch_er.setOnClickListener(new View.OnClickListener() {
+        ch_er.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                if(ch_er.isChecked()) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
                     ch_status.setEnabled(true);
                     ch_diagnosis.setEnabled(true);
                     ch_test.setEnabled(true);
                     ch_hospital.setEnabled(true);
                     ch_notes.setEnabled(true);
                     ch_consults.setEnabled(true);
+                    ch_er.setTextColor(Color.parseColor("#458EDB"));
                 } else {
                     ch_status.setEnabled(false);
                     ch_status.setChecked(false);
@@ -383,19 +569,21 @@ public class AttendingRightsActivity extends Activity {
                     ch_notes.setChecked(false);
                     ch_consults.setEnabled(false);
                     ch_consults.setChecked(false);
+                    ch_er.setTextColor(Color.parseColor("#ffffff"));
                 }
 
             }
         });
-        ch_cv.setOnClickListener(new View.OnClickListener() {
+        ch_cv.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                if(ch_cv.isChecked()) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
                     ch_attending.setEnabled(true);
                     ch_fellow.setEnabled(true);
                     ch_chief.setEnabled(true);
                     ch_resident.setEnabled(true);
                     ch_medstudent.setEnabled(true);
+                    ch_cv.setTextColor(Color.parseColor("#458EDB"));
                 } else {
                     ch_attending.setEnabled(false);
                     ch_fellow.setEnabled(false);
@@ -407,18 +595,20 @@ public class AttendingRightsActivity extends Activity {
                     ch_chief.setChecked(false);
                     ch_resident.setChecked(false);
                     ch_medstudent.setChecked(false);
+                    ch_cv.setTextColor(Color.parseColor("#ffffff"));
                 }
             }
         });
-        ch_tm.setOnClickListener(new View.OnClickListener() {
+        ch_tm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                if(ch_tm.isChecked()) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
                     ch_tmattending.setEnabled(true);
                     ch_tmfellow.setEnabled(true);
                     ch_tmchief.setEnabled(true);
                     ch_tmresident.setEnabled(true);
                     ch_tmmedstudent.setEnabled(true);
+                    ch_tm.setTextColor(Color.parseColor("#458EDB"));
                 } else {
                     ch_tmattending.setEnabled(false);
                     ch_tmfellow.setEnabled(false);
@@ -430,6 +620,7 @@ public class AttendingRightsActivity extends Activity {
                     ch_tmchief.setChecked(false);
                     ch_tmresident.setChecked(false);
                     ch_tmmedstudent.setChecked(false);
+                    ch_tm.setTextColor(Color.parseColor("#ffffff"));
                 }
             }
         });

@@ -190,6 +190,7 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                                         .isNetworkConnectionAvailable()) {
                                     RequestFragment requestFragment = RequestFragment.newInstance(SingleInstance.mainContext);
                                     requestFragment.reject(buddyInformationBean.getName());
+                                    requestFragment.setFrom(false);
                                 } else {
                                     ContactsFragment
                                             .getInstance(context)

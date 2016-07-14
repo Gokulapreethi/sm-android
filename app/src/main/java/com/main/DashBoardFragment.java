@@ -603,6 +603,7 @@ public class DashBoardFragment extends Fragment {
                                         if (notifyBean.getNotifttype().equalsIgnoreCase("C")) {
 //                                            appMainActivity.historyfragment();
                                         } else if (notifyBean.getNotifttype().equalsIgnoreCase("I")) {
+                                            rl_notify.setVisibility(View.GONE);
                                             if(notifyBean.getCategory().equalsIgnoreCase("G")){
                                                 Intent intent = new Intent(mainContext,
                                                         GroupChatActivity.class);

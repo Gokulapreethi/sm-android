@@ -101,14 +101,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/ch_pm"
+                        android:text="  Patient Management"
+                        android:textColor="@color/white"
                         android:button="@drawable/checkbok_selector"/>
                     <TextView
-                        android:text="Patient Management"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/white"/>
+                        android:layout_marginLeft="10dp"/>
                 </LinearLayout>
                 <TextView
                     android:text="Members can take the following actions:"
@@ -126,15 +126,10 @@
                         android:id="@+id/ch_add"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="  Add"
+                        android:textColor="@color/grey3"
                         android:button="@drawable/checkbok_selector"
                         android:layout_marginLeft="30dp"/>
-                    <TextView
-                        android:text="Add"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey3"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -145,15 +140,10 @@
                         android:id="@+id/ch_modify"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="  Modify"
+                        android:textColor="@color/grey3"
                         android:button="@drawable/checkbok_selector"
                         android:layout_marginLeft="30dp"/>
-                    <TextView
-                        android:text="Modify"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey3"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -164,15 +154,10 @@
                         android:id="@+id/ch_delete"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="  Delete"
+                        android:textColor="@color/grey3"
                         android:button="@drawable/checkbok_selector"
                         android:layout_marginLeft="30dp"/>
-                    <TextView
-                        android:text="Delete"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey3"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -181,17 +166,12 @@
                     android:layout_margin="10dp">
                     <CheckBox
                         android:id="@+id/ch_discharge"
+                        android:text="  Discharge"
+                        android:textColor="@color/grey3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:button="@drawable/checkbok_selector"
                         android:layout_marginLeft="30dp"/>
-                    <TextView
-                        android:text="Discharge"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey3"/>
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
@@ -206,16 +186,11 @@
                     android:layout_margin="10dp">
                     <CheckBox
                         android:id="@+id/ch_er"
+                        android:text="  Edit Rounding Form"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/white"
                         android:button="@drawable/checkbok_selector"/>
-                    <TextView
-                        android:text="Edit Rounding Form"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/white"/>
                 </LinearLayout>
                 <TextView
                     android:text="Members can edit the following fields in the Rounding Form:"
@@ -233,15 +208,10 @@
                         android:id="@+id/ch_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="  Status"
+                        android:textColor="@color/grey3"
                         android:button="@drawable/checkbok_selector"
                         android:layout_marginLeft="30dp"/>
-                    <TextView
-                        android:text="Status"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey3"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -252,15 +222,10 @@
                         android:id="@+id/ch_diagnosis"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="  Diagnosis"
+                        android:textColor="@color/grey3"
                         android:button="@drawable/checkbok_selector"
                         android:layout_marginLeft="30dp"/>
-                    <TextView
-                        android:text="Diagnosis"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey3"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -271,15 +236,10 @@
                         android:id="@+id/ch_test"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="  Tests &amp; Vitals"
+                        android:textColor="@color/grey3"
                         android:button="@drawable/checkbok_selector"
                         android:layout_marginLeft="30dp"/>
-                    <TextView
-                        android:text="Tests &amp; Vitals"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey3"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -290,15 +250,10 @@
                         android:id="@+id/ch_hospital"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="  Hospital Course"
+                        android:textColor="@color/grey3"
                         android:button="@drawable/checkbok_selector"
                         android:layout_marginLeft="30dp"/>
-                    <TextView
-                        android:text="Hospital Course"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey3"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -309,15 +264,10 @@
                         android:id="@+id/ch_notes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="  Notes"
+                        android:textColor="@color/grey3"
                         android:button="@drawable/checkbok_selector"
                         android:layout_marginLeft="30dp"/>
-                    <TextView
-                        android:text="Notes"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey3"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -328,15 +278,10 @@
                         android:id="@+id/ch_consults"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="  Consults"
+                        android:textColor="@color/grey3"
                         android:button="@drawable/checkbok_selector"
                         android:layout_marginLeft="30dp"/>
-                    <TextView
-                        android:text="Consults"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey3"/>
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
@@ -353,14 +298,9 @@
                         android:id="@+id/ch_tm"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="  Task Management"
+                        android:textColor="@color/white"
                         android:button="@drawable/checkbok_selector"/>
-                    <TextView
-                        android:text="Task Management"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/white"/>
                 </LinearLayout>
                 <TextView
                     android:text="Members can assign task to the following roles:"
@@ -378,15 +318,10 @@
                         android:id="@+id/ch_tmattending"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="  Attending"
+                        android:textColor="@color/grey3"
                         android:button="@drawable/checkbok_selector"
                         android:layout_marginLeft="30dp"/>
-                    <TextView
-                        android:text="Attending"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey3"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -397,15 +332,10 @@
                         android:id="@+id/ch_tmfellow"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="  Fellow"
+                        android:textColor="@color/grey3"
                         android:button="@drawable/checkbok_selector"
                         android:layout_marginLeft="30dp"/>
-                    <TextView
-                        android:text="Fellow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey3"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -416,15 +346,10 @@
                         android:id="@+id/ch_tmchief"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="  Chief Resident"
+                        android:textColor="@color/grey3"
                         android:button="@drawable/checkbok_selector"
                         android:layout_marginLeft="30dp"/>
-                    <TextView
-                        android:text="Chief Resident"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey3"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -435,15 +360,10 @@
                         android:id="@+id/ch_tmresident"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="  Resident"
+                        android:textColor="@color/grey3"
                         android:button="@drawable/checkbok_selector"
                         android:layout_marginLeft="30dp"/>
-                    <TextView
-                        android:text="Resident"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey3"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -454,15 +374,10 @@
                         android:id="@+id/ch_tmmedstudent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="  Med Student"
+                        android:textColor="@color/grey3"
                         android:button="@drawable/checkbok_selector"
                         android:layout_marginLeft="30dp"/>
-                    <TextView
-                        android:text="Med Student"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey3"/>
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
@@ -479,14 +394,9 @@
                         android:id="@+id/ch_cv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="  Comments View"
+                        android:textColor="@color/white"
                         android:button="@drawable/checkbok_selector"/>
-                    <TextView
-                        android:text="Comments View"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/white"/>
                 </LinearLayout>
                 <TextView
                     android:text="Ability to view patient's comments from the following roles:"
@@ -504,15 +414,10 @@
                         android:id="@+id/ch_attending"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="  Attending"
+                        android:textColor="@color/grey3"
                         android:button="@drawable/checkbok_selector"
                         android:layout_marginLeft="30dp"/>
-                    <TextView
-                        android:text="Attending"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey3"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -523,15 +428,10 @@
                         android:id="@+id/ch_fellow"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="  Fellow"
+                        android:textColor="@color/grey3"
                         android:button="@drawable/checkbok_selector"
                         android:layout_marginLeft="30dp"/>
-                    <TextView
-                        android:text="Fellow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey3"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -542,15 +442,10 @@
                         android:id="@+id/ch_chief"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="  Chief Resident"
+                        android:textColor="@color/grey3"
                         android:button="@drawable/checkbok_selector"
                         android:layout_marginLeft="30dp"/>
-                    <TextView
-                        android:text="Chief Resident"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey3"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -561,15 +456,10 @@
                         android:id="@+id/ch_resident"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="  Resident"
+                        android:textColor="@color/grey3"
                         android:button="@drawable/checkbok_selector"
                         android:layout_marginLeft="30dp"/>
-                    <TextView
-                        android:text="Resident"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey3"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -580,15 +470,10 @@
                         android:id="@+id/ch_medstudent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="Med Student"
+                        android:textColor="@color/grey3"
                         android:button="@drawable/checkbok_selector"
                         android:layout_marginLeft="30dp"/>
-                    <TextView
-                        android:text="Med Student"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="17sp"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey3"/>
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"

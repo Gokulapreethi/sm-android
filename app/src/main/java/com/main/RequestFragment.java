@@ -48,6 +48,7 @@ public class RequestFragment extends Fragment {
     View _rootView;
     String buddy;
     String isAccept;
+    private boolean isSerach=false;
     private ProgressDialog pDialog;
 
 
@@ -100,12 +101,21 @@ public class RequestFragment extends Fragment {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ContactsFragment contactsFragment = ContactsFragment.getInstance(mainContext);
-                FragmentManager fragmentManager = SingleInstance.mainContext
-                        .getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(
-                        R.id.activity_main_content_fragment, contactsFragment)
-                        .commitAllowingStateLoss();
+                if(isSerach){
+                    FindPeople findPeople = FindPeople.newInstance(mainContext);
+                    FragmentManager fragmentManager = SingleInstance.mainContext
+                            .getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(
+                            R.id.activity_main_content_fragment, findPeople)
+                            .commitAllowingStateLoss();
+                }else {
+                    ContactsFragment contactsFragment = ContactsFragment.getInstance(mainContext);
+                    FragmentManager fragmentManager = SingleInstance.mainContext
+                            .getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(
+                            R.id.activity_main_content_fragment, contactsFragment)
+                            .commitAllowingStateLoss();
+                }
             }
         });
         _rootView = null;
@@ -316,6 +326,9 @@ public class RequestFragment extends Fragment {
     }
     public void setBuddyName(String buddyname) {
         buddy = buddyname;
+    }
+    public void setFrom(boolean isFrom){
+        isSerach=isFrom;
     }
     public void setRequest(String requestFor) {
         isAccept = requestFor;

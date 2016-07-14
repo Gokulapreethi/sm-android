@@ -7711,7 +7711,7 @@ public class XmlParser {
 							.getNodeValue());
 				roles.add(pbean);
 			}
-			list = doc.getElementsByTagName("Editroundingform ");
+			list = doc.getElementsByTagName("Editroundingform");
 			for (int i = 0; i < list.getLength(); i++) {
 				node = list.item(i);
 				nodeMap = node.getAttributes();
@@ -7755,7 +7755,7 @@ public class XmlParser {
 							.getNodeValue());
 				roles.add(eBean);
 			}
-			list = doc.getElementsByTagName("Taskmanagement  ");
+			list = doc.getElementsByTagName("Taskmanagement");
 			for (int i = 0; i < list.getLength(); i++) {
 				node = list.item(i);
 				nodeMap = node.getAttributes();
@@ -7797,7 +7797,7 @@ public class XmlParser {
 
 				roles.add(tBean);
 			}
-			list = doc.getElementsByTagName("Commentsview   ");
+			list = doc.getElementsByTagName("Commentsview");
 			for (int i = 0; i < list.getLength(); i++) {
 				node = list.item(i);
 				nodeMap = node.getAttributes();

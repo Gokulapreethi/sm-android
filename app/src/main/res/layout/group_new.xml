@@ -83,7 +83,7 @@
                     android:layout_gravity="center"
                     android:layout_below="@+id/tv"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/usericon1"
+                    android:background="@drawable/group_usericon"
                     android:layout_centerHorizontal="true" />
 
                 <ImageView
