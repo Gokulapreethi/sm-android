@@ -19,12 +19,14 @@ import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
@@ -4988,6 +4990,16 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     convertView = inflater.inflate(R.layout.group_chat_row,
                             null);
                 }
+
+                RelativeLayout rr_send=(RelativeLayout) convertView.findViewById(R.id.rr_resend);
+                rr_send.setVisibility(View.GONE);
+                Button btn_resend=(Button)convertView.findViewById(R.id.btn_resend);
+                ImageView videoPlay=(ImageView)convertView.findViewById(R.id.videoPlay);
+                videoPlay.setVisibility(View.GONE);
+                ImageView receiver_videoPlay=(ImageView)convertView.findViewById(R.id.receiver_videoPlay);
+                receiver_videoPlay.setVisibility(View.GONE);
+
+
                 ImageView thumbsUp, thumbsDown;
                 final GroupChatBean gcBean = chatList.get(position);
 
@@ -6248,9 +6260,14 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     im_pin.setText(gcBean.getMediaName().split("COMMedia/")[1]);
                                     multimediaIcon.setPadding(2, 2, 2, 2);
                                     if (gcBean.getMimetype().equalsIgnoreCase(
-                                            "video"))
-                                        multimediaIcon
-                                                .setImageResource(R.drawable.videoview1);
+                                            "video")) {
+                                        Bitmap bMap = ThumbnailUtils.createVideoThumbnail(gcBean.getMediaName(), MediaStore.Video.Thumbnails.MICRO_KIND);
+                                       multimediaIcon.setImageBitmap(bMap);
+                                        videoPlay.setVisibility(View.VISIBLE);
+                                        receiver_videoPlay.setVisibility(View.VISIBLE);
+//                                        multimediaIcon
+//                                                .setImageResource(R.drawable.videoview1);
+                                    }
                                     else {
                                         multimediaIcon.setVisibility(View.GONE);
 //                                 multimediaIcon
@@ -6570,7 +6587,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     if (gcBean.isWithdraw()) {
                         withdraw.setVisibility(View.VISIBLE);
                         xbutton.setVisibility(View.VISIBLE);
-                        mainlayout.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                        mainlayout.setBackgroundColor(Color.parseColor("#3D2831"));
                         withdraw.setTextColor(Color.parseColor("#99004c"));
                         xbutton.setTextColor(Color.parseColor("#99004c"));
                     } else {
@@ -6599,10 +6616,15 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             if (fname[i].split("COMMedia/")[1].endsWith("mp4")) {
                                 holder = inflater.inflate(R.layout.videochatlist, parent, false);
                                 ImageView receiver_multi_msg = (ImageView) holder.findViewById(R.id.receiver_multi_msg);
+                                ImageView video_play=(ImageView)holder.findViewById(R.id.videoPlay);
+                                video_play.setVisibility(View.VISIBLE);
                                 TextView tv_pathname = (TextView) holder.findViewById(R.id.tv_pathname);
                                 tv_pathname.setText(fname[i].split("COMMedia/")[1]);
-                                receiver_multi_msg
-                                        .setImageResource(R.drawable.videoview1);
+//                                receiver_multi_msg
+//                                        .setImageResource(R.drawable.videoview1);
+                                Bitmap bMap = ThumbnailUtils.createVideoThumbnail(fname[i], MediaStore.Video.Thumbnails.MICRO_KIND);
+                                receiver_multi_msg.setImageBitmap(bMap);
+
                                 final String path = fname[i];
                                 receiver_multi_msg.setOnClickListener(new OnClickListener() {
                                     @Override
@@ -6729,6 +6751,17 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     tv_senderwithdraw.setText(gcBean.getSenderWithdraw());
 
                 }
+
+                if(gcBean.getThumb()==2){
+                    rr_send.setVisibility(View.VISIBLE);
+                    mainlayout.setBackgroundColor(Color.parseColor("#3D2831"));
+                }
+                btn_resend.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                       ResendMsgAlert(gcBean);
+                    }
+                });
 
             } catch (Exception e) {
                 // TODO Auto-generated catch block
@@ -11971,6 +12004,52 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 SipNotificationListener.getCurrentContext())
                 .updateChatReply(gcBean1);
     }
+
+
+    public void ResendMsgAlert(final GroupChatBean gcBean1){
+
+                        if (CallDispatcher.LoginUser != null
+                                && SingleInstance.mainContext
+                                .isNetworkConnectionAvailable()) {
+                            gcBean1.setType("100");
+                            if (gcBean1.getMimetype().equals("text") || gcBean1.getMimetype().equals("location")) {
+                                Log.i("group0123", "message2 : " + gcBean1.getMessage());
+                                SingleInstance.getGroupChatProcesser().getQueue()
+                                        .addObject(gcBean1);
+                            }
+                            else if(gcBean1.getMimetype().equals("textfile"))
+                            {
+                                Log.d("AAA", "file path " + gcBean1.getMediaName());
+//                                DBAccess.getdbHeler(context).insertGroupChat(gcBean);
+
+                                uploadFile(gcBean1);
+
+                            }
+                            else {
+//                                Log.d("group123", "file path " + gcBean.getMediaName());
+//                                DBAccess.getdbHeler(context).insertGroupChat(gcBean);
+//
+//                                // start GK 07.10.2015 changes
+//
+//                                imageViewer.addImage(gcBean.getMediaName());
+//
+//                                // ended 07-10-15 changes
+
+                                uploadFile(gcBean1);
+                            }
+
+
+
+                        }else {
+                            if (!SingleInstance.mainContext.isNetworkConnectionAvailable()) {
+                                showToast("Sorry no internet connection");
+                            } else {
+                                showToast("Kindly login to send message");
+                            }
+                        }
+
+    }
+
 
 
 }

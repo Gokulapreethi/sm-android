@@ -25,6 +25,13 @@
                 android:layout_marginBottom="5dp"
                 android:src="@drawable/refresh" />
             <ImageView
+                android:id="@+id/videoPlay"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/videoview1"
+                android:visibility="gone"/>
+            <ImageView
                 android:id="@+id/im_pin"
                 android:layout_below="@+id/receiver_multi_msg"
                 android:layout_width="25dp"

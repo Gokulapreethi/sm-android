@@ -188,6 +188,13 @@
                             android:padding="5dp"
                             android:src="@drawable/refresh" />
                         <ImageView
+                            android:id="@+id/receiver_videoPlay"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/videoview1"
+                            android:visibility="gone"/>
+                        <ImageView
                             android:id="@+id/sendim_pin"
                             android:layout_below="@+id/sender_multi_msg"
                             android:layout_width="25dp"
@@ -667,6 +674,13 @@
                                 android:layout_marginBottom="5dp"
                                 android:src="@drawable/refresh" />
                             <ImageView
+                                android:id="@+id/videoPlay"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:layout_centerInParent="true"
+                                android:src="@drawable/videoview1"
+                                android:visibility="gone"/>
+                            <ImageView
                                 android:id="@+id/im_pin"
                                 android:layout_below="@+id/receiver_multi_msg"
                                 android:layout_width="25dp"
@@ -927,8 +941,42 @@
                     android:layout_marginLeft="5dp"
                     android:layout_below="@+id/rl_header"
                     android:textSize="15dp"
+                    android:textColor="#99004c"
                     android:visibility="gone"/>
+                <RelativeLayout
+                    android:id="@+id/rr_resend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone">
+                    <Button
+                        android:id="@+id/btn_resend"
+                        android:layout_width="80dp"
+                        android:layout_height="30dp"
+                        android:text="RESEND"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/white"
+                        android:background="#99004c"/>
+                    <TextView
+                        android:id="@+id/tv_notsend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="not send"
+                        android:layout_alignBaseline="@+id/btn_resend"
+                        android:layout_marginRight="10dp"
+                        android:textSize="15dp"
+                        android:layout_toLeftOf="@+id/btn_resend2"
+                        android:textColor="#99004c"/>
+                    <Button
+                        android:id="@+id/btn_resend2"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/state_not_sent"/>
+                </RelativeLayout>
             </RelativeLayout>
+
 
             <ImageView
                 android:id="@+id/thumbs_down"
