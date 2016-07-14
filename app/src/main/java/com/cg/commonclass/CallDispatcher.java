@@ -59,6 +59,7 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
 import android.telephony.TelephonyManager;
 import android.text.format.DateFormat;
 import android.util.Base64;
@@ -83,12 +84,14 @@ import android.widget.Toast;
 import com.bean.ConnectionBrokerServerBean;
 import com.bean.FormFieldSettingDeleteBean;
 import com.bean.GroupChatBean;
+import com.bean.GroupTempBean;
 import com.bean.ProfileBean;
 import com.callHistory.CallHistoryActivity;
 import com.cg.DB.DBAccess;
 import com.cg.SlideMenu.SlideMenuInterface;
 import com.cg.SlideMenu.Slidebean;
 import com.cg.account.ShareByProfile;
+import com.cg.account.SplashScreen;
 import com.cg.account.buddiesList;
 import com.cg.account.buddyView1;
 import com.cg.account.forgotPassword;
@@ -265,12 +268,12 @@ import de.javawi.jstun.test.DiscoveryTest1;
 /**
  * This class is used to send and receive the signals which is controlled by the
  * Engines. For the every send and receive process it has to notify the
- * 
- * 
+ *
+ *
  * respective user interface screen
- * 
- * 
- * 
+ *
+ *
+ *
  */
 
 public class CallDispatcher implements WebServiceCallback, CallSessionListener,
@@ -754,7 +757,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * At the time of instance creation pass the context of the activity
-	 * 
+	 *
 	 * @param contexts
 	 *            - To which screen we are going to notify about the signals
 	 */
@@ -878,12 +881,12 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	 * bitmap_table.get(imageName); } else { String path =
 	 * Environment.getExternalStorageDirectory() + "/COMMedia/" + imageName;
 	 * File file = new File(path); if (!file.exists()) {
-	 * 
+	 *
 	 * if (!bitmap_table.containsKey("default")) { bitmap =
 	 * BitmapFactory.decodeResource( context.getResources(),
 	 * R.drawable.icon_buddy_aoffline); bitmap_table.put("default", bitmap); }
 	 * else bitmap = bitmap_table.get("default");
-	 * 
+	 *
 	 * } else { bitmap = ResizeImage(path); if (bitmap != null) { bitmap =
 	 * Bitmap.createScaledBitmap(bitmap, 200, 150, false);
 	 * bitmap_table.put(imageName, bitmap); } else { if
@@ -891,14 +894,14 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	 * BitmapFactory.decodeResource( context.getResources(),
 	 * R.drawable.icon_buddy_aoffline); bitmap_table.put("default", bitmap); }
 	 * else bitmap = bitmap_table.get("default"); }
-	 * 
+	 *
 	 * }
-	 * 
+	 *
 	 * } } else { if (!bitmap_table.containsKey("default")) { bitmap =
 	 * BitmapFactory.decodeResource( context.getResources(),
 	 * R.drawable.icon_buddy_aoffline); bitmap_table.put("default", bitmap); }
 	 * else bitmap = bitmap_table.get("default"); }
-	 * 
+	 *
 	 * } catch (Exception e) { // TODO Auto-generated catch block
 	 * e.printStackTrace(); } return bitmap; }
 	 */
@@ -1014,7 +1017,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	/**
 	 * If web service is running we have to stop the service and add that
 	 * details into the preference then start the web service
-	 * 
+	 *
 	 * @param strURL
 	 *            - Web service connection url
 	 * @param strPort
@@ -1041,7 +1044,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	/**
 	 * To initialize the context of the respective ui to notify the Engine
 	 * actions
-	 * 
+	 *
 	 * @param contexts
 	 */
 	public void setContext(Context contexts) {
@@ -1052,7 +1055,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	/**
 	 * To initialize the global object which are used to maintain the signals
 	 * and handle the signals
-	 * 
+	 *
 	 */
 	public void initCall() {
 
@@ -1127,7 +1130,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * Store the web service url and prot number in the preferences
-	 * 
+	 *
 	 * @param url
 	 *            - Web service connection url
 	 * @param port
@@ -1147,7 +1150,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	/**
 	 * To initialize the WebServiceClient object and start the web service
 	 * client process
-	 * 
+	 *
 	 * @param url
 	 *            - web service connection url
 	 * @param port
@@ -1312,7 +1315,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * To get the public ip address of the login user.
-	 * 
+	 *
 	 * @param serverIp
 	 *            - ip address which is parsed from the web service connection
 	 *            url
@@ -1342,7 +1345,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	/**
 	 * To sign in the buddy. At the time of sign in initialize the
 	 * CommunicationEngine instance.
-	 * 
+	 *
 	 * @param user
 	 *            - user id of the Buddy
 	 * @param password
@@ -1456,7 +1459,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * To create and return the KeepAliveBean object for the login user.
-	 * 
+	 *
 	 * @return KeepAliveBean
 	 */
 	public KeepAliveBean getKeepAliveBean() {
@@ -1810,7 +1813,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	/**
 	 * Check the buddy name is exist in the adapter. If that's not available
 	 * return -1 else return the last index value of the adapter
-	 * 
+	 *
 	 * @param name
 	 *            - Buddy name to be check in the adapter list
 	 * @return if buddy is not available in the adapter return -1
@@ -1899,7 +1902,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	 * "Model",<br>
 	 * "API Level",<br>
 	 * "sdk version"<br>
-	 * 
+	 *
 	 * @return String[]
 	 */
 	public String[] getMobileDetails() {
@@ -2003,7 +2006,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * To set the local ip address
-	 * 
+	 *
 	 * @param localipaddsress
 	 */
 	public void setLocalipaddsress(String localipaddsress) {
@@ -2013,7 +2016,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * To get the local ip address
-	 * 
+	 *
 	 * @return
 	 */
 	public static String getLocalipaddsress() {
@@ -2022,7 +2025,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * To set the public ip address
-	 * 
+	 *
 	 * @param publicipaddress
 	 */
 	public void setPublicipaddress(String publicipaddress) {
@@ -2033,7 +2036,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * To get the public ip address
-	 * 
+	 *
 	 * @return
 	 */
 	public static String getPublicipaddress() {
@@ -2043,7 +2046,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * To set the cb server details
-	 * 
+	 *
 	 * @param cbserver1
 	 */
 	public void setCbserver1(String cbserver1) {
@@ -2052,7 +2055,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * To get the cb server1 detail
-	 * 
+	 *
 	 * @return
 	 */
 	public String getCbserver1() {
@@ -2061,7 +2064,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * To set cbserver2 detail
-	 * 
+	 *
 	 * @param cbserver2
 	 */
 	public void setCbserver2(String cbserver2) {
@@ -2070,7 +2073,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * To get cbserver2 detail
-	 * 
+	 *
 	 * @return
 	 */
 	public String getCbserver2() {
@@ -2079,7 +2082,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * To set router detail
-	 * 
+	 *
 	 * @param router
 	 */
 	public void setRouter(String router) {
@@ -2088,7 +2091,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * To get router detail
-	 * 
+	 *
 	 * @return
 	 */
 	public String getRouter() {
@@ -2097,7 +2100,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * To set relay detail
-	 * 
+	 *
 	 * @param relay
 	 */
 	public void setRelay(String relay) {
@@ -2106,7 +2109,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * To get relay detail
-	 * 
+	 *
 	 * @return
 	 */
 	public String getRelay() {
@@ -3112,16 +3115,16 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					Log.i("callscreenfinish","calldispatcher type=1 and result=1");
 					stopRingTone();
 					CallDispatcher.sb.setStartTime(getCurrentDateandTime());
-					handlerForCall.post(new Runnable() {
-
-						@Override
-						public void run() {
-							// TODO Auto-generated method stub
-							getofflineCallResponse(sb.getFrom(),
-									"Call Rejected");
-						}
-					});
-					NoAnswer(sb.getTo(),sb.getCallType());
+//					handlerForCall.post(new Runnable() {
+//
+//						@Override
+//						public void run() {
+//							// TODO Auto-generated method stub
+//							getofflineCallResponse(sb.getFrom(),
+//									"Call Rejected");
+//						}
+//					});
+					NoAnswer(sb.getFrom(),sb.getCallType());
 					// Call rejected response
 					isCallInitiate = false;
 					closeDialWindow("Call rejected " + sb.getFrom(), "1", "1");
@@ -3166,12 +3169,12 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					// }
 					// DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
 					// CallDispatcher.sb);
-					handlerForCall.post(new Runnable() {
-						@Override
-						public void run() {
-							showCallHistory(CallDispatcher.sb.getSessionid(),CallDispatcher.sb.getCallType());
-						}
-					});
+//					handlerForCall.post(new Runnable() {
+//						@Override
+//						public void run() {
+//							showCallHistory(CallDispatcher.sb.getSessionid(),CallDispatcher.sb.getCallType());
+//						}
+//					});
 
 					if (conferenceRequest.containsKey(sb.getFrom())) {
 						conferenceRequest.remove(sb.getFrom());
@@ -3807,7 +3810,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					}
 				}
 
-				
+
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -3821,80 +3824,129 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 		noanswerhandler.post(new Runnable() {
 
-			@Override
-			public void run() {
+            @Override
+            public void run() {
 
-				Context context = null;
-				if (SingleInstance.contextTable.get("groupchat") != null) {
-					context = SingleInstance.contextTable.get("groupchat");
-				} else {
-					context = SingleInstance.mainContext;
-				}
-				final Dialog dialog = new Dialog(context);
-				final ImageLoader imageLoader = new ImageLoader(context);
-				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-				dialog.setContentView(R.layout.no_answer_screen);
-				dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-				dialog.getWindow().setBackgroundDrawableResource(R.color.transparent);
-				dialog.show();
-				TextView do_lay = (TextView) dialog.findViewById(R.id.do_lay);
-				TextView username = (TextView)dialog.findViewById(R.id.username);
-				ImageView profile_pic = (ImageView)dialog. findViewById(R.id.riv1);
-				TextView send_messagelay = (TextView)dialog.findViewById(R.id.send_messagelay);
-				TextView callback_messagelay = (TextView)dialog.findViewById(R.id.callback_messagelay);
+                Context context = null;
+                if (SingleInstance.contextTable.get("groupchat") != null) {
+                    context = SingleInstance.contextTable.get("groupchat");
+                } else {
+                    context = SingleInstance.mainContext;
+                }
+                final Dialog dialog = new Dialog(context);
+                final ImageLoader imageLoader = new ImageLoader(context);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.no_answer_screen);
+                dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+                dialog.getWindow().setBackgroundDrawableResource(R.color.transparent);
+                dialog.show();
+                TextView do_lay = (TextView) dialog.findViewById(R.id.do_lay);
+                TextView username = (TextView) dialog.findViewById(R.id.username);
+                ImageView profile_pic = (ImageView) dialog.findViewById(R.id.riv1);
+                TextView send_messagelay = (TextView) dialog.findViewById(R.id.send_messagelay);
+                TextView send_audio_messagelay = (TextView) dialog.findViewById(R.id.send_audio_messagelay);
+                TextView callback_messagelay = (TextView) dialog.findViewById(R.id.callback_messagelay);
+                TextView send_video_messagelay = (TextView) dialog.findViewById(R.id.send_video_messagelay);
 
-				callback_messagelay.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						if(Calltype.equalsIgnoreCase("AC")){
-							Log.d("string", "Calltype"+Calltype);
-							MakeCall(1, Username, SingleInstance.mainContext);
-						}
-						else if(Calltype.equalsIgnoreCase("VC")) {
-							MakeCall(2, Username,
-									SingleInstance.mainContext);
-						}
-						dialog.dismiss();
+                ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(Username);
+                if (bean.getFirstname() != null && bean.getLastname() != null) {
+                    username.setText(bean.getFirstname() + " " + bean.getLastname());
 
-					}
-				});
+                }
+                String Profilephoto = bean.getPhoto();
+                if (Profilephoto != null && Profilephoto.length() > 0) {
+                    String pic_Path = Environment.getExternalStorageDirectory().getAbsolutePath()
+                            + "/COMMedia/" + bean.getPhoto();
+                    File pic = new File(pic_Path);
+                    if (pic.exists()) {
+                        imageLoader.DisplayImage(pic_Path, profile_pic, R.drawable.img_user);
+                    }
 
-				send_messagelay.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
+                }
 
+                callback_messagelay.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (Calltype.equalsIgnoreCase("AC")) {
+                            Log.d("string", "Calltype" + Calltype);
+                            MakeCall(1, Username, SingleInstance.mainContext);
+                        } else if (Calltype.equalsIgnoreCase("VC")) {
+                            MakeCall(2, Username,
+                                    SingleInstance.mainContext);
+                        }
+                        dialog.dismiss();
 
-					}
-				});
+                    }
+                });
 
+                send_messagelay.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        openChatScreen(Username);
+                    }
+                });
 
-				ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(Username);
-				if(bean.getFirstname()!= null && bean.getLastname()!= null){
-					username.setText(bean.getFirstname()+ " "+bean.getLastname());
+                send_audio_messagelay.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        openChatScreen(Username);
+                    }
+                });
 
-				}
-				String Profilephoto = bean.getPhoto();
-				if(Profilephoto!= null&& Profilephoto.length() > 0){
-					String pic_Path = Environment.getExternalStorageDirectory().getAbsolutePath()
-							+ "/COMMedia/" + bean.getPhoto();
-					File pic = new File(pic_Path);
-					if (pic.exists()) {
-						imageLoader.DisplayImage(pic_Path, profile_pic , R.drawable.img_user);
-					}
+                send_video_messagelay.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        openChatScreen(Username);
+                    }
+                });
 
-				}
+                do_lay.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+            }
+        });
+	}
 
+	private void openChatScreen(String noanswered_user){
+//		if(SingleInstance.chatIntentValues != null) {
+//			GroupTempBean groupTempBean = SingleInstance.chatIntentValues;
+//			Intent intent = new Intent(SingleInstance.mainContext,GroupChatActivity.class);
+//			intent.putExtra("groupid", groupTempBean.getGroupId());
+//			intent.putExtra("isGroup", groupTempBean.isGroup());
+//			if(!groupTempBean.isGroup()) {
+//				intent.putExtra("isReq", groupTempBean.getOpen());
+//				intent.putExtra("buddy", groupTempBean.getBuddy());
+//				intent.putExtra("buddystatus", groupTempBean.getBuddyStatus());
+//				intent.putExtra("nickname",groupTempBean.getNickname());
+//			}
+//			SingleInstance.mainContext.startActivity(intent);
+//		}
 
-
-
-				do_lay.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						dialog.dismiss();
-					}
-				});
-			}
-		});
+		BuddyInformationBean bean = null;
+				Vector<BuddyInformationBean>  total_buddylist = ContactsFragment.getBuddyList();
+		for(BuddyInformationBean informationBean : total_buddylist) {
+            if(informationBean.getName() != null && informationBean.getName().equalsIgnoreCase(noanswered_user)) {
+                bean = informationBean;
+                break;
+            }
+        }
+        if(bean != null) {
+            Intent intent = new Intent(SingleInstance.mainContext, GroupChatActivity.class);
+            intent.putExtra("groupid", CallDispatcher.LoginUser
+                    + bean.getName());
+            intent.putExtra("isGroup", false);
+            intent.putExtra("isReq", "C");
+            intent.putExtra("buddy", bean.getName());
+            intent.putExtra("buddystatus", bean.getStatus());
+            intent.putExtra("nickname", bean.getFirstname() + " " + bean.getLastname());
+			SingleInstance.mainContext.startActivity(intent);
+        }
 	}
 
 	private ChatBean getChatBean(SignalingBean sb) {
@@ -3953,13 +4005,13 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 //					showAlert("", ErrMsg);
 					Log.i("calltest", "showBusyMessage" +SingleInstance.instanceTable
-							.containsKey("connection") +SingleInstance.instanceTable.containsKey("callscreen")+issecMadeConference);
+                            .containsKey("connection") +SingleInstance.instanceTable.containsKey("callscreen")+issecMadeConference);
 					if (SingleInstance.instanceTable
-							.containsKey("connection")) {
+                            .containsKey("connection")) {
 						if (!SingleInstance.instanceTable.containsKey("callscreen")) {
 							if (!issecMadeConference) {
 								((CallConnectingScreen) SingleInstance.instanceTable
-										.get("connection")).finishConnectingScreen();
+                                        .get("connection")).finishConnectingScreen();
 							}
 //							else if (issecMadeConference
 //									&& CallDispatcher.contConferencemembers
@@ -3976,10 +4028,10 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						}
 					} else if (issecMadeConference
 								&& CallDispatcher.contConferencemembers
-										.size() == 0) {
+                            .size() == 0) {
 						if (!SingleInstance.instanceTable.containsKey("callscreen")) {
 							((CallConnectingScreen) SingleInstance.instanceTable
-									.get("connection")).finishConnectingScreen();
+                                    .get("connection")).finishConnectingScreen();
 						}
 					}
 
@@ -4073,18 +4125,18 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					public void run() {
 						try {
 							if (message
-									.getText()
+                                    .getText()
 									.equalsIgnoreCase(
-											"Some other user with same user name has logged in")) {
+                                            "Some other user with same user name has logged in")) {
 //                                TCPEngine.getTCPClient().stopClient();
 								isAnotherUserLogedIn = true;
 								SingleInstance.mainContext.notifySigninError(
 										"Duplicate Login", message.getText());
 							}
 							else if (message
-									.getText().trim()
+                                    .getText().trim()
 									.equalsIgnoreCase(
-											"Session Invalid")) {
+                                            "Session Invalid")) {
 								isAnotherUserLogedIn = true;
 								showToast(SingleInstance.mainContext,"Session Invalid:Time out");
 
@@ -4094,8 +4146,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							else {
 								if (AppReference.isWriteInFile)
 									AppReference.logger
-											.debug("LOGOUT REASON :: "
-													+ message.getText());
+                                            .debug("LOGOUT REASON :: "
+                                                    + message.getText());
 								// showAlert("LOGOUT",
 								// "Reason : " + message.getText());
 								// isAnotherUserLogedIn = true;
@@ -4135,9 +4187,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								Log.d("UMBX", "OnLOgin " + chklong);
 
 								double receivedlatvalueindouble = Double
-										.parseDouble(bib.getLatitude());
+                                        .parseDouble(bib.getLatitude());
 								double receivedlongvalueindouble = Double
-										.parseDouble(bib.getLongitude());
+                                        .parseDouble(bib.getLongitude());
 
 								final String recLat = String.format("%.2f",
 										receivedlatvalueindouble);
@@ -4166,10 +4218,10 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 														BuddyInformationBean oldBuddyBean = null;
 
 														for (BuddyInformationBean temp : ContactsFragment
-																.getBuddyList()) {
+                                                                .getBuddyList()) {
 															if (temp.getName()
 																	.equalsIgnoreCase(
-																			bib.getName())) {
+                                                                            bib.getName())) {
 																oldBuddyBean = temp;
 																break;
 															}
@@ -4189,53 +4241,53 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 															Log.d("UMBX",
 																	"old lat"
 																			+ oldBuddyBean
-																					.getLatitude());
+                                                                            .getLatitude());
 															Log.d("UMBX",
 																	"old long..."
 																			+ oldBuddyBean
-																					.getLongitude());
+                                                                            .getLongitude());
 															double oldlatvalueindouble = Double
-																	.parseDouble(oldBuddyBean
-																			.getLatitude());
+                                                                    .parseDouble(oldBuddyBean
+                                                                            .getLatitude());
 															double oldlongvalueindouble = Double
-																	.parseDouble(oldBuddyBean
-																			.getLongitude());
+                                                                    .parseDouble(oldBuddyBean
+                                                                            .getLongitude());
 
 															String oldrecLat = String
-																	.format("%.2f",
-																			oldlatvalueindouble);
+                                                                    .format("%.2f",
+                                                                            oldlatvalueindouble);
 															String oldrecLong = String
-																	.format("%.2f",
-																			oldlongvalueindouble);
+                                                                    .format("%.2f",
+                                                                            oldlongvalueindouble);
 															//
 															String recchaklatold = oldrecLat
-																	.substring(
-																			0,
-																			oldrecLat
-																					.indexOf(".") + 2);
+                                                                    .substring(
+                                                                            0,
+                                                                            oldrecLat
+                                                                                    .indexOf(".") + 2);
 															Log.d("UMBX",
 																	"OnLOgin "
 																			+ recchaklatold);
 															String recchklongold = oldrecLong
-																	.substring(
-																			0,
-																			oldrecLong
-																					.indexOf(".") + 2);
+                                                                    .substring(
+                                                                            0,
+                                                                            oldrecLong
+                                                                                    .indexOf(".") + 2);
 															Log.d("UMBX",
 																	"OnLOgin "
 																			+ recchklongold);
 
 															if (!recchaklat
-																	.equals(recchaklatold)
+                                                                    .equals(recchaklatold)
 																	&& !recchklong
-																			.equals(recchaklatold)) {
+                                                                    .equals(recchaklatold)) {
 																Log.d("UMBX",
 																		"different");
 																Toast.makeText(
 																		context,
 																		"Make call",
 																		2000)
-																		.show();
+                                                                        .show();
 																bib.setIslocationBasedServiceDone(true);
 																LocationMadeService(
 																		bib.getName(),
@@ -4248,7 +4300,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 																		context,
 																		"Already processed",
 																		2000)
-																		.show();
+                                                                        .show();
 															}
 														} else {
 															Log.d("UMBX",
@@ -4257,7 +4309,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 																	context,
 																	"Make call",
 																	2000)
-																	.show();
+                                                                    .show();
 															bib.setIslocationBasedServiceDone(true);
 
 															LocationMadeService(
@@ -4274,7 +4326,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 																2000).show();
 
 														sendNotesOnLatLong(bib
-																.getName());
+                                                                .getName());
 													}
 												}
 											} catch (Exception e) {
@@ -4293,7 +4345,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							} else {
 								BuddyInformationBean oldBuddyBean = null;
 								for (BuddyInformationBean temp : ContactsFragment
-										.getBuddyList()) {
+                                        .getBuddyList()) {
 									if (!temp.isTitle()) {
 										if (temp.getName().equalsIgnoreCase(
 												bib.getName())) {
@@ -4313,7 +4365,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 											.isIslocationBasedServiceDone());
 									bib.setLatitude(oldBuddyBean.getLatitude());
 									bib.setLongitude(oldBuddyBean
-											.getLongitude());
+                                            .getLongitude());
 									Log.d("UMBX",
 											"new location lat "
 													+ bib.getLatitude());
@@ -4328,7 +4380,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 							BuddyInformationBean oldBuddyBean = null;
 							for (BuddyInformationBean temp : ContactsFragment
-									.getBuddyList()) {
+                                    .getBuddyList()) {
 								if (!temp.isTitle()) {
 									if (temp.getName().equalsIgnoreCase(
 											bib.getName())) {
@@ -4364,7 +4416,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							+ bib.getName());
 					try {
 						GroupChatActivity gca = (GroupChatActivity) SingleInstance.contextTable
-								.get("groupchat");
+                                .get("groupchat");
 						gca.updateBuddy(bib.getName(), bib.getStatus());
 					}catch(Exception e){
 						Log.i("DCBA", "Received NO Class found. reached======== "
@@ -4379,7 +4431,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							|| bib.getStatus().equals("4")) {
 
 						for (BuddyInformationBean buddyInformationBean : ContactsFragment
-								.getBuddyList()) {
+                                .getBuddyList()) {
 							if (!buddyInformationBean.isTitle()) {
 								if (buddyInformationBean.getName().equals(
 										bib.getName())) {
@@ -4392,29 +4444,29 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 											showToast(
 													SingleInstance.mainContext,
 													buddyInformationBean
-															.getName()
+                                                            .getName()
 															+ " accepts your request");
 											WebServiceReferences.webServiceClient.GetAllProfile(CallDispatcher.LoginUser,                                                                          buddyInformationBean.getName(),SingleInstance.mainContext);
 										}
 									}
 									if (bib.getStatus().equalsIgnoreCase("0")) {
 										buddyInformationBean
-												.setStatus("Offline");
+                                                .setStatus("Offline");
 									} else if (bib.getStatus()
 											.equalsIgnoreCase("1")) {
 										buddyInformationBean
-												.setStatus("Online");
+                                                .setStatus("Online");
 									} else if (bib.getStatus()
 											.equalsIgnoreCase("2")) {
 										buddyInformationBean
-												.setStatus("Airport");
+                                                .setStatus("Airport");
 									} else if (bib.getStatus()
 											.equalsIgnoreCase("3")) {
 										buddyInformationBean.setStatus("Away");
 									} else if (bib.getStatus()
 											.equalsIgnoreCase("4")) {
 										buddyInformationBean
-												.setStatus("Stealth");
+                                                .setStatus("Stealth");
 									} else {
 										Log.i("contacts123",
 												"UNKNOWN : " + bib.getName()
@@ -4424,44 +4476,44 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								}
 							}
 						}
-						
+
 
 						handlerForCall.post(new Runnable() {
 
 							@Override
 							public void run() {
 								// TODO Auto-generated method stub
-								
+
 								ContactsFragment.getInstance(context)
-										.SortList();
+                                        .SortList();
 							}
 						});
 
 						if (WebServiceReferences.contextTable
-								.containsKey("utilitybuyer")) {
+                                .containsKey("utilitybuyer")) {
 							UtilityBuyer buyer = (UtilityBuyer) WebServiceReferences.contextTable
-									.get("utilitybuyer");
+                                    .get("utilitybuyer");
 							buyer.updateBuddyStatus(bib.getName(),
 									bib.getStatus());
 						}
 						if (WebServiceReferences.contextTable
-								.containsKey("utilityseller")) {
+                                .containsKey("utilityseller")) {
 							UtilitySeller seller = (UtilitySeller) WebServiceReferences.contextTable
-									.get("utilityseller");
+                                    .get("utilityseller");
 							seller.updateBuddyStatus(bib.getName(),
 									bib.getStatus());
 						}
 						if (WebServiceReferences.contextTable
-								.containsKey("utilityneeder")) {
+                                .containsKey("utilityneeder")) {
 							UtilityServiceNeeder needer = (UtilityServiceNeeder) WebServiceReferences.contextTable
-									.get("utilityneeder");
+                                    .get("utilityneeder");
 							needer.updateBuddyStatus(bib.getName(),
 									bib.getStatus());
 						}
 						if (WebServiceReferences.contextTable
-								.containsKey("utilityprovider")) {
+                                .containsKey("utilityprovider")) {
 							UtilityServiceProvider provider = (UtilityServiceProvider) WebServiceReferences.contextTable
-									.get("utilityprovider");
+                                    .get("utilityprovider");
 							provider.updateBuddyStatus(bib.getName(),
 									bib.getStatus());
 						}
@@ -4569,8 +4621,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									// }
 									if (isApplicationInBackground(SingleInstance.mainContext)) {
 										SingleInstance.buddyRequestMessageList
-												.add(bib.getName()
-														+ " sent request to you");
+                                                .add(bib.getName()
+                                                        + " sent request to you");
 									} else {
 										showToast(
 												SingleInstance.mainContext,
@@ -4599,8 +4651,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 										bib.getName());
 								DBAccess.getdbHeler()
 										.deleteGroupChatEntryLocally(
-												bib.getName(),
-												CallDispatcher.LoginUser);
+                                                bib.getName(),
+                                                CallDispatcher.LoginUser);
 								DBAccess.getdbHeler().deleteIndividualChat(
 										bib.getName());
 								// pendingToShow.deleteUser(bib.getName());
@@ -4612,9 +4664,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								// }
 								// }
 								if (SingleInstance.groupChatHistory
-										.containsKey(bib.getName())) {
+                                        .containsKey(bib.getName())) {
 									SingleInstance.groupChatHistory.remove(bib
-											.getName());
+                                            .getName());
 								}
 								SingleInstance.mainContext
 										.updateBuddyInformation(bib);
@@ -4651,7 +4703,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					}
 
 				} else if (message.getPermission_details() != null) {
-				
+
 					if (!WebServiceReferences.running) {
 						SharedPreferences preferences = PreferenceManager
 								.getDefaultSharedPreferences(context);
@@ -4676,7 +4728,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							message.getReset_account()[0], SingleInstance.mainContext);
 				}
 				else if (message.getProfile_details() != null) {
-					
+
 					if (!WebServiceReferences.running) {
 						SharedPreferences preferences = PreferenceManager
 								.getDefaultSharedPreferences(context);
@@ -4687,9 +4739,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					if (message.getProfile_details()[2].length() == 0) {
 						Vector<String> multimediaFields = getdbHeler(context)
 								.getMultimediaFields(
-										"SELECT fieldvalue FROM profilefieldvalues WHERE fieldid IN (SELECT fieldid FROM fieldtemplate WHERE fieldtype = 'Audio' OR fieldtype = 'Video' OR fieldtype = 'Photo') and userid = '"
-												+ message.getProfile_details()[0]
-												+ "'");
+                                        "SELECT fieldvalue FROM profilefieldvalues WHERE fieldid IN (SELECT fieldid FROM fieldtemplate WHERE fieldtype = 'Audio' OR fieldtype = 'Video' OR fieldtype = 'Photo') and userid = '"
+                                                + message.getProfile_details()[0]
+                                                + "'");
 						if (multimediaFields != null
 								&& multimediaFields.size() > 0) {
 							for (String fieldName : multimediaFields) {
@@ -4702,7 +4754,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 								if (bitmap_table.containsKey(file.getName())) {
 									Bitmap bmp = bitmap_table.remove(file
-											.getName());
+                                            .getName());
 									if (bmp != null)
 										if (!bmp.isRecycled())
 											bmp.recycle();
@@ -4714,14 +4766,14 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									"DELETE from profilefieldvalues WHERE userid="
 											+ "\""
 											+ message.getProfile_details()[0]
-													.toString().trim() + "\"");
+                                            .toString().trim() + "\"");
 						}
 					} else {
 						String modified_date = getdbHeler(context)
 								.getModifiedDate(
-										"select max(modifieddate) from profilefieldvalues where userid='"
-												+ message.getProfile_details()[0]
-												+ "'");
+                                        "select max(modifieddate) from profilefieldvalues where userid='"
+                                                + message.getProfile_details()[0]
+                                                + "'");
 						if (modified_date == null)
 							modified_date = "";
 						else if (modified_date.trim().length() == 0)
@@ -4729,7 +4781,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 						if (message.getProfile_details()[2] != null) {
 							if (!message.getProfile_details()[2]
-									.equals(modified_date)) {
+                                    .equals(modified_date)) {
 								String[] profileDetails = new String[3];
 								profileDetails[0] = message
 										.getProfile_details()[0];
@@ -4744,7 +4796,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				} else if (message.getResponseObject() != null) {
 					if (SingleInstance.contextTable.containsKey("MAIN")) {
 						((AppMainActivity) SingleInstance.contextTable
-								.get("MAIN")).notifyUDPupdates(message
+                                .get("MAIN")).notifyUDPupdates(message
 								.getResponseObject());
 					} else {
 						showToast(SipNotificationListener.getCurrentContext(),
@@ -4833,7 +4885,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 										+ "\"" + configresponse_list[1].trim()
 										+ "\"");
 						Set<String> sessionIdList = getdbHeler(context)
-								.getSessionId(configresponse_list[1].trim());
+                                .getSessionId(configresponse_list[1].trim());
 						if (sessionIdList != null && sessionIdList.size() > 0) {
 							for (String sessionId : sessionIdList) {
 								// getdbHeler(context).deleteAllshares(
@@ -4860,12 +4912,12 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									}
 								}
 								if (WebServiceReferences.Imcollection
-										.containsKey(sessionId)) {
+                                        .containsKey(sessionId)) {
 									WebServiceReferences.Imcollection
-											.remove(sessionId);
+                                            .remove(sessionId);
 								}
 								if (message_map
-										.containsKey(configresponse_list[1])) {
+                                        .containsKey(configresponse_list[1])) {
 									message_map.remove(configresponse_list[1]);
 								}
 								handlerForCall.post(new Runnable() {
@@ -4875,9 +4927,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 										// TODO Auto-generated method stub
 										ContactsFragment.getContactAdapter()
 												.notifyDataSetChanged();
-								
+
 										ExchangesFragment exchanges = ExchangesFragment
-												.newInstance(context);
+                                                .newInstance(context);
 										if (exchanges.adapter != null)
 											exchanges.adapter
 													.notifyDataSetChanged();
@@ -4897,24 +4949,24 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							public void run() {
 								// TODO Auto-generated method stub
 								if (SingleInstance.contextTable
-										.containsKey("forms")) {
+                                        .containsKey("forms")) {
 									FormsFragment quickActionFragment = FormsFragment
-											.newInstance(context);
+                                            .newInstance(context);
 
 									quickActionFragment.populateLists();
 
 								}
 
 								if (WebServiceReferences.contextTable
-										.containsKey("formsettings"))
+                                        .containsKey("formsettings"))
 									((FormSettings) WebServiceReferences.contextTable
-											.get("formsettings"))
-											.populateLists();
+                                            .get("formsettings"))
+                                            .populateLists();
 
 								if (WebServiceReferences.contextTable
-										.containsKey("clone"))
+                                        .containsKey("clone"))
 									(AvatarFragment.newInstance(context))
-											.loadConfigs();
+                                            .loadConfigs();
 
 								(FilesFragment.newInstance(context))
 										.filesListRefresh();
@@ -4985,7 +5037,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						Log.i("formfield123", "udp signal delete formid : "
 								+ ffDBean.getFormId());
 						ArrayList<String[]> buddiesAccessList = ffDBean
-								.getBuddiesList();
+                                .getBuddiesList();
 						if (buddiesAccessList != null) {
 							for (String[] buddyAccess : buddiesAccessList) {
 								Log.i("formfield123",
@@ -4994,8 +5046,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 												+ buddyAccess[1]);
 								DBAccess.getdbHeler()
 										.deleteFormFieldBuddyAccess(
-												ffDBean.getFormId(),
-												buddyAccess[0], buddyAccess[1]);
+                                                ffDBean.getFormId(),
+                                                buddyAccess[0], buddyAccess[1]);
 							}
 						}
 					}
@@ -5007,7 +5059,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							ShareReminder sr = (ShareReminder) lst;
 							if (sr.getStatus().equals("new")) {
 								WebServiceReferences.shareRemainderArray
-										.add(sr);
+                                        .add(sr);
 							}
 							// if (listenerclass instanceof CompleteListView) {
 							// CompleteListView complete = (CompleteListView)
@@ -5151,10 +5203,10 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 			case SUBSCRIBE:
 				Log.i("register", "555555555555555555555");
 				if (WebServiceReferences.contextTable
-						.containsKey("registration")) {
+                        .containsKey("registration")) {
 					Log.i("register", "55");
 					((Registration) WebServiceReferences.contextTable
-							.get("registration"))
+                            .get("registration"))
 							.notifyRegistrationResponse(servicebean.getObj());
 				}
 
@@ -5443,7 +5495,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				// + "'");
 				// // For temp, server will not consider
 				// // utilityName, So hardcoded -
-				
+
 				// String utilityName = "buysell";
 				// WebServiceReferences.webServiceClient
 				// .syncUtilityItems(
@@ -5552,7 +5604,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						dissableUserSettings();
 						if (servicebean.getObj() instanceof WebServiceBean) {
 							WebServiceBean server_response = (WebServiceBean) servicebean
-									.getObj();
+                                    .getObj();
 							Context cntxt;
 							destroySIPStack();
 							myStatus = "0";
@@ -5571,7 +5623,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							if (server_response.getText() != null
 									&& server_response.getText()
 											.equalsIgnoreCase(
-													"you are logged out")) {
+                                                    "you are logged out")) {
 
 								Log.e("lgg", "logout......");
 
@@ -5643,16 +5695,16 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								}
 
 								if (!WebServiceReferences.contextTable
-										.containsKey("buddyView1")) {
+                                        .containsKey("buddyView1")) {
 									Intent logiIntent = new Intent(cntxt,
 											buddyView1.class);
 									cntxt.startActivity(logiIntent);
 								}
 								if (WebServiceReferences.contextTable
-										.containsKey("formactivity")) {
+                                        .containsKey("formactivity")) {
 
 									WebServiceReferences.contextTable
-											.remove("formactivity");
+                                            .remove("formactivity");
 
 								}
 
@@ -5715,18 +5767,18 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								final Object obj = list.get(i);
 								if (obj instanceof BuddyInformationBean) {
 									BuddyInformationBean bib = (BuddyInformationBean) list
-											.get(i);
+                                            .get(i);
 
 									for (BuddyInformationBean biBean : ContactsFragment
-											.getBuddyList()) {
+                                            .getBuddyList()) {
 										if (!biBean.isTitle()) {
 											if (biBean.getName()
 													.equalsIgnoreCase(
-															bib.getName())) {
+                                                            bib.getName())) {
 												biBean = bib;
 												biBean.setStatus(ContactsFragment
 														.getStatusString(bib
-																.getStatus()));
+                                                                .getStatus()));
 											}
 										}
 										// else {
@@ -5752,12 +5804,12 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 //									});
 
 									/*
-									 * 
+									 *
 									 * if (bib.getType().equals("N")) {
-									 * 
+									 *
 									 * WebServiceReferences.buddyList.put(bib
 									 * .getName().trim(), bib);
-									 * 
+									 *
 									 * if (WebServiceReferences.tempBuddyList
 									 * .containsKey(bib.getName())) {
 									 * BuddyInformationBean oldBib =
@@ -5768,16 +5820,16 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									 * if (oldBib
 									 * .isIslocationBasedServiceDone()) {
 									 * bib.setIslocationBasedServiceDone(true);
-									 * 
+									 *
 									 * bib.setLatitude(oldBib .getLatitude());
 									 * bib.setLongitude(oldBib .getLongitude());
-									 * 
+									 *
 									 * }
-									 * 
+									 *
 									 * }
-									 * 
+									 *
 									 * } else if (bib.getType().equals("R")) {
-									 * 
+									 *
 									 * WebServiceReferences.reqbuddyList.put(
 									 * bib.getName(), bib); } else if
 									 * (bib.getStatus() != null) { if
@@ -5795,14 +5847,14 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 											// TODO Auto-generated method
 											// stub
 											setFTPUsername(((FtpDetails) obj)
-													.getFtpusername());
+                                                    .getFtpusername());
 											setFTPpassword(((FtpDetails) obj)
 													.getFtppasssword());
 											Editor editor = sharedPreferences
-													.edit();
+                                                    .edit();
 											editor.putString("ftpusername",
 													((FtpDetails) obj)
-															.getFtpusername());
+                                                            .getFtpusername());
 											editor.putString("ftppassword",
 													((FtpDetails) obj)
 															.getFtppasssword());
@@ -5812,7 +5864,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 												if (!((AppMainActivity) context).isFormLoaded) {
 
 													((AppMainActivity) context)
-															.process();
+                                                            .process();
 
 												}
 
@@ -5873,8 +5925,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							if (AppReference.isWriteInFile) {
 								try {
 									AppReference.logger
-											.error("KA123 key0 webservice response",
-													e);
+                                            .error("KA123 key0 webservice response",
+                                                    e);
 								} catch (Exception e1) {
 									// TODO Auto-generated catch block
 									e1.printStackTrace();
@@ -5897,11 +5949,11 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						// TODO Auto-generated method stub
 						if (servicebean.getObj() instanceof WebServiceBean) {
 							final WebServiceBean bean = (WebServiceBean) servicebean
-									.getObj();
+                                    .getObj();
 							ContactsFragment.getInstance(
 									SingleInstance.mainContext)
 									.notifyBuddyDeleted(bean.getText());
-						
+
 						}
 
 					}
@@ -6009,7 +6061,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 				if (servicebean.getObj() instanceof WebServiceBean) {
 					if (WebServiceReferences.contextTable
-							.containsKey("findpeoples")) {
+                            .containsKey("findpeoples")) {
 
 //						FindPeople bList = (FindPeople) WebServiceReferences.contextTable
 //                                .get("findpeoples");
@@ -6030,7 +6082,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					}
 
 					if (WebServiceReferences.contextTable
-							.containsKey("findpeoples")) {
+                            .containsKey("findpeoples")) {
 //						Log.d("find", "on calldisp findpeoples.......");
 //						FindPeople bList = (FindPeople) WebServiceReferences.contextTable
 //								.get("findpeoples");
@@ -6320,7 +6372,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				// if (SingleInstance.instanceTable
 				// .containsKey("createprofile")) {
 				// cancelDialog();
-			
+
 				//
 				// CreateProfileFragment pFragment = (CreateProfileFragment)
 				// SingleInstance.instanceTable
@@ -6570,7 +6622,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				// if (fieldTemplateBean.getFieldId().equals("3"))
 				// isUpdated = true;
 				//
-			
+
 				//
 				// if (!msg_file.exists()) {
 				//
@@ -6653,11 +6705,11 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 			case SHAREBYPROFILE:
 				if (WebServiceReferences.contextTable
-						.containsKey("sharebyprofile")) {
+                        .containsKey("sharebyprofile")) {
 					ShareByProfile frmrec_creator = (ShareByProfile) WebServiceReferences.contextTable
-							.get("sharebyprofile");
+                            .get("sharebyprofile");
 					frmrec_creator.notifyWebServiceResponse(servicebean
-							.getObj());
+                            .getObj());
 				}
 
 				break;
@@ -6671,7 +6723,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							cancelDialog();
 							if (servicebean.getObj() instanceof ArrayList) {
 								ArrayList<Object> response = (ArrayList<Object>) servicebean
-										.getObj();
+                                        .getObj();
 								String createdDate = "";
 								String modifiedDate = "";
 								for (Object object : response) {
@@ -6685,26 +6737,26 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 											cv.put("profiletimestamp",
 													pBean.getModifiedDate());
 											createdDate = pBean
-													.getCreatedDate();
+                                                    .getCreatedDate();
 											modifiedDate = pBean
 													.getModifiedDate();
 											if (!getdbHeler(context)
-													.isRecordExists(
-															"select * from profiletemplate where profileid='"
-																	+ pBean.getProfileId()
-																	+ "'")) {
+                                                    .isRecordExists(
+                                                            "select * from profiletemplate where profileid='"
+                                                                    + pBean.getProfileId()
+                                                                    + "'")) {
 												int id = getdbHeler(context)
 														.insertProfileTemplate(
-																cv);
+                                                                cv);
 
 											} else {
 												cv.remove("profileid");
 												getdbHeler(context)
 														.updateProfileTemplate(
-																cv,
-																"profileid='"
-																		+ pBean.getProfileId()
-																		+ "'");
+                                                                cv,
+                                                                "profileid='"
+                                                                        + pBean.getProfileId()
+                                                                        + "'");
 											}
 
 										}
@@ -6716,18 +6768,18 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 													.equalsIgnoreCase("1")) {
 
 												fieldTemplateBean
-														.setCreatedDate(createdDate);
+                                                        .setCreatedDate(createdDate);
 												fieldTemplateBean
 														.setModifiedDate(modifiedDate);
 
 												getdbHeler(context)
 														.saveOrUpdateProfileField(
-																fieldTemplateBean);
+                                                                fieldTemplateBean);
 
 											}
 
 										}
-										
+
 									}
 
 								}
@@ -6735,11 +6787,11 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							} else if (servicebean.getObj() instanceof WebServiceBean) {
 
 								if (WebServiceReferences.contextTable
-										.containsKey("buscard"))
+                                        .containsKey("buscard"))
 									((BusCard) WebServiceReferences.contextTable
-											.get("buscard"))
-											.showAlert(((WebServiceBean) servicebean
-													.getObj()).getText());
+                                            .get("buscard"))
+                                            .showAlert(((WebServiceBean) servicebean
+                                                    .getObj()).getText());
 
 							}
 						} catch (Exception e) {
@@ -6752,16 +6804,16 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				break;
 			case DELETEPROFILE:
 				if (WebServiceReferences.contextTable
-						.containsKey("buscard")) {
+                        .containsKey("buscard")) {
 					BusCard bCard = (BusCard) WebServiceReferences.contextTable
-							.get("buscard");
+                            .get("buscard");
 					bCard.notifyWebServiceDelete(servicebean.getObj());
 				}
 				// SingleInstance.mainContext.setProfilePic();
 
 				if (SingleInstance.contextTable.containsKey("MAIN")) {
 					AppMainActivity appMainActivity = (AppMainActivity) SingleInstance.contextTable
-							.get("MAIN");
+                            .get("MAIN");
 					appMainActivity.setProfilePic();
 
 				}
@@ -6770,7 +6822,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				Log.d("result", "" + servicebean.getServiceMethods().toString());
 
 				final WebServiceBean webserviceBean = (WebServiceBean) servicebean
-						.getObj();
+                        .getObj();
 
 				handlerForCall.post(new Runnable() {
 
@@ -6780,17 +6832,17 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						try {
 
 							if (WebServiceReferences.contextTable
-									.containsKey("forgotPassword")) {
+                                    .containsKey("forgotPassword")) {
 								forgotPassword forget = (forgotPassword) WebServiceReferences.contextTable
-										.get("forgotPassword");
+                                        .get("forgotPassword");
 								forget.getResponseFromServer(
 										webserviceBean.getText());
 
 							}
 							if (WebServiceReferences.contextTable
-									.containsKey("getnewpassword")) {
+                                    .containsKey("getnewpassword")) {
 								getnewpassword gPassword = (getnewpassword) WebServiceReferences.contextTable
-										.get("getnewpassword");
+                                        .get("getnewpassword");
 //								gPassword
 //										.notifyWebserviceResponse(webserviceBean);
 							}
@@ -6803,7 +6855,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 			case SECRETANSWER:
 				final WebServiceBean webServiceBean = (WebServiceBean) servicebean
-						.getObj();
+                        .getObj();
 
 				handlerForCall.post(new Runnable() {
 
@@ -6813,9 +6865,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						try {
 
 							if (WebServiceReferences.contextTable
-									.containsKey("getnewpassword")) {
+                                    .containsKey("getnewpassword")) {
 								getnewpassword newp = (getnewpassword) WebServiceReferences.contextTable
-										.get("getnewpassword");
+                                        .get("getnewpassword");
 //								newp.getSecretQuestionResponse(
 //										webServiceBean.getText(),
 //										webServiceBean.getResult());
@@ -6843,7 +6895,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								showToast(SipNotificationListener
 										.getCurrentContext(),
 										((ShareSendBean) servicebean.getObj())
-												.getText());
+                                                .getText());
 							}
 
 						}
@@ -6859,29 +6911,29 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						// TODO Auto-generated method stub
 						cancelDialog();
 						if (WebServiceReferences.contextTable
-								.containsKey("utilityseller")) {
+                                .containsKey("utilityseller")) {
 							((UtilitySeller) WebServiceReferences.contextTable
-									.get("utilityseller"))
+                                    .get("utilityseller"))
 									.notifywebserviceReponse(servicebean
-											.getObj());
+                                            .getObj());
 						} else if (WebServiceReferences.contextTable
-								.containsKey("utilitybuyer")) {
+                                .containsKey("utilitybuyer")) {
 							((UtilityBuyer) WebServiceReferences.contextTable
-									.get("utilitybuyer"))
+                                    .get("utilitybuyer"))
 									.notifywebserviceReponse(servicebean
-											.getObj());
+                                            .getObj());
 						} else if (WebServiceReferences.contextTable
-								.containsKey("utilityprovider")) {
+                                .containsKey("utilityprovider")) {
 							((UtilityServiceProvider) WebServiceReferences.contextTable
-									.get("utilityprovider"))
+                                    .get("utilityprovider"))
 									.notifywebserviceReponse(servicebean
-											.getObj());
+                                            .getObj());
 						} else if (WebServiceReferences.contextTable
-								.containsKey("utilityneeder")) {
+                                .containsKey("utilityneeder")) {
 							((UtilityServiceNeeder) WebServiceReferences.contextTable
-									.get("utilityneeder"))
+                                    .get("utilityneeder"))
 									.notifywebserviceReponse(servicebean
-											.getObj());
+                                            .getObj());
 						}
 					}
 				});
@@ -6896,36 +6948,36 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						if (servicebean.getObj() instanceof String[]) {
 
 							if (WebServiceReferences.contextTable
-									.containsKey("block_list")) {
+                                    .containsKey("block_list")) {
 								((Blocked_list) WebServiceReferences.contextTable
-										.get("block_list"))
+                                        .get("block_list"))
 										.notifyBuddyblockunblock(servicebean
-												.getObj());
+                                                .getObj());
 							}
 							if (WebServiceReferences.contextTable
-									.containsKey("utilityseller")) {
+                                    .containsKey("utilityseller")) {
 								((UtilitySeller) WebServiceReferences.contextTable
-										.get("utilityseller"))
+                                        .get("utilityseller"))
 										.notifyBuddyblockunblock(servicebean
-												.getObj());
+                                                .getObj());
 							} else if (WebServiceReferences.contextTable
-									.containsKey("utilitybuyer")) {
+                                    .containsKey("utilitybuyer")) {
 								((UtilityBuyer) WebServiceReferences.contextTable
-										.get("utilitybuyer"))
+                                        .get("utilitybuyer"))
 										.notifyBuddyblockunblock(servicebean
-												.getObj());
+                                                .getObj());
 							} else if (WebServiceReferences.contextTable
-									.containsKey("utilityprovider")) {
+                                    .containsKey("utilityprovider")) {
 								((UtilityServiceProvider) WebServiceReferences.contextTable
-										.get("utilityprovider"))
+                                        .get("utilityprovider"))
 										.notifyBuddyblockunblock(servicebean
-												.getObj());
+                                                .getObj());
 							} else if (WebServiceReferences.contextTable
-									.containsKey("utilityneeder")) {
+                                    .containsKey("utilityneeder")) {
 								((UtilityServiceNeeder) WebServiceReferences.contextTable
-										.get("utilityneeder"))
+                                        .get("utilityneeder"))
 										.notifyBuddyblockunblock(servicebean
-												.getObj());
+                                                .getObj());
 							}
 						}
 					}
@@ -7106,9 +7158,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							.NotifyresponsecallConfig(servicebean.getObj());
 				}
 				if (WebServiceReferences.contextTable
-						.containsKey("answeringmachine")) {
+                        .containsKey("answeringmachine")) {
 					((AnsweringMachineActivity) WebServiceReferences.contextTable
-							.get("answeringmachine"))
+                            .get("answeringmachine"))
 							.NotifyresponsecallConfig(servicebean.getObj());
 				}
 
@@ -7121,7 +7173,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						// TODO Auto-generated method stub
 						if (servicebean.getObj() instanceof ArrayList) {
 							ArrayList<Object> response = (ArrayList<Object>) servicebean
-									.getObj();
+                                    .getObj();
 							String buddyname = null;
 							for (Object object : response) {
 
@@ -7145,14 +7197,14 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 													+ bean.getId())) {
 										int id = getdbHeler(context)
 												.insertOfflineCallResponseDetails(
-														cv);
+                                                        cv);
 										Log.i("clone", "---->id" + id);
 									} else {
 										cv.remove("id");
 										getdbHeler(context)
 												.updateOfflineCallResponseDetails(
-														cv,
-														"id=" + bean.getId());
+                                                        cv,
+                                                        "id=" + bean.getId());
 									}
 
 									String[] params = new String[3];
@@ -7182,8 +7234,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 										cv_update.put("status", 0);
 										getdbHeler(context)
 												.updateOfflineCallResponseDetails(
-														cv_update,
-														"id=" + bean.getId());
+                                                        cv_update,
+                                                        "id=" + bean.getId());
 										cv = null;
 										downloadOfflineresponse(
 												bean.getResponse(),
@@ -7195,21 +7247,21 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							}
 
 							if (WebServiceReferences.contextTable
-									.containsKey("clone")) {
+                                    .containsKey("clone")) {
 								AvatarFragment avatarFragment = AvatarFragment
-										.newInstance(context);
+                                        .newInstance(context);
 								avatarFragment.populateAllresponses();
 							}
 							if (WebServiceReferences.contextTable
-									.containsKey("avatarset")) {
+                                    .containsKey("avatarset")) {
 								AvatarActivity avatarActivity = AvatarActivity
-										.newInstance(context);
+                                        .newInstance(context);
 								avatarActivity.populateAllresponses();
 							}
 							if (WebServiceReferences.contextTable
-									.containsKey("answeringmachine"))
+                                    .containsKey("answeringmachine"))
 								((AnsweringMachineActivity) WebServiceReferences.contextTable
-										.get("answeringmachine"))
+                                        .get("answeringmachine"))
 										.populatePendingclones();
 							if (buddyname != null) {
 								showToast(context,
@@ -7236,7 +7288,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 						if (servicebean.getObj() instanceof ArrayList) {
 							ArrayList<Object> blocked_list = (ArrayList<Object>) servicebean
-									.getObj();
+                                    .getObj();
 							blocked_buddies.clear();
 							if (blocked_list != null) {
 								for (Object object : blocked_list) {
@@ -7450,7 +7502,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				// });
 				break;
 			case ADDFORMRECORDS:
-				
+
 
 				break;
 			case GETFORMSTEMPLATE:
@@ -7465,35 +7517,35 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 			case ACCESSFORM:
 
 				if (WebServiceReferences.contextTable
-						.containsKey("formpermission")) {
+                        .containsKey("formpermission")) {
 
 					AccessAndSync frmrec_creator = (AccessAndSync) WebServiceReferences.contextTable
-							.get("formpermission");
+                            .get("formpermission");
 					frmrec_creator.notifyWebServiceResponse(servicebean
-							.getObj());
+                            .getObj());
 				} else if (WebServiceReferences.contextTable
-						.containsKey("formpermissionviewer")) {
+                        .containsKey("formpermissionviewer")) {
 
 					FormPermissionViewer frmrec_creator = (FormPermissionViewer) WebServiceReferences.contextTable
-							.get("formpermissionviewer");
+                            .get("formpermissionviewer");
 					frmrec_creator.notifyWebServiceResponseupdate(servicebean
-							.getObj());
+                            .getObj());
 				} else if (WebServiceReferences.contextTable
-						.containsKey("SecContatct")) {
+                        .containsKey("SecContatct")) {
 
 					ContactLogics frm_creator = (ContactLogics) WebServiceReferences.contextTable
-							.get("SecContatct");
+                            .get("SecContatct");
 					frm_creator.notifyWebServiceResponseAccess(servicebean
-							.getObj());
+                            .getObj());
 				}
 
 				break;
 
 			case DELETEACCESSFORM:
 				if (WebServiceReferences.contextTable
-						.containsKey("formpermissionviewer")) {
+                        .containsKey("formpermissionviewer")) {
 					FormPermissionViewer frmrec_creator = (FormPermissionViewer) WebServiceReferences.contextTable
-							.get("formpermissionviewer");
+                            .get("formpermissionviewer");
 					Log.i("formsettings", "" + servicebean.getObj().toString());
 
 					if (servicebean.getObj() instanceof String[]) {
@@ -7504,7 +7556,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						String del_row = "delete from formsettings where settingid='"
 								+ fsid + "'";
 						getdbHeler(SipNotificationListener.getCurrentContext())
-								.ExecuteQuery(del_row);
+                                .ExecuteQuery(del_row);
 						frmrec_creator.refreshList();
 						cancelDialog();
 
@@ -7519,11 +7571,11 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 			case UPDATEFORMRECORDS:
 				if (WebServiceReferences.contextTable
-						.containsKey("frmreccreator")) {
+                        .containsKey("frmreccreator")) {
 					FormRecordsCreators frmrec_creator = (FormRecordsCreators) WebServiceReferences.contextTable
-							.get("frmreccreator");
+                            .get("frmreccreator");
 					frmrec_creator.notifyWebServiceResponse1(servicebean
-							.getObj());
+                            .getObj());
 				} else {
 					handleDataForms(servicebean.getObj());
 
@@ -7536,12 +7588,12 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				Log.i("thread", "response to createforms");
 				if (WebServiceReferences.contextTable.containsKey("formdesc")) {
 					FormDescription frm_creator = (FormDescription) WebServiceReferences.contextTable
-							.get("formdesc");
+                            .get("formdesc");
 					frm_creator.notifyWebServiceResponse(servicebean.getObj());
 				} else if (WebServiceReferences.contextTable
-						.containsKey("SecContatct")) {
+                        .containsKey("SecContatct")) {
 					ContactLogics frm_creator = (ContactLogics) WebServiceReferences.contextTable
-							.get("SecContatct");
+                            .get("SecContatct");
 					frm_creator.notifyWebServiceResponse(servicebean.getObj());
 				} else {
 					Log.i("thread", "response to createforms elseeee....");
@@ -7556,11 +7608,11 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 						if (SingleInstance.contextTable.containsKey("forms")) {
 							FormsFragment quickActionFragment = FormsFragment
-									.newInstance(context);
+                                    .newInstance(context);
 
 							quickActionFragment
 									.notifyWebServiceResponse(servicebean
-											.getObj());
+                                            .getObj());
 						} else {
 							handleGetDataForms(servicebean.getObj());
 						}
@@ -7577,14 +7629,14 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 				if (SingleInstance.contextTable.containsKey("forms")) {
 					FormsFragment quickActionFragment = FormsFragment
-							.newInstance(context);
+                            .newInstance(context);
 
 					quickActionFragment.notifyFormDeletionRespose(servicebean
-							.getObj());
+                            .getObj());
 				} else if (WebServiceReferences.contextTable
-						.containsKey("appsview")) {
+                        .containsKey("appsview")) {
 					AppsView frm_activity = (AppsView) WebServiceReferences.contextTable
-							.get("appsview");
+                            .get("appsview");
 					frm_activity.refreshIcon();
 				}
 
@@ -7597,7 +7649,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 			case DELETEFORMRECORD:
 				if (WebServiceReferences.contextTable.containsKey("frmviewer")) {
 					FormViewer frm_creator = (FormViewer) WebServiceReferences.contextTable
-							.get("frmviewer");
+                            .get("frmviewer");
 					frm_creator.notifyFormDeleteRecords(servicebean.getObj());
 				} else {
 					handleDeleteFormsRecords(servicebean.getObj());
@@ -7605,7 +7657,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				break;
 			case CHANGEPASSWORD:
 				final WebServiceBean sbean = (WebServiceBean) servicebean
-						.getObj();
+                        .getObj();
 				Log.d("chk", "RESULT:" + sbean.getText());
 				// handlerForCall.post(new Runnable() {
 				// @Override
@@ -7639,11 +7691,11 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					public void run() {
 						// TODO Auto-generated method stub
 						if (WebServiceReferences.contextTable
-								.containsKey("permissionsactivity"))
+                                .containsKey("permissionsactivity"))
 							((PermissionsActivity) WebServiceReferences.contextTable
-									.get("permissionsactivity"))
+                                    .get("permissionsactivity"))
 									.notifySetPermissionResponse(servicebean
-											.getObj());
+                                            .getObj());
 					}
 				});
 				break;
@@ -7653,7 +7705,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					public void run() {
 						if (servicebean.getObj() instanceof ArrayList)
 							notifyGetallPermission((ArrayList<PermissionBean>) servicebean
-									.getObj());
+                                    .getObj());
 					}
 				});
 				break;
@@ -7673,7 +7725,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								if (LoginUser != null) {
 
 									WebServiceReferences.webServiceClient
-											.heartBeat(aliveBean);
+                                            .heartBeat(aliveBean);
 								}
 							}
 						}
@@ -7684,7 +7736,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				break;
 			case DELETEALLSHARES:
 				if (WebServiceReferences.contextTable
-						.containsKey("buddiesList"))
+                        .containsKey("buddiesList"))
 					ContactsFragment.getInstance(context)
 							.notifyDeleteallshareResponse(servicebean.getObj());
 				else
@@ -7698,15 +7750,15 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					public void run() {
 						// TODO Auto-generated method stub
 						if (WebServiceReferences.contextTable
-								.containsKey("creategroup")) {
+                                .containsKey("creategroup")) {
 							((GroupActivity) WebServiceReferences.contextTable
-									.get("creategroup"))
+                                    .get("creategroup"))
 									.notifyCreateGroup(servicebean.getObj());
 						}
 						if (WebServiceReferences.contextTable
-								.containsKey("exchanges")) {
+                                .containsKey("exchanges")) {
 							ExchangesFragment exchanges = ExchangesFragment
-									.newInstance(context);
+                                    .newInstance(context);
 							exchanges.notifyGroupList();
 						}
 					}
@@ -7739,20 +7791,20 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					public void run() {
 						// TODO Auto-generated method stub
 						if (WebServiceReferences.contextTable
-								.containsKey("creategroup")) {
+                                .containsKey("creategroup")) {
 							((GroupActivity) WebServiceReferences.contextTable
-									.get("creategroup"))
+                                    .get("creategroup"))
 									.notifyDeleteGroup(servicebean.getObj());
 						} else if (WebServiceReferences.contextTable
-								.containsKey("buddiesList")) {
+                                .containsKey("buddiesList")) {
 							ContactsFragment.getInstance(
 									SingleInstance.mainContext)
 									.notifyDeleteGroup(servicebean.getObj());
 						}
 						if (WebServiceReferences.contextTable
-								.containsKey("exchanges")) {
+                                .containsKey("exchanges")) {
 							ExchangesFragment excFragment = ExchangesFragment
-									.newInstance(context);
+                                    .newInstance(context);
 							excFragment.notifyGroupList();
 						}
 					}
@@ -7796,20 +7848,20 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					public void run() {
 						// TODO Auto-generated method stub
 						if (WebServiceReferences.contextTable
-								.containsKey("buddiesList")) {
+                                .containsKey("buddiesList")) {
 							(ContactsFragment.getInstance(context))
 									.notifyDeleteGroup(servicebean.getObj());
 						}
 						if (WebServiceReferences.contextTable
-								.containsKey("creategroup")) {
+                                .containsKey("creategroup")) {
 							((GroupActivity) WebServiceReferences.contextTable
-									.get("creategroup"))
+                                    .get("creategroup"))
 									.notifyDeleteGroup(servicebean.getObj());
 						}
 						if (WebServiceReferences.contextTable
-								.containsKey("viewgroup")) {
+                                .containsKey("viewgroup")) {
 							((ViewGroups) WebServiceReferences.contextTable
-									.get("viewgroup"))
+                                    .get("viewgroup"))
 									.notifyDeleteGroup(servicebean.getObj());
 
 						}
@@ -7826,7 +7878,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						if (servicebean.getObj() instanceof Vector) {
 							@SuppressWarnings("unchecked")
 							Vector<GroupBean> gBeanList = (Vector<GroupBean>) servicebean
-									.getObj();
+                                    .getObj();
 							for (GroupBean groupBean : gBeanList) {
 								groupBean.setUserName(LoginUser);
 								groupBean.setOwnerName(LoginUser);
@@ -7838,9 +7890,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							}
 
 							if (WebServiceReferences.contextTable
-									.containsKey("exchanges")) {
+                                    .containsKey("exchanges")) {
 								ExchangesFragment exchangesFragment = ExchangesFragment
-										.newInstance(context);
+                                        .newInstance(context);
 								exchangesFragment.notifyGroupList();
 							}
 						}
@@ -7856,7 +7908,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						if (servicebean.getObj() instanceof Vector) {
 							@SuppressWarnings("unchecked")
 							Vector<GroupBean> gBeanList = (Vector<GroupBean>) servicebean
-									.getObj();
+                                    .getObj();
 							for (GroupBean groupBean : gBeanList) {
 								groupBean.setUserName(LoginUser);
 								groupBean.setActiveGroupMembers(groupBean
@@ -7868,9 +7920,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							}
 
 							if (WebServiceReferences.contextTable
-									.containsKey("exchanges")) {
+                                    .containsKey("exchanges")) {
 								ExchangesFragment exchangesFragment = ExchangesFragment
-										.newInstance(context);
+                                        .newInstance(context);
 								exchangesFragment.notifyGroupList();
 							}
 						}
@@ -7920,38 +7972,38 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 								DBAccess.getdbHeler(context)
 										.updateProfileFieldValues(
-												cv,
-												"fieldid=" + details[0]
-														+ " and userid='"
-														+ details[1] + "'");
+                                                cv,
+                                                "fieldid=" + details[0]
+                                                        + " and userid='"
+                                                        + details[1] + "'");
 								if (details[0].equals("2")
 										&& details[1]
 												.equalsIgnoreCase(LoginUser)) {
 									SingleInstance.mainContext.setProfilePic();
 									if (SingleInstance.contextTable
-											.containsKey("settings")) {
+                                            .containsKey("settings")) {
 										SettingsFragment settingContext = SettingsFragment
-												.newInstance(context);
+                                                .newInstance(context);
 										settingContext
 												.notifyProfilePictureDownloaded();
 									}
 									ContactsFragment contactsContext = ContactsFragment
-											.getInstance(SingleInstance.mainContext);
+                                            .getInstance(SingleInstance.mainContext);
 									contactsContext
 											.notifyProfilePictureDownloaded();
 
 								}
 								if (SingleInstance.instanceTable
-										.containsKey("createprofile")) {
+                                        .containsKey("createprofile")) {
 									(CreateProfileFragment.newInstance(context))
 											.notifyFileDownloaded(details[0],
-													filename, details[1]);
+                                                    filename, details[1]);
 								}
 								if (SingleInstance.instanceTable
-										.containsKey("viewprofile")) {
+                                        .containsKey("viewprofile")) {
 									(ViewProfileFragment.newInstance(context))
 											.notifyfileDownloaded(details[0],
-													details[1]);
+                                                    details[1]);
 								}
 
 							}
@@ -7973,7 +8025,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 		try {
 			Log.d("FTP", "Came to downloadofflinecall Response----->" + id);
 			AppMainActivity appMainActivity = (AppMainActivity) SingleInstance.contextTable
-					.get("MAIN");
+                    .get("MAIN");
 			FTPBean ftpBean = new FTPBean();
 			if (CallDispatcher.LoginUser != null) {
 				if (from.equalsIgnoreCase("profile field")) {
@@ -7984,10 +8036,10 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							cv.put("status", 1);
 							DBAccess.getdbHeler(context)
 									.updateProfileFieldValues(
-											cv,
-											"fieldid=" + details[0]
-													+ " and userid='"
-													+ details[1] + "'");
+                                            cv,
+                                            "fieldid=" + details[0]
+                                                    + " and userid='"
+                                                    + details[1] + "'");
 						}
 					}
 					ftpBean.setReq_object(id);
@@ -8021,12 +8073,12 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				if (path != null && path.trim().length() > 0
 						&& !path.equalsIgnoreCase("null")) {
 					ftpBean.setServer_ip(appMainActivity.cBean.getRouter()
-							.split(":")[0]);
+                            .split(":")[0]);
 					ftpBean.setServer_port(40400);
 					if (obj instanceof ShareReminder) {
 						ftpBean.setFtp_username(((ShareReminder) obj).getFrom());
 						ftpBean.setFtp_password(((ShareReminder) obj)
-								.getFtpPassword());
+                                .getFtpPassword());
 					} else {
 						ftpBean.setFtp_username("ftpadmin");
 						ftpBean.setFtp_password("ftppassword");
@@ -8093,13 +8145,13 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 		case SUBSCRIBE:
 			if (WebServiceReferences.contextTable.containsKey("buddyView1"))
 				((buddyView1) WebServiceReferences.contextTable
-						.get("buddyView1"))
+                        .get("buddyView1"))
 						.notifyRegistrationResponse(errorMsg);
 			break;
 		case SIGNIN:
 			if (WebServiceReferences.contextTable.containsKey("buddyView1"))
 				((buddyView1) WebServiceReferences.contextTable
-						.get("buddyView1")).notifyLoginResponse(errorMsg);
+                        .get("buddyView1")).notifyLoginResponse(errorMsg);
 			break;
 		case SIGNOUT:
 			handlerForCall.post(new Runnable() {
@@ -8410,7 +8462,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * To hang up the specified user's call
-	 * 
+	 *
 	 * @param buddyName
 	 *            - User name to hang up call
 	 * @param calltype
@@ -8454,7 +8506,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * To add the buddy into the conference call
-	 * 
+	 *
 	 * @param selectedBuddy
 	 *            - whom to add into the conference
 	 * @param calltype
@@ -8528,7 +8580,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						BuddyInformationBean online_bean = null;
 
 						for (BuddyInformationBean temp : ContactsFragment
-								.getBuddyList()) {
+                                .getBuddyList()) {
 							if (!temp.isTitle()) {
 								if (temp.getName().equalsIgnoreCase(
 										online_buddys[i])) {
@@ -8541,9 +8593,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						if (online_bean.getLatitude().trim().length() != 0
 								&& online_bean.getLongitude().trim().length() != 0) {
 							Double blat = Double.parseDouble(online_bean
-									.getLatitude());
+                                    .getLatitude());
 							Double blong = Double.parseDouble(online_bean
-									.getLongitude());
+                                    .getLongitude());
 							if (blat != 0 && blong != 0) {
 								double theta = ownlong - blong;
 								double dist = Math.sin(deg2rad(ownlat))
@@ -8718,7 +8770,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * To get the buddies who are all in online
-	 * 
+	 *
 	 * @return
 	 */
 	public String[] getOnlinePagingBuddys() {
@@ -8962,7 +9014,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * If LogingUser is match with from return the to value else return from
-	 * 
+	 *
 	 * @param from
 	 * @param to
 	 * @return String
@@ -9124,7 +9176,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				Key = iterator.next();
 
 				SignalingBean sbx = CallDispatcher.contConferencemembers
-						.get(Key);
+                        .get(Key);
 
 				callHangUp1(sbx);
 
@@ -9215,7 +9267,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * To mute and unmute the speaker with respect to the speaker value
-	 * 
+	 *
 	 * @param speaker
 	 */
 	public void audioSpeakerMute(boolean speaker) {
@@ -9229,7 +9281,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	/**
 	 * To mute or unmute the speaker when video call is in progress
-	 * 
+	 *
 	 * @param speaker
 	 */
 	public static void videoSpeakerMute(boolean speaker) {
@@ -9327,7 +9379,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 			// Guard against "bad hostname" errors during handshake.
 			con.setHostnameVerifier(new HostnameVerifier() {
-				
+
 				@Override
 				public boolean verify(String host, SSLSession sess) {
 					// TODO Auto-generated method stub
@@ -9417,7 +9469,7 @@ private TrustManager[] get_trust_mgr() {
 				ipaddress = url;
 			} else {
 				ipaddress = (String) this.context
-						.getString(R.string.service_url);
+                        .getString(R.string.service_url);
 			}
 		} else {
 			ipaddress = (String) this.context.getString(R.string.service_url);
@@ -9482,7 +9534,7 @@ private TrustManager[] get_trust_mgr() {
 						Log.i("b",
 								"***************process public ip state method***********************");
 						WebServiceReferences.webServiceClient
-								.heartBeat(aliveBean);
+                                .heartBeat(aliveBean);
 						String[] user = { LoginUser, "", "" };
 //						WebServiceReferences.webServiceClient.getFormTemplate(
 //								user, context);
@@ -9612,7 +9664,7 @@ private TrustManager[] get_trust_mgr() {
 								buffer.length);
 						datagramReceive.setData(rtpPacketReceive.packet);
 						datagramReceive
-								.setLength(rtpPacketReceive.packet.length);
+                                .setLength(rtpPacketReceive.packet.length);
 						// socket.receive(datagram);
 						Log.d("UDP", "ready to receive  while(true){");
 						s.receive(datagramReceive);
@@ -9981,8 +10033,8 @@ private TrustManager[] get_trust_mgr() {
 							siginBean
 									.setExternalipaddress(getPublicipaddress());
 							siginBean.setSignalingPort(Integer
-									.toString(AppMainActivity.commEngine
-											.getSignalingPort()));
+                                    .toString(AppMainActivity.commEngine
+                                            .getSignalingPort()));
 							siginBean.setPstatus("1");
 							siginBean.setDtype(returnDetails[0]);
 							siginBean.setDos(returnDetails[2]);
@@ -9990,7 +10042,7 @@ private TrustManager[] get_trust_mgr() {
 									R.string.app_version));
 
 							WebServiceReferences.webServiceClient
-									.UsersignIn(siginBean);
+                                    .UsersignIn(siginBean);
 
 						} catch (Exception e) {
 							// TODO: handle exception
@@ -10010,7 +10062,7 @@ private TrustManager[] get_trust_mgr() {
 
 					} else {
 						Toast.makeText(context, "Please check settings", 3000)
-								.show();
+                                .show();
 					}
 				} catch (Exception e) {
 					// TODO: handle exception
@@ -10128,14 +10180,14 @@ private TrustManager[] get_trust_mgr() {
 				Log.d("AAAA", "notifytype2Sent  ==> " );
 				CallDispatcher.sb.setStartTime(getCurrentDateandTime());
 				Object objCallScreen = SingleInstance.instanceTable
-						.get("callscreen");
+                        .get("callscreen");
 				if (objCallScreen != null) {
 					if (objCallScreen instanceof AudioCallScreen)
 						((AudioCallScreen) SingleInstance.instanceTable
-								.get("callscreen")).notifyType2Received();
+                                .get("callscreen")).notifyType2Received();
 					if (objCallScreen instanceof AudioPagingSRWindow)
 						((AudioPagingSRWindow) SingleInstance.instanceTable
-								.get("callscreen")).notifyType2Received();
+                                .get("callscreen")).notifyType2Received();
 
 				} else {
 					handlerForCall.postDelayed(new Runnable() {
@@ -10144,15 +10196,15 @@ private TrustManager[] get_trust_mgr() {
 						public void run() {
 							// TODO Auto-generated method stub
 							Object objCallScreen = SingleInstance.instanceTable
-									.get("callscreen");
+                                    .get("callscreen");
 							if (objCallScreen != null) {
 								if (objCallScreen instanceof AudioCallScreen)
 									((AudioCallScreen) SingleInstance.instanceTable
-											.get("callscreen"))
+                                            .get("callscreen"))
 											.notifyType2Received();
 								if (objCallScreen instanceof AudioPagingSRWindow)
 									((AudioPagingSRWindow) SingleInstance.instanceTable
-											.get("callscreen"))
+                                            .get("callscreen"))
 											.notifyType2Received();
 
 							}
@@ -10222,14 +10274,14 @@ private TrustManager[] get_trust_mgr() {
 					cancelDownloadSchedule();
 					Log.i("wifi123", "Wifi closed : " + isWifiClosed);
 					SingleInstance.mainContext
-							.ShowError("The Network Has Changed");
+                            .ShowError("The Network Has Changed");
 
 					SingleInstance.printLog(null, "The Network Has Changed" , "INFO", null);
 					new AppMainActivity().setfooterVisiblity(false);
 					SingleInstance.mainContext.chageMyStatus();
 
 					Object objCallScreen = SingleInstance.instanceTable
-							.get("callscreen");
+                            .get("callscreen");
 
 					if (objCallScreen != null) {
 
@@ -10252,9 +10304,9 @@ private TrustManager[] get_trust_mgr() {
 							acalObj.showWifiStateChangedAlert("Internet Connection lost,can not continue this call");
 
 						} else if (SingleInstance.instanceTable
-								.containsKey("screenshare")) {
+                                .containsKey("screenshare")) {
 							ScreenSharingFragment ssFragment = (ScreenSharingFragment) SingleInstance.instanceTable
-									.get("screenshare");
+                                    .get("screenshare");
 							ssFragment
 									.showWifiStateChangedAlert("Internet Connection lost,can not continue this call");
 
@@ -10262,45 +10314,45 @@ private TrustManager[] get_trust_mgr() {
 
 					}
 					if (WebServiceReferences.contextTable
-							.containsKey("frmviewer")) {
+                            .containsKey("frmviewer")) {
 						FormViewer view1 = (FormViewer) WebServiceReferences.contextTable
-								.get("frmviewer");
+                                .get("frmviewer");
 						view1.cancelDialog(false);
 					} else if (WebServiceReferences.contextTable
-							.containsKey("frmreccreator")) {
+                            .containsKey("frmreccreator")) {
 						FormRecordsCreators view1 = (FormRecordsCreators) WebServiceReferences.contextTable
-								.get("frmreccreator");
+                                .get("frmreccreator");
 						view1.cancelDialog(false);
 					} else if (WebServiceReferences.contextTable
-							.containsKey("formpermissionviewer")) {
+                            .containsKey("formpermissionviewer")) {
 						FormPermissionViewer frm_creator = (FormPermissionViewer) WebServiceReferences.contextTable
-								.get("formpermissionviewer");
+                                .get("formpermissionviewer");
 
 						frm_creator.cancelDialog(false);
 
 					} else if (WebServiceReferences.contextTable
-							.containsKey("formpermission")) {
+                            .containsKey("formpermission")) {
 						AccessAndSync view1 = (AccessAndSync) WebServiceReferences.contextTable
-								.get("formpermission");
+                                .get("formpermission");
 						view1.cancelDialog(false);
 					} else if (WebServiceReferences.contextTable
-							.containsKey("formdesc")) {
+                            .containsKey("formdesc")) {
 						FormDescription view1 = (FormDescription) WebServiceReferences.contextTable
-								.get("formdesc");
+                                .get("formdesc");
 						view1.cancelDialog(false);
 					}
 
 					else if (SingleInstance.contextTable.containsKey("forms")) {
 						FormsFragment quickActionFragment = FormsFragment
-								.newInstance(context);
+                                .newInstance(context);
 
 						quickActionFragment.cancelDialog();
 						quickActionFragment.showToast();
 					}
 					if (SingleInstance.instanceTable
-							.containsKey("connection"))
+                            .containsKey("connection"))
 						((CallConnectingScreen) SingleInstance.instanceTable
-								.get("connection"))
+                                .get("connection"))
 								.showWifiStateChangedAlert("Internet Connection lost,can not continue this call");
 					// if (WebServiceReferences.contextTable
 					// .containsKey("sipcallscreen")) {
@@ -10362,7 +10414,7 @@ private TrustManager[] get_trust_mgr() {
 					// }).start();
 
 					LoginPageFragment loginPageFragment = LoginPageFragment
-							.newInstance(SingleInstance.mainContext);
+                            .newInstance(SingleInstance.mainContext);
 					loginPageFragment.backgroundLogin();
 
 				}
@@ -10392,19 +10444,19 @@ private TrustManager[] get_trust_mgr() {
 		buider.setMessage(
 				"Are you sure, You want to Send this application to Background ?")
 				.setPositiveButton("Yes",
-						new DialogInterface.OnClickListener() {
+                        new DialogInterface.OnClickListener() {
 
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								((Activity) mcontext).moveTaskToBack(true);
-							}
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                ((Activity) mcontext).moveTaskToBack(true);
+                            }
 						})
 				.setNegativeButton("No", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
-						dialog.cancel();
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO Auto-generated method stub
+                        dialog.cancel();
 					}
 				});
 		AlertDialog alert = buider.create();
@@ -10433,7 +10485,7 @@ private TrustManager[] get_trust_mgr() {
 						try {
 							ContactsFragment.getContactAdapter()
 									.notifyDataSetChanged();
-							
+
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -10603,7 +10655,7 @@ private TrustManager[] get_trust_mgr() {
 				bmp.recycle();
 			double sampleSize = 0;
 			Boolean scaleByHeight = Math.abs(options.outHeight - targetHeight) >= Math
-					.abs(options.outWidth - targetWidth);
+                    .abs(options.outWidth - targetWidth);
 
 			if (options.outHeight * options.outWidth * 2 >= 1638) {
 
@@ -10883,9 +10935,9 @@ private TrustManager[] get_trust_mgr() {
 			if (AppReference.isFormloaded) {
 
 				FormsFragment viewProfileFragment = FormsFragment
-						.newInstance(context);
+                        .newInstance(context);
 				AppMainActivity appMainActivity = (AppMainActivity) SingleInstance.contextTable
-						.get("MAIN");
+                        .get("MAIN");
 				FragmentManager fragmentManager = appMainActivity
 						.getSupportFragmentManager();
 				FragmentTransaction fragmentTransaction = fragmentManager
@@ -10971,12 +11023,12 @@ private TrustManager[] get_trust_mgr() {
 		GSMCallisAccepted = true;
 		if (WebServiceReferences.contextTable.containsKey("multimediautils"))
 			((MultimediaUtils) WebServiceReferences.contextTable
-					.get("multimediautils")).notifyGSMCallAccepted();
+                    .get("multimediautils")).notifyGSMCallAccepted();
 		// if (WebServiceReferences.contextTable.containsKey("videoplayer"))
 		// ((VideoPlayer) WebServiceReferences.contextTable.get("videoplayer"))
 		// .notifyGSMCallAccepted();
 		Object objCallScreen = SingleInstance.instanceTable
-				.get("callscreen");
+                .get("callscreen");
 
 		if (objCallScreen != null) {
 
@@ -11002,7 +11054,7 @@ private TrustManager[] get_trust_mgr() {
 		}
 		if (SingleInstance.instanceTable.containsKey("connection"))
 			((CallConnectingScreen) SingleInstance.instanceTable
-					.get("connection")).HangupCall();
+                    .get("connection")).HangupCall();
 
 		// if (WebServiceReferences.contextTable.containsKey("sipcallscreen")) {
 		// ((CallScreenActivity) WebServiceReferences.contextTable
@@ -11053,16 +11105,16 @@ private TrustManager[] get_trust_mgr() {
 		if (hastoupdate) {
 			if (WebServiceReferences.contextTable.containsKey("MAIN")) {
 				CompleteListView list = (CompleteListView) WebServiceReferences.contextTable
-						.get("MAIN");
+                        .get("MAIN");
 				if (type.equalsIgnoreCase("video")) {
 					if (hastoStream)
 						list.updateComponent(buddyName, filePath.substring(0,
 								filePath.trim().length() - 4), sbean
-								.getFileId(), filename, "2", type);
+                                .getFileId(), filename, "2", type);
 					else
 						list.updateComponent(buddyName, filePath.substring(0,
 								filePath.trim().length() - 4), sbean
-								.getFileId(), filename, "1", type);
+                                .getFileId(), filename, "1", type);
 
 				} else {
 					list.updateComponent(buddyName, filePath,
@@ -11170,7 +11222,7 @@ private TrustManager[] get_trust_mgr() {
 			TextView time_input, boolean stream_enabled,
 			CompleteListBean cmpBean) {
 		AppMainActivity appMain = ((AppMainActivity) SingleInstance.contextTable
-				.get("MAIN"));
+                .get("MAIN"));
 		try {
 			ConnectionBrokerServerBean cBean = appMain.cBean;
 			FTPBean ftpBean = new FTPBean();
@@ -11224,12 +11276,12 @@ private TrustManager[] get_trust_mgr() {
 
 			if (WebServiceReferences.contextTable.containsKey("sendershare")) {
 				((sendershare) WebServiceReferences.contextTable
-						.get("sendershare")).finish();
+                        .get("sendershare")).finish();
 			}
 			if (WebServiceReferences.contextTable.containsKey("Component")) {
 				if (flag)
 					((ComponentCreator) WebServiceReferences.contextTable
-							.get("Component")).finish();
+                            .get("Component")).finish();
 			}
 			send_multiple = false;
 
@@ -11238,7 +11290,7 @@ private TrustManager[] get_trust_mgr() {
 		}
 	}
 	/*
-	 * To upload files using webservice 
+	 * To upload files using webservice
 	 */
 	public void uploadFile(String username, String password,String componenttype,
 			String filename, String contents,String componentpath,Object context1)
@@ -11291,7 +11343,7 @@ private TrustManager[] get_trust_mgr() {
 	}
 
 	/*
-	 * To upload files using webservice 
+	 * To upload files using webservice
 	 */
 
 	public void showAlert(final String title, final String message) {
@@ -11350,11 +11402,11 @@ private TrustManager[] get_trust_mgr() {
 							nilldistancelist.add(utilityBean);
 						else {
 							String distance = String.format("%.3f", Double
-									.parseDouble(utilityBean.getDistance()));
+                                    .parseDouble(utilityBean.getDistance()));
 							if (distance.startsWith("0")) {
 								double dist = Double.parseDouble(distance) * 1000;
 								utilityBean.setDistance(Integer
-										.toString((int) dist) + "m");
+                                        .toString((int) dist) + "m");
 								distancem_list.add(utilityBean);
 							} else {
 								utilityBean.setDistance(distance + "km");
@@ -11485,7 +11537,7 @@ private TrustManager[] get_trust_mgr() {
 				chb.setAutoCall(autoCall[i]);
 
 				chb.setNetworkState(Integer
-						.toString(CallDispatcher.networkState));
+                        .toString(CallDispatcher.networkState));
 				chb.setLoginUserName(LoginUser);
 				arrayCallHistory.add(chb);
 
@@ -11622,8 +11674,8 @@ private TrustManager[] get_trust_mgr() {
 					try {
 						if (!SingleInstance.mainContext.isAutoAcceptEnabled(
 								CallDispatcher.LoginUser, CallDispatcher
-										.getUser(signBean.getFrom(),
-												signBean.getTo()))) {
+                                        .getUser(signBean.getFrom(),
+                                                signBean.getTo()))) {
 							startRingTone();
 						}
 						whenCallInitiated();
@@ -11636,11 +11688,11 @@ private TrustManager[] get_trust_mgr() {
 							intentmain = new Intent(context,
 									AppMainActivity.class);
 							intentmain
-									.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                    .addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 							intentmain
-									.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                                    .addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 							intentmain
-									.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
+                                    .addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
 							intentmain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
 							context.getApplicationContext().startActivity(
@@ -11676,21 +11728,50 @@ private TrustManager[] get_trust_mgr() {
 							// signBean);
 							// }
 							//
-							Intent intent = new Intent(SingleInstance.mainContext, NotificationReceiver.class);
-							PendingIntent pIntent = PendingIntent.getActivity(SingleInstance.mainContext, (int) System.currentTimeMillis(), intent, 0);
-							Notification n  = new Notification.Builder(SingleInstance.mainContext)
-									.setContentTitle(" Call from " + signBean.getFrom())
-									.setSmallIcon(R.drawable.logo_snazmed)
-									.setContentIntent(pIntent)
-									.setAutoCancel(true).build();
+
+							ActivityManager am = (ActivityManager)SingleInstance.mainContext.getSystemService(SingleInstance.mainContext.ACTIVITY_SERVICE);
+							List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
+							ActivityManager.RunningTaskInfo task = tasks.get(0); // Should be my task
+							ComponentName rootActivity = task.baseActivity;
+
+// Now build an Intent that will bring this task to the front
+							Intent intent = new Intent(SingleInstance.mainContext,SplashScreen.class);
+//							intent.setComponent(rootActivity);
+// Set the action and category so it appears that the app is being launched
+							intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+							intent.setAction(Intent.ACTION_MAIN);
+							intent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+							NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(SingleInstance.mainContext)
+									.setSmallIcon(R.drawable.logo) // notification icon
+									.setContentTitle("SnazMed") // title for notification
+									.setContentText("Call from " + signBean.getFrom()) // message for notification
+									.setAutoCancel(true); // clear notification after click
+//							Intent intent = new Intent(SingleInstance.mainContext, AppMainActivity.class);
+//							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+//									| Intent.FLAG_ACTIVITY_SINGLE_TOP);
+							PendingIntent pi = PendingIntent.getActivity(SingleInstance.mainContext, 0, intent, 0);
+							mBuilder.setContentIntent(pi);
+							NotificationManager mNotificationManager =
+									(NotificationManager) SingleInstance.mainContext.getSystemService(Context.NOTIFICATION_SERVICE);
+							mNotificationManager.notify(0, mBuilder.getNotification());
 
 
-							NotificationManager notificationManager =
-									(NotificationManager) SingleInstance.mainContext.getSystemService(SingleInstance.mainContext.NOTIFICATION_SERVICE);
-
-							notificationManager.notify(0, n);
+//							Intent intent = new Intent(SingleInstance.mainContext, AppMainActivity.class);
+//							PendingIntent pIntent = PendingIntent.getActivity(SingleInstance.mainContext, (int) System.currentTimeMillis(), intent, 0);
+//							Notification n  = new Notification.Builder(SingleInstance.mainContext)
+//									.setContentTitle(" Call from " + signBean.getFrom())
+//                                    .setSmallIcon(R.drawable.logo_snazmed)
+//									.setContentIntent(pIntent)
+//                                    .setAutoCancel(true).build();
+//
+//
+//							NotificationManager notificationManager =
+//									(NotificationManager) SingleInstance.mainContext.getSystemService(SingleInstance.mainContext.NOTIFICATION_SERVICE);
+//
+//							notificationManager.notify(0, n);
 							AppMainActivity appMainActivity=(AppMainActivity) SingleInstance.contextTable
-									.get("MAIN");
+                                    .get("MAIN");
 							appMainActivity.closingActivity();
 
 							checkandcloseDialog();
@@ -11706,7 +11787,7 @@ private TrustManager[] get_trust_mgr() {
 									AppReference.mainContext.getSupportFragmentManager();
 							FragmentTransaction ft = fm.beginTransaction();
 							inCommingCallAlert incommingCallAlert = inCommingCallAlert
-									.getInstance(context);
+                                    .getInstance(context);
 							Bundle bundle = new Bundle();
 							bundle.putSerializable("bean", signBean);
 							incommingCallAlert.setArguments(bundle);
@@ -11739,7 +11820,7 @@ private TrustManager[] get_trust_mgr() {
 					// TODO Auto-generated method stub
 
 					if (SingleInstance.contextTable
-							.containsKey("IncomingCallAlert")) {
+                            .containsKey("IncomingCallAlert")) {
 
 						isCallInitiate = false;
 						isIncomingCall = false;
@@ -11755,7 +11836,7 @@ private TrustManager[] get_trust_mgr() {
 								AppReference.mainContext.getSupportFragmentManager();
 						FragmentTransaction ft = fm.beginTransaction();
 						ContactsFragment contactsFragment = ContactsFragment
-								.getInstance(context);
+                                .getInstance(context);
 						ft.replace(R.id.activity_main_content_fragment,
 								contactsFragment);
 						ft.commitAllowingStateLoss();
@@ -11794,7 +11875,7 @@ private TrustManager[] get_trust_mgr() {
 				// TODO Auto-generated method stub
 				try {
 					if (SingleInstance.instanceTable
-							.containsKey("alertscreen")) {
+                            .containsKey("alertscreen")) {
 //						inCommingCallAlert alert = (inCommingCallAlert) SingleInstance.contextTable
 //								.get("alertscreen");
 //						alert.finishactivity();
@@ -11802,7 +11883,7 @@ private TrustManager[] get_trust_mgr() {
 								AppReference.mainContext.getSupportFragmentManager();
 						FragmentTransaction ft = fm.beginTransaction();
 						ContactsFragment contactsFragment = ContactsFragment
-								.getInstance(context);
+                                .getInstance(context);
 						ft.replace(R.id.activity_main_content_fragment,
 								contactsFragment);
 						ft.commitAllowingStateLoss();
@@ -11827,9 +11908,9 @@ private TrustManager[] get_trust_mgr() {
 											int which) {
 										// TODO Auto-generated method stub
 										if (WebServiceReferences.missedcallCount
-												.containsKey(sbean.getFrom()))
+                                                .containsKey(sbean.getFrom()))
 											WebServiceReferences.missedcallCount
-													.remove(sbean.getFrom());
+                                                    .remove(sbean.getFrom());
 										isCallignored = false;
 										mdialog.cancel();
 										mdialog = null;
@@ -11850,9 +11931,9 @@ private TrustManager[] get_trust_mgr() {
 											int which) {
 										// TODO Auto-generated method stub
 										if (WebServiceReferences.missedcallCount
-												.containsKey(sbean.getFrom()))
+                                                .containsKey(sbean.getFrom()))
 											WebServiceReferences.missedcallCount
-													.remove(sbean.getFrom());
+                                                    .remove(sbean.getFrom());
 										isCallignored = false;
 										mdialog = null;
 									}
@@ -11895,7 +11976,7 @@ private TrustManager[] get_trust_mgr() {
 	private void updatecallDuration() {
 		try {
 			Object objCallScreen = SingleInstance.instanceTable
-					.get("callscreen");
+                    .get("callscreen");
 			if (objCallScreen instanceof AudioCallScreen) {
 				AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
 				acalObj.resetCallDuration();
@@ -12001,7 +12082,7 @@ private TrustManager[] get_trust_mgr() {
 				if (SingleInstance.instanceTable.containsKey("connection")) {
 					Log.d("AAAA", "notifyType2Received ifpart ==> " );
 					((CallConnectingScreen) SingleInstance.instanceTable
-							.get("connection")).notifyType2Received();
+                            .get("connection")).notifyType2Received();
 				} else {
 					Log.d("AAAA", "notifyType2Received elsepart ==> " );
 					String buddyx = getUser(sb.getFrom(), sb.getTo());
@@ -12009,7 +12090,7 @@ private TrustManager[] get_trust_mgr() {
 					CallDispatcher.conferenceMembersTime.put(buddyx,
 							getCurrentDateTime());
 					Object objCallScreen = SingleInstance.instanceTable
-							.get("callscreen");
+                            .get("callscreen");
 					if (objCallScreen != null
 							&& objCallScreen instanceof VideoCallScreen) {
 						VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
@@ -12237,7 +12318,7 @@ private TrustManager[] get_trust_mgr() {
 					Log.i("forms",
 							"insideeeeeeeeeeeeeee  formmmmmm existsssssss");
 					String tid_split[] = fields1[fields1.length - 1].toString()
-							.split(":");
+                            .split(":");
 					field_list.add(tid_split[0]);
 					if (bean.getFormRecords() != null) {
 						for (int rec = 0; rec < bean.getFormRecords().size(); rec++) {
@@ -12264,7 +12345,7 @@ private TrustManager[] get_trust_mgr() {
 									else if (dtype.get(field_list.get(idx))
 											.equalsIgnoreCase("INTEGER"))
 										cv.put(columnname, Integer
-												.parseInt(field_values[idx]));
+                                                .parseInt(field_values[idx]));
 									else if (dtype.get(field_list.get(idx))
 											.equalsIgnoreCase("nvarchar(20)"))
 										cv.put(columnname, field_values[idx]);
@@ -12287,21 +12368,21 @@ private TrustManager[] get_trust_mgr() {
 								Log.i("thread",
 										"Activity existance/////////"
 												+ WebServiceReferences.contextTable
-														.containsKey("formactivity"));
+                                                .containsKey("formactivity"));
 								if (SingleInstance.contextTable
-										.containsKey("forms")) {
+                                        .containsKey("forms")) {
 									FormsFragment quickActionFragment = FormsFragment
-											.newInstance(context);
+                                            .newInstance(context);
 
 									quickActionFragment.populateLists();
 
 								}
 								if (WebServiceReferences.contextTable
-										.containsKey("frmviewer")) {
+                                        .containsKey("frmviewer")) {
 									FormViewer frm_creator = (FormViewer) WebServiceReferences.contextTable
-											.get("frmviewer");
+                                            .get("frmviewer");
 									if (frm_creator.isShowingCurrentForm(bean
-											.getFormId())) {
+                                            .getFormId())) {
 										frm_creator.refreshList();
 									}
 								}
@@ -12328,15 +12409,15 @@ private TrustManager[] get_trust_mgr() {
 					if (getdbHeler(context).createFormTable(field, tbl, dtype)) {
 
 						String tid_split[] = fields1[fields1.length - 1]
-								.toString().split(":");
+                                .toString().split(":");
 						String status = "1";
 
 						field_list.add(tid_split[0]);
 						if (bean.getFormRecords() != null) {
 							for (int rec = 0; rec < bean.getFormRecords()
-									.size(); rec++) {
+                                    .size(); rec++) {
 								String[] field_values = bean.getFormRecords()
-										.get(rec);
+                                        .get(rec);
 								ContentValues cv = new ContentValues();
 
 								for (int idx = 0; idx < field_values.length; idx++) {
@@ -12385,22 +12466,22 @@ private TrustManager[] get_trust_mgr() {
 									Log.i("thread",
 											"Activity existance/////////"
 													+ WebServiceReferences.contextTable
-															.containsKey("formactivity"));
+                                                    .containsKey("formactivity"));
 									if (SingleInstance.contextTable
-											.containsKey("forms")) {
+                                            .containsKey("forms")) {
 										FormsFragment quickActionFragment = FormsFragment
-												.newInstance(context);
+                                                .newInstance(context);
 
 										quickActionFragment.populateLists();
 
 									}
 									if (WebServiceReferences.contextTable
-											.containsKey("frmviewer")) {
+                                            .containsKey("frmviewer")) {
 										FormViewer frm_creator = (FormViewer) WebServiceReferences.contextTable
-												.get("frmviewer");
+                                                .get("frmviewer");
 										if (frm_creator
 												.isShowingCurrentForm(bean
-														.getFormId())) {
+                                                        .getFormId())) {
 											frm_creator.refreshList();
 										}
 									}
@@ -12469,7 +12550,7 @@ private TrustManager[] get_trust_mgr() {
 					bean.getForm_name() + "_" + bean.getForm_id())) {
 
 				String tid_split[] = fields1[fields1.length - 1].toString()
-						.split(":");
+                        .split(":");
 				field_list.remove("status");
 				field_list.add(tid_split[0]);
 
@@ -12516,7 +12597,7 @@ private TrustManager[] get_trust_mgr() {
 											.equalsIgnoreCase("BLOB")) {
 										cv.put(columnane,
 												decodeBase64(RecordInfo
-														.get(field_list.get(i))));
+                                                        .get(field_list.get(i))));
 									} else if (dtype.get(field_list.get(i))
 											.equalsIgnoreCase("INTEGER")) {
 
@@ -12526,7 +12607,7 @@ private TrustManager[] get_trust_mgr() {
 													field_list.get(i)).length() > 0) {
 												cv.put(columnane,
 														Integer.parseInt(RecordInfo.get(field_list
-																.get(i))));
+                                                                .get(i))));
 
 											}
 										} else {
@@ -12535,18 +12616,18 @@ private TrustManager[] get_trust_mgr() {
 										}
 
 									} else if (dtype.get(field_list.get(i))
-											.contains("2")) {
+                                            .contains("2")) {
 										if (RecordInfo.get(field_list.get(i)) != null) {
 
 											if (RecordInfo.get(
 													field_list.get(i))
-													.contains("MPD_")
+                                                    .contains("MPD_")
 													|| RecordInfo.get(
 															field_list.get(i))
-															.contains("MAD_")
+                                                    .contains("MAD_")
 													|| RecordInfo.get(
 															field_list.get(i))
-															.contains("MVD_")) {
+                                                    .contains("MVD_")) {
 
 												File extStore = Environment
 														.getExternalStorageDirectory();
@@ -12554,22 +12635,22 @@ private TrustManager[] get_trust_mgr() {
 														extStore.getAbsolutePath()
 																+ "/COMMedia/"
 																+ RecordInfo
-																		.get(field_list
-																				.get(i)));
+                                                                .get(field_list
+                                                                        .get(i)));
 
 												if (!myFile.exists()) {
 													downloadOfflineresponse(
 															RecordInfo.get(field_list
-																	.get(i)),
+                                                                    .get(i)),
 															"", "forms", "");
 
 												}
 												cv.put(columnane, RecordInfo
-														.get(field_list.get(i)));
+                                                        .get(field_list.get(i)));
 
 											} else {
 												cv.put(columnane, RecordInfo
-														.get(field_list.get(i)));
+                                                        .get(field_list.get(i)));
 
 											}
 										} else {
@@ -12613,7 +12694,7 @@ private TrustManager[] get_trust_mgr() {
 
 				if (getdbHeler(context).createFormTable(field, tbl, dtype)) {
 					String tid_split[] = fields1[fields1.length - 1].toString()
-							.split(":");
+                            .split(":");
 					field_list.remove("status");
 					field_list.add(tid_split[0]);
 
@@ -12622,7 +12703,7 @@ private TrustManager[] get_trust_mgr() {
 						for (int rec = 0; rec < bean.getRec_list().size(); rec++) {
 
 							FormRecordsbean recordsBean = bean.getRec_list()
-									.get(rec);
+                                    .get(rec);
 							HashMap<String, String> field_values = recordsBean
 									.getRecords_info();
 
@@ -12650,30 +12731,30 @@ private TrustManager[] get_trust_mgr() {
 									if (field_list.get(i).equalsIgnoreCase(
 											"tableid")) {
 										tableID = field_values.get(field_list
-												.get(i));
+                                                .get(i));
 										cv.put(columnane, field_values
-												.get(field_list.get(i)));
+                                                .get(field_list.get(i)));
 									} else {
 
 										if (dtype.get(field_list.get(i))
 												.equalsIgnoreCase("BLOB")) {
 											cv.put(columnane,
 													decodeBase64(field_values
-															.get(field_list
-																	.get(i))));
+                                                            .get(field_list
+                                                                    .get(i))));
 										} else if (dtype.get(field_list.get(i))
 												.equalsIgnoreCase("INTEGER")) {
 
 											if (field_values.get(field_list
-													.get(i)) != null) {
+                                                    .get(i)) != null) {
 
 												if (field_values.get(
 														field_list.get(i))
-														.length() > 0) {
+                                                        .length() > 0) {
 													cv.put(columnane,
 															Integer.parseInt(field_values
-																	.get(field_list
-																			.get(i))));
+                                                                    .get(field_list
+                                                                            .get(i))));
 
 												}
 											} else {
@@ -12682,24 +12763,24 @@ private TrustManager[] get_trust_mgr() {
 											}
 
 										} else if (dtype.get(field_list.get(i))
-												.contains("2")) {
+                                                .contains("2")) {
 
 											if (field_values.get(field_list
-													.get(i)) != null) {
+                                                    .get(i)) != null) {
 
 												if (field_values.get(
 														field_list.get(i))
-														.contains("MPD_")
+                                                        .contains("MPD_")
 														|| field_values
-																.get(field_list
-																		.get(i))
-																.contains(
-																		"MAD_")
+                                                        .get(field_list
+                                                                .get(i))
+                                                        .contains(
+                                                                "MAD_")
 														|| field_values
-																.get(field_list
-																		.get(i))
-																.contains(
-																		"MVD_")) {
+                                                        .get(field_list
+                                                                .get(i))
+                                                        .contains(
+                                                                "MVD_")) {
 
 													File extStore = Environment
 															.getExternalStorageDirectory();
@@ -12707,27 +12788,27 @@ private TrustManager[] get_trust_mgr() {
 															extStore.getAbsolutePath()
 																	+ "/COMMedia/"
 																	+ field_values
-																			.get(field_list
-																					.get(i)));
+                                                                    .get(field_list
+                                                                            .get(i)));
 
 													if (!myFile.exists()) {
 														downloadOfflineresponse(
 																field_values
-																		.get(field_list
-																				.get(i)),
+                                                                        .get(field_list
+                                                                                .get(i)),
 																"", "forms", "");
 
 													}
 													cv.put(columnane,
 															field_values
-																	.get(field_list
-																			.get(i)));
+                                                                    .get(field_list
+                                                                            .get(i)));
 
 												} else {
 													cv.put(columnane,
 															field_values
-																	.get(field_list
-																			.get(i)));
+                                                                    .get(field_list
+                                                                            .get(i)));
 
 												}
 											} else {
@@ -12756,7 +12837,7 @@ private TrustManager[] get_trust_mgr() {
 
 			if (WebServiceReferences.contextTable.containsKey("frmviewer")) {
 				FormViewer formviewer = (FormViewer) WebServiceReferences.contextTable
-						.get("frmviewer");
+                        .get("frmviewer");
 				if (formviewer.isShowingCurrentForm(bean.getForm_id())) {
 					formviewer.refreshList();
 				}
@@ -12798,9 +12879,9 @@ private TrustManager[] get_trust_mgr() {
 								public void run() {
 
 									if (SingleInstance.contextTable
-											.containsKey("forms")) {
+                                            .containsKey("forms")) {
 										FormsFragment quickActionFragment = FormsFragment
-												.newInstance(context);
+                                                .newInstance(context);
 
 										quickActionFragment
 												.populateListAfterDelete();
@@ -12808,24 +12889,24 @@ private TrustManager[] get_trust_mgr() {
 									}
 
 									if (WebServiceReferences.contextTable
-											.containsKey("appsview")) {
+                                            .containsKey("appsview")) {
 										AppsView frm_activity = (AppsView) WebServiceReferences.contextTable
-												.get("appsview");
+                                                .get("appsview");
 										frm_activity.refreshIcon();
 									}
 									if (WebServiceReferences.contextTable
-											.containsKey("frmviewer")) {
+                                            .containsKey("frmviewer")) {
 
 										FormViewer frm_activity = (FormViewer) WebServiceReferences.contextTable
-												.get("frmviewer");
+                                                .get("frmviewer");
 										frm_activity.finish();
 
 									}
 									if (WebServiceReferences.contextTable
-											.containsKey("frmreccreator")) {
+                                            .containsKey("frmreccreator")) {
 
 										FormRecordsCreators frm_activity = (FormRecordsCreators) WebServiceReferences.contextTable
-												.get("frmreccreator");
+                                                .get("frmreccreator");
 										frm_activity.finish();
 									}
 
@@ -12881,26 +12962,26 @@ private TrustManager[] get_trust_mgr() {
 
 							getdbHeler(context).ExecuteQuery(strUpdateCount);
 							if (SingleInstance.contextTable
-									.containsKey("forms")) {
+                                    .containsKey("forms")) {
 								FormsFragment quickActionFragment = FormsFragment
-										.newInstance(context);
+                                        .newInstance(context);
 
 								quickActionFragment.populateLists();
 
 							}
 							if (WebServiceReferences.contextTable
-									.containsKey("frmviewer")) {
+                                    .containsKey("frmviewer")) {
 								FormViewer frm_creator = (FormViewer) WebServiceReferences.contextTable
-										.get("frmviewer");
+                                        .get("frmviewer");
 
 								frm_creator.refreshList();
 
 							}
 
 							if (WebServiceReferences.contextTable
-									.containsKey("appsview")) {
+                                    .containsKey("appsview")) {
 								AppsView frm_activity = (AppsView) WebServiceReferences.contextTable
-										.get("appsview");
+                                        .get("appsview");
 								frm_activity.refreshIcon();
 
 							}
@@ -13000,19 +13081,19 @@ private TrustManager[] get_trust_mgr() {
 						if (getdbHeler(context).ExecuteQuery(insertQuery)) {
 
 							if (SingleInstance.contextTable
-									.containsKey("forms")) {
+                                    .containsKey("forms")) {
 								FormsFragment quickActionFragment = FormsFragment
-										.newInstance(context);
+                                        .newInstance(context);
 
 								quickActionFragment.populateLists();
 
 							}
 							if (WebServiceReferences.contextTable
-									.containsKey("frmviewer")) {
+                                    .containsKey("frmviewer")) {
 								Log.i("FORMOPT", "udp FORM VIEWER TRUE===>");
 
 								FormViewer frm_activity = (FormViewer) WebServiceReferences.contextTable
-										.get("frmviewer");
+                                        .get("frmviewer");
 								frm_activity.showConfirmation(
 										CallDispatcher.LoginUser,
 										bean.getFormId(), bean.getFormtime(),
@@ -13023,15 +13104,15 @@ private TrustManager[] get_trust_mgr() {
 							else {
 
 								WebServiceReferences.webServiceClient
-										.Getcontent(CallDispatcher.LoginUser,
-												bean.getFormId(), "", context);
+                                        .Getcontent(CallDispatcher.LoginUser,
+                                                bean.getFormId(), "", context);
 
 							}
 							if (WebServiceReferences.contextTable
-									.containsKey("appsview")) {
+                                    .containsKey("appsview")) {
 
 								AppsView frm_activity = (AppsView) WebServiceReferences.contextTable
-										.get("appsview");
+                                        .get("appsview");
 								frm_activity.refreshIcon();
 
 							}
@@ -13043,7 +13124,7 @@ private TrustManager[] get_trust_mgr() {
 								bean.getForm_name() + "_" + bean.getFormId())) {
 
 							String recordtime = getdbHeler(context)
-									.getRecordtime(bean.getFormId());
+                                    .getRecordtime(bean.getFormId());
 
 							if (!recordtime.equals(bean.getFormtime())) {
 
@@ -13058,27 +13139,27 @@ private TrustManager[] get_trust_mgr() {
 										strUpdateCount)) {
 
 									if (WebServiceReferences.contextTable
-											.containsKey("appsview")) {
+                                            .containsKey("appsview")) {
 										AppsView frm_activity = (AppsView) WebServiceReferences.contextTable
-												.get("appsview");
+                                                .get("appsview");
 										frm_activity.refreshIcon();
 
 									}
 
 									if (SingleInstance.contextTable
-											.containsKey("forms")) {
+                                            .containsKey("forms")) {
 										FormsFragment quickActionFragment = FormsFragment
-												.newInstance(context);
+                                                .newInstance(context);
 
 										quickActionFragment.populateLists();
 
 									}
 
 									if (WebServiceReferences.contextTable
-											.containsKey("frmviewer")) {
+                                            .containsKey("frmviewer")) {
 
 										FormViewer frm_activity = (FormViewer) WebServiceReferences.contextTable
-												.get("frmviewer");
+                                                .get("frmviewer");
 
 										frm_activity.showConfirmation(
 												CallDispatcher.LoginUser,
@@ -13087,20 +13168,20 @@ private TrustManager[] get_trust_mgr() {
 
 									} else {
 										WebServiceReferences.webServiceClient
-												.Getcontent(
-														CallDispatcher.LoginUser,
-														bean.getFormId(),
-														bean.getFormtime(),
-														context);
+                                                .Getcontent(
+                                                        CallDispatcher.LoginUser,
+                                                        bean.getFormId(),
+                                                        bean.getFormtime(),
+                                                        context);
 
 									}
 
 								} else {
 									WebServiceReferences.webServiceClient
-											.Getcontent(
-													CallDispatcher.LoginUser,
-													bean.getFormId(),
-													bean.getFormtime(), context);
+                                            .Getcontent(
+                                                    CallDispatcher.LoginUser,
+                                                    bean.getFormId(),
+                                                    bean.getFormtime(), context);
 
 								}
 
@@ -13118,26 +13199,26 @@ private TrustManager[] get_trust_mgr() {
 								public void run() {
 
 									if (SingleInstance.contextTable
-											.containsKey("forms")) {
+                                            .containsKey("forms")) {
 										FormsFragment quickActionFragment = FormsFragment
-												.newInstance(context);
+                                                .newInstance(context);
 
 										quickActionFragment.populateLists();
 
 									}
 									if (WebServiceReferences.contextTable
-											.containsKey("appsview")) {
+                                            .containsKey("appsview")) {
 
 										AppsView frm_activity = (AppsView) WebServiceReferences.contextTable
-												.get("appsview");
+                                                .get("appsview");
 										frm_activity.refreshIcon();
 
 									}
 
 									FormViewer formviewer = (FormViewer) WebServiceReferences.contextTable
-											.get("frmviewer");
+                                            .get("frmviewer");
 									if (formviewer.isShowingCurrentForm(bean
-											.getFormId())) {
+                                            .getFormId())) {
 										formviewer.showConfirmation(
 												CallDispatcher.LoginUser,
 												bean.getFormId(),
@@ -13145,11 +13226,11 @@ private TrustManager[] get_trust_mgr() {
 									} else {
 
 										WebServiceReferences.webServiceClient
-												.Getcontent(
-														CallDispatcher.LoginUser,
-														bean.getFormId(),
-														bean.getFormtime(),
-														SingleInstance.mainContext);
+                                                .Getcontent(
+                                                        CallDispatcher.LoginUser,
+                                                        bean.getFormId(),
+                                                        bean.getFormtime(),
+                                                        SingleInstance.mainContext);
 
 									}
 								}
@@ -13162,9 +13243,9 @@ private TrustManager[] get_trust_mgr() {
 					if (!bean.getForm_owner().equalsIgnoreCase(
 							CallDispatcher.LoginUser)
 							&& !WebServiceReferences.buddies_forms
-									.contains(bean.getForm_owner())) {
+                            .contains(bean.getForm_owner())) {
 						WebServiceReferences.buddies_forms.add(bean
-								.getForm_owner());
+                                .getForm_owner());
 					}
 				}
 			}
@@ -13212,33 +13293,33 @@ private TrustManager[] get_trust_mgr() {
 									+ "_" + settingBean.getFormid() + "]'";
 							getdbHeler(context).ExecuteQuery(del_forminfo);
 							if (SingleInstance.contextTable
-									.containsKey("forms")) {
+                                    .containsKey("forms")) {
 								FormsFragment quickActionFragment = FormsFragment
-										.newInstance(context);
+                                        .newInstance(context);
 
 								quickActionFragment.populateLists();
 
 							}
 
 							if (WebServiceReferences.contextTable
-									.containsKey("appsview")) {
+                                    .containsKey("appsview")) {
 								AppsView frm_activity = (AppsView) WebServiceReferences.contextTable
-										.get("appsview");
+                                        .get("appsview");
 								frm_activity.refreshIcon();
 							}
 							if (WebServiceReferences.contextTable
-									.containsKey("frmviewer")) {
+                                    .containsKey("frmviewer")) {
 
 								FormViewer frm_activity = (FormViewer) WebServiceReferences.contextTable
-										.get("frmviewer");
+                                        .get("frmviewer");
 								frm_activity.finish();
 
 							}
 							if (WebServiceReferences.contextTable
-									.containsKey("frmreccreator")) {
+                                    .containsKey("frmreccreator")) {
 
 								FormRecordsCreators frm_activity = (FormRecordsCreators) WebServiceReferences.contextTable
-										.get("frmreccreator");
+                                        .get("frmreccreator");
 								frm_activity.finish();
 							}
 
@@ -13392,7 +13473,7 @@ private TrustManager[] get_trust_mgr() {
 		Log.i("Instruction", "Path====>" + path);
 		Log.i("onresult123", "uploadofflineResponse");
 		AppMainActivity appMainActivity = (AppMainActivity) SingleInstance.contextTable
-				.get("MAIN");
+                .get("MAIN");
 		if (path != null) {
 			if (CallDispatcher.LoginUser != null) {
 				FTPBean ftpBean = new FTPBean();
@@ -13486,7 +13567,7 @@ private TrustManager[] get_trust_mgr() {
 
 			BuddyInformationBean bib1 = null;
 				for (BuddyInformationBean temp : ContactsFragment
-						.getBuddyList()) {
+                        .getBuddyList()) {
 					if (!temp.isTitle()) {
 						if (temp.getName().equalsIgnoreCase(username)) {
 							bib1 = temp;
@@ -13494,7 +13575,7 @@ private TrustManager[] get_trust_mgr() {
 						}
 					}
 				}
-			//} 
+			//}
 			Log.i("call123", "Bib : " + bib1);
 			Log.d("Test", "audioconf check Bib :"+bib1);
 
@@ -13541,7 +13622,7 @@ private TrustManager[] get_trust_mgr() {
 					Log.i("call123", "Name : " + name);
 
 					for (BuddyInformationBean bib : ContactsFragment
-							.getBuddyList()) {
+                            .getBuddyList()) {
 						if (!bib.isTitle()) {
 							if (bib.getName().equalsIgnoreCase(name)) {
 
@@ -13552,7 +13633,7 @@ private TrustManager[] get_trust_mgr() {
 										+ CallDispatcher.LoginUser);
 								// sb=new SignalingBean();
 								CallDispatcher.sb
-										.setFrom(CallDispatcher.LoginUser);
+                                        .setFrom(CallDispatcher.LoginUser);
 
 								CallDispatcher.sb.setTo(name);
 
@@ -13569,7 +13650,7 @@ private TrustManager[] get_trust_mgr() {
 								CallDispatcher.sb.setCallType(calltype);
 
 								CallDispatcher.sb
-										.setSessionid(sessionIdGenerated);
+                                        .setSessionid(sessionIdGenerated);
 
 								if(calltype.equalsIgnoreCase("VC") || calltype.equalsIgnoreCase("AC")) {
 									CallDispatcher.sb.setHost(CallDispatcher.LoginUser);
@@ -13581,15 +13662,15 @@ private TrustManager[] get_trust_mgr() {
 								AppMainActivity.commEngine
 										.makeContactConference(CallDispatcher.sb);
 								SignalingBean toSave1 = (SignalingBean) CallDispatcher.sb
-										.clone();
+                                        .clone();
 								CallDispatcher.contConferencemembers.put(
 										name, toSave1);
 								if (calltype.equalsIgnoreCase("VC")) {
 									CallDispatcher.hsAddedBuddyNameFromConferenceCall
-											.put(name, toSave1);
+                                            .put(name, toSave1);
 								} else if (calltype.equalsIgnoreCase("AC")) {
 									CallDispatcher.hsAddedBuddyNameFromConferenceCall
-											.put(name, toSave1);
+                                            .put(name, toSave1);
 								}
 								break;
 							}
@@ -13620,7 +13701,7 @@ private TrustManager[] get_trust_mgr() {
 				bundle.putBoolean("bconf", isconf);
 				FragmentTransaction ft = fm.beginTransaction();
 				CallConnectingScreen callConnectingScreen = CallConnectingScreen
-						.getInstance(context);
+                        .getInstance(context);
 				callConnectingScreen.setArguments(bundle);
 				ft.replace(R.id.activity_main_content_fragment,
 						callConnectingScreen);
@@ -13662,23 +13743,23 @@ private TrustManager[] get_trust_mgr() {
 
 						if (callresponse_list.get(2) instanceof ArrayList) {
 							ArrayList<OfflineRequestConfigBean> config_list = (ArrayList<OfflineRequestConfigBean>) callresponse_list
-									.get(2);
+                                    .get(2);
 
 							if (config_list != null) {
 								for (OfflineRequestConfigBean offlineRequestConfigBean : config_list) {
 									ContentValues cv = new ContentValues();
 									cv.put("config_id",
 											offlineRequestConfigBean
-													.getConfig_id());
+                                                    .getConfig_id());
 									cv.put("fromuser", buddy_id);
 									cv.put("messagetitle",
 											offlineRequestConfigBean
 													.getMessageTitle());
 									cv.put("messagetype",
 											offlineRequestConfigBean
-													.getMessagetype());
+                                                    .getMessagetype());
 									cv.put("message", offlineRequestConfigBean
-											.getMessage());
+                                            .getMessage());
 									cv.put("responsetype",
 											offlineRequestConfigBean
 													.getResponseType());
@@ -13694,23 +13775,23 @@ private TrustManager[] get_trust_mgr() {
 
 									downloadOfflineresponse(
 											offlineRequestConfigBean
-													.getMessage(),
+                                                    .getMessage(),
 											offlineRequestConfigBean
-													.getConfig_id(),
+                                                    .getConfig_id(),
 											"answering machine", null);
 
 								}
 								if (!SingleInstance.instanceTable
-										.containsKey("callscreen")) {
+                                        .containsKey("callscreen")) {
 									Intent intent = new Intent(context,
 											AnsweringMachineActivity.class);
 									intent.putExtra("buddy", buddy_id);
 									intent.putExtra(
 											"avatarlist",
 											(ArrayList<OfflineRequestConfigBean>) callresponse_list
-													.get(2));
+                                                    .get(2));
 									SingleInstance.mainContext
-											.startActivity(intent);
+                                            .startActivity(intent);
 								}
 							}
 						}
@@ -13729,7 +13810,7 @@ private TrustManager[] get_trust_mgr() {
 	private void getofflineCallResponse(String selectedBuddy, String reason) {
 		try {
 			Object objCallScreen = SingleInstance.instanceTable
-					.get("callscreen");
+                    .get("callscreen");
 			Log.d("Avataar", "----->getofflineCallResponse<-----"
 					+ objCallScreen + selectedBuddy + LoginUser);
 			if (objCallScreen == null) {
@@ -13741,9 +13822,9 @@ private TrustManager[] get_trust_mgr() {
 					details[0] = CallDispatcher.LoginUser;
 					details[1] = selectedBuddy;
 					details[2] = getdbHeler(SingleInstance.mainContext)
-							.getwheninfo(
-									"select cid from clonemaster where cdescription=\""
-											+ reason + "\"");
+                            .getwheninfo(
+                                    "select cid from clonemaster where cdescription=\""
+                                            + reason + "\"");
 //					WebServiceReferences.webServiceClient
 //							.OfflineCallResponse(details);
 				}
@@ -13760,7 +13841,7 @@ private TrustManager[] get_trust_mgr() {
 
 		CallDispatcher.conConference.clear();
 		CallDispatcher callDisp = (CallDispatcher) WebServiceReferences.callDispatch
-				.get("calldispatch");
+                .get("calldispatch");
 		String from = Alert.readString(context, Alert.fromuser, null);
 		String to = Alert.readString(context, Alert.touser, null);
 		Log.i("name", "to" + to);
@@ -14059,7 +14140,7 @@ private TrustManager[] get_trust_mgr() {
 
 			CallDispatcher.conConference.clear();
 			CallDispatcher callDisp = (CallDispatcher) WebServiceReferences.callDispatch
-					.get("calldisp");
+                    .get("calldisp");
 			if (action.equalsIgnoreCase("sp")) {
 
 				Log.i("name", "photo");
@@ -14096,7 +14177,7 @@ private TrustManager[] get_trust_mgr() {
 				}
 
 				String[] columArray = columns
-						.toArray(new String[columns.size()]);
+                        .toArray(new String[columns.size()]);
 
 				for (int i = 0; i < columArray.length; i++) {
 
@@ -14105,7 +14186,7 @@ private TrustManager[] get_trust_mgr() {
 									+ columArray[i].replace("[", "").replace(
 											"]", ""));
 					colNames.add(columArray[i].replace("[", "")
-							.replace("]", ""));
+                            .replace("]", ""));
 					colTypes.add("nvarchar(20)");
 				}
 
@@ -14171,7 +14252,7 @@ private TrustManager[] get_trust_mgr() {
 								+ lkupName + "field_dtypes " + field_dtypes);
 						String[] attributes = getdbHeler(context)
 								.getRecordsofforminfotable1(lkupName,
-										field_dtypes);
+                                        field_dtypes);
 
 						Log.i("IMP", "FOR LOOP attributes.length"
 								+ attributes.length);
@@ -14200,7 +14281,7 @@ private TrustManager[] get_trust_mgr() {
 						SipNotificationListener.getCurrentContext());
 
 				QuickActionFragment actionFragment = QuickActionFragment
-						.newInstance(context);
+                        .newInstance(context);
 				Log.i("qa", "context" + actionFragment.getContext());
 				WebServiceReferences.webServiceClient.CreateFormAttribute(
 						params, columnnames, columntypes, attribute_list,
@@ -14229,24 +14310,24 @@ private TrustManager[] get_trust_mgr() {
 			} else if (action.equalsIgnoreCase("AC")) {
 				Log.i("Action", action);
 				if (!SingleInstance.instanceTable
-						.containsKey("callscreen")
+                        .containsKey("callscreen")
 						&& !SingleInstance.instanceTable
-								.containsKey("alertscreen")
+                        .containsKey("alertscreen")
 						&& !WebServiceReferences.contextTable
-								.containsKey("sicallalert")
+                        .containsKey("sicallalert")
 						&& !WebServiceReferences.contextTable
-								.containsKey("sipcallscreen"))
+                        .containsKey("sipcallscreen"))
 					callDisp.MakeCall(1, to,
 							SipNotificationListener.getCurrentContext());
 			} else if (action.equalsIgnoreCase("VC")) {
 				if (!SingleInstance.instanceTable
-						.containsKey("callscreen")
+                        .containsKey("callscreen")
 						&& !WebServiceReferences.contextTable
-								.containsKey("alertscreen")
+                        .containsKey("alertscreen")
 						&& !WebServiceReferences.contextTable
-								.containsKey("sicallalert")
+                        .containsKey("sicallalert")
 						&& !WebServiceReferences.contextTable
-								.containsKey("sipcallscreen"))
+                        .containsKey("sipcallscreen"))
 					callDisp.MakeCall(2, to,
 							SipNotificationListener.getCurrentContext());
 			} else if (action.equalsIgnoreCase("ABC")) {
@@ -14257,27 +14338,27 @@ private TrustManager[] get_trust_mgr() {
 				requestAudioConference(to);
 			} else if (action.equalsIgnoreCase("VCF")) {
 				if (!SingleInstance.instanceTable
-						.containsKey("callscreen")
+                        .containsKey("callscreen")
 						&& !SingleInstance.instanceTable
-								.containsKey("alertscreen")
+                        .containsKey("alertscreen")
 						&& !WebServiceReferences.contextTable
-								.containsKey("sicallalert")
+                        .containsKey("sicallalert")
 						&& !WebServiceReferences.contextTable
-								.containsKey("sipcallscreen")) {
+                        .containsKey("sipcallscreen")) {
 					String[] str = to.split(",");
 					String offlinenames = null;
 					// ArrayList< String> datas=new ArrayList<String>();
 					for (int i = 0; i < str.length; i++) {
 
 						for (BuddyInformationBean bib : ContactsFragment
-								.getBuddyList()) {
+                                .getBuddyList()) {
 							if (!bib.isTitle()) {
 								if (bib.getName().equalsIgnoreCase(str[i])) {
 									if (bib.getStatus().equalsIgnoreCase(
 											"online")) {
 
 										CallDispatcher.conConference
-												.add(str[i]);
+                                                .add(str[i]);
 									} else {
 										if (offlinenames == null) {
 											offlinenames = str[i];
@@ -14404,9 +14485,9 @@ private TrustManager[] get_trust_mgr() {
 
 		}
 		if (WebServiceReferences.contextTable
-				.containsKey("QuickActionSelectcalls")) {
+                .containsKey("QuickActionSelectcalls")) {
 			((QuickActionSelectcalls) WebServiceReferences.contextTable
-					.get("QuickActionSelectcalls")).finish();
+                    .get("QuickActionSelectcalls")).finish();
 		}
 
 	}
@@ -14416,11 +14497,11 @@ private TrustManager[] get_trust_mgr() {
 
 		if (!SingleInstance.instanceTable.containsKey("callscreen")
 				&& !SingleInstance.instanceTable
-						.containsKey("alertscreen")
+                .containsKey("alertscreen")
 				&& !WebServiceReferences.contextTable
-						.containsKey("sicallalert")
+                .containsKey("sicallalert")
 				&& !WebServiceReferences.contextTable
-						.containsKey("sipcallscreen")) {
+                .containsKey("sipcallscreen")) {
 			String[] str = to.split(",");
 			String offlinenames = null;
 			String online = null;
@@ -14485,9 +14566,9 @@ private TrustManager[] get_trust_mgr() {
 			if (online != null) {
 					Log.d("AAAA", "notifyType2Received ifpart ==> ");
 				if(SingleInstance.instanceTable
-						.containsKey("connection")) {
+                        .containsKey("connection")) {
 					CallConnectingScreen connectingScreen = (CallConnectingScreen) SingleInstance.instanceTable
-							.get("connection");
+                            .get("connection");
 					if(connectingScreen != null) {
 						connectingScreen.setTitle(online);
 					}
@@ -14496,11 +14577,11 @@ private TrustManager[] get_trust_mgr() {
 		} else {
 			Log.i("AudioCall", "Call Screen :" + SingleInstance.instanceTable.containsKey("callscreen") +
 					" Alert Screen :" + SingleInstance.instanceTable
-					.containsKey("alertscreen") + " Sip Call Alert :" +
+                    .containsKey("alertscreen") + " Sip Call Alert :" +
 					WebServiceReferences.contextTable
-							.containsKey("sicallalert") + " Sip Call Screen :" +
+                            .containsKey("sicallalert") + " Sip Call Screen :" +
 					WebServiceReferences.contextTable
-							.containsKey("sipcallscreen"));
+                            .containsKey("sipcallscreen"));
 		}
 
 	}
@@ -14509,11 +14590,11 @@ private TrustManager[] get_trust_mgr() {
 
 		if (!SingleInstance.instanceTable.containsKey("callscreen")
 				&& !SingleInstance.instanceTable
-						.containsKey("alertscreen")
+                .containsKey("alertscreen")
 				&& !WebServiceReferences.contextTable
-						.containsKey("sicallalert")
+                .containsKey("sicallalert")
 				&& !WebServiceReferences.contextTable
-						.containsKey("sipcallscreen")) {
+                .containsKey("sipcallscreen")) {
 			String[] str = to.split(",");
 			String offlinenames = null;
 
@@ -14569,11 +14650,11 @@ private TrustManager[] get_trust_mgr() {
 	public void requestVideoBroadCast(String to) {
 		if (!SingleInstance.instanceTable.containsKey("callscreen")
 				&& !SingleInstance.instanceTable
-						.containsKey("alertscreen")
+                .containsKey("alertscreen")
 				&& !WebServiceReferences.contextTable
-						.containsKey("sicallalert")
+                .containsKey("sicallalert")
 				&& !WebServiceReferences.contextTable
-						.containsKey("sipcallscreen")) {
+                .containsKey("sipcallscreen")) {
 			String value = to + ",";
 			String[] str = value.split(",");
 			String offlinenames = null;
@@ -14632,7 +14713,7 @@ private TrustManager[] get_trust_mgr() {
 				}
 			}
 
-			
+
 
 			// bib = WebServiceReferences.buddyList.get(username);
 			if (bib != null && bib.getStatus().equalsIgnoreCase("online")) {
@@ -14692,21 +14773,21 @@ private TrustManager[] get_trust_mgr() {
 						if (SingleInstance.parentId != null) {
 
 							CallDispatcher.sb
-									.setBs_parentid(SingleInstance.parentId);
+                                    .setBs_parentid(SingleInstance.parentId);
 
 						} else {
 							CallDispatcher.sb.setBs_parentid(Utility
-									.getSessionID());
+                                    .getSessionID());
 						}
 //						CallDispatcher.sb.setStartTime(getCurrentDateandTime());
 						SignalingBean temp = (SignalingBean) CallDispatcher.sb
-								.clone();
+                                .clone();
 						temp.setBs_calltype("2");
 //						DBAccess.getdbHeler()
 //								.saveOrUpdateRecordtransactiondetails(
 //										CallDispatcher.sb);
 						SingleInstance.ContactSharng = false;
-						
+
 					} else {
 //						CallDispatcher.sb.setStartTime(getCurrentDateandTime());
 //						DBAccess.getdbHeler()
@@ -14715,7 +14796,7 @@ private TrustManager[] get_trust_mgr() {
 					}
 				} else {
 //					CallDispatcher.sb.setStartTime(getCurrentDateandTime());
-					
+
 				}
 				CallDispatcher.dialChecker = true;
 				SignalingBean vbcsb = (SignalingBean) CallDispatcher.sb.clone();
@@ -14829,15 +14910,15 @@ private TrustManager[] get_trust_mgr() {
 						if (SingleInstance.parentId != null) {
 
 							CallDispatcher.sb
-									.setBs_parentid(SingleInstance.parentId);
+                                    .setBs_parentid(SingleInstance.parentId);
 
 						} else {
 							CallDispatcher.sb.setBs_parentid(Utility
-									.getSessionID());
+                                    .getSessionID());
 						}
 //						CallDispatcher.sb.setStartTime(getCurrentDateandTime());
 						SignalingBean temp = (SignalingBean) CallDispatcher.sb
-								.clone();
+                                .clone();
 						temp.setBs_calltype("2");
 //						DBAccess.getdbHeler()
 //								.saveOrUpdateRecordtransactiondetails(
@@ -14971,9 +15052,9 @@ private TrustManager[] get_trust_mgr() {
 								if (getdbHeler(context).ExecuteQuery(
 										strDeleteQry)) {
 									if (WebServiceReferences.contextTable
-											.containsKey("MAIN")) {
+                                            .containsKey("MAIN")) {
 										((CompleteListView) WebServiceReferences.contextTable
-												.get("MAIN")).UpdateList();
+                                                .get("MAIN")).UpdateList();
 									}
 								}
 
@@ -14989,9 +15070,9 @@ private TrustManager[] get_trust_mgr() {
 								if (getdbHeler(context).ExecuteQuery(
 										strDeleteQry)) {
 									if (WebServiceReferences.contextTable
-											.containsKey("MAIN")) {
+                                            .containsKey("MAIN")) {
 										((CompleteListView) WebServiceReferences.contextTable
-												.get("MAIN")).UpdateList();
+                                                .get("MAIN")).UpdateList();
 									}
 								}
 
@@ -15128,7 +15209,7 @@ private TrustManager[] get_trust_mgr() {
 
 	/**
 	 * Crate thumbnail image file from the video
-	 * 
+	 *
 	 * @param strThumbPath
 	 * @return
 	 */
@@ -15346,7 +15427,7 @@ private TrustManager[] get_trust_mgr() {
 		try {
 			if (Response.equalsIgnoreCase("true")) {
 				final ShareReminder share = (ShareReminder) bean
-						.getReq_object();
+                        .getReq_object();
 				String filepath = Environment.getExternalStorageDirectory()
 						+ "/COMMedia/" + bean.getFile_path();
 
@@ -15495,7 +15576,7 @@ private TrustManager[] get_trust_mgr() {
 							Intent reminderIntent = new Intent(context,
 									ReminderService.class);
 							SipNotificationListener.getCurrentContext()
-									.startService(reminderIntent);
+                                    .startService(reminderIntent);
 							Log.d("thread", strQuery);
 						}
 
@@ -15513,18 +15594,18 @@ private TrustManager[] get_trust_mgr() {
 					}
 					if (WebServiceReferences.contextTable.containsKey("MAIN")) {
 						final CompleteListView complete = (CompleteListView) WebServiceReferences.contextTable
-								.get("MAIN");
+                                .get("MAIN");
 						handlerForCall.post(new Runnable() {
 
 							@Override
 							public void run() {
 								Log.d("thread", "downloadd");
 								if (getdbHeler(context)
-										.isRecordExists(
-												"select * from component where componentid="
-														+ cmptPro
-																.getComponentId()
-														+ "")) {
+                                        .isRecordExists(
+                                                "select * from component where componentid="
+                                                        + cmptPro
+                                                        .getComponentId()
+                                                        + "")) {
 
 									complete.notifyFileDownloaded(cmptPro,
 											share.getType(),
@@ -15537,10 +15618,10 @@ private TrustManager[] get_trust_mgr() {
 
 				}
 
-			
+
 				if (WebServiceReferences.contextTable.containsKey("MAIN")) {
 					CompleteListView list = (CompleteListView) WebServiceReferences.contextTable
-							.get("MAIN");
+                            .get("MAIN");
 					list.adapter.selectAllNotes(false);
 					if (list.btn_edit.getVisibility() == View.GONE) {
 						list.btn_edit.setVisibility(View.VISIBLE);
@@ -15571,23 +15652,23 @@ private TrustManager[] get_trust_mgr() {
 		 * sipCommunicator = new SipCommunicator(sipQueue,
 		 * AppReference.sipnotifier); sipCommunicator.setRnning(true);
 		 * sipCommunicator.start();
-		 * 
+		 *
 		 * AppReference.sipCommunicator = sipCommunicator; AppReference.sipQueue
 		 * = sipQueue; AppReference.sipnotifier.setcallBack();
-		 * 
+		 *
 		 * } else { sipQueue = AppReference.sipQueue; sipCommunicator =
 		 * AppReference.sipCommunicator; sipCommunicator.setRnning(true);
 		 * AppReference.sipnotifier.setcallBack(); }
-		 * 
+		 *
 		 * CommunicationBean bean = new CommunicationBean();
 		 * bean.setOperationType(sip_operation_types.LOAD_LIBS);
 		 * sipQueue.addMsg(bean);
-		 * 
+		 *
 		 * File fledir = Context.getDir("Media", Context.MODE_PRIVATE); File
 		 * file = new File(fledir, "hold.wav"); if (!file.exists()) {
 		 * Log.d("calltest", "file existes" + file.getPath());
 		 * checkisholdmusicexists(context); }
-		 * 
+		 *
 		 * CommunicationBean mbean = new CommunicationBean();
 		 * mbean.setOperationType(sip_operation_types.CREATE_PLAYER);
 		 * mbean.setFile_path(file.getPath()); sipQueue.addMsg(mbean);
@@ -15752,7 +15833,7 @@ private TrustManager[] get_trust_mgr() {
 
 	public void notifyDownloadtoIMScreen(FTPBean bean, boolean downloadResult) {
 		AppMainActivity appMainActivity = (AppMainActivity) SingleInstance.contextTable
-				.get("MAIN");
+                .get("MAIN");
 		SignalingBean sb = (SignalingBean) bean.getReq_object();
 		if (sb != null) {
 			if (sb.getCallType().equals("MPP")
@@ -15767,7 +15848,7 @@ private TrustManager[] get_trust_mgr() {
 						if (!sb.getisRobo().equalsIgnoreCase("yes")) {
 							FTPBean fbean = new FTPBean();
 							fbean.setServer_ip(appMainActivity.cBean
-									.getRouter().split(":")[0]);
+                                    .getRouter().split(":")[0]);
 							fbean.setServer_port(40400);
 							fbean.setFtp_username(bean.getFtp_username());
 							fbean.setFtp_password(bean.getFtp_password());
@@ -15806,7 +15887,7 @@ private TrustManager[] get_trust_mgr() {
 				ChatBean chatBean = getChatBean(sb);
 				chatBean.setUsername(CallDispatcher.LoginUser + sb.getFrom());
 				SingleInstance.getChatHistoryWriter().getQueue()
-						.addObject(chatBean);
+                        .addObject(chatBean);
 
 				// Vector<ChatBean> chatList = SingleInstance.chatHistory
 				// .get(chatBean.getFromUser());
@@ -15819,15 +15900,15 @@ private TrustManager[] get_trust_mgr() {
 				// chatList);
 				// }
 				ChatActivity chat = (ChatActivity) SingleInstance.contextTable
-						.get("chatactivity");
+                        .get("chatactivity");
 				if (chat != null)
 					chat.updateUI(chatBean);
 
 				else {
 					if (WebServiceReferences.Imcollection.containsKey(sb
-							.getSessionid())) {
+                            .getSessionid())) {
 						ArrayList<SignalingBean> al = WebServiceReferences.Imcollection
-								.get(sb.getSessionid());
+                                .get(sb.getSessionid());
 						al.add(sb);
 
 						if (isApplicationInBackground(context)) {
@@ -15848,7 +15929,7 @@ private TrustManager[] get_trust_mgr() {
 
 					} else {
 						if (!WebServiceReferences.activeSession.containsKey(sb
-								.getFrom())) {
+                                .getFrom())) {
 							WebServiceReferences.activeSession.put(
 									sb.getFrom(), sb.getSessionid());
 
@@ -15858,16 +15939,16 @@ private TrustManager[] get_trust_mgr() {
 									sb.getSessionid(), al);
 						} else {
 							String session = WebServiceReferences.activeSession
-									.get(sb.getFrom());
+                                    .get(sb.getFrom());
 							if (WebServiceReferences.Imcollection
-									.containsKey(session)) {
+                                    .containsKey(session)) {
 								ArrayList<SignalingBean> lst = (ArrayList<SignalingBean>) WebServiceReferences.Imcollection
-										.get(session);
+                                        .get(session);
 								lst.add(sb);
 
 							} else {
 								WebServiceReferences.activeSession.remove(sb
-										.getFrom());
+                                        .getFrom());
 								WebServiceReferences.activeSession.put(
 										sb.getFrom(), sb.getSessionid());
 
@@ -15878,7 +15959,7 @@ private TrustManager[] get_trust_mgr() {
 							}
 						}
 						AppMainActivity appActivity = (AppMainActivity) WebServiceReferences.contextTable
-								.get("MAIN");
+                                .get("MAIN");
 						GenerateimView(appActivity.imView, sb.getFrom(),
 								sb.getSessionid(), false, "",
 								CallDispatcher.LoginUser);
@@ -15890,9 +15971,9 @@ private TrustManager[] get_trust_mgr() {
 								// TODO Auto-generated method stub
 								ContactsFragment.getContactAdapter()
 										.notifyDataSetChanged();
-								
+
 								ExchangesFragment exchanges = ExchangesFragment
-										.newInstance(context);
+                                        .newInstance(context);
 								if (exchanges != null)
 									exchanges.adapter.notifyDataSetChanged();
 
@@ -15927,7 +16008,7 @@ private TrustManager[] get_trust_mgr() {
 				bmp.recycle();
 			double sampleSize = 0;
 			Boolean scaleByHeight = Math.abs(options.outHeight - targetHeight) >= Math
-					.abs(options.outWidth - targetWidth);
+                    .abs(options.outWidth - targetWidth);
 
 			if (options.outHeight * options.outWidth * 2 >= 1638) {
 
@@ -15983,7 +16064,7 @@ private TrustManager[] get_trust_mgr() {
 			while (myVeryOwnIterator.hasNext()) {
 				String key = (String) myVeryOwnIterator.next();
 				ArrayList<SignalingBean> value = (ArrayList<SignalingBean>) WebServiceReferences.Imcollection
-						.get(key);
+                        .get(key);
 				ix[i] = value.size();
 				SignalingBean sx = value.get(0);
 				String srtNames = sx.getFrom();
@@ -16021,28 +16102,28 @@ private TrustManager[] get_trust_mgr() {
 			}
 			quickAction
 					.setOnActionItemClickListener(new QuickAction1.OnActionItemClickListener() {
-						@Override
-						public void onItemClick(int pos) {
+                        @Override
+                        public void onItemClick(int pos) {
 
-							try {
-								Log.e("IM", "Postition :" + pos);
-								Log.e("IM", "NAME :" + al.get(pos));
+                            try {
+                                Log.e("IM", "Postition :" + pos);
+                                Log.e("IM", "NAME :" + al.get(pos));
 
-								Log.e("IM", "Session :" + hs.get(al.get(pos)));
-								String name = (String) al.get(pos);
-								String session = (String) hs.get(al.get(pos));
+                                Log.e("IM", "Session :" + hs.get(al.get(pos)));
+                                String name = (String) al.get(pos);
+                                String session = (String) hs.get(al.get(pos));
 
-								showActiveSession(session, name, context);
-								al.remove(pos);
-								if (al.size() <= 0) {
-									v.setVisibility(View.INVISIBLE);
-								}
+                                showActiveSession(session, name, context);
+                                al.remove(pos);
+                                if (al.size() <= 0) {
+                                    v.setVisibility(View.INVISIBLE);
+                                }
 
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
 
-						}
+                        }
 					});
 
 			quickAction.show(v);
@@ -16413,7 +16494,7 @@ private TrustManager[] get_trust_mgr() {
 						&& settings.getLocationService().trim().length() > 0) {
 					location_Service = getdbHeler(
 							SipNotificationListener.getCurrentContext())
-							.getServiceName(settings.getLocationService());
+                            .getServiceName(settings.getLocationService());
 				}
 				serviceType = 0;
 
@@ -16435,7 +16516,7 @@ private TrustManager[] get_trust_mgr() {
 
 		SharedPreferences pref = PreferenceManager
 				.getDefaultSharedPreferences(SipNotificationListener
-						.getCurrentContext().getApplicationContext());
+                        .getCurrentContext().getApplicationContext());
 		WebServiceReferences.globaldateformat = pref.getString("dateformate",
 				"MM-dd-yyyy");
 		pref = null;
@@ -16593,13 +16674,13 @@ private TrustManager[] get_trust_mgr() {
 
 	private void viewProfile(String buddy) {
 		ViewProfileFragment viewProfileFragment = ViewProfileFragment
-				.newInstance(context);
+                .newInstance(context);
 		// Bundle bundle = new Bundle();
 		// bundle.putString("buddyname", buddy);
 		// viewProfileFragment.setArguments(bundle);
 		viewProfileFragment.setBuddyName(buddy);
 		FragmentManager fragmentManager = ((AppMainActivity) SingleInstance.contextTable
-				.get("MAIN")).getSupportFragmentManager();
+                .get("MAIN")).getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager
 				.beginTransaction();
 		fragmentTransaction.replace(R.id.activity_main_content_fragment,
@@ -16735,11 +16816,11 @@ private TrustManager[] get_trust_mgr() {
 
 		if (!SingleInstance.instanceTable.containsKey("callscreen")
 				&& !SingleInstance.instanceTable
-						.containsKey("alertscreen")
+                .containsKey("alertscreen")
 				&& !WebServiceReferences.contextTable
-						.containsKey("sicallalert")
+                .containsKey("sicallalert")
 				&& !WebServiceReferences.contextTable
-						.containsKey("sipcallscreen")) {
+                .containsKey("sipcallscreen")) {
 			String value = to + ",";
 
 			String[] str = value.split(",");
@@ -16883,6 +16964,17 @@ private TrustManager[] get_trust_mgr() {
 				@Override
 				public void onClick(View v) {
 					dialog.dismiss();
+
+//					DBAccess.getdbHeler(context).putDBEntry(
+//							4, Environment
+//									.getExternalStorageDirectory()
+//									+ "/COMMedia/CallRecording/"
+//									+ strSessionId + ".wav",
+//							WebServiceReferences
+//									.getNoteCreateTimeForFiles(),
+//							"CallHistory",
+//							null, "");
+
 					Intent intentComponent = new Intent(context,
 							CallHistoryActivity.class);
 					intentComponent.putExtra("buddyname",

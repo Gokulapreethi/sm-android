@@ -8,6 +8,9 @@ public class GroupTempBean implements Serializable {
 	private String groupId;
 	private boolean isGroup;
 	private String buddy;
+	private String nickname;
+	private String buddyStatus;
+	private String open;
 
 	public String getGroupId() {
 		return groupId;
@@ -33,4 +36,27 @@ public class GroupTempBean implements Serializable {
 		this.buddy = buddy;
 	}
 
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public String getBuddyStatus() {
+		return buddyStatus;
+	}
+
+	public void setBuddyStatus(String buddyStatus) {
+		this.buddyStatus = buddyStatus;
+	}
+
+	public String getOpen() {
+		return open;
+	}
+
+	public void setOpen(String open) {
+		this.open = open;
+	}
 }
