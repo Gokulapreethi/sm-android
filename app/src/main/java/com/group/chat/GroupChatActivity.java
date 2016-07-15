@@ -770,6 +770,22 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             view_snazbox.setVisibility(View.VISIBLE);
             PatientDetails();
         }
+
+        String noanswerReplyType = getIntent().getStringExtra("noanswerreply");
+        if(noanswerReplyType != null) {
+            if (noanswerReplyType.equalsIgnoreCase("text")) {
+                message.requestFocus();
+            } else if (noanswerReplyType.equalsIgnoreCase("audio")) {
+                if (!CallDispatcher.isCallInitiate) {
+                    atachlay.setVisibility(View.GONE);
+                    audio_layout.setVisibility(View.VISIBLE);
+                } else
+                    showToast("Please Try again...call in progress");
+            } else if (noanswerReplyType.equalsIgnoreCase("video")) {
+                showVideoMessageDialog();
+            }
+        }
+
         profilechat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

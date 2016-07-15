@@ -3883,7 +3883,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
-                        openChatScreen(Username);
+                        openChatScreen(Username,"text");
                     }
                 });
 
@@ -3891,7 +3891,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
-                        openChatScreen(Username);
+                        openChatScreen(Username,"audio");
                     }
                 });
 
@@ -3899,7 +3899,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
-                        openChatScreen(Username);
+                        openChatScreen(Username,"video");
                     }
                 });
 
@@ -3913,7 +3913,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
         });
 	}
 
-	private void openChatScreen(String noanswered_user){
+	private void openChatScreen(String noanswered_user, String mes_type){
 //		if(SingleInstance.chatIntentValues != null) {
 //			GroupTempBean groupTempBean = SingleInstance.chatIntentValues;
 //			Intent intent = new Intent(SingleInstance.mainContext,GroupChatActivity.class);
@@ -3945,6 +3945,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
             intent.putExtra("buddy", bean.getName());
             intent.putExtra("buddystatus", bean.getStatus());
             intent.putExtra("nickname", bean.getFirstname() + " " + bean.getLastname());
+			intent.putExtra("noanswerreply",mes_type);
 			SingleInstance.mainContext.startActivity(intent);
         }
 	}
@@ -5101,6 +5102,39 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 				return true;
 			}
 		}
+
+		return false;
+	}
+
+	public boolean isApplicationInBackgroundCall(final Context context) {
+		ActivityManager am = (ActivityManager) context
+				.getSystemService(Context.ACTIVITY_SERVICE);
+
+		List<RunningTaskInfo> tasks = am.getRunningTasks(1);
+		Log.d("BACK", "isApplicationSentToBackground method");
+		if (!tasks.isEmpty()) {
+			Log.d("BACK", "not Empty");
+			ComponentName topActivity = tasks.get(0).topActivity;
+			Log.d("BACK", "topActivity : "+topActivity+" topActivity.getPackageName() : "+topActivity.getPackageName());
+			if (!topActivity.getPackageName().equals(context.getPackageName())) {
+
+				if(topActivity.toString().contains("com.android.documentsui")) {
+					Log.d("BACK", "going to return false........");
+					return false;
+				}
+				Log.d("BACK", "going to return true........");
+				return true;
+			}
+		}
+
+
+//		ActivityManager am = (ActivityManager)SingleInstance.mainContext.getSystemService(SingleInstance.mainContext.ACTIVITY_SERVICE);
+//		List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
+//		ActivityManager.RunningTaskInfo task = tasks.get(0); // Should be my task
+//		ComponentName rootActivity = task.baseActivity;
+//		Log.i("Gallery","rootActivity  "+rootActivity);
+//		String activityOnTop = task.topActivity.toString();
+//		Log.i("Gallery", "activityOnTop" + activityOnTop);
 
 		return false;
 	}
@@ -11684,7 +11718,8 @@ private TrustManager[] get_trust_mgr() {
 						// Context context = SipNotificationListener
 						// .getCurrentContext();
 						Intent intentmain = null;
-						if (isApplicationInBackground(context)) {
+						if (isApplicationInBackgroundCall(context)) {
+							Log.i("BACK","inside if");
 							intentmain = new Intent(context,
 									AppMainActivity.class);
 							intentmain
@@ -11733,6 +11768,9 @@ private TrustManager[] get_trust_mgr() {
 							List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
 							ActivityManager.RunningTaskInfo task = tasks.get(0); // Should be my task
 							ComponentName rootActivity = task.baseActivity;
+							Log.i("Gallery","rootActivity  "+rootActivity);
+							String activityOnTop = task.topActivity.toString();
+							Log.i("Gallery","activityOnTop"+activityOnTop);
 
 // Now build an Intent that will bring this task to the front
 							Intent intent = new Intent(SingleInstance.mainContext,SplashScreen.class);
@@ -11743,9 +11781,10 @@ private TrustManager[] get_trust_mgr() {
 							intent.addCategory(Intent.CATEGORY_LAUNCHER);
 
 							NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(SingleInstance.mainContext)
+
 									.setSmallIcon(R.drawable.logo) // notification icon
 									.setContentTitle("SnazMed") // title for notification
-									.setContentText("Call from " + signBean.getFrom()) // message for notification
+									.setContentText("Call from " + Buddyname(signBean.getFrom())) // message for notification
 									.setAutoCancel(true); // clear notification after click
 //							Intent intent = new Intent(SingleInstance.mainContext, AppMainActivity.class);
 //							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
