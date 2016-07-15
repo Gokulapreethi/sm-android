@@ -71,6 +71,7 @@ public class AMAVerification extends Activity {
     private CallDispatcher calldisp;
     LinearLayout dialogue;
     LinearLayout relay_search;
+    private int checkBoxCounter = 0;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -211,17 +212,17 @@ public class AMAVerification extends Activity {
         videocall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int count=0;
-                for(BuddyInformationBean bib:result){
-                    if(bib.isSelected())
+                int count = 0;
+                for (BuddyInformationBean bib : result) {
+                    if (bib.isSelected())
                         count++;
                 }
-                if(count==1){
-                    for(BuddyInformationBean bib:result){
+                if (count == 1) {
+                    for (BuddyInformationBean bib : result) {
                         calldisp.MakeCall(1, bib.getName(),
                                 context);
                     }
-                }else
+                } else
                     showToast("One Person is allowed to make audio call");
                 finish();
             }
@@ -260,10 +261,11 @@ public class AMAVerification extends Activity {
                 btn_1.setText("");
             }
         });
-        selectAll_buddy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        selectAll_buddy.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
+            public void onClick(View v) {
+
+                if (selectAll_buddy.isChecked()) {
                     for (int i = 0; i < result.size(); i++) {
                         adapter.getItem(i).setSelected(true);
                     }
@@ -279,6 +281,7 @@ public class AMAVerification extends Activity {
                         count++;
                     }
                 }
+                checkBoxCounter = count;
                 if (count == 0) {
                     RelativeLayout2.setVisibility(View.GONE);
                     dialogue.setVisibility(View.GONE);
@@ -286,8 +289,38 @@ public class AMAVerification extends Activity {
                     RelativeLayout2.setVisibility(View.VISIBLE);
                 }
                 selected.setText(count + " selected");
+
             }
         });
+//        {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                checkBoxCounter = 0;
+//                if (b) {
+//                    for (int i = 0; i < result.size(); i++) {
+//                        adapter.getItem(i).setSelected(true);
+//                    }
+//                } else {
+//                    for (int i = 0; i < result.size(); i++) {
+//                        adapter.getItem(i).setSelected(false);
+//                    }
+//                }
+//                adapter.notifyDataSetChanged();
+//                int count = 0;
+//                for (BuddyInformationBean bib : result) {
+//                    if (bib.isSelected()) {
+//                        count++;
+//                    }
+//                }
+//                if (count == 0) {
+//                    RelativeLayout2.setVisibility(View.GONE);
+//                    dialogue.setVisibility(View.GONE);
+//                } else {
+//                    RelativeLayout2.setVisibility(View.VISIBLE);
+//                }
+//                selected.setText(count + " selected");
+//            }
+//        });
         searchResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -596,7 +629,7 @@ public class AMAVerification extends Activity {
         private Vector<BuddyInformationBean> result;
         private Vector<BuddyInformationBean> originalList;
         private  ContactsFilter filter;
-        private int checkBoxCounter = 0;
+
 
         public AMAAdapter(Context context, int resource, Vector<BuddyInformationBean> objects) {
             super(context, resource, objects);

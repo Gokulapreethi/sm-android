@@ -1566,10 +1566,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             for (GroupChatBean Gcb : chatList) {
                                 if (Gcb.isSelect()) {
                                     count++;
+                                    checkBoxCounter = count;
                                 }
                             }
                             countofselection.setText(count + " Selected");
                         }else
+                            checkBoxCounter = 0;
                             countofselection.setText(0 + " Selected");
                     }
                 });
@@ -1577,6 +1579,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 sidemenu.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        selectAll_buddy.setChecked(false);
                         forward = false;
                         adapter.notifyDataSetChanged();
                         selectAll_container.setVisibility(View.GONE);
@@ -5248,6 +5251,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         selectInvidual_buddy.setChecked(gcBean.isSelect());
                     } else {
                         selectInvidual_buddy.setVisibility(View.GONE);
+                    }
+                    if(gcBean.isSelect()){
+                        selectInvidual_buddy.setChecked(true);
+                    }else{
+                        selectInvidual_buddy.setChecked(false);
                     }
                     selectInvidual_buddy.setOnClickListener(new OnClickListener() {
                         @Override
@@ -9962,8 +9970,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     }
     public void countofcheckbox(int count)
     {
-        Log.i("asdf","count"+count);
+        Log.i("asdf", "count" + count);
         countofselection.setText(Integer.toString(count) + " Selected");
+        if(count==chatList.size())
+            selectAll_buddy.setChecked(true);
+        else
+            selectAll_buddy.setChecked(false);
 
     }
 

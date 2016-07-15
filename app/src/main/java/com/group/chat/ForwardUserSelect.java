@@ -76,6 +76,7 @@ public class ForwardUserSelect extends Activity {
     private int total_groupcount = 0;
     private boolean contact=true;
     private boolean fromfiles = false;
+    private int checkBoxCounter = 0;
 
 
     Vector<BuddyInformationBean> buddylist = new Vector<BuddyInformationBean>();
@@ -248,70 +249,94 @@ public class ForwardUserSelect extends Activity {
 
 
         selectAll.setTag(true);
-        selectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        selectAll.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean ischecked) {
-//                if (contact == true) {
+            public void onClick(View v) {
+                Log.d("inside selection", "---->item position");
+                int count = 0;
 
+                if ((Boolean) selectAll.isChecked()) {
+                    for (BuddyInformationBean buddyBean : buddylist) {
+                        buddyBean.setSelected(true);
+                        count++;
+                    }
+                    selectAll.setTag(false);
+                    countofcheckbox(count);
+                    total_count = count;
+                    adapter.checkBoxCounter = count;
+                } else {
+                    for (BuddyInformationBean buddyBean : buddylist) {
+                        buddyBean.setSelected(false);
+                    }
+                    selectAll.setTag(true);
+                    countofcheckbox(0);
+                    total_count = 0;
+                    adapter.checkBoxCounter = 0;
+                }
+                adapter.notifyDataSetChanged();
+            }
+        });
 
-                    Log.d("inside selection", "---->item position");
+        selectAll_group.setTag(true);
+        selectAll_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("inside selection", "---->item position");
                 int count=0;
 
-                    if ((Boolean) selectAll.getTag()) {
-                        for (BuddyInformationBean buddyBean : buddylist) {
-                            buddyBean.setSelected(true);
-                            count++;
-                        }
-                        selectAll.setTag(false);
-                        countofcheckbox(count);
-                        total_count = count;
-                    } else {
-                        for (BuddyInformationBean buddyBean : buddylist) {
-                            buddyBean.setSelected(false);
-                        }
-                        selectAll.setTag(true);
-                        countofcheckbox(0);
-                        total_count = 0;
+                if ((Boolean) selectAll_group.isChecked()) {
+                    for (GroupBean gbean : buddygroupList) {
+                        gbean.setSelected(true);
+                        count++;
+
                     }
-                    adapter.notifyDataSetChanged();
+                    selectAll_group.setTag(false);
+                    groupcheckbox(count);
+                    total_groupcount = count;
+                    checkBoxCounter = count;
+                } else {
+                    for (GroupBean groupBean : buddygroupList) {
+                        groupBean.setSelected(false);
 
+                    }
+                    selectAll_group.setTag(true);
+                    groupcheckbox(0);
+                    total_groupcount = 0;
+                    checkBoxCounter = 0;
+                }
+                forwardGroupAdapter.notifyDataSetChanged();
+            }
+        });
 
-//                }
-
-        }
-
-    });
-        selectAll_group.setTag(true);
-
-               selectAll_group.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                   @Override
-                   public void onCheckedChanged(CompoundButton compoundButton, boolean ischecked) {
-                       Log.d("inside selection", "---->item position");
-                       int count=0;
-
-                       if ((Boolean) selectAll_group.getTag()) {
-                           for (GroupBean gbean : buddygroupList) {
-                               gbean.setSelected(true);
-                               count++;
-
-                           }
-                           selectAll_group.setTag(false);
-                           groupcheckbox(count);
-                           total_groupcount = count;
-                       } else {
-                           for (GroupBean groupBean : buddygroupList) {
-                               groupBean.setSelected(false);
-
-                           }
-                           selectAll_group.setTag(true);
-                           groupcheckbox(0);
-                           total_groupcount = 0;
-                       }
-                       forwardGroupAdapter.notifyDataSetChanged();
-
-                   }
-               });
-
+//               selectAll_group.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//                   @Override
+//                   public void onCheckedChanged(CompoundButton compoundButton, boolean ischecked) {
+//                       Log.d("inside selection", "---->item position");
+//                       int count=0;
+//
+//                       if ((Boolean) selectAll_group.getTag()) {
+//                           for (GroupBean gbean : buddygroupList) {
+//                               gbean.setSelected(true);
+//                               count++;
+//
+//                           }
+//                           selectAll_group.setTag(false);
+//                           groupcheckbox(count);
+//                           total_groupcount = count;
+//                       } else {
+//                           for (GroupBean groupBean : buddygroupList) {
+//                               groupBean.setSelected(false);
+//
+//                           }
+//                           selectAll_group.setTag(true);
+//                           groupcheckbox(0);
+//                           total_groupcount = 0;
+//                       }
+//                       forwardGroupAdapter.notifyDataSetChanged();
+//
+//                   }
+//               });
+//
 
 
 
@@ -418,7 +443,6 @@ public class ForwardUserSelect extends Activity {
 
         private Typeface tf_bold = null;
         ImageLoader imageLoader;
-        private int checkBoxCounter = 0;
         private  ForwardFilter filter;
         Vector<GroupBean> grouplist = new Vector<GroupBean>();
         Vector<GroupBean> originallist;
@@ -639,6 +663,14 @@ public class ForwardUserSelect extends Activity {
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
+
+        for (GroupBean gbean : buddygroupList) {
+            gbean.setSelected(false);
+        }
+        for (BuddyInformationBean buddyBean : buddylist) {
+            buddyBean.setSelected(false);
+        }
+
         WebServiceReferences.contextTable.remove("forwarduser");
         super.onDestroy();
     }

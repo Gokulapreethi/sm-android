@@ -245,6 +245,7 @@ public class MyAccountActivity extends Activity {
                                 dim.leftMargin = 30;
                                 dim.weight = 1;
                                 dim.topMargin = 5;
+                                dim.bottomMargin = 7;
                                 dynamicText.setLayoutParams(dim);
                                 button = new Button(context);
                                 LinearLayout.LayoutParams but = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -1635,6 +1636,7 @@ public class MyAccountActivity extends Activity {
                             dim.leftMargin = 30;
                             dim.topMargin = 5;
                             dim.weight = 1;
+                            dim.bottomMargin = 7;
                             dynamicText.setLayoutParams(dim);
                             button = new Button(context);
                             LinearLayout.LayoutParams but = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);

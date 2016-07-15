@@ -56,6 +56,7 @@ public class FindPeople extends Fragment {
     private static CallDispatcher calldisp = null;
     public View _rootView;
     private ProgressDialog pDialog;
+    private int checkBoxCounter = 0;
 
     public static FindPeople newInstance(Context context) {
         try {
@@ -127,10 +128,11 @@ public class FindPeople extends Fragment {
                 selectAll_buddy = (CheckBox) _rootView.findViewById(R.id.selectAll_buddy);
                 selected = (TextView) _rootView.findViewById(R.id.selected);
                 searchResult = (ListView) _rootView.findViewById(R.id.searchResult);
-                selectAll_buddy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                selectAll_buddy.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        if (b) {
+                    public void onClick(View v) {
+                        if (selectAll_buddy.isChecked()) {
                             for (int i=0;i<result.size();i++) {
                                 adapter.getItem(i).setSelected(true);
                             }
@@ -140,15 +142,39 @@ public class FindPeople extends Fragment {
                             }
                         }
                         adapter.notifyDataSetChanged();
+
                         int count = 0;
                         for (BuddyInformationBean bib : result) {
                             if (bib.isSelected()) {
                                 count++;
+                                checkBoxCounter = count;
                             }
                         }
                         selected.setText(count + " selected");
                     }
                 });
+//                selectAll_buddy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//                    @Override
+//                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                        if (b) {
+//                            for (int i=0;i<result.size();i++) {
+//                                adapter.getItem(i).setSelected(true);
+//                            }
+//                        } else {
+//                            for (int i=0;i<result.size();i++) {
+//                                adapter.getItem(i).setSelected(false);
+//                            }
+//                        }
+//                        adapter.notifyDataSetChanged();
+//                        int count = 0;
+//                        for (BuddyInformationBean bib : result) {
+//                            if (bib.isSelected()) {
+//                                count++;
+//                            }
+//                        }
+//                        selected.setText(count + " selected");
+//                    }
+//                });
                 if (result.size() > 0) {
                     adapter = new FindPeopleAdapter(mainContext, R.layout.find_people_item, result);
                     searchResult.setAdapter(adapter);
@@ -310,9 +336,13 @@ public class FindPeople extends Fragment {
                         public void onClick(View v) {
                             if (((CheckBox) v).isChecked()){
                                 bib.setSelected(true);
+                                checkBoxCounter++;
+                                countofcheckbox(checkBoxCounter);
                             }
                             else {
                                 bib.setSelected(false);
+                                checkBoxCounter--;
+                                countofcheckbox(checkBoxCounter);
                             }
                         }
                     });
@@ -351,6 +381,16 @@ public class FindPeople extends Fragment {
         ImageView statusIcon;
         TextView buddyName;
         TextView occupation;
+    }
+    public void countofcheckbox(int count)
+    {
+        Log.i("asdf", "count" + count);
+        selected.setText(Integer.toString(count) + " Selected");
+        if(count==result.size())
+            selectAll_buddy.setChecked(true);
+        else
+            selectAll_buddy.setChecked(false);
+
     }
     private void showprogress() {
         try {

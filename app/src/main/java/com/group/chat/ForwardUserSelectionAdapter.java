@@ -41,7 +41,7 @@ public class ForwardUserSelectionAdapter extends ArrayAdapter<BuddyInformationBe
     private Vector<BuddyInformationBean> userList;
     private Vector<BuddyInformationBean> originallist;
     private LayoutInflater inflater = null;
-    private static int checkBoxCounter = 0;
+    public int checkBoxCounter = 0;
     private int checkboxcount;
     private  ForwardFilter filter;
     boolean[] checkBoxState;

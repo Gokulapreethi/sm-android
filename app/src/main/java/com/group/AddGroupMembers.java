@@ -312,28 +312,28 @@ public class AddGroupMembers extends Activity {
 			}
 			countofcheckbox(count);
 			selectAll.setTag(true);
-			selectAll.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
+			selectAll.setOnClickListener(new OnClickListener() {
 				@Override
-				public void onCheckedChanged(CompoundButton buttonView,
-						boolean isChecked) {
-					// TODO Auto-generated method stub
+				public void onClick(View v) {
 					Log.i("AAAA","select all");
 					try {
-                        //if (isUserSelected) {
-                            if ((Boolean) selectAll.getTag()) {
-                                for (UserBean userBean : contactList) {
-                                    userBean.setSelected(true);
-                                }
-                                selectAll.setTag(false);
-								countofcheckbox(presentbuddiescount);
-                            } else {
-                                for (UserBean userBean : contactList) {
-                                    userBean.setSelected(false);
-                                }
-                                selectAll.setTag(true);
-								countofcheckbox(0);
-                            }
+						//if (isUserSelected) {
+						if ((Boolean) selectAll.isChecked()) {
+							for (UserBean userBean : contactList) {
+								userBean.setSelected(true);
+							}
+							selectAll.setTag(false);
+							countofcheckbox(presentbuddiescount);
+							adapter.checkBoxCounter=presentbuddiescount;
+						} else {
+							for (UserBean userBean : contactList) {
+								userBean.setSelected(false);
+							}
+							selectAll.setTag(true);
+							countofcheckbox(0);
+							adapter.checkBoxCounter=0;
+						}
+
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						if (AppReference.isWriteInFile)
@@ -345,6 +345,40 @@ public class AddGroupMembers extends Activity {
 
 				}
 			});
+
+//			selectAll.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+//
+//				@Override
+//				public void onCheckedChanged(CompoundButton buttonView,
+//						boolean isChecked) {
+//					// TODO Auto-generated method stub
+//					Log.i("AAAA","select all");
+//					try {
+//                        //if (isUserSelected) {
+//                            if ((Boolean) selectAll.getTag()) {
+//                                for (UserBean userBean : contactList) {
+//                                    userBean.setSelected(true);
+//                                }
+//                                selectAll.setTag(false);
+//								countofcheckbox(presentbuddiescount);
+//                            } else {
+//                                for (UserBean userBean : contactList) {
+//                                    userBean.setSelected(false);
+//                                }
+//                                selectAll.setTag(true);
+//								countofcheckbox(0);
+//                            }
+//					} catch (Exception e) {
+//						// TODO Auto-generated catch block
+//						if (AppReference.isWriteInFile)
+//							AppReference.logger.error(e.getMessage(), e);
+//						else
+//							e.printStackTrace();
+//					}
+//					adapter.notifyDataSetChanged();
+//
+//				}
+//			});
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			if (AppReference.isWriteInFile)

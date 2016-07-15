@@ -6,12 +6,13 @@
     android:layout_height="match_parent"
     android:background="@color/black2"
     >
-<RelativeLayout
+<LinearLayout
     android:id="@+id/relay1"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
-    android:gravity="center|left">
+    android:orientation="vertical"
+    android:gravity="top">
 
 
     <TextView
@@ -21,11 +22,10 @@
         android:layout_marginLeft="30dp"
         android:textSize="15dp"
         android:text="Publication or Citation"
-        android:textColor="@color/grey3"
-        android:layout_marginTop="50dp"/>
+        android:textColor="@color/grey3" />
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="150dp"
         android:layout_below="@id/Text_view1"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="30dp"
@@ -35,7 +35,7 @@
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="2000dp"
+        android:layout_height="wrap_content"
         android:id="@+id/Edit_text1"
         android:textSize="20dp"
         android:digits="@string/alphaNumericandspace"
@@ -53,7 +53,7 @@
 
 
 
-</RelativeLayout>
+</LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
