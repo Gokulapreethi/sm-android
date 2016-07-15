@@ -8153,6 +8153,10 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	public void notifyGetPatientRecords(Object obj){
 		if(obj instanceof Vector){
 			Log.i("patientdetails", "notifyGetPatientRecords");
+			GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
+			if(groupChatActivity != null) {
+				groupChatActivity.cancelDialog();
+			}
 
 			Vector<PatientDetailsBean> pBeanList=(Vector<PatientDetailsBean>)obj;
 			for(PatientDetailsBean pBean:pBeanList){

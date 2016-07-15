@@ -364,6 +364,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             isOpen = getIntent().getStringExtra("isReq");
         appMainActivity = (AppMainActivity) SingleInstance.contextTable
                 .get("MAIN");
+        context = GroupChatActivity.this;
         sidemenu = (ImageView) findViewById(R.id.side_menu);
         mediaPlayer = new MediaPlayer();
 
@@ -769,6 +770,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             tv_file.setTextColor(getResources().getColor(R.color.white));
             view_snazbox.setVisibility(View.VISIBLE);
             PatientDetails();
+            if(!isOpen.equalsIgnoreCase("p"))
+            showprogress();
         }
 
         String noanswerReplyType = getIntent().getStringExtra("noanswerreply");
@@ -984,7 +987,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     int Currentyear = Calendar.getInstance().get(Calendar.YEAR);
                     Log.i("sss1","Current year"+Currentyear);
 
-                    String BirthYear=str[2];
+                    String BirthYear;
+                    if(str[2].length()>2)
+                        BirthYear=str[2];
+                    else
+                        BirthYear=str[0];
                     int age=Currentyear-(Integer.parseInt(BirthYear));
                     Log.i("sss1","Current age"+age);
 

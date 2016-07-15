@@ -216,7 +216,7 @@
 
 
     <LinearLayout
-        android:id="@+id/linear3"
+        android:id="@+id/sendBtn"
         android:layout_width="fill_parent"
         android:layout_height="45dp"
         android:orientation="horizontal"

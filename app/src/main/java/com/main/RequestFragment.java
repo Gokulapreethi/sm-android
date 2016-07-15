@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,8 @@ import com.image.utils.ImageLoader;
 import com.util.SingleInstance;
 
 import org.lib.model.BuddyInformationBean;
+
+import java.util.Calendar;
 
 
 public class RequestFragment extends Fragment {
@@ -288,10 +291,28 @@ public class RequestFragment extends Fragment {
                             lastName.setText(pb.getLastname());
                         if(!(pb.getNickname().equals(null) || pb.getNickname().equals("")))
                             nickName.setText(pb.getNickname());
-                        if(!(pb.getSex().equals(null) || pb.getSex().equals("")))
-                            mf.setText(pb.getSex());
-                        if(!(pb.getState().equals(null) || pb.getState().equals("")))
-                            atten_phys.setText(pb.getState());
+                        if(pb.getDob()!=null&& pb.getDob().length()>0) {
+                            String birthdate=pb.getDob();
+                            Log.i("sss1", "Current birthdate" + birthdate);
+                            if(birthdate.contains("/")){
+                                birthdate=birthdate.replace("/","-");
+                                Log.d("sss1","replace brithdate"+birthdate);
+                            }
+                            String[] str = birthdate.split("-");
+                            int Currentyear = Calendar.getInstance().get(Calendar.YEAR);
+                            Log.i("sss1","Current year"+Currentyear);
+                            String BirthYear;
+                            if(str[2].length()>2)
+                                BirthYear=str[2];
+                            else
+                                BirthYear=str[0];
+                            int age=Currentyear-(Integer.parseInt(BirthYear));
+                            Log.i("sss1","Current age"+age);
+
+                            mf.setText(String.valueOf(age));
+                        }
+                        if(!(pb.getUsertype().equals(null) || pb.getUsertype().equals("")))
+                            atten_phys.setText(pb.getUsertype());
                         if(!(pb.getState().equals(null) || pb.getState().equals("")))
                             statof.setText(pb.getState());
                         if(!(pb.getProfession().equals(null) || pb.getProfession().equals("")))

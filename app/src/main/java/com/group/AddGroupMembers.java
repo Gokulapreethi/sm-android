@@ -37,6 +37,7 @@ import android.widget.Toast;
 import com.bean.ProfileBean;
 import com.bean.UserBean;
 import com.cg.DB.DBAccess;
+import com.cg.quickaction.User;
 import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
@@ -145,7 +146,7 @@ public class AddGroupMembers extends Activity {
 						}
 					}
 				}
-			} else {
+			}else {
 					for (BuddyInformationBean bib : cList) {
 						for(String temp:buddylist){
 							if(temp.equalsIgnoreCase(bib.getName())) {
@@ -198,7 +199,7 @@ public class AddGroupMembers extends Activity {
 						for(String temp:mlist){
 							groupList.add(temp);
 						}
-						groupList.add(CallDispatcher.LoginUser);
+						groupList.add(gBean.getOwnerName());
 						Log.i("AAAA", "grouplist" + groupList.size());
 					}
 					for (String tmp : groupList) {

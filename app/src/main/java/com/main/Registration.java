@@ -74,7 +74,7 @@ public class Registration extends Activity {
     String strIPath;
     private Handler service_handler;
     private boolean isDialogVisible = false;
-    Spinner  sp5, sp6, sp7;
+    AutoCompleteTextView  sp5, sp6, sp7;
     AutoCompleteTextView sp1, sp3, sp4,sp2;
     private String tos, baa;
     private Handler handler = new Handler();
@@ -861,9 +861,9 @@ public class Registration extends Activity {
         sp2 = (AutoCompleteTextView) findViewById(R.id.rlay_user_type);
         sp3 = (AutoCompleteTextView) findViewById(R.id.rlay_state_of_practice);
         sp4 = (AutoCompleteTextView) findViewById(R.id.rlay_hospital_affiliation);
-        sp5 = (Spinner) findViewById(R.id.spsecAns1);
-        sp6 = (Spinner) findViewById(R.id.spsecAns2);
-        sp7 = (Spinner) findViewById(R.id.spsecAns3);
+        sp5 = (AutoCompleteTextView) findViewById(R.id.spsecAns1);
+        sp6 = (AutoCompleteTextView) findViewById(R.id.spsecAns2);
+        sp7 = (AutoCompleteTextView) findViewById(R.id.spsecAns3);
 
         final AutoCompleteTextView rlay_professional_org = (AutoCompleteTextView) findViewById(R.id.prof_desgn);
         final AutoCompleteTextView Speciality = (AutoCompleteTextView) findViewById(R.id.speciality);
@@ -967,28 +967,28 @@ public class Registration extends Activity {
         final ArrayList<String> quesList = DBAccess.getdbHeler().getSecurityQuestions();
 
         list_secQue1 = new ArrayList<String>();
-        list_secQue1.add("Choose Question");
         list_secQue1.addAll(quesList);
+        list_secQue1.add("Other Question");
 
-        dataAdapter_secQue1 = new ArrayAdapter<String>(context, R.layout.spinner_lay, list_secQue1);
+        dataAdapter_secQue1 = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, list_secQue1);
         dataAdapter_secQue1.setDropDownViewResource(R.layout.spinner_dropdown_list);
 
         sp5.setAdapter(dataAdapter_secQue1);
 
         list_secQue2 = new ArrayList<String>();
-        list_secQue2.add("Choose Question");
         list_secQue2.addAll(quesList);
+        list_secQue1.add("Other Question");
 
-        dataAdapter_secQue2 = new ArrayAdapter<String>(context, R.layout.spinner_lay, list_secQue2);
+        dataAdapter_secQue2 = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, list_secQue2);
         dataAdapter_secQue2.setDropDownViewResource(R.layout.spinner_dropdown_list);
 
         sp6.setAdapter(dataAdapter_secQue2);
 
         list_secQue3 = new ArrayList<String>();
-        list_secQue3.add("Choose Question");
         list_secQue3.addAll(quesList);
+        list_secQue1.add("Other Question");
 
-        dataAdapter_secQue3 = new ArrayAdapter<String>(context, R.layout.spinner_lay, list_secQue3);
+        dataAdapter_secQue3 = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, list_secQue3);
         dataAdapter_secQue3.setDropDownViewResource(R.layout.spinner_dropdown_list);
 
         sp7.setAdapter(dataAdapter_secQue3);
@@ -1322,22 +1322,26 @@ public class Registration extends Activity {
             public void afterTextChanged(Editable editable) {
             }
         });
-        sp5.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        sp5.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (sp5.getSelectedItem().toString().equalsIgnoreCase("Other Question")) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (sp5.getText().toString().equalsIgnoreCase("Other Question")) {
                     etsecQues1.setVisibility(View.VISIBLE);
                     view_q1.setVisibility(View.VISIBLE);
                 } else {
                     etsecQues1.setVisibility(View.GONE);
                     view_q1.setVisibility(View.GONE);
+                    setQuestions();
                 }
-                setQuestions();
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                setQuestions();
+            public void afterTextChanged(Editable s) {
+
             }
         });
         etsecQues1.addTextChangedListener(new TextWatcher() {
@@ -1358,22 +1362,26 @@ public class Registration extends Activity {
             public void afterTextChanged(Editable editable) {
             }
         });
-        sp6.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        sp6.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (sp6.getSelectedItem().toString().equalsIgnoreCase("Other Question")) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (sp6.getText().toString().equalsIgnoreCase("Other Question")) {
                     etsecQues2.setVisibility(View.VISIBLE);
                     view_q2.setVisibility(View.VISIBLE);
                 } else {
                     etsecQues2.setVisibility(View.GONE);
                     view_q2.setVisibility(View.GONE);
+                    setQuestions();
                 }
-                setQuestions();
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                setQuestions();
+            public void afterTextChanged(Editable s) {
+
             }
         });
         etsecQues2.addTextChangedListener(new TextWatcher() {
@@ -1394,22 +1402,47 @@ public class Registration extends Activity {
             public void afterTextChanged(Editable editable) {
             }
         });
-        sp7.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        sp7.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (sp7.getSelectedItem().toString().equalsIgnoreCase("Other Question")) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (sp7.getText().toString().equalsIgnoreCase("Other Question")) {
                     etsecQues3.setVisibility(View.VISIBLE);
                     view_q3.setVisibility(View.VISIBLE);
                 } else {
                     etsecQues3.setVisibility(View.GONE);
                     view_q3.setVisibility(View.GONE);
+                    setQuestions();
                 }
-                setQuestions();
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                setQuestions();
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        sp7.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                sp7.showDropDown();
+                return false;
+            }
+        });
+        sp6.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                sp6.showDropDown();
+                return false;
+            }
+        });
+        sp5.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                sp5.showDropDown();
+                return false;
             }
         });
         etsecQues3.addTextChangedListener(new TextWatcher() {
@@ -1512,27 +1545,27 @@ public class Registration extends Activity {
                             }else
                                 sb.setSex("");
                             sb.setAssociation(association_membership.getText().toString());
-                            if (sp5.getSelectedItem().toString().equalsIgnoreCase("Choose Question") ||
-                                    sp6.getSelectedItem().toString().equalsIgnoreCase("Choose Question") ||
-                                    sp7.getSelectedItem().toString().equalsIgnoreCase("Choose Question")) {
+                            if (sp5.getText().toString().equalsIgnoreCase("Choose Question") ||
+                                    sp6.getText().toString().equalsIgnoreCase("Choose Question") ||
+                                    sp7.getText().toString().equalsIgnoreCase("Choose Question")) {
                                 showAlert1("Please Enter valid secret questions");
                                 return;
-                            } else if (sp5.getSelectedItem().toString().equalsIgnoreCase("Other Question") ||
-                                    sp6.getSelectedItem().toString().equalsIgnoreCase("Other Question") ||
-                                    sp7.getSelectedItem().toString().equalsIgnoreCase("Other Question")) {
-                                if (sp5.getSelectedItem().toString().equalsIgnoreCase("Other Question"))
+                            } else if (sp5.getText().toString().equalsIgnoreCase("Other Question") ||
+                                    sp6.getText().toString().equalsIgnoreCase("Other Question") ||
+                                    sp7.getText().toString().equalsIgnoreCase("Other Question")) {
+                                if (sp5.getText().toString().equalsIgnoreCase("Other Question"))
                                     sb.setSecques1(etsecQues1.toString().trim());
-                                if (sp6.getSelectedItem().toString().equalsIgnoreCase("Other Question"))
+                                if (sp6.getText().toString().equalsIgnoreCase("Other Question"))
                                     sb.setSecques2(etsecQues2.toString().trim());
-                                if (sp7.getSelectedItem().toString().equalsIgnoreCase("Other Question"))
+                                if (sp7.getText().toString().equalsIgnoreCase("Other Question"))
                                     sb.setSecques3(etsecQues3.toString().trim());
 
                             } else {
-                                sb.setSecques1(sp5.getSelectedItem().toString()
+                                sb.setSecques1(sp5.getText().toString()
                                         .trim());
-                                sb.setSecques2(sp6.getSelectedItem().toString()
+                                sb.setSecques2(sp6.getText().toString()
                                         .trim());
-                                sb.setSecques3(sp7.getSelectedItem().toString()
+                                sb.setSecques3(sp7.getText().toString()
                                         .trim());
                             }
                                 if (!WebServiceReferences.running) {
@@ -1945,38 +1978,38 @@ public class Registration extends Activity {
         final ArrayList<String> quesList = DBAccess.getdbHeler().getSecurityQuestions();
 
         list_secQue1.clear();
-        list_secQue1.add("Choose Question");
         list_secQue1.addAll(quesList);
         list_secQue1.add("Other Question");
 
         list_secQue2.clear();
-        list_secQue2.add("Choose Question");
         list_secQue2.addAll(quesList);
         list_secQue2.add("Other Question");
 
         list_secQue3.clear();
-        list_secQue3.add("Choose Question");
         list_secQue3.addAll(quesList);
         list_secQue3.add("Other Question");
 
-        if (!sp5.getSelectedItem().toString().equalsIgnoreCase("Choose Question") && !sp5.getSelectedItem().toString().equalsIgnoreCase("Other Question")) {
-            list_secQue2.remove(sp5.getSelectedItem());
-            list_secQue3.remove(sp5.getSelectedItem());
-            dataAdapter_secQue2.notifyDataSetChanged();
-            dataAdapter_secQue3.notifyDataSetChanged();
+        if (!sp5.getText().toString().equalsIgnoreCase("Other Question")) {
+            list_secQue2.remove(sp5.getText().toString());
+            list_secQue3.remove(sp5.getText().toString());
         }
-        if (!sp6.getSelectedItem().toString().equalsIgnoreCase("Choose Question") && !sp6.getSelectedItem().toString().equalsIgnoreCase("Other Question")) {
-            list_secQue1.remove(sp6.getSelectedItem());
-            list_secQue3.remove(sp6.getSelectedItem());
-            dataAdapter_secQue1.notifyDataSetChanged();
-            dataAdapter_secQue3.notifyDataSetChanged();
+        if (!sp6.getText().toString().equalsIgnoreCase("Other Question")) {
+            list_secQue1.remove(sp6.getText().toString());
+            list_secQue3.remove(sp6.getText().toString());
         }
-        if (!sp7.getSelectedItem().toString().equalsIgnoreCase("Choose Question") && !sp7.getSelectedItem().toString().equalsIgnoreCase("Other Question")) {
-            list_secQue1.remove(sp7.getSelectedItem());
-            list_secQue2.remove(sp7.getSelectedItem());
-            dataAdapter_secQue1.notifyDataSetChanged();
-            dataAdapter_secQue2.notifyDataSetChanged();
+        if (!sp7.getText().toString().equalsIgnoreCase("Other Question")) {
+            list_secQue1.remove(sp7.getText().toString());
+            list_secQue2.remove(sp7.getText().toString());
         }
+        dataAdapter_secQue1 = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, list_secQue1);
+        dataAdapter_secQue2 = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, list_secQue2);
+        dataAdapter_secQue3 = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, list_secQue3);
+        sp5.setAdapter(dataAdapter_secQue1);
+        sp6.setAdapter(dataAdapter_secQue2);
+        sp7.setAdapter(dataAdapter_secQue3);
+        dataAdapter_secQue1.notifyDataSetChanged();
+        dataAdapter_secQue2.notifyDataSetChanged();
+        dataAdapter_secQue3.notifyDataSetChanged();
     }
     public ArrayList<String> loadResidencyFiles(){
         ArrayList<String> list = new ArrayList<String>();

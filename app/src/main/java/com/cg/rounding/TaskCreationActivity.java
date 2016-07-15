@@ -93,6 +93,7 @@ public class TaskCreationActivity extends Activity {
     TextView assignMember;
     private TextView remindTime;
     int edit_Year , edit_day, edit_month;
+    Vector<PatientDetailsBean> PatientList;
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
@@ -133,7 +134,6 @@ public class TaskCreationActivity extends Activity {
             }
         });
 
-        final Vector<PatientDetailsBean> PatientList;
         String strGetQry = "select * from patientdetails where groupid='"
                 + groupid + "'";
         PatientList=DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
@@ -267,6 +267,7 @@ public class TaskCreationActivity extends Activity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() > 0) {
+                    loadMembers();
                     patientName.setVisibility(View.VISIBLE);
                     patient.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.button_arrow_up, 0);
                 } else {
@@ -494,32 +495,7 @@ public class TaskCreationActivity extends Activity {
             }
         });
 
-        GroupBean gBean = DBAccess.getdbHeler().getGroupAndMembers("select * from groupdetails where groupid="
-                + groupid);
-        if (gBean != null) {
-            if (gBean.getActiveGroupMembers() != null
-                    && gBean.getActiveGroupMembers().length() > 0) {
-                Log.i("AAAA","RoundingMember");
-                String[] mlist = (gBean.getActiveGroupMembers())
-                        .split(",");
-                BuddyInformationBean bean=new BuddyInformationBean();
-                ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(gBean.getOwnerName());
-                bean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname());
-                bean.setName(gBean.getOwnerName());
-                bean.setProfile_picpath(pBean.getPhoto());
-                bean.setType("0");
-                members.add(bean);
-                for (String tmp : mlist) {
-                    BuddyInformationBean uBean = new BuddyInformationBean();
-                    ProfileBean pbean=DBAccess.getdbHeler().getProfileDetails(tmp);
-                    uBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
-                    uBean.setName(tmp);
-                    uBean.setProfile_picpath(pbean.getPhoto());
-                    uBean.setType("0");
-                    members.add(uBean);
-                }
-            }
-        }
+
 
     }
         public void notifytime(String value) throws Exception {
@@ -687,7 +663,8 @@ public class TaskCreationActivity extends Activity {
                 final BuddyInformationBean bib = result.get(i);
                 if(bib!=null) {
                     if (bib.getProfile_picpath() != null) {
-                        String pic_Path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/COMMedia/" + bib.getProfile_picpath();
+                        String pic_Path = Environment.getExternalStorageDirectory().getAbsolutePath()
+                                + "/COMMedia/" + bib.getProfile_picpath();
                         File pic = new File(pic_Path);
                         if (pic.exists()) {
                             imageLoader.DisplayImage(pic_Path, holder.buddyicon, R.drawable.img_user);
@@ -821,5 +798,29 @@ public class TaskCreationActivity extends Activity {
                 return;
             }
         }
+    }
+    private void loadMembers()
+    {
+        String memberslist="";
+        members.clear();
+        for (PatientDetailsBean bean : PatientList) {
+            String name = bean.getFirstname() + " " + bean.getLastname();
+            if (name.equalsIgnoreCase(patient.getText().toString())) {
+                if(bean.getAssignedmembers()!=null)
+                    memberslist=bean.getAssignedmembers();
+            }
+        }
+            if (memberslist != null && memberslist.length() > 0) {
+                String[] mlist = memberslist.split(",");
+                for (String tmp : mlist) {
+                    BuddyInformationBean uBean = new BuddyInformationBean();
+                    ProfileBean pbean=DBAccess.getdbHeler().getProfileDetails(tmp);
+                    uBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
+                    uBean.setName(tmp);
+                    uBean.setProfile_picpath(pbean.getPhoto());
+                    uBean.setType("0");
+                    members.add(uBean);
+                }
+            }
     }
 }

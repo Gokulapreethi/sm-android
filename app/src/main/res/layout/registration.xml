@@ -433,7 +433,7 @@
                     android:layout_weight="1"
                     android:padding="7dp"
                     android:background="#272829"
-                    android:hint="Email"
+                    android:hint="Email (this will be your User ID)"
                     android:gravity="center_vertical"
                     android:inputType="textEmailAddress"
                     android:maxLength="50"
@@ -610,15 +610,20 @@
                         android:text="1"
                         android:background="@drawable/round_blue" />
 
-                    <Spinner
+                    <AutoCompleteTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="15dp"
                         android:layout_marginLeft="10dp"
                         android:paddingLeft="13dp"
-                        android:popupBackground="#202021"
+                        android:hint="Choose Question"
+                        android:textColorHint="@color/white"
+                        android:background="@color/black2"
+                        android:textColor="@color/white"
+                        android:editable="false"
+                        android:dropDownWidth="match_parent"
+                        android:drawableRight="@drawable/input_arrow"
                         android:spinnerMode="dropdown"
-                        style="@style/spinner_style"
                         android:id="@+id/spsecAns1"/>
                 </LinearLayout>
 
@@ -716,15 +721,20 @@
                     android:text="2"
                     android:background="@drawable/round_blue" />
 
-                <Spinner
+                <AutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="15dp"
                     android:layout_marginLeft="10dp"
                     android:paddingLeft="13dp"
                     android:spinnerMode="dropdown"
-                    android:popupBackground="#202021"
-                    style="@style/spinner_style"
+                    android:background="@color/black2"
+                    android:textColor="@color/white"
+                    android:editable="false"
+                    android:hint="Choose Question"
+                    android:textColorHint="@color/white"
+                    android:dropDownWidth="match_parent"
+                    android:drawableRight="@drawable/input_arrow"
                     android:id="@+id/spsecAns2"/>
                 </LinearLayout>
                 <View
@@ -820,14 +830,20 @@
                     android:text="3"
                     android:background="@drawable/round_blue" />
 
-                <Spinner
+                <AutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="15dp"
                     android:layout_marginLeft="10dp"
+                    android:background="@color/black2"
+                    android:textColor="@color/white"
+                    android:editable="false"
+                    android:hint="Choose Question"
+                    android:textColorHint="@color/white"
+                    android:dropDownWidth="match_parent"
+                    android:drawableRight="@drawable/input_arrow"
                     android:popupBackground="#202021"
                     android:paddingLeft="13dp"
-                    style="@style/spinner_style"
                     android:spinnerMode="dropdown"
                     android:id="@+id/spsecAns3"/>
                 </LinearLayout>

@@ -101,6 +101,7 @@ public class ForwardUserSelect extends Activity {
         selectAll_group = (CheckBox)findViewById(R.id.btn_selectall1);
         final TextView txtView01 = (TextView) findViewById(R.id.txtView01);
         Button send = (Button) findViewById(R.id.Sendbtn);
+        LinearLayout sendBtn=(LinearLayout)findViewById(R.id.sendBtn);
         ImageView tick_mark = (ImageView)findViewById(R.id.tick_mark);
 
 
@@ -138,7 +139,7 @@ public class ForwardUserSelect extends Activity {
         LinearLayout Mycontact_forward = (LinearLayout) findViewById(R.id.Mycontact_forward);
         LinearLayout Mygroups_forward = (LinearLayout) findViewById(R.id.Mygroups_forward);
 
-        send.setOnClickListener(new View.OnClickListener() {
+        sendBtn.setOnClickListener(new View.OnClickListener() {
 
 
             public void onClick(View arg0) {
