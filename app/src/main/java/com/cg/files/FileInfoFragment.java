@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Base64;
@@ -56,6 +57,7 @@ public class FileInfoFragment extends Fragment {
     CompleteListBean cbean;
     private FileImageLoader fileImageLoader = null;
     private TextView tv_send;
+    ProgressDialog progress;
     private String componenttype;
     private ArrayList<String> uploadFilesList = new ArrayList<String>();
     private String filename1;
@@ -356,7 +358,7 @@ public class FileInfoFragment extends Fragment {
 
         try {
             Log.i("AAAA", "forawrd user share" +
-                    "" );
+                    "");
             if (SendbuddyList.size() > 0) {
                         if (WebServiceReferences.running) {
                             uploadDatas.add(cbean.getcomponentType());
@@ -437,16 +439,17 @@ public class FileInfoFragment extends Fragment {
                 else
                     calldisp.uploadFile(username, password, componenttype, fname, base64,filename1,fileInfoFragment);
             }
-            ProgressDialog dialog = new ProgressDialog(mainContext);
-            calldisp.showprogress(dialog, mainContext);
+            showprogress();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
     public void sendFile(){
         Log.i("AAAA","send file info fragment");
-        calldisp.cancelDialog();
+        cancelDialog();
         ArrayList<String> b_list = new ArrayList<String>();
         b_list.addAll(SendbuddyList);
         Collections.sort(b_list);
@@ -458,6 +461,48 @@ public class FileInfoFragment extends Fragment {
                 b_list, u_list, componenttype, cbean.getComment(),
                 cbean.getContentpath(), "", null, null,null, null, null, true, cbean);
     }
+
+    Handler handler = new Handler();
+    public void showprogress() {
+        handler.post(new Runnable() {
+
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                try {
+                    if (progress == null) {
+                        progress = new ProgressDialog(mainContext);
+                        if (progress != null) {
+                            progress.setCancelable(false);
+                            progress.setMessage("File Uploading in Progress ...");
+                            progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            progress.setProgress(0);
+                            progress.setMax(100);
+                            progress.show();
+                        }
+                    }
+
+                } catch (Exception e) {
+                    SingleInstance.printLog(null, e.getMessage(), null, e);
+                }
+            }
+
+        });
+
+    }
+
+    public void cancelDialog() {
+        try {
+            if (progress != null) {
+                progress.dismiss();
+                progress = null;
+            }
+        } catch (Exception e) {
+            SingleInstance.printLog(null, e.getMessage(), null, e);
+        }
+
+    }
+
 
     private String encodeAudioVideoToBase64(String path){
         String strFile=null;
