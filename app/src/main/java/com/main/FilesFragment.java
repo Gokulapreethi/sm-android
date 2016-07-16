@@ -1447,7 +1447,8 @@ public class FilesFragment extends Fragment implements OnClickListener {
 						//intent.putExtra("exten", extn);
 						context.startActivity(intent);
 					} else {
-
+						Log.i("pin","open Action_view");
+                        AppReference.fileOpen=true;
 						MimeTypeMap mime = MimeTypeMap.getSingleton();
 						Intent intent = new Intent();
 						intent.setAction(android.content.Intent.ACTION_VIEW);

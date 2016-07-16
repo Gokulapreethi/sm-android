@@ -97,4 +97,6 @@ public class AppReference {
 	private static int isApplication = 1;
 
 	public static Fragment bacgroundFragment=null;
+
+	public static boolean fileOpen=false;
 }

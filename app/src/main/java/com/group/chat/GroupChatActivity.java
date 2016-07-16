@@ -2739,6 +2739,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         // TODO Auto-generated method stub
         super.onResume();
         AppMainActivity.inActivity = this;
+        AppReference.fileOpen=false;
         context = this;
         if(AppReference.mainContext.isPinEnable) {
             if (AppReference.mainContext.openPinActivity) {
@@ -11769,6 +11770,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         super.onStop();
         Log.i("pin", "Groupchatactivity Onstop");
         AppReference.mainContext.isApplicationBroughtToBackground();
+        if(AppReference.fileOpen){
+            Log.i("pin", "Groupchatactivity Onstop AppReference.fileOpen==true");
+            AppReference.mainContext.openPinActivity=false;
+        }
 
     }
     private void calendarProcess()
