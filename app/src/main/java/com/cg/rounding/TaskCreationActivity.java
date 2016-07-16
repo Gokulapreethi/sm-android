@@ -511,7 +511,7 @@ public class TaskCreationActivity extends Activity {
         if(obj instanceof String[])
         {
             String[] result=(String[])obj;
-            SimpleDateFormat datefor = new SimpleDateFormat("yyyy-MM-dd");;
+            SimpleDateFormat datefor = new SimpleDateFormat("MM-dd-yyyy");;
             Date tmpDate=null;
             String timevalue="";
             String alarmtime = remindTime.getText().toString();
@@ -523,7 +523,7 @@ public class TaskCreationActivity extends Activity {
 
             try {
                 tmpDate = datefor.parse(reminder[0]);
-                Log.d("Valueof","date1"+tmpDate);
+                Log.d("timevalue","date1"+tmpDate);
             }catch (Exception e) {
                 e.printStackTrace();
                 Log.d("Valueof", "date1" + e.toString());
@@ -548,10 +548,11 @@ public class TaskCreationActivity extends Activity {
             Calendar cal  = Calendar.getInstance();
             cal.setTime(tmpDate);
 
+
             cal.set(Calendar.HOUR, Integer.parseInt(time[0]));
             cal.set(Calendar.MINUTE, Integer.parseInt(time[1]));
-            Log.i("Calender", "value0" + Integer.parseInt(time[0]));
-            Log.i("Calender","value1"+Integer.parseInt(time[1]));
+            Log.i("timevalue", "valuehour" + Integer.parseInt(time[0]));
+            Log.i("timevalue","valueminute"+Integer.parseInt(time[1]));
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
                 Log.i("schedulemanager", "build version kitkat and below");
                 alarmManager.set(AlarmManager.RTC_WAKEUP,cal.getTimeInMillis(),pendingIntent);

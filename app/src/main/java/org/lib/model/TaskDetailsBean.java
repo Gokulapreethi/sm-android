@@ -19,6 +19,16 @@ public class TaskDetailsBean implements Serializable {
     private String patientid;
     private String header;
     private String taskstatus;
+
+    public String getCrtDuetime() {
+        return crtDuetime;
+    }
+
+    public void setCrtDuetime(String crtDuetime) {
+        this.crtDuetime = crtDuetime;
+    }
+
+    private String crtDuetime;
     public String getGroupid() {
         return groupid;
     }

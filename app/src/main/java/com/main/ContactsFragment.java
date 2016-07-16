@@ -4100,6 +4100,7 @@ public class ContactsFragment extends Fragment{
 				String fullname=bean.getFirstname()+" "+bean.getLastname();
 				nbean.setSortdate(gbean.getCreatedDate());
 				nbean.setUsername(fullname);
+				nbean.setOwner(gbean.getGroupName());
 				nbean.setNotifttype("Invite");
 				nbean.setType("group");
 				grouprecentlist.add(nbean);

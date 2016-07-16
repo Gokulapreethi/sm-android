@@ -106,7 +106,7 @@ public class RoundingTaskAdapter extends ArrayAdapter<TaskDetailsBean> {
                         d1 = dateformat.parse(datevalue);
                         String date = sdf.format(d1);
 //                    String[] time = month[1].split(":");
-                        holder.pending_hours.setText(date);
+                        holder.pending_hours.setText(date+ ", "+tBean.getCrtDuetime());
                     }
 
                     else

@@ -9102,6 +9102,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 
     private static TaskDetailsBean setDate(TaskDetailsBean bean) {
         if (bean.getDuedate() != null) {
+            bean.setCrtDuetime(bean.getDuetime());
             Log.i("sss", "Due date");
             long resultDay = 0;
             long resultHours = 0;

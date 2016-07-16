@@ -30,6 +30,7 @@ public class ScheduleManager extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d("timevalue","enterintomanagerclass");
             GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
             if(groupChatActivity != null) {
                 context=groupChatActivity;
