@@ -296,6 +296,7 @@ public class PatientRoundingFragment extends Fragment {
                     public void onClick(View v) {
                         Intent intent = new Intent(mainContext, TaskCreationActivity.class);
                         intent.putExtra("groupid", pBean.getGroupid());
+                        intent.putExtra("patientid",pBean.getPatientid());
                         startActivity(intent);
                         dialog.dismiss();
                     }

@@ -327,7 +327,7 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                                 holder.file_txt1.setVisibility(View.VISIBLE);
                                 holder.fileType.setText(notifyBean.getUsername());
                                 holder.fileName.setText("invites you to group");
-                                holder.file_txt1.setText("My group");
+                                holder.file_txt1.setText(notifyBean.getOwner());
                                 holder.file_txt1.setTextColor(context.getResources().getColor(R.color.blue2));
                             }
 

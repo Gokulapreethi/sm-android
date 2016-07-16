@@ -23,6 +23,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -30,7 +31,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -97,6 +100,13 @@ public class AddGroupMembers extends Activity {
 			text_memeberscount = (TextView)findViewById(R.id.text_memeberscount);
 			calltype=getIntent().getStringExtra("calltype");
 			fromRounding=getIntent().getBooleanExtra("fromRounding",false);
+			RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+					ViewGroup.LayoutParams.FILL_PARENT,
+					ViewGroup.LayoutParams.FILL_PARENT
+			);
+			params.bottomMargin=50;
+//			params.setMargins(0, 50, 0, 50); //left,top,right,bottom
+			lv_addcontact.setLayoutParams(params);
 
 			if(fromCall){
 				txtView01.setText("ADD MEMBERS");

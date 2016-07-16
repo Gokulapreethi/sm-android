@@ -148,6 +148,7 @@ public class PhysicianInviteFragment extends Fragment {
                 share.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        AppReference.fileOpen=true;
                         String shareBody = "";
                         if(isFrom)
                             shareBody = "Download the app\nhttps://play.google.com";

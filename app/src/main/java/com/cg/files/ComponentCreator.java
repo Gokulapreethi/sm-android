@@ -272,7 +272,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 //				}
 //			});
 			btnDone = (Button) findViewById(R.id.btn_save_note);
-			filePlusBtn=(ImageView)findViewById(R.id.new_file_create);
+			filePlusBtn=(ImageView)findViewById(R.id.file_plus);
 			newFileImg=(ImageView)findViewById(R.id.newfile);
 //			btnaccept = (Button) findViewById(R.id.btn_accept);
 //			btnreject = (Button) findViewById(R.id.btn_reject);

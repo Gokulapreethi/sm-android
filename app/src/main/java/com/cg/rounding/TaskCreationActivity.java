@@ -78,7 +78,7 @@ public class TaskCreationActivity extends Activity {
     private Context context;
     private SimpleDateFormat dateFormatter;
     TextView reminder;
-    private String groupid,taskid;
+    private String groupid,taskid,patientid;
     private int remainderTag=0;
     private  TextView ed_assignMember;
     private static ProgressDialog pDialog;
@@ -125,7 +125,8 @@ public class TaskCreationActivity extends Activity {
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
         groupid=getIntent().getStringExtra("groupid");
         taskid=getIntent().getStringExtra("taskid");
-        isEdit=getIntent().getBooleanExtra("isEdit",false);
+        isEdit=getIntent().getBooleanExtra("isEdit", false);
+        patientid=getIntent().getStringExtra("patientid");
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,6 +138,11 @@ public class TaskCreationActivity extends Activity {
         String strGetQry = "select * from patientdetails where groupid='"
                 + groupid + "'";
         PatientList=DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
+        if(patientid!=null)
+        for(PatientDetailsBean pbean:PatientList){
+            if(pbean.getPatientid().equalsIgnoreCase(patientid))
+                patient.setText(pbean.getFirstname()+" "+pbean.getLastname());
+        }
         if(isEdit) {
             String strQuery="select * from taskdetails where groupid='" + groupid + "'and taskid ='" + taskid+ "'";
             title.setText("EDIT TASK");
@@ -487,6 +493,7 @@ public class TaskCreationActivity extends Activity {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                if(patientid==null)
                 patient.showDropDown();
                 if(PatientList.size() == 0){
                     Toast.makeText(context, "Please create patient before creating new task...", Toast.LENGTH_SHORT).show();

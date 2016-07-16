@@ -1584,18 +1584,18 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 adapter.notifyDataSetChanged();
                             }
                         });
-                        if (((CheckBox) view).isChecked()) {
+                        if (selectAll_buddy.isChecked()) {
                             int count = 0;
                             for (GroupChatBean Gcb : chatList) {
-                                if (Gcb.isSelect()) {
+                                if (Gcb.isSelect())
                                     count++;
-                                    checkBoxCounter = count;
-                                }
                             }
+                            checkBoxCounter = count;
                             countofselection.setText(count + " Selected");
-                        }else
+                        }else {
                             checkBoxCounter = 0;
                             countofselection.setText(0 + " Selected");
+                        }
                     }
                 });
 

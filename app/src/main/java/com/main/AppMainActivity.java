@@ -346,13 +346,13 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 			Log.i("AAAA","App Main "+Build.VERSION.SDK_INT);
-//			if (Build.VERSION.SDK_INT >= 21) {
-//				Log.i("AAAA","App Main 21");
-//				Window window = getWindow();
-//				window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//				window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//				window.setStatusBarColor(getResources().getColor(R.color.white));
-//			}
+			if (Build.VERSION.SDK_INT >= 21) {
+				Log.i("AAAA","App Main 21");
+				Window window = getWindow();
+				window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+				window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+				window.setStatusBarColor(getResources().getColor(R.color.blue2));
+			}
 
 			AppReference.mainContext = this;
 			SipQueue sipQueue = new SipQueue();
@@ -677,6 +677,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			shareScreen = false;
 		}
 		cancelDialogOnResume();
+		AppReference.fileOpen=false;
 		if(isPinEnable) {
 			if (openPinActivity) {
 				openPinActivity=false;
@@ -7804,6 +7805,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		super.onStop();
 		Log.d("AAAA", "onStop ");
 		isApplicationBroughtToBackground();
+		if(AppReference.fileOpen){
+			AppReference.mainContext.openPinActivity=false;
+		}
 //		if(isPinEnable) {
 //			if (isApplicationBroughtToBackground()) {
 //				Intent i = new Intent(AppMainActivity.this, MainActivity.class);

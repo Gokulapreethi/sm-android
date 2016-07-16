@@ -107,7 +107,7 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 				holder = (ViewHolder) convertView.getTag();
 			final UserBean userBean = userList.get(position);
 			if(userBean!=null) {
-				if(userBean.getFirstname().length()>1)
+				if(userBean.getFirstname()!=null&&userBean.getFirstname().length()>1)
 				holder.buddyName.setText(userBean.getFirstname());
 				else
 					holder.buddyName.setText(userBean.getBuddyName());
