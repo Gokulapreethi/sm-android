@@ -1775,9 +1775,13 @@ public class WSRunner implements Runnable {
 						if (mParser.getResult(mSp.toString())) {
 							Vector<PatientDetailsBean> pBean = mParser.parseGetPatientDetails(mSp
 									.toString());
-
 							mServicebean.setObj(pBean);
-						}if (mServicebean.getCallBack() != null) {
+						}else {
+							webServiceBean = mParser.parseResultFromXml(mSp
+									.toString());
+							mServicebean.setObj(webServiceBean);
+						}
+						if (mServicebean.getCallBack() != null) {
 						Log.i("patientdetails","GETPATIENTRECORDS");
 						((AppMainActivity) mServicebean.getCallBack())
 								.notifyGetPatientRecords(mServicebean.getObj());

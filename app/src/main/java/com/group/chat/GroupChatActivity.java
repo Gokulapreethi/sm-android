@@ -310,6 +310,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     View PrivateReply_view=null;
     String privateParentID=null;
     String privateReply_username=null;
+    private boolean mypatient=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -9470,14 +9471,23 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         mypatients.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                patientType = "mypatient";
                 mypatients.setTextColor(getResources().getColor(R.color.white));
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
                         PatientList.clear();
-                        String strGetQry = "select * from patientdetails where groupid='"
-                                + groupId + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser +"%'";
+                        String strGetQry;
+                        if(mypatient){
+                            mypatient=false;
+                            patientType = "mypatient";
+                            strGetQry = "select * from patientdetails where groupid='"
+                                    + groupId + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser +"%'";
+                        }else {
+                            mypatient=true;
+                            patientType = "name";
+                            strGetQry = "select * from patientdetails where groupid='"
+                                    + groupBean.getGroupId() + "'";
+                        }
                         PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
                         Collections.sort(PatientList, new PatientStatusComparator());
                         tempPatientList.clear();
@@ -9674,6 +9684,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     }
 
     public void MembersProcess() {
+        setDefault();
+        profile_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_members_white));
+        tv_profie.setTextColor(getResources().getColor(R.color.white));
+        view_profile.setVisibility(View.VISIBLE);
         final LinearLayout content = (LinearLayout) findViewById(R.id.content);
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         content.removeAllViews();
@@ -11126,30 +11140,14 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         String status = null;
         Vector<BuddyInformationBean> tempList = new Vector<BuddyInformationBean>();
         Vector<BuddyInformationBean> onlinelist = new Vector<BuddyInformationBean>();
-//        Vector<BuddyInformationBean> offlinelist = new Vector<BuddyInformationBean>();
-//        Vector<BuddyInformationBean> airplanelist = new Vector<BuddyInformationBean>();
-//        Vector<BuddyInformationBean> awaylist = new Vector<BuddyInformationBean>();
         tempList.clear();
         for (BuddyInformationBean sortlistbean : vectorBean) {
-            status = sortlistbean.getStatus();
-            if (status!=null && status.equalsIgnoreCase("Online")) {
+            if (sortlistbean.getStatus()!=null && sortlistbean.getStatus().equalsIgnoreCase("Online")) {
                 onlinelist.add(sortlistbean);
-//            } else if (status.equalsIgnoreCase("Offline") || status.equalsIgnoreCase("Stealth")) {
-//                offlinelist.add(sortlistbean);
-//            } else if (status.equalsIgnoreCase("Airport")|| status.equalsIgnoreCase("busy")) {
-//                airplanelist.add(sortlistbean);
-//            } else if (status.equalsIgnoreCase("Away")) {
-//                awaylist.add(sortlistbean);
             }
         }
         if(onlinelist.size()>0)
             tempList.addAll(onlinelist);
-//        if(airplanelist.size()>0)
-//            tempList.addAll(airplanelist);
-//        if(awaylist.size()>0)
-//            tempList.addAll(awaylist);
-//        if(offlinelist.size()>0)
-//            tempList.addAll(offlinelist);
 
         return tempList;
 
@@ -11176,85 +11174,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         LinksAdapter adapter=new LinksAdapter(context,R.layout.chat_links,chatlinkList);
         list.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-    }
-    private void snazboxProcess()
-    {
-        final LinearLayout content = (LinearLayout) findViewById(R.id.content);
-        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        content.removeAllViews();
-        final View view = layoutInflater.inflate(R.layout.files_list, content);
-        final TextView alpha_sort=(TextView)view.findViewById(R.id.alpha_sort);
-        final TextView date_sort=(TextView)view.findViewById(R.id.date_sort);
-        final TextView type_sort=(TextView)view.findViewById(R.id.type_sort);
-        final SwipeMenuListView listView = (SwipeMenuListView) view.findViewById(R.id.filesList);
-        listView.setVisibility(View.VISIBLE);
-        date_sort.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FilesFragment.sortorder = "date";
-                date_sort.setTextColor(getResources().getColor(R.color.white));
-                alpha_sort.setTextColor(getResources().getColor(R.color.snazlgray));
-                type_sort.setTextColor(getResources().getColor(R.color.snazlgray));
-                filesList.clear();
-                filesList = loadFiles(CallDispatcher.LoginUser);
-                filesAdapter = new FilesAdapter(context, filesList);
-                listView.setAdapter(filesAdapter);
-                filesAdapter.notifyDataSetChanged();
-            }
-        });
-        alpha_sort.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FilesFragment.sortorder="alpha";
-                date_sort.setTextColor(getResources().getColor(R.color.snazlgray));
-                alpha_sort.setTextColor(getResources().getColor(R.color.white));
-                type_sort.setTextColor(getResources().getColor(R.color.snazlgray));
-                filesList.clear();
-                filesList = loadFiles(CallDispatcher.LoginUser);
-                Collections.sort(filesList, new FilesListComparator());
-                filesAdapter = new FilesAdapter(context, filesList);
-                listView.setAdapter(filesAdapter);
-                filesAdapter.notifyDataSetChanged();
-            }
-        });
-        type_sort.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FilesFragment.sortorder = "type";
-                date_sort.setTextColor(getResources().getColor(R.color.snazlgray));
-                alpha_sort.setTextColor(getResources().getColor(R.color.snazlgray));
-                type_sort.setTextColor(getResources().getColor(R.color.white));
-                filesList.clear();
-                filesList = loadFiles(CallDispatcher.LoginUser);
-                filesAdapter = new FilesAdapter(context, getSortType(filesList));
-                listView.setAdapter(filesAdapter);
-                filesAdapter.notifyDataSetChanged();
-            }
-        });
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1,
-                                    int position, long arg3) {
-                try {
-//                    CompleteListBean cBean = filesAdapter
-//                            .getItem(position);
-//                    FileInfoFragment fileInfoFragment = FileInfoFragment.newInstance(context);
-//                    FragmentManager fragmentManager = SingleInstance.mainContext
-//                            .getSupportFragmentManager();
-//                    fragmentManager.beginTransaction().replace(
-//                            R.id.activity_main_content_fragment, fileInfoFragment)
-//                            .commitAllowingStateLoss();
-//                    callDisp.cmp = cBean;
-//                    fileInfoFragment.setFileBean(cBean);
-                    // }
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-            }
-        });
     }
     private Vector<CompleteListBean> loadFiles(String username) {
 
@@ -11584,62 +11503,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         content.removeAllViews();
         final View view = layoutInflater.inflate(R.layout.files_list, content);
         try {
-//            LinearLayout content1 = (LinearLayout)v1. findViewById(R.id.i1);
-//            content1.removeAllViews();
-//            ImageView plusBtn=(ImageView)v1.findViewById(R.id.plusBtn);
-//
-//            plusBtn.setOnClickListener(new OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    try {
-//                        final Dialog dialog = new Dialog(context);
-//                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//                        dialog.setContentView(R.layout.dialog_myacc_menu);
-//                        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-//                        lp.copyFrom(dialog.getWindow().getAttributes());
-//                        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-//                        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-//                        lp.horizontalMargin = 15;
-//                        Window window = dialog.getWindow();
-//                        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-//                        window.setAttributes(lp);
-//                        window.setGravity(Gravity.BOTTOM);
-//                        dialog.show();
-//                        TextView newfile = (TextView) dialog.findViewById(R.id.delete_acc);
-//                        newfile.setText("New File");
-//                        newfile.setBackgroundColor(context.getResources().getColor(R.color.green));
-//                        TextView newfolder = (TextView) dialog.findViewById(R.id.log_out);
-//                        newfolder.setText("New Folder");
-//                        newfolder.setVisibility(View.GONE);
-//                        newfolder.setBackgroundColor(context.getResources().getColor(R.color.green));
-//                        TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
-//                        cancel.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View arg0) {
-//                                dialog.dismiss();
-//                            }
-//                        });
-//                        newfile.setOnClickListener(new OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                Intent intentComponent = new Intent(context,
-//                                        ComponentCreator.class);
-//                                Bundle bndl = new Bundle();
-//                                bndl.putString("type", "note");
-//                                bndl.putBoolean("action", true);
-//                                bndl.putBoolean("fromNew",true);
-//                                intentComponent.putExtras(bndl);
-//                                context.startActivity(intentComponent);
-//                                dialog.dismiss();
-//                            }
-//                        });
-//                    } catch (Exception e) {
-//                        // TODO Auto-generated catch block
-//                        e.printStackTrace();
-//                    }
-//                }
-//            });
-//            View view = layoutInflater.inflate(R.layout.files_list, content1);
             final RelativeLayout rl_file=(RelativeLayout)view.findViewById(R.id.rl_file);
             final TextView tv_file=(TextView)view.findViewById(R.id.tv_file);
             final TextView alpha_sort=(TextView)view.findViewById(R.id.alpha_sort);
@@ -11648,7 +11511,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             date_sort.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    sortorder="date";
+                    FilesFragment.sortorder = "date";
                     date_sort.setTextColor(getResources().getColor(R.color.white));
                     alpha_sort.setTextColor(getResources().getColor(R.color.snazlgray));
                     type_sort.setTextColor(getResources().getColor(R.color.snazlgray));
@@ -11663,7 +11526,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             alpha_sort.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    sortorder="alpha";
+                    FilesFragment.sortorder = "alpha";
                     date_sort.setTextColor(getResources().getColor(R.color.snazlgray));
                     alpha_sort.setTextColor(getResources().getColor(R.color.white));
                     type_sort.setTextColor(getResources().getColor(R.color.snazlgray));
@@ -11679,7 +11542,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             type_sort.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    sortorder = "type";
+                    FilesFragment.sortorder = "type";
                     date_sort.setTextColor(getResources().getColor(R.color.snazlgray));
                     alpha_sort.setTextColor(getResources().getColor(R.color.snazlgray));
                     type_sort.setTextColor(getResources().getColor(R.color.white));
@@ -11742,7 +11605,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     try {
                         CompleteListBean cBean = filesAdapter
                                 .getItem(position);
-//                        deleteNote(cBean, context);
+                        deleteNote(cBean, context);
                         return false;
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
@@ -11763,6 +11626,95 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             // TODO: handle exception
             e.printStackTrace();
         }
+    }
+    public void deleteNote(final CompleteListBean cBean, Context context1) {
+        try {
+            String message = null;
+            message = "Are you sure to delete this'" + cBean.getContentName()
+                    + "'?";
+
+            AlertDialog.Builder deleteConfirmation = new AlertDialog.Builder(
+                    context1);
+            deleteConfirmation.setTitle("Delete Confirmation");
+            deleteConfirmation.setMessage(message);
+            deleteConfirmation.setPositiveButton(SingleInstance.mainContext.getResources().getString(R.string.yes)
+                    ,
+                    new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            try {
+                                String strDeleteQry = "delete from component where componentid="
+                                        + cBean.getComponentId();
+
+                                if (callDisp.getdbHeler(context).ExecuteQuery(
+                                        strDeleteQry)) {
+                                    filesList.remove(cBean);
+                                    if (cBean.getContentpath() != null
+                                            && cBean.getContentpath() != "") {
+                                        if (!cBean.getcomponentType()
+                                                .equalsIgnoreCase("video")) {
+
+                                            File f = new File(cBean
+                                                    .getContentpath());
+                                            if (f.exists()) {
+                                                f.delete();
+                                            }
+
+                                        } else if (cBean.getcomponentType()
+                                                .equalsIgnoreCase("video")) {
+
+                                            File f = new File(cBean
+                                                    .getContentpath() + ".mp4");
+                                            if (f.exists()) {
+                                                f.delete();
+                                            }
+                                            File f1 = new File(cBean
+                                                    .getContentpath() + ".jpg");
+                                            if (f1.exists()) {
+                                                f1.delete();
+                                            }
+
+                                        }
+                                    }
+                                }
+
+                            } catch (Exception e) {
+                                Log.i("callhistory", "" + e.getMessage());
+                                if (AppReference.isWriteInFile)
+                                    AppReference.logger.error(e.getMessage(), e);
+
+                            }
+                            handler.post(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    // TODO Auto-generated method stub
+                                    filesAdapter.notifyDataSetChanged();
+                                }
+                            });
+                        }
+                    });
+            deleteConfirmation.setNegativeButton("No",
+                    new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+            deleteConfirmation.show();
+
+            // showSingleSelectBuddy();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            if (AppReference.isWriteInFile)
+                AppReference.logger.error(e.getMessage(), e);
+            else
+                e.printStackTrace();
+        }
+
     }
 
     @Override

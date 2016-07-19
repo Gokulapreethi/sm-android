@@ -71,6 +71,24 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
         imageLoader=new ImageLoader(context);
 
 	}
+    @Override
+    public int getItemViewType(int position) {
+//            return super.getItemViewType(position);
+//            return position % 3;
+        BuddyInformationBean bib = contactList.get(position);
+        if(bib.getStatus()!=null && bib.getStatus().equalsIgnoreCase("pending")){
+            return 1;
+        }else if(bib.getStatus()!=null && bib.getStatus().equalsIgnoreCase("new")){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+    //
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -141,7 +159,6 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                     }
                     if (buddyInformationBean.getStatus()
                             .equalsIgnoreCase("new")) {
-                        ContactsFragment.swipeposition=1;
                         holder.contact_history.setVisibility(View.GONE);
                         holder.occupation.setText("invite recieved");
                         holder.status.setBackgroundResource(R.drawable.checkbox_default);
@@ -205,7 +222,6 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                             holder.buddyName.setText(buddyInformationBean.getName());
 
                     } else if (buddyInformationBean.getStatus().equalsIgnoreCase("pending")) {
-                        ContactsFragment.swipeposition=1;
                         holder.occupation.setText("invite sent");
                         holder.contact_history.setVisibility(View.GONE);
                         holder.inreq.setVisibility(View.VISIBLE);
@@ -244,7 +260,6 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                             holder.buddyName.setText(buddyInformationBean.getName());
 
                     } else {
-                        ContactsFragment.swipeposition=0;
                         holder.inreq.setVisibility(View.GONE);
                         if (!buddyInformationBean.getName().equalsIgnoreCase(
                                 CallDispatcher.LoginUser)) {

@@ -4418,6 +4418,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					try {
 						GroupChatActivity gca = (GroupChatActivity) SingleInstance.contextTable
                                 .get("groupchat");
+						if(gca!=null)
 						gca.updateBuddy(bib.getName(), bib.getStatus());
 					}catch(Exception e){
 						Log.i("DCBA", "Received NO Class found. reached======== "
@@ -4487,6 +4488,14 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 								ContactsFragment.getInstance(context)
                                         .SortList();
+								GroupChatActivity gca = (GroupChatActivity) SingleInstance.contextTable
+										.get("groupchat");
+								if(gca!=null) {
+									if (gca.isGroup)
+										gca.MembersProcess();
+									else if(gca.isRounding)
+										gca.RoundingMember();
+								}
 							}
 						});
 

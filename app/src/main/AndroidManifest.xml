@@ -900,6 +900,7 @@
         </activity>
         <activity
             android:name="com.cg.account.PinSecurity"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -976,6 +977,7 @@
         <activity
             android:name="com.Fingerprint.MainActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleInstance"
             android:windowSoftInputMode="stateHidden">
         </activity>
         <activity
