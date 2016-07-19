@@ -404,7 +404,7 @@ public class MyAccountFragment extends Fragment {
             ProfileBean bean=SingleInstance.myAccountBean;
             if(bean.getUsername()!=null) {
                 if(bean.getTitle()!=null && bean.getLastname()!=null)
-                     nicName.setText(bean.getTitle() + "" + bean.getLastname());
+                     nicName.setText(bean.getTitle() + " " + bean.getLastname());
                 else
                     nicName.setText( bean.getFirstname());
                 cancelDialog();
@@ -485,6 +485,7 @@ public class MyAccountFragment extends Fragment {
             }
             if(bean.getProfession()!=null){
                 prof.setText(bean.getProfession());
+                profession.setText(bean.getProfession());
             }
             if(bean.getSpeciality()!=null){
                 speciality.setText(bean.getSpeciality());

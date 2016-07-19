@@ -20,6 +20,16 @@ public class TaskDetailsBean implements Serializable {
     private String header;
     private String taskstatus;
 
+    public String getHeadercode() {
+        return headercode;
+    }
+
+    public void setHeadercode(String headercode) {
+        this.headercode = headercode;
+    }
+
+    private String headercode;
+
     public String getCrtDuetime() {
         return crtDuetime;
     }

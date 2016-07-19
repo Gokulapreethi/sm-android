@@ -18,6 +18,34 @@ public class NotifyListBean{
     private String username="";
     private String category = "";
 
+    public String getFilecount() {
+        return filecount;
+    }
+
+    public void setFilecount(String filecount) {
+        this.filecount = filecount;
+    }
+
+    public String getCallcount() {
+        return callcount;
+    }
+
+    public void setCallcount(String callcount) {
+        this.callcount = callcount;
+    }
+
+    public String getChatcount() {
+        return chatcount;
+    }
+
+    public void setChatcount(String chatcount) {
+        this.chatcount = chatcount;
+    }
+
+    private String filecount="";
+    private String callcount="";
+    private String chatcount="";
+
     public String getIndinvite() {
         return Indinvite;
     }

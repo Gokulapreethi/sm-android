@@ -88,10 +88,18 @@ public class RoundingTaskAdapter extends ArrayAdapter<TaskDetailsBean> {
                         ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(tmp);
                         names=names+pBean.getTitle()+" "+pBean.getFirstname()+", ";
                     }
-                    holder.doctorname.setText(names.substring(0,names.length() - 2));
+                    holder.doctorname.setText(names.substring(0, names.length() - 2));
                 }
                 else
                     holder.doctorname.setText("Unassigned");
+                if(tBean.getHeadercode().equalsIgnoreCase("1")){
+                    holder.pending_hours.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.pink));
+                }else if(tBean.getHeadercode().equalsIgnoreCase("2")){
+                    holder.pending_hours.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.green));
+                }else if(tBean.getHeadercode().equalsIgnoreCase("3")){
+                    holder.pending_hours.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.white));
+                }
+
                 if (tBean.getDuedate() != null) {
                    int Duetime=Integer.parseInt(tBean.getDuetime());
                     Log.i("sss", "Due time"+Duetime);

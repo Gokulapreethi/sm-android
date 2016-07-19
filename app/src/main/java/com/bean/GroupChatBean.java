@@ -37,8 +37,17 @@ public class GroupChatBean implements Serializable, Cloneable {
 	private String comment="";
 	private boolean playing;
 	private boolean isJoin;
-
 	private String senderWithdraw;
+
+	public boolean isforward() {
+		return isforward;
+	}
+
+	public void setIsforward(boolean isforward) {
+		this.isforward = isforward;
+	}
+
+	private boolean isforward;
 
 	public boolean isPlaying() {
 		return playing;

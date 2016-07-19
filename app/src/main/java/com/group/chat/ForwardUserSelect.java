@@ -200,6 +200,15 @@ public class ForwardUserSelect extends Activity {
                             }
                         });
 
+                        if(SingleInstance.contextTable.containsKey("groupchat")){
+                            GroupChatActivity groupChatActivity = (GroupChatActivity)SingleInstance.contextTable.get("groupchat");
+                            for(GroupChatBean cbean:groupChatActivity.adapter.getAllitem()){
+                                cbean.setIsforward(false);
+
+                            }
+                            groupChatActivity.adapter.notifyDataSetChanged();
+                        }
+
                     }
                 } else {
                     showAlert1("Info", "Check internet connection Unable to connect server");

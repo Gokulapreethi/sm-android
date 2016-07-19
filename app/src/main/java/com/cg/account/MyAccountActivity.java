@@ -60,6 +60,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import bsh.StringUtil;
+
 
 public class MyAccountActivity extends Activity {
     private Context context;
@@ -314,6 +316,7 @@ public class MyAccountActivity extends Activity {
                     Button save1 = (Button) dialog1.findViewById(R.id.save_button2);
                     Button cancel1 = (Button) dialog1.findViewById(R.id.cancel_button2);
 
+
                     if(isEdit){
 
                         if(spliting_address!=null) {
@@ -335,7 +338,6 @@ public class MyAccountActivity extends Activity {
                             office_fax_number.setText(address[6]);
                         }
                     }
-
                     office_phone_number.addTextChangedListener(new TextWatcher() {
                         @Override
                         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -348,6 +350,17 @@ public class MyAccountActivity extends Activity {
                             } else {
                                 office_phone_numbertext.setVisibility(View.GONE);
                             }
+                            if (charSequence.length()==3&& isNumeric(charSequence.toString())){
+                                office_phone_number.setText(charSequence+"-");
+                                office_phone_number.setSelection(4);
+                            }
+                            int counter = charSequence.toString().split("-", -1).length - 1;
+                            Log.d("countof","string"+counter);
+                            if(charSequence.length()==7&&counter==1 ){
+                                office_phone_number.setText(charSequence+"-");
+                                office_phone_number.setSelection(8);
+                            }
+
                         }
 
                         @Override
@@ -367,6 +380,16 @@ public class MyAccountActivity extends Activity {
                                 office_fax_numbertext.setVisibility(View.VISIBLE);
                             } else {
                                 office_fax_numbertext.setVisibility(View.GONE);
+                            }
+                            if (charSequence.length()==3&& isNumeric(charSequence.toString())){
+                                office_fax_number.setText(charSequence+"-");
+                                office_fax_number.setSelection(4);
+                            }
+                            int counter1 = charSequence.toString().split("-", -1).length - 1;
+                            Log.d("countof","string"+counter1);
+                            if(charSequence.length()==7&&counter1==1 ){
+                                office_fax_number.setText(charSequence+"-");
+                                office_fax_number.setSelection(8);
                             }
                         }
 
@@ -423,6 +446,10 @@ public class MyAccountActivity extends Activity {
                             } else {
                                 ziptext.setVisibility(View.GONE);
                             }
+                            if (charSequence.length()==5&& isNumeric(charSequence.toString())){
+                                zip.setText(charSequence+"-");
+                                zip.setSelection(6);
+                            }
                         }
 
                         @Override
@@ -477,22 +504,22 @@ public class MyAccountActivity extends Activity {
                                     office_address = Addressline1;
                                 }
                                 if (Addressline2 != null && !Addressline2.trim().equals("")) {
-                                    office_address = office_address + "," + Addressline2;
+                                    office_address = office_address + ", " + Addressline2;
                                 }
                                 if (zip_code != null && !zip_code.trim().equals("")) {
-                                    office_address = office_address + "," + zip_code;
+                                    office_address = office_address + ", " + zip_code;
                                 }
                                 if (city_value != null && !city_value.trim().equals("")) {
-                                    office_address = office_address + "," + city_value;
+                                    office_address = office_address + ", " + city_value;
                                 }
                                 if (state_value != null && !state_value.trim().equals("")) {
-                                    office_address = office_address + "," + state_value;
+                                    office_address = office_address + ", " + state_value;
                                 }
                                 if (office_phone_no != null && !office_phone_no.trim().equals("")) {
-                                    office_address = office_address + "," + office_phone_no;
+                                    office_address = office_address + ", " + office_phone_no;
                                 }
                                 if (office_fax != null && !office_fax.trim().equals("")) {
-                                    office_address = office_address + "," + office_fax;
+                                    office_address = office_address + ", " + office_fax;
                                 }
 
                                 String full_officeaddress = office_address;
@@ -1034,10 +1061,14 @@ public class MyAccountActivity extends Activity {
                         } else {
                             profDesc.setVisibility(View.GONE);
                         }
+
                     }
 
                     @Override
                     public void afterTextChanged(Editable editable) {
+                        if(rlay_professional_org.getText().toString().equalsIgnoreCase("Other")){
+                            rlay_professional_org.setText("");
+                        }
                     }
                 });
 
@@ -1214,7 +1245,7 @@ public class MyAccountActivity extends Activity {
                 list = new ArrayList<String>();
                 list.add("MD");
                 list.add("DO");
-                list.add("Othr");
+                list.add("Other");
                 dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list, list);
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
                 rlay_professional_org.setAdapter(dataAdapter);
@@ -1800,6 +1831,14 @@ public class MyAccountActivity extends Activity {
                 AppReference.mainContext.registerBroadcastReceiver();
             }
         }
+    }
+    public static boolean isNumeric(String str) {
+        try {
+            Double.parseDouble(str);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 
     @Override

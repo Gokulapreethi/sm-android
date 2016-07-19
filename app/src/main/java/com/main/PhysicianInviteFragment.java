@@ -113,7 +113,7 @@ public class PhysicianInviteFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             Intent i = new Intent(Intent.ACTION_VIEW);
-                            i.setData(Uri.parse("https://play.google.com"));
+                            i.setData(Uri.parse("https://play.google.com/store/apps"));
                             startActivity(i);
                         }
                     });
@@ -131,7 +131,7 @@ public class PhysicianInviteFragment extends Fragment {
                     textinfo_5.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com"));
+                            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps"));
                             startActivity(i);
                         }
                     });
@@ -154,7 +154,7 @@ public class PhysicianInviteFragment extends Fragment {
                             shareBody = "Download the app\nhttps://play.google.com";
                                     else
                         shareBody = "Download the app\n" +
-                                "https://play.google.com "+textinfo_3.getText().toString();
+                                "https://play.google.com "+textinfo_4.getText().toString();
                         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                         sharingIntent.setType("text/plain");
                         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");

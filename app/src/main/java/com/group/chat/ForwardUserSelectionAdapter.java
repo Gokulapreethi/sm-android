@@ -108,7 +108,6 @@ public class ForwardUserSelectionAdapter extends ArrayAdapter<BuddyInformationBe
                     } else {
                         holder.header_title.setVisibility(View.VISIBLE);
                     }
-
                 }
                 if (userBean.getOccupation() != null && userBean.getOccupation().length()>0 && userBean.getOccupation().equalsIgnoreCase(""))  {
 

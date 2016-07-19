@@ -101,6 +101,7 @@ import com.cg.profiles.ViewProfiles;
 import com.cg.rounding.AssignPatientActivity;
 import com.cg.rounding.LinksAdapter;
 import com.cg.rounding.OwnershipActivity;
+import com.cg.rounding.PatientLocationComparator;
 import com.cg.rounding.PatientNameComparator;
 import com.cg.rounding.PatientRoundingFragment;
 import com.cg.rounding.PatientStatusComparator;
@@ -304,12 +305,14 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     private RolePatientManagementBean rolePatientManagementBean;
     private RoleAccessBean roleAccessBean;
     private GroupMemberBean memberbean;
+    Integer itemID;
 
     //For this boolean used for private button click
     boolean isPrivateBack=false;
     View PrivateReply_view=null;
     String privateParentID=null;
     String privateReply_username=null;
+    boolean isForward=false;
     private boolean mypatient=true;
 
     @Override
@@ -890,6 +893,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     for(PatientDetailsBean bean:PatientList){
                         bean.setIsFromPatienttab(true);
                     }
+
                     patientadapter = new RoundingPatientAdapter(context, R.layout.rouding_patient_row, PatientList);
                     listViewPatient.setAdapter(null);
                     listViewPatient.setAdapter(patientadapter);
@@ -1515,7 +1519,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 createMenu2(menu);
                                 break;
                             case 2:
-                                Log.d("Swiselect", " case 1 : " + swipeposition);
+                                Log.d("Swiselect", " case 2 : " + swipeposition);
                                 createMenu3(menu);
                                 break;
 
@@ -1603,8 +1607,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 sidemenu.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
                         selectAll_buddy.setChecked(false);
                         forward = false;
+                        for(GroupChatBean bean:chatList){
+                            bean.setSelect(false);
+                            bean.setIsforward(false);
+                        }
                         adapter.notifyDataSetChanged();
                         selectAll_container.setVisibility(View.GONE);
                         sendLay.setVisibility(View.VISIBLE);
@@ -1638,6 +1647,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     handler.post(new Runnable() {
                                         @Override
                                         public void run() {
+//                                            swipeposition = 2;
                                             forwardlay.setVisibility(View.VISIBLE);
                                             audio_call.setVisibility(View.GONE);
                                             settingnotifications.getLayoutParams().height = 100;
@@ -1676,6 +1686,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                         if (gcBean2.getWithdrawn() != null && gcBean2.getWithdrawn().equals("1"))
                                             showToast("You cannot forward withdrawn message");
                                         else {
+                                            GroupChatBean groupChatBean = adapter.getItem(position);
+                                            groupChatBean.setSelect(true);
+                                            for(GroupChatBean gbean:adapter.getAllitem()){
+                                                gbean.setIsforward(true);
+                                            }
                                             forward = true;
                                             adapter.notifyDataSetChanged();
                                             handler.post(new Runnable() {
@@ -1981,6 +1996,20 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 loadGroupMembers(groupId);
                 mem_adapter = new BuddyAdapter(GroupChatActivity.this, membersList);
                 memlist_splmsg.setAdapter(mem_adapter);
+
+                lv.setOnSwipeListener(new SwipeMenuListView.OnSwipeListener() {
+                    @Override
+                    public void onSwipeStart(int position) {
+                        itemID = position;
+                        Log.d("Swiselect1", "onSwipeStart : " + position);
+
+                    }
+
+                    @Override
+                    public void onSwipeEnd(int position) {
+                        Log.d("Swiselect1", "onSwipeEnd : " + position);
+                    }
+                });
 
                 sendBtn.setOnClickListener(new OnClickListener() {
 
@@ -4967,6 +4996,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             return chatList.get(position);
         }
 
+        public Vector<GroupChatBean> getAllitem(){
+            return chatList;
+        }
+
         public long getItemId(int position) {
             return position;
         }
@@ -4989,13 +5022,16 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 //            return super.getItemViewType(position);
 //            return position % 3;
             GroupChatBean gcBean = chatList.get(position);
-            if(gcBean.getCategory()!=null && gcBean.getCategory().equalsIgnoreCase("call"))
-            {
-                return 2;
-            }else if(gcBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)){
-                return 0;
+            if(!gcBean.isforward()) {
+                if (gcBean.getCategory() != null && gcBean.getCategory().equalsIgnoreCase("call")) {
+                    return 2;
+                } else if (gcBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+                    return 0;
+                } else {
+                    return 1;
+                }
             }else{
-                return 1;
+                return 2;
             }
         }
 //
@@ -5095,7 +5131,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 btn_confrm.setVisibility(View.GONE);
                 btn_private.setVisibility(View.GONE);
                 privatelay.setVisibility(View.GONE);
-                final CheckBox selectInvidual_buddy = (CheckBox) convertView
+                selectInvidual_buddy = (CheckBox) convertView
                         .findViewById(R.id.selectInvidual_buddy);
                 selectInvidual_buddy.setTag(gcBean);
                 LinearLayout chat_view = null;
@@ -5272,6 +5308,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     normalcontainer.setVisibility(View.VISIBLE);
 
                     if (forward) {
+                        swipeposition=2;
                         selectInvidual_buddy.setVisibility(View.VISIBLE);
                         selectInvidual_buddy.setChecked(gcBean.isSelect());
                     } else {
@@ -5282,6 +5319,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     }else{
                         selectInvidual_buddy.setChecked(false);
                     }
+
                     selectInvidual_buddy.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -9069,18 +9107,24 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     Log.i("xxx", "%%%%%%%% bean date upcoming " + date2);
                     long hour = Integer.parseInt(bean.getDuetime());
                     Log.i("xxxx", "hours upcoming " + hour);
-                    if (hour != 0 && hour <= 12 && hour > 0)
+                    if (hour != 0 && hour <= 12 && hour > 0) {
                         newtoday.add(bean);
-                    else
+                        bean.setHeadercode("2");
+                    }
+                    else {
                         upcoming.add(bean);
+                        bean.setHeadercode("3");
+                    }
                 } else if (date2.compareTo(date1) < 0) {
                     Log.i("xxx", "%%%%%%%% bean date overdue " + date2);
+                    bean.setHeadercode("1");
                     overdue.add(bean);
                 } else if (date2.compareTo(date1) == 0) {
                     Log.i("xxx", "%%%%%%%% bean date today " + date2);
                     long hour = Integer.parseInt(bean.getDuetime());
                     Log.i("xxxx", "hours today " + hour);
                     newtoday.add(bean);
+                    bean.setHeadercode("2");
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -9438,6 +9482,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+                        Collections.sort(PatientList, new PatientLocationComparator());
                         patientadapter = new RoundingPatientAdapter(context, R.layout.rouding_patient_row, PatientList);
                         listViewPatient.setAdapter(null);
                         listViewPatient.setAdapter(patientadapter);
