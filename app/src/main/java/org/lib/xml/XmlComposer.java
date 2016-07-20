@@ -2029,6 +2029,9 @@ public class XmlComposer {
 			builder.append("\" subcategory=\"");
 			builder.append(bean.getSubCategory());
 			builder.append("\" mimetype=\"");
+			if(bean.getMessage()!=null &&bean.getMessage().length()>0 && bean.getMediaName()!=null)
+				builder.append("mixedfile");
+			else
 			builder.append(bean.getMimetype());
 			builder.append("\" sessionid=\"");
 			builder.append(bean.getSessionid());

@@ -25,6 +25,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.cg.commonclass.BuddyListComparator;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.snazmed.R;
@@ -40,6 +41,7 @@ import com.util.SingleInstance;
 import org.lib.model.BuddyInformationBean;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class FindPeople extends Fragment {
@@ -176,6 +178,7 @@ public class FindPeople extends Fragment {
 //                    }
 //                });
                 if (result.size() > 0) {
+                    Collections.sort(result,new BuddyListComparator());
                     adapter = new FindPeopleAdapter(mainContext, R.layout.find_people_item, result);
                     searchResult.setAdapter(adapter);
                     searchResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {

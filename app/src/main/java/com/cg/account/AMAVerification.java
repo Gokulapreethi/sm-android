@@ -90,7 +90,7 @@ public class AMAVerification extends Activity {
         final LinearLayout groupbtn = (LinearLayout) findViewById(R.id.groupbtn);
         btn_1 = (EditText) findViewById(R.id.searchet);
         cancel  = (Button)findViewById(R.id.cancel);
-        cancel.setVisibility(View.GONE);
+        cancel.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
         search = (Button) findViewById(R.id.search);
         final Button deleteContact=(Button)findViewById(R.id.delete);
         Button chat=(Button)findViewById(R.id.chat);
@@ -107,13 +107,14 @@ public class AMAVerification extends Activity {
                      btn_1.setVisibility(View.GONE);
                      cancel.setVisibility(View.VISIBLE);
                      relay_search.setVisibility(View.GONE);
+                     cancel.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_close));
                      search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
                  }else {
                      Log.d("ifcondition","else");
                      txtView01.setVisibility(View.GONE);
                      btn_1.setVisibility(View.VISIBLE);
                      relay_search.setVisibility(View.VISIBLE);
-                     cancel.setVisibility(View.GONE);
+                     cancel.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
                      btn_1.setText("");
                      search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_close));
                  }

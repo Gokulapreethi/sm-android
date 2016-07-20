@@ -2783,7 +2783,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 								WebServiceReferences.running = false;
 
 								if (commEngine != null) {
-									commEngine.stop();
+//									commEngine.stop();
 								}
 								commEngine = null;
 
@@ -7670,7 +7670,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					Bitmap bmp = AppMainActivity.this.ShrinkBitmap(
 							file_name, 150, 150);
 					image_writter = new FileOutputStream(img_file);
-					bmp.compress(CompressFormat.JPEG, 75, image_writter);
+					bmp.compress(CompressFormat.JPEG, 100, image_writter);
 					bmp.recycle();
 					bmp = null;
 					image_writter.flush();

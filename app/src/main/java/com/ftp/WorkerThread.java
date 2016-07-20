@@ -597,7 +597,8 @@ public class WorkerThread implements Runnable {
 		temp[4]=contents;
 		File file = new File(componentpath);
 		long length = (int) file.length();
-		length = length/1024;
+		if(!componenttype.equalsIgnoreCase("photo"))
+			length = length/1024;
 		temp[5]="im";
 		temp[6]= String.valueOf(length);
 		Log.i("FileUpload", "Inside CallDisp_UploadFile---> " +temp[6]);
