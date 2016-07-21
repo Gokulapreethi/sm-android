@@ -1669,5 +1669,17 @@ public class WebServiceClient {
 		if (wsNotifier != null)
 			wsNotifier.addTasktoExecutor(servicebean);
 	}
+	public void Sync(Context context) {
+		Servicebean servicebean = new Servicebean();
+		HashMap<String, String> property_map = new HashMap<String, String>();
+		property_map.put("username",CallDispatcher.LoginUser);
+		property_map.put("password", CallDispatcher.Password);
+		servicebean.setProperty_map(property_map);
+		servicebean.setWsmethodname("GetShareHistory");
+		servicebean.setServiceMethods(EnumWebServiceMethods.SYNC);
+		servicebean.setCallBack(context);
+		if (wsNotifier != null)
+			wsNotifier.addTasktoExecutor(servicebean);
+	}
 
 }

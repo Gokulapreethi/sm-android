@@ -212,8 +212,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -722,11 +724,16 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	public void loginResponse(Object object) {
 
 		try {
+			HashMap<String,ShareReminder> files=new HashMap<>();
+			files.clear();
+
+			Log.d("SYNC","--->loginResponse");
 			initializeCommunicationEngine();
 			profileDetails.clear();
 			if (ftpNotifier == null)
 				ftpNotifier = new FTPNotifier();
 			if (object instanceof ArrayList) {
+				Log.d("SYNC","--->ArrayList");
 				ArrayList list = (ArrayList) object;
 				for (int i = 0; i < list.size(); i++) {
 					final Object obj = list.get(i);
@@ -802,6 +809,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 							SingleInstance.printLog("Signin", message, "INFO",
 									null);
 							if (sr.getStatus().equals("new")) {
+								files.put(sr.getFileLocation(),sr);
 								WebServiceReferences.shareRemainderArray
 										.add(sr);
 							}
@@ -810,6 +818,29 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 					}
 				}
+
+			}
+//			if(DBAccess.getdbHeler(SingleInstance.mainContext).getExitFilename()!=null){
+//				ArrayList<String> exitFilename=DBAccess.getdbHeler(SingleInstance.mainContext).getExitFilename();
+//				if(exitFilename!=null && exitFilename.size()>0) {
+//					Log.i("fileexit","Arraylist >0 exitfile");
+//					for (String name : exitFilename) {
+//						if (files.containsKey(name)) {
+//							Log.i("fileexit", "same file");
+//							files.remove(name);
+//						}
+//					}
+//				}
+//			}
+			WebServiceReferences.shareRemainderArray
+					.clear();
+			Iterator entries = files.entrySet().iterator();
+			while (entries.hasNext()) {
+				Map.Entry entry = (Map.Entry) entries.next();
+				String key = (String)entry.getKey();
+				ShareReminder value = (ShareReminder)entry.getValue();
+				WebServiceReferences.shareRemainderArray
+						.add(value);
 
 			}
 			Log.i("share123", "shared file size : "
@@ -6823,15 +6854,15 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	public void ModuleNameChange() {
 		handler.post(new Runnable() {
 
-		@Override
-		public void run() {
-			recenttv.setText(getResources().getString(R.string.recents_app));
-			tvfiles.setText(getResources().getString(R.string.file_app));
-			tvmore.setText(getResources().getString(R.string.settings_app));
-			tvcontacts.setText(getResources().getString(R.string.contacts_app));
-			appstv.setText(getResources().getString(R.string.apps_av));
-		}
-	});
+			@Override
+			public void run() {
+				recenttv.setText(getResources().getString(R.string.recents_app));
+				tvfiles.setText(getResources().getString(R.string.file_app));
+				tvmore.setText(getResources().getString(R.string.settings_app));
+				tvcontacts.setText(getResources().getString(R.string.contacts_app));
+				appstv.setText(getResources().getString(R.string.apps_av));
+			}
+		});
 }
 	private boolean compareDatesByDateMethods(SimpleDateFormat df,
 			Date oldDate, Date newDate, String from) {
@@ -7426,6 +7457,11 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			ex.printStackTrace();
 		}
 
+	}
+	public void syncFinished(){
+		FilesFragment filesFragment = FilesFragment
+				.newInstance(getApplicationContext());
+		filesFragment.cancelDialog();
 	}
 
 	public void notifyAcceptReject(int call_id) {

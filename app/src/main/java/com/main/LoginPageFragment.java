@@ -547,6 +547,7 @@ public class LoginPageFragment extends Fragment {
 				}
 			}
 
+
 //			Button register = (Button) view.findViewById(R.id.btnRegister);
 //			register.setTypeface (tf_regular);
 //

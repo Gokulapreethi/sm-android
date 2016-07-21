@@ -6924,7 +6924,7 @@ public class XmlParser {
 							city=nodeMap.getNamedItem("cityName").getNodeValue();
 						}
 						cityList.add(city);
-						Log.d("listvalue","parsecities"+cityList.size());
+						Log.d("listvalue", "parsecities" + cityList.size());
 					}
 				}
 			}catch(Exception e){
@@ -8018,6 +8018,29 @@ public class XmlParser {
 			e.printStackTrace();
 		} finally {
 			return response_list;
+		}
+	}
+	public ArrayList<ShareReminder> parseSyncFileDetails(String xml)
+	{
+		ArrayList<ShareReminder>sync=new ArrayList<ShareReminder>();
+		try {
+			dbf = DocumentBuilderFactory.newInstance();
+			db = dbf.newDocumentBuilder();
+			is = new InputSource();
+			is.setCharacterStream(new StringReader(xml));
+			doc = (Document) db.parse(is);
+			Log.i("formfield345", "parse started");
+			list = doc.getElementsByTagName("sharereminder");
+
+			for (int i = 0; i < list.getLength(); i++) {
+				node = list.item(i);
+				nodeMap = node.getAttributes();
+				sync.add(parseShareReminder(nodeMap));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			return sync;
 		}
 	}
 	public String[] parseDeleteTask(String xml) {

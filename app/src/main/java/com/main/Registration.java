@@ -472,6 +472,17 @@ public class Registration extends Activity {
                                                        } else {
                                                            office_phone_numbertext.setVisibility(View.GONE);
                                                        }
+                                                       if (charSequence.length()==3&& isNumeric(charSequence.toString())){
+                                                           office_phone_number.setText(charSequence+"-");
+                                                           office_phone_number.setSelection(4);
+                                                       }
+                                                       int counter = charSequence.toString().split("-", -1).length - 1;
+                                                       Log.d("countof","string"+counter);
+                                                       if(charSequence.length()==7&&counter==1 ){
+                                                           office_phone_number.setText(charSequence+"-");
+                                                           office_phone_number.setSelection(8);
+                                                       }
+
                                                    }
 
                                                    @Override
@@ -491,6 +502,16 @@ public class Registration extends Activity {
                                                            office_fax_numbertext.setVisibility(View.VISIBLE);
                                                        } else {
                                                            office_fax_numbertext.setVisibility(View.GONE);
+                                                       }
+                                                       if (charSequence.length()==3&& isNumeric(charSequence.toString())){
+                                                           office_fax_number.setText(charSequence+"-");
+                                                           office_fax_number.setSelection(4);
+                                                       }
+                                                       int counter1 = charSequence.toString().split("-", -1).length - 1;
+                                                       Log.d("countof","string"+counter1);
+                                                       if(charSequence.length()==7&&counter1==1 ){
+                                                           office_fax_number.setText(charSequence+"-");
+                                                           office_fax_number.setSelection(8);
                                                        }
                                                    }
 
@@ -546,6 +567,10 @@ public class Registration extends Activity {
                                                            ziptext.setVisibility(View.VISIBLE);
                                                        } else {
                                                            ziptext.setVisibility(View.GONE);
+                                                       }
+                                                       if (charSequence.length()==5&& isNumeric(charSequence.toString())){
+                                                           zip.setText(charSequence+"-");
+                                                           zip.setSelection(6);
                                                        }
                                                    }
 

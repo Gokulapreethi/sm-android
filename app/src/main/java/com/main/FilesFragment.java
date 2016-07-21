@@ -171,7 +171,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 	private String username;
 	LinearLayout content;
 	private Boolean isSearch=false;
-	Button clearAllBtn;
+	private Button clearAllBtn;
 	public static String sortorder="";
 
 	private Dialog plus_dialog;
@@ -197,7 +197,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 			Bundle savedInstanceState) {
 		AppReference.bacgroundFragment=filesFragment;
 		view = null;
-		btn_edit = (Button) getActivity().findViewById(R.id.btn_settings);
+		btn_edit = (Button) getActivity().findViewById(R.id.im_view);
 		selectall = (Button) getActivity().findViewById(R.id.btn_brg);
 		Button select = (Button) getActivity().findViewById(R.id.btn_brg);
 		select.setVisibility(View.GONE);
@@ -217,9 +217,8 @@ public class FilesFragment extends Fragment implements OnClickListener {
 		ed_search=(EditText) getActivity().findViewById(R.id.search_box);
 		clearAllBtn = (Button) getActivity().findViewById(R.id.btn_settings);
 		ed_search.setVisibility(View.GONE);
-		clearAllBtn.setVisibility(View.GONE);
+		clearAllBtn.setVisibility(View.VISIBLE);
 		clearAllBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_refresh));
-		clearAllBtn.setText("");
 		if (view == null) {
 			view = inflater.inflate(R.layout.file_tab, null);
 			try {
@@ -465,37 +464,43 @@ public class FilesFragment extends Fragment implements OnClickListener {
 					}
 
 					public void beforeTextChanged(CharSequence s, int start,
-							int count, int after) {
+												  int count, int after) {
 					}
 
 					public void onTextChanged(CharSequence s, int start,
-							int before, int count) {
+											  int before, int count) {
 
 						String text = ed_search.getText().toString()
 								.toLowerCase(Locale.getDefault());
 						filesAdapter.filter(text);
-						if(filesAdapter.getCount()==0){
+						if (filesAdapter.getCount() == 0) {
 							ShowToast(SingleInstance.mainContext.getResources().getString(R.string.no_result_found));
 						}
-						if(text.contains("a")) {
+						if (text.contains("a")) {
 							rl_file.setVisibility(View.VISIBLE);
 							tv_file.setText("Audio Files");
 							file_img.setBackgroundResource(R.drawable.audio_p);
-						}else if(text.contains("p")) {
+						} else if (text.contains("p")) {
 							rl_file.setVisibility(View.VISIBLE);
 							tv_file.setText("Photo Files");
 							file_img.setBackgroundResource(R.drawable.photo_p);
-						}else if(text.contains("v")) {
+						} else if (text.contains("v")) {
 							rl_file.setVisibility(View.VISIBLE);
 							tv_file.setText("Video Files");
 							file_img.setBackgroundResource(R.drawable.video_p);
-						}else{
+						} else {
 							rl_file.setVisibility(View.VISIBLE);
 							tv_file.setText("Other Files");
 							file_img.setBackgroundResource(R.drawable.other_p);
 						}
-						if(text.length()==0)
+						if (text.length() == 0)
 							rl_file.setVisibility(View.GONE);
+					}
+				});
+				clearAllBtn.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						syncFiles();
 					}
 				});
 
@@ -599,7 +604,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 						if (!isSearch) {
 							plus.setBackgroundResource(R.drawable.navigation_close);
 							title.setVisibility(View.GONE);
-							clearAllBtn.setVisibility(View.GONE);
+//							clearAllBtn.setVisibility(View.GONE);
 							ed_search.setVisibility(View.VISIBLE);
 							isSearch = true;
 						} else {
@@ -990,8 +995,47 @@ public class FilesFragment extends Fragment implements OnClickListener {
 		}
 
 	}
+	public void syncFiles() {
+//        AppMainActivity.cBean.getRouter().split(":")[0]
+		Log.d("SYNC", "===>syncFiles()");
+		try {
+			final AlertDialog.Builder alert = new AlertDialog.Builder(
+					context);
+			alert.setTitle("Alert");
+			alert.setMessage("Are you sure want to syncronous all files?");
+			alert.setCancelable(false);
+			alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialogInterface, int i) {
+					dialogInterface.dismiss();
+					handler.post(new Runnable() {
+						@Override
+						public void run() {
+							if (WebServiceReferences.running) {
+								WebServiceReferences.webServiceClient
+										.Sync(SingleInstance.mainContext);
+							}
+							showprogress("Syncing in Progress..");
+						}
 
-	private void cancelDialog() {
+					});
+				}
+			});
+			alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialogInterface, int i) {
+					dialogInterface.dismiss();
+				}
+			});
+
+			alert.show();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+
+
+	public void cancelDialog() {
 		try {
 			if (progDailog != null) {
 				progDailog.dismiss();
@@ -1001,6 +1045,26 @@ public class FilesFragment extends Fragment implements OnClickListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	public void showprogress(String title) {
+		if (progDailog != null) {
+			if (progDailog.isShowing()) {
+				Log.i("dialog","cancel dialog showprogress");
+				cancelDialog();
+			}
+		}
+		progDailog = new ProgressDialog(context);
+		progDailog.setCancelable(false);
+		progDailog.show();
+		progDailog.setMessage(title);
+		progDailog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		progDailog.setProgress(0);
+		progDailog.setMax(100);
+		//progDailog.show();
+
+	}
+	public void notifySyncResult(){
+		cancelDialog();
 	}
 
 	public View getParentView() {

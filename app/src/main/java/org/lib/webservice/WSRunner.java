@@ -514,7 +514,23 @@ public class WSRunner implements Runnable {
 
 						break;
 
-				case GETSETUTILITY:
+					case SYNC:
+						mChk = mParser.getResult(mSp.toString());
+						ArrayList<ShareReminder> syncBean=mParser
+								.parseSyncFileDetails(mSp.toString());
+						mServicebean.setObj(syncBean);
+						Log.d("SYNC", "--->SYNC");
+						if (mServicebean.getCallBack() instanceof AppMainActivity) {
+							Log.d("SYNC","--->SYNC if");
+							((AppMainActivity) mServicebean.getCallBack())
+									.loginResponse(mServicebean.getObj());
+							SingleInstance.mainContext.syncFinished();
+//							FilesFragment fl = new FilesFragment();
+//							fl.notifySyncResult();
+						}
+
+
+					case GETSETUTILITY:
 
 					if (mParser.getResult(mSp.toString())) {
 						UtilityResponse bean = mParser.parseUtilityresponse(mSp
