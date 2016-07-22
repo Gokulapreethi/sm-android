@@ -100,12 +100,6 @@
             android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
-            android:name="com.callHistory.OrderMenuActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" >
-        </activity>
-        <activity
             android:name="com.cg.forms.FormsActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -161,11 +155,6 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.cg.forms.FormPermission"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name="com.cg.forms.Compute"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
@@ -182,12 +171,6 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.cg.forms.FormCreator"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" >
-        </activity>
-        <activity
             android:name="com.cg.forms.FormPermissionViewer"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
@@ -200,16 +183,6 @@
         </activity>
         <activity
             android:name="com.cg.forms.FormViewer"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.cg.forms.FormSync"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.cg.forms.Form_instruction"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>
@@ -423,8 +396,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
-        <activity android:name="com.cg.account.VideoRecorder" >
-        </activity>
         <activity
             android:name="com.cg.commongui.TestHTML5WebView"
             android:hardwareAccelerated="true"
@@ -432,10 +403,6 @@
         </activity>
         <activity
             android:name="com.cg.settings.MenuPage"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.cg.settings.About"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -500,30 +467,13 @@
             android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
-            android:name="com.cg.account.CamsampleActivity"
-            android:screenOrientation="landscape" />
-        <activity
             android:name="com.cg.account.buddiesList"
             android:configChanges="orientation"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.cg.instancemessage.InstantMessageScreen"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|adjustPan" >
-        </activity>
-        <activity
             android:name="com.cg.callservices.CallActiveMembersList"
             android:screenOrientation="portrait">
-        </activity>
-        <activity
-            android:name="com.cg.callservices.inCommingCallAlert"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.cg.callservices.CallConnectingScreen"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.cg.files.ComponentCreator"

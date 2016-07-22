@@ -51,19 +51,31 @@
                 android:visibility="gone"
                 android:textColor="#808080"
                 android:textSize="15dp" />
-
-            <AutoCompleteTextView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="15dp"
-                android:layout_marginLeft="10dp"
-                android:popupBackground="#202021"
-                android:paddingLeft="13dp"
-                style="@style/spinner_style"
-                android:spinnerMode="dropdown"
-                android:hint="User Type"
-                android:textColor="@color/white"
-                android:id="@+id/usertype"/>
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="1">
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:paddingLeft="13dp"
+                    android:spinnerMode="dropdown"
+                    android:hint="User Type"
+                    android:background="#272829"
+                    android:layout_weight="1"
+                    android:textColor="@color/white"
+                    android:id="@+id/usertype"/>
+                <ImageView
+                    android:id="@+id/usertype_img"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/input_arrow"/>
+            </LinearLayout>
+
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -152,19 +164,31 @@
                 android:text="State of Practice"
                 android:textColor="#808080"
                 android:textSize="15dp" />
-
-            <AutoCompleteTextView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginLeft="15dp"
-                android:popupBackground="#202021"
-                android:paddingLeft="13dp"
-                style="@style/spinner_style"
-                android:hint="State of Practice"
-                android:textColor="@color/white"
-                android:id="@+id/state_tilte"/>
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="1">
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:paddingLeft="13dp"
+                    android:background="#272829"
+                    android:layout_weight="1"
+                    android:hint="State of Practice"
+                    android:textColor="@color/white"
+                    android:id="@+id/state_tilte"/>
+                <ImageView
+                    android:id="@+id/state_img"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/input_arrow"/>
+            </LinearLayout>
+
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -184,19 +208,32 @@
                 android:visibility="gone"
                 android:textColor="#808080"
                 android:textSize="15dp" />
-
-            <AutoCompleteTextView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginLeft="15dp"
-                android:popupBackground="#202021"
-                android:paddingLeft="13dp"
-                style="@style/spinner_style"
-                android:hint="Specialty"
-                android:textColor="@color/white"
-                android:id="@+id/spec_tilte"/>
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="1">
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:popupBackground="#202021"
+                    android:paddingLeft="13dp"
+                    android:background="#272829"
+                    android:layout_weight="1"
+                    android:hint="Specialty"
+                    android:textColor="@color/white"
+                    android:id="@+id/spec_tilte"/>
+                <ImageView
+                    android:id="@+id/specialty_img"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/input_arrow"/>
+            </LinearLayout>
+
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -282,19 +319,32 @@
                 android:visibility="gone"
                 android:textColor="#808080"
                 android:textSize="15dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+                    <AutoCompleteTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:popupBackground="#202021"
+                        android:paddingLeft="13dp"
+                        android:hint="City"
+                        android:background="#272829"
+                        android:layout_weight="1"
+                        android:textColor="@color/white"
+                        android:id="@+id/city_tilte"/>
+                    <ImageView
+                        android:id="@+id/city_img"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/input_arrow"/>
+                </LinearLayout>
 
-            <AutoCompleteTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginLeft="15dp"
-                android:popupBackground="#202021"
-                android:paddingLeft="13dp"
-                style="@style/spinner_style"
-                android:hint="City"
-                android:textColor="@color/white"
-                android:id="@+id/city_tilte"/>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -315,19 +365,32 @@
                 android:visibility="gone"
                 android:textColor="#808080"
                 android:textSize="15dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+                    <AutoCompleteTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:popupBackground="#202021"
+                        android:paddingLeft="13dp"
+                        android:background="#272829"
+                        android:layout_weight="1"
+                        android:hint="Hospital"
+                        android:textColor="@color/white"
+                        android:id="@+id/hos_tilte"/>
+                    <ImageView
+                        android:id="@+id/hospital_img"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/input_arrow"/>
+                </LinearLayout>
 
-            <AutoCompleteTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginLeft="15dp"
-                android:popupBackground="#202021"
-                android:paddingLeft="13dp"
-                style="@style/spinner_style"
-                android:hint="Hospital"
-                android:textColor="@color/white"
-                android:id="@+id/hos_tilte"/>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -397,19 +460,31 @@
                 android:text="Medical Schools"
                 android:textColor="#808080"
                 android:textSize="15dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+                    <AutoCompleteTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:popupBackground="#202021"
+                        android:paddingLeft="13dp"
+                        android:background="#272829"
+                        android:layout_weight="1"
+                        android:hint="Medical School"
+                        android:textColor="@color/white"
+                        android:id="@+id/medical_scl"/>
+                    <ImageView
+                        android:id="@+id/medical_img"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/input_arrow"/>
+                </LinearLayout>
 
-            <AutoCompleteTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginLeft="15dp"
-                android:popupBackground="#202021"
-                android:paddingLeft="13dp"
-                android:hint="Medical School"
-                android:textColor="@color/white"
-                style="@style/spinner_style"
-                android:id="@+id/medical_scl"/>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -429,19 +504,32 @@
                 android:textColor="#808080"
                 android:visibility="gone"
                 android:textSize="15dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+                    <AutoCompleteTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:popupBackground="#202021"
+                        android:paddingLeft="13dp"
+                        android:background="#272829"
+                        android:layout_weight="1"
+                        android:hint="Residency Program"
+                        android:textColor="@color/white"
+                        android:id="@+id/resi_pro"/>
+                    <ImageView
+                        android:id="@+id/residency_img"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/input_arrow"/>
+                </LinearLayout>
 
-            <AutoCompleteTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginLeft="15dp"
-                android:popupBackground="#202021"
-                android:paddingLeft="13dp"
-                android:hint="Residency Program"
-                android:textColor="@color/white"
-                style="@style/spinner_style"
-                android:id="@+id/resi_pro"/>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -461,20 +549,33 @@
                 android:text="Fellowship Program"
                 android:textColor="#808080"
                 android:textSize="15dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+                    <AutoCompleteTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:popupBackground="#202021"
+                        android:paddingLeft="13dp"
+                        android:background="#272829"
+                        android:layout_weight="1"
+                        android:hint="Fellowship Program"
+                        android:textColor="@color/white"
+                        android:layout_marginBottom="15dp"
+                        android:id="@+id/fellow"/>
+                    <ImageView
+                        android:id="@+id/fellow_img"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/input_arrow"/>
+                </LinearLayout>
 
-            <AutoCompleteTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginLeft="15dp"
-                android:popupBackground="#202021"
-                android:paddingLeft="13dp"
-                android:hint="Fellowship Program"
-                android:textColor="@color/white"
-                android:layout_marginBottom="15dp"
-                style="@style/spinner_style"
-                android:id="@+id/fellow"/>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"

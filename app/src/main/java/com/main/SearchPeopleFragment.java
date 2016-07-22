@@ -15,10 +15,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -62,6 +64,9 @@ public class SearchPeopleFragment extends Fragment {
     ArrayList<String> specialityList = new ArrayList<String>();
     ArrayList<String> medicalschoolsList = new ArrayList<String>();
     ArrayList<String> hospitalList = new ArrayList<String>();
+    private boolean isUsertype=false,isState=false;
+    private boolean isSpeciality=false,isMedical=false,isResidency=false;
+    private boolean isFellow=false,isHospital=false,isCity=false;
 
     public static SearchPeopleFragment newInstance(Context context) {
         try {
@@ -165,6 +170,14 @@ public class SearchPeopleFragment extends Fragment {
                 residency = (AutoCompleteTextView) _rootView.findViewById(R.id.resi_pro);
                 fellow = (AutoCompleteTextView) _rootView.findViewById(R.id.fellow);
                 gender = (RadioGroup) _rootView.findViewById(R.id.gender);
+                final ImageView usertype_img=(ImageView)_rootView.findViewById(R.id.usertype_img);
+                final ImageView state_img=(ImageView)_rootView.findViewById(R.id.state_img);
+                final ImageView speciality_img=(ImageView)_rootView.findViewById(R.id.specialty_img);
+                final ImageView medical_img=(ImageView)_rootView.findViewById(R.id.medical_img);
+                final ImageView residency_img=(ImageView)_rootView.findViewById(R.id.residency_img);
+                final ImageView fellow_img=(ImageView)_rootView.findViewById(R.id.fellow_img);
+                final ImageView hospital_img=(ImageView)_rootView.findViewById(R.id.hospital_img);
+                final ImageView city_img=(ImageView)_rootView.findViewById(R.id.city_img);
                 arrow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -269,11 +282,21 @@ public class SearchPeopleFragment extends Fragment {
 
                 usertype.setAdapter(dataAdapter);
                 usertype.setThreshold(1);
-                usertype.setOnClickListener(new View.OnClickListener() {
+                usertype_img.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        usertype.showDropDown();
+                        InputMethodManager imm = (InputMethodManager)mainContext. getSystemService(mainContext.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        if (isUsertype) {
+                            isUsertype = false;
+                            usertype.dismissDropDown();
+                            usertype_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                        } else {
+                            isUsertype = true;
+                            usertype_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                            usertype.showDropDown();
+                        }
                     }
                 });
 
@@ -285,11 +308,21 @@ public class SearchPeopleFragment extends Fragment {
 
                 state.setAdapter(dataAdapter);
                 state.setThreshold(1);
-                state.setOnClickListener(new View.OnClickListener() {
+                state_img.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        state.showDropDown();
+                        InputMethodManager imm = (InputMethodManager) mainContext.getSystemService(mainContext.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        if (isState) {
+                            isState = false;
+                            state.dismissDropDown();
+                            state_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                        } else {
+                            isState = true;
+                            state_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                            state.showDropDown();
+                        }
                     }
                 });
 
@@ -303,11 +336,21 @@ public class SearchPeopleFragment extends Fragment {
 
                 city.setAdapter(dataAdapter);
                 city.setThreshold(1);
-                city.setOnClickListener(new View.OnClickListener() {
+                city_img.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        city.showDropDown();
+                        InputMethodManager imm = (InputMethodManager)mainContext. getSystemService(mainContext.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        if (isCity) {
+                            isCity = false;
+                            city.dismissDropDown();
+                            city_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                        } else {
+                            isCity = true;
+                            city_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                            city.showDropDown();
+                        }
                     }
                 });
 
@@ -318,11 +361,21 @@ public class SearchPeopleFragment extends Fragment {
 
                 speciality.setAdapter(dataAdapter);
                 speciality.setThreshold(1);
-                speciality.setOnClickListener(new View.OnClickListener() {
+                speciality_img.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        speciality.showDropDown();
+                        InputMethodManager imm = (InputMethodManager)mainContext. getSystemService(mainContext.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        if (isSpeciality) {
+                            isSpeciality = false;
+                            speciality.dismissDropDown();
+                            speciality_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                        } else {
+                            isSpeciality = true;
+                            speciality_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                            speciality.showDropDown();
+                        }
                     }
                 });
 
@@ -334,11 +387,21 @@ public class SearchPeopleFragment extends Fragment {
 
                 hospital.setAdapter(dataAdapter);
                 hospital.setThreshold(1);
-                hospital.setOnClickListener(new View.OnClickListener() {
+                hospital_img.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        hospital.showDropDown();
+                        InputMethodManager imm = (InputMethodManager)mainContext. getSystemService(mainContext.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        if (isHospital) {
+                            isHospital = false;
+                            hospital.dismissDropDown();
+                            hospital_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                        } else {
+                            isHospital = true;
+                            hospital_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                            hospital.showDropDown();
+                        }
                     }
                 });
 
@@ -348,41 +411,71 @@ public class SearchPeopleFragment extends Fragment {
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
                 medical.setAdapter(dataAdapter);
                 medical.setThreshold(1);
-                medical.setOnClickListener(new View.OnClickListener() {
+                medical_img.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        medical.showDropDown();
+                        InputMethodManager imm = (InputMethodManager)mainContext. getSystemService(mainContext.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        if (isMedical) {
+                            isMedical = false;
+                            medical.dismissDropDown();
+                            medical_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                        } else {
+                            isMedical = true;
+                            medical_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                            medical.showDropDown();
+                        }
                     }
                 });
 
                 list = new ArrayList<String>();
-                list.add("Residency Program");
-                list.add("Chennai");
+                Registration reg=new Registration();
+                list.addAll(reg.loadResidencyFiles());
 
                 dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list,list);
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
                 residency.setAdapter(dataAdapter);
                 residency.setThreshold(1);
-                residency.setOnClickListener(new View.OnClickListener() {
+                residency_img.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        residency.showDropDown();
+                        InputMethodManager imm = (InputMethodManager)mainContext. getSystemService(mainContext.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        if (isResidency) {
+                            isResidency = false;
+                            residency.dismissDropDown();
+                            residency_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                        } else {
+                            isResidency = true;
+                            residency_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                            residency.showDropDown();
+                        }
                     }
                 });
                 list = new ArrayList<String>();
-                list.add("Fellowship Program");
+                list.addAll(reg.loadFellowship());
 
                 dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list,list);
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
                 fellow.setAdapter(dataAdapter);
                 fellow.setThreshold(1);
-                fellow.setOnClickListener(new View.OnClickListener() {
+                fellow_img.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        fellow.showDropDown();
+                        InputMethodManager imm = (InputMethodManager)mainContext. getSystemService(mainContext.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        if (isFellow) {
+                            isFellow = false;
+                            fellow.dismissDropDown();
+                            fellow_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                        } else {
+                            isFellow = true;
+                            fellow_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                            fellow.showDropDown();
+                        }
                     }
                 });
                 usertype.addTextChangedListener(new TextWatcher() {
