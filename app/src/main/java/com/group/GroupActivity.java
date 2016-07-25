@@ -1067,7 +1067,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 		case R.id.save_group:
 			if (SingleInstance.mainContext.isNetworkConnectionAvailable()) {
 
-				if (groupName.length() > 0 && groupName.length() <= 15
+				if (groupName.length() > 0 && groupName.length() <= 20
 						&& isGroupNameValidate(groupName) && membersList.size()>0) {
 					hideKeyboard();
 					// callDisp.showprogress(CallDispatcher.pdialog, context);
@@ -1090,7 +1090,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 				} else {
 					if (!isGroupNameValidate(groupName)) {
 						showToast("Special Characters -/. Are only allowed");
-					} else if (groupName.length() > 15) {
+					} else if (groupName.length() > 20) {
 						showToast("Groupname must be 1-15 characters");
 					} else if(membersAcceptedList.size()==0){
 						showToast("Please select group members");

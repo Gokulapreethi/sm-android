@@ -129,7 +129,7 @@
                     android:background="#272829"
                     android:hint="Group Name"
                     android:gravity="center_vertical"
-                    android:maxLength="30"
+                    android:maxLength="20"
                     android:textColor="@color/white" />
                 <View
                     android:layout_width="match_parent"

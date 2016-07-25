@@ -810,7 +810,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                 String groupName = ed_groupname.getText().toString();
                 if (SingleInstance.mainContext.isNetworkConnectionAvailable()) {
 
-                    if (groupName.length() > 0 && groupName.length() <= 15
+                    if (groupName.length() > 0 && groupName.length() <= 20
                             && isGroupNameValidate(groupName) && (membersList.size()>0 || membersAcceptedList.size()>0)) {
                         hideKeyboard();
                         // callDisp.showprogress(CallDispatcher.pdialog, context);
@@ -830,7 +830,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                     } else {
                         if (!isGroupNameValidate(groupName)) {
                             showToast("Special Characters -/. Are only allowed");
-                        } else if (groupName.length() > 15) {
+                        } else if (groupName.length() > 20) {
                             showToast("Groupname must be 1-15 characters");
                         } else if(membersAcceptedList.size()==0){
                             showToast("Please select group members");
