@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.bean.EditForm;
+import com.bean.GroupChatBean;
 import com.bean.GroupChatPermissionBean;
 import com.bean.ProfileBean;
 import com.cg.account.ChangePassword;
@@ -525,11 +526,20 @@ public class WSRunner implements Runnable {
 							((AppMainActivity) mServicebean.getCallBack())
 									.loginResponse(mServicebean.getObj());
 							SingleInstance.mainContext.syncFinished();
-//							FilesFragment fl = new FilesFragment();
-//							fl.notifySyncResult();
 						}
-
-
+						break;
+					case SYNCCHAT:
+						mChk = mParser.getResult(mSp.toString());
+						ArrayList<GroupChatBean> chatBean=mParser
+								.parseSyncChatDetails(mSp.toString());
+						mServicebean.setObj(chatBean);
+						Log.d("CHATSYNC", "--->SYNC CHAT");
+						if (mServicebean.getCallBack() instanceof AppMainActivity) {
+							Log.d("CHATSYNC","--->SYNC CHAT if");
+							((AppMainActivity) mServicebean.getCallBack())
+									.notifySyncChat(mServicebean.getObj());
+						}
+						break;
 					case GETSETUTILITY:
 
 					if (mParser.getResult(mSp.toString())) {

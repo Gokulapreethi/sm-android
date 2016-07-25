@@ -1337,6 +1337,22 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 							showToast(fullname
 									+ " have added you in the "
 									+ object.getGroupName() + " Group");
+
+							handler.post(new Runnable() {
+
+								@Override
+								public void run() {
+									// TODO Auto-generated method stub
+									GroupChatActivity gca = (GroupChatActivity) SingleInstance.contextTable
+											.get("groupchat");
+									if(gca!=null) {
+										if (gca.isGroup)
+											gca.MembersProcess();
+										else if(gca.isRounding)
+											gca.RoundingMember();
+									}
+								}
+							});
 						}
 					} else {
 						String Fullname=object.getDeleteGroupMembers();
@@ -8622,6 +8638,33 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		protected void onPreExecute() {
 
 			super.onPreExecute();
+		}
+	}
+	public void notifySyncChat(Object obj) {
+		GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
+		if(groupChatActivity != null) {
+			groupChatActivity.cancelDialog();
+		}
+		if (obj instanceof ArrayList) {
+			ArrayList<GroupChatBean> chatList = (ArrayList<GroupChatBean>) obj;
+			for(GroupChatBean groupChatBean:chatList) {
+				if (groupChatBean.getMimetype().equals("text")
+						|| groupChatBean.getMimetype().equals("location")) {
+					processGroupChatChanges(groupChatBean);
+
+				} else {
+					groupChatBean.setStatus(0);
+					processGroupChatChanges(groupChatBean.clone());
+					String fileName = groupChatBean.getMediaName();
+					groupChatBean
+							.setMediaName(Utils
+									.getFilePathString(groupChatBean
+											.getMediaName()));
+					downloadGroupChatFile(groupChatBean, fileName);
+				}
+			}
+		} else if (obj instanceof WebServiceBean) {
+			showToast(((WebServiceBean) obj).getText());
 		}
 	}
 }

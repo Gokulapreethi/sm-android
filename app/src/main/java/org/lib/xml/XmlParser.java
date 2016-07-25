@@ -8043,6 +8043,66 @@ public class XmlParser {
 			return sync;
 		}
 	}
+	public ArrayList<GroupChatBean> parseSyncChatDetails(String xml)
+	{
+		ArrayList<GroupChatBean>sync=new ArrayList<GroupChatBean>();
+		try {
+			dbf = DocumentBuilderFactory.newInstance();
+			db = dbf.newDocumentBuilder();
+			is = new InputSource();
+			is.setCharacterStream(new StringReader(xml));
+			doc = (Document) db.parse(is);
+			Log.i("CHATSYNC", "parse started");
+			list = doc.getElementsByTagName("chatmessage");
+
+			for (int i = 0; i < list.getLength(); i++) {
+				GroupChatBean cBean=new GroupChatBean();
+				node = list.item(i);
+				nodeMap = node.getAttributes();
+				if (nodeMap.getNamedItem("fromuser") != null)
+					cBean.setFrom(nodeMap.getNamedItem("fromuser").getNodeValue());
+				if (nodeMap.getNamedItem("touser") != null)
+					cBean.setTo(nodeMap.getNamedItem("touser").getNodeValue());
+				if (nodeMap.getNamedItem("signalid") != null)
+					cBean.setSignalid(nodeMap.getNamedItem("signalid").getNodeValue());
+				if (nodeMap.getNamedItem("sessionid") != null)
+					cBean.setSessionid(nodeMap.getNamedItem("sessionid").getNodeValue());
+				if (nodeMap.getNamedItem("category") != null)
+					cBean.setCategory(nodeMap.getNamedItem("category").getNodeValue());
+				if (nodeMap.getNamedItem("subcategory") != null)
+					cBean.setSubCategory(nodeMap.getNamedItem("subcategory").getNodeValue());
+				if (nodeMap.getNamedItem("mimetype") != null)
+					cBean.setMimetype(nodeMap.getNamedItem("mimetype").getNodeValue());
+				if (nodeMap.getNamedItem("privatemembers") != null)
+					cBean.setPrivateMembers(nodeMap.getNamedItem("privatemembers").getNodeValue());
+				if (nodeMap.getNamedItem("parentid") != null)
+					cBean.setParentId(nodeMap.getNamedItem("parentid").getNodeValue());
+				if (nodeMap.getNamedItem("remaindertime") != null)
+					cBean.setReminderTime(nodeMap.getNamedItem("remaindertime").getNodeValue());
+				if (nodeMap.getNamedItem("senttime") != null)
+					cBean.setSenttime(nodeMap.getNamedItem("senttime").getNodeValue());
+				if (nodeMap.getNamedItem("senttimezone") != null)
+					cBean.setSenttimez(nodeMap.getNamedItem("senttimezone").getNodeValue());
+				if (nodeMap.getNamedItem("dateandtime") != null)
+					cBean.setSenttime(nodeMap.getNamedItem("dateandtime").getNodeValue());
+				if (nodeMap.getNamedItem("ftpusername") != null)
+					cBean.setFtpUsername(nodeMap.getNamedItem("ftpusername").getNodeValue());
+				if (nodeMap.getNamedItem("ftppassword") != null)
+					cBean.setFtpPassword(nodeMap.getNamedItem("ftppassword").getNodeValue());
+				if (nodeMap.getNamedItem("filename") != null)
+					cBean.setMediaName(nodeMap.getNamedItem("filename").getNodeValue());
+				if (nodeMap.getNamedItem("psignalid") != null)
+					cBean.setpSingnalId(nodeMap.getNamedItem("psignalid").getNodeValue());
+				if (nodeMap.getNamedItem("message") != null)
+					cBean.setMessage(nodeMap.getNamedItem("message").getNodeValue());
+				sync.add(cBean);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			return sync;
+		}
+	}
 	public String[] parseDeleteTask(String xml) {
 		String[] result = null;
 		result=new String[3];

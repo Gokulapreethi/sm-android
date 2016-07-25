@@ -415,8 +415,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         window.setGravity(Gravity.BOTTOM);
                         dialog.show();
 
-                        TextView edit_grp = (TextView) dialog.findViewById(R.id.edit_grp);
-                        edit_grp.setVisibility(View.GONE);
+                        TextView sync_chat = (TextView) dialog.findViewById(R.id.edit_grp);
+                        sync_chat.setVisibility(View.GONE);
+                        sync_chat.setText("SYNC CHAT");
                         TextView sms = (TextView) dialog.findViewById(R.id.invite_grp);
                         sms.setText("Invite User to Group");
                         TextView clear = (TextView) dialog.findViewById(R.id.leave_grp);
@@ -433,6 +434,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
+                            }
+                        });
+                        sync_chat.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showprogress();
+                                WebServiceReferences.webServiceClient.ChatSync(buddy,SingleInstance.mainContext);
                             }
                         });
                         delet_user.setOnClickListener(new View.OnClickListener() {

@@ -1669,7 +1669,7 @@ public class WebServiceClient {
 		if (wsNotifier != null)
 			wsNotifier.addTasktoExecutor(servicebean);
 	}
-	public void Sync(Context context) {
+	public void FileSync(Context context) {
 		Servicebean servicebean = new Servicebean();
 		HashMap<String, String> property_map = new HashMap<String, String>();
 		property_map.put("username",CallDispatcher.LoginUser);
@@ -1677,6 +1677,18 @@ public class WebServiceClient {
 		servicebean.setProperty_map(property_map);
 		servicebean.setWsmethodname("GetShareHistory");
 		servicebean.setServiceMethods(EnumWebServiceMethods.SYNC);
+		servicebean.setCallBack(context);
+		if (wsNotifier != null)
+			wsNotifier.addTasktoExecutor(servicebean);
+	}
+	public void ChatSync(String username,Context context) {
+		Servicebean servicebean = new Servicebean();
+		HashMap<String, String> property_map = new HashMap<String, String>();
+		property_map.put("userid",username);
+		property_map.put("dateandtime", "");
+		servicebean.setProperty_map(property_map);
+		servicebean.setWsmethodname("SyncChat");
+		servicebean.setServiceMethods(EnumWebServiceMethods.SYNCCHAT);
 		servicebean.setCallBack(context);
 		if (wsNotifier != null)
 			wsNotifier.addTasktoExecutor(servicebean);

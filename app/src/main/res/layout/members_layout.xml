@@ -24,7 +24,7 @@
             android:id="@+id/online_sort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:textColor="@color/snazlgray"
             android:background="@color/black2"
             android:text="ONLINE"
             android:layout_marginRight="20dp"
@@ -37,7 +37,7 @@
             android:background="@color/black2"
             android:drawableRight="@drawable/sort_arrow"
             android:drawableEnd="@drawable/sort_arrow"
-            android:textColor="@color/snazlgray"
+            android:textColor="@color/white"
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
             android:text="A &gt; Z"/>

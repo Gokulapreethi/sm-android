@@ -1013,7 +1013,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 						public void run() {
 							if (WebServiceReferences.running) {
 								WebServiceReferences.webServiceClient
-										.Sync(SingleInstance.mainContext);
+										.FileSync(SingleInstance.mainContext);
 							}
 							showprogress("Syncing in Progress..");
 						}

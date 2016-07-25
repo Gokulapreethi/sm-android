@@ -131,6 +131,7 @@ public class FindPeople extends Fragment {
                 selected = (TextView) _rootView.findViewById(R.id.selected);
                 searchResult = (ListView) _rootView.findViewById(R.id.searchResult);
 
+                selectAll_buddy.setChecked(false);
                 selectAll_buddy.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -179,6 +180,7 @@ public class FindPeople extends Fragment {
 //                    }
 //                });
                 if (result.size() > 0) {
+                    checkBoxCounter=0;
                     Collections.sort(result,new BuddyListComparator());
                     adapter = new FindPeopleAdapter(mainContext, R.layout.find_people_item, result);
                     searchResult.setAdapter(adapter);
