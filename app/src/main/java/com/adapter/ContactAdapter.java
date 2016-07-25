@@ -137,6 +137,7 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
             if (contactList.size() > 0) {
             final BuddyInformationBean buddyInformationBean = (BuddyInformationBean) contactList.get(position);
                 if (!buddyInformationBean.isTitle()) {
+                    if(buddyInformationBean.getLastname()!=null)
                     holder.tv_header_title.setText(String.valueOf(buddyInformationBean.getLastname().charAt(0)).toUpperCase());
                     holder.tv_header_title.setVisibility(View.VISIBLE);
                     if(position>0){

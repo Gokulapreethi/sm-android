@@ -91,7 +91,7 @@
         android:layout_below="@+id/msglay"
         android:gravity="center"
         android:padding="5dp"
-        android:textColor="@color/snazlgray"
+        android:textColor="@color/white"
         android:text="Read "
         android:textSize="15dp" />
 
@@ -110,7 +110,7 @@
         android:layout_below="@+id/read"
         android:gravity="center"
         android:padding="5dp"
-        android:textColor="@color/snazlgray"
+        android:textColor="@color/white"
         android:text="Delivered "
         android:textSize="15dp" />
 

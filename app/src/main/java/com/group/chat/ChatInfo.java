@@ -81,15 +81,9 @@ public class ChatInfo extends Activity {
             sentView.setText("Sent:");
 //        tvdate.setText(chatList.getSenttime());
             tvread.setText(Html.fromHtml("<font color=\"#FFFFFF\">"
-                    + "READ "
-                    + "</font>"
-                    + "  "
-                    + "<font color=\"#2789e4\">  1"));
+                    + "READ " + "</font>"));
             tvdelivered.setText(Html.fromHtml("<font color=\"#FFFFFF\">"
-                    + "DELIVERED "
-                    + "</font>"
-                    + "  "
-                    + "<font color=\"#2789e4\">  1"));
+                    + "DELIVERED " + "</font>"));
             SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
             String dateInString = chatList.getSenttime();
             SimpleDateFormat fmt2 = new SimpleDateFormat("MM:dd:yyyy hh:mm a");
@@ -158,16 +152,10 @@ public class ChatInfo extends Activity {
                 ListView deliveredList = (ListView) findViewById(R.id.deliverd);
                 ChatInfoAdapter deliveredListadapter = new ChatInfoAdapter(ChatInfo.this, deliveredchat);
                 deliveredList.setAdapter(deliveredListadapter);
-                tvread.setText(Html.fromHtml("<font color=\"#FFFFFF\">"
-                        + "READ "
-                        + "</font>"
-                        + "  "
-                        + "<font color=\"#2789e4\">  "+chat.size()));
-                tvdelivered.setText(Html.fromHtml("<font color=\"#FFFFFF\">"
-                        + "DELIVERED "
-                        + "</font>"
-                        + "  "
-                        + "<font color=\"#2789e4\">  " + deliveredchat.size()));
+//                tvread.setText(Html.fromHtml("<font color=\"#FFFFFF\">"
+//                        + "READ " + "</font>"));
+//                tvdelivered.setText(Html.fromHtml("<font color=\"#FFFFFF\">"
+//                        + "DELIVERED " + "</font>"));
             }
             cancel.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -196,14 +196,19 @@ import org.lib.webservice.Servicebean;
 import org.tcp.TCPEngine;
 import org.util.Utility;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -7694,30 +7699,31 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				Log.d("decode12", "decode12 : " + file_name);
 				if (file_name.trim().toLowerCase().endsWith("jpg")) {
 					Log.d("decode12", "decode12img1 : " + directory_path);
-					byte[] imageAsBytes = Base64.decode(filedetails[1], 0);
-					File img_file = new File(file_name);
-					img_file.createNewFile();
-					FileOutputStream image_writter = new FileOutputStream(
-							img_file);
-					image_writter.write(imageAsBytes);
-					image_writter.flush();
-					image_writter.close();
-
-					Bitmap bmp = AppMainActivity.this.ShrinkBitmap(
-							file_name, 150, 150);
-					image_writter = new FileOutputStream(img_file);
-					bmp.compress(CompressFormat.JPEG, 100, image_writter);
-					bmp.recycle();
-					bmp = null;
-					image_writter.flush();
-					image_writter.close();
-					Log.d("decode12", "decode12img1a : " + directory_path);
-					// img_file = null;
-					if (img_file.exists()) {
-						Log.d("decode12", "decode12img1a1 : " + directory_path);
-						notifyChatFTPStatus(chatFTPBean, true);
-						Log.d("decode12", "decode12img1b : " + directory_path);
-					}
+//					byte[] imageAsBytes = Base64.decode(filedetails[1], 0);
+//					File img_file = new File(file_name);
+//					img_file.createNewFile();
+//					FileOutputStream image_writter = new FileOutputStream(
+//							img_file);
+//					image_writter.write(imageAsBytes);
+//					image_writter.flush();
+//					image_writter.close();
+//
+//					Bitmap bmp = AppMainActivity.this.ShrinkBitmap(
+//							file_name, 150, 150);
+//					image_writter = new FileOutputStream(img_file);
+//					bmp.compress(CompressFormat.JPEG, 100, image_writter);
+//					bmp.recycle();
+//					bmp = null;
+//					image_writter.flush();
+//					image_writter.close();
+//					Log.d("decode12", "decode12img1a : " + directory_path);
+//					// img_file = null;
+//					if (img_file.exists()) {
+//						Log.d("decode12", "decode12img1a1 : " + directory_path);
+//						notifyChatFTPStatus(chatFTPBean, true);
+//						Log.d("decode12", "decode12img1b : " + directory_path);
+//					}
+					new DownloadImage(file_name,filedetails[0],chatFTPBean).execute();
 				} else {
 					if (decodeAudioVideoToBase64(file_name, filedetails[1])) {
 						notifyChatFTPStatus(chatFTPBean,true);
@@ -8526,5 +8532,96 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			}
 		}
 
+	}
+	public class DownloadImage extends AsyncTask<String, Void, String> {
+
+		String path=null;
+		String profileName=null;
+		ChatFTPBean chatFTPBean=null;
+
+		DownloadImage(String path,String profileName,ChatFTPBean chatFTPBean){
+			this.path=path;
+			this.profileName=profileName;
+			this.chatFTPBean=chatFTPBean;
+		}
+
+		@Override
+		protected String doInBackground(String... urls) {
+			String response = "";
+			try {
+				Log.i("imagedownload", "profile download");
+//        File extStore = Environment.getExternalStorageDirectory();
+				File myFile = new File(path);
+				if(!myFile.exists()) {
+					try {
+
+						URL bitmap = new URL("http://www.snazevents.com/uploads/"+profileName);
+						HttpURLConnection connection = (HttpURLConnection) bitmap
+								.openConnection();
+						connection.setDoInput(true);
+						connection.connect();
+						if (connection.getInputStream() != null) {
+							InputStream inputStream = connection.getInputStream();
+//           String dir_path = Environment.getExternalStorageDirectory()
+//             + "/COMMedia";
+//           File directory = new File(dir_path);
+//           if (!directory.exists())
+//            directory.mkdir();
+							String filePath = Environment.getExternalStorageDirectory()
+									.getAbsolutePath()
+									+ "/COMMedia/"+profileName;
+
+//           Log.d("mypath", "my file path is---->" + filePath);
+
+							File file_name = new File(filePath);
+							BufferedOutputStream bos = new BufferedOutputStream(
+									new FileOutputStream(file_name));
+							int inByte;
+							while ((inByte = inputStream.read()) != -1) {
+								bos.write(inByte);
+							}
+							bos.close();
+
+							//** For  Avatar download
+							//Start
+							Bitmap btmap = BitmapFactory.decodeStream(inputStream);
+							if (connection.getContentLength() <= 0 && btmap == null) {
+								Log.i("imagedownload", "avatar download faild contact name-->");
+
+							} else {
+								Log.i("imagedownload", "avatar download success contact name-->");
+							}
+							//End
+
+						}
+					}catch (FileNotFoundException e){
+						e.printStackTrace();
+					}catch (Exception e){
+						e.printStackTrace();
+					}
+				}else{
+
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			return response;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			Toast.makeText(AppMainActivity.this,"Download Success",Toast.LENGTH_SHORT).show();
+			if(chatFTPBean!=null)
+				notifyChatFTPStatus(chatFTPBean, true);
+			ContactsFragment.getInstance(context).SortList();
+		}
+
+		@Override
+		protected void onPreExecute() {
+
+			super.onPreExecute();
+		}
 	}
 }

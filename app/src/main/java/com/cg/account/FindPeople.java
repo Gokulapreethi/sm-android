@@ -146,6 +146,7 @@ public class FindPeople extends Fragment {
                         adapter.notifyDataSetChanged();
 
                         int count = 0;
+                        checkBoxCounter=0;
                         for (BuddyInformationBean bib : result) {
                             if (bib.isSelected()) {
                                 count++;

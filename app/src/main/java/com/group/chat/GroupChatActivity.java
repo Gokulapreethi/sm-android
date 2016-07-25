@@ -1643,6 +1643,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     showToast("You cannot forward withdrawn message");
                                 else {
                                     forward = true;
+                                    for(GroupChatBean gbean:adapter.getAllitem()){
+                                        gbean.setIsforward(true);
+                                    }
                                     adapter.notifyDataSetChanged();
                                     handler.post(new Runnable() {
                                         @Override
