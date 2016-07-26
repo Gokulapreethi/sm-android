@@ -85,6 +85,7 @@ public class new_user_5 extends Activity{
                 Intent intent = new Intent(new_user_5.this, NewUser.class);
                 intent.putExtra("role", "Physician");
                 startActivity(intent);
+                    finish();
                 }else
                     Toast.makeText(getApplicationContext(), "Please enter invite code",
                             Toast.LENGTH_SHORT).show();

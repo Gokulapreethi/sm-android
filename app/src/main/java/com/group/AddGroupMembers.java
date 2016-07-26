@@ -204,8 +204,8 @@ public class AddGroupMembers extends Activity {
 					final GroupBean gBean = DBAccess.getdbHeler() .getGroupAndMembers(
 							"select * from groupdetails where groupid=" + groupid);
 					ArrayList<String> groupList=new ArrayList<String>();
-					if(gBean.getActiveGroupMembers()!=null && !gBean.getActiveGroupMembers().equalsIgnoreCase("")) {
-						String[] mlist = (gBean.getActiveGroupMembers()).split(",");
+					if(gBean.getInviteMembers()!=null && !gBean.getInviteMembers().equalsIgnoreCase("")) {
+						String[] mlist = (gBean.getInviteMembers()).split(",");
 						for(String temp:mlist){
 							groupList.add(temp);
 						}

@@ -671,13 +671,13 @@ public class AMAVerification extends Activity {
                     }
                     holder.header_title.setVisibility(View.VISIBLE);
                     String cname1, cname2;
-                    cname1 = String.valueOf(bib.getFirstname().charAt(0));
+                    cname1 = String.valueOf(bib.getLastname().charAt(0));
 
                     holder.header_title.setText(cname1.toUpperCase());
 
                     if (i > 0) {
                         final  BuddyInformationBean bbean1 = result.get(i - 1);
-                        cname2 = String.valueOf(bbean1.getFirstname().charAt(0));
+                        cname2 = String.valueOf(bbean1.getLastname().charAt(0));
                         if (cname1.equalsIgnoreCase(cname2)) {
                             Log.d("Headervalue","title-->");
                             holder.header_title.setVisibility(View.GONE);

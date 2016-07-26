@@ -418,7 +418,7 @@
                     android:layout_marginLeft="15dp"
                     android:gravity="left"
                     android:padding="7dp"
-                    android:text="Email (this will be your User ID)"
+                    android:text="Email (This will be your Snazmed user ID)"
                     android:visibility="gone"
                     android:textColor="#808080"
                     android:textSize="15dp" />
@@ -433,7 +433,7 @@
                     android:layout_weight="1"
                     android:padding="7dp"
                     android:background="#272829"
-                    android:hint="Email (this will be your User ID)"
+                    android:hint="Email (This will be your Snazmed user ID)"
                     android:gravity="center_vertical"
                     android:inputType="textEmailAddress"
                     android:maxLength="50"

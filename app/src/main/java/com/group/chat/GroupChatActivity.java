@@ -9617,6 +9617,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         bean.setFirstname(pBean.getTitle() + pBean.getFirstname());
                     else
                         bean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname());
+                bean.setLastname(pBean.getLastname());
                 bean.setName(gBean.getOwnerName());
                 bean.setSelected(true);
                 bean.setProfile_picpath(pBean.getPhoto());
@@ -9639,6 +9640,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             uBean.setFirstname(pbean.getTitle() + pbean.getFirstname());
                         else
                             uBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
+                    uBean.setLastname(pbean.getLastname());
                     uBean.setName(tmp);
                     uBean.setStatus("offline");
                     uBean.setProfile_picpath(pbean.getPhoto());
@@ -9773,6 +9775,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         bean.setFirstname(pbean.getTitle() + pbean.getFirstname());
                     else
                         bean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
+                bean.setLastname(pbean.getLastname());
                 bean.setSelected(true);
                 bean.setName(gBean.getOwnerName());
                 bean.setProfile_picpath(pbean.getPhoto());
@@ -9796,6 +9799,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             uBean.setFirstname(pBean.getTitle() + pBean.getFirstname());
                         else
                             uBean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname());
+                    uBean.setLastname(pBean.getLastname());
                     uBean.setName(tmp);
                     uBean.setStatus("offline");
                     uBean.setProfile_picpath(pBean.getPhoto());
