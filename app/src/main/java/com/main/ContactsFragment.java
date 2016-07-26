@@ -594,6 +594,10 @@ public class ContactsFragment extends Fragment{
 				}else if(SortType.equalsIgnoreCase("ALPH")){
 					online_sort.setTextColor(getResources().getColor(R.color.snazlgray));
 					alph_sort.setTextColor(getResources().getColor(R.color.white));
+					if(!isazsort)
+						alph_sort.setText("Z>A");
+					else
+						alph_sort.setText("A>Z");
 				}
 
 				online_sort.setOnClickListener(new OnClickListener() {

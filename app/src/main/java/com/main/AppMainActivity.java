@@ -7917,7 +7917,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				{
 					if( myKM.inKeyguardRestrictedInputMode())
 					{
-						if(count==0) {
+						if(count==0 && !openPinActivity) {
 							Intent i = new Intent(AppMainActivity.this, PinSecurity.class);
 							startActivity(i);
 							count++;

@@ -816,6 +816,9 @@
                 android:layout_centerInParent="true"
                 android:clickable="false"
                 android:progress="0"
+                android:indeterminate="false"
+                android:secondaryProgress="0"
+                android:background="@drawable/circle_shape"
                 android:progressDrawable="@drawable/rota"
                 android:visibility="visible" />
         </RelativeLayout>

@@ -101,6 +101,9 @@ public class MyAccountActivity extends Activity {
     ArrayList<String> states=new ArrayList<String>();
     private String pastingContentCopy, spliting_address;
     Button button, members_button,addr_plus;
+    boolean iszipchar=true;
+    boolean isfaxNochar=true,isfaxNochar2=true;
+    boolean isphNochar=true,isphNochar2=true;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -350,30 +353,32 @@ public class MyAccountActivity extends Activity {
                             } else {
                                 office_phone_numbertext.setVisibility(View.GONE);
                             }
-                            if (charSequence.length()==3&& isNumeric(charSequence.toString())){
+                            if (charSequence.length()==3&& isNumeric(charSequence.toString()) && isphNochar){
                                 office_phone_number.setText(charSequence+"-");
                                 office_phone_number.setSelection(4);
-                            }
+                            }else if(charSequence.length()>3 )
+                                isphNochar=false;
+                            if(charSequence.length()>7)
+                                isphNochar2=false;
+                            else if(charSequence.length()<3 )
+                                isphNochar=true;
+                            else if(charSequence.length()<7)
+                                isphNochar2=true;
                             int counter = charSequence.toString().split("-", -1).length - 1;
-                            Log.d("countof","string"+counter);
-                            if(charSequence.length()==7&&counter==1 ){
+                            if(charSequence.length()==7&&counter==1 && isphNochar2 ){
                                 office_phone_number.setText(charSequence+"-");
                                 office_phone_number.setSelection(8);
                             }
-
                         }
-
                         @Override
                         public void afterTextChanged(Editable editable) {
                         }
                     });
 
-
                     office_fax_number.addTextChangedListener(new TextWatcher() {
                         @Override
                         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                         }
-
                         @Override
                         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                             if (charSequence.length() > 0) {
@@ -381,18 +386,23 @@ public class MyAccountActivity extends Activity {
                             } else {
                                 office_fax_numbertext.setVisibility(View.GONE);
                             }
-                            if (charSequence.length()==3&& isNumeric(charSequence.toString())){
+                            if (charSequence.length()==3&& isNumeric(charSequence.toString())&& isfaxNochar){
                                 office_fax_number.setText(charSequence+"-");
                                 office_fax_number.setSelection(4);
-                            }
+                            }else if(charSequence.length()>3 )
+                                isfaxNochar=false;
+                             if(charSequence.length()>7)
+                                isfaxNochar2=false;
+                             else if(charSequence.length()<3 )
+                                isfaxNochar=true;
+                            else if(charSequence.length()<7)
+                                isfaxNochar2=true;
                             int counter1 = charSequence.toString().split("-", -1).length - 1;
-                            Log.d("countof","string"+counter1);
-                            if(charSequence.length()==7&&counter1==1 ){
+                            if(charSequence.length()==7&&counter1==1 && isfaxNochar2 ){
                                 office_fax_number.setText(charSequence+"-");
                                 office_fax_number.setSelection(8);
                             }
                         }
-
                         @Override
                         public void afterTextChanged(Editable editable) {
                         }
@@ -434,6 +444,7 @@ public class MyAccountActivity extends Activity {
                         public void afterTextChanged(Editable editable) {
                         }
                     });
+
                     zip.addTextChangedListener(new TextWatcher() {
                         @Override
                         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -446,10 +457,13 @@ public class MyAccountActivity extends Activity {
                             } else {
                                 ziptext.setVisibility(View.GONE);
                             }
-                            if (charSequence.length()==5&& isNumeric(charSequence.toString())){
+                            if (charSequence.length()==5&& isNumeric(charSequence.toString()) && iszipchar){
                                 zip.setText(charSequence+"-");
                                 zip.setSelection(6);
-                            }
+                            }else if(charSequence.length()>5)
+                                iszipchar=false;
+                            else if(charSequence.length()<5)
+                                iszipchar=true;
                         }
 
                         @Override

@@ -11,6 +11,9 @@ public class PatientListComparator implements Comparator<UserBean> {
 
     @Override
     public int compare(UserBean oldbean, UserBean newbean){
+        if(oldbean.getFirstname()!=null && newbean.getFirstname()!=null)
         return (oldbean.getFirstname().compareToIgnoreCase(newbean.getFirstname()));
+        else
+            return (oldbean.getBuddyName().compareToIgnoreCase(newbean.getBuddyName()));
     }
 }

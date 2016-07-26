@@ -9622,7 +9622,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 bean.setSelected(true);
                 bean.setProfile_picpath(pBean.getPhoto());
                 if (gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser))
-                    bean.setStatus(CallDispatcher.onlineStatus);
+                    bean.setStatus(appMainActivity.loadCurrentStatus());
                 else
                     for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
                         if (bib.getName().equalsIgnoreCase(gBean.getOwnerName())) {
@@ -9645,7 +9645,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     uBean.setStatus("offline");
                     uBean.setProfile_picpath(pbean.getPhoto());
                     if (tmp.equalsIgnoreCase(CallDispatcher.LoginUser))
-                        uBean.setStatus(CallDispatcher.onlineStatus);
+                        uBean.setStatus(appMainActivity.loadCurrentStatus());
                     else
                         for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
                             if (bib.getName().equalsIgnoreCase(tmp)) {
@@ -9780,7 +9780,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 bean.setName(gBean.getOwnerName());
                 bean.setProfile_picpath(pbean.getPhoto());
                 if (gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser))
-                    bean.setStatus(CallDispatcher.onlineStatus);
+                    bean.setStatus(appMainActivity.loadCurrentStatus());
                 else
                     for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
                         if (bib.getName().equalsIgnoreCase(gBean.getOwnerName())) {
@@ -9804,7 +9804,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     uBean.setStatus("offline");
                     uBean.setProfile_picpath(pBean.getPhoto());
                     if (tmp.equalsIgnoreCase(CallDispatcher.LoginUser))
-                        uBean.setStatus(CallDispatcher.onlineStatus);
+                        uBean.setStatus(appMainActivity.loadCurrentStatus());
                     else
                         for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
                             if (bib.getName().equalsIgnoreCase(tmp)) {

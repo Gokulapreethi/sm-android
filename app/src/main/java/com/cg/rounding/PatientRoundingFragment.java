@@ -450,7 +450,7 @@ public class PatientRoundingFragment extends Fragment {
                         if (tmp.equalsIgnoreCase(CallDispatcher.LoginUser)) {
                             ProfileBean bean = SingleInstance.myAccountBean;
                             uBean.setFirstname(bean.getFirstname() + " " + bean.getLastname());
-                            uBean.setStatus(CallDispatcher.onlineStatus);
+                            uBean.setStatus(SingleInstance.mainContext.loadCurrentStatus());
                             String pic_Path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/COMMedia/" + bean.getPhoto();
                             uBean.setProfilePic(pic_Path);
                         }else

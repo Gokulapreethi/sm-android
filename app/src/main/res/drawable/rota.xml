@@ -9,31 +9,33 @@
             <shape
                 android:innerRadiusRatio="2.5"
                 android:shape="ring"
-                android:thicknessRatio="25.0" >
+                android:thicknessRatio="25.0"
+                android:useLevel="true">
                 <gradient
                     android:centerColor="@color/blue2"
                     android:endColor="@color/blue2"
                     android:startColor="@color/blue2"
-                    android:type="sweep" />
+                    android:type="sweep"
+                    android:useLevel="false"/>
             </shape>
         </rotate>
     </item>
-    <item android:id="@android:id/secondaryProgress">
-        <rotate
-            android:fromDegrees="270"
-            android:toDegrees="270"
-            android:pivotX="50%"
-            android:pivotY="50%" >
-            <shape
-                android:innerRadiusRatio="2.5"
-                android:shape="ring"
-                android:thicknessRatio="25.0" >
-                <gradient
-                    android:centerColor="@color/blue2"
-                    android:endColor="@color/blue2"
-                    android:startColor="@color/blue2"
-                    android:type="sweep" />
-            </shape>
-        </rotate>
-    </item>
+    <!--<item android:id="@android:id/secondaryProgress">-->
+        <!--<rotate-->
+            <!--android:fromDegrees="270"-->
+            <!--android:toDegrees="270"-->
+            <!--android:pivotX="50%"-->
+            <!--android:pivotY="50%" >-->
+            <!--<shape-->
+                <!--android:innerRadiusRatio="2.5"-->
+                <!--android:shape="ring"-->
+                <!--android:thicknessRatio="25.0" >-->
+                <!--<gradient-->
+                    <!--android:centerColor="@color/blue2"-->
+                    <!--android:endColor="@color/blue2"-->
+                    <!--android:startColor="@color/blue2"-->
+                    <!--android:type="sweep" />-->
+            <!--</shape>-->
+        <!--</rotate>-->
+    <!--</item>-->
 </layer-list>    

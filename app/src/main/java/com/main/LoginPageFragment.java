@@ -243,9 +243,7 @@ public class LoginPageFragment extends Fragment {
             else {
                 ArrayList<String> ids=DBAccess.getdbHeler().getSecurityQuestionsIds();
                 String allIds = TextUtils.join(",", ids);
-                Log.i("AAAA","LOGIN "+allIds);
-                String[] id=allIds.split(",");
-                if(id.length!=15)
+                if(ids.size()!=15)
                 WebServiceReferences.webServiceClient.getSecurityQuestions(SingleInstance.mainContext,
                         allIds,SingleInstance.mainContext.seccreatedDate);
             }
