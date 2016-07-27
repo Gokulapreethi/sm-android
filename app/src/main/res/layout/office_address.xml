@@ -139,23 +139,39 @@
             android:visibility="gone"
             />
 
-        <EditText
-            android:id="@+id/address_edit4"
-            android:layout_below="@id/address_text4"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:textSize="20dp"
-            android:hint="city"
-            android:digits="@string/alphaNumericandspace"
-            android:background="@color/black2"
-            android:textColor="@color/white"
-            android:layout_marginLeft="20dp"
-            android:layout_marginBottom="10dp"
-            />
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:id="@+id/linearlay_city"
+            android:layout_below="@id/address_text4">
+
+            <AutoCompleteTextView
+                android:id="@+id/address_edit4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="20dp"
+                android:hint="city"
+                android:background="@color/black2"
+                android:textColor="@color/white"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1"
+                />
+            <ImageView
+                android:id="@+id/city_img"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/input_arrow"/>
+        </LinearLayout>
+
         <View
             android:id="@+id/address_view4"
-            android:layout_below="@+id/address_edit4"
+            android:layout_below="@+id/linearlay_city"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="5dp"

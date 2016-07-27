@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -64,6 +65,7 @@ public class NewUser extends Activity {
     ArrayList<String> states=new ArrayList<String>();
     ArrayAdapter<String> stateAdapter;
     private int age;
+    private boolean isState=false;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -87,7 +89,7 @@ public class NewUser extends Activity {
         ed_hno = (EditText)findViewById(R.id.ed_hno);
         ed_zipcode = (EditText)findViewById(R.id.ed_zipcode);
         ed_email = (EditText)findViewById(R.id.ed_email);
-//        spin_state = (Spinner) findViewById(R.id.spin_state);
+        final ImageView state_img=(ImageView)findViewById(R.id.state_img);
 
         final String role = getIntent().getStringExtra("role");
         setDone();
@@ -98,12 +100,21 @@ public class NewUser extends Activity {
         state = (AutoCompleteTextView) findViewById(R.id.state);
         stateAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, states);
         state.setAdapter(stateAdapter);
-        state.setThreshold(1);
-        state.setOnClickListener(new View.OnClickListener() {
-
+        state.setThreshold(30);
+        state_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                state.showDropDown();
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                if (isState) {
+                    isState = false;
+                    state.dismissDropDown();
+                    state_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                } else {
+                    isState = true;
+                    state_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    state.showDropDown();
+                }
             }
         });
 
@@ -290,6 +301,8 @@ public class NewUser extends Activity {
             public void onClick(View arg0) {
 
                 try {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(arg0.getWindowToken(), 0);
 
                     SimpleDateFormat sdf = new SimpleDateFormat();
                     String due_date =  ed_dob.getText().toString();

@@ -23,6 +23,7 @@ import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -70,7 +71,7 @@ public class Registration extends Activity {
     private SharedPreferences preferences;
     private CallDispatcher calldisp;
     ImageView riv;
-    boolean isOffcState=false;
+    boolean isOffcState=false,isCity=false;
     String strIPath;
     private Handler service_handler;
     private boolean isDialogVisible = false;
@@ -88,6 +89,7 @@ public class Registration extends Activity {
     ArrayList<String> medicalschoolsList = new ArrayList<String>();
     ArrayList<String> hospitalList = new ArrayList<String>();
     ArrayList<String> medicalSocietyList = new ArrayList<String>();
+    ArrayList<String> cityList=new ArrayList<String>();
     ArrayAdapter<String> stateAdapter;
     ArrayAdapter<String> hospitalDetailsAdapter;
     ArrayAdapter<String> medicalDetailsAdapter;
@@ -100,6 +102,9 @@ public class Registration extends Activity {
     private ArrayAdapter<String> dataAdapter_secQue2;
     private ArrayAdapter<String> dataAdapter_secQue3;
     private AutoCompleteTextView state1;
+    private boolean isTitle=false,isUsertype=false,isProff=false,isState=false;
+    private boolean isSpeciality=false,isMedical=false,isResidency=false;
+    private boolean isFellow=false,isHospital=false,isAssociation=false;
     private String add_citation="",add_officeaddress = "",add_association_mem = "", Addressline1,Addressline2, office_phone_no, office_fax, zip_code, city_value,office_address, state_value = "";
 
 
@@ -121,8 +126,6 @@ public class Registration extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.registration);
-        getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         context = this;
 
@@ -450,11 +453,12 @@ public class Registration extends Activity {
                                                final EditText Address1 = (EditText) dialog1.findViewById(R.id.address_edit1);
                                                final EditText address2 = (EditText) dialog1.findViewById(R.id.address_edit2);
                                                final EditText zip = (EditText) dialog1.findViewById(R.id.address_edit3);
-                                               final EditText city = (EditText) dialog1.findViewById(R.id.address_edit4);
+                                               final AutoCompleteTextView city = (AutoCompleteTextView) dialog1.findViewById(R.id.address_edit4);
                                                final EditText office_phone_number = (EditText) dialog1.findViewById(R.id.address_edit5);
                                                final EditText office_fax_number = (EditText) dialog1.findViewById(R.id.address_edit6);
                                                state1 = (AutoCompleteTextView) dialog1.findViewById(R.id.state_of_practice);
                                                final ImageView offcstate_img=(ImageView)dialog1.findViewById(R.id.offcstate_img);
+                                               final ImageView city_img=(ImageView)dialog1.findViewById(R.id.city_img);
 
                                                Button save1 = (Button) dialog1.findViewById(R.id.save_button2);
                                                Button cancel1 = (Button) dialog1.findViewById(R.id.cancel_button2);
@@ -649,15 +653,38 @@ public class Registration extends Activity {
                                                            String full_officeaddress = office_address;
 
 
-
-                                edOffc.setText(full_officeaddress);
+                                                           edOffc.setText(full_officeaddress);
                                                            plus_id.setVisibility(View.GONE);
                                                            dialog1.dismiss();
                                                            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                                                            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                                                       }else
+                                                       } else
                                                            showToast("Please enter mandatory fields");
 
+                                                   }
+                                               });
+                                               cityList.addAll(SingleInstance.mainContext.cityList);
+
+                                               ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list,cityList);
+
+                                               dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
+
+                                               city.setAdapter(dataAdapter);
+                                               city.setThreshold(30);
+                                               city_img.setOnClickListener(new View.OnClickListener() {
+                                                   @Override
+                                                   public void onClick(View v) {
+                                                       InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                                                       imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                                                       if (isCity) {
+                                                           isCity = false;
+                                                           city.dismissDropDown();
+                                                           city_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                                                       } else {
+                                                           isCity = true;
+                                                           city_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                                                           city.showDropDown();
+                                                       }
                                                    }
                                                });
                                                states = DBAccess.getdbHeler().getStateDetails();
@@ -836,6 +863,8 @@ public class Registration extends Activity {
         capture_image.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 strIPath = Environment.getExternalStorageDirectory()
                         + "/COMMedia/MPD_" + getFileName()
                         + ".jpg";
@@ -906,28 +935,60 @@ public class Registration extends Activity {
         final TextView tv_fellow = (TextView) findViewById(R.id.tv_fellow);
         final TextView tv_hospital = (TextView) findViewById(R.id.tv_hospital);
         final TextView tv_association = (TextView) findViewById(R.id.tv_association);
+        final ImageView titel_img=(ImageView)findViewById(R.id.title_img);
+        final ImageView usertype_img=(ImageView)findViewById(R.id.usertype_img);
+        final ImageView prof_img=(ImageView)findViewById(R.id.prof_img);
+        final ImageView state_img=(ImageView)findViewById(R.id.state_img);
+        final ImageView speciality_img=(ImageView)findViewById(R.id.speciality_img);
+        final ImageView medical_img=(ImageView)findViewById(R.id.medical_img);
+        final ImageView residency_img=(ImageView)findViewById(R.id.residency_img);
+        final ImageView fellow_img=(ImageView)findViewById(R.id.fellow_img);
+        final ImageView hospital_img=(ImageView)findViewById(R.id.hospital_img);
+        final ImageView association_img=(ImageView)findViewById(R.id.association_img);
+        final ImageView ques1_img=(ImageView)findViewById(R.id.ques1_img);
+        final ImageView ques2_img=(ImageView)findViewById(R.id.ques2_img);
+        final ImageView ques3_img=(ImageView)findViewById(R.id.ques3_img);
+
 
         medicalSocietyList=DBAccess.getdbHeler().getMedicalSocietiesDetails();
         medicalDetailsAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, medicalSocietyList);
         association_membership.setAdapter(medicalDetailsAdapter);
-        association_membership.setThreshold(1);
-        association_membership.setOnClickListener(new OnClickListener() {
-
+        association_membership.setThreshold(30);
+        association_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                association_membership.showDropDown();
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                if (isAssociation) {
+                    isAssociation = false;
+                    association_membership.dismissDropDown();
+                    association_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                } else {
+                    isAssociation = true;
+                    association_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    association_membership.showDropDown();
+                }
             }
         });
 
         hospitalList=DBAccess.getdbHeler().getHospitalDetails();
         hospitalDetailsAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, hospitalList);
         sp4.setAdapter(hospitalDetailsAdapter);
-        sp4.setThreshold(1);
-        sp4.setOnClickListener(new OnClickListener() {
-
+        sp4.setThreshold(30);
+        hospital_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sp4.showDropDown();
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                if (isHospital) {
+                    isHospital = false;
+                    sp4.dismissDropDown();
+                    hospital_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                } else {
+                    isHospital = true;
+                    hospital_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    sp4.showDropDown();
+                }
             }
         });
 
@@ -947,12 +1008,21 @@ public class Registration extends Activity {
                 (R.layout.spinner_dropdown_list);
 
         sp1.setAdapter(dataAdapter);
-        sp1.setThreshold(1);
-        sp1.setOnClickListener(new OnClickListener() {
-
+        sp1.setThreshold(30);
+        titel_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sp1.showDropDown();
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                if (isTitle) {
+                    isTitle = false;
+                    sp1.dismissDropDown();
+                    titel_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                } else {
+                    isTitle = true;
+                    titel_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    sp1.showDropDown();
+                }
             }
         });
 
@@ -969,23 +1039,41 @@ public class Registration extends Activity {
 
         sp2.setAdapter(dataAdapter);
         sp2.setSelection(0);
-        sp2.setOnClickListener(new OnClickListener() {
-
+        usertype_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sp2.showDropDown();
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                if (isUsertype) {
+                    isUsertype = false;
+                    sp2.dismissDropDown();
+                    usertype_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                } else {
+                    isUsertype = true;
+                    usertype_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    sp2.showDropDown();
+                }
             }
         });
 
         states= DBAccess.getdbHeler().getStateDetails();
         stateAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, states);
         sp3.setAdapter(stateAdapter);
-        sp3.setThreshold(1);
-        sp3.setOnClickListener(new OnClickListener() {
-
+        sp3.setThreshold(30);
+        state_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sp3.showDropDown();
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                if (isState) {
+                    isState = false;
+                    sp3.dismissDropDown();
+                    state_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                } else {
+                    isState = true;
+                    state_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    sp3.showDropDown();
+                }
             }
         });
 
@@ -1025,11 +1113,20 @@ public class Registration extends Activity {
         dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         residency_pgm.setAdapter(dataAdapter);
         residency_pgm.setSelection(0);
-        residency_pgm.setOnClickListener(new OnClickListener() {
-
+        residency_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                residency_pgm.showDropDown();
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                if (isResidency) {
+                    isResidency = false;
+                    residency_pgm.dismissDropDown();
+                    residency_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                } else {
+                    isResidency = true;
+                    residency_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    residency_pgm.showDropDown();
+                }
             }
         });
 
@@ -1058,11 +1155,20 @@ public class Registration extends Activity {
         dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         fellowship_pgm.setAdapter(dataAdapter);
         fellowship_pgm.setSelection(0);
-        fellowship_pgm.setOnClickListener(new OnClickListener() {
-
+        fellow_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fellowship_pgm.showDropDown();
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                if (isFellow) {
+                    isFellow = false;
+                    fellowship_pgm.dismissDropDown();
+                    fellow_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                } else {
+                    isFellow = true;
+                    fellow_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    fellowship_pgm.showDropDown();
+                }
             }
         });
 
@@ -1093,11 +1199,20 @@ public class Registration extends Activity {
         dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         rlay_professional_org.setAdapter(dataAdapter);
         rlay_professional_org.setSelection(0);
-        rlay_professional_org.setOnClickListener(new OnClickListener() {
-
+        prof_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                rlay_professional_org.showDropDown();
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                if (isProff) {
+                    isProff = false;
+                    rlay_professional_org.dismissDropDown();
+                    prof_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                } else {
+                    isProff = true;
+                    prof_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    rlay_professional_org.showDropDown();
+                }
             }
         });
 
@@ -1125,12 +1240,21 @@ public class Registration extends Activity {
         dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list, specialityList);
         dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         Speciality.setAdapter(dataAdapter);
-        Speciality.setThreshold(1);
-        Speciality.setOnClickListener(new OnClickListener() {
-
+        Speciality.setThreshold(30);
+        speciality_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Speciality.showDropDown();
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                if (isSpeciality) {
+                    isSpeciality = false;
+                    Speciality.dismissDropDown();
+                    speciality_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                } else {
+                    isSpeciality = true;
+                    speciality_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    Speciality.showDropDown();
+                }
             }
         });
 
@@ -1158,12 +1282,21 @@ public class Registration extends Activity {
         dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list, medicalschoolsList);
         dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         medical_schools.setAdapter(dataAdapter);
-        medical_schools.setThreshold(1);
-        medical_schools.setOnClickListener(new OnClickListener() {
-
+        medical_schools.setThreshold(30);
+        medical_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                medical_schools.showDropDown();
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                if (isMedical) {
+                    isMedical = false;
+                    medical_schools.dismissDropDown();
+                    medical_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                } else {
+                    isMedical = true;
+                    medical_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                    medical_schools.showDropDown();
+                }
             }
         });
 
@@ -1449,25 +1582,22 @@ public class Registration extends Activity {
 
             }
         });
-        sp7.setOnTouchListener(new View.OnTouchListener() {
+        ques3_img.setOnClickListener(new OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onClick(View v) {
                 sp7.showDropDown();
-                return false;
             }
         });
-        sp6.setOnTouchListener(new View.OnTouchListener() {
+        ques2_img.setOnClickListener(new OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onClick(View v) {
                 sp6.showDropDown();
-                return false;
             }
         });
-        sp5.setOnTouchListener(new View.OnTouchListener() {
+        ques1_img.setOnClickListener(new OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onClick(View v) {
                 sp5.showDropDown();
-                return false;
             }
         });
         etsecQues3.addTextChangedListener(new TextWatcher() {
@@ -2035,6 +2165,35 @@ public class Registration extends Activity {
         dataAdapter_secQue1.notifyDataSetChanged();
         dataAdapter_secQue2.notifyDataSetChanged();
         dataAdapter_secQue3.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK) {
+            AlertDialog.Builder buider = new AlertDialog.Builder(context);
+            buider.setMessage(context.getResources().getString(R.string.app_background))
+                    .setPositiveButton(context.getResources().getString(R.string.yes),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    try {
+                                        moveTaskToBack(true);
+                                    } catch (Exception e) {
+                                        SingleInstance.printLog(null, e.getMessage(), null, e);
+                                    }
+                                }
+                            })
+                    .setNegativeButton(context.getResources().getString(R.string.no),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+            AlertDialog alert = buider.create();
+            alert.show();
+        }
+        return super.onKeyDown(keyCode, event);
     }
     public ArrayList<String> loadResidencyFiles(){
         ArrayList<String> list = new ArrayList<String>();

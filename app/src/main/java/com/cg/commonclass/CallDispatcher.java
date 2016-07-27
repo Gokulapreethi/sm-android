@@ -4491,9 +4491,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								GroupChatActivity gca = (GroupChatActivity) SingleInstance.contextTable
 										.get("groupchat");
 								if(gca!=null) {
-									if (gca.isGroup)
+									if (gca.isGroup && gca.isMemberTab)
 										gca.MembersProcess();
-									else if(gca.isRounding)
+									else if(gca.isRounding && gca.isMemberTab)
 										gca.RoundingMember();
 								}
 							}

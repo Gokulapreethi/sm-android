@@ -19,6 +19,7 @@ import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bean.UserBean;
 import com.cg.DB.DBAccess;
@@ -185,27 +186,28 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 			holder.cancel_lay.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
-					if(userBean.getGroupid()!=null) {
-						GroupBean gBean = DBAccess.getdbHeler().getGroupAndMembers(
-								"select * from groupdetails where groupid=" + userBean.getGroupid());
-						gBean.setDeleteGroupMembers(userBean.getBuddyName());
-						gBean.setGroupName(userBean.getGroupname());
-						if(gBean.getGrouptype()!=null) {
-							Log.i("AAAA", "group -----" + gBean.getGrouptype());
-							if (gBean.getGrouptype().equalsIgnoreCase("Rounding")) {
+					if (userList.size() > 1) {
+						if (userBean.getGroupid() != null) {
+							GroupBean gBean = DBAccess.getdbHeler().getGroupAndMembers(
+									"select * from groupdetails where groupid=" + userBean.getGroupid());
+							gBean.setDeleteGroupMembers(userBean.getBuddyName());
+							gBean.setGroupName(userBean.getGroupname());
+							if (gBean.getGrouptype() != null) {
+								Log.i("AAAA", "group -----" + gBean.getGrouptype());
+								if (gBean.getGrouptype().equalsIgnoreCase("Rounding")) {
+									RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable
+											.get("roundingGroup");
+									if (roundingGroup != null)
+										roundingGroup.showprogress();
+									WebServiceReferences.webServiceClient.createRoundingGroup(gBean, roundingGroup);
+								}
+							} else {
 								RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable
 										.get("roundingGroup");
-								if (roundingGroup != null)
-									roundingGroup.showprogress();
-								WebServiceReferences.webServiceClient.createRoundingGroup(gBean, roundingGroup);
-							}
-						}else {
-								RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable
-										.get("roundingGroup");
-								if(roundingGroup!=null){
+								if (roundingGroup != null) {
 									roundingGroup.membersList.remove(userBean);
 									roundingGroup.refreshMembersList();
-								}else {
+								} else {
 									GroupActivity groupActivity = (GroupActivity) SingleInstance.contextTable
 											.get("groupActivity");
 									if (groupActivity != null)
@@ -214,7 +216,9 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 								}
 
 							}
-					}
+						}
+					}else
+						Toast.makeText(context, "Minimum two members is needed to be in the group...", Toast.LENGTH_SHORT).show();
 				}
 			});
 

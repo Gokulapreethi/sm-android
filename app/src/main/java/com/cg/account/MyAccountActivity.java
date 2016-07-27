@@ -82,7 +82,7 @@ public class MyAccountActivity extends Activity {
     private boolean isTitle=false,isUsertype=false,isProff=false,isState=false;
     private boolean isSpeciality=false,isMedical=false,isResidency=false;
     private boolean isFellow=false,isHospital=false,isAssociation=false;
-    boolean isOffcState=false;
+    boolean isOffcState=false,isCity=false;
     String[] address = new String[7];
 
     private Handler handler = new Handler();
@@ -95,10 +95,12 @@ public class MyAccountActivity extends Activity {
     ArrayAdapter<String> medicalDetailsAdapter;
     ArrayList<String> stateList = new ArrayList<String>();
     ArrayList<String> specialityList = new ArrayList<String>();
+
     ArrayList<String> medicalschoolsList = new ArrayList<String>();
     ArrayList<String> hospitalList = new ArrayList<String>();
     ArrayList<String> medicalSocietyList = new ArrayList<String>();
     ArrayList<String> states=new ArrayList<String>();
+    ArrayList<String> cityList=new ArrayList<String>();
     private String pastingContentCopy, spliting_address;
     Button button, members_button,addr_plus;
     boolean iszipchar=true;
@@ -310,11 +312,12 @@ public class MyAccountActivity extends Activity {
                     final EditText Address1 = (EditText) dialog1.findViewById(R.id.address_edit1);
                     final EditText address2 = (EditText) dialog1.findViewById(R.id.address_edit2);
                     final EditText zip = (EditText) dialog1.findViewById(R.id.address_edit3);
-                    final EditText city = (EditText) dialog1.findViewById(R.id.address_edit4);
+                    final AutoCompleteTextView city = (AutoCompleteTextView) dialog1.findViewById(R.id.address_edit4);
                     final EditText office_phone_number = (EditText) dialog1.findViewById(R.id.address_edit5);
                     final EditText office_fax_number = (EditText) dialog1.findViewById(R.id.address_edit6);
                     state1 = (AutoCompleteTextView) dialog1.findViewById(R.id.state_of_practice);
                     final ImageView offcstate_img=(ImageView)dialog1.findViewById(R.id.offcstate_img);
+                    final ImageView city_img=(ImageView)dialog1.findViewById(R.id.city_img);
 
                     Button save1 = (Button) dialog1.findViewById(R.id.save_button2);
                     Button cancel1 = (Button) dialog1.findViewById(R.id.cancel_button2);
@@ -496,7 +499,7 @@ public class MyAccountActivity extends Activity {
                             InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                             dialog1.dismiss();
-                            isEdit=false;
+                            isEdit = false;
                         }
                     });
                     save1.setOnClickListener(new View.OnClickListener() {
@@ -509,9 +512,9 @@ public class MyAccountActivity extends Activity {
                             state_value = state1.getText().toString().trim();
                             office_phone_no = office_phone_number.getText().toString();
                             office_fax = office_fax_number.getText().toString();
-                            if(Address1.getText().toString().length()>0 && address2.getText().toString().length()>0 && zip.getText().toString().length()>0
-                                    && city.getText().toString().length()>0 && state1.getText().toString().length()>0
-                                    && office_phone_number.getText().toString().length()>0 && office_fax_number.getText().toString().length()>0) {
+                            if (Address1.getText().toString().length() > 0 && address2.getText().toString().length() > 0 && zip.getText().toString().length() > 0
+                                    && city.getText().toString().length() > 0 && state1.getText().toString().length() > 0
+                                    && office_phone_number.getText().toString().length() > 0 && office_fax_number.getText().toString().length() > 0) {
 
                                 String office_address = "";
                                 if (Addressline1 != null && !Addressline1.trim().equals("")) {
@@ -537,15 +540,14 @@ public class MyAccountActivity extends Activity {
                                 }
 
                                 String full_officeaddress = office_address;
-                                if(isEdit){
-                                    isEdit=false;
+                                if (isEdit) {
+                                    isEdit = false;
                                     Log.d("officeaddress", "vale1" + office_address);
                                     Log.d("officeaddress", "vale2" + spliting_address);
-                                    add_officeaddress =  add_officeaddress.replace(spliting_address, "");
-                                    add_officeaddress+="###"+ office_address;
-                                }else
-                                if (add_officeaddress.length()<0) {
-                                    add_officeaddress= full_officeaddress;
+                                    add_officeaddress = add_officeaddress.replace(spliting_address, "");
+                                    add_officeaddress += "###" + office_address;
+                                } else if (add_officeaddress.length() < 0) {
+                                    add_officeaddress = full_officeaddress;
                                 } else
                                     add_officeaddress = add_officeaddress + "###" + full_officeaddress;
                                 String[] split = add_officeaddress.split("###");
@@ -594,19 +596,39 @@ public class MyAccountActivity extends Activity {
                                     }
 
                                 }
-
-
-//                                tv_addr.setText(office_address);
                                 dialog1.dismiss();
                                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                            }else
+                            } else
                                 showToast("Please enter mandatory fields");
 
                         }
                     });
-                    states = DBAccess.getdbHeler().getStateDetails();
+                    cityList.addAll(SingleInstance.mainContext.cityList);
 
+                    ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list,cityList);
+
+                    dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
+
+                    city.setAdapter(dataAdapter);
+                    city.setThreshold(30);
+                    city_img.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                            if (isCity) {
+                                isCity = false;
+                                city.dismissDropDown();
+                                city_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+                            } else {
+                                isCity = true;
+                                city_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
+                                city.showDropDown();
+                            }
+                        }
+                    });
+                    states = DBAccess.getdbHeler().getStateDetails();
                     stateAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, states);
                     state1.setAdapter(stateAdapter);
                     state1.setThreshold(30);

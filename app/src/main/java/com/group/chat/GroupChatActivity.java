@@ -193,7 +193,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     public SwipeMenuListView lv = null;
     public Vector<GroupChatBean> chatList;
     private String sessionid = null;
-    public boolean isChat = true;
     int lastcount = 0, msgStatus = 0;
     public String buddy = null, nickname = null;
     public EditText message = null;
@@ -314,6 +313,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     String privateReply_username=null;
     boolean isForward=false;
     private boolean mypatient=true;
+    public boolean isMemberTab=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -805,13 +805,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             @Override
             public void onClick(View v) {
                 setDefault();
+                isMemberTab=true;
                 if (!isGroup && !isRounding)
                     profile_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_profile_white));
                 else
                     profile_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_members_white));
                 tv_profie.setTextColor(getResources().getColor(R.color.white));
                 view_profile.setVisibility(View.VISIBLE);
-                isChat = false;
                 try {
                     if (!isGroup && !isRounding)
                         profileProcess();
@@ -828,6 +828,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             @Override
             public void onClick(View v) {
                 setDefault();
+                isMemberTab=false;
                 if (isRounding) {
                     PatientDetails();
                     file_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_patients_white));
@@ -837,13 +838,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 }
                 tv_file.setTextColor(getResources().getColor(R.color.white));
                 view_snazbox.setVisibility(View.VISIBLE);
-                isChat = false;
             }
         });
         link_chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setDefault();
+                isMemberTab=false;
                 if (isRounding) {
                     TaskProcess();
                     links_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_tasks_white));
@@ -855,25 +856,24 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     view_links.setVisibility(View.VISIBLE);
                     linkProcess();
                 }
-                isChat = false;
             }
         });
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setDefault();
+                isMemberTab=false;
                 chat_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_chat_white));
                 tv_chat.setTextColor(getResources().getColor(R.color.white));
                 view_chat.setVisibility(View.VISIBLE);
-                isChat = true;
                 chatprocess();
             }
         });
         info_lay.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                isChat = false;
                 setDefault();
+                isMemberTab=false;
                 if (isGroup) {
                     info_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_info_white));
                     GroupInfo();
@@ -1040,7 +1040,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     }
 
     public void chatprocess() {
-        if (isChat) {
             final LinearLayout content = (LinearLayout) findViewById(R.id.content);
             content.removeAllViews();
             LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -2257,8 +2256,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-
-        }
 
     }
 
