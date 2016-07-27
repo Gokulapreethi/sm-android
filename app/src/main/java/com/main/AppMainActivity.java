@@ -7952,8 +7952,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
                     case 3:
                         SingleInstance.myOrder = false;
                         fragment = FilesFragment.newInstance(context);
-                        ((FilesFragment) fragment).getUsername(CallDispatcher.LoginUser);
+						((FilesFragment) fragment).getUsername(CallDispatcher.LoginUser);
                         ((FilesFragment) fragment).setFromContacts(false);
+						((FilesFragment) fragment).componentType("",false);
                         break;
                     case 4:
                         fragment = CalendarFragment.newInstance(context);

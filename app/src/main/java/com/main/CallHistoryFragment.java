@@ -74,6 +74,7 @@ public class CallHistoryFragment extends Fragment {
 		final Button all_contact = (Button) getActivity().findViewById(
 				R.id.all_contacts);
 		all_contact.setText(SingleInstance.mainContext.getResources().getString(R.string.chat_history_tab));
+			all_contact.setVisibility(View.GONE);
 		final Button pending_contact = (Button) getActivity().findViewById(
 				R.id.pending_contacts);
 		pending_contact.setText(SingleInstance.mainContext.getResources().getString(R.string.call_history_tab));
@@ -89,11 +90,11 @@ public class CallHistoryFragment extends Fragment {
 		title.setVisibility(View.GONE);
 		
 		Button clearall = (Button) getActivity().findViewById(R.id.add_group);
-		clearall.setVisibility(View.VISIBLE);
+		clearall.setVisibility(View.GONE);
 		clearall.setText(SingleInstance.mainContext.getResources().getString(
 				R.string.clear_all));
 		clearall.setTextColor(Color.parseColor("#ffffff"));
-		clearall.setBackgroundResource(R.color.background);
+		clearall.setBackgroundResource(R.color.blue2);
 		Button plusbtn = (Button) getActivity().findViewById(
 				R.id.btn_settings);
 		plusbtn.setVisibility(View.GONE);

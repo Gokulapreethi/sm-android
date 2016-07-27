@@ -1,7 +1,9 @@
 package com.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +24,11 @@ import com.cg.commonclass.CallDispatcher;
 import com.cg.hostedconf.AppReference;
 import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
+import com.main.CallHistoryFragment;
 import com.main.ContactsFragment;
 import com.main.DashBoardFragment;
+import com.main.FilesFragment;
+import com.util.SingleInstance;
 
 import org.lib.model.BuddyInformationBean;
 import org.lib.model.GroupBean;
@@ -74,6 +79,7 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                 view = inflater.inflate(R.layout.notify_list_row, null,
                         false);
                 holder = new ViewHolder();
+                holder.time = (TextView)view.findViewById(R.id.time);
                 holder.fileType = (TextView) view.findViewById(R.id.file_type);
                 holder.fileName = (TextView) view.findViewById(R.id.file_txt);
                 holder.buddyicon = (ImageView) view.findViewById(R.id.buddyicon);
@@ -86,13 +92,77 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                 holder.chat_info = (RelativeLayout)view.findViewById(R.id.chat_info);
                 holder.header_container = (RelativeLayout) view.findViewById(R.id.header_container);
                 holder.list_container = (LinearLayout)view.findViewById(R.id.linear);
+                holder.chat_relay = (RelativeLayout)view.findViewById(R.id.relay_chat);
+                holder.chat_image = (ImageView)view.findViewById(R.id.recent_chat);
+                holder.chat_count = (TextView)view.findViewById(R.id.chat_count);
+                holder.file_relay = (RelativeLayout)view.findViewById(R.id.relay_file);
+                holder.file_image = (ImageView)view.findViewById(R.id.recent_file);
+                holder.file_count = (TextView)view.findViewById(R.id.file_count);
+                holder.call_relay = (RelativeLayout)view.findViewById(R.id.relay_call);
+                holder.call_image = (ImageView)view.findViewById(R.id.recent_call);
+                holder.call_count = (TextView)view.findViewById(R.id.call_count);
+                holder.counts_relay = (RelativeLayout)view.findViewById(R.id.chat_info);
+
                 view.setTag(holder);
             } else {
                 holder = (ViewHolder) view.getTag();
             }
 
-            NotifyListBean notifyBean = fileList.get(position);
 
+            final NotifyListBean notifyBean = fileList.get(position);
+            Log.d("listcount","beanfilecount "+notifyBean.getFilecount());
+            Log.d("listcount","beanchatcount "+notifyBean.getChatcount());
+            Log.d("listcount","beancallcount "+notifyBean.getCallcount());
+
+                if (notifyBean.getCallcount() != null&& notifyBean.getCallcount().length()>0) {
+                    holder.call_relay.setVisibility(View.VISIBLE);
+                    holder.call_count.setText(notifyBean.getCallcount());
+                    Log.d("listcount", "beancallcountif " + notifyBean.getCallcount());
+                }
+            if (notifyBean.getFilecount() != null&& notifyBean.getFilecount().length()>0) {
+                    holder.file_relay.setVisibility(View.VISIBLE);
+                    holder.file_count.setText(notifyBean.getFilecount());
+                    Log.d("listcount", "beanfilecountif " + notifyBean.getFilecount());
+                }
+            if (notifyBean.getChatcount() != null&& notifyBean.getChatcount().length()>0) {
+                    holder.chat_relay.setVisibility(View.VISIBLE);
+                    holder.chat_count.setText(notifyBean.getChatcount());
+                    Log.d("listcount", "beanchatcountif " + notifyBean.getChatcount());
+                }
+
+            holder.chat_relay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(notifyBean.getCategory().equalsIgnoreCase("I")){
+                        Intent intent = new Intent(context, GroupChatActivity.class);
+                        intent.putExtra("isGroup", false);
+                        intent.putExtra("buddy", notifyBean.getFileid());
+                        context.startActivity(intent);
+                    }else if(notifyBean.getCategory().equalsIgnoreCase("G")){
+                        Intent intent = new Intent(context, GroupChatActivity.class);
+                        intent.putExtra("isGroup", true);
+                        intent.putExtra("groupid", notifyBean.getFileid());
+                        context.startActivity(intent);
+                    }
+
+                }
+            });
+            holder.fileIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FilesFragment filesFragment = FilesFragment.newInstance(context);
+                    FragmentManager fragmentManager = SingleInstance.mainContext.getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.activity_main_content_fragment, filesFragment).commitAllowingStateLoss();
+                }
+            });
+            holder.call_relay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CallHistoryFragment callhistoryFragment = CallHistoryFragment.newInstance(context);
+                    FragmentManager fragmentManager = SingleInstance.mainContext.getSupportFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.activity_main_content_fragment, callhistoryFragment).commitAllowingStateLoss();
+                }
+            });
             if(notifyBean!=null) {
                 Log.d("String","otifyid"+notifyBean.getFileid());
                 if (notifyBean.getProfilePic() != null && notifyBean.getProfilePic().length()>0) {
@@ -129,7 +199,7 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
             }else {
                 holder.buddyicon.setVisibility(View.VISIBLE);
                 holder.fileIcon.setVisibility(View.GONE);
-                holder.chat_info.setVisibility(View.GONE);
+                holder.chat_info.setVisibility(View.VISIBLE);
                 holder.imagestatus.setVisibility(View.VISIBLE);
             }
             if(notifyBean!=null) {
@@ -326,6 +396,7 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                                 Log.d("group","value--->");
                                 holder.file_txt1.setVisibility(View.VISIBLE);
                                 holder.fileType.setText(notifyBean.getUsername());
+//                                holder.time.setText();
                                 holder.fileName.setText("invites you to group");
                                 holder.file_txt1.setText(notifyBean.getOwner());
                                 holder.file_txt1.setTextColor(context.getResources().getColor(R.color.blue2));
@@ -381,11 +452,11 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
         ImageView fileIcon;
         TextView header,time;
         LinearLayout list_container;
-        RelativeLayout header_container;
-        ImageView imagestatus;
+        RelativeLayout header_container,chat_relay,file_relay,call_relay,counts_relay;
+        ImageView imagestatus,chat_image,file_image,call_image;
         ImageView buddyicon;
         RelativeLayout chat_info;
-        TextView file_type1;
+        TextView file_type1,chat_count,call_count,file_count;
         TextView file_txt1;
 
     }

@@ -126,7 +126,7 @@
                 android:id="@+id/chat_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone">
+                android:visibility="visible">
 
 
 
@@ -134,15 +134,16 @@
                 android:id="@+id/relay_chat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:visibility="gone">
 
             <ImageView
                 android:id="@+id/recent_chat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:background="@drawable/recent_message"/>
             <TextView
+                android:id="@+id/chat_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1"
@@ -156,16 +157,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:layout_toRightOf="@+id/relay_chat">
+                android:layout_toRightOf="@+id/relay_chat"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/recent_file"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:layout_marginLeft="20dp"
                     android:background="@drawable/recent_files"/>
                 <TextView
+                    android:id="@+id/file_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1"
@@ -180,7 +182,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:layout_toRightOf="@+id/relay_file">
+                    android:layout_toRightOf="@+id/relay_file"
+                    android:visibility="gone">
 
                     <ImageView
                         android:id="@+id/recent_call"
@@ -190,6 +193,7 @@
                         android:layout_marginTop="2dp"
                         android:background="@drawable/recent_calls"/>
                     <TextView
+                        android:id="@+id/call_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="1"

@@ -456,6 +456,20 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
 		notifyDataSetChanged();
 
 	}
+	public void Memeorycontrol(String Type) {
+		// TODO Auto-generated method stub
+		filesFragment.filesList.clear();
+			for (CompleteListBean storedData : filesFragment.tempFilesList) {
+				if (storedData.getcomponentType().equalsIgnoreCase(Type)) {
+					fileList.add(storedData);
+					Log.i("adaptervalue", "type2" + storedData.getcomponentType());
+				}
+			}
+		Log.i("adaptervalue", "type3" + fileList.size());
+		Log.i("adaptervalue", "type4" + filesFragment.filesList.size());
+
+		notifyDataSetChanged();
+	}
 	String bytesToSize(int bytes) {
 		int kilobyte = 1024;
 		int megabyte = kilobyte * 1024;

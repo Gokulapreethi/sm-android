@@ -111,6 +111,7 @@
             android:layout_toRightOf="@+id/tv_audio"
             android:layout_toEndOf="@+id/tv_audio" />
         <ImageView
+            android:id="@+id/audio_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/broadcast"
@@ -157,6 +158,7 @@
             android:layout_toRightOf="@+id/tv_video"
             android:layout_toEndOf="@+id/tv_video" />
         <ImageView
+            android:id="@+id/video_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/memory_video"
@@ -200,10 +202,10 @@
             android:layout_toRightOf="@+id/tv_photo"
             android:layout_toEndOf="@+id/tv_photo" />
         <ImageView
+            android:id="@+id/photo_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/memory_photo"
-
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
@@ -244,6 +246,7 @@
             android:layout_toRightOf="@+id/tv_others"
             android:layout_toEndOf="@+id/tv_others" />
         <ImageView
+            android:id="@+id/attachment_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/memory_other"
@@ -290,9 +293,8 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/capture_image_vie"
+            android:id="@+id/chat_imageview"
             android:background="@drawable/memory_messages"
-
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />

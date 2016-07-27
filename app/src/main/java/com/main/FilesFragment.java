@@ -107,6 +107,8 @@ public class FilesFragment extends Fragment implements OnClickListener {
 	public static CallDispatcher callDisp;
 	private ProgressDialog progDailog = null;
 	public String owner;
+	private String FileType;
+	private Boolean isfrommemeory=false;
 	private boolean fromContacts = false;
 
 	public Button btn_edit = null;
@@ -300,9 +302,6 @@ public class FilesFragment extends Fragment implements OnClickListener {
 						date_sort.setTextColor(getResources().getColor(R.color.white));
 						alpha_sort.setTextColor(getResources().getColor(R.color.snazlgray));
 						type_sort.setTextColor(getResources().getColor(R.color.snazlgray));
-						filesList.clear();
-						filesList = loadFiles(username);
-						Log.i("files123", "fileslist : " + filesList.size());
 						filesAdapter = new FilesAdapter(context, filesList);
 						listView.setAdapter(filesAdapter);
 						filesAdapter.notifyDataSetChanged();
@@ -315,10 +314,6 @@ public class FilesFragment extends Fragment implements OnClickListener {
 						date_sort.setTextColor(getResources().getColor(R.color.snazlgray));
 						alpha_sort.setTextColor(getResources().getColor(R.color.white));
 						type_sort.setTextColor(getResources().getColor(R.color.snazlgray));
-						filesList.clear();
-						filesList = loadFiles(username);
-						Collections.sort(filesList,new FilesListComparator());
-						Log.i("files123", "fileslist : " + filesList.size());
 						filesAdapter = new FilesAdapter(context, filesList);
 						listView.setAdapter(filesAdapter);
 						filesAdapter.notifyDataSetChanged();
@@ -331,14 +326,12 @@ public class FilesFragment extends Fragment implements OnClickListener {
 						date_sort.setTextColor(getResources().getColor(R.color.snazlgray));
 						alpha_sort.setTextColor(getResources().getColor(R.color.snazlgray));
 						type_sort.setTextColor(getResources().getColor(R.color.white));
-						filesList.clear();
-						filesList = loadFiles(username);
-						Log.i("files123", "fileslist : " + filesList.size());
 						filesAdapter = new FilesAdapter(context, getSortType(filesList));
 						listView.setAdapter(filesAdapter);
 						filesAdapter.notifyDataSetChanged();
 					}
 				});
+
 				tf_regular = Typeface.createFromAsset(context.getAssets(),
 						getResources().getString(R.string.fontfamily));
 		        tf_bold = Typeface.createFromAsset(context.getAssets(),
@@ -354,7 +347,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 				btnContainer = (LinearLayout) view
 						.findViewById(R.id.button_container);
 				btnContainer.setOnClickListener(this);
-				filesList = loadFiles(username);
+				filesList = loadFiles(CallDispatcher.LoginUser);
 				Log.i("files123", "fileslist : " + filesList.size());
 				filesAdapter = new FilesAdapter(context, filesList);
 				listView.setAdapter(filesAdapter);
@@ -364,7 +357,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 						+ SingleInstance.mainContext.getResources().getString(R.string.create_different_file));
 				text_show.setTextSize(15);
 				text_show.setGravity(Gravity.CENTER_HORIZONTAL);
-				text_show.setTextColor(R.color.black);
+				text_show.setTextColor(getResources().getColor(R.color.black));
 				RelativeLayout audio_minimize = (RelativeLayout)getActivity().findViewById(R.id.audio_minimize);
 				RelativeLayout video_minimize = (RelativeLayout)getActivity().findViewById(R.id.video_minimize);
 				audio_minimize.setOnClickListener(new OnClickListener() {
@@ -381,6 +374,13 @@ public class FilesFragment extends Fragment implements OnClickListener {
 						addShowHideListener(false);
 					}
 				});
+				if(isfrommemeory){
+					filesAdapter.Memeorycontrol(FileType);
+					filesAdapter = new FilesAdapter(context, filesList);
+					listView.setAdapter(filesAdapter);
+					filesAdapter.notifyDataSetChanged();
+					Log.i("adaptervalue", "type" + FileType);
+				}
 				ImageView min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
 				ImageView min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
 				min_incall.setOnClickListener(new OnClickListener() {
@@ -2267,6 +2267,10 @@ public class FilesFragment extends Fragment implements OnClickListener {
 	protected void ShowToast(String string) {
 		// TODO Auto-generated method stub
 		Toast.makeText(context, string, Toast.LENGTH_SHORT).show();
+	}
+	public void componentType(String type,boolean isfrommemorycontrol){
+		FileType = type;
+		isfrommemeory = isfrommemorycontrol;
 	}
 
 	public boolean checkPosition(int position) {

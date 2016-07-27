@@ -51,6 +51,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -149,8 +150,8 @@ public class DashBoardFragment extends Fragment {
                             ed_search.setVisibility(View.VISIBLE);
                             isSearch=true;
                         } else {
-                            LoadFilesList(CallDispatcher.LoginUser);
-                            notifyAdapter = new NotifyListAdapter(mainContext, tempnotifylist);
+//                            LoadFilesList(CallDispatcher.LoginUser);
+                            notifyAdapter = new NotifyListAdapter(mainContext, LoadFilesList(CallDispatcher.LoginUser));
                             notifylistview.setAdapter(notifyAdapter);
                             notifyAdapter.notifyDataSetChanged();
                             plusBtn.setBackgroundResource(R.drawable.navigation_search);
@@ -515,8 +516,8 @@ public class DashBoardFragment extends Fragment {
                                 View v2 = layoutInflater.inflate(R.layout.notification, rl);
                                 LinearLayout no_notify=(LinearLayout)v2.findViewById(R.id.no_notify);
                                 notifylistview = (ListView) v2.findViewById(R.id.notify_list);
-                                LoadFilesList(CallDispatcher.LoginUser);
-                                notifyAdapter = new NotifyListAdapter(mainContext, tempnotifylist);
+//                                LoadFilesList(CallDispatcher.LoginUser);
+                                notifyAdapter = new NotifyListAdapter(mainContext, LoadFilesList(CallDispatcher.LoginUser));
                                 notifylistview.setAdapter(notifyAdapter);
                                 notifyAdapter.isFromOther(false);
                                 notifyAdapter.notifyDataSetChanged();
@@ -733,7 +734,7 @@ public class DashBoardFragment extends Fragment {
 
     public Vector<NotifyListBean> LoadFilesList(String username)
     {
-        Log.i("Multi","username : "+username);
+        Log.i("Multi", "username : " + username);
         tempnotifylist.clear();
         seacrhnotifylist.clear();
         notifyList = DBAccess.getdbHeler()
@@ -812,7 +813,8 @@ public class DashBoardFragment extends Fragment {
         }
         Collections.sort(tempnotifylist, new DateComparator());
         Collections.sort(seacrhnotifylist, new DateComparator());
-      return tempnotifylist;
+
+        return listcount();
     }
 
     private void viewFileInfo(CompleteListBean cBean, int position) {
@@ -961,6 +963,58 @@ public class DashBoardFragment extends Fragment {
         }
     }
 
+    private Vector<NotifyListBean> listcount(){
+        HashMap<String,Integer > fileslist = new HashMap<String,Integer>();
+        HashMap<String,Integer > chatlist = new HashMap<String,Integer>();
+        HashMap<String,Integer > calllist = new HashMap<String,Integer>();
 
+        int i=0,j=0,k=0;
+        HashMap<String,NotifyListBean > usernotifylist = new HashMap<String,NotifyListBean>();
+        for(NotifyListBean nbean : tempnotifylist){
+            if(nbean.getNotifttype().equalsIgnoreCase("F")){
+                if(fileslist.containsKey(nbean.getFrom()))
+                    fileslist.put(nbean.getFrom(),++i);
+                else {
+                    i=0;
+                    fileslist.put(nbean.getFrom(), ++i);
+                }
+            }else if(nbean.getNotifttype().equalsIgnoreCase("I")){
+                Log.d("chatlist", "entry");
+                if(chatlist.containsKey(nbean.getFrom())) {
+                    Log.d("chatlist", "entries"+nbean.getFrom());
+                    Log.d("chatlist", "entry1");
+                    chatlist.put(nbean.getFrom(), ++j);
+                }
+                else{
+                    Log.d("chatlist", "entry2");
+                    j=0;
+                    chatlist.put(nbean.getFrom(), ++j);
+                }
+            }else if(nbean.getNotifttype().equalsIgnoreCase("C")){
+                if(calllist.containsKey(nbean.getFrom())) {
+                    calllist.put(nbean.getFrom(), ++k);
+                }
+                else{
+                    k=0;
+                    calllist.put(nbean.getFrom(),++k);
+                }
+            }
+            if(!usernotifylist.containsKey(nbean.getFrom()))
+                usernotifylist.put(nbean.getFrom(), nbean);
+        }
+        Vector<NotifyListBean> templist=new Vector<NotifyListBean>();
+        templist.addAll(usernotifylist.values());
+        for(NotifyListBean bean:templist){
+            if(chatlist.get(bean.getFrom())!=null)
+                bean.setChatcount(String.valueOf(chatlist.get(bean.getFrom())));
+            if(calllist.get(bean.getFrom())!=null)
+                bean.setCallcount(String.valueOf(calllist.get(bean.getFrom())));
+            if(fileslist.get(bean.getFrom())!=null)
+                bean.setFilecount(String.valueOf(fileslist.get(bean.getFrom())));
+        }
+        Log.d("listcount","fileslist"+fileslist.size());
+        Log.d("listcount","chatlist"+chatlist.size());
+        Log.d("listcount","calllist"+calllist.size());
+        return templist;
+    }
 }
-
