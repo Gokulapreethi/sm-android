@@ -7391,6 +7391,10 @@ public class XmlParser {
 						if (!(message.equals(null) || message.equals(""))) {
 							bean.setTempletmessage(message);
 						}
+						String editmodevalue = element.getAttribute("editmode").trim();
+						if(!editmodevalue.equals(null)|| editmodevalue.equals("")){
+							bean.setEditvalue(editmodevalue);
+						}
 						chattemplate.add(bean);
 					}
 				}

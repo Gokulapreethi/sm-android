@@ -108,6 +108,8 @@
         android:id="@+id/searchResult"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:divider="@color/snazlgray"
+        android:dividerHeight="4px"
         android:layout_below="@+id/selectAll_container"
         android:layout_above="@+id/RelativeLayout2"/>
 

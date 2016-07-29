@@ -8178,9 +8178,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
             e.printStackTrace();
         }
     }
-		public void notifyChatTemplate(boolean response,ArrayList<Object> object){
+		public void notifyChatTemplate(ArrayList<Object> object){
 		Log.i("chattemplate","Appmain notifychatTemplate");
-		if(response && object!=null){
+		if(object!=null){
 			if (object instanceof ArrayList) {
 				ArrayList list = (ArrayList) object;
 				for (int i = 0; i < list.size(); i++) {

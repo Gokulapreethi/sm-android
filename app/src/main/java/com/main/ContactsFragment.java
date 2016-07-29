@@ -4081,8 +4081,9 @@ public class ContactsFragment extends Fragment{
 				else
 					contactrecentlist.add(bean);
 			}else if(bean.getNotifttype().equalsIgnoreCase("I")) {
-				if (bean.getCategory().equalsIgnoreCase("G"))
+				if (bean.getCategory().equalsIgnoreCase("G")) {
 					grouprecentlist.add(bean);
+				}
 				else if(bean.getCategory().equalsIgnoreCase("I"))
 					contactrecentlist.add(bean);
 			}

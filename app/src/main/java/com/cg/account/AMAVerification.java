@@ -669,7 +669,7 @@ public class AMAVerification extends Activity {
                             imageLoader.DisplayImage(bib.getProfile_picpath(), holder.buddyicon, R.drawable.img_user);
                         }
                     }
-                    holder.header_title.setVisibility(View.VISIBLE);
+                    holder.header_title.setVisibility(View.GONE);
                     String cname1, cname2;
                     cname1 = String.valueOf(bib.getLastname().charAt(0));
 
@@ -683,7 +683,7 @@ public class AMAVerification extends Activity {
                             holder.header_title.setVisibility(View.GONE);
                         } else {
                             Log.d("Headervalue","title--> else");
-                            holder.header_title.setVisibility(View.VISIBLE);
+                            holder.header_title.setVisibility(View.GONE);
                         }
 
                     }

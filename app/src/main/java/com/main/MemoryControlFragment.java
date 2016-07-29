@@ -11,11 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cg.commongui.LineProgressBar;
+import com.cg.files.FileInfoFragment;
 import com.cg.snazmed.R;
 import com.util.SingleInstance;
 
@@ -137,6 +139,61 @@ public class MemoryControlFragment extends Fragment {
                     TextView tv_chat=(TextView)view.findViewById(R.id.tv_chat);
                     TextView tv_total=(TextView)view.findViewById(R.id.tv_total);
                     TextView tv_free=(TextView)view.findViewById(R.id.tv_free);
+                    ImageView audio_image = (ImageView)view.findViewById(R.id.audio_image);
+                    ImageView video_image = (ImageView)view.findViewById(R.id.video_image);
+                    ImageView photo_image = (ImageView)view.findViewById(R.id.photo_image);
+                    ImageView attachment_image = (ImageView)view.findViewById(R.id.attachment_image);
+                    ImageView chat_imageview = (ImageView)view.findViewById(R.id.chat_imageview);
+
+                    audio_image.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            FilesFragment filesFragment = FilesFragment.newInstance(mainContext);
+                            filesFragment.componentType("AUDIO",true);
+                            FragmentManager fragmentManager = SingleInstance.mainContext
+                                    .getSupportFragmentManager();
+                            fragmentManager.beginTransaction().replace(
+                                    R.id.activity_main_content_fragment, filesFragment)
+                                    .commitAllowingStateLoss();
+                        }
+                    });
+                    video_image.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            FilesFragment filesFragment = FilesFragment.newInstance(mainContext);
+                            filesFragment.componentType("VIDEO",true);
+                            FragmentManager fragmentManager = SingleInstance.mainContext
+                                    .getSupportFragmentManager();
+                            fragmentManager.beginTransaction().replace(
+                                    R.id.activity_main_content_fragment, filesFragment)
+                                    .commitAllowingStateLoss();
+                        }
+                    });
+                    photo_image.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            FilesFragment filesFragment = FilesFragment.newInstance(mainContext);
+                            filesFragment.componentType("PHOTO",true);
+                            FragmentManager fragmentManager = SingleInstance.mainContext
+                                    .getSupportFragmentManager();
+                            fragmentManager.beginTransaction().replace(
+                                    R.id.activity_main_content_fragment, filesFragment)
+                                    .commitAllowingStateLoss();
+                        }
+                    });
+                    attachment_image.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            FilesFragment filesFragment = FilesFragment.newInstance(mainContext);
+                            filesFragment.componentType("ATTACHMENT",true);
+                            FragmentManager fragmentManager = SingleInstance.mainContext
+                                    .getSupportFragmentManager();
+                            fragmentManager.beginTransaction().replace(
+                                    R.id.activity_main_content_fragment, filesFragment)
+                                    .commitAllowingStateLoss();
+                        }
+                    });
+
                     tv_audio.setText(bytesToSize(audio));
                     tv_video.setText(bytesToSize(videos));
                     tv_photo.setText(bytesToSize(image));

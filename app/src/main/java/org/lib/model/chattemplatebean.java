@@ -9,7 +9,11 @@ public class chattemplatebean {
     String templetid;
     String templetmessage;
     boolean selected=false;
+    String editvalue;
 
+    public String getEditvalue() {return editvalue;}
+
+    public void setEditvalue(String editvalue) {this.editvalue = editvalue;}
 
     public String getTempletid() {
         return templetid;

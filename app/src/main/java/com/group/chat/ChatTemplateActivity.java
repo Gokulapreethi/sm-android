@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -23,10 +24,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.Fingerprint.MainActivity;
 import com.cg.DB.DBAccess;
+import com.cg.account.PinSecurity;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
+import com.main.AppMainActivity;
 import com.util.SingleInstance;
 
 
@@ -63,6 +68,7 @@ public class ChatTemplateActivity extends Activity {
         im_delete=(ImageView)findViewById(R.id.deleteview);
         im_edit=(ImageView)findViewById(R.id.edview);
         templateList= DBAccess.getdbHeler(context).getChatTemplates();
+        Log.i("templatelist","chattemplate"+templateList.size());
         templateAdapter = new ChattemplateAdpater(ChatTemplateActivity.this, templateList);
         tmp_listview.setAdapter(templateAdapter);
         tmp_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -168,6 +174,40 @@ public class ChatTemplateActivity extends Activity {
             return convertView;
         }
     }
+    @Override
+    public void onResume() {
+        // TODO Auto-generated method stub
+        super.onResume();
+        AppMainActivity.inActivity = this;
+        AppReference.fileOpen=false;
+        context = this;
+        if(AppReference.mainContext.isPinEnable) {
+            if (AppReference.mainContext.openPinActivity) {
+                AppReference.mainContext.openPinActivity=false;
+                if(Build.VERSION.SDK_INT>20 && AppReference.mainContext.isTouchIdEnabled) {
+                    Intent i = new Intent(ChatTemplateActivity.this, MainActivity.class);
+                    startActivity(i);
+                }else {
+                    Intent i = new Intent(ChatTemplateActivity.this, PinSecurity.class);
+                    startActivity(i);
+                }
+            } else {
+                AppReference.mainContext.count=0;
+                AppReference.mainContext.registerBroadcastReceiver();
+            }
+        }
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i("pin", "Groupchatactivity Onstop");
+        AppReference.mainContext.isApplicationBroughtToBackground();
+        if(AppReference.fileOpen){
+            Log.i("pin", "Groupchatactivity Onstop AppReference.fileOpen==true");
+            AppReference.mainContext.openPinActivity=false;
+        }
+
+    }
     private void showTemplates()
     {
         dialog1 = new Dialog(ChatTemplateActivity.this);
@@ -254,17 +294,19 @@ public class ChatTemplateActivity extends Activity {
 
                     }
                 });
+
                 deleteview.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String[] param=new String[6];
-                        param[0]=CallDispatcher.LoginUser;
-                        param[1]="34";
-                        param[2]="delete";
-                        param[3]=bean.getTempletid();
-                        param[4]="";
-                        param[5]="";
-                        templateid=bean.getTempletid();
+                        String[] param = new String[7];
+                        param[0] = CallDispatcher.LoginUser;
+                        param[1] = "34";
+                        param[2] = "1";
+                        param[3] = "delete";
+                        param[4] = bean.getTempletid();
+                        param[5] = "";
+                        param[6] = "";
+                        templateid = bean.getTempletid();
                         calldisp.showprogress(progressDialog, context);
                         WebServiceReferences.webServiceClient.UpdateChatTemplate(param, context);
                     }
@@ -272,19 +314,23 @@ public class ChatTemplateActivity extends Activity {
                 plus.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showEditTemplate("","","add");
+                        showEditTemplate("", "", "add");
                     }
                 });
+
+                if(bean.getEditvalue()!=null && bean.getEditvalue().equalsIgnoreCase("0")){
+                    editview.setVisibility(View.GONE);
+                    deleteview.setVisibility(View.GONE);
+                }else {
+                    editview.setVisibility(View.VISIBLE);
+                    deleteview.setVisibility(View.VISIBLE);
+                }
                 if(position==templatelist.size()-1){
                     plus.setVisibility(View.VISIBLE);
                     editview.setVisibility(View.GONE);
                     deleteview.setVisibility(View.GONE);
-                    messages.setTextColor(getResources().getColor(R.color.blue2));
                 }else {
                     plus.setVisibility(View.GONE);
-                    editview.setVisibility(View.VISIBLE);
-                    deleteview.setVisibility(View.VISIBLE);
-                    messages.setTextColor(getResources().getColor(R.color.white));
                 }
 
                 messages.setText(bean.getTempletmessage());
@@ -321,13 +367,14 @@ public class ChatTemplateActivity extends Activity {
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String[] param=new String[6];
+                String[] param=new String[7];
                 param[0]=CallDispatcher.LoginUser;
                 param[1]="34";
-                param[2]=type;
-                param[3]=id;
-                param[4]=ed_message.getText().toString();
-                param[5]="";
+                param[2]="1";
+                param[3]=type;
+                param[4]=id;
+                param[5]=ed_message.getText().toString();
+                param[6]="";
                 messagecontent=ed_message.getText().toString();
                 templateid=id;
                 calldisp.showprogress(progressDialog, context);

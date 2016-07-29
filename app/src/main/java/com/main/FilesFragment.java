@@ -358,6 +358,30 @@ public class FilesFragment extends Fragment implements OnClickListener {
 				text_show.setTextSize(15);
 				text_show.setGravity(Gravity.CENTER_HORIZONTAL);
 				text_show.setTextColor(getResources().getColor(R.color.black));
+
+				if(isfrommemeory){
+					filesAdapter.Memeorycontrol(FileType);
+					filesAdapter = new FilesAdapter(context, filesList);
+					listView.setAdapter(filesAdapter);
+					filesAdapter.notifyDataSetChanged();
+					if (FileType.equalsIgnoreCase("audio")) {
+						rl_file.setVisibility(View.VISIBLE);
+						tv_file.setText("Audio Files");
+						file_img.setBackgroundResource(R.drawable.audio_p);
+					} else if (FileType.equalsIgnoreCase("photo")) {
+						rl_file.setVisibility(View.VISIBLE);
+						tv_file.setText("Photo Files");
+						file_img.setBackgroundResource(R.drawable.photo_p);
+					} else if (FileType.equalsIgnoreCase("video")) {
+						rl_file.setVisibility(View.VISIBLE);
+						tv_file.setText("Video Files");
+						file_img.setBackgroundResource(R.drawable.video_p);
+					} else {
+						rl_file.setVisibility(View.VISIBLE);
+						tv_file.setText("Other Files");
+						file_img.setBackgroundResource(R.drawable.other_p);
+					}
+				}
 				RelativeLayout audio_minimize = (RelativeLayout)getActivity().findViewById(R.id.audio_minimize);
 				RelativeLayout video_minimize = (RelativeLayout)getActivity().findViewById(R.id.video_minimize);
 				audio_minimize.setOnClickListener(new OnClickListener() {
@@ -374,13 +398,6 @@ public class FilesFragment extends Fragment implements OnClickListener {
 						addShowHideListener(false);
 					}
 				});
-				if(isfrommemeory){
-					filesAdapter.Memeorycontrol(FileType);
-					filesAdapter = new FilesAdapter(context, filesList);
-					listView.setAdapter(filesAdapter);
-					filesAdapter.notifyDataSetChanged();
-					Log.i("adaptervalue", "type" + FileType);
-				}
 				ImageView min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
 				ImageView min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
 				min_incall.setOnClickListener(new OnClickListener() {
@@ -525,29 +542,9 @@ public class FilesFragment extends Fragment implements OnClickListener {
 
 					}
 				});
-				listView.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-					@Override
-					public boolean onItemLongClick(AdapterView<?> arg0,
-							View arg1, int position, long arg3) {
-						try {
-							// TODO Auto-generated method stub
-//							CompleteListBean cBean = filesAdapter
-//									.getItem(position);
-//							deleteNote(cBean, context);
-							// }
-
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						return true;
-					}
-				});
 
 				selectall.setVisibility(View.GONE);
-//				selectall
-//						.setBackgroundResource(R.drawable.ic_action_select_all);
+//				selectall.setBackgroundResource(R.drawable.ic_action_select_all);
 				selectall.setText(SingleInstance.mainContext.getResources().getString(R.string.select_all_filess2));
 				selectall.setBackgroundColor(getResources().getColor(R.color.background));
 				selectall.setTextColor(getResources().getColor(R.color.white));
@@ -1696,7 +1693,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 					break;
 				}
 			}
-			if (!isSelected) {
+			if (!isSelected && !isfrommemeory) {
 				filesListRefresh();
 			}
 			if (listView.getAdapter().getCount() > 0)

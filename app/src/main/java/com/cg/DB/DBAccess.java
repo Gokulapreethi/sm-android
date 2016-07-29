@@ -139,7 +139,7 @@ public class DBAccess extends SQLiteOpenHelper {
 	String scheduleevent = "create table if not exists scheduleevent(owner nvarchar(255), title nvarchar(255), starttime nvarchar(225), endtime nvarchar(255), eventdate nvarchar(255))";
 	String securityquestions = "create table if not exists securityquestions(id tinyint(4), questions nvarchar(225), createddate nvarchar(255))";
     String recordtransactiondetails = "create table if not exists recordtransactiondetails(id INTEGER PRIMARY KEY AUTOINCREMENT, fromname nvarchar(100), toname nvarchar(100),parentid nvarchar(250), sessionid nvarchar(250), type nvarchar(100), starttime nvarchar(100), endtime nvarchar(100), calltime nvarchar(100), userid nvarchar(100), network nvarchar(50), deviceos nvarchar(50),recordedfile nvarchar(100), calltype nvarchar(100),bs_calltype tinyint(4),bs_callstatus tinyint(4),bs_callcategory tinyint(4),sortdate nvarchar(100),status tinyint(4),activecallstatus nvarchar(100),chatid nvarchar(100),host varchar(100), participants varchar(256),hostname varchar(50),participantname varchar(250))";
-	String chattemplate = "create table if not exists chattemplate(id varchar(10), message nvarchar(225),userid nvarchar(225))";
+	String chattemplate = "create table if not exists chattemplate(id varchar(10), message nvarchar(225),userid nvarchar(225),editmodevalue nvarchar(50))";
 	String serverhelp = "create table if not exists serverhelp(method varchar(100), lastmodified nvarchar(225))";
 	String roundingmemberdetails = "create table if not exists roundingmemberdetails(groupid nvarchar(25),membername nvarchar(25),role nvarchar(25),admin nvarchar(25))";
 	String patientdetails = "create table if not exists patientdetails(groupid nvarchar(25), patientid nvarchar(25), creatorname nvarchar(25), firstname nvarchar(25), middlename nvarchar(25), lastname nvarchar(25), dob nvarchar(25), sex nvarchar(25),hospital nvarchar(25), mrn nvarchar(25), floor nvarchar(25), ward nvarchar(25), room nvarchar(25), bed nvarchar(25),admissiondate nvarchar(25), assignedmembers nvarchar(255),status nvarchar(25))";
@@ -9670,6 +9670,7 @@ public class DBAccess extends SQLiteOpenHelper {
 				cv.put("id", bean.getTempletid());
 				cv.put("message", bean.getTempletmessage());
 				cv.put("userid", CallDispatcher.LoginUser);
+			    cv.put("editmodevalue",bean.getEditvalue());
 			if (isRecordExists("select * from chattemplate where userid='"
 					+ CallDispatcher.LoginUser + "'and id='" + bean.getTempletid() + "'"))
 				row = (int) db.update("chattemplate", cv, "userid='" + CallDispatcher.LoginUser + "'and id='" + bean.getTempletid() + "'",null);
@@ -9777,7 +9778,7 @@ public class DBAccess extends SQLiteOpenHelper {
 			} else {
 				openDatabase();
 			}
-			String strGetQry = "select id,message from chattemplate WHERE userid='" + CallDispatcher.LoginUser+ "'";
+			String strGetQry = "select id,message,editmodevalue from chattemplate WHERE userid='" + CallDispatcher.LoginUser+ "'";
 			cur = db.rawQuery(strGetQry, null);
 			int len = cur.getCount();
 			cur.moveToFirst();
@@ -9786,6 +9787,7 @@ public class DBAccess extends SQLiteOpenHelper {
 				chattemplatebean chattemplatebean=new chattemplatebean();
 				chattemplatebean.setTempletid(cur.getString(0));
 				chattemplatebean.setTempletmessage(cur.getString(1));
+				chattemplatebean.setEditvalue(cur.getString(2));
 				cur.moveToNext();
 				vc_chaChattemplatebeans.add(chattemplatebean);
 			}

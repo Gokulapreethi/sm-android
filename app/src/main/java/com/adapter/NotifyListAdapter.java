@@ -130,6 +130,8 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                     Log.d("listcount", "beanchatcountif " + notifyBean.getChatcount());
                 }
 
+
+
             holder.chat_relay.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -196,6 +198,22 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                holder.fileIcon.setVisibility(View.VISIBLE);
                 holder.chat_info.setVisibility(View.GONE);
                 holder.imagestatus.setVisibility(View.GONE);
+                holder.list_container.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(notifyBean.getCategory().equalsIgnoreCase("I")){
+                            Intent intent = new Intent(context, GroupChatActivity.class);
+                            intent.putExtra("isGroup", false);
+                            intent.putExtra("buddy", notifyBean.getFileid());
+                            context.startActivity(intent);
+                        }else if(notifyBean.getCategory().equalsIgnoreCase("G")){
+                            Intent intent = new Intent(context, GroupChatActivity.class);
+                            intent.putExtra("isGroup", true);
+                            intent.putExtra("groupid", notifyBean.getFileid());
+                            context.startActivity(intent);
+                        }
+                    }
+                });
             }else {
                 holder.buddyicon.setVisibility(View.VISIBLE);
                 holder.fileIcon.setVisibility(View.GONE);

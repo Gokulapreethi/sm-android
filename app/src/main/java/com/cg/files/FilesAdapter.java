@@ -450,7 +450,6 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
 						.toLowerCase(Locale.getDefault()).startsWith(charText)) {
 					fileList.add(storedData);
 				}
-
 			}
 		}
 		notifyDataSetChanged();
@@ -462,12 +461,8 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
 			for (CompleteListBean storedData : filesFragment.tempFilesList) {
 				if (storedData.getcomponentType().equalsIgnoreCase(Type)) {
 					fileList.add(storedData);
-					Log.i("adaptervalue", "type2" + storedData.getcomponentType());
 				}
 			}
-		Log.i("adaptervalue", "type3" + fileList.size());
-		Log.i("adaptervalue", "type4" + filesFragment.filesList.size());
-
 		notifyDataSetChanged();
 	}
 	String bytesToSize(int bytes) {

@@ -445,12 +445,12 @@ public class ComponentCreator extends Activity implements IMNotifier {
 					document.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
-//								try {
-//									Intent intent = new Intent(context, FilePicker.class);
-//									startActivityForResult(intent, 38);
-//								} catch (Exception e) {
-//									e.printStackTrace();
-//								}
+								try {
+									Intent intent = new Intent(context, FilePicker.class);
+									startActivityForResult(intent, 38);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
 						}
 					});
 					audio.setOnClickListener(new OnClickListener() {

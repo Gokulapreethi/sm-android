@@ -2198,19 +2198,19 @@ public class WSRunner implements Runnable {
 
 					case GETCHATTEMPLATE:
 						Log.i("chattemplate","getchatTemplate response--->"+mSp.toString());
-						mChk = mParser.getResult(mSp.toString());
-						if (mChk) {
+//						mChk = mParser.getResult(mSp.toString());
+//						if (mChk) {
 							Log.i("chattemplate","parse value getchattemplate");
 							ArrayList<Object> values=mParser.parseGetchattemplate(mSp.toString());
 							if(SingleInstance.mainContext!=null){
 								Log.i("chattemplate","mServicebean.getCallBack() != null");
-									SingleInstance.mainContext.notifyChatTemplate(mChk,values);
+									SingleInstance.mainContext.notifyChatTemplate(values);
 							}
-						}else{
-							if(SingleInstance.mainContext!=null){
-								SingleInstance.mainContext.notifyChatTemplate(mChk,null);
-							}
-						}
+//						}else{
+//							if(SingleInstance.mainContext!=null){
+//								SingleInstance.mainContext.notifyChatTemplate(null);
+//							}
+//						}
 						break;
 				default:
 					Log.d("webservice", "Came to default case");

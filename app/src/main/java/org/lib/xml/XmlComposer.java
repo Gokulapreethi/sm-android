@@ -3149,10 +3149,11 @@ public class XmlComposer {
 
 		buffer.append(" userid=" + quotes + param[0] + quotes);
 		buffer.append(" requestid=" + quotes + param[1] + quotes);
-		buffer.append(" type=" + quotes + param[2] + quotes);
-		buffer.append(" templateid=" + quotes + param[3] + quotes);
-		buffer.append(" template=" + quotes + param[4] + quotes);
-		buffer.append(" deletetemplates=" + quotes + param[5] + quotes);
+		buffer.append(" editmode="+ quotes+ param[2] + quotes);
+		buffer.append(" type=" + quotes + param[3] + quotes);
+		buffer.append(" templateid=" + quotes + param[4] + quotes);
+		buffer.append(" template=" + quotes + param[5] + quotes);
+		buffer.append(" deletetemplates=" + quotes + param[6] + quotes);
 		buffer.append(" />");
 		return "<?xml version=\"1.0\"?>" + buffer.toString();
 	}
