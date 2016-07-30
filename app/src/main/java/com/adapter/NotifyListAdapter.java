@@ -441,6 +441,8 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                                 holder.fileType.setText(notifyBean.getUsername());
                             else if(notifyBean.getType().trim().equalsIgnoreCase("document"))
                                 holder.fileType.setText(notifyBean.getUsername());
+                            else if(notifyBean.getType().trim().equalsIgnoreCase("mixedfile"))
+                                holder.fileType.setText(notifyBean.getUsername());
                             if (notifyBean.getType().trim().equalsIgnoreCase("text")) {
                                 if (notifyBean.getContent() != null)
                                     holder.fileName.setText(notifyBean.getContent());
@@ -449,6 +451,8 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                                     File newFile = new File(notifyBean.getMedia());
                                     if (newFile.exists())
                                         holder.fileName.setText(notifyBean.getType() + " received");
+                                    else
+                                        holder.fileName.setText("Files Received");
                                 } else
                                     holder.fileName.setText("File Not Found");
                             }

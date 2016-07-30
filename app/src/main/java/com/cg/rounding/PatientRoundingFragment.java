@@ -524,6 +524,7 @@ public class PatientRoundingFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
         });
+        Collections.sort(memberslist, new PatientListComparator());
         MembersAdapter adapter = new MembersAdapter(mainContext, R.layout.rounding_member_row, memberslist);
         list.setAdapter(adapter);
 

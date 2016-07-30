@@ -1693,5 +1693,19 @@ public class WebServiceClient {
 		if (wsNotifier != null)
 			wsNotifier.addTasktoExecutor(servicebean);
 	}
+	public void TransferOwnership(String username,String groupid,String newowner,String oldowner,Context context) {
+		Servicebean servicebean = new Servicebean();
+		HashMap<String, String> property_map = new HashMap<String, String>();
+		property_map.put("userid",username);
+		property_map.put("groupid", groupid);
+		property_map.put("newGroupOwner", newowner);
+		property_map.put("oldGroupOwner", oldowner);
+		servicebean.setProperty_map(property_map);
+		servicebean.setWsmethodname("TransferOwnerShip");
+		servicebean.setServiceMethods(EnumWebServiceMethods.TRANSFEROWNERSHIP);
+		servicebean.setCallBack(context);
+		if (wsNotifier != null)
+			wsNotifier.addTasktoExecutor(servicebean);
+	}
 
 }

@@ -11372,6 +11372,10 @@ private TrustManager[] get_trust_mgr() {
                 dtemp[1] = password;
                 dtemp[2] = fname[i];
                 Log.d("XP WSD", "User Name " + username + " Password " + password + " File Name " + filename);
+				String strIPath = Environment.getExternalStorageDirectory()
+						+ "/COMMedia/" + fname[i];
+				File file=new File(strIPath);
+				if(!file.exists())
                 WebServiceReferences.webServiceClient.FileDownload(dtemp);
             }
         }else{
@@ -11379,6 +11383,10 @@ private TrustManager[] get_trust_mgr() {
             dtemp[1]=password;
             dtemp[2]=filename;
             Log.d("XP WSD", "User Name "+username+" Password "+password+" File Name "+filename);
+			String strIPath = Environment.getExternalStorageDirectory()
+					+ "/COMMedia/" + filename;
+			File file=new File(strIPath);
+			if(!file.exists())
             WebServiceReferences.webServiceClient.FileDownload(dtemp);
         }
 

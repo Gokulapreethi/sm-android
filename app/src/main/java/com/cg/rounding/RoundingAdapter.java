@@ -117,7 +117,7 @@ public class RoundingAdapter extends ArrayAdapter<GroupBean> {
                         Environment.getExternalStorageDirectory().getAbsolutePath() + "/COMMedia/" +
                                 groupBean.getGroupIcon(),
                         holder.buddy_icon,
-                        R.drawable.user_photo);
+                        R.drawable.group_usericon);
             }
 
             holder.listContainer.setOnClickListener(new View.OnClickListener() {

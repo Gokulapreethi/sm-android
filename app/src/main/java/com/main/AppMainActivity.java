@@ -6182,6 +6182,10 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						param[0] = CallDispatcher.LoginUser;
 						param[1] = CallDispatcher.Password;
 						param[2] = gbean.getGroupIcon();
+						String strIPath = Environment.getExternalStorageDirectory()
+								+ "/COMMedia/" + gbean.getGroupIcon();
+						File file=new File(strIPath);
+						if(!file.exists())
 						WebServiceReferences.webServiceClient.FileDownload(param);
 					}
 				}
@@ -6226,6 +6230,10 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						param[0] = CallDispatcher.LoginUser;
 						param[1] = CallDispatcher.Password;
 						param[2] = gbean.getGroupIcon();
+						String strIPath = Environment.getExternalStorageDirectory()
+								+ "/COMMedia/" + gbean.getGroupIcon();
+						File file=new File(strIPath);
+						if(!file.exists())
 						WebServiceReferences.webServiceClient.FileDownload(param);
 					}
 				}
@@ -7651,6 +7659,10 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						param[0] = CallDispatcher.LoginUser;
 						param[1] = CallDispatcher.Password;
 						param[2] = pBean.getPhoto();
+						String strIPath = Environment.getExternalStorageDirectory()
+								+ "/COMMedia/" + pBean.getPhoto();
+						File file=new File(strIPath);
+						if(!file.exists())
 						WebServiceReferences.webServiceClient.FileDownload(param);
 					}
 				}
@@ -8083,6 +8095,10 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					param[0] = CallDispatcher.LoginUser;
 					param[1] = CallDispatcher.Password;
 					param[2] = bean.getGroupIcon();
+					String strIPath = Environment.getExternalStorageDirectory()
+							+ "/COMMedia/" + bean.getGroupIcon();
+					File file=new File(strIPath);
+					if(!file.exists())
 					WebServiceReferences.webServiceClient.FileDownload(param);
 				}
 		}

@@ -1,5 +1,6 @@
 package org.lib.xml;
 
+import android.content.ContentValues;
 import android.telecom.Call;
 import android.util.Base64;
 import android.util.Log;
@@ -18,6 +19,7 @@ import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.SipNotificationListener;
 import com.cg.commonclass.WebServiceReferences;
+import com.group.chat.GroupChatActivity;
 import com.main.AppMainActivity;
 import com.main.ContactsFragment;
 import com.util.SingleInstance;
@@ -3248,7 +3250,7 @@ public class XmlParser {
 					temp[2] = nodeMap.getNamedItem("status").getNodeValue();
 				if (nodeMap.getNamedItem("role") != null)
 					temp[3] = nodeMap.getNamedItem("role").getNodeValue();
-				WebServiceReferences.webServiceClient.GetMemberRights(CallDispatcher.LoginUser,temp[1],SingleInstance.mainContext);
+				WebServiceReferences.webServiceClient.GetMemberRights(CallDispatcher.LoginUser, temp[1], SingleInstance.mainContext);
 			}
 			list = doc.getElementsByTagName("RoleAccess");
 			if (list.getLength() > 0) {
@@ -3279,6 +3281,28 @@ public class XmlParser {
 				if (nodeMap.getNamedItem("patientid") != null)
 					temp[3] = nodeMap.getNamedItem("patientid").getNodeValue();
 				DBAccess.getdbHeler().deletePatientRelatedDetails(temp[1], temp[3]);
+			}
+			list = doc.getElementsByTagName("TransferOwnerShip");
+			if (list.getLength() > 0) {
+				String[] temp = new String[3];
+				node = list.item(0);
+				nodeMap = node.getAttributes();
+				if (nodeMap.getNamedItem("groupid") != null)
+					temp[0] = nodeMap.getNamedItem("groupid").getNodeValue();
+				if (nodeMap.getNamedItem("oldGroupOwner") != null)
+					temp[1] = nodeMap.getNamedItem("oldGroupOwner").getNodeValue();
+				if (nodeMap.getNamedItem("newGroupOwner") != null)
+					temp[2] = nodeMap.getNamedItem("newGroupOwner").getNodeValue();
+				ContentValues cv=new ContentValues();
+				cv.put("groupowner",temp[2]);
+				DBAccess.getdbHeler().updateGroup(cv, temp[0]);
+				DBAccess.getdbHeler().updateGroupMembers(cv,temp[0]);
+				GroupChatActivity gca = (GroupChatActivity) SingleInstance.contextTable
+						.get("groupchat");
+				if(gca!=null) {
+					 if(gca.isRounding && gca.isMemberTab)
+						gca.RoundingMember();
+				}
 			}
 
 			list = doc.getElementsByTagName("EditForm");

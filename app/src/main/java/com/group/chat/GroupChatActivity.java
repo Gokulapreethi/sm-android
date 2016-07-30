@@ -89,6 +89,7 @@ import com.cg.commongui.listswipe.SwipeMenuListView;
 import com.cg.files.CompleteListBean;
 import com.cg.files.CompleteListView;
 import com.cg.files.ComponentCreator;
+import com.cg.files.FileInfoFragment;
 import com.cg.files.FilePicker;
 import com.cg.files.FilesAdapter;
 import com.cg.forms.AddNewForm;
@@ -757,12 +758,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 
         if (isOpen.equalsIgnoreCase("C")) {
             chatprocess();
-        }else if (isOpen.equalsIgnoreCase("p")) {
+        }else if (isOpen.equalsIgnoreCase("F")) {
             setDefault();
-            file_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_patients_white));
             tv_file.setTextColor(getResources().getColor(R.color.white));
             view_snazbox.setVisibility(View.VISIBLE);
-            PatientDetails();
+            FilesProcess();
+            file_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_snazbox_white));
         } else if (isOpen.equalsIgnoreCase("A") || isOpen.equalsIgnoreCase("B")) {
             try {
                 profileProcess();
@@ -9466,6 +9467,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 location_image.setVisibility(View.GONE);
                 status.setTextColor(getResources().getColor(R.color.snazlgray));
                 status_image.setVisibility(View.GONE);
+                Collections.sort(PatientList, new PatientNameComparator());
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -9542,7 +9544,14 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                     + groupBean.getGroupId() + "'";
                         }
                         PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
-                        Collections.sort(PatientList, new PatientStatusComparator());
+                        Collections.sort(PatientList, new PatientNameComparator());
+                        patientType = "name";
+                        name.setTextColor(getResources().getColor(R.color.white));
+                        name_image.setVisibility(View.VISIBLE);
+                        location.setTextColor(getResources().getColor(R.color.snazlgray));
+                        location_image.setVisibility(View.GONE);
+                        status.setTextColor(getResources().getColor(R.color.snazlgray));
+                        status_image.setVisibility(View.GONE);
                         tempPatientList.clear();
                         tempPatientList = PatientList;
                         for (PatientDetailsBean bean : PatientList) {
@@ -9583,6 +9592,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         final GroupBean gBean = calldisp.getdbHeler(context).getGroupAndMembers("select * from groupdetails where groupid="
                 + groupId);
         final Vector<BuddyInformationBean> memberslist = new Vector<BuddyInformationBean>();
+        final Vector<BuddyInformationBean> allmemberslist = new Vector<BuddyInformationBean>();
+        final BuddyInformationBean ownerbean = new BuddyInformationBean();
 
         groupname.setText(groupBean.getGroupName());
         groupDesc.setText(gBean.getGroupdescription());
@@ -9606,28 +9617,27 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 Log.i("AAAA", "RoundingMember");
                 String[] mlist = (gBean.getActiveGroupMembers())
                         .split(",");
-                BuddyInformationBean bean = new BuddyInformationBean();
                 ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(gBean.getOwnerName());
                 if (pBean != null)
                     if (pBean.getTitle()!=null &&(pBean.getTitle().equalsIgnoreCase("Dr.")
                             || pBean.getTitle().equalsIgnoreCase("Prof.")))
-                        bean.setFirstname(pBean.getTitle() + pBean.getFirstname());
+                        ownerbean.setFirstname(pBean.getTitle() + pBean.getFirstname());
                     else
-                        bean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname());
-                bean.setLastname(pBean.getLastname());
-                bean.setName(gBean.getOwnerName());
-                bean.setSelected(true);
-                bean.setProfile_picpath(pBean.getPhoto());
+                        ownerbean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname());
+                ownerbean.setLastname(pBean.getLastname());
+                ownerbean.setName(gBean.getOwnerName());
+                ownerbean.setSelected(true);
+                ownerbean.setProfile_picpath(pBean.getPhoto());
                 if (gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser))
-                    bean.setStatus(appMainActivity.loadCurrentStatus());
+                    ownerbean.setStatus(appMainActivity.loadCurrentStatus());
                 else
                     for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
                         if (bib.getName().equalsIgnoreCase(gBean.getOwnerName())) {
-                            bean.setStatus(bib.getStatus());
+                            ownerbean.setStatus(bib.getStatus());
                             break;
                         }
                     }
-                memberslist.add(bean);
+                allmemberslist.add(ownerbean);
                 for (String tmp : mlist) {
                     BuddyInformationBean uBean = new BuddyInformationBean();
                     ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(tmp);
@@ -9652,16 +9662,17 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         }
                     memberslist.add(uBean);
                 }
-
                 for(BuddyInformationBean bib:memberslist){
                     GroupMemberBean gbean=DBAccess.getdbHeler().getMemberDetails(gBean.getGroupId(),bib.getName());
                     bib.setRole(gbean.getRole());
                     bib.setOwner(gbean.getAdmin());
                 }
+                Collections.sort(memberslist, new BuddyListComparator());
+                allmemberslist.addAll(memberslist);
             }
         }
         int count_memberslist = memberslist.size();
-        Log.d("memberslist", "value--->"+count_memberslist);
+        Log.d("memberslist", "value--->" + count_memberslist);
         members_count.setText("(" + Integer.toString(count_memberslist) + ")");
         online.setOnClickListener(new OnClickListener() {
             @Override
@@ -9670,7 +9681,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 alpha.setTextColor(getResources().getColor(R.color.snazlgray));
                 role.setTextColor(getResources().getColor(R.color.snazlgray));
                 sorting = "online";
-                MembersAdapter adapter = new MembersAdapter(context, R.layout.rounding_member_row, getOnlineList(memberslist));
+                MembersAdapter adapter = new MembersAdapter(context, R.layout.rounding_member_row, getOnlineList(allmemberslist));
                 list.removeAllViews();
                 final int adapterCount = adapter.getCount();
                 for (int i = 0; i < adapterCount; i++) {
@@ -9697,7 +9708,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     alpha.setText("Z>A");
                     Collections.reverse(memberslist);
                 }
-                MembersAdapter adapter = new MembersAdapter(context, R.layout.rounding_member_row, memberslist);
+                MembersAdapter adapter = new MembersAdapter(context, R.layout.rounding_member_row, allmemberslist);
                 list.removeAllViews();
                 final int adapterCount = adapter.getCount();
                 for (int i = 0; i < adapterCount; i++) {
@@ -9714,9 +9725,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 online.setTextColor(getResources().getColor(R.color.snazlgray));
                 role.setTextColor(getResources().getColor(R.color.white));
                 sorting = "role";
-                Vector<BuddyInformationBean> templist=new Vector<BuddyInformationBean>();
-                for(BuddyInformationBean bib:memberslist){
-                    if(bib.getRole()!=null && !bib.getRole().equalsIgnoreCase(""))
+                Vector<BuddyInformationBean> templist = new Vector<BuddyInformationBean>();
+                for (BuddyInformationBean bib : allmemberslist) {
+                    if (bib.getRole() != null && !bib.getRole().equalsIgnoreCase(""))
                         templist.add(bib);
                 }
                 MembersAdapter adapter = new MembersAdapter(context, R.layout.rounding_member_row, templist);
@@ -9729,7 +9740,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 adapter.notifyDataSetChanged();
             }
         });
-        MembersAdapter adapter = new MembersAdapter(this, R.layout.rounding_member_row, memberslist);
+        MembersAdapter adapter = new MembersAdapter(this, R.layout.rounding_member_row, allmemberslist);
         final int adapterCount = adapter.getCount();
 
         for (int i = 0; i < adapterCount; i++) {
@@ -9759,34 +9770,36 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         + groupBean.getGroupId());
         sorting = "online";
         final Vector<BuddyInformationBean> memberslist = new Vector<BuddyInformationBean>();
+        final Vector<BuddyInformationBean> allmemberslist = new Vector<BuddyInformationBean>();
+        final BuddyInformationBean ownerbean = new BuddyInformationBean();
         if (gBean != null) {
             if (gBean.getActiveGroupMembers() != null
                     && gBean.getActiveGroupMembers().length() > 0) {
                 Log.i("AAAA", "RoundingMember");
                 String[] mlist = (gBean.getActiveGroupMembers())
                         .split(",");
-                BuddyInformationBean bean = new BuddyInformationBean();
+
                 ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(gBean.getOwnerName());
                 if (pbean != null)
                     if (pbean.getTitle()!=null &&(pbean.getTitle().equalsIgnoreCase("Dr.") || pbean.getTitle().equalsIgnoreCase("Prof.")))
-                        bean.setFirstname(pbean.getTitle() + pbean.getFirstname());
+                        ownerbean.setFirstname(pbean.getTitle() + pbean.getFirstname());
                     else
-                        bean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
-                bean.setLastname(pbean.getLastname());
-                bean.setSelected(true);
-                bean.setName(gBean.getOwnerName());
-                bean.setProfile_picpath(pbean.getPhoto());
+                        ownerbean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
+                ownerbean.setLastname(pbean.getLastname());
+                ownerbean.setSelected(true);
+                ownerbean.setName(gBean.getOwnerName());
+                ownerbean.setProfile_picpath(pbean.getPhoto());
                 if (gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser))
-                    bean.setStatus(appMainActivity.loadCurrentStatus());
+                    ownerbean.setStatus(appMainActivity.loadCurrentStatus());
                 else
                     for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
                         if (bib.getName().equalsIgnoreCase(gBean.getOwnerName())) {
-                            bean.setStatus(bib.getStatus());
+                            ownerbean.setStatus(bib.getStatus());
                             break;
                         }
                     }
-                bean.setSelected(true);
-                memberslist.add(bean);
+                ownerbean.setSelected(true);
+                allmemberslist.add(ownerbean);
                 for (String tmp : mlist) {
                     BuddyInformationBean uBean = new BuddyInformationBean();
                     ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(tmp);
@@ -9813,6 +9826,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 }
             }
         }
+        Collections.sort(memberslist, new BuddyListComparator());
+        allmemberslist.addAll(memberslist);
 
         online.setOnClickListener(new OnClickListener() {
             @Override
@@ -9820,7 +9835,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 online.setTextColor(getResources().getColor(R.color.white));
                 alpha.setTextColor(getResources().getColor(R.color.snazlgray));
                 sorting = "online";
-                MembersAdapter adapter = new MembersAdapter(context, R.layout.rounding_member_row, getOnlineList(memberslist));
+                MembersAdapter adapter = new MembersAdapter(context, R.layout.rounding_member_row, getOnlineList(allmemberslist));
 
                 list.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
@@ -9833,22 +9848,24 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 online.setTextColor(getResources().getColor(R.color.snazlgray));
                 sorting = "alpha";
                 Collections.sort(memberslist, new BuddyListComparator());
-                if(isatoz) {
+                if (isatoz) {
                     alpha.setText("A>Z");
                     isatoz = false;
-                }
-                else {
+                } else {
                     isatoz = true;
                     alpha.setText("Z>A");
                     Collections.reverse(memberslist);
                 }
-                MembersAdapter adapter = new MembersAdapter(context, R.layout.rounding_member_row, memberslist);
+                allmemberslist.clear();
+                allmemberslist.add(ownerbean);
+                allmemberslist.addAll(memberslist);
+                MembersAdapter adapter = new MembersAdapter(context, R.layout.rounding_member_row, allmemberslist);
                 list.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
             }
         });
 
-        MembersAdapter adapter = new MembersAdapter(this, R.layout.rounding_member_row, memberslist);
+        MembersAdapter adapter = new MembersAdapter(this, R.layout.rounding_member_row, allmemberslist);
         list.setAdapter(adapter);
     }
 
@@ -11672,6 +11689,36 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 }
             });
             listView.setMenuCreator(creator);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> arg0, View arg1,
+                                        int position, long arg3) {
+                    try {
+
+                        CompleteListBean cBean = filesAdapter.getItem(position);
+                        FileInfoFragment fileInfoFragment = FileInfoFragment.newInstance(context);
+                        FragmentManager fragmentManager = SingleInstance.mainContext
+                                .getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(
+                                R.id.activity_main_content_fragment, fileInfoFragment)
+                                .commitAllowingStateLoss();
+                        calldisp.cmp = cBean;
+                        fileInfoFragment.setFileBean(cBean);
+                        if(isGroup)
+                            fileInfoFragment.setFrom(true,groupId,isGroup);
+                        else
+                            fileInfoFragment.setFrom(true, buddy, isGroup);
+                        finish();
+
+                        // }
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
+                }
+            });
 
 
             if (filesAdapter.getCount() > 0 || filesList.size() > 0) {

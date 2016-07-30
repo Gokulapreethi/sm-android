@@ -27,8 +27,10 @@ import com.cg.commongui.MultimediaUtils;
 import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.group.chat.ForwardUserSelect;
+import com.group.chat.GroupChatActivity;
 import com.image.utils.FileImageLoader;
 import com.main.AppMainActivity;
+import com.main.ContactsFragment;
 import com.main.FilesFragment;
 import com.util.FullScreenImage;
 import com.util.SingleInstance;
@@ -62,6 +64,8 @@ public class FileInfoFragment extends Fragment {
     private ArrayList<String> uploadFilesList = new ArrayList<String>();
     private String filename1;
     CallDispatcher calldisp = new CallDispatcher(SingleInstance.mainContext);
+    private boolean isFromChat=false,isGroup=false;
+    private String groupid;
     public static FileInfoFragment newInstance(Context context) {
         try {
             if (fileInfoFragment == null) {
@@ -111,13 +115,32 @@ public class FileInfoFragment extends Fragment {
             backBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    appMainActivity.removeFragments(FileInfoFragment.newInstance(SingleInstance.mainContext));
-                    FilesFragment filesFragment = FilesFragment.newInstance(mainContext);
-                    FragmentManager fragmentManager = SingleInstance.mainContext
-                            .getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(
-                            R.id.activity_main_content_fragment, filesFragment)
-                            .commitAllowingStateLoss();
+//                    appMainActivity.removeFragments(FileInfoFragment.newInstance(SingleInstance.mainContext));
+                    if(isFromChat){
+                        Intent intent = new Intent(mainContext, GroupChatActivity.class);
+                        if(isGroup) {
+                            intent.putExtra("isGroup", true);
+                            intent.putExtra("groupid", groupid);
+                        }else {
+                            intent.putExtra("isGroup", false);
+                            intent.putExtra("buddy", groupid);
+                        }
+                        intent.putExtra("isReq","F");
+                        startActivity(intent);
+                        ContactsFragment contactsFragment = ContactsFragment.getInstance(mainContext);
+                        FragmentManager fragmentManager = SingleInstance.mainContext
+                                .getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(
+                                R.id.activity_main_content_fragment, contactsFragment)
+                                .commitAllowingStateLoss();
+                    }else {
+                        FilesFragment filesFragment = FilesFragment.newInstance(mainContext);
+                        FragmentManager fragmentManager = SingleInstance.mainContext
+                                .getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(
+                                R.id.activity_main_content_fragment, filesFragment)
+                                .commitAllowingStateLoss();
+                    }
                 }
             });
             plusBtn.setOnClickListener(new View.OnClickListener() {
@@ -294,6 +317,11 @@ public class FileInfoFragment extends Fragment {
     }
     public void setFileBean(CompleteListBean cBean) {
         cbean = cBean;
+    }
+    public void setFrom(boolean isfrom,String groupId,boolean isgroup) {
+        isFromChat = isfrom;
+        groupid=groupId;
+        isGroup=isgroup;
     }
 
     String bytesToSize(int bytes) {

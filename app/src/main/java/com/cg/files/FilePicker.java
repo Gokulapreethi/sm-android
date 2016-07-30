@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
@@ -148,19 +149,19 @@ public class FilePicker extends Activity {
                 String[] fList = path.list(filter);
                 fileList = new Item[fList.length];
                 for (int i = 0; i < fList.length; i++) {
-                    fileList[i] = new Item(fList[i], R.drawable.file_icon);
+                        fileList[i] = new Item(fList[i], R.drawable.file_icon);
 
-                    // Convert into file path
-                    File sel = new File(path, fList[i]);
+                        // Convert into file path
+                        File sel = new File(path, fList[i]);
 
-                    // Set drawables
-                    if (sel.isDirectory()) {
-                        fileList[i].icon = R.drawable.directory_icon;
-                        Log.d("DIRECTORY", fileList[i].file);
-                    } else {
-                        Log.d("FILE", fileList[i].file);
+                        // Set drawables
+                        if (sel.isDirectory()) {
+                            fileList[i].icon = R.drawable.directory_icon;
+                            Log.d("DIRECTORY", fileList[i].file);
+                        } else {
+                            Log.d("FILE", fileList[i].file);
 
-                    }
+                        }
 
                 }
 
@@ -367,10 +368,20 @@ public class FilePicker extends Activity {
 //                                                                    + sel.getPath());
 //
 //                                                }
-                                                Intent i = new Intent();
-                                                i.putExtra("filePath", destinationPath);
-                                                setResult(RESULT_OK, i);
-                                                finish();
+
+                                                if (destinationPath.endsWith("pdf") || destinationPath.endsWith("doc") ||
+                                                        destinationPath.endsWith("docs") || destinationPath.endsWith("txt")
+                                                        || destinationPath.endsWith("docx") || destinationPath.endsWith("odt")
+                                                        || destinationPath.endsWith("xls") || destinationPath.endsWith("xlsx")
+                                                        || destinationPath.endsWith("ppt") || destinationPath.endsWith("pptx")
+                                                        || destinationPath.endsWith("php") || destinationPath.endsWith("psd")) {
+                                                    Intent i = new Intent();
+                                                    i.putExtra("filePath", destinationPath);
+                                                    setResult(RESULT_OK, i);
+                                                    finish();
+                                                }else
+                                                    Toast.makeText(FilePicker.this, "Choose only document files", Toast.LENGTH_SHORT)
+                                                            .show();
 
                                             }
                                         } catch (Exception e) {

@@ -4033,6 +4033,10 @@ public class ContactsFragment extends Fragment{
 						param[0] = CallDispatcher.LoginUser;
 						param[1] = CallDispatcher.Password;
 						param[2] = pBean.getPhoto();
+						String strIPath = Environment.getExternalStorageDirectory()
+								+ "/COMMedia/" + pBean.getPhoto();
+						File file=new File(strIPath);
+						if(!file.exists())
 						WebServiceReferences.webServiceClient.FileDownload(param);
 					}
 				}

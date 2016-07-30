@@ -43,6 +43,7 @@ import com.main.ContactsFragment;
 import org.lib.model.BuddyInformationBean;
 import org.lib.model.GroupBean;
 import org.lib.model.GroupMemberBean;
+import org.lib.model.WebServiceBean;
 
 import java.io.File;
 import java.util.Vector;
@@ -54,7 +55,7 @@ public class OwnershipActivity extends Activity {
     Handler handler = new Handler();
     private ProgressDialog progress = null;
     MembersAdapter adapter;
-    private boolean islast=false;
+    String groupid,groupowner;
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
@@ -73,7 +74,7 @@ public class OwnershipActivity extends Activity {
                 finish();
             }
         });
-        final String groupid=getIntent().getStringExtra("groupid");
+        groupid=getIntent().getStringExtra("groupid");
         final GroupBean gBean = DBAccess.getdbHeler().getGroupAndMembers(
                 "select * from groupdetails where groupid=" + groupid);
         search.setOnClickListener(new View.OnClickListener() {
@@ -108,9 +109,9 @@ public class OwnershipActivity extends Activity {
             }
         });
         if (gBean != null) {
-            if (gBean.getActiveGroupMembers() != null
-                    && gBean.getActiveGroupMembers().length() > 0) {
-                String[] mlist = (gBean.getActiveGroupMembers())
+            if (gBean.getInviteMembers() != null
+                    && gBean.getInviteMembers().length() > 0) {
+                String[] mlist = (gBean.getInviteMembers())
                         .split(",");
 
                 for (String tmp : mlist) {
@@ -137,21 +138,13 @@ public class OwnershipActivity extends Activity {
             @Override
             public void onClick(View view) {
                 showprogress();
-                String status,role="";
                 for(UserBean uBean:membersList){
                     Log.i("AAAA", "Rounding status 1" + uBean.isSelected());
-                    if(uBean.isSelected())
-                        status="1";
-                    else
-                        status="0";
-                    if(uBean.getRole()!=null)
-                    role=uBean.getRole();
-                    uBean.setAdmin(status);
-                    UserBean ubean=(UserBean)membersList.get(membersList.size()-1);
-                    if(ubean.getBuddyName().equalsIgnoreCase(uBean.getBuddyName()))
-                        islast=true;
-                    WebServiceReferences.webServiceClient.SetMemberRights(uBean.getBuddyName(), gBean.getGroupId(), status,
-                            role, context);
+                    if(uBean.isSelected()) {
+                        groupowner=uBean.getBuddyName();
+                        WebServiceReferences.webServiceClient.TransferOwnership(CallDispatcher.LoginUser, gBean.getGroupId(),
+                                uBean.getBuddyName(), gBean.getOwnerName(), context);
+                    }
                 }
             }
         });
@@ -164,6 +157,7 @@ public class OwnershipActivity extends Activity {
         private Vector<UserBean> result;
         private Vector<UserBean> originalList;
         private  ContactsFilter filter;
+        int selected_position = -1;
 
         public MembersAdapter(Context context, int resource, Vector<UserBean> objects) {
             super(context, resource, objects);
@@ -175,7 +169,7 @@ public class OwnershipActivity extends Activity {
         }
 
         @Override
-        public View getView(int i, View convertView, ViewGroup viewGroup) {
+        public View getView(final int i, View convertView, ViewGroup viewGroup) {
             try {
                 holder = new ViewHolder();
                 if(convertView == null) {
@@ -213,7 +207,7 @@ public class OwnershipActivity extends Activity {
                         holder.buddyName.setText(bib.getBuddyName());
                     if(bib.getRole()!=null)
                     holder.position.setText(bib.getRole());
-                    Log.i("AAAA","admin "+bib.getAdmin());
+                    Log.i("AAAA", "admin " + bib.getAdmin());
                     if(bib.getAdmin()!=null && bib.getAdmin().equalsIgnoreCase("1")) {
                         holder.sel_buddy.setChecked(true);
                         holder.ownsership.setVisibility(View.VISIBLE);
@@ -221,14 +215,22 @@ public class OwnershipActivity extends Activity {
                         holder.sel_buddy.setChecked(false);
                         holder.ownsership.setVisibility(View.GONE);
                     }
-                    holder.sel_buddy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    if(selected_position==i) {
+                        holder.sel_buddy.setChecked(true);
+                    } else {
+                        holder.sel_buddy.setChecked(false);
+                    }
+                    holder.sel_buddy.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            if(isChecked)
+                        public void onClick(View v) {
+                            if (((CheckBox) v).isChecked()) {
                                 bib.setSelected(true);
-                            else
+                                selected_position = i;
+                            } else {
                                 bib.setSelected(false);
-
+                                selected_position = -1;
+                            }
+                            notifyDataSetChanged();
                         }
                     });
                 }
@@ -360,36 +362,17 @@ public class OwnershipActivity extends Activity {
             String result = (String) obj;
             if (result.equalsIgnoreCase("updated")) {
                 showToast("Successfully  updated");
-                for(UserBean userBean:membersList) {
-                    if (userBean.getAdmin().equalsIgnoreCase("1")) {
-                        Log.i("AAAA", "Rounding status 1" + userBean.getBuddyName());
-                        ContentValues cv = new ContentValues();
-                        cv.put("adminmembers", userBean.getBuddyName());
-                        DBAccess.getdbHeler(getApplicationContext())
-                                .updateGroupMembers(cv, "groupid=" + userBean.getGroupid());
-                        GroupMemberBean bean = new GroupMemberBean();
-                        bean.setGroupid(userBean.getGroupid());
-                        bean.setMembername(userBean.getBuddyName());
-                        if(userBean.getRole()!=null)
-                        bean.setRole(userBean.getRole());
-                        bean.setAdmin("1");
-                        DBAccess.getdbHeler().insertorUpdateMemberDetails(bean);
-                    } else {
-                        Log.i("AAAA", "Rounding status 0 "+userBean.getBuddyName());
-                        GroupMemberBean bean = new GroupMemberBean();
-                        bean.setGroupid(userBean.getGroupid());
-                        bean.setMembername(userBean.getBuddyName());
-                        if(userBean.getRole()!=null)
-                        bean.setRole(userBean.getRole());
-                        bean.setAdmin("0");
-                        DBAccess.getdbHeler().insertorUpdateMemberDetails(bean);
-                    }
-                }
-                if(islast)
+                ContentValues cv=new ContentValues();
+                cv.put("groupowner",groupowner);
+                DBAccess.getdbHeler().updateGroup(cv, groupid);
+                DBAccess.getdbHeler().updateGroupMembers(cv,groupid);
                 finish();
-            }else
-                showToast(result);
-
+            }
+        }else if(obj instanceof WebServiceBean) {
+            WebServiceBean server_response = (WebServiceBean) obj;
+            if (server_response.getText() != null) {
+                showToast(server_response.getText());
+            }
         }
     }
     @Override

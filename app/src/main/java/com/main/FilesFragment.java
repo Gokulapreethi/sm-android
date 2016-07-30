@@ -1806,6 +1806,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 					.commitAllowingStateLoss();
 			callDisp.cmp = cBean;
 			fileInfoFragment.setFileBean(cBean);
+			fileInfoFragment.setFrom(false,"",false);
 //			Intent intentComponent = new Intent(context, ComponentCreator.class);
 //			Bundle bndl = new Bundle();
 //			bndl.putString("type", cBean.getcomponentType());

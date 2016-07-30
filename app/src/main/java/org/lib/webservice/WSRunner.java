@@ -1613,6 +1613,20 @@ public class WSRunner implements Runnable {
 									null, null);
 						}
 						break;
+					case TRANSFEROWNERSHIP:
+						if (mParser.getResult(mSp.toString())) {
+							String ownsershipresult = mParser.parseResultXml(mSp.toString());
+							mServicebean.setObj(ownsershipresult);
+						} else {
+							webServiceBean = mParser.parseResultFromXml(mSp
+									.toString());
+							mServicebean.setObj(webServiceBean);
+						}
+						if (mServicebean.getCallBack() instanceof OwnershipActivity) {
+							((OwnershipActivity) mServicebean.getCallBack())
+									.notifyOwnership(mServicebean.getObj());
+						}
+						break;
 					
 				case GETPROFESSIONS:
 					if (mParser.getResult(mSp.toString())) {
