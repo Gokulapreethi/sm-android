@@ -27,6 +27,7 @@ dependencies {
     compile 'com.android.support:support-v4:22.2.1'
     compile 'com.google.android.gms:play-services:7.8.0'
     compile 'com.android.support:multidex:1.0.0'
+    compile 'com.android.support:design:23.2.1'
     compile files('libs/bsh-2.0b4.jar')
     compile files('libs/com.antlersoft.android.contentxml.jar')
     compile files('libs/com.antlersoft.android.db.jar')

@@ -1277,6 +1277,6 @@
     <string name="action_week_view">Week view</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
-     
+    <string name="label_permissions">Please enable Microphone and Storage permissions.</string>
 
 </resources>

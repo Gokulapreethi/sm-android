@@ -316,6 +316,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     private boolean mypatient=true;
     public boolean isMemberTab=false;
 
+    private HashMap<String,Object> current_open_activity_detail = new HashMap<String,Object>();
+    private boolean save_state = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -365,11 +368,25 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         info_img = (ImageView) findViewById(R.id.info_img);
         file_img = (ImageView) findViewById(R.id.file_img);
         links_img = (ImageView) findViewById(R.id.links_img);
-        if (getIntent().getStringExtra("isReq") != null)
+        if (getIntent().getStringExtra("isReq") != null) {
             isOpen = getIntent().getStringExtra("isReq");
+            current_open_activity_detail.put("isReq",isOpen);
+        }
         appMainActivity = (AppMainActivity) SingleInstance.contextTable
                 .get("MAIN");
         context = GroupChatActivity.this;
+
+        current_open_activity_detail = new HashMap<String,Object>();
+        current_open_activity_detail.put("activtycontext",context);
+        current_open_activity_detail.put("isGroup",isGroup);
+        current_open_activity_detail.put("groupid",groupId);
+        current_open_activity_detail.put("sessionid",sessionid);
+        current_open_activity_detail.put("isRounding",isRounding);
+        current_open_activity_detail.put("buddy",buddy);
+        current_open_activity_detail.put("nickname",nickname);
+        current_open_activity_detail.put("buddystatus",temp);
+
+
         sidemenu = (ImageView) findViewById(R.id.side_menu);
         mediaPlayer = new MediaPlayer();
 
@@ -2764,13 +2781,27 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         gcBean.setResult("1");
         bean.setResponseObject(gcBean);
         SingleInstance.mainContext.ReadMessageAck(bean);
-        if (SingleInstance.contextTable.containsKey("groupchat"))
+        if (SingleInstance.contextTable.containsKey("groupchat")) {
             SingleInstance.contextTable.remove("groupchat");
+        }
+
+        if(save_state){
+            SingleInstance.current_open_activity_detail.putAll(this.current_open_activity_detail);
+            save_state = false;
+        } else {
+            SingleInstance.current_open_activity_detail.clear();
+        }
+
         mediaPlayer.stop();
         isPrivateBack=false;
         PrivateReply_view=null;
         privateReply_username=null;
         super.onDestroy();
+    }
+
+    public void finishScreenforCallRequest(){
+        save_state = true;
+        this.finish();
     }
 
     @Override

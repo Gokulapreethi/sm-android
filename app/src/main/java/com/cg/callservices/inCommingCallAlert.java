@@ -6,7 +6,6 @@ import android.app.KeyguardManager.KeyguardLock;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -33,7 +32,7 @@ import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
-import com.service.FloatingCallService;
+import com.service.ChatHeadDrawerService;
 import com.util.SingleInstance;
 
 import org.audio.AudioProperties;
@@ -184,13 +183,14 @@ public class inCommingCallAlert extends Fragment {
 							ft.replace(R.id.activity_main_content_fragment,
                                     AppReference.bacgroundFragment);
 							ft.commitAllowingStateLoss();
-							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-								min_incall.setVisibility(View.VISIBLE);
-							} else {
-								Intent serviceIntent = new Intent(getActivity(), FloatingCallService.class);
+							AppReference.mainContext.openNonClosedActivity();
+//							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//								min_incall.setVisibility(View.VISIBLE);
+//							} else {
+								Intent serviceIntent = new Intent(getActivity(), ChatHeadDrawerService.class);
 								serviceIntent.putExtra("sview", 0);
 								getActivity().startService(serviceIntent);
-							}
+//							}
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -688,6 +688,7 @@ public class inCommingCallAlert extends Fragment {
 		ft.replace(R.id.activity_main_content_fragment,
 				AppReference.bacgroundFragment);
 		ft.commitAllowingStateLoss();
+		AppReference.mainContext.openNonClosedActivity();
 		mainHeader.setVisibility(View.VISIBLE);
 		min_incall.setVisibility(View.GONE);
 	}

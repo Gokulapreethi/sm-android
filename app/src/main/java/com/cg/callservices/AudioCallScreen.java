@@ -50,7 +50,7 @@ import com.group.AddGroupMembers;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
 import com.main.ContactsFragment;
-import com.service.FloatingCallService;
+import com.service.ChatHeadDrawerService;
 import com.util.SingleInstance;
 
 import org.audio.AudioProperties;
@@ -304,8 +304,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 					objCallDispatcher = new CallDispatcher(context);
 				mainHeader = (RelativeLayout) getActivity().findViewById(R.id.mainheader);
 				mainHeader.setVisibility(View.GONE);
-				audio_minimize = (RelativeLayout) getActivity().findViewById(R.id.audio_minimize);
-				audio_minimize.setVisibility(View.GONE);
+//				audio_minimize = (RelativeLayout) getActivity().findViewById(R.id.audio_minimize);
+//				audio_minimize.setVisibility(View.GONE);
 
 				objCallDispatcher.setNoScrHeight(noScrHeight);
 				objCallDispatcher.setNoScrWidth(noScrWidth);
@@ -349,7 +349,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 									objCallDispatcher.accepted_users.clear();
 									chTimer.stop();
 									AppMainActivity.ctimer.stop();
-									audio_minimize.setVisibility(View.GONE);
+//									audio_minimize.setVisibility(View.GONE);
 									//
 									isHangedUp = true;
 
@@ -526,7 +526,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 											CallDispatcher.isCallInitiate = false;
 											chTimer.stop();
 											AppMainActivity.ctimer.stop();
-											audio_minimize.setVisibility(View.GONE);
+//											audio_minimize.setVisibility(View.GONE);
 
 											if (!isHangedUp) {
 
@@ -648,14 +648,15 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			if (AppMainActivity.commEngine != null) {
                 AppMainActivity.commEngine.setmDecodeFrame(true);
             }
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-			} else {
-				AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
-			}
+//			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//
+//			} else {
+//				AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
+//			}
+			AppReference.mainContext.stopService(new Intent(AppReference.mainContext, ChatHeadDrawerService.class));
 			Activity parent = getActivity();
 			if(parent != null){
-				audio_minimize.setVisibility(View.GONE);
+//				audio_minimize.setVisibility(View.GONE);
 				if(min_outcall != null) {
 					min_outcall.setVisibility(View.GONE);
 				}
@@ -765,8 +766,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			llayAudioCall = inflater.inflate(R.layout.audiocallscreen, null);
 //			final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
 //			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-			audio_minimize = (RelativeLayout) getActivity().findViewById(R.id.audio_minimize);
-			audio_minimize.setVisibility(View.GONE);
+//			audio_minimize = (RelativeLayout) getActivity().findViewById(R.id.audio_minimize);
+//			audio_minimize.setVisibility(View.GONE);
 //		getActivity().getWindow().setSoftInputMode(
 //				WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 			TextView tv = (TextView) llayAudioCall.findViewById(R.id.status);
@@ -876,14 +877,14 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 				public void onClick(View v) {
 					Log.i("Float","minimize.setOnClickListener");
 					try {
-						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-						} else {
-						Intent serviceIntent = new Intent(AppReference.mainContext.getApplication(),FloatingCallService.class);
+//						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//
+//						} else {
+						Intent serviceIntent = new Intent(AppReference.mainContext.getApplication(),ChatHeadDrawerService.class);
 						serviceIntent.putExtra("sview",2);
 						serviceIntent.putExtra("callscreen","ACS");
 						AppReference.mainContext.startService(serviceIntent);
-						}
+//						}
 //						getActivity().startService(new Intent(getActivity(), FloatingCallService.class));
 						addShowHideListener();
 					} catch (Exception e) {
@@ -2238,7 +2239,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 								CallDispatcher.isCallInitiate = false;
 								chTimer.stop();
 								AppMainActivity.ctimer.stop();
-								audio_minimize.setVisibility(View.GONE);
+//								audio_minimize.setVisibility(View.GONE);
 
 								if (!isHangedUp) {
 
@@ -2857,11 +2858,12 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			}
 			Activity parent = getActivity();
 			Log.i("AudioCall", "parent : " + parent);
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-			} else {
-				AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
-			}
+//			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//
+//			} else {
+//				AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
+//			}
+			AppReference.mainContext.stopService(new Intent(AppReference.mainContext, ChatHeadDrawerService.class));
 			preview_hided = false;
 			currentcall_type = "AC";
 			objCallDispatcher.stopRingTone();
@@ -2920,7 +2922,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			ft.replace(R.id.activity_main_content_fragment,
 					AppReference.bacgroundFragment);
 			ft.commitAllowingStateLoss();
-			audio_minimize.setVisibility(View.GONE);
+//			audio_minimize.setVisibility(View.GONE);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -3208,10 +3210,11 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 		ft.replace(R.id.activity_main_content_fragment,
 				AppReference.bacgroundFragment);
 		ft.commitAllowingStateLoss();
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			audio_minimize.setVisibility(View.VISIBLE);
-		}
+//		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//			audio_minimize.setVisibility(View.VISIBLE);
+//		}
 		mainHeader.setVisibility(View.VISIBLE);
+		AppReference.mainContext.openNonClosedActivity();
 	}
 
 	public void processCallRequest(int caseid, RecordTransactionBean record_TransactionBean, String feature) {

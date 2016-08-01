@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -34,7 +33,7 @@ import com.cg.snazmed.R;
 import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
-import com.service.FloatingCallService;
+import com.service.ChatHeadDrawerService;
 import com.util.SingleInstance;
 
 import org.lib.model.SignalingBean;
@@ -177,13 +176,14 @@ public class CallConnectingScreen extends Fragment {
 							ft.replace(R.id.activity_main_content_fragment,
                                     AppReference.bacgroundFragment);
 							ft.commitAllowingStateLoss();
-							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-								min_outcall.setVisibility(View.VISIBLE);
-							} else {
-								Intent serviceIntent = new Intent(getActivity(), FloatingCallService.class);
+							AppReference.mainContext.openNonClosedActivity();
+//							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//								min_outcall.setVisibility(View.VISIBLE);
+//							} else {
+								Intent serviceIntent = new Intent(getActivity(), ChatHeadDrawerService.class);
 								serviceIntent.putExtra("sview", 1);
 								getActivity().startService(serviceIntent);
-							}
+//							}
 
 						} catch (Exception e) {
 							e.printStackTrace();

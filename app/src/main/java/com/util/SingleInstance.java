@@ -80,6 +80,7 @@ public class SingleInstance {
     public static ArrayList<BuddyInformationBean> searchedResult=new ArrayList<BuddyInformationBean>();
 	public static FileDetailsBean fileDetailsBean=new FileDetailsBean();
 	public static Vector<FileDetailsBean> fileDetails=new Vector<FileDetailsBean>();
+	public static HashMap<String,Object> current_open_activity_detail = new HashMap<String,Object>();
 
 	public static ChatProcesser getChatProcesser() {
 		if (chatProcesser == null) {

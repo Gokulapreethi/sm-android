@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -16,13 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +36,7 @@ import org.lib.model.BuddyInformationBean;
 import org.lib.model.GroupMemberBean;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 public class RoundingEditActivity extends Activity {
     private String status="0";
@@ -52,6 +49,9 @@ public class RoundingEditActivity extends Activity {
     Handler handler = new Handler();
     private ProgressDialog progress = null;
     private boolean isTitle=false;
+
+    private HashMap<String,Object> current_open_activity_detail = new HashMap<String,Object>();
+    private boolean save_state = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -78,6 +78,13 @@ public class RoundingEditActivity extends Activity {
         buddyname=getIntent().getStringExtra("buddyname");
         firstname=getIntent().getStringExtra("firstname");
         groupid=getIntent().getStringExtra("groupid");
+
+        current_open_activity_detail = new HashMap<String,Object>();
+        current_open_activity_detail.put("activtycontext",context);
+        current_open_activity_detail.put("buddyname",buddyname);
+        current_open_activity_detail.put("firstname",firstname);
+        current_open_activity_detail.put("groupid",groupid);
+
         buddy.setText(firstname);
         GroupMemberBean bean=DBAccess.getdbHeler().getMemberDetails(groupid,buddyname);
         if(bean.getAdmin()!=null){
@@ -340,5 +347,21 @@ public class RoundingEditActivity extends Activity {
     public static class ViewHolder {
         ImageView icon;
         TextView rights;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(save_state){
+            SingleInstance.current_open_activity_detail.putAll(this.current_open_activity_detail);
+            save_state = false;
+        } else {
+            SingleInstance.current_open_activity_detail.clear();
+        }
+    }
+
+    public void finishScreenforCallRequest(){
+        save_state = true;
+        this.finish();
     }
 }

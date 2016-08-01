@@ -1,24 +1,20 @@
 package org.core;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
-import java.net.InetAddress;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Timer;
+import android.content.Context;
+import android.content.res.Resources.NotFoundException;
+import android.media.MediaCodec;
+import android.media.MediaExtractor;
+import android.media.MediaFormat;
+import android.media.MediaMuxer;
+import android.opengl.GLSurfaceView;
+import android.os.Environment;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.cg.callservices.VideoThreadBean;
+import com.cg.commonclass.CallDispatcher;
+import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
 
 import org.audio.AudioRecorder;
 import org.audio.AudioRecorderListener;
@@ -40,16 +36,25 @@ import org.video.VideoCodec;
 import org.video.VideoFrameCallback;
 import org.video.VideoFrameRenderer;
 
-import android.content.Context;
-import android.content.res.Resources.NotFoundException;
-import android.opengl.GLSurfaceView;
-import android.os.Environment;
-import android.util.Log;
-
-import com.cg.callservices.VideoCallScreen;
-import com.cg.callservices.VideoThreadBean;
-import com.cg.commonclass.CallDispatcher;
-import com.cg.commonclass.WebServiceReferences;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.net.InetAddress;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.Timer;
 
 /**
  * 
@@ -3123,6 +3128,7 @@ public class CommunicationEngine implements AudioRecorderListener,
 	 * Used to Stop AudioCapture from AudioRecorder.Also stop the AudioRecorder.
 	 */
 	public void stopAudioCapture() {
+		Log.i("Recording","stopAudioCapture");
 		if (audioRecorder != null) {
 			if (CallDispatcher.sb.getCallType().equalsIgnoreCase("ABC")
 					|| CallDispatcher.sb.getCallType().equalsIgnoreCase("VBC")
@@ -4160,6 +4166,8 @@ public class CommunicationEngine implements AudioRecorderListener,
 					rFile.seek(0);
 					rFile.write(header);
 					rFile.close();
+					Log.i(TAG, "mixFiles");
+//					muxing(fileName,"mix");
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -4243,6 +4251,142 @@ public class CommunicationEngine implements AudioRecorderListener,
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+
+
+	/*
+	* Recorded call Audio and Video Mixing
+	*/
+
+	private String TAG = "Recording";
+	private boolean vc = false;
+	private boolean am = false;
+	public void muxing(String path_sessioid,String from) {
+
+		String outputFile = "";
+		if (from.equalsIgnoreCase("video")) {
+			vc = true;
+		} else if (from.equalsIgnoreCase("mix")) {
+			am = true;
+		}
+		try {
+			if (vc && am) {
+				vc = false;
+				am = false;
+				File file = new File(Environment.getExternalStorageDirectory() + File.separator + "final2.mp4");
+				file.createNewFile();
+				outputFile = file.getAbsolutePath();
+
+				MediaExtractor videoExtractor = new MediaExtractor();
+//			AssetFileDescriptor afdd = getAssets().openFd("Produce.MP4");
+//			videoExtractor.setDataSource(afdd.getFileDescriptor(), afdd.getStartOffset(), afdd.getLength());
+
+				videoExtractor.setDataSource(Environment.getExternalStorageDirectory()
+						+ "/COMMedia/CallRecording/"
+						+ path_sessioid + ".mp4");
+
+				MediaExtractor audioExtractor = new MediaExtractor();
+				audioExtractor.setDataSource(Environment.getExternalStorageDirectory()
+						+ "/one.mp3");
+
+				Log.d(TAG, "Video Extractor Track Count " + videoExtractor.getTrackCount());
+				Log.d(TAG, "Audio Extractor Track Count " + audioExtractor.getTrackCount());
+
+				MediaMuxer muxer = new MediaMuxer(outputFile, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
+
+				videoExtractor.selectTrack(0);
+				MediaFormat videoFormat = videoExtractor.getTrackFormat(0);
+				Log.d(TAG, "Video Format " + videoFormat.toString());
+				int videoTrack = muxer.addTrack(videoFormat);
+
+				audioExtractor.selectTrack(0);
+				MediaFormat audioFormat = audioExtractor.getTrackFormat(0);
+				Log.d(TAG, "Audio Format " + audioFormat.toString());
+				MediaFormat mediaFormat = new MediaFormat();
+
+				int audioTrack = muxer.addTrack(audioFormat);
+
+
+				boolean sawEOS = false;
+				int frameCount = 0;
+				int offset = 100;
+				int sampleSize = 256 * 1024;
+				ByteBuffer videoBuf = ByteBuffer.allocate(sampleSize);
+				ByteBuffer audioBuf = ByteBuffer.allocate(sampleSize);
+				MediaCodec.BufferInfo videoBufferInfo = new MediaCodec.BufferInfo();
+				MediaCodec.BufferInfo audioBufferInfo = new MediaCodec.BufferInfo();
+
+
+				videoExtractor.seekTo(0, MediaExtractor.SEEK_TO_CLOSEST_SYNC);
+				audioExtractor.seekTo(0, MediaExtractor.SEEK_TO_CLOSEST_SYNC);
+
+				muxer.start();
+
+				while (!sawEOS) {
+					videoBufferInfo.offset = offset;
+					videoBufferInfo.size = videoExtractor.readSampleData(videoBuf, offset);
+
+
+					if (videoBufferInfo.size < 0 || audioBufferInfo.size < 0) {
+						Log.d(TAG, "saw input EOS.");
+						sawEOS = true;
+						videoBufferInfo.size = 0;
+
+					} else {
+						videoBufferInfo.presentationTimeUs = videoExtractor.getSampleTime();
+						videoBufferInfo.flags = videoExtractor.getSampleFlags();
+						muxer.writeSampleData(videoTrack, videoBuf, videoBufferInfo);
+						videoExtractor.advance();
+
+
+						frameCount++;
+						Log.d(TAG, "Frame (" + frameCount + ") Video PresentationTimeUs:" + videoBufferInfo.presentationTimeUs + " Flags:" + videoBufferInfo.flags + " Size(KB) " + videoBufferInfo.size / 1024);
+						Log.d(TAG, "Frame (" + frameCount + ") Audio PresentationTimeUs:" + audioBufferInfo.presentationTimeUs + " Flags:" + audioBufferInfo.flags + " Size(KB) " + audioBufferInfo.size / 1024);
+
+					}
+				}
+
+				Toast.makeText(AppReference.mainContext, "frame:" + frameCount, Toast.LENGTH_SHORT).show();
+
+
+				boolean sawEOS2 = false;
+				int frameCount2 = 0;
+				while (!sawEOS2) {
+					frameCount2++;
+
+					audioBufferInfo.offset = offset;
+					audioBufferInfo.size = audioExtractor.readSampleData(audioBuf, offset);
+
+					if (videoBufferInfo.size < 0 || audioBufferInfo.size < 0) {
+						Log.d(TAG, "saw input EOS.");
+						sawEOS2 = true;
+						audioBufferInfo.size = 0;
+					} else {
+						audioBufferInfo.presentationTimeUs = audioExtractor.getSampleTime();
+						audioBufferInfo.flags = audioExtractor.getSampleFlags();
+						muxer.writeSampleData(audioTrack, audioBuf, audioBufferInfo);
+						audioExtractor.advance();
+
+
+						Log.d(TAG, "Frame (" + frameCount + ") Video PresentationTimeUs:" + videoBufferInfo.presentationTimeUs + " Flags:" + videoBufferInfo.flags + " Size(KB) " + videoBufferInfo.size / 1024);
+						Log.d(TAG, "Frame (" + frameCount + ") Audio PresentationTimeUs:" + audioBufferInfo.presentationTimeUs + " Flags:" + audioBufferInfo.flags + " Size(KB) " + audioBufferInfo.size / 1024);
+
+					}
+				}
+
+				Toast.makeText(AppReference.mainContext, "frame:" + frameCount2, Toast.LENGTH_SHORT).show();
+
+				muxer.stop();
+				muxer.release();
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			Log.d(TAG, "Mixer Error 1 " + e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Log.d(TAG, "Mixer Error 2 " + e.getMessage());
 		}
 	}
 }

@@ -55,6 +55,7 @@ import com.group.AddGroupMembers;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
 import com.main.ContactsFragment;
+import com.service.ChatHeadDrawerService;
 import com.service.FloatingCallService;
 import com.util.SingleInstance;
 
@@ -202,10 +203,6 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	private boolean isMinimize=false;
 	TextView member_count;
 
-//	TextView textView1;
-//	TextView textView2;
-//	TextView textView3;
-
 	MediaPlayer mediaPlayer;
 	boolean video_1_shown= true, video_2_shown= true;
 	// String acStatus=null;
@@ -336,10 +333,10 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 									.setEndTime(objCallDispatcher.getCurrentDateandTime());
 							CallDispatcher.sb
 									.setCallDuration(SingleInstance.mainContext
-											.getCallDuration(CallDispatcher.sb
-															.getStartTime(),
-													CallDispatcher.sb
-															.getEndTime()));
+                                            .getCallDuration(CallDispatcher.sb
+                                                            .getStartTime(),
+                                                    CallDispatcher.sb
+                                                            .getEndTime()));
 							CallDispatcher.sb.setCallstatus("callattended");
 
 							//For Callhistory host and participant name entry
@@ -366,7 +363,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 							DBAccess.getdbHeler()
 									.saveOrUpdateRecordtransactiondetails(
-											CallDispatcher.sb);
+                                            CallDispatcher.sb);
 
 							// }
 							// Log.d("test", "From leave/bye");
@@ -467,12 +464,12 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 								} else {
 									objCallDispatcher
 											.notifyCallHistoryToServer(
-													objCallDispatcher.LoginUser,
-													bundle.getString("bye"),
-													"211",
-													objCallDispatcher.sessId,
-													getCurrentDateTime(),
-													getCurrentDateTime());
+                                                    objCallDispatcher.LoginUser,
+                                                    bundle.getString("bye"),
+                                                    "211",
+                                                    objCallDispatcher.sessId,
+                                                    getCurrentDateTime(),
+                                                    getCurrentDateTime());
 								}
 
 								if (alert != null && alert.isShowing()) {
@@ -559,10 +556,10 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 								.setEndTime(objCallDispatcher.getCurrentDateandTime());
 						CallDispatcher.sb
 								.setCallDuration(SingleInstance.mainContext
-										.getCallDuration(CallDispatcher.sb
-														.getStartTime(),
-												CallDispatcher.sb
-														.getEndTime()));
+                                        .getCallDuration(CallDispatcher.sb
+                                                        .getStartTime(),
+                                                CallDispatcher.sb
+                                                        .getEndTime()));
 								CallDispatcher.sb.setCallstatus("callattended");
 
 								//For Callhistory host and participant name entry
@@ -589,7 +586,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 								DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 								DBAccess.getdbHeler()
 										.saveOrUpdateRecordtransactiondetails(
-												CallDispatcher.sb);
+                                                CallDispatcher.sb);
 								showCallHistory();
 								Log.d("Test","Inside Videocallscreen SelfHangUp@@@@@");
 							}
@@ -924,7 +921,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 										context,
 										SingleInstance.mainContext.getResources()
 												.getString(
-														R.string.max_conf_members),
+                                                        R.string.max_conf_members),
 										Toast.LENGTH_SHORT).show();
 							}
 						} catch (Exception e) {
@@ -1101,7 +1098,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 										context,
 										SingleInstance.mainContext.getResources()
 												.getString(
-														R.string.max_conf_members),
+                                                        R.string.max_conf_members),
 										Toast.LENGTH_SHORT).show();
 							}
 						} catch (Exception e) {
@@ -1533,7 +1530,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 											SingleInstance.mainContext
 													.getResources()
 													.getString(
-															R.string.unable_send_video),
+                                                            R.string.unable_send_video),
 											Toast.LENGTH_LONG).show();
 									//
 									Message message = new Message();
@@ -1574,6 +1571,10 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 					receivedHangUp();
 				}
 			}
+//			AppReference.mainContext.startRecording();
+//			startVideoRecording();
+//			recording_start = true;
+//			onToggleScreenShare(recording_start);
 
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -2046,15 +2047,15 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		builder.setMessage(msg)
 				.setCancelable(false)
 				.setPositiveButton(
-						SingleInstance.mainContext.getResources().getString(
-								R.string.ok),
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
+                        SingleInstance.mainContext.getResources().getString(
+                                R.string.ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
 //								finish();
-								finishVideocallScreen();
-								return;
-							}
-						});
+                                finishVideocallScreen();
+                                return;
+                            }
+                        });
 		alert = builder.create();
 		alert.show();
 	}
@@ -2229,36 +2230,38 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			builder.setMessage(ask)
 					.setCancelable(false)
 					.setPositiveButton(
-							SingleInstance.mainContext.getResources()
-									.getString(R.string.yes),
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-													int id) {
-									try {
-										selfHangup = true;
-										Message message = new Message();
-										Bundle bundle = new Bundle();
-										bundle.putString("hangupfullscreen",
-												"hangupfullscreen");
-										message.obj = bundle;
-										// Log.e("h_bye", "");
-										videoHandler.sendMessage(message);
-									} catch (Exception e) {
-										// TODO: handle exception
-										e.printStackTrace();
-									}
+                            SingleInstance.mainContext.getResources()
+                                    .getString(R.string.yes),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int id) {
+                                    try {
+//                                        recording_start = false;
+//										onToggleScreenShare(recording_start);
+                                        selfHangup = true;
+                                        Message message = new Message();
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("hangupfullscreen",
+                                                "hangupfullscreen");
+                                        message.obj = bundle;
+                                        // Log.e("h_bye", "");
+                                        videoHandler.sendMessage(message);
+                                    } catch (Exception e) {
+                                        // TODO: handle exception
+                                        e.printStackTrace();
+                                    }
 
-								}
-							})
+                                }
+                            })
 					.setNegativeButton(
-							SingleInstance.mainContext.getResources()
-									.getString(R.string.no),
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-													int id) {
-									dialog.cancel();
-								}
-							});
+                            SingleInstance.mainContext.getResources()
+                                    .getString(R.string.no),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int id) {
+                                    dialog.cancel();
+                                }
+                            });
 			alert = builder.create();
 
 			alert.show();
@@ -2292,18 +2295,18 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 				.setMessage(message)
 				.setCancelable(false)
 				.setNegativeButton(
-						SingleInstance.mainContext.getResources().getString(
-								R.string.hangup),
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								try {
-									forceHAngUp();
-								} catch (Exception e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-							}
-						});
+                        SingleInstance.mainContext.getResources().getString(
+                                R.string.hangup),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                try {
+                                    forceHAngUp();
+                                } catch (Exception e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
 		alertCall.show();
 	}
 
@@ -2395,7 +2398,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	/**
 	 * Show the list of Online Buddies to add them on the conference.Alert view
 	 * is used to show the Buddy List.
-	 * 
+	 *
 	 * @param callType
 	 *            VideoCall.
 	 */
@@ -2461,7 +2464,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	/**
 	 * Used to select the Particular user To view the Users Videos on the
 	 * Screen.(Connected Users).
-	 * 
+	 *
 	 * @param buddyVideo
 	 *            BuddyName.
 	 */
@@ -2701,7 +2704,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 	/**
 	 * Perform any final cleanup before an activity is destroyed.
-	 * 
+	 *
 	 */
 	public void onDestroy() {
 
@@ -3709,11 +3712,11 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		//
 		// }
 		// else{
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-		} else {
-			AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
-		}
+//		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//
+//		} else {
+			AppReference.mainContext.stopService(new Intent(AppReference.mainContext, ChatHeadDrawerService.class));
+//		}
 		Activity parent = getActivity();
 		if(parent != null){
 			video_minimize.setVisibility(View.GONE);
@@ -3988,8 +3991,8 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 								SignalingBean sb = objCallDispatcher
 										.callconfernceUpdate(
-												choiceList[which].toString(),
-												callType, sessionid);
+                                                choiceList[which].toString(),
+                                                callType, sessionid);
 
 								CallDispatcher.conferenceRequest.put(
 										choiceList[which].toString(), sb);
@@ -4026,25 +4029,25 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		builder.setMessage(ask)
 				.setCancelable(false)
 				.setPositiveButton(
-						SingleInstance.mainContext.getResources().getString(
-								R.string.yes),
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
+                        SingleInstance.mainContext.getResources().getString(
+                                R.string.yes),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
 
-								forceHAngUp();
-								dialog.cancel();
+                                forceHAngUp();
+                                dialog.cancel();
 
-							}
-						})
+                            }
+                        })
 				.setNegativeButton(
-						SingleInstance.mainContext.getResources().getString(
-								R.string.no),
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
+                        SingleInstance.mainContext.getResources().getString(
+                                R.string.no),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
 
-								dialog.cancel();
-							}
-						});
+                                dialog.cancel();
+                            }
+                        });
 		AlertDialog alert1 = builder.create();
 		alert1.show();
 
@@ -4061,7 +4064,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 
 	public void notifyVideoSSRC(String buddy, int ssrc){
-		Log.i("NotesVideo","came to notifyVideoSSRC : buddy => "+buddy+" ssrc => "+ssrc);
+		Log.i("NotesVideo", "came to notifyVideoSSRC : buddy => " + buddy + " ssrc => " + ssrc);
 		if(videoSSRC.containsKey(buddy)){
 			Log.i("NotesVideo","inside if");
 			videoSSRC.put(buddy, ssrc);
@@ -4128,7 +4131,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 								res_info[2] = objCallDispatcher
 										.getdbHeler(context)
 										.getwheninfo(
-												"select cid from clonemaster where cdescription='Offline'");
+                                                "select cid from clonemaster where cdescription='Offline'");
 							else
 								res_info[2] = "";
 
@@ -4157,13 +4160,15 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 	public void finishVideocallScreen()
 	{
-
+		Log.i("Recording","finishVideocallScreen");
 		try {
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-			} else {
-				AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
-			}
+//			AppReference.mainContext.startRecording();
+//			onToggleScreenShare(false);
+//			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//
+//			} else {
+				AppReference.mainContext.stopService(new Intent(AppReference.mainContext, ChatHeadDrawerService.class));
+//			}
 			if (SingleInstance.instanceTable.containsKey("callactivememberslist")) {
 				CallActiveMembersList activeMembersList = (CallActiveMembersList) SingleInstance.instanceTable.get("callactivememberslist");
 				activeMembersList.finishActivity();
@@ -4344,14 +4349,14 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	}
 
 	void addShowHideListener() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-		} else {
-			Intent serviceIntent = new Intent(getActivity(), FloatingCallService.class);
+//		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//
+//		} else {
+			Intent serviceIntent = new Intent(getActivity(), ChatHeadDrawerService.class);
 			serviceIntent.putExtra("sview", 2);
 			serviceIntent.putExtra("callscreen", "VCS");
 			getActivity().startService(serviceIntent);
-		}
+//		}
 		isMinimize=true;
 		FragmentManager fm =
 				AppReference.mainContext.getSupportFragmentManager();
@@ -4424,4 +4429,9 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		}
 	}
 
+
+	public void assignMediaStop(){
+		hasRemoved = true;
+		mRenderFrame = false;
+	}
 }

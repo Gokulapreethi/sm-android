@@ -176,6 +176,7 @@ import com.main.Registration;
 import com.main.SettingsFragment;
 import com.main.ViewProfileFragment;
 import com.screensharing.ScreenSharingFragment;
+import com.service.ChatHeadDrawerService;
 import com.service.FloatingCallService;
 import com.util.SingleInstance;
 
@@ -2438,11 +2439,11 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					SingleInstance.mainContext.runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
-							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-							} else {
-								AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
-							}
+//							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//
+//							} else {
+								AppReference.mainContext.stopService(new Intent(AppReference.mainContext, ChatHeadDrawerService.class));
+//							}
 							ImageView min_outcall = (ImageView) SingleInstance.mainContext.findViewById(R.id.min_outcall);
 							min_outcall.setVisibility(View.GONE);
 							ImageView min_incall = (ImageView) SingleInstance.mainContext.findViewById(R.id.min_incall);

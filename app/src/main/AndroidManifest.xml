@@ -60,6 +60,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <application
         android:name="com.Fingerprint.InjectedApplication"
         android:icon="@drawable/logo"
@@ -570,6 +571,9 @@
         </service>
 
         <service android:name="com.service.FloatingCallService"/>
+
+        <service android:name="com.service.ChatHeadDrawerService"
+            android:enabled="true"/>
         <!-- Goolge API Key -->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
