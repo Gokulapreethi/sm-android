@@ -8081,7 +8081,9 @@ public class XmlParser {
 			is.setCharacterStream(new StringReader(xml));
 			doc = (Document) db.parse(is);
 			Log.i("CHATSYNC", "parse started");
+			Element element=null;
 			list = doc.getElementsByTagName("chatmessage");
+
 
 			for (int i = 0; i < list.getLength(); i++) {
 				GroupChatBean cBean=new GroupChatBean();
@@ -8095,8 +8097,9 @@ public class XmlParser {
 					cBean.setSignalid(nodeMap.getNamedItem("signalid").getNodeValue());
 				if (nodeMap.getNamedItem("sessionid") != null)
 					cBean.setSessionid(nodeMap.getNamedItem("sessionid").getNodeValue());
-				if (nodeMap.getNamedItem("category") != null)
-					cBean.setCategory(nodeMap.getNamedItem("category").getNodeValue());
+				if (nodeMap.getNamedItem("chattype") != null)
+					cBean.setCategory(nodeMap.getNamedItem("chattype").getNodeValue());
+				cBean.setType("100");
 				if (nodeMap.getNamedItem("subcategory") != null)
 					cBean.setSubCategory(nodeMap.getNamedItem("subcategory").getNodeValue());
 				if (nodeMap.getNamedItem("mimetype") != null)
@@ -8107,22 +8110,42 @@ public class XmlParser {
 					cBean.setParentId(nodeMap.getNamedItem("parentid").getNodeValue());
 				if (nodeMap.getNamedItem("remaindertime") != null)
 					cBean.setReminderTime(nodeMap.getNamedItem("remaindertime").getNodeValue());
+				if (nodeMap.getNamedItem("messagestatus") != null)
+					cBean.setMessagestatus(nodeMap.getNamedItem("messagestatus").getNodeValue());
 				if (nodeMap.getNamedItem("senttime") != null)
 					cBean.setSenttime(nodeMap.getNamedItem("senttime").getNodeValue());
 				if (nodeMap.getNamedItem("senttimezone") != null)
 					cBean.setSenttimez(nodeMap.getNamedItem("senttimezone").getNodeValue());
-				if (nodeMap.getNamedItem("dateandtime") != null)
-					cBean.setSenttime(nodeMap.getNamedItem("dateandtime").getNodeValue());
+				if (nodeMap.getNamedItem("status") != null)
+					cBean.setCstatus(nodeMap.getNamedItem("status").getNodeValue());
+//				if (nodeMap.getNamedItem("dateandtime") != null)
+//					cBean.setSenttime(nodeMap.getNamedItem("dateandtime").getNodeValue());
+				if (nodeMap.getNamedItem("sentstatustime") != null)
+					cBean.setSentstatustime(nodeMap.getNamedItem("sentstatustime").getNodeValue());
+				if (nodeMap.getNamedItem("deliverstatustime") != null)
+					cBean.setDeliverstatustime(nodeMap.getNamedItem("deliverstatustime").getNodeValue());
+				if (nodeMap.getNamedItem("readstatustime") != null)
+					cBean.setReadstatustime(nodeMap.getNamedItem("readstatustime").getNodeValue());
 				if (nodeMap.getNamedItem("ftpusername") != null)
 					cBean.setFtpUsername(nodeMap.getNamedItem("ftpusername").getNodeValue());
 				if (nodeMap.getNamedItem("ftppassword") != null)
 					cBean.setFtpPassword(nodeMap.getNamedItem("ftppassword").getNodeValue());
 				if (nodeMap.getNamedItem("filename") != null)
 					cBean.setMediaName(nodeMap.getNamedItem("filename").getNodeValue());
+				if (nodeMap.getNamedItem("filecomment") != null)
+					cBean.setComment(nodeMap.getNamedItem("filecomment").getNodeValue());
+				if (nodeMap.getNamedItem("filetitle") != null)
+					cBean.setFiletitle(nodeMap.getNamedItem("filetitle").getNodeValue());
 				if (nodeMap.getNamedItem("psignalid") != null)
 					cBean.setpSingnalId(nodeMap.getNamedItem("psignalid").getNodeValue());
-				if (nodeMap.getNamedItem("message") != null)
-					cBean.setMessage(nodeMap.getNamedItem("message").getNodeValue());
+				element = (Element) doc.getElementsByTagName("message").item(i);
+				if (element != null) {
+					String message = getCharacterDataFromElement(element);
+					if (message != null && !message.trim().equals("")) {
+						cBean.setMessage(message);
+					}
+				}
+
 				sync.add(cBean);
 			}
 		} catch (Exception e) {

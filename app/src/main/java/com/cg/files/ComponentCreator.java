@@ -99,6 +99,7 @@ import com.cg.instancemessage.NotePickerScreen;
 import com.cg.quickaction.ShareNotePicker;
 import com.cg.timer.ReminderService;
 import com.crypto.AESFileCrypto;
+import com.group.chat.SendListUIBean;
 import com.image.utils.FileImageLoader;
 import com.image.utils.ImageLoader;
 import com.image.utils.ImageUtils;
@@ -448,9 +449,11 @@ public class ComponentCreator extends Activity implements IMNotifier {
 								try {
 									Intent intent = new Intent(context, FilePicker.class);
 									startActivityForResult(intent, 38);
+									GET_RESOURCES = DOCUMENT;
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
+							dialog.dismiss();
 						}
 					});
 					audio.setOnClickListener(new OnClickListener() {
@@ -1787,6 +1790,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 												.getNoteCreateTimeForFiles(),
 										filename.getText().toString().trim(),
 										complBean,fileDesc.getText().toString().trim());
+								Log.i("getresource","value"+GET_RESOURCES);
 								if (SingleInstance.ContactSharng
 										|| parentID != null) {
 									SingleInstance.ContactSharng = false;
@@ -1822,6 +1826,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 										if (!send) {
 											ON_CREATE = false;
 											callDisp.cmp = cbean;
+											Log.i("getresources","valueof___________>");
 											openNote();
 											showToast(SingleInstance.mainContext
 													.getResources()
@@ -1954,6 +1959,11 @@ public class ComponentCreator extends Activity implements IMNotifier {
 						.getCallDispatcher(SingleInstance.mainContext);
 			}
 			cbean = callDisp.cmp;
+			Log.i("getResources","componenttype"+cbean.getcomponentType());
+			Log.i("getResources","cmponenetid"+cbean.getComponentId());
+			Log.i("getResources","content"+cbean.getContent());
+			Log.i("getResources","contentpath"+cbean.getContentpath());
+
 			if (cbean.getContent() != null) {
 				btn_comment.setText(cbean.getContent());
 				Log.i("cmt", "-----open note" + cbean.getContent());
@@ -3326,6 +3336,16 @@ public class ComponentCreator extends Activity implements IMNotifier {
 					e.printStackTrace();
 				}
 
+			}else if (requestCode == 38) {
+				Log.d("strpath", "chatdoc " + strIPath);
+				ComponentPath = data.getStringExtra("filePath");
+				File fileCheck = new File(ComponentPath);
+
+				if (fileCheck.exists()) {
+					tv_file.setVisibility(View.INVISIBLE);
+					file_img.setVisibility(View.INVISIBLE);
+					imageLoader.DisplayImage(ComponentPath, newFileImg, drawable.attachfile);
+				}
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

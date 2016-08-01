@@ -417,7 +417,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         dialog.show();
 
                         TextView sync_chat = (TextView) dialog.findViewById(R.id.edit_grp);
-                        sync_chat.setVisibility(View.GONE);
+                        sync_chat.setVisibility(View.VISIBLE);
                         sync_chat.setText("SYNC CHAT");
                         TextView sms = (TextView) dialog.findViewById(R.id.invite_grp);
                         sms.setText("Invite User to Group");
@@ -440,8 +440,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         sync_chat.setOnClickListener(new OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                showprogress();
-                                WebServiceReferences.webServiceClient.ChatSync(buddy,SingleInstance.mainContext);
+                                dialog.dismiss();
+                                chatsync();
                             }
                         });
                         delet_user.setOnClickListener(new View.OnClickListener() {
@@ -3159,6 +3159,82 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             else
                 e.printStackTrace();
         }
+    }
+    private void chatsync(){
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.group_dialog);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.horizontalMargin = 15;
+        Window window = dialog.getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        window.setAttributes(lp);
+        window.setGravity(Gravity.BOTTOM);
+        dialog.show();
+
+        TextView threedays = (TextView) dialog.findViewById(R.id.edit_grp);
+        threedays.setVisibility(View.VISIBLE);
+        threedays.setText("3 Days");
+        TextView seven_days = (TextView) dialog.findViewById(R.id.invite_grp);
+        seven_days.setText("7 Days");
+        TextView one_month = (TextView) dialog.findViewById(R.id.leave_grp);
+        one_month.setText("30 Days");
+        one_month.setBackgroundColor(getResources().getColor(R.color.blue2));
+        TextView all_chat = (TextView) dialog.findViewById(R.id.delete_grp);
+        all_chat.setText("All Days");
+        all_chat.setBackgroundColor(getResources().getColor(R.color.blue2));
+        TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                try {
+                    dialog.dismiss();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        all_chat.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                showprogress();
+                WebServiceReferences.webServiceClient.ChatSync(buddy, SingleInstance.mainContext,"");
+            }
+        });
+
+        threedays.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                showprogress();
+                WebServiceReferences.webServiceClient.ChatSync(buddy, SingleInstance.mainContext,"1");
+            }
+        });
+        seven_days.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+
+                dialog.dismiss();
+                showprogress();
+                WebServiceReferences.webServiceClient.ChatSync(buddy, SingleInstance.mainContext,"2");
+            }
+        });
+
+        one_month.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                    dialog.dismiss();
+                    showprogress();
+                    WebServiceReferences.webServiceClient.ChatSync(buddy, SingleInstance.mainContext, "3");
+
+            }
+        });
     }
 
     private void individualCallMenu(int pos) {

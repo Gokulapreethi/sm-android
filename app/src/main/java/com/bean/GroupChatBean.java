@@ -38,6 +38,18 @@ public class GroupChatBean implements Serializable, Cloneable {
 	private boolean playing;
 	private boolean isJoin;
 	private String senderWithdraw;
+	private String messagestatus;
+
+	public String getMessagestatus() {
+		return messagestatus;
+	}
+
+	public void setMessagestatus(String messagestatus) {
+		this.messagestatus = messagestatus;
+	}
+
+
+
 
 	public boolean isforward() {
 		return isforward;
@@ -166,6 +178,47 @@ public class GroupChatBean implements Serializable, Cloneable {
 	private int status;
 	private int unreadStatus;
     private int thumb=0;
+
+	public String getCstatus() {
+		return cstatus;
+	}
+
+	public void setCstatus(String cstatus) {
+		this.cstatus = cstatus;
+	}
+
+	private String cstatus;
+
+
+	public String getReadstatustime() {
+		return readstatustime;
+	}
+
+	public void setReadstatustime(String readstatustime) {
+		this.readstatustime = readstatustime;
+	}
+
+	private String readstatustime;
+
+	public String getDeliverstatustime() {
+		return deliverstatustime;
+	}
+
+	public void setDeliverstatustime(String deliverstatustime) {
+		this.deliverstatustime = deliverstatustime;
+	}
+
+	private String deliverstatustime;
+
+	public String getSentstatustime() {
+		return sentstatustime;
+	}
+
+	public void setSentstatustime(String sentstatustime) {
+		this.sentstatustime = sentstatustime;
+	}
+
+	private String sentstatustime;
 
 	public String getReminderTime() {
 		return reminderTime;

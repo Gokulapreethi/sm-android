@@ -1156,6 +1156,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	public void processGroupChatChanges(GroupChatBean gcBean) {
 
 		try {
+			Log.i("entering","processchtat----->");
 
 			SingleInstance.printLog("UDP_NOTIFICATION",
                     "Received UDP Notification - 1" + gcBean.getMediaName(),
@@ -1172,6 +1173,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				saveAndSettingScheduler(gcBean);
 			} else {
 				saveAndNotifyGroupChatUI(gcBean);
+				Log.i("entering", "saveAndNotifyGroupChatUI----->");
 			}
 
 		} catch (Exception e) {
@@ -1689,6 +1691,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	private void saveAndNotifyGroupChatUI(GroupChatBean gcBean) {
 
 		try {
+			Log.i("entering", "saveAndNotify11----->");
 
 			GroupChatActivity groupChatActivity = (GroupChatActivity) SingleInstance.contextTable
 					.get("groupchat");
@@ -1709,8 +1712,10 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			if (gcBean.getCategory().equalsIgnoreCase("I")) {
 				gcBean.setSessionid(gcBean.getFrom());
 				gcBean.setGroupId(gcBean.getFrom());
+				Log.i("entering", "sessionid"+gcBean.getSessionid());
 			} else {
 				gcBean.setGroupId(gcBean.getTo());
+				Log.i("entering", "groupid"+gcBean.getGroupId());
 			}
 			SingleInstance.printLog("GROUP123",
 					"history writer :  " + gcBean.getGroupId(), "INFO", null);
@@ -1719,11 +1724,13 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				if (groupChatActivity.isGroup || groupChatActivity.isRounding
 						&& groupChatActivity.groupId
 								.equals(gcBean.getGroupId())) {
+					Log.i("entering", "group");
 					isOpen = true;
 				}
 				if (!groupChatActivity.isGroup&& !groupChatActivity.isRounding
 						&& groupChatActivity.buddy.equals(gcBean.getGroupId()
 								.replace(CallDispatcher.LoginUser, ""))) {
+					Log.i("entering", "rounding");
 					isOpen = true;
 				}
 			}
@@ -8663,21 +8670,28 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			groupChatActivity.cancelDialog();
 		}
 		if (obj instanceof ArrayList) {
+			Log.i("entering","arraylist----->");
 			ArrayList<GroupChatBean> chatList = (ArrayList<GroupChatBean>) obj;
+			Log.i("entering","arraylist1----->"+chatList.size());
 			for(GroupChatBean groupChatBean:chatList) {
 				if (groupChatBean.getMimetype().equals("text")
 						|| groupChatBean.getMimetype().equals("location")) {
+					Log.i("entering","text----->");
 					processGroupChatChanges(groupChatBean);
+
 
 				} else {
 					groupChatBean.setStatus(0);
+					Log.i("entering", "status----->");
 					processGroupChatChanges(groupChatBean.clone());
 					String fileName = groupChatBean.getMediaName();
 					groupChatBean
 							.setMediaName(Utils
 									.getFilePathString(groupChatBean
 											.getMediaName()));
+					Log.i("entering", "downloading----->");
 					downloadGroupChatFile(groupChatBean, fileName);
+					Log.i("entering", "downloadingchat----->");
 				}
 			}
 		} else if (obj instanceof WebServiceBean) {

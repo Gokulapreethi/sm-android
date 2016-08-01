@@ -253,7 +253,7 @@ public class FileInfoFragment extends Fragment {
                             fileIcon.setVisibility(View.VISIBLE);
                             fileImageLoader.DisplayImage(cbean.getContentpath(), fileIcon, R.drawable.photonotesnew);
                         } else if (cbean.getcomponentType().trim().equalsIgnoreCase("document")) {
-//                            fileIcon.setBackgroundResource(R.drawable.textnotesnew);
+                            fileIcon.setBackgroundResource(R.drawable.attachfile);
 //                            String[] name = cbean.getContentpath().split("\\.");
 //                            fileIcon.setTag(cbean.getComponentId());
 //                            String extn = name[1];

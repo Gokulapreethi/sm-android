@@ -5767,7 +5767,7 @@ public class DBAccess extends SQLiteOpenHelper {
 				componentType = "video";
 			else if (option == 6)
 				componentType = "sketch";
-			else if (option == 7)
+			else if (option == 9)
 				componentType = "document";
 
 			cv.put("componenttype", componentType);

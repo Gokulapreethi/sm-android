@@ -2654,8 +2654,10 @@ public class CompleteListView extends FragmentActivity implements
 				componentType = "video";
 			else if (option == 6)
 				componentType = "sketch";
-			else if (option == 7)
+			else if (option == 9)
 				componentType = "document";
+			Log.i("getresource","dbvalue----componenttyrp"+componentType);
+			Log.i("getresource","dbvalue--option"+option);
 
 			cv.put("componenttype", componentType);
 			cv.put("componentpath", ComponentPath);

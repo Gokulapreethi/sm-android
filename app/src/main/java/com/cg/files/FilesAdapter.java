@@ -288,6 +288,11 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
 			holder.overlay.setVisibility(View.GONE);
 				fileImageLoader.DisplayImage(fileBean.getContentpath().replace(".mp4", ".jpg"), holder.fileIcon, R.drawable.audionotesnew);
 			}
+		else if (fileBean.getcomponentType().trim().equals("document")) {
+			holder.fileIcon.setVisibility(View.VISIBLE);
+			holder.overlay.setVisibility(View.GONE);
+			fileImageLoader.DisplayImage("",holder.fileIcon, R.drawable.attachfile);
+		}
 
 		else if (fileBean.getcomponentType().trim().equals("video")) {
 				holder.fileIcon.setTag(fileBean.getComponentId());

@@ -96,13 +96,13 @@ public class ForwardUserSelectionAdapter extends ArrayAdapter<BuddyInformationBe
                 holder.buddyName.setText(userBean.getFirstname()+" "+userBean.getLastname());
 
                 String cname1, cname2;
-                cname1 = String.valueOf(userBean.getFirstname().charAt(0));
+                cname1 = String.valueOf(userBean.getLastname().charAt(0));
 
                 holder.header_title.setText(cname1.toUpperCase());
 
                 if (position > 0) {
                     final BuddyInformationBean Binfobean = userList.get(position - 1);
-                    cname2 = String.valueOf(Binfobean.getFirstname().charAt(0));
+                    cname2 = String.valueOf(Binfobean.getLastname().charAt(0));
                     if (cname1.equalsIgnoreCase(cname2)) {
                         holder.header_title.setVisibility(View.GONE);
                     } else {
@@ -156,8 +156,6 @@ public class ForwardUserSelectionAdapter extends ArrayAdapter<BuddyInformationBe
                     } else {
                         holder.statusIcon.setBackgroundResource(R.drawable.offline_icon);
                     }
-
-
                 }
             }
 
