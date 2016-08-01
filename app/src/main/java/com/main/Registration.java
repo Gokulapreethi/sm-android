@@ -1960,7 +1960,7 @@ public class Registration extends Activity {
                             param[6]= String.valueOf(length);
                             if (file.exists()) {
                                 param[4] = encodeTobase64(BitmapFactory.decodeFile(file.getPath()));
-                                WebServiceReferences.webServiceClient.FileUpload(param,Registration.this);
+                                WebServiceReferences.webServiceClient.FileUpload(param,Registration.this,"");
                                 FileDetailsBean fBean=new FileDetailsBean();
                                 fBean.setFilename(param[3]);
                                 fBean.setFiletype("image");

@@ -675,7 +675,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 					param[6]= String.valueOf(length);
 					if(file.exists()) {
 						param[4] = encodeTobase64(BitmapFactory.decodeFile(file.getPath()));
-						WebServiceReferences.webServiceClient.FileUpload(param,GroupActivity.this);
+						WebServiceReferences.webServiceClient.FileUpload(param,GroupActivity.this,"");
 						FileDetailsBean fBean=new FileDetailsBean();
 						fBean.setFilename(param[3]);
 						fBean.setFiletype("image");

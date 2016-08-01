@@ -3287,22 +3287,14 @@ public class XmlParser {
 				String[] temp = new String[3];
 				node = list.item(0);
 				nodeMap = node.getAttributes();
-				if (nodeMap.getNamedItem("groupid") != null)
-					temp[0] = nodeMap.getNamedItem("groupid").getNodeValue();
+				if (nodeMap.getNamedItem("groupId") != null)
+					temp[0] = nodeMap.getNamedItem("groupId").getNodeValue();
 				if (nodeMap.getNamedItem("oldGroupOwner") != null)
 					temp[1] = nodeMap.getNamedItem("oldGroupOwner").getNodeValue();
 				if (nodeMap.getNamedItem("newGroupOwner") != null)
 					temp[2] = nodeMap.getNamedItem("newGroupOwner").getNodeValue();
-				ContentValues cv=new ContentValues();
-				cv.put("groupowner",temp[2]);
-				DBAccess.getdbHeler().updateGroup(cv, temp[0]);
-				DBAccess.getdbHeler().updateGroupMembers(cv,temp[0]);
-				GroupChatActivity gca = (GroupChatActivity) SingleInstance.contextTable
-						.get("groupchat");
-				if(gca!=null) {
-					 if(gca.isRounding && gca.isMemberTab)
-						gca.RoundingMember();
-				}
+				WebServiceReferences.webServiceClient.GetGroupDetails(CallDispatcher.LoginUser,
+						temp[0],SingleInstance.mainContext);
 			}
 
 			list = doc.getElementsByTagName("EditForm");

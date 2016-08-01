@@ -20,6 +20,9 @@ public class Servicebean {
 	private boolean isUpdateavailable = false;
 
 	private Object updateObject;
+	private Object fileUplaod;
+
+	private String uploadOrDownloadFor;
 
 	private HashMap<String, String> property_map;
 
@@ -125,4 +128,19 @@ public class Servicebean {
 		this.extraDatas = extraDatas;
 	}
 
+	public Object getFileUplaod() {
+		return fileUplaod;
+	}
+
+	public void setFileUplaod(Object fileUplaod) {
+		this.fileUplaod = fileUplaod;
+	}
+
+	public String getUploadOrDownloadFor() {
+		return uploadOrDownloadFor;
+	}
+
+	public void setUploadOrDownloadFor(String uploadOrDownloadFor) {
+		this.uploadOrDownloadFor = uploadOrDownloadFor;
+	}
 }

@@ -654,7 +654,7 @@ public class MyAccountFragment extends Fragment {
                 param[6]= String.valueOf(length);
                 if(file.exists()) {
                     param[4] = encodeTobase64(BitmapFactory.decodeFile(file.getPath()));
-                    WebServiceReferences.webServiceClient.FileUpload(param,mainContext);
+                    WebServiceReferences.webServiceClient.FileUpload(param,mainContext,"");
                     FileDetailsBean fBean=new FileDetailsBean();
                     fBean.setFilename(param[3]);
                     fBean.setFiletype("image");

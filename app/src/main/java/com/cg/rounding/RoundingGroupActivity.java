@@ -731,7 +731,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                     param[6]= String.valueOf(length);
                     if(file.exists()) {
                         param[4] = encodeTobase64(BitmapFactory.decodeFile(file.getPath()));
-                        WebServiceReferences.webServiceClient.FileUpload(param,RoundingGroupActivity.this);
+                        WebServiceReferences.webServiceClient.FileUpload(param,RoundingGroupActivity.this,"");
                         FileDetailsBean fBean=new FileDetailsBean();
                         fBean.setFilename(param[3]);
                         fBean.setFiletype("image");

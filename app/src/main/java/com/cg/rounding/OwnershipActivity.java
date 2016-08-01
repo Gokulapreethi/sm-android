@@ -56,6 +56,7 @@ public class OwnershipActivity extends Activity {
     private ProgressDialog progress = null;
     MembersAdapter adapter;
     String groupid,groupowner;
+    private GroupBean gBean;
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
@@ -75,7 +76,7 @@ public class OwnershipActivity extends Activity {
             }
         });
         groupid=getIntent().getStringExtra("groupid");
-        final GroupBean gBean = DBAccess.getdbHeler().getGroupAndMembers(
+        gBean = DBAccess.getdbHeler().getGroupAndMembers(
                 "select * from groupdetails where groupid=" + groupid);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -362,9 +363,13 @@ public class OwnershipActivity extends Activity {
             String result = (String) obj;
             if (result.equalsIgnoreCase("updated")) {
                 showToast("Successfully  updated");
+                String activemembers=gBean.getActiveGroupMembers().replace(groupowner, CallDispatcher.LoginUser);
+                String invitemembers=gBean.getInviteMembers().replace(groupowner,CallDispatcher.LoginUser);
                 ContentValues cv=new ContentValues();
                 cv.put("groupowner",groupowner);
                 DBAccess.getdbHeler().updateGroup(cv, groupid);
+                cv.put("active_members",activemembers);
+                cv.put("invitemembers",invitemembers);
                 DBAccess.getdbHeler().updateGroupMembers(cv,groupid);
                 finish();
             }

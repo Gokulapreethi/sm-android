@@ -107,7 +107,7 @@ public class WorkerThread implements Runnable {
                             Bitmap bitmap = BitmapFactory.decodeFile(paths[i]);
                             String base64 = encodeTobase64(bitmap);
                             String fname = paths[i].split("/")[5];
-                            uploadFile(username, password, "photo", fname, base64, filename,SingleInstance.mainContext);
+                            uploadFile(username, password, "photo", fname, base64, filename,SingleInstance.mainContext,ftpBean);
                         }else
                         {
                             String type=gBean.getMimetype();
@@ -121,7 +121,7 @@ public class WorkerThread implements Runnable {
                             }
                                 String base64 = encodeAudioVideoToBase64(paths[i]);
                                 String fname = paths[i].split("/")[5];
-                               uploadFile(username, password, type, fname, base64, filename,SingleInstance.mainContext);
+                               uploadFile(username, password, type, fname, base64, filename,SingleInstance.mainContext,ftpBean);
 
                         }
                     }
@@ -137,7 +137,7 @@ public class WorkerThread implements Runnable {
                     Log.i("FileUpload1", "password--->" + password);
                     Log.i("FileUpload1", "type--->" + gBean.getMimetype());
                     Log.i("FileUpload1", "base64--->" + base64);
-                    uploadFile(username, password, "photo", fname, base64, filename,SingleInstance.mainContext);
+                    uploadFile(username, password, "photo", fname, base64, filename,SingleInstance.mainContext,ftpBean);
                 }
 			}
 			else if(gBean.getMimetype().equalsIgnoreCase("audio")||gBean.getMimetype().equalsIgnoreCase("video"))
@@ -154,7 +154,7 @@ public class WorkerThread implements Runnable {
 				Log.i("FileUpload1", "type--->" + gBean.getMimetype());
 				Log.i("FileUpload1", "base64--->" + base64);
 
-				uploadFile(username, password, gBean.getMimetype(), fname, base64,filename,SingleInstance.mainContext);
+				uploadFile(username, password, gBean.getMimetype(), fname, base64,filename,SingleInstance.mainContext,ftpBean);
 			}
 			notifyStatus(true);
 
@@ -585,7 +585,7 @@ public class WorkerThread implements Runnable {
 		return strFile;
 	}
 	public void uploadFile(String username, String password,String componenttype,
-						   String filename, String contents,String componentpath,Context context1)
+						   String filename, String contents,String componentpath,Context context1, Object obj)
 	{
 		Log.i("FileUpload", "Inside CallDisp_UploadFile---> " +componentpath);
 
@@ -602,6 +602,6 @@ public class WorkerThread implements Runnable {
 		temp[5]="im";
 		temp[6]= String.valueOf(length);
 		Log.i("FileUpload", "Inside CallDisp_UploadFile---> " +temp[6]);
-		WebServiceReferences.webServiceClient.FileUpload(temp,context1);
+		WebServiceReferences.webServiceClient.FileUpload(temp,context1,obj);
 	}
 }

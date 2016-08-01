@@ -205,7 +205,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layour_realy1"
-
+        android:layout_marginBottom="50dp"
         android:background="@color/black2"
         android:layout_above="@id/linear3"
         android:visibility="visible">

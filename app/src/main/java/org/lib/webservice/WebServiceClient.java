@@ -508,7 +508,7 @@ public class WebServiceClient {
 			wsNotifier.addTasktoExecutor(servicebean);
 	}
 	
-	public void FileUpload(String[] parm,Object obj) {
+	public void FileUpload(String[] parm,Object obj, Object fileuplaod) {
         Log.i("FileUpload", "Inside FileUpload WsClient--->" );
 
         Servicebean servicebean = new Servicebean();
@@ -518,6 +518,8 @@ public class WebServiceClient {
 		servicebean.setWsmethodname("FileUpload");
 		servicebean.setProperty_map(property_map);
 		servicebean.setCallBack(obj);
+		servicebean.setUploadOrDownloadFor(parm[5]);
+		servicebean.setFileUplaod(fileuplaod);
 		servicebean.setServiceMethods(EnumWebServiceMethods.UPLOAD);
 		if (wsNotifier != null)
 			wsNotifier.addTasktoExecutor(servicebean);

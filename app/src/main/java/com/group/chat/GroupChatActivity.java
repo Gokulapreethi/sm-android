@@ -4088,6 +4088,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 
     public void uploadCompleted(FTPBean bean, boolean status) {
         try {
+            Log.i("AAAA","upload completed ******************8  ");
             if (bean != null) {
                 GroupChatBean groupChatBean = ((GroupChatBean) bean
                         .getReq_object()).clone();
@@ -4095,9 +4096,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     groupChatBean.setMediaName(bean.getFilename());
                 else
                     groupChatBean.setMediaName(null);
-                if (status)
-                    SingleInstance.getGroupChatProcesser().getQueue()
-                            .addObject(groupChatBean);
+//                if (status)
+//                    SingleInstance.getGroupChatProcesser().getQueue()
+//                            .addObject(groupChatBean);
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block

@@ -11352,7 +11352,7 @@ private TrustManager[] get_trust_mgr() {
 		temp[5]="file";
 		temp[6]= String.valueOf(length);
 		Log.i("FileUpload", "Inside CallDisp_UploadFile---> " +temp[6]);
-		WebServiceReferences.webServiceClient.FileUpload(temp,context1);
+		WebServiceReferences.webServiceClient.FileUpload(temp,context1,"");
 		FileDetailsBean fBean=new FileDetailsBean();
 		fBean.setFilename(filename);
 		fBean.setFiletype(componenttype);

@@ -1495,8 +1495,8 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				if (ftpBean.getOperation().equalsIgnoreCase("UPLOAD")) {
 					if (status) {
 						gcBean.setStatus(2);
-						SingleInstance.getGroupChatProcesser().getQueue()
-								.addObject(gcBean);
+//						SingleInstance.getGroupChatProcesser().getQueue()
+//								.addObject(gcBean);
 						DBAccess.getdbHeler().deleteUploadDownloadStatus(
 								ftpBean.getInputFile());
 
@@ -8091,9 +8091,10 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		if(obj instanceof GroupBean){
 			GroupBean bean=(GroupBean)obj;
 			ContentValues cv = new ContentValues();
+			cv.put("groupowner",bean.getOwnerName());
 			cv.put("active_members", bean.getActiveGroupMembers());
 			cv.put("invitemembers", bean.getInviteMembers());
-			DBAccess.getdbHeler(getApplicationContext())
+			DBAccess.getdbHeler()
 					.updateGroupMembers(cv, "groupid=" + bean.getGroupId());
 			ContactsFragment.getInstance(SingleInstance.mainContext).getList();
 			RoundingFragment.newInstance(SingleInstance.mainContext).getList();
@@ -8108,18 +8109,22 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					if(!file.exists())
 					WebServiceReferences.webServiceClient.FileDownload(param);
 				}
+			handler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					GroupChatActivity gca = (GroupChatActivity) SingleInstance.contextTable
+							.get("groupchat");
+					if(gca!=null) {
+						if (gca.isGroup && gca.isMemberTab)
+							gca.MembersProcess();
+						else if(gca.isRounding && gca.isMemberTab)
+							gca.RoundingMember();
+					}
+				}
+			});
 		}
-//		else if(obj instanceof String[]){
-//			String[] result=(String[])obj;
-//			if(result[2].equalsIgnoreCase("0")){
-//			}else{
-//				ContentValues cv = new ContentValues();
-//				cv.put("invitemembers", CallDispatcher.LoginUser);
-//				DBAccess.getdbHeler(getApplicationContext())
-//						.updateGroupMembers(cv, "groupid=" + result[1]);
-//				Log.i("AAAA", "notifygroupDetails accept");
-//			}
-//		}
 	}
 
     public  void notifySentreceived(GroupChatBean gcBean)
@@ -8696,6 +8701,20 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			}
 		} else if (obj instanceof WebServiceBean) {
 			showToast(((WebServiceBean) obj).getText());
+		}
+	}
+	public void notifyFileUploadResponse(Servicebean servicebean) {
+		Log.i("fileupload", "Appmain notifyFileUploadReponse");
+		if (servicebean.getUploadOrDownloadFor() != null && servicebean.getUploadOrDownloadFor().equalsIgnoreCase("im")) {
+			if (servicebean.getFileUplaod() != null && servicebean.getFileUplaod() instanceof ChatFTPBean) {
+				ChatFTPBean chatFTPBean = (ChatFTPBean) servicebean.getFileUplaod();
+				GroupChatBean gcBean = (GroupChatBean) chatFTPBean.getSourceObject();
+				if (gcBean != null)
+					if (chatFTPBean.getOperation().equalsIgnoreCase("UPLOAD")) {
+						SingleInstance.getGroupChatProcesser().getQueue()
+								.addObject(gcBean);
+					}
+			}
 		}
 	}
 }
