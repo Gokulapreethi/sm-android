@@ -2536,7 +2536,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									handlerForCall.post(new Runnable() {
 										@Override
 										public void run() {
-											showCallHistory(CallDispatcher.sb.getSessionid(), CallDispatcher.sb.getCallType());
+											showCallHistoryWithoutRecord(CallDispatcher.sb.getSessionid() , CallDispatcher.sb.getCallType());
+//											showCallHistory(CallDispatcher.sb.getSessionid(), CallDispatcher.sb.getCallType());
 										}
 									});
 								}
@@ -16925,6 +16926,22 @@ private TrustManager[] get_trust_mgr() {
 			}
 		}
 
+	}
+
+	public void showCallHistoryWithoutRecord(final String strSessionId, final String callType){
+		DBAccess.getdbHeler().updaterecordtransaction(CallDispatcher.sb.getSessionid());
+		Intent intentComponent = new Intent(context,
+				CallHistoryActivity.class);
+		intentComponent.putExtra("buddyname",
+				CallDispatcher.sb.getFrom());
+		intentComponent.putExtra("isDelete", true);
+
+		if(callType.equalsIgnoreCase("VC"))
+			intentComponent.putExtra("audiocall",false);
+		intentComponent.putExtra("individual", true);
+		intentComponent.putExtra("sessionid",
+				CallDispatcher.sb.getSessionid());
+		context.startActivity(intentComponent);
 	}
 
 	public void showCallHistory(final String strSessionId, final String callType)

@@ -197,6 +197,7 @@ public class CommunicationEngine implements AudioRecorderListener,
 	 * Audio from the MIC.
 	 */
 	private AudioRecorder audioRecorder = null;
+	private boolean audio_recording_enabled = false;
 	/**
 	 * This VideoCodec class provides video codec functionalities. Supports two
 	 * codecs H264 and VP8.Also contains pixel format conversion methods.
@@ -3135,8 +3136,11 @@ public class CommunicationEngine implements AudioRecorderListener,
 			}
 			audioRecorder = null;
 		}
-		if (audioThread != null) {
-			audioThread.stopAudioThread();
+//		if (audioThread != null) {
+//			audioThread.stopAudioThread();
+//		}
+		if(!audio_recording_enabled) {
+			return;
 		}
 		new Thread(new Runnable() {
 

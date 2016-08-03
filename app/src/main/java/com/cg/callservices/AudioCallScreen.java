@@ -2979,7 +2979,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	String file = "";
 	private void showCallHistory()
 	{
-		objCallDispatcher.showCallHistory(strSessionId , calltype);
+		objCallDispatcher.showCallHistoryWithoutRecord(strSessionId, calltype);
+//		objCallDispatcher.showCallHistory(strSessionId , calltype);
 //		try {
 //			final Dialog dialog = new Dialog(SingleInstance.mainContext);
 //			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

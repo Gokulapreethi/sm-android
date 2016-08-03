@@ -4227,7 +4227,8 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 	private void showCallHistory()
 	{
-		objCallDispatcher.showCallHistory(sessionid , "VC");
+		objCallDispatcher.showCallHistoryWithoutRecord(sessionid , "VC");
+//		objCallDispatcher.showCallHistory(sessionid , "VC");
 //		try {
 //			mHandler=new Handler();
 //			final Dialog dialog = new Dialog(SingleInstance.mainContext);
