@@ -150,6 +150,7 @@ import com.image.utils.ImageLoader;
 import com.process.BGProcessor;
 import com.process.MemoryProcessor;
 import com.screensharing.ScreenSharingFragment;
+import com.service.ChatHeadDrawerService;
 import com.service.FloatingCallService;
 import com.thread.CommunicationBean;
 import com.thread.SipCommunicator;
@@ -226,7 +227,7 @@ import java.util.TimerTask;
 import java.util.Vector;
 
 
-public class AppMainActivity extends FragmentActivity implements PjsuaInterface,TCPEngine.TCPListener,FloatingCallService.CallButtonCallBack{
+public class AppMainActivity extends FragmentActivity implements PjsuaInterface,TCPEngine.TCPListener,FloatingCallService.CallButtonCallBack, ChatHeadDrawerService.CallMinimizedButtonCallBack{
 
 	private MediaPlayer iplayer;
     public static boolean isLogin;
@@ -342,6 +343,30 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	public boolean isTouchIdEnabled=true;
 
 	private RelativeLayout mainHeader;
+/* Video Recording
+	private static final String TAG = "Record";
+	private static final int REQUEST_CODE = 1000;
+	private int mScreenDensity;
+	private MediaProjectionManager mProjectionManager;
+	private static final int DISPLAY_WIDTH = 720;
+	private static final int DISPLAY_HEIGHT = 1280;
+	private MediaProjection mMediaProjection;
+	private VirtualDisplay mVirtualDisplay;
+//	private MediaProjectionCallback mMediaProjectionCallback;
+//	private ToggleButton mToggleButton;
+	private MediaRecorder mMediaRecorder;
+	private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
+	private static final int REQUEST_PERMISSIONS = 10;
+
+	private boolean screen_recording = false;
+
+	static {
+		ORIENTATIONS.append(Surface.ROTATION_0, 90);
+		ORIENTATIONS.append(Surface.ROTATION_90, 0);
+		ORIENTATIONS.append(Surface.ROTATION_180, 270);
+		ORIENTATIONS.append(Surface.ROTATION_270, 180);
+	}
+	*/
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -456,8 +481,19 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 									.getDisplayMetrics());
 
 			onConfigurationChanged(config);
-			
 			Log.i("logservice", "inside app main oncreate");
+
+/*  Video Recording
+			DisplayMetrics metrics = new DisplayMetrics();
+			getWindowManager().getDefaultDisplay().getMetrics(metrics);
+			mScreenDensity = metrics.densityDpi;
+
+			mMediaRecorder = new MediaRecorder();
+
+			mProjectionManager = (MediaProjectionManager) getSystemService
+					(Context.MEDIA_PROJECTION_SERVICE);
+					*/
+
 			try {
 				String dir_path = Environment.getExternalStorageDirectory()
 						+ "/COMMedia";
@@ -2940,6 +2976,41 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			}
 		});
 
+	}
+
+	@Override
+	public void minimizeButtonClickState(String current_screen, String typeofcallscreen) {
+		Intent intent = new Intent(context, SplashScreen.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // You need this if starting
+		//  the activity from a service
+		intent.setAction(Intent.ACTION_MAIN);
+		intent.addCategory(Intent.CATEGORY_LAUNCHER);
+		startActivity(intent);
+
+		closingActivity();
+		stopService(new Intent(getApplication(), ChatHeadDrawerService.class));
+
+		if(current_screen.equalsIgnoreCase("callscreen")) {
+			if(typeofcallscreen.equalsIgnoreCase("ACS")) {
+				addShowHideListener(true);
+			} else {
+				addShowHideListener(false);
+			}
+		} else if(current_screen.equalsIgnoreCase("incomingalert")) {
+			inCommingCallAlert incommingCallAlert = inCommingCallAlert.getInstance(SingleInstance.mainContext);
+			FragmentManager fragmentManager = SingleInstance.mainContext
+					.getSupportFragmentManager();
+			fragmentManager.beginTransaction().replace(
+					R.id.activity_main_content_fragment, incommingCallAlert)
+					.commitAllowingStateLoss();
+		} else if(current_screen.equalsIgnoreCase("connecting")) {
+			CallConnectingScreen callConnectingScreen = CallConnectingScreen.getInstance(SingleInstance.mainContext);
+			FragmentManager fragmentManager = SingleInstance.mainContext
+					.getSupportFragmentManager();
+			fragmentManager.beginTransaction().replace(
+					R.id.activity_main_content_fragment, callConnectingScreen)
+					.commitAllowingStateLoss();
+		}
 	}
 
 	class MyTimerTask extends TimerTask {
@@ -8420,7 +8491,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		startActivity(intent);
 
 		closingActivity();
-		stopService(new Intent(getApplication(), FloatingCallService.class));
+		stopService(new Intent(getApplication(), ChatHeadDrawerService.class));
 		mainHeader.setVisibility(View.GONE);
 
 		if(current_screen.equalsIgnoreCase("callscreen")) {
@@ -8465,20 +8536,21 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		}
 	}
 
-	public void closingActivity(){
+	public void closingActivity() {
 
 		if (SingleInstance.contextTable.containsKey("groupchat"))
 		{
 			GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
 			if(groupChatActivity != null) {
-				groupChatActivity.finish();
+//				groupChatActivity.finish();
+				groupChatActivity.finishScreenforCallRequest();
 			}
 
 		}
 
 		if (WebServiceReferences.contextTable.containsKey("ordermenuactivity")) {
 			CallHistoryActivity callHistoryActivity = (CallHistoryActivity) WebServiceReferences.contextTable.get("ordermenuactivity");
-			if(callHistoryActivity != null) {
+			if (callHistoryActivity != null) {
 				callHistoryActivity.finish();
 			}
 		}
@@ -8486,21 +8558,21 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		if (WebServiceReferences.contextTable.containsKey("myaccountactivity")) {
 
 			MyAccountActivity myaccount_activity = (MyAccountActivity) WebServiceReferences.contextTable.get("myaccountactivity");
-			if(myaccount_activity != null) {
+			if (myaccount_activity != null) {
 				myaccount_activity.finish();
 			}
 		}
 		if (WebServiceReferences.contextTable.containsKey("roundnewpatient")) {
 
 			RoundNewPatientActivity roundnewpatient = (RoundNewPatientActivity) WebServiceReferences.contextTable.get("roundnewpatient");
-			if(roundnewpatient != null) {
+			if (roundnewpatient != null) {
 				roundnewpatient.finish();
 			}
 		}
 
-		if(SingleInstance.contextTable.containsKey("duplicateexistinggroup")) {
-			DuplicateExistingGroups duplicateExistingGroups = (DuplicateExistingGroups)SingleInstance.contextTable.get("duplicateexistinggroup");
-			if(duplicateExistingGroups != null) {
+		if (SingleInstance.contextTable.containsKey("duplicateexistinggroup")) {
+			DuplicateExistingGroups duplicateExistingGroups = (DuplicateExistingGroups) SingleInstance.contextTable.get("duplicateexistinggroup");
+			if (duplicateExistingGroups != null) {
 				duplicateExistingGroups.finish();
 			}
 		}
@@ -8508,77 +8580,164 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		if (WebServiceReferences.contextTable.containsKey("roundingEdit")) {
 
 			RoundingEditActivity roundingEdit = (RoundingEditActivity) WebServiceReferences.contextTable.get("roundingEdit");
-			if(roundingEdit != null) {
-				roundingEdit.finish();
+			if (roundingEdit != null) {
+//				roundingEdit.finish();
+				roundingEdit.finishScreenforCallRequest();
 			}
 		}
 		if (SingleInstance.contextTable.containsKey("roundingGroup")) {
 
 			RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable.get("roundingGroup");
-			if(roundingGroup != null) {
-				roundingGroup.finish();
+			if (roundingGroup != null) {
+//				roundingGroup.finish();
+				roundingGroup.finishScreenforCallRequest();
 			}
 		}
 
 		if (WebServiceReferences.contextTable.containsKey("taskcreation")) {
 
 			TaskCreationActivity taskcreation = (TaskCreationActivity) WebServiceReferences.contextTable.get("taskcreation");
-			if(taskcreation != null) {
+			if (taskcreation != null) {
 				taskcreation.finish();
 			}
 		}
 		if (WebServiceReferences.contextTable.containsKey("forwarduser")) {
 
 			ForwardUserSelect forwarduser = (ForwardUserSelect) WebServiceReferences.contextTable.get("forwarduser");
-			if(forwarduser != null) {
+			if (forwarduser != null) {
 				forwarduser.finish();
 			}
 		}
 		if (WebServiceReferences.contextTable.containsKey("groupactivity")) {
 
 			GroupActivity groupactivity = (GroupActivity) WebServiceReferences.contextTable.get("groupactivity");
-			if(groupactivity != null) {
+			if (groupactivity != null) {
 				groupactivity.finish();
 			}
 		}
 
-		if(SingleInstance.contextTable.containsKey("customvideocallscreen")){
-			CustomVideoCamera customVideoCamera=(CustomVideoCamera)SingleInstance.contextTable.get("customvideocallscreen");
-			if(customVideoCamera!=null){
+		if (SingleInstance.contextTable.containsKey("customvideocallscreen")) {
+			CustomVideoCamera customVideoCamera = (CustomVideoCamera) SingleInstance.contextTable.get("customvideocallscreen");
+			if (customVideoCamera != null) {
 				customVideoCamera.finish();
 			}
 		}
 
-		if(WebServiceReferences.contextTable.containsKey("customvideoplayer")) {
-			VideoPlayer videoPlayer = (VideoPlayer)WebServiceReferences.contextTable.get("customvideoplayer");
-			if(videoPlayer != null) {
+		if (WebServiceReferences.contextTable.containsKey("customvideoplayer")) {
+			VideoPlayer videoPlayer = (VideoPlayer) WebServiceReferences.contextTable.get("customvideoplayer");
+			if (videoPlayer != null) {
 				videoPlayer.finish();
 			}
 		}
 
 		if (WebServiceReferences.contextTable.containsKey("filepicker")) {
-			FilePicker filePicker = (FilePicker)WebServiceReferences.contextTable.get("filepicker");
-			if(filePicker != null){
+			FilePicker filePicker = (FilePicker) WebServiceReferences.contextTable.get("filepicker");
+			if (filePicker != null) {
 				filePicker.finish();
 			}
 		}
 
 		if (WebServiceReferences.contextTable.containsKey("Component")) {
 			ComponentCreator componentCreator = (ComponentCreator) WebServiceReferences.contextTable.get("Component");
-			if(componentCreator != null){
+			if (componentCreator != null) {
 				componentCreator.finish();
 			}
 		}
 
 		if (WebServiceReferences.contextTable.containsKey("multimediautils")) {
-			MultimediaUtils multimediaUtils = (MultimediaUtils)WebServiceReferences.contextTable.get("multimediautils");
-			if(multimediaUtils != null) {
+			MultimediaUtils multimediaUtils = (MultimediaUtils) WebServiceReferences.contextTable.get("multimediautils");
+			if (multimediaUtils != null) {
 				multimediaUtils.finish();
 			}
 		}
 
 	}
-	public class DownloadImage extends AsyncTask<String, Void, String> {
+
+
+	public void openNonClosedActivity() {
+		try {
+			if (SingleInstance.current_open_activity_detail != null && SingleInstance.current_open_activity_detail.size() > 0) {
+//                Object cur_context_object = SingleInstance.current_open_activity_detail.get("activtycontext");
+				Iterator it = SingleInstance.current_open_activity_detail.entrySet().iterator();
+				while (it.hasNext()) {
+					Map.Entry pair = (Map.Entry)it.next();
+					Object cur_context_object = pair.getKey();
+					HashMap<String,Object> objectHashMap = (HashMap<String, Object>) pair.getValue();
+					if (cur_context_object instanceof GroupChatActivity) {
+						String group_id = null;
+						Intent intent = new Intent(context, GroupChatActivity.class);
+						if (objectHashMap.containsKey("groupid") && objectHashMap.get("groupid") != null) {
+							group_id = (String) objectHashMap.get("groupid");
+							intent.putExtra("groupid", group_id);
+						}
+						if (objectHashMap.containsKey("isGroup") && objectHashMap.get("isGroup") != null) {
+							intent.putExtra("isGroup", (boolean) objectHashMap.get("isGroup"));
+						}
+						if (objectHashMap.containsKey("isRounding") && objectHashMap.get("isRounding") != null) {
+							intent.putExtra("isRounding", (boolean) objectHashMap.get("isRounding"));
+							if ((boolean) objectHashMap.get("isRounding") && group_id != null) {
+								WebServiceReferences.webServiceClient.GetPatientRecords("", group_id
+										, SingleInstance.mainContext);
+								WebServiceReferences.webServiceClient.GetTaskInfo("", group_id, SingleInstance.mainContext);
+								WebServiceReferences.webServiceClient.GetRoleAccess(CallDispatcher.LoginUser, group_id,
+										"", SingleInstance.mainContext);
+								WebServiceReferences.webServiceClient.GetMemberRights(CallDispatcher.LoginUser,
+										group_id, SingleInstance.mainContext);
+							}
+						}
+						if (objectHashMap.containsKey("sessionid") && objectHashMap.get("sessionid") != null) {
+							intent.putExtra("sessionid", (String) objectHashMap.get("sessionid"));
+						}
+						//				intent.putExtra("isGroup", (boolean)objectHashMap.get("isGroup"));
+						if (objectHashMap.containsKey("isReq") && objectHashMap.get("isReq") != null) {
+							intent.putExtra("isReq", (String) objectHashMap.get("isReq"));
+						}
+						if (objectHashMap.containsKey("buddy") && objectHashMap.get("buddy") != null) {
+							intent.putExtra("buddy", (String) objectHashMap.get("buddy"));
+						}
+						if (objectHashMap.containsKey("buddystatus") && objectHashMap.get("buddystatus") != null) {
+							intent.putExtra("buddystatus", (String) objectHashMap.get("buddystatus"));
+						}
+						if (objectHashMap.containsKey("nickname") && objectHashMap.get("nickname") != null) {
+							intent.putExtra("nickname", (String) objectHashMap.get("nickname"));
+						}
+						Log.i("reopen", "openNonClosedActivity GroupChatActivity");
+						startActivity(intent);
+					}
+
+					if (cur_context_object instanceof RoundingEditActivity) {
+
+						Intent intent = new Intent(context, RoundingEditActivity.class);
+						intent.putExtra("buddyname", (String) objectHashMap.get("buddyname"));
+						intent.putExtra("firstname", (String) objectHashMap.get("buddyname"));
+						intent.putExtra("groupid", (String) objectHashMap.get("buddyname"));
+						Log.i("reopen", "openNonClosedActivity RoundingEditActivity");
+						startActivity(intent);
+					}
+
+					if (cur_context_object instanceof RoundingGroupActivity) {
+						Intent intent = new Intent(context,
+								RoundingGroupActivity.class);
+						if (objectHashMap.containsKey("isEdit") && objectHashMap.get("isEdit") != null) {
+							intent.putExtra("isEdit", (boolean) objectHashMap.get("isEdit"));
+						}
+						if (objectHashMap.containsKey("id") && objectHashMap.get("id") != null) {
+							intent.putExtra("id", (String) objectHashMap.get("id"));
+						}
+						if (objectHashMap.containsKey("isduplicate") && objectHashMap.get("isduplicate") != null) {
+							intent.putExtra("isduplicate", (boolean) objectHashMap.get("isduplicate"));
+						}
+						Log.i("reopen", "openNonClosedActivity RoundingGroupActivity");
+						startActivity(intent);
+					}
+				}
+            }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+		public class DownloadImage extends AsyncTask<String, Void, String> {
 
 		String path=null;
 		String profileName=null;
@@ -8684,7 +8843,6 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					Log.i("entering","text----->");
 					processGroupChatChanges(groupChatBean);
 
-
 				} else {
 					groupChatBean.setStatus(0);
 					Log.i("entering", "status----->");
@@ -8717,4 +8875,178 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			}
 		}
 	}
+
+	/*
+	Video Recording
+	public void onAcRe(int resultCode, Intent data) {
+		mMediaProjectionCallback = new MediaProjectionCallback();
+		mMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
+		mMediaProjection.registerCallback(mMediaProjectionCallback, null);
+		mVirtualDisplay = createVirtualDisplay();
+		mMediaRecorder.start();
+	}
+
+	public void startRecording() {
+		screen_recording = !screen_recording;
+		if (ContextCompat.checkSelfPermission(context,
+				Manifest.permission.WRITE_EXTERNAL_STORAGE) + ContextCompat
+				.checkSelfPermission(context,
+						Manifest.permission.RECORD_AUDIO)
+				!= PackageManager.PERMISSION_GRANTED) {
+			if (ActivityCompat.shouldShowRequestPermissionRationale
+					(AppMainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
+					ActivityCompat.shouldShowRequestPermissionRationale
+							(AppMainActivity.this, Manifest.permission.RECORD_AUDIO)) {
+//				mToggleButton.setChecked(false);
+				screen_recording = false;
+				Snackbar.make(findViewById(android.R.id.content), R.string.label_permissions,
+						Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
+						new View.OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								ActivityCompat.requestPermissions(AppMainActivity.this,
+										new String[]{Manifest.permission
+												.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
+										REQUEST_PERMISSIONS);
+							}
+						}).show();
+			} else {
+				ActivityCompat.requestPermissions(AppMainActivity.this,
+						new String[]{Manifest.permission
+								.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
+						REQUEST_PERMISSIONS);
+			}
+		} else {
+			onToggleScreenShare(screen_recording);
+		}
+	}
+
+
+
+
+	public void onToggleScreenShare(Boolean view) {
+		if (view) {
+			initRecorder();
+			shareScreen();
+		} else {
+			mMediaRecorder.stop();
+			mMediaRecorder.reset();
+			Log.v(TAG, "Stopping Recording");
+			stopScreenSharing();
+		}
+	}
+
+	private void shareScreen() {
+		if (mMediaProjection == null) {
+			startActivityForResult(mProjectionManager.createScreenCaptureIntent(), REQUEST_CODE);
+			return;
+		}
+		mVirtualDisplay = createVirtualDisplay();
+		mMediaRecorder.start();
+	}
+*/
+//	private VirtualDisplay createVirtualDisplay() {
+//		return mMediaProjection.createVirtualDisplay("MainActivity",
+//				DISPLAY_WIDTH, DISPLAY_HEIGHT, mScreenDensity,
+//				DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
+//				mMediaRecorder.getSurface(), null /*Callbacks*/, null
+//                /*Handler*/);
+//	}
+/*
+	private void initRecorder() {
+		try {
+//			mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+			mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
+			mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+			mMediaRecorder.setOutputFile(Environment
+					.getExternalStoragePublicDirectory(Environment
+							.DIRECTORY_DOWNLOADS) + "/video.mp4");
+			mMediaRecorder.setVideoSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+			mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+//			mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+			mMediaRecorder.setVideoEncodingBitRate(512 * 1000);
+			mMediaRecorder.setVideoFrameRate(30);
+			int rotation = getWindowManager().getDefaultDisplay().getRotation();
+			int orientation = ORIENTATIONS.get(rotation + 90);
+			mMediaRecorder.setOrientationHint(orientation);
+			mMediaRecorder.prepare();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private class MediaProjectionCallback extends MediaProjection.Callback {
+		@Override
+		public void onStop() {
+			if (screen_recording) {
+//				mToggleButton.setChecked(false);
+				screen_recording = false;
+				mMediaRecorder.stop();
+				mMediaRecorder.reset();
+				Log.v(TAG, "Recording Stopped");
+			}
+			mMediaProjection = null;
+			stopScreenSharing();
+		}
+	}
+
+	private void stopScreenSharing() {
+		if (mVirtualDisplay == null) {
+			return;
+		}
+		mVirtualDisplay.release();
+		//mMediaRecorder.release(); //If used: mMediaRecorder object cannot
+		// be reused again
+		destroyMediaProjection();
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		destroyMediaProjection();
+	}
+
+	private void destroyMediaProjection() {
+		if (mMediaProjection != null) {
+			mMediaProjection.unregisterCallback(mMediaProjectionCallback);
+			mMediaProjection.stop();
+			mMediaProjection = null;
+		}
+		Log.i(TAG, "MediaProjection Stopped");
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode,
+										   @NonNull String permissions[],
+										   @NonNull int[] grantResults) {
+		switch (requestCode) {
+			case REQUEST_PERMISSIONS: {
+				if ((grantResults.length > 0) && (grantResults[0] +
+						grantResults[1]) == PackageManager.PERMISSION_GRANTED) {
+					onToggleScreenShare(true);
+				} else {
+//					mToggleButton.setChecked(false);
+					screen_recording = false;
+					Snackbar.make(findViewById(android.R.id.content), R.string.label_permissions,
+							Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
+							new View.OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									Intent intent = new Intent();
+									intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+									intent.addCategory(Intent.CATEGORY_DEFAULT);
+									intent.setData(Uri.parse("package:" + getPackageName()));
+									intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+									intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+									intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+									startActivity(intent);
+								}
+							}).show();
+				}
+				return;
+			}
+		}
+	}
+		*/
+
 }

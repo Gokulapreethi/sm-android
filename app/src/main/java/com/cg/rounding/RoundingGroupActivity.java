@@ -137,6 +137,9 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
     AppMainActivity appMainActivity;
     boolean isatoz=true;
 
+    private HashMap<String,Object> current_open_activity_detail = new HashMap<String,Object>();
+    private boolean save_state = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -181,6 +184,12 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
         isduplicate = getIntent().getBooleanExtra("isduplicate", false);
         fromRounding=getIntent().getBooleanExtra("fromRounding",false);
         SingleInstance.contextTable.put("roundingGroup", context);
+
+        current_open_activity_detail = new HashMap<String,Object>();
+        current_open_activity_detail.put("activtycontext",context);
+        current_open_activity_detail.put("isEdit",isEdit);
+        current_open_activity_detail.put("isduplicate",isduplicate);
+
         member_lay=(LinearLayout)findViewById(R.id.member_lay);
         member_lay1=(LinearLayout)findViewById(R.id.member_lay1);
         sort=(LinearLayout)findViewById(R.id.sort);
@@ -323,6 +332,8 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
             title.setText("EDIT ROUNDING GROUP");
             tv_text.setVisibility(View.GONE);
             groupid = getIntent().getStringExtra("id");
+            current_open_activity_detail.put("id",groupid);
+
             groupBean = callDisp.getdbHeler(context).getGroup(
                     "select * from grouplist where groupid=" + groupid);
             sort.setVisibility(View.VISIBLE);
@@ -797,6 +808,18 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
             WebServiceReferences.contextTable.remove("creategroup");
         if(SingleInstance.contextTable.containsKey("roundingGroup")){
             SingleInstance.contextTable.remove("roundingGroup");
+        }
+
+        if(save_state){
+            if(SingleInstance.current_open_activity_detail.containsKey(context)) {
+                SingleInstance.current_open_activity_detail.remove(context);
+            }
+            SingleInstance.current_open_activity_detail.put(context,this.current_open_activity_detail);
+            save_state = false;
+        } else {
+            if(SingleInstance.current_open_activity_detail.containsKey(context)) {
+                SingleInstance.current_open_activity_detail.remove(context);
+            }
         }
         super.onDestroy();
     }
@@ -1337,4 +1360,10 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
         return tempList;
 
     }
+
+    public void finishScreenforCallRequest(){
+        save_state = true;
+        this.finish();
+    }
+
 }
