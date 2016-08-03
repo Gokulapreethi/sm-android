@@ -247,7 +247,7 @@
                     android:layout_marginLeft="15dp"
                     android:gravity="left"
                     android:padding="7dp"
-                    android:text="State Of Practice"
+                    android:text="State of Home Address"
                     android:textColor="#808080"
                     android:textSize="15dp" />
 

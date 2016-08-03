@@ -7132,7 +7132,9 @@ public class XmlParser {
 				if (nodeMap.getNamedItem("createdDate") != null)
 					bean.setCreatedDate(nodeMap.getNamedItem("createdDate")
 							.getNodeValue());
-
+				if (nodeMap.getNamedItem("groupOwner") != null)
+					bean.setOwnerName(nodeMap.getNamedItem("groupOwner")
+							.getNodeValue());
 				if (nodeMap.getNamedItem("modifiedDate") != null)
 					bean.setModifiedDate(nodeMap.getNamedItem("modifiedDate")
 							.getNodeValue());

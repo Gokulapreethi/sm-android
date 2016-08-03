@@ -382,7 +382,7 @@
                     android:layout_marginLeft="15dp"
                     android:gravity="left"
                     android:padding="7dp"
-                    android:text="State of Practice"
+                    android:text="State of Home Address"
                     android:visibility="gone"
                     android:textColor="#808080"
                     android:textSize="15dp" />
@@ -397,7 +397,7 @@
                         android:layout_marginLeft="15dp"
                         android:id="@+id/rlay_state_of_practice"
                         android:textColor="@color/white"
-                        android:hint="State Of Practice"
+                        android:hint="State of Home Address"
                         android:layout_weight="1"
                         android:padding="7dp"
                         android:layout_marginTop="10dp"

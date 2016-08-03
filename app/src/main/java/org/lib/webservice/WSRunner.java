@@ -32,6 +32,7 @@ import com.cg.forms.FormRecordsCreators;
 import com.cg.forms.FormViewer;
 import com.cg.rounding.AssignPatientActivity;
 import com.cg.rounding.AttendingRightsActivity;
+import com.cg.rounding.DuplicateExistingGroups;
 import com.cg.rounding.OwnershipActivity;
 import com.cg.rounding.PatientRoundingFragment;
 import com.cg.rounding.RoundNewPatientActivity;
@@ -1480,20 +1481,18 @@ public class WSRunner implements Runnable {
 				 */
 				case CREATEGROUP:
 					if (mParser.getResult(mSp.toString())) {
-						GroupBean bean = mParser.parseCreateGroup(mSp
-								.toString());
+						GroupBean bean = mParser.parseCreateGroup(mSp.toString());
 						mServicebean.setObj(bean);
 					} else {
-						webServiceBean = mParser.parseResultFromXml(mSp
-								.toString());
+						webServiceBean = mParser.parseResultFromXml(mSp.toString());
 						mServicebean.setObj(webServiceBean);
 					}
-					// mService_callback.notifyWebServiceResponse(mServicebean);
-					if (mServicebean.getCallBack() != null) {
-						Log.i("register", "---response-----");
+					if (mServicebean.getCallBack() instanceof GroupActivity) {
 						((GroupActivity) mServicebean.getCallBack())
 								.notifyCreateGroup(mServicebean.getObj());
-						Log.i("register", "---response send-----");
+					}else if(mServicebean.getCallBack() instanceof DuplicateExistingGroups){
+						((DuplicateExistingGroups) mServicebean.getCallBack())
+								.notifyCreateGroup(mServicebean.getObj());
 					} else {
 						SingleInstance.printLog(TAG, "Login, Callback is NULL",
 								null, null);

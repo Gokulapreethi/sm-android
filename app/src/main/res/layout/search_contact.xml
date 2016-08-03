@@ -161,7 +161,7 @@
                 android:gravity="left"
                 android:padding="7dp"
                 android:visibility="gone"
-                android:text="State of Practice"
+                android:text="State of Home Address"
                 android:textColor="#808080"
                 android:textSize="15dp" />
             <LinearLayout
@@ -177,7 +177,7 @@
                     android:paddingLeft="13dp"
                     android:background="#272829"
                     android:layout_weight="1"
-                    android:hint="State of Practice"
+                    android:hint="State of Home Address"
                     android:textColor="@color/white"
                     android:id="@+id/state_tilte"/>
                 <ImageView
