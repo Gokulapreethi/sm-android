@@ -6,11 +6,24 @@
     android:layout_margin="15dp">
 
     <TextView
+        android:id="@+id/sync_chat"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@color/blue2"
+        android:gravity="center"
+        android:padding="7dp"
+        android:text="Sync Chat"
+        android:textColor="@color/white"
+        android:textSize="17dp"
+        android:visibility="gone"/>
+
+    <TextView
         android:id="@+id/edit_grp"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
         android:background="@color/blue2"
         android:gravity="center"
+        android:layout_marginTop="3dp"
         android:padding="7dp"
         android:text="Edit Group"
         android:textColor="@color/white"

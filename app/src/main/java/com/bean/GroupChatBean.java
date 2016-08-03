@@ -39,6 +39,15 @@ public class GroupChatBean implements Serializable, Cloneable {
 	private boolean isJoin;
 	private String senderWithdraw;
 	private String messagestatus;
+	private String dateandtime;
+
+	public String getDateandtime() {
+		return dateandtime;
+	}
+
+	public void setDateandtime(String dateandtime) {
+		this.dateandtime = dateandtime;
+	}
 
 	public String getMessagestatus() {
 		return messagestatus;

@@ -294,6 +294,7 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
 			fileImageLoader.DisplayImage("",holder.fileIcon, R.drawable.attachfile);
 		}
 
+
 		else if (fileBean.getcomponentType().trim().equals("video")) {
 				holder.fileIcon.setTag(fileBean.getComponentId());
 				holder.fileIcon.setVisibility(View.VISIBLE);

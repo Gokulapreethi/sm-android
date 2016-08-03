@@ -315,6 +315,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     boolean isForward=false;
     private boolean mypatient=true;
     public boolean isMemberTab=false;
+    Button search;
 
     private HashMap<String,Object> current_open_activity_detail = new HashMap<String,Object>();
     private boolean save_state = false;
@@ -330,12 +331,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         final LinearLayout chat = (LinearLayout) findViewById(R.id.chat);
         final LinearLayout profilechat = (LinearLayout) findViewById(R.id.profilechat);
         dot = (Button) findViewById(R.id.dot);
-        final Button search = (Button) findViewById(R.id.search);
+        search = (Button) findViewById(R.id.search);
         search.setVisibility(View.VISIBLE);
         LinearLayout snazbox_chat = (LinearLayout) findViewById(R.id.snazbox_chat);
         LinearLayout link_chat = (LinearLayout) findViewById(R.id.link_chat);
         final LinearLayout content = (LinearLayout) findViewById(R.id.content);
         cancel = (Button) findViewById(R.id.cancel);
+
 
         cancel.setOnClickListener(new OnClickListener() {
             @Override
@@ -413,6 +415,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             roleAccessBean = DBAccess.getdbHeler().getRoleAccessDetails(groupBean.getGroupId(), memberbean.getRole());
             rolePatientManagementBean = DBAccess.getdbHeler().getRolePatientManagement(groupBean.getGroupId(), memberbean.getRole());
         }
+        search.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                showprogress();
+//                WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"1",groupId,"");
+            }
+        });
 
         dot.setOnClickListener(new OnClickListener() {
             @Override
@@ -458,7 +467,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             @Override
                             public void onClick(View v) {
                                 dialog.dismiss();
-                                chatsync();
+                                chatsync(false);
                             }
                         });
                         delet_user.setOnClickListener(new View.OnClickListener() {
@@ -628,6 +637,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         TextView leave_grp = (TextView) dialog.findViewById(R.id.leave_grp);
                         TextView delete_grp = (TextView) dialog.findViewById(R.id.delete_grp);
                         TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
+                        TextView sync_chat = (TextView)dialog.findViewById(R.id.sync_chat);
                         if (groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
                             delete_grp.setVisibility(View.VISIBLE);
                             leave_grp.setVisibility(View.GONE);
@@ -637,6 +647,14 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             delete_grp.setVisibility(View.GONE);
                             leave_grp.setVisibility(View.VISIBLE);
                         }
+                        sync_chat.setVisibility(View.VISIBLE);
+                        sync_chat.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                                chatsync(true);
+                            }
+                        });
                         cancel.setOnClickListener(new View.OnClickListener() {
 
                             @Override
@@ -740,11 +758,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 }
             }
         });
-        search.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
+//        search.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//            }
+//        });
         BuddyStatus();
         if (!isGroup && !isRounding) {
             if(nickname==null) {
@@ -1174,9 +1192,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     @Override
                     public void onClick(View view) {
 //                        if(!CallDispatcher.isCallInitiate)
-                        photochat();
-//                        else
-//                            showToast("Please Try again...call  in progress");
+                        if(SendListUI.size()<5) {
+                            photochat();
+                        }
+                        else
+                            showToast("Please attach only 5 files");
                     }
                 });
 //
@@ -1223,8 +1243,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     public void onClick(View view) {
 //                        showAudioMessageDialog();
                         if(!CallDispatcher.isCallInitiate) {
-                            atachlay.setVisibility(View.GONE);
-                            audio_layout.setVisibility(View.VISIBLE);
+                            if(SendListUI.size()<5) {
+                                atachlay.setVisibility(View.GONE);
+                                audio_layout.setVisibility(View.VISIBLE);
+                            }
+                            else
+                                showToast("Please attach only 5 files");
                         }else
                             showToast("Please Try again...call in progress");
 //                        animation.start();
@@ -1234,7 +1258,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     @Override
                     public void onClick(View view) {
 //                        if(!CallDispatcher.isCallInitiate)
-                        showVideoMessageDialog();
+                        if(SendListUI.size()<5) {
+                            showVideoMessageDialog();
+                        }
+                        else
+                            showToast("Please attach only 5 files");
+
 //                        else
 //                            showToast("Please Try again...call in progress");
                     }
@@ -1242,8 +1271,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 btn_sketch.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(!CallDispatcher.isCallInitiate)
-                        handsketch();
+                        if(!CallDispatcher.isCallInitiate) {
+                            if (SendListUI.size() < 5) {
+                                handsketch();
+                            } else
+                                showToast("Please attach only 5 files");
+                        }
                         else
                         showToast("Please Try again... Call in progress");
                     }
@@ -1291,7 +1324,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 btn_file.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        openFolder();
+                        if (SendListUI.size() < 5) {
+                            openFolder();
+                        } else
+                            showToast("Please attach only 5 files");
                     }
                 });
 
@@ -3196,7 +3232,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 e.printStackTrace();
         }
     }
-    private void chatsync(){
+    private void chatsync(final boolean isfromgroup){
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.group_dialog);
@@ -3211,16 +3247,15 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         window.setGravity(Gravity.BOTTOM);
         dialog.show();
 
-        TextView threedays = (TextView) dialog.findViewById(R.id.edit_grp);
-        threedays.setVisibility(View.VISIBLE);
+        TextView days = (TextView) dialog.findViewById(R.id.edit_grp);
+        days.setVisibility(View.GONE);
+        TextView threedays = (TextView) dialog.findViewById(R.id.invite_grp);
         threedays.setText("3 Days");
-        TextView seven_days = (TextView) dialog.findViewById(R.id.invite_grp);
+        TextView seven_days = (TextView) dialog.findViewById(R.id.leave_grp);
         seven_days.setText("7 Days");
-        TextView one_month = (TextView) dialog.findViewById(R.id.leave_grp);
-        one_month.setText("30 Days");
-        one_month.setBackgroundColor(getResources().getColor(R.color.blue2));
+        seven_days.setBackgroundColor(getResources().getColor(R.color.blue2));
         TextView all_chat = (TextView) dialog.findViewById(R.id.delete_grp);
-        all_chat.setText("All Days");
+        all_chat.setText("Load More");
         all_chat.setBackgroundColor(getResources().getColor(R.color.blue2));
         TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -3239,36 +3274,45 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             public void onClick(View v) {
                 dialog.dismiss();
                 showprogress();
-                WebServiceReferences.webServiceClient.ChatSync(buddy, SingleInstance.mainContext,"");
+                String mindate=DBAccess.getdbHeler().getminDateandTime();
+                if(mindate!=null) {
+                    String[] date = mindate.split(" ");
+                    if (!isfromgroup)
+                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "3", buddy, date[0]);
+                    else
+                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "3", groupId, date[0]);
+                }else{
+                    if (!isfromgroup)
+                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "1", buddy, "");
+                    else
+                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "1", groupId, "");
+                }
             }
         });
 
-        threedays.setOnClickListener(new OnClickListener() {
+        threedays.setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(View v) {
+            public void onClick(View arg0) {
+
                 dialog.dismiss();
                 showprogress();
-                WebServiceReferences.webServiceClient.ChatSync(buddy, SingleInstance.mainContext,"1");
+                if(!isfromgroup)
+                WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"1",buddy,"");
+                else
+                    WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"1",groupId,"");
             }
         });
+
         seven_days.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View arg0) {
-
                 dialog.dismiss();
                 showprogress();
-                WebServiceReferences.webServiceClient.ChatSync(buddy, SingleInstance.mainContext,"2");
-            }
-        });
-
-        one_month.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                    dialog.dismiss();
-                    showprogress();
-                    WebServiceReferences.webServiceClient.ChatSync(buddy, SingleInstance.mainContext, "3");
-
+                if(!isfromgroup)
+                    WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"2",buddy,"");
+                else
+                    WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"2",groupId,"");
             }
         });
     }
@@ -3570,7 +3614,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 + "/COMMedia/" + callDisp.getFileName() + ".mp4";
 
                         strIPath = path;
-                        Log.i("AAA","New activity "+strIPath);
+                        Log.i("AAA", "New activity " + strIPath);
                         SendListUIBean uIbean = new SendListUIBean();
                         uIbean.setType("video");
                         uIbean.setPath(strIPath);
@@ -3604,7 +3648,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 
                         Log.i("AAA","New activity "+strIPath);
                         strIPath = path;
-                        Log.i("AAA","New activity "+strIPath);
+                        Log.i("AAA", "New activity " + strIPath);
                         SendListUIBean uIbean = new SendListUIBean();
                         uIbean.setType("video");
                         uIbean.setPath(strIPath);

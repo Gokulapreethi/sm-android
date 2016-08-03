@@ -3480,6 +3480,11 @@ public class XmlParser {
 							if (ftppassword != null && !ftppassword.equals("")) {
 								bean.setFtpPassword(ftppassword);
 							}
+							String dateandtime = element.getAttribute(
+									"dateandtime").trim();
+							if (dateandtime != null && !dateandtime.equals("")) {
+								bean.setDateandtime(dateandtime);
+							}
 							bean.setThumb(2);
 						}
 					} else if (bean.getType().equals("104")) {
@@ -8112,8 +8117,8 @@ public class XmlParser {
 					cBean.setSenttimez(nodeMap.getNamedItem("senttimezone").getNodeValue());
 				if (nodeMap.getNamedItem("status") != null)
 					cBean.setCstatus(nodeMap.getNamedItem("status").getNodeValue());
-//				if (nodeMap.getNamedItem("dateandtime") != null)
-//					cBean.setSenttime(nodeMap.getNamedItem("dateandtime").getNodeValue());
+				if (nodeMap.getNamedItem("dateandtime") != null)
+					cBean.setDateandtime(nodeMap.getNamedItem("dateandtime").getNodeValue());
 				if (nodeMap.getNamedItem("sentstatustime") != null)
 					cBean.setSentstatustime(nodeMap.getNamedItem("sentstatustime").getNodeValue());
 				if (nodeMap.getNamedItem("deliverstatustime") != null)
