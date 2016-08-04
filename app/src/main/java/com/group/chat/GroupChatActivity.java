@@ -41,6 +41,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -72,6 +73,7 @@ import com.bean.ProfileBean;
 import com.bean.SpecialMessageBean;
 import com.bean.UserBean;
 import com.callHistory.CallHistoryActivity;
+import com.cg.Calendar.CalendarViewClass;
 import com.cg.Calendar.DateView;
 import com.cg.DB.DBAccess;
 import com.cg.account.PinSecurity;
@@ -165,6 +167,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
@@ -295,13 +298,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     Button dot;
     boolean isatoz=true;
     private RecordTransactionBean rBean=null;
-    int mYear;
-    int mMonth;
-    int mDay;
-    Calendar c = Calendar.getInstance();
-    int prevDay = c.get(Calendar.DAY_OF_MONTH);
-    int prevMonth = c.get(Calendar.MONTH);
-    int prevYear = c.get(Calendar.YEAR);
     private RolePatientManagementBean rolePatientManagementBean;
     private RoleAccessBean roleAccessBean;
     private GroupMemberBean memberbean;
@@ -11995,49 +11991,39 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         content.removeAllViews();
         final View v1 = layoutInflater.inflate(R.layout.calendar, content);
-        CalendarView cal = (CalendarView)v1. findViewById(R.id.calendarView1);
+        HashSet<Date> events = new HashSet<>();
+        events.add(new Date());
 
+        CalendarViewClass cv = ((CalendarViewClass)findViewById(R.id.calendar_view));
+        cv.updateCalendar(events);
 
-        cal.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-
+        // assign event handler
+        cv.setEventHandler(new CalendarViewClass.EventHandler()
+        {
             @Override
-            public void onSelectedDayChange(CalendarView view, int year, int month,
-                                            int dayOfMonth) {
-                // TODO Auto-generated method stub
-                mDay = dayOfMonth;
-                mMonth = month;
-                mYear = year;
+            public void onDayLongPress(Date date)
+            {
+                // show returned day
+
                 try {
                     Calendar c = Calendar.getInstance();
-                    c.set(mYear, mMonth, mDay);
-                    SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy");
-                    String selectedDate = df.format(c.getTime());
-                    Date date = df.parse(selectedDate);
+                    c.setTime(date);
+                    SimpleDateFormat df1 = new SimpleDateFormat("dd MMM yyyy");
+                    String selectedDate = df1.format(c.getTime());
+                    Date date1 = df1.parse(selectedDate);
                     SimpleDateFormat outFormat = new SimpleDateFormat("EEE");
-                    String goal = outFormat.format(date);
-                    if (changeUpdate(mYear, mMonth, mDay)) {
-                        prevDay = mDay;
-                        prevMonth = mMonth;
-                        prevYear = mYear;
+                    String goal = outFormat.format(date1);
                         Intent intent = new Intent(context, DateView.class);
                         intent.putExtra("date", selectedDate);
                         intent.putExtra("day", goal);
                         startActivity(intent);
-                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
-    }
-    private boolean changeUpdate(int curYear, int curMonth, int curDay) {
-        boolean changed = false;
 
-        if (curDay != prevDay || curMonth != prevMonth || curYear != prevYear) {
-            changed = true;
-        }
-        return changed;
     }
 
     public String getCurrentTime() {

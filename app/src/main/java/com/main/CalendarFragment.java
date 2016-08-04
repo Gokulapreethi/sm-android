@@ -79,7 +79,7 @@ public class CalendarFragment extends Fragment {
             view = null;
             if (view == null) {
                 view = inflater.inflate(R.layout.calendar, null);
-                cal = (CalendarView)view. findViewById(R.id.calendarView1);
+                cal = (CalendarView)view. findViewById(R.id.calendar_view);
 
                 cal.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
 

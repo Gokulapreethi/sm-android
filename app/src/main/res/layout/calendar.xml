@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
     android:background="@color/black2"
-    xmlns:tools="http://schemas.android.com/tools">
-    <CalendarView
-        android:id="@+id/calendarView1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:showWeekNumber="false"
-        tools:targetApi="honeycomb" />
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
-</RelativeLayout>
+    <com.cg.Calendar.CalendarViewClass
+        xmlns:calendarNS="http://schemas.android.com/apk/res/com.cg.Calendar"
+        android:id="@+id/calendar_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>
