@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -24,7 +25,9 @@ import android.widget.TextView;
 import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
+import com.cg.rounding.RoundingFragment;
 import com.cg.snazmed.R;
+import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
 import com.util.SingleInstance;
 
@@ -116,6 +119,10 @@ public class SideMenu extends Fragment{
             ll_status.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    GroupChatActivity gca = (GroupChatActivity) SingleInstance.contextTable
+                            .get("groupchat");
+                    if(gca!=null)
+                        gca.finish();
                     ShowView();
                     AppMainActivity.onDrawerItemSelected(0);
                 }
@@ -128,6 +135,17 @@ public class SideMenu extends Fragment{
                     ll_dash.setBackgroundColor(Color.parseColor("#1F2021"));
                     tv_dash.setTextColor(mainContext.getResources().getColor(R.color.white));
                     AppMainActivity.onDrawerItemSelected(1);
+                    GroupChatActivity gca = (GroupChatActivity) SingleInstance.contextTable
+                            .get("groupchat");
+                    if(gca!=null) {
+                        gca.finish();
+                        DashBoardFragment changePassword = DashBoardFragment.newInstance(SingleInstance.mainContext);
+                        FragmentManager fragmentManager = SingleInstance.mainContext
+                                .getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(
+                                R.id.activity_main_content_fragment, changePassword)
+                                .commitAllowingStateLoss();
+                    }
                 }
             });
 
@@ -138,6 +156,17 @@ public class SideMenu extends Fragment{
                     ll_cont.setBackgroundColor(Color.parseColor("#1F2021"));
                     tv_cont.setTextColor(mainContext.getResources().getColor(R.color.white));
                     AppMainActivity.onDrawerItemSelected(2);
+                    GroupChatActivity gca = (GroupChatActivity) SingleInstance.contextTable
+                            .get("groupchat");
+                    if(gca!=null) {
+                        gca.finish();
+                        ContactsFragment changePassword = ContactsFragment.getInstance(SingleInstance.mainContext);
+                        FragmentManager fragmentManager = SingleInstance.mainContext
+                                .getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(
+                                R.id.activity_main_content_fragment, changePassword)
+                                .commitAllowingStateLoss();
+                    }
                 }
             });
 
@@ -148,6 +177,17 @@ public class SideMenu extends Fragment{
                     ll_files.setBackgroundColor(Color.parseColor("#1F2021"));
                     tv_files.setTextColor(mainContext.getResources().getColor(R.color.white));
                     AppMainActivity.onDrawerItemSelected(3);
+                    GroupChatActivity gca = (GroupChatActivity) SingleInstance.contextTable
+                            .get("groupchat");
+                    if(gca!=null) {
+                        gca.finish();
+                        FilesFragment changePassword = FilesFragment.newInstance(SingleInstance.mainContext);
+                        FragmentManager fragmentManager = SingleInstance.mainContext
+                                .getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(
+                                R.id.activity_main_content_fragment, changePassword)
+                                .commitAllowingStateLoss();
+                    }
                 }
             });
 
@@ -157,6 +197,10 @@ public class SideMenu extends Fragment{
                     setDefaultMenu();
                     ll_calc.setBackgroundColor(Color.parseColor("#1F2021"));
                     tv_calc.setTextColor(mainContext.getResources().getColor(R.color.white));
+                    GroupChatActivity gca = (GroupChatActivity) SingleInstance.contextTable
+                            .get("groupchat");
+                    if(gca!=null)
+                        gca.finish();
                     AppMainActivity.onDrawerItemSelected(4);
                 }
             });
@@ -168,6 +212,17 @@ public class SideMenu extends Fragment{
                     ll_myacc.setBackgroundColor(Color.parseColor("#1F2021"));
                     tv_myacc.setTextColor(mainContext.getResources().getColor(R.color.white));
                     AppMainActivity.onDrawerItemSelected(5);
+                    GroupChatActivity gca = (GroupChatActivity) SingleInstance.contextTable
+                            .get("groupchat");
+                    if(gca!=null) {
+                        gca.finish();
+                        MyAccountFragment changePassword = MyAccountFragment.newInstance(SingleInstance.mainContext);
+                        FragmentManager fragmentManager = SingleInstance.mainContext
+                                .getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(
+                                R.id.activity_main_content_fragment, changePassword)
+                                .commitAllowingStateLoss();
+                    }
                 }
             });
 
@@ -178,6 +233,17 @@ public class SideMenu extends Fragment{
                     ll_settings.setBackgroundColor(Color.parseColor("#1F2021"));
                     tv_settings.setTextColor(mainContext.getResources().getColor(R.color.white));
                     AppMainActivity.onDrawerItemSelected(6);
+                    GroupChatActivity gca = (GroupChatActivity) SingleInstance.contextTable
+                            .get("groupchat");
+                    if(gca!=null) {
+                        gca.finish();
+                        SettingsFragment changePassword = SettingsFragment.newInstance(SingleInstance.mainContext);
+                        FragmentManager fragmentManager = SingleInstance.mainContext
+                                .getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(
+                                R.id.activity_main_content_fragment, changePassword)
+                                .commitAllowingStateLoss();
+                    }
                 }
             });
 
@@ -185,7 +251,12 @@ public class SideMenu extends Fragment{
                 @Override
                 public void onClick(View view) {
                     setDefaultMenu();
+                    GroupChatActivity gca = (GroupChatActivity) SingleInstance.contextTable
+                            .get("groupchat");
+                    if(gca!=null)
+                        gca.finish();
                     AppMainActivity.onDrawerItemSelected(7);
+
                 }
             });
             ll_rounding.setOnClickListener(new View.OnClickListener() {
@@ -195,6 +266,17 @@ public class SideMenu extends Fragment{
                     ll_rounding.setBackgroundColor(Color.parseColor("#1F2021"));
                     tv_rounding.setTextColor(mainContext.getResources().getColor(R.color.white));
                     AppMainActivity.onDrawerItemSelected(8);
+                    GroupChatActivity gca = (GroupChatActivity) SingleInstance.contextTable
+                            .get("groupchat");
+                    if(gca!=null) {
+                        gca.finish();
+                        RoundingFragment changePassword = RoundingFragment.newInstance(SingleInstance.mainContext);
+                        FragmentManager fragmentManager = SingleInstance.mainContext
+                                .getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(
+                                R.id.activity_main_content_fragment, changePassword)
+                                .commitAllowingStateLoss();
+                    }
                 }
             });
             ll_invite_users.setOnClickListener(new View.OnClickListener() {
@@ -204,6 +286,17 @@ public class SideMenu extends Fragment{
                     ll_invite_users.setBackgroundColor(Color.parseColor("#1F2021"));
                     tv_invite_user.setTextColor(mainContext.getResources().getColor(R.color.white));
                     AppMainActivity.onDrawerItemSelected(9);
+                    GroupChatActivity gca = (GroupChatActivity) SingleInstance.contextTable
+                            .get("groupchat");
+                    if(gca!=null) {
+                        gca.finish();
+                        InviteUserFragment changePassword = InviteUserFragment.newInstance(SingleInstance.mainContext);
+                        FragmentManager fragmentManager = SingleInstance.mainContext
+                                .getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(
+                                R.id.activity_main_content_fragment, changePassword)
+                                .commitAllowingStateLoss();
+                    }
                 }
             });
             return view;

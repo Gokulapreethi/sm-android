@@ -2105,6 +2105,8 @@ public class PatientRoundingFragment extends Fragment {
                         showprogress();
                         WebServiceReferences.webServiceClient.SetPatientDescription(pBean, patientRoundingFragment);
                         diagnosis.setText(pBean.getDiagnosis());
+                        pcBean.setDate(pBean.getDate());
+                        pcBean.setDiagnosis(pBean.getDiagnosis());
                         dialog1.dismiss();
                     }
                 });

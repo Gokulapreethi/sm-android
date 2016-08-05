@@ -84,6 +84,7 @@ public class RolesManagementFragment extends Fragment {
                 Intent intent = new Intent(SingleInstance.mainContext, GroupChatActivity.class);
                 intent.putExtra("groupid", groupId);
                 intent.putExtra("isRounding", true);
+                intent.putExtra("isReq", "p");
                 SingleInstance.mainContext.startActivity(intent);
                 RoundingFragment roundingFragment = RoundingFragment.newInstance(SingleInstance.mainContext);
                 FragmentManager fragmentManager = SingleInstance.mainContext

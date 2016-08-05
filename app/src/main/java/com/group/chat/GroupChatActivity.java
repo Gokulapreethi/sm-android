@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -173,7 +174,7 @@ import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-public class GroupChatActivity extends Activity implements OnClickListener ,TextWatcher {
+public class GroupChatActivity extends FragmentActivity implements OnClickListener ,TextWatcher {
     private Button btnBack;
     private Button settingsMenu;
     private ImageView profilePic;
@@ -309,6 +310,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     private boolean mypatient=true;
     public boolean isMemberTab=false;
     Button search;
+    DrawerLayout mDrawerLayout;
+    LinearLayout menu_side;
 
     private HashMap<String,Object> current_open_activity_detail = new HashMap<String,Object>();
     private boolean save_state = false;
@@ -407,7 +410,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             RoundingFragment changePassword = RoundingFragment.newInstance(context);
             FragmentManager fragmentManager = SingleInstance.mainContext
                     .getSupportFragmentManager();
-            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentManager.beginTransaction().replace(
                     R.id.activity_main_content_fragment, changePassword)
                     .commitAllowingStateLoss();
@@ -419,10 +421,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         search.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-//                showprogress();
-//                WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"1",groupId,"");
             }
         });
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        menu_side = (LinearLayout) findViewById(R.id.menu_side);
+        notifyUI();
 
         dot.setOnClickListener(new OnClickListener() {
             @Override
@@ -1669,7 +1673,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 sidemenu.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        if(cancel.getVisibility()==v.VISIBLE){
+                            mDrawerLayout.openDrawer(menu_side);
+                        }
                         selectAll_buddy.setChecked(false);
                         forward = false;
                         for(GroupChatBean bean:chatList){
@@ -12003,11 +12009,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         cv.updateCalendar(events);
 
         // assign event handler
-        cv.setEventHandler(new CalendarViewClass.EventHandler()
-        {
+        cv.setEventHandler(new CalendarViewClass.EventHandler() {
             @Override
-            public void onDayLongPress(Date date)
-            {
+            public void onDayLongPress(Date date) {
                 // show returned day
 
                 try {
@@ -12016,10 +12020,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     SimpleDateFormat df1 = new SimpleDateFormat("M-dd-yyyy");
                     String selectedDate = df1.format(c.getTime());
                     Date date1 = df1.parse(selectedDate);
-                        Intent intent = new Intent(context, CalendarActivity.class);
-                        intent.putExtra("date", selectedDate);
-                        intent.putExtra("groupid",groupId);
-                        startActivity(intent);
+                    Intent intent = new Intent(context, CalendarActivity.class);
+                    intent.putExtra("date", selectedDate);
+                    intent.putExtra("groupid", groupId);
+                    startActivity(intent);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -12292,7 +12296,78 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         }
 
     }
+    public void notifyUI() {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                int dashCount = 0;
+                dashCount += DBAccess.getdbHeler(context)
+                        .getUnreadMsgCount(CallDispatcher.LoginUser);
+                dashCount += DBAccess.getdbHeler(context)
+                        .getUnreadFileCount(CallDispatcher.LoginUser);
+                dashCount += DBAccess.getdbHeler(context)
+                        .getUnreadCallCount(CallDispatcher.LoginUser);
+                TextView dash_count = (TextView) findViewById(R.id.dash_count);
+                if (dashCount > 0) {
+                    dash_count.setText(Integer.toString(dashCount));
+                    dash_count.setVisibility(View.VISIBLE);
+                } else {
+                    dash_count.setVisibility(View.GONE);
+                }
+                ProfileBean bean=SingleInstance.myAccountBean;
+                TextView userName = (TextView) findViewById(R.id.userName);
+                if(bean.getFirstname()!=null && bean.getLastname()!=null)
+                    userName.setText(bean.getFirstname()+" "+bean.getLastname());
+                else if(bean.getNickname()!=null)
+                    userName.setText(bean.getNickname());
+                else
+                    userName.setText(CallDispatcher.LoginUser);
+                String status_1 = SingleInstance.mainContext.loadCurrentStatus();
+                TextView status = (TextView) findViewById(R.id.status);
+                ImageView img_status = (ImageView) findViewById(R.id.img_status);
+                if(status_1.equalsIgnoreCase("online")){
+                    status.setText("Online");
+                    img_status.setBackgroundResource(R.drawable.online_icon);
+                }else if(status_1.equalsIgnoreCase("away")){
+                    status.setText("Invisible");
+                    img_status.setBackgroundResource(R.drawable.invisibleicon);
+                }else if(status_1.equalsIgnoreCase("busy")){
+                    status.setText("Busy");
+                    img_status.setBackgroundResource(R.drawable.busy_icon);
+                }else{
+                    status.setText("Offline");
+                    img_status.setBackgroundResource(R.drawable.offline_icon);
+                }
+                setProfilePic();
+            }
+        });
+    }
 
+    public void setProfilePic() {
+        handler.post(new Runnable() {
 
+            @Override
+            public void run() {
+                try {
+                    ProfileBean bean=SingleInstance.myAccountBean;
+                    ImageView user_image = (ImageView) findViewById(R.id.user_image);
+                    if(bean.getPhoto()!=null){
+                        String profilePic=bean.getPhoto();
+                        if (profilePic != null && profilePic.length() > 0) {
+                            if (!profilePic.contains("COMMedia")) {
+                                profilePic = Environment.getExternalStorageDirectory()
+                                        + "/COMMedia/" + profilePic;
+                            }
+                            imageLoader.DisplayImage(profilePic, user_image,
+                                    R.drawable.img_user);
+                        }
+                    }
+                } catch (Exception e) {
+                    SingleInstance.printLog(null, e.getMessage(), null, e);
+                }
+            }
+        });
+
+    }
 
 }

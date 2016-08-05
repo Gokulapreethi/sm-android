@@ -98,6 +98,8 @@ public class WorkerThread implements Runnable {
 			Log.i("FileUploadIM1", "path3" +filename);
 
 			Log.i("FileUpload1", "type--->" + gBean.getMimetype());
+			SingleInstance.getGroupChatHistoryWriter().getQueue()
+					.addObject(gBean);
 
 			if((gBean.getMimetype().equals("mixedfile"))||gBean.getMimetype().equalsIgnoreCase("image")) {
                 String[] paths=filename.split(",");

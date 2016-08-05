@@ -77,6 +77,7 @@ public class ForwardUserSelect extends Activity {
     private boolean contact=true;
     private boolean fromfiles = false;
     private int checkBoxCounter = 0;
+    public int checkBoxCounter1=0;
 
 
     Vector<BuddyInformationBean> buddylist = new Vector<BuddyInformationBean>();
@@ -273,7 +274,7 @@ public class ForwardUserSelect extends Activity {
                     selectAll.setTag(false);
                     countofcheckbox(count);
                     total_count = count;
-                    adapter.checkBoxCounter = count;
+                    checkBoxCounter1 = count;
                 } else {
                     for (BuddyInformationBean buddyBean : buddylist) {
                         buddyBean.setSelected(false);
@@ -281,7 +282,7 @@ public class ForwardUserSelect extends Activity {
                     selectAll.setTag(true);
                     countofcheckbox(0);
                     total_count = 0;
-                    adapter.checkBoxCounter = 0;
+                    checkBoxCounter1 = 0;
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -365,7 +366,6 @@ public class ForwardUserSelect extends Activity {
                     view_Group.setVisibility(View.GONE);
                     chbox_lay.setVisibility(View.VISIBLE);
                     chbox_lay1.setVisibility(View.GONE);
-
                     adapter = new ForwardUserSelectionAdapter(ForwardUserSelect.this, buddylist);
                     memberListView.setAdapter(null);
                     memberListView.setAdapter(adapter);

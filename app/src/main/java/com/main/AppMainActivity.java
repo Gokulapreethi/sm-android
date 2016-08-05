@@ -8024,8 +8024,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
             FragmentManager fm = appMainActivity.getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
             Fragment fragment = null;
-            appMainActivity.setProfilePic();
+//            appMainActivity.setProfilePic();
             if (appMainActivity.isLoggedIn()) {
+				Log.i("AAAA","appmain activity "+position);
                 switch(position){
                     case 1:
                         fragment = DashBoardFragment.newInstance(context);
@@ -8059,6 +8060,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
                 appMainActivity.showToast("Kindly Login");
 
             if (fragment != null) {
+				Log.i("AAAA","appmain activity ");
                 ft.replace(R.id.activity_main_content_fragment, fragment);
                 ft.commit();
             }

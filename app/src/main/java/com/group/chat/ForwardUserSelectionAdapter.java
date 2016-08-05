@@ -41,7 +41,7 @@ public class ForwardUserSelectionAdapter extends ArrayAdapter<BuddyInformationBe
     private Vector<BuddyInformationBean> userList;
     private Vector<BuddyInformationBean> originallist;
     private LayoutInflater inflater = null;
-    public int checkBoxCounter = 0;
+
     private int checkboxcount;
     private  ForwardFilter filter;
     boolean[] checkBoxState;
@@ -127,16 +127,16 @@ public class ForwardUserSelectionAdapter extends ArrayAdapter<BuddyInformationBe
                         if (((CheckBox) v).isChecked()) {
                             checkBoxState[position] = true;
                             userBean.setSelected(true);
-                            checkBoxCounter++;
                             if (listmembers != null) {
-                                listmembers.countofcheckbox(checkBoxCounter);
+                                listmembers.checkBoxCounter1++;
+                                listmembers.countofcheckbox(listmembers.checkBoxCounter1);
                             }
                         } else {
                             checkBoxState[position] = false;
                             userBean.setSelected(false);
-                            checkBoxCounter--;
                             if (listmembers != null) {
-                                listmembers.countofcheckbox(checkBoxCounter);
+                                listmembers.checkBoxCounter1--;
+                                listmembers.countofcheckbox(listmembers.checkBoxCounter1);
                             }
                         }
                     }
