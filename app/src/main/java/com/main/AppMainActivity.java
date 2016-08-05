@@ -2299,7 +2299,6 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						removeFragments(SearchPeopleFragment.newInstance(context));
 						removeFragments(DashBoardFragment.newInstance(context));
 						removeFragments(CallHistoryFragment.newInstance(context));
-						removeFragments(CalendarFragment.newInstance(context));
 						removeFragments(InviteUserFragment.newInstance(context));
 						removeFragments(FindPeople.newInstance(context));
 						removeFragments(SecurityQuestions.newInstance(context));
@@ -2418,10 +2417,6 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			if (fragment instanceof SearchPeopleFragment) {
 				view = ((SearchPeopleFragment) fragment).getParentView();
 				((SearchPeopleFragment) fragment)._rootView = null;
-			}
-			if (fragment instanceof CalendarFragment) {
-				view = ((CalendarFragment) fragment).getParentView();
-				((CalendarFragment) fragment).view = null;
 			}
 			if (fragment instanceof InviteUserFragment) {
 				view = ((InviteUserFragment) fragment).getParentView();
@@ -2925,8 +2920,6 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 								removeFragments(MyAccountFragment
 										.newInstance(context));
 								removeFragments(SearchPeopleFragment
-										.newInstance(context));
-								removeFragments(CalendarFragment
 										.newInstance(context));
 								removeFragments(InviteUserFragment
 										.newInstance(context));
@@ -8045,9 +8038,6 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						((FilesFragment) fragment).getUsername(CallDispatcher.LoginUser);
                         ((FilesFragment) fragment).setFromContacts(false);
 						((FilesFragment) fragment).componentType("",false);
-                        break;
-                    case 4:
-                        fragment = CalendarFragment.newInstance(context);
                         break;
                     case 5:
                         fragment = MyAccountFragment.newInstance(context);

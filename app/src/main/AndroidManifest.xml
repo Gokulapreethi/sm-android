@@ -832,7 +832,7 @@
             android:name="com.cg.account.NewUserTC">
         </activity>
 	<activity
-            android:name="com.cg.Calendar.CalendarViewClass"
+            android:name="com.main.CalendarActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
         </activity>
