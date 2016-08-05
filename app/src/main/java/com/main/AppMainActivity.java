@@ -143,6 +143,7 @@ import com.ftp.FTPPoolManager;
 import com.group.GroupActivity;
 import com.group.GroupAdapter1;
 import com.group.GroupRequestFragment;
+import com.group.chat.ChatInfoBean;
 import com.group.chat.ForwardUserSelect;
 import com.group.chat.GroupChatActivity;
 import com.group.chat.GroupChatBroadCastReceiver;
@@ -8201,14 +8202,12 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						gcBean1.setSent(gcBean.getSent());
 					}
 						String  mem="";
-						DBAccess.getdbHeler(getApplicationContext()).ChatInfo(gcBean.getFrom(), gcBean.getSignalid(),gcBean.getSent(),gcBean.getSenttimez());
+						DBAccess.getdbHeler(getApplicationContext()).ChatInfo(gcBean.getFrom(), gcBean.getSignalid(), gcBean.getSent(), gcBean.getSenttimez());
                         if (SingleInstance.groupChatHistory.containsKey(gcBean1.getGroupId())) {
                             SingleInstance.groupChatHistory.remove(gcBean1.getGroupId());
                             SingleInstance.groupChatHistory.put(gcBean1.getGroupId(), groupChatActivity.chatList);
                         }
-//                    }
                 }
-
             }
             handler.post(new Runnable() {
                 @Override
@@ -8219,7 +8218,6 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
         }
 
     }
-
 
     public  void notifytextTyping(final GroupChatBean gcBean)
     {
@@ -8824,28 +8822,42 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			groupChatActivity.cancelDialog();
 		}
 		if (obj instanceof ArrayList) {
+			ArrayList<Object> reult=(ArrayList<Object>) obj;
 			Log.i("entering","arraylist----->");
-			ArrayList<GroupChatBean> chatList = (ArrayList<GroupChatBean>) obj;
-			Log.i("entering","arraylist1----->"+chatList.size());
-			for(GroupChatBean groupChatBean:chatList) {
-				if (groupChatBean.getMimetype().equals("text")
-						|| groupChatBean.getMimetype().equals("location")) {
-					Log.i("entering","text----->");
-					processGroupChatChanges(groupChatBean);
-
-				} else {
-					groupChatBean.setStatus(0);
-					Log.i("entering", "status----->");
-					processGroupChatChanges(groupChatBean.clone());
-					String fileName = groupChatBean.getMediaName();
-					groupChatBean
-							.setMediaName(Utils
-									.getFilePathString(groupChatBean
-											.getMediaName()));
-					Log.i("entering", "downloading----->");
-					downloadGroupChatFile(groupChatBean, fileName);
-					Log.i("entering", "downloadingchat----->");
+			for(int i=0;i<reult.size();i++) {
+				if(reult.get(i) instanceof GroupChatBean) {
+					GroupChatBean groupChatBean = (GroupChatBean) reult.get(i);
+					Log.i("entering","groupchatbean----->");
+						if (groupChatBean.getMimetype().equals("text")
+								|| groupChatBean.getMimetype().equals("location")) {
+							Log.i("entering", "text----->");
+							processGroupChatChanges(groupChatBean);
+						} else {
+							groupChatBean.setStatus(0);
+							Log.i("entering", "status----->");
+							processGroupChatChanges(groupChatBean.clone());
+							String fileName = groupChatBean.getMediaName();
+							groupChatBean.setMediaName(Utils
+									.getFilePathString(groupChatBean.getMediaName()));
+							downloadGroupChatFile(groupChatBean, fileName);
+						}
+					}
+				else if(reult.get(i) instanceof ChatInfoBean) {
+					ChatInfoBean cbean = (ChatInfoBean) reult.get(i);
+					Log.i("entering","chatinfobean----->");
+					if (cbean.getDate() != null) {
+						cbean.setDate(cbean.getDate());
+						cbean.setStatus("2");
+					} else if (cbean.getDeliverstatustime() != null) {
+						cbean.setDate(cbean.getDeliverstatustime());
+						cbean.setStatus("1");
+					} else{
+						cbean.setDate(cbean.getSentstatustime());
+						cbean.setStatus("0");
 				}
+					DBAccess.getdbHeler(getApplicationContext()).ChatInfo(cbean.getName(), cbean.getSid(), cbean.getStatus(), cbean.getDate());
+				}
+
 			}
 		} else if (obj instanceof WebServiceBean) {
 			showToast(((WebServiceBean) obj).getText());

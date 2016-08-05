@@ -19,6 +19,7 @@ import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.SipNotificationListener;
 import com.cg.commonclass.WebServiceReferences;
+import com.group.chat.ChatInfoBean;
 import com.group.chat.GroupChatActivity;
 import com.main.AppMainActivity;
 import com.main.ContactsFragment;
@@ -8070,9 +8071,10 @@ public class XmlParser {
 			return sync;
 		}
 	}
-	public ArrayList<GroupChatBean> parseSyncChatDetails(String xml)
+	public ArrayList<Object> parseSyncChatDetails(String xml)
 	{
-		ArrayList<GroupChatBean>sync=new ArrayList<GroupChatBean>();
+		ArrayList<Object>syncList=new ArrayList<Object>();
+
 		try {
 			dbf = DocumentBuilderFactory.newInstance();
 			db = dbf.newDocumentBuilder();
@@ -8085,7 +8087,7 @@ public class XmlParser {
 
 
 			for (int i = 0; i < list.getLength(); i++) {
-				GroupChatBean cBean=new GroupChatBean();
+				GroupChatBean cBean = new GroupChatBean();
 				node = list.item(i);
 				nodeMap = node.getAttributes();
 				if (nodeMap.getNamedItem("fromuser") != null)
@@ -8144,13 +8146,49 @@ public class XmlParser {
 						cBean.setMessage(message);
 					}
 				}
+				syncList.add(cBean);
+				Element firstLevel = (Element)node;
+				NodeList value1Nodes = (firstLevel).getElementsByTagName("status");
+				Node node1 = value1Nodes.item(i);
+				NamedNodeMap nodemap1=node1.getAttributes();
+				ChatInfoBean chatInfoBean = new ChatInfoBean();
 
-				sync.add(cBean);
+				if (nodemap1.getNamedItem("user") != null)
+					chatInfoBean.setName(nodemap1.getNamedItem("user").getNodeValue());
+				if (nodemap1.getNamedItem("sentstatustime") != null)
+					chatInfoBean.setSentstatustime(nodemap1.getNamedItem("sentstatustime").getNodeValue());
+				Log.i("valueof", "beanvale1" + chatInfoBean.getSentstatustime());
+				if (nodemap1.getNamedItem("deliverstatustime") != null)
+					chatInfoBean.setDeliverstatustime(nodemap1.getNamedItem("deliverstatustime").getNodeValue());
+				Log.i("valueof", "beanvale2" + chatInfoBean.getDeliverstatustime());
+				if (nodemap1.getNamedItem("readstatustime") != null)
+					chatInfoBean.setDate(nodemap1.getNamedItem("readstatustime").getNodeValue());
+				Log.i("valueof", "beanvale3" + chatInfoBean.getDate());
+				chatInfoBean.setSid(cBean.getSignalid());
+				syncList.add(chatInfoBean);
 			}
+//				list = doc.getElementsByTagName("status");
+//				for (int i = 0; i < list.getLength(); i++) {
+//					ChatInfoBean chatInfoBean = new ChatInfoBean();
+//					node = list.item(i);
+//					nodeMap = node.getAttributes();
+//					if (nodeMap.getNamedItem("user") != null)
+//						chatInfoBean.setName(nodeMap.getNamedItem("user").getNodeValue());
+//					if (nodeMap.getNamedItem("sentstatustime") != null)
+//						chatInfoBean.setSentstatustime(nodeMap.getNamedItem("sentstatustime").getNodeValue());
+//					Log.i("valueof", "beanvale1" + chatInfoBean.getSentstatustime());
+//					if (nodeMap.getNamedItem("deliverstatustime") != null)
+//						chatInfoBean.setDeliverstatustime(nodeMap.getNamedItem("deliverstatustime").getNodeValue());
+//					Log.i("valueof", "beanvale2" + chatInfoBean.getDeliverstatustime());
+//					if (nodeMap.getNamedItem("readstatustime") != null)
+//						chatInfoBean.setDate(nodeMap.getNamedItem("readstatustime").getNodeValue());
+//					Log.i("valueof", "beanvale3" + chatInfoBean.getDate());
+//					syncList.add(chatInfoBean);
+//				}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			return sync;
+			return syncList;
 		}
 	}
 	public String[] parseDeleteTask(String xml) {

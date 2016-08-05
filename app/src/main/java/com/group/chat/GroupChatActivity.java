@@ -29,6 +29,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -311,6 +312,8 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 
     private HashMap<String,Object> current_open_activity_detail = new HashMap<String,Object>();
     private boolean save_state = false;
+    ImageView btMenu;
+    private RelativeLayout mainHeader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -362,6 +365,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         info_img = (ImageView) findViewById(R.id.info_img);
         file_img = (ImageView) findViewById(R.id.file_img);
         links_img = (ImageView) findViewById(R.id.links_img);
+
+//        btMenu = (ImageView) findViewById(R.id.side_menu);
+//        final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+//        mainHeader=(RelativeLayout)findViewById(R.id.mainheader);
+        final LinearLayout menu_side = (LinearLayout) findViewById(R.id.menu_side);
         if (getIntent().getStringExtra("isReq") != null) {
             isOpen = getIntent().getStringExtra("isReq");
             current_open_activity_detail.put("isReq",isOpen);

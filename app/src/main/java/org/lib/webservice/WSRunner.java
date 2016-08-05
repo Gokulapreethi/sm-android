@@ -536,7 +536,7 @@ public class WSRunner implements Runnable {
 						break;
 					case SYNCCHAT:
 						mChk = mParser.getResult(mSp.toString());
-						ArrayList<GroupChatBean> chatBean=mParser
+						ArrayList<Object> chatBean=mParser
 								.parseSyncChatDetails(mSp.toString());
 						mServicebean.setObj(chatBean);
 						Log.d("CHATSYNC", "--->SYNC CHAT");
