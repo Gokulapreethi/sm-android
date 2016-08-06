@@ -11,6 +11,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.lib.model.SignalingBean;
 import org.util.Utility;
@@ -208,6 +211,9 @@ public class ComponentCreator extends Activity implements IMNotifier {
 	TextView tv_file;
 	ImageView file_img,overlay;
 
+	private HashMap<String,Object> current_open_activity_detail = new HashMap<String,Object>();
+	private boolean save_state = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		try {
@@ -382,6 +388,18 @@ public class ComponentCreator extends Activity implements IMNotifier {
 			complBean = (CompleteListBean) getIntent().getExtras()
 					.getSerializable("viewBean");
 
+			current_open_activity_detail.put("action",ON_CREATE);
+			current_open_activity_detail.put("type",noteType);
+			current_open_activity_detail.put("forms",forms);
+			current_open_activity_detail.put("position",position);
+			current_open_activity_detail.put("buddyname",buddyname);
+			current_open_activity_detail.put("parentid",parentID);
+			current_open_activity_detail.put("from",from);
+			current_open_activity_detail.put("produ",product);
+			current_open_activity_detail.put("response",response);
+			current_open_activity_detail.put("fromNew",fromNewFile);
+			current_open_activity_detail.put("viewBean",complBean);
+
 			if (complBean != null) {
 
 				Log.i("complBean", String.valueOf(complBean.getComponentId()));
@@ -555,6 +573,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
 			if (from == null)
 				from = "";
 			send = bndl.getBoolean("send");
+
+			current_open_activity_detail.put("send",send);
 			CompleteListView.checkDir();
 
 			contentLayout = (ScrollView) findViewById(R.id.footerss);
@@ -4184,10 +4204,9 @@ public class ComponentCreator extends Activity implements IMNotifier {
 
 	@Override
 	protected void onDestroy() {
+		// TODO Auto-generated method stub
 		try {
-
-			// TODO Auto-generated method stub
-
+			super.onDestroy();
 			if (WebServiceReferences.contextTable.containsKey("Component")) {
 				WebServiceReferences.contextTable.remove("Component");
 			}
@@ -4195,10 +4214,35 @@ public class ComponentCreator extends Activity implements IMNotifier {
 				WebServiceReferences.contextTable.remove("a_play");
 			}
 
+			Object cur_context_object = null;
+			Iterator it0 = SingleInstance.current_open_activity_detail.entrySet().iterator();
+			while (it0.hasNext()) {
+				Map.Entry pair0 = (Map.Entry) it0.next();
+				Object cur_context_object0 = pair0.getKey();
+				if(cur_context_object0 instanceof ComponentCreator) {
+					cur_context_object =cur_context_object0;
+				}
+			}
+			if(cur_context_object != null) {
+				Log.i("reopen", "GroupChatActivity containsKey0");
+				SingleInstance.current_open_activity_detail.remove(cur_context_object);
+			}
+			if(save_state){
+				if(SingleInstance.current_open_activity_detail.containsKey(context)) {
+					SingleInstance.current_open_activity_detail.remove(context);
+				}
+				SingleInstance.current_open_activity_detail.put(context,this.current_open_activity_detail);
+				save_state = false;
+			} else {
+				if(SingleInstance.current_open_activity_detail.containsKey(context)) {
+					SingleInstance.current_open_activity_detail.remove(context);
+				}
+			}
+
 			if (callDisp != null) {
 				callDisp.cmp = null;
 			}
-			super.onDestroy();
+
 			if (img != null) {
 				if (!img.isRecycled()) {
 					img.recycle();
@@ -4214,6 +4258,11 @@ public class ComponentCreator extends Activity implements IMNotifier {
 			e.printStackTrace();
 		}
 
+	}
+
+	public void finishScreenforCallRequest(){
+		save_state = true;
+		this.finish();
 	}
 
 	public void ShowError(String Title, String Message) {

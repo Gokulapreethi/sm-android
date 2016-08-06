@@ -196,7 +196,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|right"
                 android:layout_marginTop="65dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:onClick="true"
                 android:background="@drawable/minimize_lay"
                 >
@@ -226,7 +226,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|right"
                 android:layout_marginTop="110dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:onClick="true"
                 android:background="@drawable/minimize_lay">
 

@@ -8158,7 +8158,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 	}
 	public void notifygroupDetails(Object obj){
-		Log.i("AAAA","notifygroupDetails");
+		Log.i("AAAA", "notifygroupDetails");
 		if(obj instanceof GroupBean){
 			GroupBean bean=(GroupBean)obj;
 			ContentValues cv = new ContentValues();
@@ -8187,10 +8187,10 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					// TODO Auto-generated method stub
 					GroupChatActivity gca = (GroupChatActivity) SingleInstance.contextTable
 							.get("groupchat");
-					if(gca!=null) {
+					if (gca != null) {
 						if (gca.isGroup && gca.isMemberTab)
 							gca.MembersProcess();
-						else if(gca.isRounding && gca.isMemberTab)
+						else if (gca.isRounding && gca.isMemberTab)
 							gca.RoundingMember();
 					}
 				}
@@ -8313,6 +8313,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 	}
 	public void notifyGetPatientRecords(Object obj){
+		Log.i("reopen","notifyGetPatientRecords");
 		if(obj instanceof Vector){
 			GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
 			if(groupChatActivity != null) {
@@ -8330,6 +8331,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		}
 	}
 	public void notifyGetTaskRecords(Object obj){
+		Log.i("reopen","notifyGetTaskRecords");
 		if(obj instanceof Vector){
 			Log.i("patientdetails","notifyGetTaskRecords");
 			Vector<TaskDetailsBean> pBeanList=(Vector<TaskDetailsBean>)obj;
@@ -8566,7 +8568,8 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 			RoundNewPatientActivity roundnewpatient = (RoundNewPatientActivity) WebServiceReferences.contextTable.get("roundnewpatient");
 			if (roundnewpatient != null) {
-				roundnewpatient.finish();
+//				roundnewpatient.finish();
+				roundnewpatient.finishScreenforCallRequest();
 			}
 		}
 
@@ -8598,7 +8601,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 			TaskCreationActivity taskcreation = (TaskCreationActivity) WebServiceReferences.contextTable.get("taskcreation");
 			if (taskcreation != null) {
-				taskcreation.finish();
+				taskcreation.finishScreenforCallRequest();
 			}
 		}
 		if (WebServiceReferences.contextTable.containsKey("forwarduser")) {
@@ -8640,7 +8643,8 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		if (WebServiceReferences.contextTable.containsKey("Component")) {
 			ComponentCreator componentCreator = (ComponentCreator) WebServiceReferences.contextTable.get("Component");
 			if (componentCreator != null) {
-				componentCreator.finish();
+//				componentCreator.finish();
+				componentCreator.finishScreenforCallRequest();
 			}
 		}
 
@@ -8655,61 +8659,155 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 
 	public void openNonClosedActivity() {
-		if (SingleInstance.current_open_activity_detail != null && SingleInstance.current_open_activity_detail.size() > 0) {
-			Object cur_context_object = SingleInstance.current_open_activity_detail.get("activtycontext");
-			if(cur_context_object instanceof RoundingEditActivity) {
+		try {
+			if (SingleInstance.current_open_activity_detail != null && SingleInstance.current_open_activity_detail.size() > 0) {
+//                Object cur_context_object = SingleInstance.current_open_activity_detail.get("activtycontext");
+				Iterator it0 = SingleInstance.current_open_activity_detail.entrySet().iterator();
+				while (it0.hasNext()) {
+					Map.Entry pair0 = (Map.Entry)it0.next();
+					Object cur_context_object0 = pair0.getKey();
+					HashMap<String,Object> objectHashMap0 = (HashMap<String, Object>) pair0.getValue();
+					if (cur_context_object0 instanceof GroupChatActivity) {
+						String group_id = null;
+						Intent intent0 = new Intent(context, GroupChatActivity.class);
+						if (objectHashMap0.containsKey("groupid") && objectHashMap0.get("groupid") != null) {
+							group_id = (String) objectHashMap0.get("groupid");
+							intent0.putExtra("groupid", group_id);
+						}
+						if (objectHashMap0.containsKey("isGroup") && objectHashMap0.get("isGroup") != null) {
+							intent0.putExtra("isGroup", (boolean) objectHashMap0.get("isGroup"));
+						}
+						if (objectHashMap0.containsKey("isRounding") && objectHashMap0.get("isRounding") != null) {
+							intent0.putExtra("isRounding", (boolean) objectHashMap0.get("isRounding"));
+							if ((boolean) objectHashMap0.get("isRounding") && group_id != null) {
+								WebServiceReferences.webServiceClient.GetPatientRecords("", group_id
+										, SingleInstance.mainContext);
+								WebServiceReferences.webServiceClient.GetTaskInfo("", group_id, SingleInstance.mainContext);
+								WebServiceReferences.webServiceClient.GetRoleAccess(CallDispatcher.LoginUser, group_id,
+										"", SingleInstance.mainContext);
+								WebServiceReferences.webServiceClient.GetMemberRights(CallDispatcher.LoginUser,
+										group_id, SingleInstance.mainContext);
+							}
+						}
+						if (objectHashMap0.containsKey("sessionid") && objectHashMap0.get("sessionid") != null) {
+							intent0.putExtra("sessionid", (String) objectHashMap0.get("sessionid"));
+						}
+						//				intent.putExtra("isGroup", (boolean)objectHashMap.get("isGroup"));
+						if (objectHashMap0.containsKey("isReq") && objectHashMap0.get("isReq") != null) {
+							intent0.putExtra("isReq", (String) objectHashMap0.get("isReq"));
+						}
+						if (objectHashMap0.containsKey("buddy") && objectHashMap0.get("buddy") != null) {
+							intent0.putExtra("buddy", (String) objectHashMap0.get("buddy"));
+						}
+						if (objectHashMap0.containsKey("buddystatus") && objectHashMap0.get("buddystatus") != null) {
+							intent0.putExtra("buddystatus", (String) objectHashMap0.get("buddystatus"));
+						}
+						if (objectHashMap0.containsKey("nickname") && objectHashMap0.get("nickname") != null) {
+							intent0.putExtra("nickname", (String) objectHashMap0.get("nickname"));
+						}
+						intent0.putExtra("minimize",true);
+						Log.i("reopen", "openNonClosedActivity GroupChatActivity");
+						startActivity(intent0);
+//					}
+						Iterator it = SingleInstance.current_open_activity_detail.entrySet().iterator();
+						while (it.hasNext()) {
+							Map.Entry pair = (Map.Entry) it.next();
+							Object cur_context_object = pair.getKey();
+							HashMap<String, Object> objectHashMap = (HashMap<String, Object>) pair.getValue();
 
-				Intent intent = new Intent(context, RoundingEditActivity.class);
-				intent.putExtra("buddyname", (String)SingleInstance.current_open_activity_detail.get("buddyname"));
-				intent.putExtra("firstname", (String)SingleInstance.current_open_activity_detail.get("buddyname"));
-				intent.putExtra("groupid", (String)SingleInstance.current_open_activity_detail.get("buddyname"));
-				startActivity(intent);
-			}
+							if (cur_context_object instanceof RoundingEditActivity) {
 
-			if(cur_context_object instanceof GroupChatActivity) {
-				Intent intent = new Intent(context, GroupChatActivity.class);
-				if(SingleInstance.current_open_activity_detail.containsKey("groupid") &&SingleInstance.current_open_activity_detail.get("groupid") != null) {
-					intent.putExtra("groupid", (String) SingleInstance.current_open_activity_detail.get("groupid"));
-				}
-				if(SingleInstance.current_open_activity_detail.containsKey("isGroup") &&SingleInstance.current_open_activity_detail.get("isGroup") != null) {
-					intent.putExtra("isGroup", (boolean) SingleInstance.current_open_activity_detail.get("isGroup"));
-				}
-				if(SingleInstance.current_open_activity_detail.containsKey("isRounding") &&SingleInstance.current_open_activity_detail.get("isRounding") != null) {
-					intent.putExtra("isRounding", (boolean) SingleInstance.current_open_activity_detail.get("isRounding"));
-				}
-				if(SingleInstance.current_open_activity_detail.containsKey("sessionid") &&SingleInstance.current_open_activity_detail.get("sessionid") != null) {
-					intent.putExtra("sessionid", (String) SingleInstance.current_open_activity_detail.get("sessionid"));
-				}
-//				intent.putExtra("isGroup", (boolean)SingleInstance.current_open_activity_detail.get("isGroup"));
-				if(SingleInstance.current_open_activity_detail.containsKey("isReq") &&SingleInstance.current_open_activity_detail.get("isReq") != null) {
-					intent.putExtra("isReq", (String) SingleInstance.current_open_activity_detail.get("isReq"));
-				}
-				if(SingleInstance.current_open_activity_detail.containsKey("buddy") &&SingleInstance.current_open_activity_detail.get("buddy") != null) {
-					intent.putExtra("buddy", (String) SingleInstance.current_open_activity_detail.get("buddy"));
-				}
-				if(SingleInstance.current_open_activity_detail.containsKey("buddystatus") &&SingleInstance.current_open_activity_detail.get("buddystatus") != null) {
-					intent.putExtra("buddystatus", (String) SingleInstance.current_open_activity_detail.get("buddystatus"));
-				}
-				if(SingleInstance.current_open_activity_detail.containsKey("nickname") &&SingleInstance.current_open_activity_detail.get("nickname") != null) {
-					intent.putExtra("nickname", (String) SingleInstance.current_open_activity_detail.get("nickname"));
-				}
-				startActivity(intent);
-			}
+								Intent intent = new Intent(context, RoundingEditActivity.class);
+								intent.putExtra("buddyname", (String) objectHashMap.get("buddyname"));
+								intent.putExtra("firstname", (String) objectHashMap.get("buddyname"));
+								intent.putExtra("groupid", (String) objectHashMap.get("buddyname"));
+								Log.i("reopen", "openNonClosedActivity RoundingEditActivity");
+								startActivity(intent);
+							}
 
-			if(cur_context_object instanceof RoundingGroupActivity) {
-				Intent intent = new Intent(context,
-						RoundingGroupActivity.class);
-				if(SingleInstance.current_open_activity_detail.containsKey("isEdit") &&SingleInstance.current_open_activity_detail.get("isEdit") != null) {
-					intent.putExtra("isEdit", (boolean) SingleInstance.current_open_activity_detail.get("isEdit"));
+							if (cur_context_object instanceof RoundingGroupActivity) {
+								Intent intent = new Intent(context,
+										RoundingGroupActivity.class);
+								if (objectHashMap.containsKey("isEdit") && objectHashMap.get("isEdit") != null) {
+									intent.putExtra("isEdit", (boolean) objectHashMap.get("isEdit"));
+								}
+								if (objectHashMap.containsKey("id") && objectHashMap.get("id") != null) {
+									intent.putExtra("id", (String) objectHashMap.get("id"));
+								}
+								if (objectHashMap.containsKey("isduplicate") && objectHashMap.get("isduplicate") != null) {
+									intent.putExtra("isduplicate", (boolean) objectHashMap.get("isduplicate"));
+								}
+								Log.i("reopen", "openNonClosedActivity RoundingGroupActivity");
+								startActivity(intent);
+							}
+
+
+							if (cur_context_object instanceof TaskCreationActivity) {
+								Intent intent = new Intent(context,
+										TaskCreationActivity.class);
+								if (objectHashMap.containsKey("groupid") && objectHashMap.get("groupid") != null) {
+									intent.putExtra("groupid", (String) objectHashMap.get("groupid"));
+								}
+								if (objectHashMap.containsKey("taskid") && objectHashMap.get("taskid") != null) {
+									intent.putExtra("taskid", (String) objectHashMap.get("taskid"));
+								}
+								if (objectHashMap.containsKey("isEdit") && objectHashMap.get("isEdit") != null) {
+									intent.putExtra("isEdit", (boolean) objectHashMap.get("isEdit"));
+								}
+								if (objectHashMap.containsKey("patientid") && objectHashMap.get("patientid") != null) {
+									intent.putExtra("patientid", (String) objectHashMap.get("patientid"));
+								}
+								Log.i("reopen", "openNonClosedActivity TaskCreationActivity");
+								startActivity(intent);
+							}
+
+							if(cur_context_object instanceof RoundNewPatientActivity) {
+								Intent intent = new Intent(context, RoundNewPatientActivity.class);
+								if (objectHashMap.containsKey("groupid") && objectHashMap.get("groupid") != null) {
+									intent.putExtra("groupid", (String) objectHashMap.get("groupid"));
+								}
+								startActivity(intent);
+							}
+						}
+					} else if(cur_context_object0 instanceof ComponentCreator) {
+						Intent intent0 = new Intent(context, ComponentCreator.class);
+						Bundle bndl = new Bundle();
+						if (objectHashMap0.containsKey("action") && objectHashMap0.get("action") != null) {
+							bndl.putBoolean("action", (boolean) objectHashMap0.get("action"));
+						}
+						if (objectHashMap0.containsKey("type") && objectHashMap0.get("type") != null) {
+							bndl.putString("type", (String) objectHashMap0.get("type"));
+						}
+						if (objectHashMap0.containsKey("forms") && objectHashMap0.get("forms") != null) {
+							bndl.putBoolean("forms", (boolean) objectHashMap0.get("forms"));
+						}
+						if (objectHashMap0.containsKey("position") && objectHashMap0.get("position") != null) {
+							bndl.putInt("position", (int) objectHashMap0.get("position"));
+						}
+						if (objectHashMap0.containsKey("buddyname") && objectHashMap0.get("buddyname") != null) {
+							bndl.putString("buddyname", (String) objectHashMap0.get("buddyname"));
+						}if (objectHashMap0.containsKey("parentid") && objectHashMap0.get("parentid") != null) {
+							bndl.putString("parentid", (String) objectHashMap0.get("parentid"));
+						}if (objectHashMap0.containsKey("from") && objectHashMap0.get("from") != null) {
+							bndl.putString("from", (String) objectHashMap0.get("from"));
+						}if (objectHashMap0.containsKey("produ") && objectHashMap0.get("produ") != null) {
+							bndl.putString("produ", (String) objectHashMap0.get("produ"));
+						}if (objectHashMap0.containsKey("response") && objectHashMap0.get("response") != null) {
+							bndl.putBoolean("response", (boolean) objectHashMap0.get("response"));
+						}if (objectHashMap0.containsKey("fromNew") && objectHashMap0.get("fromNew") != null) {
+							bndl.putBoolean("fromNew", (boolean) objectHashMap0.get("fromNew"));
+						}
+						intent0.putExtras(bndl);
+						if (objectHashMap0.containsKey("viewBean") && objectHashMap0.get("viewBean") != null) {
+							intent0.putExtra("viewBean", (CompleteListBean) objectHashMap0.get("viewBean"));
+						}
+
+						startActivity(intent0);
+					}
 				}
-				if(SingleInstance.current_open_activity_detail.containsKey("id") &&SingleInstance.current_open_activity_detail.get("id") != null) {
-					intent.putExtra("id", (String) SingleInstance.current_open_activity_detail.get("id"));
-				}
-				if(SingleInstance.current_open_activity_detail.containsKey("isduplicate") &&SingleInstance.current_open_activity_detail.get("isduplicate") != null) {
-					intent.putExtra("isduplicate", (boolean) SingleInstance.current_open_activity_detail.get("isduplicate"));
-				}
-				startActivity(intent);
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

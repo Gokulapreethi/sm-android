@@ -165,8 +165,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -221,7 +223,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     public boolean isUrgent = false;
     private String privateMembers;
     private String pId;
-    public boolean isGroup, isRounding;
+    public boolean isGroup, isRounding,minimize;
     public ProgressBar progress, progressBar1;
     public LinearLayout list_all,multi_send;
     private RelativeLayout audio_layout, ad_play, selectAll_container, settingnotifications, forwardlay;
@@ -343,6 +345,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 finish();
             }
         });
+        minimize = getIntent().getBooleanExtra("minimize",false);
         isGroup = getIntent().getBooleanExtra("isGroup", false);
         groupId = getIntent().getStringExtra("groupid");
         sessionid = getIntent().getStringExtra("sessionid");
@@ -401,13 +404,13 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         groupBean = DBAccess.getdbHeler().getGroup(
                 "select * from grouplist where groupid='" + groupId + "'");
         if(isRounding){
-            RoundingFragment changePassword = RoundingFragment.newInstance(context);
-            FragmentManager fragmentManager = SingleInstance.mainContext
-                    .getSupportFragmentManager();
-            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            fragmentManager.beginTransaction().replace(
-                    R.id.activity_main_content_fragment, changePassword)
-                    .commitAllowingStateLoss();
+//            RoundingFragment changePassword = RoundingFragment.newInstance(context);
+//            FragmentManager fragmentManager = SingleInstance.mainContext
+//                    .getSupportFragmentManager();
+//            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//            fragmentManager.beginTransaction().replace(
+//                    R.id.activity_main_content_fragment, changePassword)
+//                    .commitAllowingStateLoss();
 
             memberbean = DBAccess.getdbHeler().getMemberDetails(groupBean.getGroupId(), CallDispatcher.LoginUser);
             roleAccessBean = DBAccess.getdbHeler().getRoleAccessDetails(groupBean.getGroupId(), memberbean.getRole());
@@ -801,7 +804,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             view_snazbox.setVisibility(View.VISIBLE);
             PatientDetails();
             if(!isOpen.equalsIgnoreCase("p"))
-            showprogress();
+                showprogress();
+            if(minimize) {
+                cancelDialog();
+            }
         }
 
         String noanswerReplyType = getIntent().getStringExtra("noanswerreply");
@@ -2760,6 +2766,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
+        Log.i("reopen", "GroupChatActivity onDestroy");
         stopPlayback();
         sendlistadapter.stopPlayback();
         UdpMessageBean bean = new UdpMessageBean();
@@ -2784,12 +2791,32 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         if (SingleInstance.contextTable.containsKey("groupchat")) {
             SingleInstance.contextTable.remove("groupchat");
         }
-
+//        SingleInstance.current_open_activity_detail.clear();
+        Object cur_context_object = null;
+        Iterator it0 = SingleInstance.current_open_activity_detail.entrySet().iterator();
+        while (it0.hasNext()) {
+            Map.Entry pair0 = (Map.Entry) it0.next();
+            Object cur_context_object0 = pair0.getKey();
+            if(cur_context_object0 instanceof GroupChatActivity) {
+                cur_context_object =cur_context_object0;
+            }
+        }
+        if(cur_context_object != null) {
+            Log.i("reopen", "GroupChatActivity containsKey0");
+            SingleInstance.current_open_activity_detail.remove(cur_context_object);
+        }
         if(save_state){
-            SingleInstance.current_open_activity_detail.putAll(this.current_open_activity_detail);
+            if(SingleInstance.current_open_activity_detail.containsKey(context)) {
+                Log.i("reopen", "GroupChatActivity containsKey1");
+                SingleInstance.current_open_activity_detail.remove(context);
+            }
+            SingleInstance.current_open_activity_detail.put(context,this.current_open_activity_detail);
             save_state = false;
         } else {
-            SingleInstance.current_open_activity_detail.clear();
+            if(SingleInstance.current_open_activity_detail.containsKey(context)) {
+                Log.i("reopen", "GroupChatActivity containsKey");
+                SingleInstance.current_open_activity_detail.remove(context);
+            }
         }
 
         mediaPlayer.stop();

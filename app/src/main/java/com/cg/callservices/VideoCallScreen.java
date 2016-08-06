@@ -56,7 +56,6 @@ import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
 import com.main.ContactsFragment;
 import com.service.ChatHeadDrawerService;
-import com.service.FloatingCallService;
 import com.util.SingleInstance;
 
 import org.audio.AudioProperties;
@@ -3717,6 +3716,11 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 //		} else {
 			AppReference.mainContext.stopService(new Intent(AppReference.mainContext, ChatHeadDrawerService.class));
 //		}
+
+		if(mainHeader != null) {
+			mainHeader.setVisibility(View.GONE);
+		}
+
 		Activity parent = getActivity();
 		if(parent != null){
 			video_minimize.setVisibility(View.GONE);
@@ -4225,6 +4229,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 					AppReference.bacgroundFragment);
 			ft.commitAllowingStateLoss();
 			video_minimize.setVisibility(View.GONE);
+			AppReference.mainContext.openNonClosedActivity();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -4232,7 +4237,8 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 	private void showCallHistory()
 	{
-		objCallDispatcher.showCallHistory(sessionid , "VC");
+		objCallDispatcher.showCallHistoryWithoutRecord(sessionid, "VC");
+//		objCallDispatcher.showCallHistory(sessionid , "VC");
 //		try {
 //			mHandler=new Handler();
 //			final Dialog dialog = new Dialog(SingleInstance.mainContext);
@@ -4370,6 +4376,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			video_minimize.setVisibility(View.VISIBLE);
 		}
 		mainHeader.setVisibility(View.VISIBLE);
+		AppReference.mainContext.openNonClosedActivity();
 	}
     class PlaybackUpdater implements Runnable {
 	public SeekBar mBarToUpdate = null;

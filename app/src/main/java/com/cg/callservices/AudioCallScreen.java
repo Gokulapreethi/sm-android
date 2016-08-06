@@ -644,6 +644,10 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
         super.onResume();
 		try {
 			Log.i("Minimise","AudioCallScreen OnResume");
+			if(mainHeader != null) {
+				mainHeader.setVisibility(View.GONE);
+			}
+
 			AppMainActivity.inActivity = context;
 			if (AppMainActivity.commEngine != null) {
                 AppMainActivity.commEngine.setmDecodeFrame(true);
@@ -2923,6 +2927,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 					AppReference.bacgroundFragment);
 			ft.commitAllowingStateLoss();
 //			audio_minimize.setVisibility(View.GONE);
+			AppReference.mainContext.openNonClosedActivity();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -2981,7 +2986,9 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	String file = "";
 	private void showCallHistory()
 	{
-		objCallDispatcher.showCallHistory(strSessionId , calltype);
+		objCallDispatcher.showCallHistoryWithoutRecord(strSessionId, calltype);
+
+//		objCallDispatcher.showCallHistory(strSessionId , calltype);
 //		try {
 //			final Dialog dialog = new Dialog(SingleInstance.mainContext);
 //			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

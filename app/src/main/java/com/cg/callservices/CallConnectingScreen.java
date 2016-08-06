@@ -30,7 +30,6 @@ import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
-import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
 import com.service.ChatHeadDrawerService;
@@ -617,10 +616,10 @@ public class CallConnectingScreen extends Fragment {
 
 	private void OpenCallscreen(final SignalingBean sbean) {
 		final String from = sbean.getTo();
-		if (SingleInstance.contextTable.containsKey("groupchat")) {
-			GroupChatActivity groupChatActivity = (GroupChatActivity) SingleInstance.contextTable.get("groupchat");
-			groupChatActivity.finish();
-		}
+//		if (SingleInstance.contextTable.containsKey("groupchat")) {
+//			GroupChatActivity groupChatActivity = (GroupChatActivity) SingleInstance.contextTable.get("groupchat");
+//			groupChatActivity.finish();
+//		}
 		if (sbean.getCallType().equals("AC")) {
 
 			CallDispatcher.isAudioCallWindowOpened = true;
@@ -826,6 +825,9 @@ public class CallConnectingScreen extends Fragment {
 //				i.putExtras(bundle);
 //
 //				startActivity(i);
+				AppMainActivity appMainActivity = (AppMainActivity) SingleInstance.contextTable
+						.get("MAIN");
+				appMainActivity.closingActivity();
 				if (SingleInstance.instanceTable.containsKey("connection")) {
 					SingleInstance.instanceTable.remove("connection");
 				}

@@ -37,6 +37,8 @@ import org.lib.model.GroupMemberBean;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class RoundingEditActivity extends Activity {
     private String status="0";
@@ -352,11 +354,34 @@ public class RoundingEditActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        Object cur_context_object = null;
+        Iterator it0 = SingleInstance.current_open_activity_detail.entrySet().iterator();
+        while (it0.hasNext()) {
+            Map.Entry pair0 = (Map.Entry) it0.next();
+            Object cur_context_object0 = pair0.getKey();
+            if(cur_context_object0 instanceof RoundingEditActivity) {
+                cur_context_object =cur_context_object0;
+            }
+        }
+        if(cur_context_object != null) {
+            Log.i("reopen", "GroupChatActivity containsKey0");
+            SingleInstance.current_open_activity_detail.remove(cur_context_object);
+        }
         if(save_state){
-            SingleInstance.current_open_activity_detail.putAll(this.current_open_activity_detail);
+            if(SingleInstance.current_open_activity_detail.containsKey(context)) {
+                SingleInstance.current_open_activity_detail.remove(context);
+            }
+            SingleInstance.current_open_activity_detail.put(context,this.current_open_activity_detail);
             save_state = false;
         } else {
-            SingleInstance.current_open_activity_detail.clear();
+            if(SingleInstance.current_open_activity_detail.containsKey(context)) {
+                SingleInstance.current_open_activity_detail.remove(context);
+            }
+        }
+
+        if(WebServiceReferences.contextTable.containsKey("roundingEdit")) {
+            WebServiceReferences.contextTable.remove("roundingEdit");
         }
     }
 

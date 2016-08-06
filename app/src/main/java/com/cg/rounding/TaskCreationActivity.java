@@ -2,24 +2,18 @@ package com.cg.rounding;
 
 import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,13 +24,10 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -46,19 +37,15 @@ import com.bean.ProfileBean;
 import com.cg.Calendar.CustomTimePickerDialog;
 import com.cg.DB.DBAccess;
 import com.cg.DatePicker.DatePickerPopWin;
-import com.cg.account.MyAlarmService;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
-import com.cg.quickaction.Buddy;
 import com.cg.snazmed.R;
 import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
-import com.main.ContactsFragment;
 import com.util.SingleInstance;
 
 import org.lib.PatientDetailsBean;
 import org.lib.model.BuddyInformationBean;
-import org.lib.model.GroupBean;
 import org.lib.model.TaskDetailsBean;
 
 import java.io.File;
@@ -67,8 +54,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Vector;
 
 public class TaskCreationActivity extends Activity {
@@ -94,6 +84,10 @@ public class TaskCreationActivity extends Activity {
     private TextView remindTime;
     int edit_Year , edit_day, edit_month;
     Vector<PatientDetailsBean> PatientList;
+
+    private HashMap<String,Object> current_open_activity_detail = new HashMap<String,Object>();
+    private boolean save_state = false;
+
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
@@ -127,6 +121,12 @@ public class TaskCreationActivity extends Activity {
         taskid=getIntent().getStringExtra("taskid");
         isEdit=getIntent().getBooleanExtra("isEdit", false);
         patientid=getIntent().getStringExtra("patientid");
+
+        current_open_activity_detail.put("groupid",groupid);
+        current_open_activity_detail.put("taskid",taskid);
+        current_open_activity_detail.put("isEdit",isEdit);
+        current_open_activity_detail.put("patientid",patientid);
+
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -830,5 +830,47 @@ public class TaskCreationActivity extends Activity {
                     members.add(uBean);
                 }
             }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            if( WebServiceReferences.contextTable.containsKey("taskcreation")) {
+                WebServiceReferences.contextTable.remove("taskcreation");
+            }
+
+            Object cur_context_object = null;
+            Iterator it0 = SingleInstance.current_open_activity_detail.entrySet().iterator();
+            while (it0.hasNext()) {
+                Map.Entry pair0 = (Map.Entry) it0.next();
+                Object cur_context_object0 = pair0.getKey();
+                if(cur_context_object0 instanceof TaskCreationActivity) {
+                    cur_context_object =cur_context_object0;
+                }
+            }
+            if(cur_context_object != null) {
+                Log.i("reopen", "GroupChatActivity containsKey0");
+                SingleInstance.current_open_activity_detail.remove(cur_context_object);
+            }
+            if(save_state){
+                if(SingleInstance.current_open_activity_detail.containsKey(context)) {
+                    SingleInstance.current_open_activity_detail.remove(context);
+                }
+                SingleInstance.current_open_activity_detail.put(context,this.current_open_activity_detail);
+                save_state = false;
+            } else {
+                if(SingleInstance.current_open_activity_detail.containsKey(context)) {
+                    SingleInstance.current_open_activity_detail.remove(context);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void finishScreenforCallRequest(){
+        save_state = true;
+        this.finish();
     }
 }

@@ -73,6 +73,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -809,12 +811,29 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
         if(SingleInstance.contextTable.containsKey("roundingGroup")){
             SingleInstance.contextTable.remove("roundingGroup");
         }
-
+        Object cur_context_object = null;
+        Iterator it0 = SingleInstance.current_open_activity_detail.entrySet().iterator();
+        while (it0.hasNext()) {
+            Map.Entry pair0 = (Map.Entry) it0.next();
+            Object cur_context_object0 = pair0.getKey();
+            if(cur_context_object0 instanceof RoundingGroupActivity) {
+                cur_context_object =cur_context_object0;
+            }
+        }
+        if(cur_context_object != null) {
+            Log.i("reopen", "GroupChatActivity containsKey0");
+            SingleInstance.current_open_activity_detail.remove(cur_context_object);
+        }
         if(save_state){
-            SingleInstance.current_open_activity_detail.putAll(this.current_open_activity_detail);
+            if(SingleInstance.current_open_activity_detail.containsKey(context)) {
+                SingleInstance.current_open_activity_detail.remove(context);
+            }
+            SingleInstance.current_open_activity_detail.put(context,this.current_open_activity_detail);
             save_state = false;
         } else {
-            SingleInstance.current_open_activity_detail.clear();
+            if(SingleInstance.current_open_activity_detail.containsKey(context)) {
+                SingleInstance.current_open_activity_detail.remove(context);
+            }
         }
         super.onDestroy();
     }

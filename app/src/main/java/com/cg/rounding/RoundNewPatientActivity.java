@@ -6,9 +6,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -26,7 +24,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,27 +31,20 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bean.ProfileBean;
 import com.bean.UserBean;
 import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.snazmed.R;
 import com.group.AddGroupMembers;
-import com.group.BuddyAdapter;
 import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
-import com.main.AppMainActivity;
-import com.main.ContactsFragment;
 import com.util.SingleInstance;
 
 import org.lib.PatientDetailsBean;
-import org.lib.model.BuddyInformationBean;
 import org.lib.model.GroupBean;
 
 import java.io.File;
@@ -64,8 +54,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Vector;
 
 public class RoundNewPatientActivity extends Activity {
@@ -95,6 +87,10 @@ public class RoundNewPatientActivity extends Activity {
     private TextView ed_dob=null;
     private TextView ed_Admitdate=null;
     private boolean isHospital=false;
+
+    private HashMap<String,Object> current_open_activity_detail = new HashMap<String,Object>();
+    private boolean save_state = false;
+
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
@@ -126,6 +122,8 @@ public class RoundNewPatientActivity extends Activity {
         gender_patient = (RadioGroup) findViewById(R.id.gender_patient);
         final ImageView hospital_img=(ImageView)findViewById(R.id.title_img);
         groupid=getIntent().getStringExtra("groupid");
+
+        current_open_activity_detail.put("groupid",groupid);
 
         final EditText ed_firstname=(EditText)findViewById(R.id.ed_firstname);
         final EditText ed_middlename=(EditText)findViewById(R.id.ed_middlename);
@@ -886,5 +884,47 @@ public class RoundNewPatientActivity extends Activity {
             LinearLayout details_lay;
 
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            if( WebServiceReferences.contextTable.containsKey("roundnewpatient")) {
+                WebServiceReferences.contextTable.remove("roundnewpatient");
+            }
+
+            Object cur_context_object = null;
+            Iterator it0 = SingleInstance.current_open_activity_detail.entrySet().iterator();
+            while (it0.hasNext()) {
+                Map.Entry pair0 = (Map.Entry) it0.next();
+                Object cur_context_object0 = pair0.getKey();
+                if(cur_context_object0 instanceof RoundNewPatientActivity) {
+                    cur_context_object =cur_context_object0;
+                }
+            }
+            if(cur_context_object != null) {
+                Log.i("reopen", "GroupChatActivity containsKey0");
+                SingleInstance.current_open_activity_detail.remove(cur_context_object);
+            }
+            if(save_state){
+                if(SingleInstance.current_open_activity_detail.containsKey(context)) {
+                    SingleInstance.current_open_activity_detail.remove(context);
+                }
+                SingleInstance.current_open_activity_detail.put(context,this.current_open_activity_detail);
+                save_state = false;
+            } else {
+                if(SingleInstance.current_open_activity_detail.containsKey(context)) {
+                    SingleInstance.current_open_activity_detail.remove(context);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void finishScreenforCallRequest(){
+        save_state = true;
+        this.finish();
     }
 }

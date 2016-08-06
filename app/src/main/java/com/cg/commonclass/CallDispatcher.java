@@ -5,7 +5,6 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -84,7 +83,6 @@ import android.widget.Toast;
 import com.bean.ConnectionBrokerServerBean;
 import com.bean.FormFieldSettingDeleteBean;
 import com.bean.GroupChatBean;
-import com.bean.GroupTempBean;
 import com.bean.ProfileBean;
 import com.callHistory.CallHistoryActivity;
 import com.cg.DB.DBAccess;
@@ -102,9 +100,9 @@ import com.cg.avatar.CloneActivity;
 import com.cg.callservices.AudioCallScreen;
 import com.cg.callservices.AudioPagingSRWindow;
 import com.cg.callservices.CallConnectingScreen;
-import com.cg.callservices.inCommingCallAlert;
 import com.cg.callservices.VideoCallScreen;
 import com.cg.callservices.VideoPagingSRWindow;
+import com.cg.callservices.inCommingCallAlert;
 import com.cg.commongui.MultimediaUtils;
 import com.cg.commongui.TestHTML5WebView;
 import com.cg.files.CompleteListBean;
@@ -136,7 +134,6 @@ import com.cg.profiles.BusCard;
 import com.cg.profiles.ViewProfiles;
 import com.cg.quickaction.ContactLogics;
 import com.cg.quickaction.QuickActionSelectcalls;
-import com.cg.rounding.NotificationReceiver;
 import com.cg.rounding.RoundingFragment;
 import com.cg.services.PlayerService;
 import com.cg.settings.MenuPage;
@@ -177,7 +174,6 @@ import com.main.SettingsFragment;
 import com.main.ViewProfileFragment;
 import com.screensharing.ScreenSharingFragment;
 import com.service.ChatHeadDrawerService;
-import com.service.FloatingCallService;
 import com.util.SingleInstance;
 
 import org.audio.AudioProperties;
@@ -2537,7 +2533,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									handlerForCall.post(new Runnable() {
 										@Override
 										public void run() {
-											showCallHistory(CallDispatcher.sb.getSessionid(), CallDispatcher.sb.getCallType());
+											showCallHistoryWithoutRecord(CallDispatcher.sb.getSessionid(), CallDispatcher.sb.getCallType());
+//											showCallHistory(CallDispatcher.sb.getSessionid(), CallDispatcher.sb.getCallType());
 										}
 									});
 								}
@@ -16926,6 +16923,28 @@ private TrustManager[] get_trust_mgr() {
 			}
 		}
 
+	}
+
+	public void showCallHistoryWithoutRecord(final String strSessionId, final String callType) {
+		handlerForCall.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+
+				DBAccess.getdbHeler().updaterecordtransaction(CallDispatcher.sb.getSessionid());
+				Intent intentComponent = new Intent(context,
+						CallHistoryActivity.class);
+				intentComponent.putExtra("buddyname",
+						CallDispatcher.sb.getFrom());
+				intentComponent.putExtra("isDelete", true);
+
+				if (callType.equalsIgnoreCase("VC"))
+					intentComponent.putExtra("audiocall", false);
+				intentComponent.putExtra("individual", true);
+				intentComponent.putExtra("sessionid",
+						CallDispatcher.sb.getSessionid());
+				context.startActivity(intentComponent);
+			}
+		},2000);
 	}
 
 	public void showCallHistory(final String strSessionId, final String callType)
