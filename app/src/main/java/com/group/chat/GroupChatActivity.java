@@ -27,8 +27,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -47,9 +49,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -72,7 +72,7 @@ import com.bean.ProfileBean;
 import com.bean.SpecialMessageBean;
 import com.bean.UserBean;
 import com.callHistory.CallHistoryActivity;
-import com.cg.Calendar.DateView;
+import com.cg.Calendar.CalendarViewClass;
 import com.cg.DB.DBAccess;
 import com.cg.account.PinSecurity;
 import com.cg.commonclass.BuddyListComparator;
@@ -105,7 +105,6 @@ import com.cg.rounding.OwnershipActivity;
 import com.cg.rounding.PatientLocationComparator;
 import com.cg.rounding.PatientNameComparator;
 import com.cg.rounding.PatientRoundingFragment;
-import com.cg.rounding.PatientStatusComparator;
 import com.cg.rounding.RolesManagementFragment;
 import com.cg.rounding.RoundNewPatientActivity;
 import com.cg.rounding.RoundingFragment;
@@ -124,6 +123,7 @@ import com.group.ViewGroups;
 import com.image.utils.ImageLoader;
 import com.image.utils.ImageViewer;
 import com.main.AppMainActivity;
+import com.main.CalendarActivity;
 import com.main.ContactsFragment;
 import com.main.DashBoardFragment;
 import com.main.ExchangesFragment;
@@ -165,6 +165,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -175,7 +176,7 @@ import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-public class GroupChatActivity extends Activity implements OnClickListener ,TextWatcher {
+public class GroupChatActivity extends FragmentActivity implements OnClickListener ,TextWatcher {
     private Button btnBack;
     private Button settingsMenu;
     private ImageView profilePic;
@@ -297,13 +298,6 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     Button dot;
     boolean isatoz=true;
     private RecordTransactionBean rBean=null;
-    int mYear;
-    int mMonth;
-    int mDay;
-    Calendar c = Calendar.getInstance();
-    int prevDay = c.get(Calendar.DAY_OF_MONTH);
-    int prevMonth = c.get(Calendar.MONTH);
-    int prevYear = c.get(Calendar.YEAR);
     private RolePatientManagementBean rolePatientManagementBean;
     private RoleAccessBean roleAccessBean;
     private GroupMemberBean memberbean;
@@ -317,9 +311,14 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
     boolean isForward=false;
     private boolean mypatient=true;
     public boolean isMemberTab=false;
+    Button search;
+    DrawerLayout mDrawerLayout;
+    LinearLayout menu_side;
 
     private HashMap<String,Object> current_open_activity_detail = new HashMap<String,Object>();
     private boolean save_state = false;
+    ImageView btMenu;
+    private RelativeLayout mainHeader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -332,7 +331,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         final LinearLayout chat = (LinearLayout) findViewById(R.id.chat);
         final LinearLayout profilechat = (LinearLayout) findViewById(R.id.profilechat);
         dot = (Button) findViewById(R.id.dot);
-        final Button search = (Button) findViewById(R.id.search);
+        search = (Button) findViewById(R.id.search);
         search.setVisibility(View.VISIBLE);
         LinearLayout snazbox_chat = (LinearLayout) findViewById(R.id.snazbox_chat);
         LinearLayout link_chat = (LinearLayout) findViewById(R.id.link_chat);
@@ -416,6 +415,15 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             roleAccessBean = DBAccess.getdbHeler().getRoleAccessDetails(groupBean.getGroupId(), memberbean.getRole());
             rolePatientManagementBean = DBAccess.getdbHeler().getRolePatientManagement(groupBean.getGroupId(), memberbean.getRole());
         }
+        search.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        menu_side = (LinearLayout) findViewById(R.id.menu_side);
+        notifyUI();
 
         dot.setOnClickListener(new OnClickListener() {
             @Override
@@ -461,7 +469,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             @Override
                             public void onClick(View v) {
                                 dialog.dismiss();
-                                chatsync();
+                                chatsync(false);
                             }
                         });
                         delet_user.setOnClickListener(new View.OnClickListener() {
@@ -631,6 +639,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         TextView leave_grp = (TextView) dialog.findViewById(R.id.leave_grp);
                         TextView delete_grp = (TextView) dialog.findViewById(R.id.delete_grp);
                         TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
+                        TextView sync_chat = (TextView)dialog.findViewById(R.id.sync_chat);
                         if (groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
                             delete_grp.setVisibility(View.VISIBLE);
                             leave_grp.setVisibility(View.GONE);
@@ -640,6 +649,14 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                             delete_grp.setVisibility(View.GONE);
                             leave_grp.setVisibility(View.VISIBLE);
                         }
+                        sync_chat.setVisibility(View.VISIBLE);
+                        sync_chat.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                                chatsync(true);
+                            }
+                        });
                         cancel.setOnClickListener(new View.OnClickListener() {
 
                             @Override
@@ -743,11 +760,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 }
             }
         });
-        search.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
+//        search.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//            }
+//        });
         BuddyStatus();
         if (!isGroup && !isRounding) {
             if(nickname==null) {
@@ -1180,9 +1197,11 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     @Override
                     public void onClick(View view) {
 //                        if(!CallDispatcher.isCallInitiate)
-                        photochat();
-//                        else
-//                            showToast("Please Try again...call  in progress");
+                        if(SendListUI.size()<5) {
+                            photochat();
+                        }
+                        else
+                            showToast("Please attach only 5 files");
                     }
                 });
 //
@@ -1229,8 +1248,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     public void onClick(View view) {
 //                        showAudioMessageDialog();
                         if(!CallDispatcher.isCallInitiate) {
-                            atachlay.setVisibility(View.GONE);
-                            audio_layout.setVisibility(View.VISIBLE);
+                            if(SendListUI.size()<5) {
+                                atachlay.setVisibility(View.GONE);
+                                audio_layout.setVisibility(View.VISIBLE);
+                            }
+                            else
+                                showToast("Please attach only 5 files");
                         }else
                             showToast("Please Try again...call in progress");
 //                        animation.start();
@@ -1240,7 +1263,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                     @Override
                     public void onClick(View view) {
 //                        if(!CallDispatcher.isCallInitiate)
-                        showVideoMessageDialog();
+                        if(SendListUI.size()<5) {
+                            showVideoMessageDialog();
+                        }
+                        else
+                            showToast("Please attach only 5 files");
+
 //                        else
 //                            showToast("Please Try again...call in progress");
                     }
@@ -1248,8 +1276,12 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 btn_sketch.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(!CallDispatcher.isCallInitiate)
-                        handsketch();
+                        if(!CallDispatcher.isCallInitiate) {
+                            if (SendListUI.size() < 5) {
+                                handsketch();
+                            } else
+                                showToast("Please attach only 5 files");
+                        }
                         else
                         showToast("Please Try again... Call in progress");
                     }
@@ -1297,7 +1329,10 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 btn_file.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        openFolder();
+                        if (SendListUI.size() < 5) {
+                            openFolder();
+                        } else
+                            showToast("Please attach only 5 files");
                     }
                 });
 
@@ -1638,7 +1673,9 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 sidemenu.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        if(cancel.getVisibility()==v.VISIBLE){
+                            mDrawerLayout.openDrawer(menu_side);
+                        }
                         selectAll_buddy.setChecked(false);
                         forward = false;
                         for(GroupChatBean bean:chatList){
@@ -3218,7 +3255,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                 e.printStackTrace();
         }
     }
-    private void chatsync(){
+    private void chatsync(final boolean isfromgroup){
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.group_dialog);
@@ -3233,16 +3270,15 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         window.setGravity(Gravity.BOTTOM);
         dialog.show();
 
-        TextView threedays = (TextView) dialog.findViewById(R.id.edit_grp);
-        threedays.setVisibility(View.VISIBLE);
+        TextView days = (TextView) dialog.findViewById(R.id.edit_grp);
+        days.setVisibility(View.GONE);
+        TextView threedays = (TextView) dialog.findViewById(R.id.invite_grp);
         threedays.setText("3 Days");
-        TextView seven_days = (TextView) dialog.findViewById(R.id.invite_grp);
+        TextView seven_days = (TextView) dialog.findViewById(R.id.leave_grp);
         seven_days.setText("7 Days");
-        TextView one_month = (TextView) dialog.findViewById(R.id.leave_grp);
-        one_month.setText("30 Days");
-        one_month.setBackgroundColor(getResources().getColor(R.color.blue2));
+        seven_days.setBackgroundColor(getResources().getColor(R.color.blue2));
         TextView all_chat = (TextView) dialog.findViewById(R.id.delete_grp);
-        all_chat.setText("All Days");
+        all_chat.setText("Load More");
         all_chat.setBackgroundColor(getResources().getColor(R.color.blue2));
         TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -3261,36 +3297,45 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
             public void onClick(View v) {
                 dialog.dismiss();
                 showprogress();
-                WebServiceReferences.webServiceClient.ChatSync(buddy, SingleInstance.mainContext,"");
+                String mindate=DBAccess.getdbHeler().getminDateandTime();
+                if(mindate!=null) {
+                    String[] date = mindate.split(" ");
+                    if (!isfromgroup)
+                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "3", buddy, date[0]);
+                    else
+                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "3", groupId, date[0]);
+                }else{
+                    if (!isfromgroup)
+                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "1", buddy, "");
+                    else
+                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "1", groupId, "");
+                }
             }
         });
 
-        threedays.setOnClickListener(new OnClickListener() {
+        threedays.setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(View v) {
+            public void onClick(View arg0) {
+
                 dialog.dismiss();
                 showprogress();
-                WebServiceReferences.webServiceClient.ChatSync(buddy, SingleInstance.mainContext,"1");
+                if(!isfromgroup)
+                WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"1",buddy,"");
+                else
+                    WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"1",groupId,"");
             }
         });
+
         seven_days.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View arg0) {
-
                 dialog.dismiss();
                 showprogress();
-                WebServiceReferences.webServiceClient.ChatSync(buddy, SingleInstance.mainContext,"2");
-            }
-        });
-
-        one_month.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                    dialog.dismiss();
-                    showprogress();
-                    WebServiceReferences.webServiceClient.ChatSync(buddy, SingleInstance.mainContext, "3");
-
+                if(!isfromgroup)
+                    WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"2",buddy,"");
+                else
+                    WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"2",groupId,"");
             }
         });
     }
@@ -3592,7 +3637,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                                 + "/COMMedia/" + callDisp.getFileName() + ".mp4";
 
                         strIPath = path;
-                        Log.i("AAA","New activity "+strIPath);
+                        Log.i("AAA", "New activity " + strIPath);
                         SendListUIBean uIbean = new SendListUIBean();
                         uIbean.setType("video");
                         uIbean.setPath(strIPath);
@@ -3626,7 +3671,7 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
 
                         Log.i("AAA","New activity "+strIPath);
                         strIPath = path;
-                        Log.i("AAA","New activity "+strIPath);
+                        Log.i("AAA", "New activity " + strIPath);
                         SendListUIBean uIbean = new SendListUIBean();
                         uIbean.setType("video");
                         uIbean.setPath(strIPath);
@@ -11973,49 +12018,35 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         content.removeAllViews();
         final View v1 = layoutInflater.inflate(R.layout.calendar, content);
-        CalendarView cal = (CalendarView)v1. findViewById(R.id.calendarView1);
+        HashSet<Date> events = new HashSet<>();
+        events.add(new Date());
 
+        CalendarViewClass cv = ((CalendarViewClass)findViewById(R.id.calendar_view));
+        cv.updateCalendar(events);
 
-        cal.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-
+        // assign event handler
+        cv.setEventHandler(new CalendarViewClass.EventHandler() {
             @Override
-            public void onSelectedDayChange(CalendarView view, int year, int month,
-                                            int dayOfMonth) {
-                // TODO Auto-generated method stub
-                mDay = dayOfMonth;
-                mMonth = month;
-                mYear = year;
+            public void onDayLongPress(Date date) {
+                // show returned day
+
                 try {
                     Calendar c = Calendar.getInstance();
-                    c.set(mYear, mMonth, mDay);
-                    SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy");
-                    String selectedDate = df.format(c.getTime());
-                    Date date = df.parse(selectedDate);
-                    SimpleDateFormat outFormat = new SimpleDateFormat("EEE");
-                    String goal = outFormat.format(date);
-                    if (changeUpdate(mYear, mMonth, mDay)) {
-                        prevDay = mDay;
-                        prevMonth = mMonth;
-                        prevYear = mYear;
-                        Intent intent = new Intent(context, DateView.class);
-                        intent.putExtra("date", selectedDate);
-                        intent.putExtra("day", goal);
-                        startActivity(intent);
-                    }
+                    c.setTime(date);
+                    SimpleDateFormat df1 = new SimpleDateFormat("M-dd-yyyy");
+                    String selectedDate = df1.format(c.getTime());
+                    Date date1 = df1.parse(selectedDate);
+                    Intent intent = new Intent(context, CalendarActivity.class);
+                    intent.putExtra("date", selectedDate);
+                    intent.putExtra("groupid", groupId);
+                    startActivity(intent);
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
-    }
-    private boolean changeUpdate(int curYear, int curMonth, int curDay) {
-        boolean changed = false;
 
-        if (curDay != prevDay || curMonth != prevMonth || curYear != prevYear) {
-            changed = true;
-        }
-        return changed;
     }
 
     public String getCurrentTime() {
@@ -12281,7 +12312,78 @@ public class GroupChatActivity extends Activity implements OnClickListener ,Text
                         }
 
     }
+    public void notifyUI() {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                int dashCount = 0;
+                dashCount += DBAccess.getdbHeler(context)
+                        .getUnreadMsgCount(CallDispatcher.LoginUser);
+                dashCount += DBAccess.getdbHeler(context)
+                        .getUnreadFileCount(CallDispatcher.LoginUser);
+                dashCount += DBAccess.getdbHeler(context)
+                        .getUnreadCallCount(CallDispatcher.LoginUser);
+                TextView dash_count = (TextView) findViewById(R.id.dash_count);
+                if (dashCount > 0) {
+                    dash_count.setText(Integer.toString(dashCount));
+                    dash_count.setVisibility(View.VISIBLE);
+                } else {
+                    dash_count.setVisibility(View.GONE);
+                }
+                ProfileBean bean=SingleInstance.myAccountBean;
+                TextView userName = (TextView) findViewById(R.id.userName);
+                if(bean.getFirstname()!=null && bean.getLastname()!=null)
+                    userName.setText(bean.getFirstname()+" "+bean.getLastname());
+                else if(bean.getNickname()!=null)
+                    userName.setText(bean.getNickname());
+                else
+                    userName.setText(CallDispatcher.LoginUser);
+                String status_1 = SingleInstance.mainContext.loadCurrentStatus();
+                TextView status = (TextView) findViewById(R.id.status);
+                ImageView img_status = (ImageView) findViewById(R.id.img_status);
+                if(status_1.equalsIgnoreCase("online")){
+                    status.setText("Online");
+                    img_status.setBackgroundResource(R.drawable.online_icon);
+                }else if(status_1.equalsIgnoreCase("away")){
+                    status.setText("Invisible");
+                    img_status.setBackgroundResource(R.drawable.invisibleicon);
+                }else if(status_1.equalsIgnoreCase("busy")){
+                    status.setText("Busy");
+                    img_status.setBackgroundResource(R.drawable.busy_icon);
+                }else{
+                    status.setText("Offline");
+                    img_status.setBackgroundResource(R.drawable.offline_icon);
+                }
+                setProfilePic();
+            }
+        });
+    }
 
+    public void setProfilePic() {
+        handler.post(new Runnable() {
 
+            @Override
+            public void run() {
+                try {
+                    ProfileBean bean=SingleInstance.myAccountBean;
+                    ImageView user_image = (ImageView) findViewById(R.id.user_image);
+                    if(bean.getPhoto()!=null){
+                        String profilePic=bean.getPhoto();
+                        if (profilePic != null && profilePic.length() > 0) {
+                            if (!profilePic.contains("COMMedia")) {
+                                profilePic = Environment.getExternalStorageDirectory()
+                                        + "/COMMedia/" + profilePic;
+                            }
+                            imageLoader.DisplayImage(profilePic, user_image,
+                                    R.drawable.img_user);
+                        }
+                    }
+                } catch (Exception e) {
+                    SingleInstance.printLog(null, e.getMessage(), null, e);
+                }
+            }
+        });
+
+    }
 
 }

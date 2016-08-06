@@ -8,6 +8,26 @@ public class ChatInfoBean {
     String date;
     String status;
     String sid;
+    String sentstatustime;
+    String deliverstatustime;
+
+    public String getSentstatustime() {
+        return sentstatustime;
+    }
+
+    public void setSentstatustime(String sentstatustime) {
+        this.sentstatustime = sentstatustime;
+    }
+
+    public String getDeliverstatustime() {
+        return deliverstatustime;
+    }
+
+    public void setDeliverstatustime(String deliverstatustime) {
+        this.deliverstatustime = deliverstatustime;
+    }
+
+
 
     public String getName() {
         return name;
@@ -40,4 +60,5 @@ public class ChatInfoBean {
     public void setSid(String sid) {
         this.sid = sid;
     }
+
 }

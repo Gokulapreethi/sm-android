@@ -101,8 +101,10 @@ public class GroupChatProcesser extends Thread {
                                         + "/COMMedia/" + bean.getMediaName());
                             }
                         }
-						SingleInstance.getGroupChatHistoryWriter().getQueue()
-								.addObject(bean);
+						if(bean.getMimetype().equalsIgnoreCase("text") || bean.getMimetype().equalsIgnoreCase("location")) {
+							SingleInstance.getGroupChatHistoryWriter().getQueue()
+									.addObject(bean);
+						}
 					}
 				} else {
 					break;

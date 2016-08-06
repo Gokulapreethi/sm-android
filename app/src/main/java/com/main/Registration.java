@@ -46,6 +46,7 @@ import android.widget.Toast;
 
 import com.cg.DB.DBAccess;
 import com.cg.account.TermsAndAgreement;
+import com.cg.account.VeratadVerification;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.hostedconf.AppReference;
@@ -901,7 +902,7 @@ public class Registration extends Activity {
                 if (chbox2.isChecked()) {
                     baa = "1";
                     tv_baa.setTextColor(Color.parseColor("#458EDB"));
-                    Intent intent = new Intent(Registration.this, TermsAndAgreement.class);
+                    Intent intent = new Intent(Registration.this, VeratadVerification.class);
                     startActivity(intent);
                 } else {
                     baa = "0";

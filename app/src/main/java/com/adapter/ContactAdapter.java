@@ -280,7 +280,7 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                             } else if (buddyInformationBean.getStatus().equalsIgnoreCase("offline")) {
                                 holder.status.setBackgroundResource(R.drawable.offline_icon);
                             } else if (buddyInformationBean.getStatus().equalsIgnoreCase("Away")) {
-                                holder.status.setBackgroundResource(R.drawable.busy_icon);
+                                holder.status.setBackgroundResource(R.drawable.invisibleicon);
                             } else if (buddyInformationBean.getStatus().equalsIgnoreCase("Stealth")) {
                                 holder.status.setBackgroundResource(R.drawable.invisibleicon);
                             } else if (buddyInformationBean.getStatus().equalsIgnoreCase("Airport")) {

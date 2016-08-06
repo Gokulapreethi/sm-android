@@ -758,8 +758,12 @@ public class FilesFragment extends Fragment implements OnClickListener {
 					callDisp.downloadFile(CallDispatcher.LoginUser,CallDispatcher.Password,sr.getFileLocation());
 //					callDisp.downloadFile(username,sr.getFileLocation());
 				}
+				KeepAliveBean aliveBean = callDisp
+						.getKeepAliveBean(sr.getId(),
+								"accepted");
+				aliveBean.setKey("0");
+				WebServiceReferences.webServiceClient.heartBeat(aliveBean);
 			}
-
 			WebServiceReferences.shareRemainderArray.clear();
 		} catch (Exception e) {
 			e.printStackTrace();

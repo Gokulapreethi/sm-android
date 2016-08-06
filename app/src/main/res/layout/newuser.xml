@@ -225,7 +225,7 @@
 
                 <TextView
                     android:id="@+id/tr_pgm"
-                    android:text="State of Practice"
+                    android:text="State of Home Address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
@@ -247,7 +247,7 @@
                         android:layout_weight="1"
                         android:layout_gravity="center"
                         android:textColor="@color/white"
-                        android:hint="State Of Practice"
+                        android:hint="State of Home Address"
                         android:textSize="15sp"
                         android:background="@color/black2"/>
                     <ImageView

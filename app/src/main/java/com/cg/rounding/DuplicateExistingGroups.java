@@ -1,6 +1,7 @@
 package com.cg.rounding;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -24,15 +25,21 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bean.UserBean;
+import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
+import com.cg.commonclass.WebServiceReferences;
 import com.cg.snazmed.R;
 import com.group.GroupActivity;
 import com.image.utils.ImageLoader;
 import com.main.ContactsFragment;
+import com.main.ExchangesFragment;
 import com.util.SingleInstance;
 
 import org.lib.model.GroupBean;
+import org.lib.model.WebServiceBean;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 /**
@@ -44,6 +51,9 @@ public class DuplicateExistingGroups extends Activity {
     private ListView groupListView;
     private ExistingGroupAdapter groupAdapter;
     private Vector<GroupBean> groupslist=new Vector<GroupBean>();
+    private boolean isFromContacts=false;
+    private ProgressDialog dialog = null;
+    ArrayList<String> names=new ArrayList<String>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try {
@@ -60,6 +70,8 @@ public class DuplicateExistingGroups extends Activity {
             Button btn_done=(Button)findViewById(R.id.btn_done);
             Button backBtn=(Button)findViewById(R.id.btn_backaddcontact);
             groupListView=(ListView)findViewById(R.id.lv_buddylist);
+            isFromContacts=getIntent().getBooleanExtra("fromcontacts",false);
+            names=getIntent().getStringArrayListExtra("selected_members");
             btn_done.setVisibility(View.GONE);
             chkbox_lay.setVisibility(View.GONE);
             txtView01.setText("GROUP(S)");
@@ -100,6 +112,7 @@ public class DuplicateExistingGroups extends Activity {
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     if (s != null && s != "")
                         groupAdapter.getFilter().filter(s);
+
                 }
             });
 
@@ -114,13 +127,24 @@ public class DuplicateExistingGroups extends Activity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                     GroupBean groupBean = (GroupBean) groupAdapter.getItem(position);
-                    Intent intent = new Intent(DuplicateExistingGroups.this,
-                            RoundingGroupActivity.class);
-                    intent.putExtra("isEdit", true);
-                    intent.putExtra("id", groupBean.getGroupId());
-                    intent.putExtra("isduplicate",true);
-                    startActivity(intent);
-                    finish();
+                    if(isFromContacts){
+                        showprogress();
+                        String members="";
+                        for(String member:names){
+                            members=members+member+",";
+                        }
+                        groupBean.setGroupMembers(members.substring(0,
+                                members.length() - 1));
+                        WebServiceReferences.webServiceClient.createGroup(groupBean, context);
+                    }else {
+                        Intent intent = new Intent(DuplicateExistingGroups.this,
+                                RoundingGroupActivity.class);
+                        intent.putExtra("isEdit", true);
+                        intent.putExtra("id", groupBean.getGroupId());
+                        intent.putExtra("isduplicate", true);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
             });
         } catch (Exception e) {
@@ -279,12 +303,45 @@ public class DuplicateExistingGroups extends Activity {
         }
 
     }
+    private void showprogress() {
+
+        dialog = new ProgressDialog(context);
+        dialog.setCancelable(false);
+        dialog.setMessage("Progress ...");
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setProgress(0);
+        dialog.setMax(100);
+        dialog.show();
+
+    }
+
+    public void cancelDialog() {
+        if (dialog != null) {
+            dialog.dismiss();
+            dialog = null;
+        }
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if(SingleInstance.contextTable.containsKey("duplicateexistinggroup")) {
             SingleInstance.contextTable.remove("duplicateexistinggroup");
+        }
+    }
+    public void notifyCreateGroup(Object obj) {
+        if (obj instanceof GroupBean) {
+            final GroupBean groupBean = (GroupBean) obj;
+
+            groupBean.setUserName(CallDispatcher.LoginUser);
+            groupBean.setOwnerName(CallDispatcher.LoginUser);
+
+            if (DBAccess.getdbHeler().saveOrUpdateGroup(groupBean) > 0) {
+                DBAccess.getdbHeler().insertorUpdateGroupMembers(
+                        groupBean);
+            }
+            cancelDialog();
+            finish();
         }
     }
 

@@ -265,7 +265,7 @@
             android:layout_height="wrap_content"
             android:hint="MRN"
             android:maxLength="20"
-            android:inputType="number"
+            android:digits="@string/alphaNumeric"
             android:textColor="@color/white"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"

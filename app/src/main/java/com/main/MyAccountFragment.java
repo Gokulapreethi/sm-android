@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.bean.ProfileBean;
 import com.cg.account.MyAccountActivity;
 import com.cg.account.TermsAndAgreement;
+import com.cg.account.VeratadVerification;
 import com.cg.callservices.AudioCallScreen;
 import com.cg.callservices.CallConnectingScreen;
 import com.cg.callservices.inCommingCallAlert;
@@ -278,7 +279,7 @@ public class MyAccountFragment extends Fragment {
                     baa.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Intent intent=new Intent(mainContext, TermsAndAgreement.class);
+                            Intent intent=new Intent(mainContext, VeratadVerification.class);
                             intent.putExtra("myaccount", true);
                             startActivity(intent);
                         }

@@ -143,6 +143,7 @@ import com.ftp.FTPPoolManager;
 import com.group.GroupActivity;
 import com.group.GroupAdapter1;
 import com.group.GroupRequestFragment;
+import com.group.chat.ChatInfoBean;
 import com.group.chat.ForwardUserSelect;
 import com.group.chat.GroupChatActivity;
 import com.group.chat.GroupChatBroadCastReceiver;
@@ -2299,7 +2300,6 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						removeFragments(SearchPeopleFragment.newInstance(context));
 						removeFragments(DashBoardFragment.newInstance(context));
 						removeFragments(CallHistoryFragment.newInstance(context));
-						removeFragments(CalendarFragment.newInstance(context));
 						removeFragments(InviteUserFragment.newInstance(context));
 						removeFragments(FindPeople.newInstance(context));
 						removeFragments(SecurityQuestions.newInstance(context));
@@ -2418,10 +2418,6 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			if (fragment instanceof SearchPeopleFragment) {
 				view = ((SearchPeopleFragment) fragment).getParentView();
 				((SearchPeopleFragment) fragment)._rootView = null;
-			}
-			if (fragment instanceof CalendarFragment) {
-				view = ((CalendarFragment) fragment).getParentView();
-				((CalendarFragment) fragment).view = null;
 			}
 			if (fragment instanceof InviteUserFragment) {
 				view = ((InviteUserFragment) fragment).getParentView();
@@ -2925,8 +2921,6 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 								removeFragments(MyAccountFragment
 										.newInstance(context));
 								removeFragments(SearchPeopleFragment
-										.newInstance(context));
-								removeFragments(CalendarFragment
 										.newInstance(context));
 								removeFragments(InviteUserFragment
 										.newInstance(context));
@@ -8030,8 +8024,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
             FragmentManager fm = appMainActivity.getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
             Fragment fragment = null;
-            appMainActivity.setProfilePic();
+//            appMainActivity.setProfilePic();
             if (appMainActivity.isLoggedIn()) {
+				Log.i("AAAA","appmain activity "+position);
                 switch(position){
                     case 1:
                         fragment = DashBoardFragment.newInstance(context);
@@ -8045,9 +8040,6 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						((FilesFragment) fragment).getUsername(CallDispatcher.LoginUser);
                         ((FilesFragment) fragment).setFromContacts(false);
 						((FilesFragment) fragment).componentType("",false);
-                        break;
-                    case 4:
-                        fragment = CalendarFragment.newInstance(context);
                         break;
                     case 5:
                         fragment = MyAccountFragment.newInstance(context);
@@ -8068,6 +8060,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
                 appMainActivity.showToast("Kindly Login");
 
             if (fragment != null) {
+				Log.i("AAAA","appmain activity ");
                 ft.replace(R.id.activity_main_content_fragment, fragment);
                 ft.commit();
             }
@@ -8211,14 +8204,12 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						gcBean1.setSent(gcBean.getSent());
 					}
 						String  mem="";
-						DBAccess.getdbHeler(getApplicationContext()).ChatInfo(gcBean.getFrom(), gcBean.getSignalid(),gcBean.getSent(),gcBean.getSenttimez());
+						DBAccess.getdbHeler(getApplicationContext()).ChatInfo(gcBean.getFrom(), gcBean.getSignalid(), gcBean.getSent(), gcBean.getSenttimez());
                         if (SingleInstance.groupChatHistory.containsKey(gcBean1.getGroupId())) {
                             SingleInstance.groupChatHistory.remove(gcBean1.getGroupId());
                             SingleInstance.groupChatHistory.put(gcBean1.getGroupId(), groupChatActivity.chatList);
                         }
-//                    }
                 }
-
             }
             handler.post(new Runnable() {
                 @Override
@@ -8229,7 +8220,6 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
         }
 
     }
-
 
     public  void notifytextTyping(final GroupChatBean gcBean)
     {
@@ -8908,28 +8898,42 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			groupChatActivity.cancelDialog();
 		}
 		if (obj instanceof ArrayList) {
+			ArrayList<Object> reult=(ArrayList<Object>) obj;
 			Log.i("entering","arraylist----->");
-			ArrayList<GroupChatBean> chatList = (ArrayList<GroupChatBean>) obj;
-			Log.i("entering","arraylist1----->"+chatList.size());
-			for(GroupChatBean groupChatBean:chatList) {
-				if (groupChatBean.getMimetype().equals("text")
-						|| groupChatBean.getMimetype().equals("location")) {
-					Log.i("entering","text----->");
-					processGroupChatChanges(groupChatBean);
-
-				} else {
-					groupChatBean.setStatus(0);
-					Log.i("entering", "status----->");
-					processGroupChatChanges(groupChatBean.clone());
-					String fileName = groupChatBean.getMediaName();
-					groupChatBean
-							.setMediaName(Utils
-									.getFilePathString(groupChatBean
-											.getMediaName()));
-					Log.i("entering", "downloading----->");
-					downloadGroupChatFile(groupChatBean, fileName);
-					Log.i("entering", "downloadingchat----->");
+			for(int i=0;i<reult.size();i++) {
+				if(reult.get(i) instanceof GroupChatBean) {
+					GroupChatBean groupChatBean = (GroupChatBean) reult.get(i);
+					Log.i("entering","groupchatbean----->");
+						if (groupChatBean.getMimetype().equals("text")
+								|| groupChatBean.getMimetype().equals("location")) {
+							Log.i("entering", "text----->");
+							processGroupChatChanges(groupChatBean);
+						} else {
+							groupChatBean.setStatus(0);
+							Log.i("entering", "status----->");
+							processGroupChatChanges(groupChatBean.clone());
+							String fileName = groupChatBean.getMediaName();
+							groupChatBean.setMediaName(Utils
+									.getFilePathString(groupChatBean.getMediaName()));
+							downloadGroupChatFile(groupChatBean, fileName);
+						}
+					}
+				else if(reult.get(i) instanceof ChatInfoBean) {
+					ChatInfoBean cbean = (ChatInfoBean) reult.get(i);
+					Log.i("entering","chatinfobean----->");
+					if (cbean.getDate() != null) {
+						cbean.setDate(cbean.getDate());
+						cbean.setStatus("2");
+					} else if (cbean.getDeliverstatustime() != null) {
+						cbean.setDate(cbean.getDeliverstatustime());
+						cbean.setStatus("1");
+					} else{
+						cbean.setDate(cbean.getSentstatustime());
+						cbean.setStatus("0");
 				}
+					DBAccess.getdbHeler(getApplicationContext()).ChatInfo(cbean.getName(), cbean.getSid(), cbean.getStatus(), cbean.getDate());
+				}
+
 			}
 		} else if (obj instanceof WebServiceBean) {
 			showToast(((WebServiceBean) obj).getText());

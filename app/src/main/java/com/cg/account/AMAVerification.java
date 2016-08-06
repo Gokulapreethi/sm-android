@@ -38,6 +38,7 @@ import com.cg.commonclass.BuddyListComparator;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.hostedconf.AppReference;
+import com.cg.rounding.DuplicateExistingGroups;
 import com.cg.snazmed.R;
 import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
@@ -96,6 +97,7 @@ public class AMAVerification extends Activity {
         Button chat=(Button)findViewById(R.id.chat);
         Button audiocall=(Button)findViewById(R.id.audiocall);
         Button videocall=(Button)findViewById(R.id.videocall);
+        Button btnGrp=(Button)findViewById(R.id.btnGrp);
         cancel1=(Button)findViewById(R.id.cancel1);
         relay_search = (LinearLayout)findViewById(R.id.relay_search);
         search.setOnClickListener(new View.OnClickListener() {
@@ -145,6 +147,20 @@ public class AMAVerification extends Activity {
                     dialogue.setVisibility(View.VISIBLE);
                     grid_icon.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_close));
                 }
+            }
+        });
+        btnGrp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<String> names=new ArrayList<String>();
+                for (BuddyInformationBean bib : result) {
+                    if (bib.isSelected())
+                        names.add(bib.getName());
+                }
+                Intent intent = new Intent(context, DuplicateExistingGroups.class);
+                intent.putExtra("fromcontacts",true);
+                intent.putStringArrayListExtra("selected_members",names);
+                startActivity(intent);
             }
         });
         deleteContact.setOnClickListener(new View.OnClickListener() {
@@ -826,6 +842,7 @@ public class AMAVerification extends Activity {
             selectAll_buddy.setChecked(false);
 
     }
+
     private void showToast(final String message) {
         handler.post(new Runnable() {
 

@@ -75,6 +75,7 @@
 
     </RelativeLayout>
 
+
     <RelativeLayout
         android:id="@+id/selectAll_container"
         android:layout_width="match_parent"
@@ -284,7 +285,7 @@
             android:layout_marginLeft="20dp"
             android:textColor="@color/white"
             android:textSize="13sp"
-            android:visibility="gone"
+            android:visibility="visible"
             android:gravity="center"
             android:text="Add to\nGroup"
             android:drawableTop="@drawable/dashboard_group_blue"/>

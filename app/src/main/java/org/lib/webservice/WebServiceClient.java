@@ -1683,11 +1683,13 @@ public class WebServiceClient {
 		if (wsNotifier != null)
 			wsNotifier.addTasktoExecutor(servicebean);
 	}
-	public void ChatSync(String username,Context context,String mode) {
+	public void ChatSync(String username,Context context,String mode,String rerid, String date) {
 		Servicebean servicebean = new Servicebean();
 		HashMap<String, String> property_map = new HashMap<String, String>();
 		property_map.put("userid",username);
 		property_map.put("mode", mode);
+		property_map.put("date",date);
+		property_map.put("reqid",rerid);
 		servicebean.setProperty_map(property_map);
 		servicebean.setWsmethodname("SyncChat");
 		servicebean.setServiceMethods(EnumWebServiceMethods.SYNCCHAT);
