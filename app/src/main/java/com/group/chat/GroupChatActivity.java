@@ -2946,6 +2946,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
 //                                        if (position == -1) {
                                             chatList.add(gcBean);
+                                        Collections.sort(chatList, new GroupMessageComparator());
                                             adapter.notifyDataSetChanged();
 //                                            maintainListPosition();
 //                                        } else {
@@ -3016,16 +3017,19 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                             }
                                         } else {
                                             chatList.add(gcBean);
+                                            Collections.sort(chatList, new GroupMessageComparator());
                                             adapter.notifyDataSetChanged();
                                             maintainListPosition();
                                         }
                                     } else {
                                         chatList.add(gcBean);
+                                        Collections.sort(chatList, new GroupMessageComparator());
                                         adapter.notifyDataSetChanged();
                                         maintainListPosition();
                                     }
                                 } else {
                                     chatList.add(gcBean);
+                                    Collections.sort(chatList, new GroupMessageComparator());
                                     adapter.notifyDataSetChanged();
                                     maintainListPosition();
                                 }
@@ -7461,6 +7465,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
     private void loadTotalChatHistory(String groupOrBuddyName) {
         if (loadChatHistory(groupOrBuddyName) != null)
             chatList = loadChatHistory(groupOrBuddyName);
+        Collections.sort(chatList, new GroupMessageComparator());
 //        if (SingleInstance.groupChatHistory.get(groupOrBuddyName) != null
 //                && SingleInstance.groupChatHistory.get(groupOrBuddyName).size() > 0) {
 //            chatList = SingleInstance.groupChatHistory.get(groupOrBuddyName);

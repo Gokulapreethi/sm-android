@@ -81,7 +81,8 @@ public class RoundingTaskAdapter extends ArrayAdapter<TaskDetailsBean> {
                 if(tBean.getPatientname()!=null)
                     holder.patientname.setText(tBean.getPatientname());
                 Log.i("taskdetails","adpater "+tBean.getAssignedMembers());
-                if(tBean.getAssignedMembers()!=null && !tBean.getAssignedMembers().equalsIgnoreCase("")) {
+                if(tBean.getAssignedMembers()!=null && !tBean.getAssignedMembers().equalsIgnoreCase("") &&
+                        !tBean.getAssignedMembers().equalsIgnoreCase("null")) {
                     String[] list=tBean.getAssignedMembers().split(",");
                     String names="";
                     for(String tmp:list) {
