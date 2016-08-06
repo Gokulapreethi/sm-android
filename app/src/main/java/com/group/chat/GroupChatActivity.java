@@ -373,7 +373,6 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 //        final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 //        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 //        mainHeader=(RelativeLayout)findViewById(R.id.mainheader);
-        final LinearLayout menu_side = (LinearLayout) findViewById(R.id.menu_side);
         if (getIntent().getStringExtra("isReq") != null) {
             isOpen = getIntent().getStringExtra("isReq");
             current_open_activity_detail.put("isReq",isOpen);
