@@ -185,7 +185,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	private String strStartTime;
 	private Chronometer chTimer;
 	private ImageView mic;
-	private ImageView loudSpeaker,min_outcall,min_incall;
+	private ImageView loudSpeaker;
 	// TextView tvTitle;
 	String tvTitlename = null;
 	FrameLayout.LayoutParams layoutParamsf, layoutParamsf12, layoutParamsf2, layoutParamsf3;
@@ -277,14 +277,14 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
 			mainHeader.setVisibility(View.GONE);
 
-			min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
-			min_outcall.setVisibility(View.GONE);
+//			min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
+//			min_outcall.setVisibility(View.GONE);
 
-			min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
-			min_incall.setVisibility(View.GONE);
+//			min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
+//			min_incall.setVisibility(View.GONE);
 
-			video_minimize = (RelativeLayout) getActivity().findViewById(R.id.video_minimize);
-			video_minimize.setVisibility(View.GONE);
+//			video_minimize = (RelativeLayout) getActivity().findViewById(R.id.video_minimize);
+//			video_minimize.setVisibility(View.GONE);
 
 			keyguardManager = (KeyguardManager) context.getSystemService(Activity.KEYGUARD_SERVICE);
 			lock = keyguardManager.newKeyguardLock(context.KEYGUARD_SERVICE);
@@ -327,7 +327,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							// if (CallDispatcher.sb.getBs_parentid() != null) {
 							chTimer.stop();
 							AppMainActivity.cvtimer.stop();
-							video_minimize.setVisibility(View.GONE);
+//							video_minimize.setVisibility(View.GONE);
 							CallDispatcher.sb
 									.setEndTime(objCallDispatcher.getCurrentDateandTime());
 							CallDispatcher.sb
@@ -2097,7 +2097,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 								objCallDispatcher.currentSessionid = null;
 								chTimer.stop();
 								AppMainActivity.cvtimer.stop();
-								video_minimize.setVisibility(View.GONE);
+//								video_minimize.setVisibility(View.GONE);
 								if (CallDispatcher.videoScreenVisibleState) {
 									//
 
@@ -3722,16 +3722,16 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		}
 
 		Activity parent = getActivity();
-		if(parent != null){
-			video_minimize.setVisibility(View.GONE);
-			if(min_outcall != null) {
-				min_outcall.setVisibility(View.GONE);
-			}
-
-			if(min_incall != null) {
-				min_incall.setVisibility(View.GONE);
-			}
-		}
+//		if(parent != null){
+////			video_minimize.setVisibility(View.GONE);
+//			if(min_outcall != null) {
+//				min_outcall.setVisibility(View.GONE);
+//			}
+//
+//			if(min_incall != null) {
+//				min_incall.setVisibility(View.GONE);
+//			}
+//		}
 
 			AppMainActivity.inActivity = context;
 		if (AppMainActivity.commEngine != null) {
@@ -4228,7 +4228,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			ft.replace(R.id.activity_main_content_fragment,
 					AppReference.bacgroundFragment);
 			ft.commitAllowingStateLoss();
-			video_minimize.setVisibility(View.GONE);
+//			video_minimize.setVisibility(View.GONE);
 			AppReference.mainContext.openNonClosedActivity();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -4372,9 +4372,9 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		ft.replace(R.id.activity_main_content_fragment,
 				AppReference.bacgroundFragment);
 		ft.commitAllowingStateLoss();
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			video_minimize.setVisibility(View.VISIBLE);
-		}
+//		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//			video_minimize.setVisibility(View.VISIBLE);
+//		}
 		mainHeader.setVisibility(View.VISIBLE);
 		AppReference.mainContext.openNonClosedActivity();
 	}

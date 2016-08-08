@@ -177,7 +177,11 @@ public class ChatHeadDrawerService extends Service {
                 current_window = "callscreen";
                 current_callscrren = intent.getStringExtra("callscreen");
                 call_time_chronometer.setVisibility(View.VISIBLE);
-                mChatHeadImageView.setImageResource(R.drawable.ic_action_call);
+                if(current_callscrren != null && current_callscrren.equalsIgnoreCase("ACS")) {
+                    mChatHeadImageView.setImageResource(R.drawable.ic_action_call);
+                } else {
+                    mChatHeadImageView.setImageResource(R.drawable.ic_action_video_white);
+                }
                 mLayout.setBackgroundResource(R.drawable.minimize_lay);
             }
         }

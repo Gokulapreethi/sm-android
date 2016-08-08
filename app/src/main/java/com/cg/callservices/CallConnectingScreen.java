@@ -78,7 +78,6 @@ public class CallConnectingScreen extends Fragment {
 	private ArrayList<String> confMembers=new ArrayList<String>();
 	private static CallConnectingScreen callConnectingScreen;
 	public View rootView;
-	ImageView min_outcall , min_incall;
 	RelativeLayout mainHeader;
 
 	public static CallConnectingScreen getInstance(Context maincontext) {
@@ -119,10 +118,10 @@ public class CallConnectingScreen extends Fragment {
             mainHeader.setVisibility(View.GONE);
             final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
-            min_outcall.setVisibility(View.GONE);
-             min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
-            min_incall.setVisibility(View.GONE);
+//            min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
+//            min_outcall.setVisibility(View.GONE);
+//             min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
+//            min_incall.setVisibility(View.GONE);
             SingleInstance.instanceTable.put("connection", callConnectingScreen);
     //		if(rootView==null) {
                 rootView = inflater.inflate(R.layout.call_connecting, null);
@@ -266,13 +265,13 @@ public class CallConnectingScreen extends Fragment {
     public void onResume() {
         super.onResume();
 		Log.i("Minimise","CallConnectingScreen OnResume");
-		if(min_outcall != null) {
-			min_outcall.setVisibility(View.GONE);
-		}
+//		if(min_outcall != null) {
+//			min_outcall.setVisibility(View.GONE);
+//		}
 
-		if(min_incall != null) {
-			min_incall.setVisibility(View.GONE);
-		}
+//		if(min_incall != null) {
+//			min_incall.setVisibility(View.GONE);
+//		}
     }
 
 	@Override
@@ -907,7 +906,7 @@ public class CallConnectingScreen extends Fragment {
 				AppReference.bacgroundFragment);
 		ft.commitAllowingStateLoss();
 		mainHeader.setVisibility(View.VISIBLE);
-		min_outcall.setVisibility(View.GONE);
+//		min_outcall.setVisibility(View.GONE);
 	}
 
 	public void removeInstance(){

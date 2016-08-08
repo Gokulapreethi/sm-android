@@ -204,7 +204,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	//For this is used to profilepictures for owner and buddies
 	private Vector<BuddyInformationBean> buddyList;
 	ImageLoader imageLoader;
-	ImageView iv_owner,iv_buddy,min_outcall,min_incall;
+	ImageView iv_owner,iv_buddy;
 	String buddyimage;
 	String ownerimage;
 	private Button minimize;
@@ -323,10 +323,10 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 					receivedHangUp();
 
 				audioProperties = new AudioProperties(context);
-				 min_outcall = (ImageView) getActivity().findViewById(R.id.min_outcall);
-				min_outcall.setVisibility(View.GONE);
-				min_incall = (ImageView) getActivity().findViewById(R.id.min_incall);
-				min_incall.setVisibility(View.GONE);
+//				 min_outcall = (ImageView) getActivity().findViewById(R.id.min_outcall);
+//				min_outcall.setVisibility(View.GONE);
+//				min_incall = (ImageView) getActivity().findViewById(R.id.min_incall);
+//				min_incall.setVisibility(View.GONE);
 //			setContentView(ShowaudioCallScreen());
 //			if(rootView==null)
 				rootView = ShowaudioCallScreen(inflater);
@@ -658,17 +658,17 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 //				AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
 //			}
 			AppReference.mainContext.stopService(new Intent(AppReference.mainContext, ChatHeadDrawerService.class));
-			Activity parent = getActivity();
-			if(parent != null){
-//				audio_minimize.setVisibility(View.GONE);
-				if(min_outcall != null) {
-					min_outcall.setVisibility(View.GONE);
-				}
-
-				if(min_incall != null) {
-					min_incall.setVisibility(View.GONE);
-				}
-			}
+//			Activity parent = getActivity();
+//			if(parent != null){
+////				audio_minimize.setVisibility(View.GONE);
+//				if(min_outcall != null) {
+//					min_outcall.setVisibility(View.GONE);
+//				}
+//
+//				if(min_incall != null) {
+//					min_incall.setVisibility(View.GONE);
+//				}
+//			}
 
 			if(currentcall_type.equalsIgnoreCase("VC")){
 				getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);

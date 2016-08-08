@@ -67,7 +67,7 @@ public class inCommingCallAlert extends Fragment {
 
 	private KeyguardManager keyguardManager;
 	RelativeLayout mainHeader;
-	ImageView min_incall;
+//	ImageView min_incall;
 
 	private KeyguardLock lock;
 	private static inCommingCallAlert incommingCallAlert;
@@ -133,8 +133,8 @@ public class inCommingCallAlert extends Fragment {
 				mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 				mainHeader = (RelativeLayout) getActivity().findViewById(R.id.mainheader);
 				mainHeader.setVisibility(View.GONE);
-				min_incall = (ImageView) getActivity().findViewById(R.id.min_incall);
-				min_incall.setVisibility(View.GONE);
+//				min_incall = (ImageView) getActivity().findViewById(R.id.min_incall);
+//				min_incall.setVisibility(View.GONE);
 				//		if(rootView==null) {
 				rootView = inflater.inflate(R.layout.callalertscreen, null);
 
@@ -266,9 +266,9 @@ public class inCommingCallAlert extends Fragment {
 //			min_outcall.setVisibility(View.GONE);
 //		}
 
-		if(min_incall != null) {
-			min_incall.setVisibility(View.GONE);
-		}
+//		if(min_incall != null) {
+//			min_incall.setVisibility(View.GONE);
+//		}
     }
 
 	public void changeTextalert() {
@@ -690,7 +690,7 @@ public class inCommingCallAlert extends Fragment {
 		ft.commitAllowingStateLoss();
 		AppReference.mainContext.openNonClosedActivity();
 		mainHeader.setVisibility(View.VISIBLE);
-		min_incall.setVisibility(View.GONE);
+//		min_incall.setVisibility(View.GONE);
 	}
 
 	public void removeInstance(){
@@ -728,7 +728,7 @@ public class inCommingCallAlert extends Fragment {
 	}
 
 	private void ShowConnectionScreen(final SignalingBean sbean) {
-		min_incall.setVisibility(View.GONE);
+//		min_incall.setVisibility(View.GONE);
 		final String from = sbean.getTo();
 		new Thread(new Runnable() {
 			@Override
