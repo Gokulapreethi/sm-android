@@ -15,10 +15,14 @@
         android:id="@+id/video_timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
         android:layout_centerVertical="true"
+        android:layout_marginTop="6dp"
         android:layout_toRightOf="@+id/chathead_imageview"
         android:textColor="@color/white" />
 
+    <FrameLayout
+        android:id="@+id/mimimized_videoview"
+        android:layout_width="1dp"
+        android:layout_height="1dp"></FrameLayout>
 
 </RelativeLayout>

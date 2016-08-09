@@ -3524,9 +3524,11 @@ public class CommunicationEngine implements AudioRecorderListener,
 	 */
 	@Override
 	public void notifyVideoFrame(byte[] arg0) {
+		Log.i("minimizevideo","screenSharing  : "+screenSharing);
 		if (!screenSharing) {
 			try {
-				// Log.d("call",new Date()+"Video......");
+//				 Log.d("call",new Date()+"Video......");
+				Log.i("minimizevideo","videoCodec  : "+videoCodec+" video_preview :"+video_preview +" encodeVideo :"+encodeVideo);
 				if (videoCodec != null && video_preview) {
 
 					Log.i("Resolution","Before Encoding : Size : "+arg0.length+" time : "+new Date());

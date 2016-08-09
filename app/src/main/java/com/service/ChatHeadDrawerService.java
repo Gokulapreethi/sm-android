@@ -16,11 +16,15 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.Chronometer;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
+import com.main.AppMainActivity;
+
+import org.video.Preview;
 
 public class ChatHeadDrawerService extends Service {
 
@@ -36,6 +40,8 @@ public class ChatHeadDrawerService extends Service {
     private String current_callscrren;
     private String current_window;
     private Chronometer call_time_chronometer;
+    private FrameLayout video_frame_layout;
+    private Preview video_preview;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -64,6 +70,8 @@ public class ChatHeadDrawerService extends Service {
             mLayout = (RelativeLayout) mChatHead
                     .findViewById(R.id.chathead_linearlayout);
             call_time_chronometer = (Chronometer) mChatHead.findViewById(R.id.video_timer);
+            video_frame_layout = (FrameLayout)mChatHead.findViewById(R.id.mimimized_videoview);
+
             Log.i("Chronometer", "time" + (AppReference.mainContext.ctimer.getBase()));
 //            call_time_chronometer.setBase(AppReference.mainContext.ctimer.getBase());
 //            call_time_chronometer.start();
@@ -119,14 +127,23 @@ public class ChatHeadDrawerService extends Service {
                             //								Toast.LENGTH_SHORT).show();
                             //						stopSelf();
                             //					}
-
                             if (parameters.x < screenWidth / 2) {
                                 mLayout.removeAllViews();
                                 mLayout.addView(mChatHeadImageView);
                                 if (selected_view == 2) {
                                     mLayout.addView(call_time_chronometer);
+                                    if (current_callscrren != null && current_callscrren.equalsIgnoreCase("ACS")) {
+
+                                    } else {
+                                        AppMainActivity.commEngine.stopPreview();
+                                        video_frame_layout.removeView(video_preview);
+                                        video_preview = null;
+                                        video_preview = AppMainActivity.commEngine.getVideoPreview(ChatHeadDrawerService.this);
+
+                                        video_frame_layout.addView(video_preview);
+                                        mLayout.addView(video_frame_layout);
+                                    }
                                 }
-                                //						mChatHeadTextView.setVisibility(View.VISIBLE);
 
                             } else { // Set textView to left of image
                                 mLayout.removeAllViews();
@@ -134,6 +151,17 @@ public class ChatHeadDrawerService extends Service {
                                 mLayout.addView(mChatHeadImageView);
                                 if (selected_view == 2) {
                                     mLayout.addView(call_time_chronometer);
+                                    if (current_callscrren != null && current_callscrren.equalsIgnoreCase("ACS")) {
+
+                                    } else {
+                                        AppMainActivity.commEngine.stopPreview();
+                                        video_frame_layout.removeView(video_preview);
+                                        video_preview = null;
+                                        video_preview = AppMainActivity.commEngine.getVideoPreview(ChatHeadDrawerService.this);
+
+                                        video_frame_layout.addView(video_preview);
+                                        mLayout.addView(video_frame_layout);
+                                    }
                                 }
                                 //						mChatHeadTextView.setVisibility(View.VISIBLE);
                             }
@@ -185,6 +213,9 @@ public class ChatHeadDrawerService extends Service {
                 } else {
                     call_time_chronometer.setBase(AppReference.mainContext.cvtimer.getBase());
                     mChatHeadImageView.setImageResource(R.drawable.ic_action_video_white);
+                    AppMainActivity.commEngine.stopPreview();
+                    video_preview = AppMainActivity.commEngine.getVideoPreview(this);
+                    video_frame_layout.addView(video_preview);
                 }
                 mLayout.setBackgroundResource(R.drawable.minimize_lay);
 
@@ -218,7 +249,13 @@ public class ChatHeadDrawerService extends Service {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) { // perform single tap on the ImageView
 //            Toast.makeText(ChatHeadDrawerService.this, "Hi You Single Tap Me", Toast.LENGTH_SHORT).show();
+            if (selected_view == 2) {
+                if (current_callscrren != null && current_callscrren.equalsIgnoreCase("ACS")) {
 
+                } else {
+                    AppMainActivity.commEngine.stopPreview();
+                }
+            }
             AppReference.mainContext.minimizeButtonClickState(current_window, current_callscrren);
             return true;
         }
