@@ -319,6 +319,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
     private boolean save_state = false;
     ImageView btMenu;
     private RelativeLayout mainHeader;
+    boolean chattemplate=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -332,7 +333,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         final LinearLayout profilechat = (LinearLayout) findViewById(R.id.profilechat);
         dot = (Button) findViewById(R.id.dot);
         search = (Button) findViewById(R.id.search);
-        search.setVisibility(View.VISIBLE);
+        search.setVisibility(View.GONE);
         LinearLayout snazbox_chat = (LinearLayout) findViewById(R.id.snazbox_chat);
         LinearLayout link_chat = (LinearLayout) findViewById(R.id.link_chat);
         final LinearLayout content = (LinearLayout) findViewById(R.id.content);
@@ -993,19 +994,21 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             TextView association = (TextView) v1.findViewById(R.id.association);
             ImageView Statusicon = (ImageView)v1.findViewById(R.id.status_icon);
             TextView status = (TextView) findViewById(R.id.status);
-            status.setText(temp);
-            if (temp.equalsIgnoreCase("online")) {
-                Statusicon.setBackgroundResource(R.drawable.online_icon);
-            } else if (temp.equalsIgnoreCase("offline")) {
-                Statusicon.setBackgroundResource(R.drawable.offline_icon);
-            } else if (temp.equalsIgnoreCase("Away")) {
-                Statusicon.setBackgroundResource(R.drawable.busy_icon);
-            } else if (temp.equalsIgnoreCase("Stealth")) {
-                Statusicon.setBackgroundResource(R.drawable.invisibleicon);
-            } else if (temp.equalsIgnoreCase("Airport")) {
-                Statusicon.setBackgroundResource(R.drawable.busy_icon);
-            } else {
-                Statusicon.setBackgroundResource(R.drawable.offline_icon);
+            if(temp!=null) {
+                status.setText(temp);
+                if (temp.equalsIgnoreCase("online")) {
+                    Statusicon.setBackgroundResource(R.drawable.online_icon);
+                } else if (temp.equalsIgnoreCase("offline")) {
+                    Statusicon.setBackgroundResource(R.drawable.offline_icon);
+                } else if (temp.equalsIgnoreCase("Away")) {
+                    Statusicon.setBackgroundResource(R.drawable.busy_icon);
+                } else if (temp.equalsIgnoreCase("Stealth")) {
+                    Statusicon.setBackgroundResource(R.drawable.invisibleicon);
+                } else if (temp.equalsIgnoreCase("Airport")) {
+                    Statusicon.setBackgroundResource(R.drawable.busy_icon);
+                } else {
+                    Statusicon.setBackgroundResource(R.drawable.offline_icon);
+                }
             }
             LinearLayout footer1=(LinearLayout)v1.findViewById(R.id.footer1);
             footer1.setVisibility(View.GONE);
@@ -2167,12 +2170,14 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 //                                } else {
 
 //
-                                    if (DBAccess.getdbHeler(context).getChatTemplates() != null) {
-                                        Intent intent = new Intent(context, ChatTemplateActivity.class);
-                                        startActivityForResult(intent, 12);
-                                    } else {
-                                        showAlert1("Info", "No templates Values In DB");
-                                    }
+                               isGrid = true;
+                               atachlay.setVisibility(View.GONE);
+                               if (DBAccess.getdbHeler(context).getChatTemplates() != null) {
+                                   Intent intent = new Intent(context, ChatTemplateActivity.class);
+                                   startActivityForResult(intent, 12);
+                               } else {
+                                   showAlert1("Info", "No templates Values In DB");
+                               }
 
                                     // showToast("Sorry, cant able to send empty message");
 //                                }
@@ -2328,7 +2333,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 Log.i("status","updateBuddy method username-->"+userName+"  bibstatus---->"+bibStatus);
                 buddyStatus.put(userName, bibStatus);
 
-                if (userName.equalsIgnoreCase(buddy)) {
+                if (userName!=null &&userName.equalsIgnoreCase(buddy)) {
                     if (img_status != null) {
                         if (bibStatus.equals("0")) {
                             img_status.setBackgroundResource(R.drawable.offline_icon);
@@ -2485,6 +2490,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 gcBean.setSignalid(Utility.getSessionID());
                 gcBean.setSenttime(getCurrentDateandTime());
                 gcBean.setSenttimez("GMT");
+                gcBean.setDateandtime(getCurrentDateandTime());
                 if (isGroup || isRounding) {
                     gcBean.setTo(groupBean.getGroupId());
                     gcBean.setSessionid(groupBean.getGroupId());
@@ -4981,7 +4987,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             myAlertDialog.setTitle(SingleInstance.mainContext.getResources().getString(R.string.clear_chat_history));
             myAlertDialog
                     .setMessage(SingleInstance.mainContext.getResources().getString(R.string.are_you_sure_you_want_to_delete_entire_chat_history)
-                            + groupOrBuddyName + "?");
+                            + " " + nickname + "?");
             myAlertDialog.setPositiveButton("OK",
                     new DialogInterface.OnClickListener() {
 
@@ -6618,6 +6624,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         public void onClick(View view) {
                             Log.i("privatemsg","btn_private click");
                             isPrivateBack=true;
+                            LL_privateReply.setVisibility(View.VISIBLE);
                             PrivateReply_view=view;
                             GroupChatBean gcBean1 = (GroupChatBean) view
                                     .getTag();
@@ -9547,7 +9554,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         listViewPatient = (ListView) v1.findViewById(R.id.listview_patient);
         final TextView name = (TextView) v1.findViewById(R.id.name);
         final TextView location = (TextView) v1.findViewById(R.id.location);
-        final TextView status = (TextView) v1.findViewById(R.id.status);
+        final TextView status = (TextView) v1.findViewById(R.id.status_img);
         final TextView mypatients = (TextView) v1.findViewById(R.id.patients);
         final ImageView name_image = (ImageView)v1.findViewById(R.id.name_image);
         name_image.setVisibility(View.VISIBLE);
@@ -11562,6 +11569,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 gcBean.setSignalid(Utility.getSessionID());
                 gcBean.setSenttime(getCurrentDateandTime());
                 gcBean.setSenttimez("GMT");
+                gcBean.setDateandtime(getCurrentDateandTime());
                 if (fromgroup) {
                     gcBean.setTo(member);
                     gcBean.setSessionid(member);

@@ -7310,6 +7310,8 @@ public class DBAccess extends SQLiteOpenHelper {
                 groupChatBean.setWithdrawn(cur.getString(27));
 				if(cur.getString(28)!=null)
 				groupChatBean.setSenderWithdraw(cur.getString(28));
+				groupChatBean.setDateandtime(cur.getString(29));
+
 				groupChatList.add(groupChatBean);
 				cur.moveToNext();
 				Log.i("group123", "chat list size in db: " + groupChatBean.getMessage());

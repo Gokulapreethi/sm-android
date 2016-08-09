@@ -232,36 +232,36 @@ public class FilesFragment extends Fragment implements OnClickListener {
 					@Override
 					public void onClick(View view) {
 						try {
-							final Dialog dialog = new Dialog(context);
-							dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-							dialog.setContentView(R.layout.dialog_myacc_menu);
-							WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-							lp.copyFrom(dialog.getWindow().getAttributes());
-							lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-							lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-							lp.horizontalMargin = 15;
-							Window window = dialog.getWindow();
-							window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-							window.setAttributes(lp);
-							window.setGravity(Gravity.BOTTOM);
-							dialog.show();
-							TextView newfile = (TextView) dialog.findViewById(R.id.delete_acc);
-							newfile.setText("New File");
-							newfile.setBackgroundColor(context.getResources().getColor(R.color.green));
-							TextView newfolder = (TextView) dialog.findViewById(R.id.log_out);
-							newfolder.setText("New Folder");
-							newfolder.setVisibility(View.GONE);
-							newfolder.setBackgroundColor(context.getResources().getColor(R.color.green));
-							TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
-							cancel.setOnClickListener(new View.OnClickListener() {
-								@Override
-								public void onClick(View arg0) {
-										dialog.dismiss();
-								}
-							});
-							newfile.setOnClickListener(new OnClickListener() {
-								@Override
-								public void onClick(View v) {
+//							final Dialog dialog = new Dialog(context);
+//							dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//							dialog.setContentView(R.layout.dialog_myacc_menu);
+//							WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+//							lp.copyFrom(dialog.getWindow().getAttributes());
+//							lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+//							lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+//							lp.horizontalMargin = 15;
+//							Window window = dialog.getWindow();
+//							window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//							window.setAttributes(lp);
+//							window.setGravity(Gravity.BOTTOM);
+//							dialog.show();
+//							TextView newfile = (TextView) dialog.findViewById(R.id.delete_acc);
+//							newfile.setText("New File");
+//							newfile.setBackgroundColor(context.getResources().getColor(R.color.green));
+//							TextView newfolder = (TextView) dialog.findViewById(R.id.log_out);
+//							newfolder.setText("New Folder");
+//							newfolder.setVisibility(View.GONE);
+//							newfolder.setBackgroundColor(context.getResources().getColor(R.color.green));
+//							TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
+//							cancel.setOnClickListener(new View.OnClickListener() {
+//								@Override
+//								public void onClick(View arg0) {
+//										dialog.dismiss();
+//								}
+//							});
+//							newfile.setOnClickListener(new OnClickListener() {
+//								@Override
+//								public void onClick(View v) {
 									Intent intentComponent = new Intent(context,
 											ComponentCreator.class);
 									Bundle bndl = new Bundle();
@@ -270,10 +270,10 @@ public class FilesFragment extends Fragment implements OnClickListener {
 									bndl.putBoolean("fromNew",true);
 									intentComponent.putExtras(bndl);
 									context.startActivity(intentComponent);
-									dialog.dismiss();
-								}
-							});
-							plus_dialog = dialog;
+//									dialog.dismiss();
+//								}
+//							});
+//							plus_dialog = dialog;
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -1003,7 +1003,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 			final AlertDialog.Builder alert = new AlertDialog.Builder(
 					context);
 			alert.setTitle("Alert");
-			alert.setMessage("Are you sure want to syncronous all files?");
+			alert.setMessage("Are you sure want to sync all files?");
 			alert.setCancelable(false);
 			alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 				@Override
@@ -1016,7 +1016,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 								WebServiceReferences.webServiceClient
 										.FileSync(SingleInstance.mainContext);
 							}
-							showprogress("Syncing in Progress..");
+							showprogress("Sync in Progress..");
 						}
 
 					});
@@ -2311,6 +2311,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 		Vector<CompleteListBean> photoList=new Vector<CompleteListBean>();
 		Vector<CompleteListBean> videoList=new Vector<CompleteListBean>();
 		Vector<CompleteListBean> audioList=new Vector<CompleteListBean>();
+		Vector<CompleteListBean> docList=new Vector<CompleteListBean>();
 		for(CompleteListBean cBean: fileList ) {
 			if (cBean.getcomponentType().trim().equalsIgnoreCase("photo")) {
 				Log.i("AAAA","sort type photo");
@@ -2321,6 +2322,9 @@ public class FilesFragment extends Fragment implements OnClickListener {
 			} else if (cBean.getcomponentType().trim().equalsIgnoreCase("audio")) {
 				Log.i("AAAA","sort type audio");
 				audioList.add(cBean);
+			}else if (cBean.getcomponentType().trim().equalsIgnoreCase("document")) {
+				Log.i("AAAA","sort type document");
+				docList.add(cBean);
 			}
 		}
 		if(photoList.size()>0)
@@ -2329,6 +2333,8 @@ public class FilesFragment extends Fragment implements OnClickListener {
 			tempList.addAll(videoList);
 		if(audioList.size()>0)
 			tempList.addAll(audioList);
+		if(docList.size()>0)
+			tempList.addAll(docList);
 		return tempList;
 	}
 	private int dp2px(int dp) {

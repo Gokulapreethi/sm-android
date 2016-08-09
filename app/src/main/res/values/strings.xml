@@ -348,7 +348,7 @@
     <string name="option2">Option 2</string>
     <string name="option3">Option 3</string>
 
-    <string name="app_version">14July2016</string>
+    <string name="app_version">09Aug2016</string>
     <string name="app_date">2014-12-12 00:00:00</string>
     <!-- <string name="service_url"> https://172.16.1.92:443/NOTESServices/Service</string> -->
     <!-- <string name="service_url"> https://122.165.92.171:443/NOTESServices/Service</string> -->
@@ -367,6 +367,7 @@
     <!--<string name="service_url">https://www.snazevents.com/SNAZMEDServices/Service</string>-->
     <!--<string name="service_url">https://10.20.95.201:443/SNAZMEDServices/Service</string>-->
     <!--<string name="service_url">https://172.16.1.92:8443/SNAZMEDServices/Service</string>-->
+    <!--<string name="service_url">https://172.16.1.112:8443/SNAZMEDServices/Service</string>-->
        <string name="error">Sorry, unable to continue with Notes. Please try again later.
    </string>
        <string name="image">Image</string>
@@ -917,11 +918,11 @@
     <string name="you_don_have_buddies">Sorry, You dont have buddies to share</string>
     <string name="kindly_login_before_share">Kindly login before share</string>
     <string name="select_response_type">Select Response Type</string>
-    <string name="text_note_saved_succesfully">Text note saved succesfully</string>
+    <string name="text_note_saved_succesfully">Text note saved successfully</string>
     <string name="cannot_save_empty_file">Please enter some content to save. Cannot save empty file</string>
-    <string name="video_note_saved_succesfully">Video note saved succesfully</string>
-    <string name="audio_note_saved_succesfully">Audio note saved succesfully</string>
-    <string name="image_note_saved_succesfully">Image note saved succesfully</string>
+    <string name="video_note_saved_succesfully">Video note saved successfully</string>
+    <string name="audio_note_saved_succesfully">Audio note saved successfully</string>
+    <string name="image_note_saved_succesfully">Image note saved successfully</string>
     <string name="cannot_saved_">Cannot save empty file</string>
     <string name="from_self">From : Self</string>
     <string name="not_yet_set">Reminder :Not yet set</string>

@@ -11373,8 +11373,10 @@ private TrustManager[] get_trust_mgr() {
 				String strIPath = Environment.getExternalStorageDirectory()
 						+ "/COMMedia/" + fname[i];
 				File file=new File(strIPath);
-				if(!file.exists())
-                WebServiceReferences.webServiceClient.FileDownload(dtemp);
+				if(!file.exists()) {
+					Log.d("XP WSD","enters into filedownload webservice");
+					WebServiceReferences.webServiceClient.FileDownload(dtemp);
+				}
             }
         }else{
             dtemp[0]=username;
@@ -11384,8 +11386,10 @@ private TrustManager[] get_trust_mgr() {
 			String strIPath = Environment.getExternalStorageDirectory()
 					+ "/COMMedia/" + filename;
 			File file=new File(strIPath);
-			if(!file.exists())
-            WebServiceReferences.webServiceClient.FileDownload(dtemp);
+			if(!file.exists()) {
+				Log.d("XP WSD","enters into filedownload webservice");
+				WebServiceReferences.webServiceClient.FileDownload(dtemp);
+			}
         }
 
 

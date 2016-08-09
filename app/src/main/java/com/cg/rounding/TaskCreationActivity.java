@@ -174,8 +174,8 @@ public class TaskCreationActivity extends Activity {
                     View item = memberadapter.getView(i, null, null);
                     member_lv.addView(item);
                 }
-//                    ed_assignMember.setText(names.substring(0,names.length() - 2));
                 }
+            loadMembers();
             if(tBean.getSetreminder().equalsIgnoreCase("1")){
                 btn_touch.setChecked(true);
                 remainderTag=1;
@@ -299,7 +299,7 @@ public class TaskCreationActivity extends Activity {
             btn_touch.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (ed_dueDate.getText().length() > 0 ) {
+                    if (ed_dueDate.getText().length() > 0 && ed_dueTime.getText().length()>0) {
                         if (btn_touch.isChecked()) {
                             remainderTag = 1;
                             setReminder.setTextColor(getResources().getColor(R.color.white));
@@ -313,7 +313,7 @@ public class TaskCreationActivity extends Activity {
                         }
                     }else{
                         btn_touch.setChecked(false);
-                        Toast.makeText(context, "Please Select the Duedate to set reminder", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Please Select the Due date and time to set reminder", Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -341,25 +341,29 @@ public class TaskCreationActivity extends Activity {
                             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
                             String inputString2 = dateFormat.format(date);
                             String Today = inputString2;
-                            SimpleDateFormat myFormat = new SimpleDateFormat("dd-MM-yyyy");
+                            SimpleDateFormat myFormat = new SimpleDateFormat("dd-MM-yyyy h:mm a");
                             Date date1 = null;
                             Date date2 = null;
                             Date date3 = null;
 
                             try {
                                 date1 = myFormat.parse(dateDesc);
-                                date2 = myFormat.parse(ed_dueDate.getText().toString());
+                                date2 = myFormat.parse(ed_dueDate.getText().toString()+" "+ed_dueTime.getText().toString());
                                 date3 = todayDate;
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            if (date1.compareTo(date2) > 0) {
-                                remindTime.setText(ed_dueDate.getText().toString() + " " + correcttime);
-                            } else  if (date3.compareTo(date1) >0) {
-                                remindTime.setText(todayDate.toString() + " " + correcttime);
-                            }
-                            else {
+//                            if (date1.compareTo(date3) < 0) {
+//                                Log.i("AAAA","dat and time today----");
+//                                remindTime.setText(ed_dueDate.getText().toString() + " " + ed_dueTime.getText().toString());
+//                            }
+                            if (date3.compareTo(date1) <0 && date1.compareTo(date2) < 0) {
                                 remindTime.setText(dateDesc);
+//                                remindTime.setText(todayDate.toString() + " " + correcttime);
+                            }else {
+//                                remindTime.setText(dateDesc);
+                                Toast.makeText(context, "Please set correct reminder...",
+                                        Toast.LENGTH_SHORT).show();
                             }
 
                         }

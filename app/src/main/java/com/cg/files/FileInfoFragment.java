@@ -1,19 +1,24 @@
 package com.cg.files;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.commongui.MultimediaUtils;
@@ -146,6 +152,91 @@ public class FileInfoFragment extends Fragment {
             plusBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    final Dialog dialog = new Dialog(mainContext);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.group_dialog);
+                    WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                    lp.copyFrom(dialog.getWindow().getAttributes());
+                    lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                    lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                    lp.horizontalMargin = 15;
+                    Window window = dialog.getWindow();
+                    window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    window.setAttributes(lp);
+                    window.setGravity(Gravity.BOTTOM);
+                    dialog.show();
+
+                    TextView save = (TextView) dialog.findViewById(R.id.edit_grp);
+                    save.setVisibility(View.VISIBLE);
+                    save.setText("Save as");
+                    TextView download = (TextView) dialog.findViewById(R.id.invite_grp);
+                    download.setText("Download");
+                    TextView move = (TextView) dialog.findViewById(R.id.leave_grp);
+                    move.setText("Move to");
+                    move.setBackgroundColor(getResources().getColor(R.color.blue2));
+                    TextView delete = (TextView) dialog.findViewById(R.id.delete_grp);
+                    delete.setText("Delete");
+                    TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
+                    cancel.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View arg0) {
+                            try {
+                                dialog.dismiss();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    save.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View arg0) {
+                            try {
+                                dialog.dismiss();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    move.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+
+                        }
+                    });
+                    delete.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            final Dialog dialog = new Dialog(mainContext);
+                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            dialog.setContentView(R.layout.callrecord_delete_dialog);
+                            dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+                            dialog.getWindow().setBackgroundDrawableResource(R.color.black2);
+                            dialog.show();
+                            TextView tv_SecondLine = (TextView)dialog.findViewById(R.id.tv_SecondLine);
+                            tv_SecondLine.setText("You are going to delete \n 1 file from SnaxBox");
+                            TextView tv_thirdline = (TextView)dialog.findViewById(R.id.tv_thirdline);
+                            tv_thirdline.setVisibility(View.VISIBLE);
+                            TextView tv_fourthline = (TextView)dialog.findViewById(R.id.tv_fourthline);
+                            tv_fourthline.setVisibility(View.VISIBLE);
+                            Button cancel = (Button) dialog.findViewById(R.id.save);
+                            Button delete = (Button) dialog.findViewById(R.id.delete);
+                            cancel.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            delete.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.dismiss();
+                                }
+                            });
+                        }
+                    });
 
                 }
             });

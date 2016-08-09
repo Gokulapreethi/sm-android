@@ -3052,6 +3052,7 @@ public class XmlComposer {
 		buffer.append(" creatorname=" + quotes + tBean.getCreatorName() + quotes);
 		buffer.append(" taskdesc=" + quotes + tBean.getTaskdesc() + quotes);
 		buffer.append(" callpatient=" + quotes + tBean.getPatientname() + quotes);
+		if(tBean.getAssignedMembers()!=null)
 		buffer.append(" assignmembers=" + quotes + tBean.getAssignedMembers() + quotes);
 		buffer.append(" patientid=" + quotes + tBean.getPatientid() + quotes);
 		buffer.append(" duedate=" + quotes + tBean.getDuedate() + quotes);

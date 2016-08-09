@@ -193,6 +193,17 @@ public class MemoryControlFragment extends Fragment {
                                     .commitAllowingStateLoss();
                         }
                     });
+                    chat_imageview.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ContactsFragment contactsFragment = ContactsFragment.getInstance(mainContext);
+                            FragmentManager fragmentManager = SingleInstance.mainContext
+                                    .getSupportFragmentManager();
+                            fragmentManager.beginTransaction().replace(
+                                    R.id.activity_main_content_fragment, contactsFragment)
+                                    .commitAllowingStateLoss();
+                        }
+                    });
 
                     tv_audio.setText(bytesToSize(audio));
                     tv_video.setText(bytesToSize(videos));

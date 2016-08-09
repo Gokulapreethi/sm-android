@@ -151,7 +151,7 @@ public class ForwardUserSelect extends Activity {
                     for (BuddyInformationBean Binfobean : buddylist) {
                         if (Binfobean.isSelected() ) {
                             isSelectContact = true;
-                           members=members+Binfobean.getEmailid()+",";
+                           members=members+Binfobean.getName()+",";
                         }
                     }
                     String groupMembers="";

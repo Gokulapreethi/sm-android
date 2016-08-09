@@ -79,8 +79,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -3444,6 +3446,12 @@ public class XmlParser {
 						if (reminderTime != null && !reminderTime.equals("")) {
 							bean.setReminderTime(reminderTime);
 						}
+						String dateandtime = element.getAttribute(
+								"dateandtime").trim();
+						Log.i("AAAA","date and time "+dateandtime);
+						if (dateandtime != null && !dateandtime.equals("")) {
+							bean.setDateandtime(getCurrentDateandTime());
+						}
 						element = (Element) document.getElementsByTagName(
 								"message").item(0);
 						if (element != null) {
@@ -3481,11 +3489,7 @@ public class XmlParser {
 							if (ftppassword != null && !ftppassword.equals("")) {
 								bean.setFtpPassword(ftppassword);
 							}
-							String dateandtime = element.getAttribute(
-									"dateandtime").trim();
-							if (dateandtime != null && !dateandtime.equals("")) {
-								bean.setDateandtime(dateandtime);
-							}
+
 							bean.setThumb(2);
 						}
 					} else if (bean.getType().equals("104")) {
@@ -8121,6 +8125,7 @@ public class XmlParser {
 					cBean.setCstatus(nodeMap.getNamedItem("status").getNodeValue());
 				if (nodeMap.getNamedItem("dateandtime") != null)
 					cBean.setDateandtime(nodeMap.getNamedItem("dateandtime").getNodeValue());
+				cBean.setDateandtime(cBean.getSenttime());
 				if (nodeMap.getNamedItem("sentstatustime") != null)
 					cBean.setSentstatustime(nodeMap.getNamedItem("sentstatustime").getNodeValue());
 				if (nodeMap.getNamedItem("deliverstatustime") != null)
@@ -8147,44 +8152,43 @@ public class XmlParser {
 					}
 				}
 				syncList.add(cBean);
-				Element firstLevel = (Element)node;
-				NodeList value1Nodes = (firstLevel).getElementsByTagName("status");
-				Node node1 = value1Nodes.item(i);
-				NamedNodeMap nodemap1=node1.getAttributes();
+				element = (Element) doc.getElementsByTagName("status").item(i);
 				ChatInfoBean chatInfoBean = new ChatInfoBean();
-
-				if (nodemap1.getNamedItem("user") != null)
-					chatInfoBean.setName(nodemap1.getNamedItem("user").getNodeValue());
-				if (nodemap1.getNamedItem("sentstatustime") != null)
-					chatInfoBean.setSentstatustime(nodemap1.getNamedItem("sentstatustime").getNodeValue());
+				if (element.getAttribute("user") != null)
+					chatInfoBean.setName(element.getAttribute("user").trim());
+				if (element.getAttribute("sentstatustime") != null)
+					chatInfoBean.setSentstatustime(element.getAttribute("sentstatustime").trim());
 				Log.i("valueof", "beanvale1" + chatInfoBean.getSentstatustime());
-				if (nodemap1.getNamedItem("deliverstatustime") != null)
-					chatInfoBean.setDeliverstatustime(nodemap1.getNamedItem("deliverstatustime").getNodeValue());
+				if (element.getAttribute("deliverstatustime") != null)
+					chatInfoBean.setDeliverstatustime(element.getAttribute("deliverstatustime").trim());
 				Log.i("valueof", "beanvale2" + chatInfoBean.getDeliverstatustime());
-				if (nodemap1.getNamedItem("readstatustime") != null)
-					chatInfoBean.setDate(nodemap1.getNamedItem("readstatustime").getNodeValue());
+				if (element.getAttribute("readstatustime") != null)
+					chatInfoBean.setDate(element.getAttribute("readstatustime").trim());
 				Log.i("valueof", "beanvale3" + chatInfoBean.getDate());
 				chatInfoBean.setSid(cBean.getSignalid());
 				syncList.add(chatInfoBean);
+
+
+//				Element firstLevel = (Element)node;
+//				NodeList value1Nodes = (firstLevel).getElementsByTagName("status");
+//				Node node1 = value1Nodes.item(i);
+//				NamedNodeMap nodemap1=node1.getAttributes();
+//				ChatInfoBean chatInfoBean = new ChatInfoBean();
+//
+//				if (nodemap1.getNamedItem("user") != null)
+//					chatInfoBean.setName(nodemap1.getNamedItem("user").getNodeValue());
+//				if (nodemap1.getNamedItem("sentstatustime") != null)
+//					chatInfoBean.setSentstatustime(nodemap1.getNamedItem("sentstatustime").getNodeValue());
+//				Log.i("valueof", "beanvale1" + chatInfoBean.getSentstatustime());
+//				if (nodemap1.getNamedItem("deliverstatustime") != null)
+//					chatInfoBean.setDeliverstatustime(nodemap1.getNamedItem("deliverstatustime").getNodeValue());
+//				Log.i("valueof", "beanvale2" + chatInfoBean.getDeliverstatustime());
+//				if (nodemap1.getNamedItem("readstatustime") != null)
+//					chatInfoBean.setDate(nodemap1.getNamedItem("readstatustime").getNodeValue());
+//				Log.i("valueof", "beanvale3" + chatInfoBean.getDate());
+//				chatInfoBean.setSid(cBean.getSignalid());
+//				syncList.add(chatInfoBean);
 			}
-//				list = doc.getElementsByTagName("status");
-//				for (int i = 0; i < list.getLength(); i++) {
-//					ChatInfoBean chatInfoBean = new ChatInfoBean();
-//					node = list.item(i);
-//					nodeMap = node.getAttributes();
-//					if (nodeMap.getNamedItem("user") != null)
-//						chatInfoBean.setName(nodeMap.getNamedItem("user").getNodeValue());
-//					if (nodeMap.getNamedItem("sentstatustime") != null)
-//						chatInfoBean.setSentstatustime(nodeMap.getNamedItem("sentstatustime").getNodeValue());
-//					Log.i("valueof", "beanvale1" + chatInfoBean.getSentstatustime());
-//					if (nodeMap.getNamedItem("deliverstatustime") != null)
-//						chatInfoBean.setDeliverstatustime(nodeMap.getNamedItem("deliverstatustime").getNodeValue());
-//					Log.i("valueof", "beanvale2" + chatInfoBean.getDeliverstatustime());
-//					if (nodeMap.getNamedItem("readstatustime") != null)
-//						chatInfoBean.setDate(nodeMap.getNamedItem("readstatustime").getNodeValue());
-//					Log.i("valueof", "beanvale3" + chatInfoBean.getDate());
-//					syncList.add(chatInfoBean);
-//				}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -8289,5 +8293,17 @@ public class XmlParser {
 			e.printStackTrace();
 		}
 		return result;
+	}
+	public String getCurrentDateandTime() {
+		try {
+			Date curDate = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat(
+					"yyyy-MM-dd hh:mm:ss a");
+			return sdf.format(curDate).toString();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

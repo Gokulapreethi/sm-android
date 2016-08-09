@@ -42,6 +42,28 @@
             android:textColor="@color/black"
             android:text="Are you sure you want \n to delete this recording?"/>
 
+        <TextView
+            android:id="@+id/tv_thirdline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/snazlgray"
+            android:visibility="gone"
+            android:text="It will be impossible \n to restore the file"/>
+
+        <TextView
+            android:id="@+id/tv_fourthline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/snazlgray"
+            android:visibility="gone"
+            android:text="Are you sure you want \nto delete this file?"/>
+
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

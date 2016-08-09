@@ -8899,13 +8899,14 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		}
 		if (obj instanceof ArrayList) {
 			ArrayList<Object> reult=(ArrayList<Object>) obj;
-			Log.i("entering","arraylist----->");
+			Log.i("entering","arraylist----->"+reult.size());
 			for(int i=0;i<reult.size();i++) {
 				if(reult.get(i) instanceof GroupChatBean) {
 					GroupChatBean groupChatBean = (GroupChatBean) reult.get(i);
 					Log.i("entering","groupchatbean----->");
 						if (groupChatBean.getMimetype().equals("text")
-								|| groupChatBean.getMimetype().equals("location")) {
+								|| groupChatBean.getMimetype().equals("location")
+								|| groupChatBean.getMimetype().equals("link")) {
 							Log.i("entering", "text----->");
 							processGroupChatChanges(groupChatBean);
 						} else {
@@ -8923,10 +8924,10 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					Log.i("entering","chatinfobean----->");
 					if (cbean.getDate() != null) {
 						cbean.setDate(cbean.getDate());
-						cbean.setStatus("2");
+						cbean.setStatus("3");
 					} else if (cbean.getDeliverstatustime() != null) {
 						cbean.setDate(cbean.getDeliverstatustime());
-						cbean.setStatus("1");
+						cbean.setStatus("2");
 					} else{
 						cbean.setDate(cbean.getSentstatustime());
 						cbean.setStatus("0");
@@ -8947,6 +8948,19 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				GroupChatBean gcBean = (GroupChatBean) chatFTPBean.getSourceObject();
 				if (gcBean != null)
 					if (chatFTPBean.getOperation().equalsIgnoreCase("UPLOAD")) {
+						String fname="";
+						if(!gcBean.getMimetype().equalsIgnoreCase("mixedfile"))
+							fname = gcBean.getMediaName().split("/")[5];
+						else{
+							String[] paths=gcBean.getMediaName().split(",");
+							for(int i=0; i<paths.length;i++){
+								String filename = paths[i].split("/")[5];
+								fname=fname+filename+",";
+							}
+							fname=fname.substring(0, fname.length() - 1);
+						}
+						gcBean.setMediaName(fname);
+						gcBean.setSessionid(CallDispatcher.LoginUser+gcBean.getSessionid());
 						SingleInstance.getGroupChatProcesser().getQueue()
 								.addObject(gcBean);
 					}
