@@ -64,15 +64,17 @@ public class ChatHeadDrawerService extends Service {
             mLayout = (RelativeLayout) mChatHead
                     .findViewById(R.id.chathead_linearlayout);
             call_time_chronometer = (Chronometer) mChatHead.findViewById(R.id.video_timer);
-            call_time_chronometer.start();
-            call_time_chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-                @Override
-                public void onChronometerTick(Chronometer chronometer) {
-                    Log.i("Chronometer","chronometer :"+chronometer.getText()+" "+AppReference.mainContext.call_chronometer_time);
-
-                    chronometer.setText(AppReference.mainContext.call_chronometer_time);
-                }
-            });
+            Log.i("Chronometer", "time" + (AppReference.mainContext.ctimer.getBase()));
+//            call_time_chronometer.setBase(AppReference.mainContext.ctimer.getBase());
+//            call_time_chronometer.start();
+//            call_time_chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+//                @Override
+//                public void onChronometerTick(Chronometer chronometer) {
+//                    Log.i("Chronometer", "chronometer :" + chronometer.getText() + " " + AppReference.mainContext.call_chronometer_time);
+//
+//                    chronometer.setText(chronometer.getText());
+//                }
+//            });
             final WindowManager.LayoutParams parameters = new WindowManager.LayoutParams(
                     WindowManager.LayoutParams.WRAP_CONTENT, // Width
                     WindowManager.LayoutParams.WRAP_CONTENT, // Height
@@ -177,12 +179,24 @@ public class ChatHeadDrawerService extends Service {
                 current_window = "callscreen";
                 current_callscrren = intent.getStringExtra("callscreen");
                 call_time_chronometer.setVisibility(View.VISIBLE);
-                if(current_callscrren != null && current_callscrren.equalsIgnoreCase("ACS")) {
+                if (current_callscrren != null && current_callscrren.equalsIgnoreCase("ACS")) {
+                    call_time_chronometer.setBase(AppReference.mainContext.ctimer.getBase());
                     mChatHeadImageView.setImageResource(R.drawable.ic_action_call);
                 } else {
+                    call_time_chronometer.setBase(AppReference.mainContext.cvtimer.getBase());
                     mChatHeadImageView.setImageResource(R.drawable.ic_action_video_white);
                 }
                 mLayout.setBackgroundResource(R.drawable.minimize_lay);
+
+                call_time_chronometer.start();
+                call_time_chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+                    @Override
+                    public void onChronometerTick(Chronometer chronometer) {
+                        Log.i("Chronometer", "chronometer :" + chronometer.getText() + " " + AppReference.mainContext.call_chronometer_time);
+
+                        chronometer.setText(chronometer.getText());
+                    }
+                });
             }
         }
         return START_NOT_STICKY;
