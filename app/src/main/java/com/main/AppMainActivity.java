@@ -8232,15 +8232,15 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
                 if (groupChatActivity.buddy != null && gcBean.getFrom().equals(groupChatActivity.buddy)) {
 //                gcBean1.setTyping(true);
                     handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (gcBean.getResult().equals("0")) {
-                                groupChatActivity.typingstatus.setVisibility(View.VISIBLE);
-                            } else {
-                                groupChatActivity.typingstatus.setVisibility(View.GONE);
-                            }
-                        }
-                    });
+						@Override
+						public void run() {
+							if (gcBean.getResult().equals("0")) {
+								groupChatActivity.typingstatus.setVisibility(View.VISIBLE);
+							} else {
+								groupChatActivity.typingstatus.setVisibility(View.GONE);
+							}
+						}
+					});
 
                 }
 
@@ -8654,51 +8654,53 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 //                Object cur_context_object = SingleInstance.current_open_activity_detail.get("activtycontext");
 				Iterator it0 = SingleInstance.current_open_activity_detail.entrySet().iterator();
 				while (it0.hasNext()) {
-					Map.Entry pair0 = (Map.Entry)it0.next();
+					Map.Entry pair0 = (Map.Entry) it0.next();
 					Object cur_context_object0 = pair0.getKey();
-					HashMap<String,Object> objectHashMap0 = (HashMap<String, Object>) pair0.getValue();
+					HashMap<String, Object> objectHashMap0 = (HashMap<String, Object>) pair0.getValue();
 					if (cur_context_object0 instanceof GroupChatActivity) {
-						String group_id = null;
-						Intent intent0 = new Intent(context, GroupChatActivity.class);
-						if (objectHashMap0.containsKey("groupid") && objectHashMap0.get("groupid") != null) {
-							group_id = (String) objectHashMap0.get("groupid");
-							intent0.putExtra("groupid", group_id);
-						}
-						if (objectHashMap0.containsKey("isGroup") && objectHashMap0.get("isGroup") != null) {
-							intent0.putExtra("isGroup", (boolean) objectHashMap0.get("isGroup"));
-						}
-						if (objectHashMap0.containsKey("isRounding") && objectHashMap0.get("isRounding") != null) {
-							intent0.putExtra("isRounding", (boolean) objectHashMap0.get("isRounding"));
-							if ((boolean) objectHashMap0.get("isRounding") && group_id != null) {
-								WebServiceReferences.webServiceClient.GetPatientRecords("", group_id
-										, SingleInstance.mainContext);
-								WebServiceReferences.webServiceClient.GetTaskInfo("", group_id, SingleInstance.mainContext);
-								WebServiceReferences.webServiceClient.GetRoleAccess(CallDispatcher.LoginUser, group_id,
-										"", SingleInstance.mainContext);
-								WebServiceReferences.webServiceClient.GetMemberRights(CallDispatcher.LoginUser,
-										group_id, SingleInstance.mainContext);
+						if (!SingleInstance.contextTable.containsKey("groupchat")) {
+
+							String group_id = null;
+							Intent intent0 = new Intent(context, GroupChatActivity.class);
+							if (objectHashMap0.containsKey("groupid") && objectHashMap0.get("groupid") != null) {
+								group_id = (String) objectHashMap0.get("groupid");
+								intent0.putExtra("groupid", group_id);
 							}
+							if (objectHashMap0.containsKey("isGroup") && objectHashMap0.get("isGroup") != null) {
+								intent0.putExtra("isGroup", (boolean) objectHashMap0.get("isGroup"));
+							}
+							if (objectHashMap0.containsKey("isRounding") && objectHashMap0.get("isRounding") != null) {
+								intent0.putExtra("isRounding", (boolean) objectHashMap0.get("isRounding"));
+								if ((boolean) objectHashMap0.get("isRounding") && group_id != null) {
+									WebServiceReferences.webServiceClient.GetPatientRecords("", group_id
+											, SingleInstance.mainContext);
+									WebServiceReferences.webServiceClient.GetTaskInfo("", group_id, SingleInstance.mainContext);
+									WebServiceReferences.webServiceClient.GetRoleAccess(CallDispatcher.LoginUser, group_id,
+											"", SingleInstance.mainContext);
+									WebServiceReferences.webServiceClient.GetMemberRights(CallDispatcher.LoginUser,
+											group_id, SingleInstance.mainContext);
+								}
+							}
+							if (objectHashMap0.containsKey("sessionid") && objectHashMap0.get("sessionid") != null) {
+								intent0.putExtra("sessionid", (String) objectHashMap0.get("sessionid"));
+							}
+							//				intent.putExtra("isGroup", (boolean)objectHashMap.get("isGroup"));
+							if (objectHashMap0.containsKey("isReq") && objectHashMap0.get("isReq") != null) {
+								intent0.putExtra("isReq", (String) objectHashMap0.get("isReq"));
+							}
+							if (objectHashMap0.containsKey("buddy") && objectHashMap0.get("buddy") != null) {
+								intent0.putExtra("buddy", (String) objectHashMap0.get("buddy"));
+							}
+							if (objectHashMap0.containsKey("buddystatus") && objectHashMap0.get("buddystatus") != null) {
+								intent0.putExtra("buddystatus", (String) objectHashMap0.get("buddystatus"));
+							}
+							if (objectHashMap0.containsKey("nickname") && objectHashMap0.get("nickname") != null) {
+								intent0.putExtra("nickname", (String) objectHashMap0.get("nickname"));
+							}
+							intent0.putExtra("minimize", true);
+							Log.i("reopen", "openNonClosedActivity GroupChatActivity");
+							startActivity(intent0);
 						}
-						if (objectHashMap0.containsKey("sessionid") && objectHashMap0.get("sessionid") != null) {
-							intent0.putExtra("sessionid", (String) objectHashMap0.get("sessionid"));
-						}
-						//				intent.putExtra("isGroup", (boolean)objectHashMap.get("isGroup"));
-						if (objectHashMap0.containsKey("isReq") && objectHashMap0.get("isReq") != null) {
-							intent0.putExtra("isReq", (String) objectHashMap0.get("isReq"));
-						}
-						if (objectHashMap0.containsKey("buddy") && objectHashMap0.get("buddy") != null) {
-							intent0.putExtra("buddy", (String) objectHashMap0.get("buddy"));
-						}
-						if (objectHashMap0.containsKey("buddystatus") && objectHashMap0.get("buddystatus") != null) {
-							intent0.putExtra("buddystatus", (String) objectHashMap0.get("buddystatus"));
-						}
-						if (objectHashMap0.containsKey("nickname") && objectHashMap0.get("nickname") != null) {
-							intent0.putExtra("nickname", (String) objectHashMap0.get("nickname"));
-						}
-						intent0.putExtra("minimize",true);
-						Log.i("reopen", "openNonClosedActivity GroupChatActivity");
-						startActivity(intent0);
-//					}
 						Iterator it = SingleInstance.current_open_activity_detail.entrySet().iterator();
 						while (it.hasNext()) {
 							Map.Entry pair = (Map.Entry) it.next();
@@ -8706,60 +8708,67 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 							HashMap<String, Object> objectHashMap = (HashMap<String, Object>) pair.getValue();
 
 							if (cur_context_object instanceof RoundingEditActivity) {
-
-								Intent intent = new Intent(context, RoundingEditActivity.class);
-								intent.putExtra("buddyname", (String) objectHashMap.get("buddyname"));
-								intent.putExtra("firstname", (String) objectHashMap.get("buddyname"));
-								intent.putExtra("groupid", (String) objectHashMap.get("buddyname"));
-								Log.i("reopen", "openNonClosedActivity RoundingEditActivity");
-								startActivity(intent);
+								if (!WebServiceReferences.contextTable.containsKey("roundingEdit")) {
+									Intent intent = new Intent(context, RoundingEditActivity.class);
+									intent.putExtra("buddyname", (String) objectHashMap.get("buddyname"));
+									intent.putExtra("firstname", (String) objectHashMap.get("buddyname"));
+									intent.putExtra("groupid", (String) objectHashMap.get("buddyname"));
+									Log.i("reopen", "openNonClosedActivity RoundingEditActivity");
+									startActivity(intent);
+								}
 							}
 
 							if (cur_context_object instanceof RoundingGroupActivity) {
-								Intent intent = new Intent(context,
-										RoundingGroupActivity.class);
-								if (objectHashMap.containsKey("isEdit") && objectHashMap.get("isEdit") != null) {
-									intent.putExtra("isEdit", (boolean) objectHashMap.get("isEdit"));
+								if (!SingleInstance.contextTable.containsKey("roundingGroup")) {
+									Intent intent = new Intent(context,
+											RoundingGroupActivity.class);
+									if (objectHashMap.containsKey("isEdit") && objectHashMap.get("isEdit") != null) {
+										intent.putExtra("isEdit", (boolean) objectHashMap.get("isEdit"));
+									}
+									if (objectHashMap.containsKey("id") && objectHashMap.get("id") != null) {
+										intent.putExtra("id", (String) objectHashMap.get("id"));
+									}
+									if (objectHashMap.containsKey("isduplicate") && objectHashMap.get("isduplicate") != null) {
+										intent.putExtra("isduplicate", (boolean) objectHashMap.get("isduplicate"));
+									}
+									Log.i("reopen", "openNonClosedActivity RoundingGroupActivity");
+									startActivity(intent);
 								}
-								if (objectHashMap.containsKey("id") && objectHashMap.get("id") != null) {
-									intent.putExtra("id", (String) objectHashMap.get("id"));
-								}
-								if (objectHashMap.containsKey("isduplicate") && objectHashMap.get("isduplicate") != null) {
-									intent.putExtra("isduplicate", (boolean) objectHashMap.get("isduplicate"));
-								}
-								Log.i("reopen", "openNonClosedActivity RoundingGroupActivity");
-								startActivity(intent);
 							}
 
 
 							if (cur_context_object instanceof TaskCreationActivity) {
-								Intent intent = new Intent(context,
-										TaskCreationActivity.class);
-								if (objectHashMap.containsKey("groupid") && objectHashMap.get("groupid") != null) {
-									intent.putExtra("groupid", (String) objectHashMap.get("groupid"));
+								if (!WebServiceReferences.contextTable.containsKey("taskcreation")) {
+									Intent intent = new Intent(context,
+											TaskCreationActivity.class);
+									if (objectHashMap.containsKey("groupid") && objectHashMap.get("groupid") != null) {
+										intent.putExtra("groupid", (String) objectHashMap.get("groupid"));
+									}
+									if (objectHashMap.containsKey("taskid") && objectHashMap.get("taskid") != null) {
+										intent.putExtra("taskid", (String) objectHashMap.get("taskid"));
+									}
+									if (objectHashMap.containsKey("isEdit") && objectHashMap.get("isEdit") != null) {
+										intent.putExtra("isEdit", (boolean) objectHashMap.get("isEdit"));
+									}
+									if (objectHashMap.containsKey("patientid") && objectHashMap.get("patientid") != null) {
+										intent.putExtra("patientid", (String) objectHashMap.get("patientid"));
+									}
+									Log.i("reopen", "openNonClosedActivity TaskCreationActivity");
+									startActivity(intent);
 								}
-								if (objectHashMap.containsKey("taskid") && objectHashMap.get("taskid") != null) {
-									intent.putExtra("taskid", (String) objectHashMap.get("taskid"));
-								}
-								if (objectHashMap.containsKey("isEdit") && objectHashMap.get("isEdit") != null) {
-									intent.putExtra("isEdit", (boolean) objectHashMap.get("isEdit"));
-								}
-								if (objectHashMap.containsKey("patientid") && objectHashMap.get("patientid") != null) {
-									intent.putExtra("patientid", (String) objectHashMap.get("patientid"));
-								}
-								Log.i("reopen", "openNonClosedActivity TaskCreationActivity");
-								startActivity(intent);
 							}
 
-							if(cur_context_object instanceof RoundNewPatientActivity) {
-								Intent intent = new Intent(context, RoundNewPatientActivity.class);
-								if (objectHashMap.containsKey("groupid") && objectHashMap.get("groupid") != null) {
-									intent.putExtra("groupid", (String) objectHashMap.get("groupid"));
+							if (cur_context_object instanceof RoundNewPatientActivity) {
+								if (!WebServiceReferences.contextTable.containsKey("roundnewpatient")) {
+									Intent intent = new Intent(context, RoundNewPatientActivity.class);
+									if (objectHashMap.containsKey("groupid") && objectHashMap.get("groupid") != null) {
+										intent.putExtra("groupid", (String) objectHashMap.get("groupid"));
+									}
+									startActivity(intent);
 								}
-								startActivity(intent);
 							}
 						}
-					} else if(cur_context_object0 instanceof ComponentCreator) {
+					} else if (cur_context_object0 instanceof ComponentCreator) {
 						Intent intent0 = new Intent(context, ComponentCreator.class);
 						Bundle bndl = new Bundle();
 						if (objectHashMap0.containsKey("action") && objectHashMap0.get("action") != null) {
@@ -8776,15 +8785,20 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						}
 						if (objectHashMap0.containsKey("buddyname") && objectHashMap0.get("buddyname") != null) {
 							bndl.putString("buddyname", (String) objectHashMap0.get("buddyname"));
-						}if (objectHashMap0.containsKey("parentid") && objectHashMap0.get("parentid") != null) {
+						}
+						if (objectHashMap0.containsKey("parentid") && objectHashMap0.get("parentid") != null) {
 							bndl.putString("parentid", (String) objectHashMap0.get("parentid"));
-						}if (objectHashMap0.containsKey("from") && objectHashMap0.get("from") != null) {
+						}
+						if (objectHashMap0.containsKey("from") && objectHashMap0.get("from") != null) {
 							bndl.putString("from", (String) objectHashMap0.get("from"));
-						}if (objectHashMap0.containsKey("produ") && objectHashMap0.get("produ") != null) {
+						}
+						if (objectHashMap0.containsKey("produ") && objectHashMap0.get("produ") != null) {
 							bndl.putString("produ", (String) objectHashMap0.get("produ"));
-						}if (objectHashMap0.containsKey("response") && objectHashMap0.get("response") != null) {
+						}
+						if (objectHashMap0.containsKey("response") && objectHashMap0.get("response") != null) {
 							bndl.putBoolean("response", (boolean) objectHashMap0.get("response"));
-						}if (objectHashMap0.containsKey("fromNew") && objectHashMap0.get("fromNew") != null) {
+						}
+						if (objectHashMap0.containsKey("fromNew") && objectHashMap0.get("fromNew") != null) {
 							bndl.putBoolean("fromNew", (boolean) objectHashMap0.get("fromNew"));
 						}
 						intent0.putExtras(bndl);
