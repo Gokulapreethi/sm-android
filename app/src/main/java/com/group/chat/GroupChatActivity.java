@@ -404,13 +404,12 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         groupBean = DBAccess.getdbHeler().getGroup(
                 "select * from grouplist where groupid='" + groupId + "'");
         if(isRounding){
-//            RoundingFragment changePassword = RoundingFragment.newInstance(context);
-//            FragmentManager fragmentManager = SingleInstance.mainContext
-//                    .getSupportFragmentManager();
-//            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-//            fragmentManager.beginTransaction().replace(
-//                    R.id.activity_main_content_fragment, changePassword)
-//                    .commitAllowingStateLoss();
+            RoundingFragment changePassword = RoundingFragment.newInstance(context);
+            FragmentManager fragmentManager = SingleInstance.mainContext
+                    .getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(
+                    R.id.activity_main_content_fragment, changePassword)
+                    .commitAllowingStateLoss();
 
             memberbean = DBAccess.getdbHeler().getMemberDetails(groupBean.getGroupId(), CallDispatcher.LoginUser);
             roleAccessBean = DBAccess.getdbHeler().getRoleAccessDetails(groupBean.getGroupId(), memberbean.getRole());
@@ -1279,14 +1278,10 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 btn_sketch.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(!CallDispatcher.isCallInitiate) {
                             if (SendListUI.size() < 5) {
                                 handsketch();
                             } else
                                 showToast("Please attach only 5 files");
-                        }
-                        else
-                        showToast("Please Try again... Call in progress");
                     }
                 });
                 btn_videocall.setOnClickListener(new OnClickListener() {
@@ -5336,6 +5331,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 LinearLayout chat_view = null;
 //                    selectAll_buddy.setSelected(gcBean.getSelect());
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
                 Calendar cal = Calendar.getInstance();
                 String todayDate = format.format(cal.getTime());
                 if (todayDate.equals(gcBean.getSenttime().split(" ")[0])) {
@@ -5343,7 +5339,9 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 } else if (getYesterdayDateString(format).equals(gcBean.getSenttime().split(" ")[0])) {
                     tv_today.setText("Yesterday");
                 } else {
-                    tv_today.setText(gcBean.getSenttime().split(" ")[0]);
+                    Date d1 = format.parse(gcBean.getSenttime().split(" ")[0]);
+                    String newdate = sdf.format(d1);
+                    tv_today.setText(newdate);
                 }
                 tv_today.setVisibility(View.VISIBLE);
                 if (position > 0) {
@@ -10181,7 +10179,16 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         date = dateasOnNow.split(delimiter);
         Log.i("asdf", "Created Date after" + date[0]);
 
-        createddate.setText(date[0]);
+        SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+        Date d1 = null;
+        try {
+            d1 = dateformat.parse(date[0]);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String newdate = sdf.format(d1);
+        createddate.setText(newdate);
         String[] mlist = (gBean.getActiveGroupMembers())
                 .split(",");
         membercount = mlist.length + 1;

@@ -469,7 +469,7 @@ getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.Layou
 		TextView photo = (TextView) dialog.findViewById(R.id.delete_acc);
 		photo.setText("Take Photo");
 		TextView gallery = (TextView) dialog.findViewById(R.id.log_out);
-		gallery.setText("Choose from Gallery");
+		gallery.setText("Choose from Library");
 		TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
 		cancel.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -480,6 +480,7 @@ getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.Layou
 		photo.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if(!CallDispatcher.isCallInitiate) {
 				Long free_size = callDisp.getExternalMemorySize();
 				if (free_size > 0 && free_size >= 5120) {
 					String file = folderPath + "Instruction_image"
@@ -490,6 +491,10 @@ getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.Layou
 					intent.putExtra("isPhoto", true);
 					startActivityForResult(intent, CAMERA_REQUEST);
 				}
+				} else {
+					Toast.makeText(HandSketchActivity2.this, "Please Try again...call  in progress", Toast.LENGTH_SHORT)
+							.show();
+				}
 				dialog.dismiss();
 
 			}
@@ -497,10 +502,10 @@ getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.Layou
 		gallery.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(
-						Intent.ACTION_PICK,
-						android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-				startActivityForResult(intent, GALLERY_REQUEST);
+					Intent intent = new Intent(
+							Intent.ACTION_PICK,
+							android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+					startActivityForResult(intent, GALLERY_REQUEST);
 				dialog.dismiss();
 			}
 		});

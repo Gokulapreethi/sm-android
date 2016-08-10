@@ -11231,6 +11231,7 @@ public class DBAccess extends SQLiteOpenHelper {
 			cv.put("ftppassword", groupChatBean.getParticipants());
 			cv.put("remindertime", groupChatBean.getCallDuration());
 			cv.put("subcategory", groupChatBean.getCallstatus());
+			cv.put("dateandtime", groupChatBean.getEndTime());
 
 			if(groupChatBean.getCallstatus() != null && groupChatBean.getCallstatus().equalsIgnoreCase("missedcall")) {
 				cv.put("unview","join");

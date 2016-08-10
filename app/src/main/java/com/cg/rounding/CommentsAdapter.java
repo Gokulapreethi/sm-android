@@ -106,6 +106,7 @@ public class CommentsAdapter extends ArrayAdapter<PatientCommentsBean> {
                 if(cBean.getComments()!=null)
                     holder.comments.setText(cBean.getComments());
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
                 Calendar cal = Calendar.getInstance();
                 String todayDate = format.format(cal.getTime());
                 holder.header.setVisibility(View.VISIBLE);
@@ -118,7 +119,9 @@ public class CommentsAdapter extends ArrayAdapter<PatientCommentsBean> {
                     holder.date_header.setText("YESTERDAY");
                 }
                 else{
-                    holder.date_header.setText(cBean.getDateandtime().split(" ")[0]);
+                    Date d1 = format.parse(cBean.getDateandtime().split(" ")[0]);
+                    String newdate = sdf.format(d1);
+                    holder.date_header.setText(newdate);
                 }
                 holder.date_header.setVisibility(View.VISIBLE);
                 if(position>0) {

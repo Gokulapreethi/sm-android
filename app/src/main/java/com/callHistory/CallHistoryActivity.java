@@ -2,7 +2,9 @@ package com.callHistory;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import org.lib.model.BuddyInformationBean;
@@ -395,7 +397,11 @@ public class CallHistoryActivity extends Activity {
 			}
 			//End
 			if (recordTransactionBean.getStartTime() != null) {
-				date.setText(recordTransactionBean.getStartTime());
+				SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
+				SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss a");
+				Date d1 = dateformat.parse(recordTransactionBean.getStartTime());
+				String newdate = sdf.format(d1);
+				date.setText(newdate);
 			}
 			if (recordTransactionBean.getCallDuration() != null) {
 				if(recordTransactionBean.getCallDuration().contains(":")){

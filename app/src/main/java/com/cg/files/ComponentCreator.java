@@ -230,9 +230,6 @@ public class ComponentCreator extends Activity implements IMNotifier {
 						WindowManager.LayoutParams.FLAG_SECURE);
 			}
 			setContentView(R.layout.notescreationactivity);
-//			setContentView(R.layout.custom_title2);
-//			getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
-//					R.layout.custom_title2);
 			WebServiceReferences.contextTable.put("IM", this);
 			context = this;
 			if (WebServiceReferences.callDispatch.containsKey("calldisp"))
@@ -268,35 +265,14 @@ public class ComponentCreator extends Activity implements IMNotifier {
 			callDisp.setNoScrHeight(noScrHeight);
 			callDisp.setNoScrWidth(noScrWidth);
 			displaymetrics = null;
-
-//			btnIMRequest = (Button) findViewById(R.id.btn_im);
-//			btnIMRequest.setOnClickListener(new OnClickListener() {
-//
-//				@Override
-//				public void onClick(View arg0) {
-//					// TODO Auto-generated method stub
-//					callDisp.openReceivedIm(arg0, context);
-//				}
-//			});
 			btnDone = (Button) findViewById(R.id.btn_save_note);
 			filePlusBtn=(ImageView)findViewById(R.id.file_plus);
 			newFileImg=(ImageView)findViewById(R.id.newfile);
-//			btnaccept = (Button) findViewById(R.id.btn_accept);
-//			btnreject = (Button) findViewById(R.id.btn_reject);
-//			editTextNotes = (Button) findViewById(R.id.editnote);
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 					LinearLayout.LayoutParams.WRAP_CONTENT,
 					LinearLayout.LayoutParams.WRAP_CONTENT);
 			params.gravity = Gravity.CENTER_VERTICAL;
 			btnDone.setVisibility(View.VISIBLE);
-//			btn_notification = (Button) findViewById(R.id.notification);
-//			btn_notification.setOnClickListener(new OnClickListener() {
-//
-//				@Override
-//				public void onClick(View v) {
-//
-//				}
-//			});
 			newFileImg.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -371,7 +347,6 @@ public class ComponentCreator extends Activity implements IMNotifier {
 				}
 			});
 
-//			setContentView(R.layout.notescreationactivity);
 			WebServiceReferences.contextTable.put("Component", this);
 			WebServiceReferences.contextTable.put("a_play", this);
 			final Bundle bndl = getIntent().getExtras();
@@ -400,25 +375,28 @@ public class ComponentCreator extends Activity implements IMNotifier {
 			current_open_activity_detail.put("fromNew",fromNewFile);
 			current_open_activity_detail.put("viewBean",complBean);
 
-			if (complBean != null) {
 
-				Log.i("complBean", String.valueOf(complBean.getComponentId()));
-				if (complBean.getParent_id() != null
-						&& complBean.getBsstatus().equalsIgnoreCase("Received")
-						&& complBean.getDirection().equalsIgnoreCase("in")) {
-
-//					btnaccept.setVisibility(View.VISIBLE);
-//					btnreject.setVisibility(View.VISIBLE);
-				} else {
-//					btnaccept.setVisibility(View.GONE);
-//					btnreject.setVisibility(View.GONE);
-
+			if(!fromNewFile){
+				if(complBean!=null){
+					if(complBean.getContentpath()!=null)
+						ComponentPath=complBean.getContentpath();
+					if(complBean.getContentName()!=null)
+						filename.setText(complBean.getContentName());
+					if(complBean.getContent()!=null)
+						fileDesc.setText(complBean.getContent());
+					tv_file.setVisibility(View.INVISIBLE);
+					file_img.setVisibility(View.INVISIBLE);
+					if (complBean.getcomponentType().trim().equals("audio")) {
+						imageLoader.DisplayImage(complBean.getContentpath().replace(".mp4", ".jpg"), newFileImg, R.drawable.audionotesnew);
+					} else if (complBean.getcomponentType().trim().equals("video")) {
+						imageLoader.DisplayImage(complBean.getContentpath() + ".mp4",newFileImg, R.drawable.videonotesnew);
+					} else if (complBean.getcomponentType().trim().equals("photo")) {
+						imageLoader.DisplayImage(complBean.getContentpath(), newFileImg, R.drawable.photonotesnew);
+					} else if (complBean.getcomponentType().trim().equalsIgnoreCase("document")) {
+						newFileImg.setBackgroundResource(R.drawable.attachfile);
+					}
 				}
-			} else {
-//				btnaccept.setVisibility(View.GONE);
-//				btnreject.setVisibility(View.GONE);
 			}
-
 			filePlusBtn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -435,16 +413,16 @@ public class ComponentCreator extends Activity implements IMNotifier {
 					window.setAttributes(lp);
 					window.setGravity(Gravity.BOTTOM);
 					dialog.show();
-					TextView camera = (TextView) dialog.findViewById(R.id.round_edit);
-					TextView gallery = (TextView) dialog.findViewById(R.id.round_role);
-					TextView audio = (TextView) dialog.findViewById(R.id.roun_new_task);
-					TextView document = (TextView) dialog.findViewById(R.id.roun_new_patient);
-					TextView dischargePatient = (TextView) dialog.findViewById(R.id.roun_ownership);
+					TextView photo = (TextView) dialog.findViewById(R.id.round_edit);
+					TextView video = (TextView) dialog.findViewById(R.id.round_role);
+					TextView gallery = (TextView) dialog.findViewById(R.id.roun_new_task);
+					TextView audio = (TextView) dialog.findViewById(R.id.roun_new_patient);
+					TextView document = (TextView) dialog.findViewById(R.id.roun_ownership);
 					TextView deletePatient = (TextView) dialog.findViewById(R.id.roun_delete);
 					TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
-					camera.setText("Go to camera(Photo/Video)");
+					photo.setText("Take Photo");
 					gallery.setText("Go to gallery");
-					dischargePatient.setVisibility(View.GONE);
+					video.setText("Take Video");
 					deletePatient.setVisibility(View.GONE);
 					audio.setText("Record Audio File");
 					document.setText("Upload document");
@@ -485,91 +463,28 @@ public class ComponentCreator extends Activity implements IMNotifier {
 							dialog.dismiss();
 						}
 					});
-					camera.setOnClickListener(new OnClickListener() {
+					photo.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
 							dialog.dismiss();
-							if(CallDispatcher.isCallInitiate) {
+							if (CallDispatcher.isCallInitiate) {
 								showToast("Call is in progress, Please try later");
-							} else {
-								final Dialog dialog = new Dialog(context);
-								dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-								dialog.setContentView(R.layout.dialog_myacc_menu);
-								WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-								lp.copyFrom(dialog.getWindow().getAttributes());
-								lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-								lp.height = WindowManager.LayoutParams.MATCH_PARENT;
-								lp.horizontalMargin = 15;
-								Window window = dialog.getWindow();
-								window.setBackgroundDrawableResource((R.color.lblack));
-								window.setAttributes(lp);
-								window.setGravity(Gravity.BOTTOM);
-								dialog.show();
-								TextView photo = (TextView) dialog.findViewById(R.id.delete_acc);
-								photo.setText("PHOTO");
-								TextView video = (TextView) dialog.findViewById(R.id.log_out);
-								video.setText("VIDEO");
-								TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
-								cancel.setOnClickListener(new View.OnClickListener() {
-									@Override
-									public void onClick(View arg0) {
-										dialog.dismiss();
-									}
-								});
-								photo.setOnClickListener(new OnClickListener() {
-									@Override
-									public void onClick(View v) {
-										openCamera("photo");
-										dialog.dismiss();
-									}
-								});
-								video.setOnClickListener(new OnClickListener() {
-									@Override
-									public void onClick(View v) {
-										openCamera("video");
-										dialog.dismiss();
-									}
-								});
-							}
+							} else
+								openCamera("photo");
 						}
 					});
+				video.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						dialog.dismiss();
+						if (CallDispatcher.isCallInitiate) {
+							showToast("Call is in progress, Please try later");
+						} else
+						openCamera("video");
+					}
+				});
 				}
 			});
-//			btnreject.setOnClickListener(new OnClickListener() {
-//
-//				@Override
-//				public void onClick(View v) {
-//					try {
-//						// TODO Auto-generated method stub
-////						btnaccept.setVisibility(View.GONE);
-////						btnreject.setVisibility(View.GONE);
-//						DBAccess.getdbHeler().UpdateComponent(
-//								complBean.getComponentId(), "Reject");
-//					} catch (Exception e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//
-//				}
-//			});
-//			btnaccept.setOnClickListener(new OnClickListener() {
-//
-//				@Override
-//				public void onClick(View v) {
-//					try {
-//						// TODO Auto-generated method stub
-//
-//						DBAccess.getdbHeler().UpdateComponent(
-//								complBean.getComponentId(), "Accept");
-//
-//						btnaccept.setVisibility(View.GONE);
-//						btnreject.setVisibility(View.GONE);
-//					} catch (Exception e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//				}
-//			});
 			if (from == null)
 				from = "";
 			send = bndl.getBoolean("send");
@@ -614,18 +529,6 @@ public class ComponentCreator extends Activity implements IMNotifier {
 			if (filesFragment.filesAdapter != null) {
 				fileListSize = filesFragment.filesAdapter.getCount();
 			}
-//			if (forms) {
-//				commandlayout.setVisibility(View.GONE);
-//				footerlayout.setVisibility(View.GONE);
-//			} else {
-//				if (titLayout.getVisibility() == View.GONE
-//						&& commandlayout.getVisibility() == View.GONE
-//						&& commandlayout.getVisibility() == View.GONE) {
-//					titLayout.setVisibility(View.VISIBLE);
-//					commandlayout.setVisibility(View.VISIBLE);
-//					footerlayout.setVisibility(View.GONE);
-//				}
-//			}
 			if (ON_CREATE) {
 
 				showNoteView(noteType);
@@ -664,12 +567,6 @@ public class ComponentCreator extends Activity implements IMNotifier {
 						String path = getIntent().getStringExtra("audio_path");
 						Log.d("utility", "---->" + path);
 						contentLayout.addView(AudioNoteView(3, path));
-//						titLayout.setVisibility(View.GONE);
-//						commandlayout.setVisibility(View.GONE);
-//						footerlayout.setVisibility(View.GONE);
-//						editTextNotes.setVisibility(View.GONE);
-//						tvTitle.setText(SingleInstance.mainContext
-//								.getResources().getString(R.string._audio_));
 					}
 				} else {
 					CompleteListBean compBean = (CompleteListBean) bndl
@@ -679,18 +576,6 @@ public class ComponentCreator extends Activity implements IMNotifier {
 						openNote();
 					}
 				}
-			}
-			if (WebServiceReferences.contextTable
-					.containsKey("sharenotepicker")) {
-//				editTextNotes.setVisibility(View.GONE);
-			}
-			if (send && !from.equalsIgnoreCase("forms")) {
-//				btnDone.setText(SingleInstance.mainContext.getResources()
-//						.getString(R.string.send));
-//				titLayout.setVisibility(View.GONE);
-//				commandlayout.setVisibility(View.GONE);
-//				footerlayout.setVisibility(View.GONE);
-//				editTextNotes.setVisibility(View.GONE);
 			}
 
 			btn_sketch.setOnClickListener(new OnClickListener() {
@@ -1079,20 +964,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-
-//					if (btnDone.getText().toString().equalsIgnoreCase("Save")
-//							|| btnDone.getText().toString()
-//									.equalsIgnoreCase("Update")
-//							|| btnDone.getText().toString()
-//									.equalsIgnoreCase("Rename")) {
-
 						filesFragment.deleteNote(cbean, context);
-
-//					} else {
-//						showToast(SingleInstance.mainContext.getResources()
-//								.getString(R.string.kindly_save_before_dele));
-//					}
-
 				}
 			});
 
@@ -1279,15 +1151,6 @@ public class ComponentCreator extends Activity implements IMNotifier {
 					}
 				}
 			});
-//			editTextNotes.setOnClickListener(new OnClickListener() {
-//
-//				@Override
-//				public void onClick(View v) {
-//					// TODO Auto-generated method stub
-//					editNotes(tvTitle);
-//				}
-//
-//			});
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1297,8 +1160,6 @@ public class ComponentCreator extends Activity implements IMNotifier {
 
 
     private void refreshList() {
-        // FilesFragment filesFragment = FilesFragment.newInstance(context);
-        // filesFragment.filesListRefresh();
         finish();
     }
 
@@ -1413,10 +1274,6 @@ public class ComponentCreator extends Activity implements IMNotifier {
 									complBean,"");
 							if (cbean != null) {
 								ComponentPath = null;
-
-//								commandlayout.setVisibility(View.VISIBLE);
-
-//								footerlayout.setVisibility(View.VISIBLE);
 
 								btnDone.setEnabled(false);
 								if (cbean.getcomponentType().equals("audio"))
@@ -1572,59 +1429,6 @@ public class ComponentCreator extends Activity implements IMNotifier {
 							// TODO Auto-generated method stub
 							responseType(component, pos);
 							dialog.dismiss();
-							// if (pos == 0) {
-							// Intent intentComponent = new Intent(context,
-							// ComponentCreator.class);
-							// Bundle bndl = new Bundle();
-							// bndl.putString("type", "note");
-							// bndl.putBoolean("action", true);
-							// bndl.putBoolean("forms", false);
-							// bndl.putString("buddyname",
-							// component.getfromuser());
-							// bndl.putBoolean("send", true);
-							// intentComponent.putExtras(bndl);
-							// startActivity(intentComponent);
-							// dialog.dismiss();
-							// } else if (pos == 1) {
-							// Intent intentComponent = new Intent(context,
-							// ComponentCreator.class);
-							// Bundle bndl = new Bundle();
-							// bndl.putString("type", "photo");
-							// bndl.putBoolean("action", true);
-							// bndl.putBoolean("forms", false);
-							// bndl.putString("buddyname",
-							// component.getfromuser());
-							// bndl.putBoolean("send", true);
-							// intentComponent.putExtras(bndl);
-							// startActivity(intentComponent);
-							// dialog.dismiss();
-							// } else if (pos == 2) {
-							// Intent intentComponent = new Intent(context,
-							// ComponentCreator.class);
-							// Bundle bndl = new Bundle();
-							// bndl.putString("type", "audio");
-							// bndl.putBoolean("action", true);
-							// bndl.putBoolean("forms", false);
-							// bndl.putString("buddyname",
-							// component.getfromuser());
-							// bndl.putBoolean("send", true);
-							// intentComponent.putExtras(bndl);
-							// startActivity(intentComponent);
-							// dialog.dismiss();
-							// } else if (pos == 3) {
-							// Intent intentComponent = new Intent(context,
-							// ComponentCreator.class);
-							// Bundle bndl = new Bundle();
-							// bndl.putString("type", "video");
-							// bndl.putBoolean("action", true);
-							// bndl.putBoolean("forms", false);
-							// bndl.putString("buddyname",
-							// component.getfromuser());
-							// bndl.putBoolean("send", true);
-							// intentComponent.putExtras(bndl);
-							// startActivity(intentComponent);
-							// dialog.dismiss();
-							// }
 						}
 					});
 			msg_dialog = alert_builder.create();
@@ -2774,29 +2578,10 @@ public class ComponentCreator extends Activity implements IMNotifier {
 			if (ON_CREATE) {
 				btnDone.setVisibility(View.VISIBLE);
 				titLayout.setVisibility(View.GONE);
-//				editTextNotes.setVisibility(View.GONE);
-//				footerlayout.setVisibility(View.GONE);
-//				commandlayout.setVisibility(View.GONE);
 
 			} else {
-//				btnDone.setVisibility(View.GONE);
-//				editTextNotes.setVisibility(View.VISIBLE);
 				titLayout.setVisibility(View.VISIBLE);
-//				footerlayout.setVisibility(View.VISIBLE);
-//				commandlayout.setVisibility(View.VISIBLE);
 			}
-			// titLayout.setVisibility(View.GONE);
-//			editTextNotes.setOnClickListener(new OnClickListener() {
-//
-//				@Override
-//				public void onClick(View v) {
-//					// TODO Auto-generated method stub
-//
-//					editNotes(tvTitle);
-//
-//				}
-//			});
-
 			final int PRE_PLAY = 3;
 
 			final LinearLayout llAudio = new LinearLayout(context);

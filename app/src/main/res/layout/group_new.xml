@@ -130,6 +130,7 @@
                     android:hint="Group Name"
                     android:gravity="center_vertical"
                     android:maxLength="20"
+                    android:digits="@string/alpha"
                     android:textColor="@color/white" />
                 <View
                     android:layout_width="match_parent"

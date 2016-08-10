@@ -121,17 +121,16 @@ public class FileInfoFragment extends Fragment {
             backBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    appMainActivity.removeFragments(FileInfoFragment.newInstance(SingleInstance.mainContext));
-                    if(isFromChat){
+                    if (isFromChat) {
                         Intent intent = new Intent(mainContext, GroupChatActivity.class);
-                        if(isGroup) {
+                        if (isGroup) {
                             intent.putExtra("isGroup", true);
                             intent.putExtra("groupid", groupid);
-                        }else {
+                        } else {
                             intent.putExtra("isGroup", false);
                             intent.putExtra("buddy", groupid);
                         }
-                        intent.putExtra("isReq","F");
+                        intent.putExtra("isReq", "F");
                         startActivity(intent);
                         ContactsFragment contactsFragment = ContactsFragment.getInstance(mainContext);
                         FragmentManager fragmentManager = SingleInstance.mainContext
@@ -139,7 +138,7 @@ public class FileInfoFragment extends Fragment {
                         fragmentManager.beginTransaction().replace(
                                 R.id.activity_main_content_fragment, contactsFragment)
                                 .commitAllowingStateLoss();
-                    }else {
+                    } else {
                         FilesFragment filesFragment = FilesFragment.newInstance(mainContext);
                         FragmentManager fragmentManager = SingleInstance.mainContext
                                 .getSupportFragmentManager();
@@ -147,6 +146,20 @@ public class FileInfoFragment extends Fragment {
                                 R.id.activity_main_content_fragment, filesFragment)
                                 .commitAllowingStateLoss();
                     }
+                }
+            });
+            edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intentComponent = new Intent(mainContext,
+                            ComponentCreator.class);
+                    Bundle bndl = new Bundle();
+                    bndl.putString("type", "note");
+                    bndl.putBoolean("action", true);
+                    bndl.putBoolean("fromNew",false);
+                    intentComponent.putExtra("viewBean", cbean);
+                    intentComponent.putExtras(bndl);
+                    mainContext.startActivity(intentComponent);
                 }
             });
             plusBtn.setOnClickListener(new View.OnClickListener() {
@@ -209,6 +222,7 @@ public class FileInfoFragment extends Fragment {
                     delete.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            dialog.dismiss();
                             final Dialog dialog = new Dialog(mainContext);
                             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                             dialog.setContentView(R.layout.callrecord_delete_dialog);
@@ -237,12 +251,6 @@ public class FileInfoFragment extends Fragment {
                             });
                         }
                     });
-
-                }
-            });
-            edit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
 
                 }
             });
@@ -294,13 +302,12 @@ public class FileInfoFragment extends Fragment {
                             type.setText(cbean.getcomponentType());
                         if(cbean.getDateAndTime()!=null) {
                             SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
-                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
                             Date d1 = new Date();
                             String[] month = cbean.getDateAndTime().split(" ");
                             String date = sdf.format(d1);
                             String[] time = month[1].split(":");
                             available.setText(date + " "+ time[0]+":"+time[1] +" "+month[2]);
-//                            available.setText(cbean.getDateAndTime());
 
                         }
                         if(cbean.getDateAndTime()!=null) {
@@ -344,18 +351,7 @@ public class FileInfoFragment extends Fragment {
                             fileIcon.setVisibility(View.VISIBLE);
                             fileImageLoader.DisplayImage(cbean.getContentpath(), fileIcon, R.drawable.photonotesnew);
                         } else if (cbean.getcomponentType().trim().equalsIgnoreCase("document")) {
-                            fileIcon.setBackgroundResource(R.drawable.attachfile);
-//                            String[] name = cbean.getContentpath().split("\\.");
-//                            fileIcon.setTag(cbean.getComponentId());
-//                            String extn = name[1];
-//                            if (cbean.getFromUser().equals("")) {
-//                                fileName.setText(extn + " "
-//                                        + cbean.getContentName());
-//                            } else {
-//                                holder.fileName.setText(extn + " "
-//                                        + cbean.getContentName() + "\n" + "From: "
-//                                        + cbean.getFromUser());
-//                            }
+                            fileImageLoader.DisplayImage("", fileIcon, R.drawable.attachfile);
                         }
                         filename1 = cbean.getContentpath();
                         tv_send.setOnClickListener(new View.OnClickListener() {

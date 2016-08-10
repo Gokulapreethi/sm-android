@@ -167,15 +167,22 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
 				holder.dateTime.setText("Yesterday");
 				header1="Yesterday";
 			} else {
-				holder.dateTime.setText(time(df));
+				SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+				SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+				Date d1 = dateformat.parse(time(df));
+				String newdate = sdf.format(d1);
+				holder.dateTime.setText(newdate);
 				header1=time(df);
+				holder.header.setText(newdate);
 
 			}
-			if(filesFragment.sortorder.equalsIgnoreCase("alpha"))
-				header1=String.valueOf(fileBean.getContentName().charAt(0));
-			else if(filesFragment.sortorder.equalsIgnoreCase("type"))
-				header1=fileBean.getcomponentType();
-			holder.header.setText(header1.toUpperCase());
+			if(filesFragment.sortorder.equalsIgnoreCase("alpha")) {
+				header1 = String.valueOf(fileBean.getContentName().charAt(0));
+				holder.header.setText(header1.toUpperCase());
+			}else if(filesFragment.sortorder.equalsIgnoreCase("type")) {
+				header1 = fileBean.getcomponentType();
+				holder.header.setText(header1.toUpperCase());
+			}
 			holder.header.setVisibility(View.VISIBLE);
 			if(position>0){
 				CompleteListBean fBean=fileList.get(position-1);
@@ -288,14 +295,8 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
 			holder.overlay.setVisibility(View.GONE);
 				fileImageLoader.DisplayImage(fileBean.getContentpath().replace(".mp4", ".jpg"), holder.fileIcon, R.drawable.audionotesnew);
 			}
-		else if (fileBean.getcomponentType().trim().equals("document")) {
-			holder.fileIcon.setVisibility(View.VISIBLE);
-			holder.overlay.setVisibility(View.GONE);
-			fileImageLoader.DisplayImage("",holder.fileIcon, R.drawable.attachfile);
-		}
 
-
-		else if (fileBean.getcomponentType().trim().equals("video")) {
+		   else if (fileBean.getcomponentType().trim().equals("video")) {
 				holder.fileIcon.setTag(fileBean.getComponentId());
 				holder.fileIcon.setVisibility(View.VISIBLE);
 			    holder.overlay.setVisibility(View.VISIBLE);
@@ -310,21 +311,16 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
 				holder.fileIcon.setVisibility(View.VISIBLE);
 			holder.overlay.setVisibility(View.GONE);
 				fileImageLoader.DisplayImage(fileBean.getContentpath(), holder.fileIcon, R.drawable.photonotesnew);
-			} else if (fileBean.getcomponentType().trim()
-					.equalsIgnoreCase("document")) {
-				holder.fileIcon.setBackgroundResource(R.drawable.textnotesnew);
+			}
+		    else if (fileBean.getcomponentType().trim().equalsIgnoreCase("document")) {
+			holder.fileIcon.setImageResource(R.drawable.attachfile);
+			holder.fileIcon.setVisibility(View.VISIBLE);
+			holder.overlay.setVisibility(View.GONE);
 			holder.overlay.setVisibility(View.GONE);
 				String[] name = fileBean.getContentpath().split("\\.");
 				holder.fileIcon.setTag(fileBean.getComponentId());
 				String extn = name[1];
-				if (fileBean.getFromUser().equals("")) {
-					holder.fileName.setText(extn + " "
-							+ fileBean.getContentName());
-				} else {
-					holder.fileName.setText(extn + " "
-							+ fileBean.getContentName() + "\n" + "From: "
-							+ fileBean.getFromUser());
-				}
+					holder.fileName.setText(fileBean.getContentName()+"."+extn);
 			}
 			if (filesFragment.isEdit) {
 				holder.checkbox.setVisibility(View.VISIBLE);

@@ -518,13 +518,8 @@ public class RoundNewPatientActivity extends Activity {
                 if (ed_firstname.getText().toString().trim().length() > 0
                     && ed_lastname.getText().toString().trim().length() > 0
                         && ed_dob.getText().toString().trim().length() > 0
-                    && hospital.getText().toString().length()> 0
                         && ed_mrn.getText().toString().trim().length() > 0
-                        && ed_floor.getText().toString().trim().length() > 0
-                        && ed_ward.getText().toString().trim().length() > 0
-                        && ed_room.getText().toString().trim().length() > 0
-                        && ed_bed.getText().toString().trim().length() > 0
-                        && ed_Admitdate.getText().toString().trim().length() > 0) {
+                        && ed_floor.getText().toString().trim().length() > 0) {
 
                 int selectedId = gender_patient.getCheckedRadioButtonId();
                     if(selectedId>0) {
