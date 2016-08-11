@@ -84,6 +84,9 @@ public class AppReference {
 
 	public static HashMap<String,ShareReminder> filedownload=new HashMap<String,ShareReminder>();
 
+	public static HashMap<String,Object> getValuesinChat=new HashMap<>();
+
+
 
 	@SuppressLint("ShowToast")
 	public static void toastdisp(Context context, String name) {

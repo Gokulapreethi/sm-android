@@ -147,6 +147,7 @@ import com.group.chat.ChatInfoBean;
 import com.group.chat.ForwardUserSelect;
 import com.group.chat.GroupChatActivity;
 import com.group.chat.GroupChatBroadCastReceiver;
+import com.group.chat.SendListUIBean;
 import com.image.utils.ImageLoader;
 import com.process.BGProcessor;
 import com.process.MemoryProcessor;
@@ -8699,6 +8700,91 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 							}
 							intent0.putExtra("minimize", true);
 							Log.i("reopen", "openNonClosedActivity GroupChatActivity");
+							if (objectHashMap0.containsKey("message")) {
+								String msg = (String) objectHashMap0.get("message");
+								AppReference.getValuesinChat.put("message",msg);
+							}
+							if (objectHashMap0.containsKey("firstimage1")) {
+								AppReference.getValuesinChat.put("firstimage1",objectHashMap0.get("firstimage1"));
+							}
+							if (objectHashMap0.containsKey("firstimage2")) {
+								AppReference.getValuesinChat.put("firstimage2",objectHashMap0.get("firstimage2"));
+							}
+							if (objectHashMap0.containsKey("firstimage3")) {
+								AppReference.getValuesinChat.put("firstimage3",objectHashMap0.get("firstimage3"));
+							}
+							if (objectHashMap0.containsKey("secondimage1")) {
+								AppReference.getValuesinChat.put("secondimage1",objectHashMap0.get("secondimage1"));
+							}
+							if (objectHashMap0.containsKey("secondimage2")) {
+								AppReference.getValuesinChat.put("secondimage2",objectHashMap0.get("secondimage2"));
+							}
+							if (objectHashMap0.containsKey("secondimage3")) {
+								AppReference.getValuesinChat.put("secondimage3",objectHashMap0.get("secondimage3"));
+							}
+							if (objectHashMap0.containsKey("thirdimage1")) {
+								AppReference.getValuesinChat.put("thirdimage1",objectHashMap0.get("thirdimage1"));
+							}
+							if (objectHashMap0.containsKey("thirdimage2")) {
+								AppReference.getValuesinChat.put("thirdimage2",objectHashMap0.get("thirdimage2"));
+							}
+							if (objectHashMap0.containsKey("thirdimage3")) {
+								AppReference.getValuesinChat.put("thirdimage3",objectHashMap0.get("thirdimage3"));
+							}
+							if (objectHashMap0.containsKey("audio")) {
+								AppReference.getValuesinChat.put("audio",objectHashMap0.get("audio"));
+							}
+							if (objectHashMap0.containsKey("audio1")) {
+								AppReference.getValuesinChat.put("audio",objectHashMap0.get("audio1"));
+							}
+							if (objectHashMap0.containsKey("audio2")) {
+								AppReference.getValuesinChat.put("audio",objectHashMap0.get("audio2"));
+							}
+							if (objectHashMap0.containsKey("firstvideo1")) {
+								AppReference.getValuesinChat.put("firstvideo1",objectHashMap0.get("firstvideo1"));
+							}
+							if (objectHashMap0.containsKey("firstvideo2")) {
+								AppReference.getValuesinChat.put("firstvideo2",objectHashMap0.get("firstvideo2"));
+							}
+							if (objectHashMap0.containsKey("firstvideo3")) {
+								AppReference.getValuesinChat.put("firstvideo3",objectHashMap0.get("firstvideo3"));
+							}
+							if (objectHashMap0.containsKey("secondvideo1")) {
+								AppReference.getValuesinChat.put("secondvideo1",objectHashMap0.get("secondvideo1"));
+							}
+							if (objectHashMap0.containsKey("secondvideo2")) {
+								AppReference.getValuesinChat.put("secondvideo2",objectHashMap0.get("secondvideo2"));
+							}
+							if (objectHashMap0.containsKey("secondvideo3")) {
+								AppReference.getValuesinChat.put("secondvideo3",objectHashMap0.get("secondvideo3"));
+							}
+							if (objectHashMap0.containsKey("thirdvideo1")) {
+								AppReference.getValuesinChat.put("thirdvideo1",objectHashMap0.get("thirdvideo1"));
+							}
+							if (objectHashMap0.containsKey("thirdvideo2")) {
+								AppReference.getValuesinChat.put("thirdvideo2",objectHashMap0.get("thirdvideo2"));
+							}
+							if (objectHashMap0.containsKey("thirdvideo3")) {
+								AppReference.getValuesinChat.put("thirdvideo3",objectHashMap0.get("thirdvideo3"));
+							}
+							if (objectHashMap0.containsKey("sketch1")) {
+								AppReference.getValuesinChat.put("sketch1",objectHashMap0.get("sketch1"));
+							}
+							if (objectHashMap0.containsKey("sketch2")) {
+								AppReference.getValuesinChat.put("sketch2",objectHashMap0.get("sketch2"));
+							}
+							if (objectHashMap0.containsKey("sketch3")) {
+								AppReference.getValuesinChat.put("sketch3",objectHashMap0.get("sketch3"));
+							}
+							if (objectHashMap0.containsKey("document1")) {
+								AppReference.getValuesinChat.put("document1",objectHashMap0.get("document1"));
+							}
+							if (objectHashMap0.containsKey("document2")) {
+								AppReference.getValuesinChat.put("document2",objectHashMap0.get("document2"));
+							}
+							if (objectHashMap0.containsKey("document3")) {
+								AppReference.getValuesinChat.put("document3",objectHashMap0.get("document3"));
+							}
 							startActivity(intent0);
 						}
 						Iterator it = SingleInstance.current_open_activity_detail.entrySet().iterator();

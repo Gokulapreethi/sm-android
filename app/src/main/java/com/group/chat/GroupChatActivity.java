@@ -926,6 +926,140 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     view_info.setVisibility(View.VISIBLE);
             }
         });
+
+
+
+            if (SendListUI != null && sendlistadapter != null && list_all != null && AppReference.getValuesinChat!=null && AppReference.getValuesinChat.size()>0) {
+                HashMap<String, Object> objectHashMap = AppReference.getValuesinChat;
+                if (objectHashMap.containsKey("message")) {
+                    String msg = (String) objectHashMap.get("message");
+                    message.setText(msg);
+                }
+                if (objectHashMap.containsKey("firstimage1")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("firstimage1");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("firstimage2")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("firstimage2");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("firstimage3")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("firstimage3");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("secondimage1")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("secondimage1");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("secondimage2")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("secondimage2");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("secondimage3")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("secondimage3");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("thirdimage1")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("thirdimage1");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("thirdimage2")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("thirdimage2");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("thirdimage3")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("thirdimage3");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("audio")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("audio");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("audio1")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("audio1");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("audio2")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("audio2");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("firstvideo1")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("firstvideo1");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("firstvideo2")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("firstvideo2");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("firstvideo3")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("firstvideo3");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("secondvideo1")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("secondvideo1");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("secondvideo2")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("secondvideo2");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("secondvideo3")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("secondvideo3");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("thirdvideo1")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("thirdvideo1");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("thirdvideo2")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("thirdvideo2");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("thirdvideo3")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("thirdvideo3");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("sketch1")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("sketch1");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("sketch2")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("sketch2");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("sketch3")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("sketch3");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("document1")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("document1");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("document2")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("document2");
+                    SendListUI.add(sendListUI);
+                }
+                if (objectHashMap.containsKey("document3")) {
+                    SendListUIBean sendListUI = (SendListUIBean) objectHashMap.get("document3");
+                    SendListUI.add(sendListUI);
+                }
+
+                sendlistadapter.notifyDataSetChanged();
+                list_all.removeAllViews();
+                final int adapterCount = sendlistadapter.getCount();
+
+                for (int i = 0; i < adapterCount; i++) {
+                    View item = sendlistadapter.getView(i, null, null);
+                    list_all.addView(item);
+                }
+                if (adapterCount >= 2) {
+                    multi_send.getLayoutParams().height = 280;
+                }
+
+                audio_call.setBackgroundResource(R.drawable.chat_send);
+                audio_call.setTag(1);
+            }
+
     }
 
     public void refreshPatient() {
@@ -2735,6 +2869,66 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         PrivateReply_view=null;
         privateParentID=null;
         privateReply_username=null;
+
+        if(current_open_activity_detail.containsKey("message")){
+            current_open_activity_detail.remove("message");
+        }
+        if(current_open_activity_detail.containsKey("firstimage1")) {
+            current_open_activity_detail.remove("firstimage1");
+        }if(current_open_activity_detail.containsKey("firstimage2")){
+            current_open_activity_detail.remove("firstimage2");
+        }if(current_open_activity_detail.containsKey("firstimage3")){
+            current_open_activity_detail.remove("firstimage3");
+        }if(current_open_activity_detail.containsKey("secondimage1")) {
+            current_open_activity_detail.remove("secondimage1");
+        }if(current_open_activity_detail.containsKey("secondimage2")){
+            current_open_activity_detail.remove("secondimage2");
+        }if(current_open_activity_detail.containsKey("secondimage3")){
+            current_open_activity_detail.remove("secondimage3");
+        }if(current_open_activity_detail.containsKey("thirdimage1")) {
+            current_open_activity_detail.remove("thirdimage1");
+        }if(current_open_activity_detail.containsKey("thirdimage2")){
+            current_open_activity_detail.remove("thirdimage2");
+        }if(current_open_activity_detail.containsKey("thirdimage3")){
+            current_open_activity_detail.remove("thirdimage3");
+        }if(current_open_activity_detail.containsKey("audio")) {
+            current_open_activity_detail.remove("audio");
+        }if(current_open_activity_detail.containsKey("audio1")){
+            current_open_activity_detail.remove("audio1");
+        }if(current_open_activity_detail.containsKey("audio2")){
+            current_open_activity_detail.remove("audio2");
+        }if(current_open_activity_detail.containsKey("firstvideo1")) {
+            current_open_activity_detail.remove("firstvideo1");
+        }if(current_open_activity_detail.containsKey("firstvideo2")){
+            current_open_activity_detail.remove("firstvideo1");
+        }if(current_open_activity_detail.containsKey("firstvideo3")){
+            current_open_activity_detail.remove("firstvideo3");
+        }if(current_open_activity_detail.containsKey("secondvideo1")) {
+            current_open_activity_detail.remove("secondvideo1");
+        }if(current_open_activity_detail.containsKey("secondvideo2")){
+            current_open_activity_detail.remove("secondvideo2");
+        }if(current_open_activity_detail.containsKey("secondvideo3")){
+            current_open_activity_detail.remove("secondvideo3");
+        }if(current_open_activity_detail.containsKey("thirdvideo1")) {
+            current_open_activity_detail.remove("thirdvideo1");
+        }if(current_open_activity_detail.containsKey("thirdvideo2")){
+            current_open_activity_detail.remove("thirdvideo2");
+        }if(current_open_activity_detail.containsKey("thirdvideo3")){
+            current_open_activity_detail.remove("thirdvideo3");
+        }if(current_open_activity_detail.containsKey("sketch1")) {
+            current_open_activity_detail.remove("sketch1");
+        }if(current_open_activity_detail.containsKey("sketch2")){
+            current_open_activity_detail.remove("sketch2");
+        }if(current_open_activity_detail.containsKey("sketch3")){
+            current_open_activity_detail.remove("sketch3");
+        }if(current_open_activity_detail.containsKey("document1")) {
+            current_open_activity_detail.remove("document1");
+        }if(current_open_activity_detail.containsKey("document2")){
+            current_open_activity_detail.remove("document2");
+        }if(current_open_activity_detail.containsKey("document3")){
+            current_open_activity_detail.remove("document3");
+        }
+
     }
 
     private void uploadFile(GroupChatBean gBean) {
@@ -2848,6 +3042,9 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 Log.i("reopen", "GroupChatActivity containsKey1");
                 SingleInstance.current_open_activity_detail.remove(context);
             }
+            if(message!=null && message.getText().toString().trim().length()>0){
+                current_open_activity_detail.put("message", message.getText().toString().trim());
+            }
             SingleInstance.current_open_activity_detail.put(context,this.current_open_activity_detail);
             save_state = false;
         } else {
@@ -2856,6 +3053,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 SingleInstance.current_open_activity_detail.remove(context);
             }
         }
+        AppReference.getValuesinChat.clear();
 
         mediaPlayer.stop();
         isPrivateBack=false;
@@ -3522,6 +3720,15 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                     uIbean.setPath(strIPath);
                                     uIbean.setUser(buddy);
                                     SendListUI.add(uIbean);
+
+                                    if(!current_open_activity_detail.containsKey("firstimage1")) {
+                                        current_open_activity_detail.put("firstimage1", uIbean);
+                                    }else if(!current_open_activity_detail.containsKey("firstimage2")){
+                                        current_open_activity_detail.put("firstimage2", uIbean);
+                                    }else if(!current_open_activity_detail.containsKey("firstimage3")){
+                                        current_open_activity_detail.put("firstimage3", uIbean);
+                                    }
+
                                     sendlistadapter.notifyDataSetChanged();
                                     list_all.removeAllViews();
                                     final int adapterCount = sendlistadapter.getCount();
@@ -3600,6 +3807,16 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                             uIbean.setUser(buddy);
                             SendListUI.add(uIbean);
                             sendlistadapter.notifyDataSetChanged();
+
+
+                            if(!current_open_activity_detail.containsKey("thirdimage1")) {
+                                current_open_activity_detail.put("thirdimage1", uIbean);
+                            }else if(!current_open_activity_detail.containsKey("thirdimage2")){
+                                current_open_activity_detail.put("thirdimage2", uIbean);
+                            }else if(!current_open_activity_detail.containsKey("thirdimage3")){
+                                current_open_activity_detail.put("thirdimage3", uIbean);
+                            }
+
                             list_all.removeAllViews();
                             final int adapterCount = sendlistadapter.getCount();
 
@@ -3648,6 +3865,16 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         uIbean.setPath(strIPath);
                         SendListUI.add(uIbean);
                         sendlistadapter.notifyDataSetChanged();
+
+                        if(!current_open_activity_detail.containsKey("firstvideo1")) {
+                            current_open_activity_detail.put("firstvideo1", uIbean);
+                        }else if(!current_open_activity_detail.containsKey("firstvideo2")){
+                            current_open_activity_detail.put("firstvideo2", uIbean);
+                        }else if(!current_open_activity_detail.containsKey("firstvideo3")){
+                            current_open_activity_detail.put("firstvideo3", uIbean);
+                        }
+
+
                         list_all.removeAllViews();
                         final int adapterCount = sendlistadapter.getCount();
 
@@ -3682,6 +3909,15 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         uIbean.setPath(strIPath);
                         SendListUI.add(uIbean);
                         sendlistadapter.notifyDataSetChanged();
+
+                        if(!current_open_activity_detail.containsKey("secondvideo1")) {
+                            current_open_activity_detail.put("secondvideo1", uIbean);
+                        }else if(!current_open_activity_detail.containsKey("secondvideo2")){
+                            current_open_activity_detail.put("secondvideo2", uIbean);
+                        }else if(!current_open_activity_detail.containsKey("secondvideo3")){
+                            current_open_activity_detail.put("secondvideo3", uIbean);
+                        }
+
                         list_all.removeAllViews();
                         final int adapterCount = sendlistadapter.getCount();
 
@@ -3779,6 +4015,15 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                             uIbean.setUser(buddy);
                             SendListUI.add(uIbean);
                             sendlistadapter.notifyDataSetChanged();
+
+                            if(!current_open_activity_detail.containsKey("thirdvideo1")) {
+                                current_open_activity_detail.put("thirdvideo1", uIbean);
+                            }else if(!current_open_activity_detail.containsKey("thirdvideo2")){
+                                current_open_activity_detail.put("thirdvideo2", uIbean);
+                            }else if(!current_open_activity_detail.containsKey("thirdvideo3")){
+                                current_open_activity_detail.put("thirdvideo3", uIbean);
+                            }
+
                             list_all.removeAllViews();
                             final int adapterCount = sendlistadapter.getCount();
 
@@ -3827,6 +4072,15 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         uIbean.setUser(buddy);
                         SendListUI.add(uIbean);
                         sendlistadapter.notifyDataSetChanged();
+
+                        if(!current_open_activity_detail.containsKey("sketch1")) {
+                            current_open_activity_detail.put("sketch1", uIbean);
+                        }else if(!current_open_activity_detail.containsKey("sketch2")){
+                            current_open_activity_detail.put("sketch2", uIbean);
+                        }else if(!current_open_activity_detail.containsKey("sketch3")){
+                            current_open_activity_detail.put("sketch3", uIbean);
+                        }
+
                         list_all.removeAllViews();
                         final int adapterCount = sendlistadapter.getCount();
 
@@ -3872,6 +4126,16 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         uIbean.setUser(buddy);
                         SendListUI.add(uIbean);
                         sendlistadapter.notifyDataSetChanged();
+
+                        if(!current_open_activity_detail.containsKey("document1")) {
+                            current_open_activity_detail.put("document1", uIbean);
+                        }else if(!current_open_activity_detail.containsKey("document2")){
+                            current_open_activity_detail.put("document2", uIbean);
+                        }else if(!current_open_activity_detail.containsKey("document3")){
+                            current_open_activity_detail.put("document3", uIbean);
+                        }
+
+
                         list_all.removeAllViews();
                         final int adapterCount = sendlistadapter.getCount();
 
@@ -6976,7 +7240,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                     e.printStackTrace();
                                 }
 
-                            } else if (fname[i].split("COMMedia/")[1].endsWith(".jpg")) {
+                            } else if (fname[i].split("COMMedia/")[1].endsWith(".jpg")|| fname[i].split("COMMedia/")[1].endsWith(".png")) {
                                 holder = inflater.inflate(R.layout.chatimagelistview, parent, false);
                                 ImageView receiver_multi_msg = (ImageView) holder.findViewById(R.id.receiver_multi_msg);
                                 TextView tv_pathname = (TextView) holder.findViewById(R.id.tv_pathname);
@@ -10382,6 +10646,15 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         uIbean.setPath(strIPath);
                         uIbean.setUser(buddy);
                         SendListUI.add(uIbean);
+
+                        if(!current_open_activity_detail.containsKey("audio")) {
+                            current_open_activity_detail.put("audio", uIbean);
+                        }else if(!current_open_activity_detail.containsKey("audio1")){
+                            current_open_activity_detail.put("audio1", uIbean);
+                        }else if(!current_open_activity_detail.containsKey("audio2")){
+                            current_open_activity_detail.put("audio2", uIbean);
+                        }
+
                         sendlistadapter.notifyDataSetChanged();
                         list_all.removeAllViews();
                         final int adapterCount = sendlistadapter.getCount();

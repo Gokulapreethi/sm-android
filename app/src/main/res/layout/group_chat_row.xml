@@ -942,7 +942,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_below="@+id/rl_header"
                     android:textSize="15dp"
-                    android:textColor="#99004c"
+                    android:textColor="#fff"
                     android:visibility="gone"/>
                 <RelativeLayout
                     android:id="@+id/rr_resend"
