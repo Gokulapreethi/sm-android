@@ -5536,7 +5536,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 ProgressBar progress, intermediateProgress;
                 final ImageView multimediaIcon, locationIcon, saveMsg, scheduleMsg, retryIcon, img_status1, audio_play;
                 final SeekBar audio_seekbar;
-                final RelativeLayout iconContainer, audioLayout, mainlayout;
+                final RelativeLayout iconContainer, audioLayout, mainlayout,rl_header;
                 normalcontainer = (RelativeLayout) convertView
                         .findViewById(R.id.normalcontainer);
                 join_lay = (LinearLayout) convertView
@@ -5578,6 +5578,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 TextView withdraw = (TextView) convertView.findViewById(R.id.withdrawlay);
                 TextView xbutton = (TextView) convertView.findViewById(R.id.xdelete);
                 mainlayout = (RelativeLayout) convertView.findViewById(R.id.receiver_layout);
+                rl_header = (RelativeLayout) convertView.findViewById(R.id.rl_header);
                 Log.i("group123", "gcbean from : " + gcBean.getFrom() +
                         "gcbean to:" + gcBean.getTo() + " login user :" + CallDispatcher.LoginUser
                         + " message : " + gcBean.getMessage());
@@ -6118,14 +6119,6 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                             deadlineReplyText.setVisibility(View.GONE);
                         }
                         saveMsg.setTag(gcBean);
-                        mainlayout.setTag(gcBean);
-                        mainlayout.setOnClickListener(new OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                GroupChatBean gcBean = (GroupChatBean) v.getTag();
-                                saveFile(gcBean);
-                            }
-                        });
 
                     } else {
                         Log.i("reply","not loginuser");
@@ -6223,15 +6216,6 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                 img_status.setBackgroundResource(R.drawable.offline_icon);
                             }
                         }
-
-                        senderLayout.setTag(gcBean);
-                        senderLayout.setOnClickListener(new OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                GroupChatBean gcBean = (GroupChatBean) v.getTag();
-                                saveFile(gcBean);
-                            }
-                        });
 
 
                         // RadioGroup deadLineReply = (RadioGroup) convertView
@@ -6822,6 +6806,15 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
                         }
                     }
+                    im_pin.setTag(gcBean.getMediaName());
+                    im_pin.setContentDescription(gcBean.getMimetype());
+                    im_pin.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            saveFile(v.getContentDescription().toString(), v.getTag().toString());
+                            return true;
+                        }
+                    });
 
                     im_pin.setOnClickListener(new OnClickListener() {
                         @Override
@@ -6857,6 +6850,13 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         }
                     });
 
+                    multimediaIcon.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                                saveFile(v.getContentDescription().toString(),v.getTag().toString());
+                            return true;
+                        }
+                    });
                     multimediaIcon.setOnClickListener(new OnClickListener() {
 
                         @Override
@@ -7164,6 +7164,15 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                 receiver_multi_msg.setImageBitmap(bMap);
 
                                 final String path = fname[i];
+                                receiver_multi_msg.setTag(path);
+                                receiver_multi_msg.setContentDescription(gcBean.getMimetype());
+                                receiver_multi_msg.setOnLongClickListener(new View.OnLongClickListener() {
+                                    @Override
+                                    public boolean onLongClick(View v) {
+                                        saveFile(v.getContentDescription().toString(),v.getTag().toString());
+                                        return true;
+                                    }
+                                });
                                 receiver_multi_msg.setOnClickListener(new OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -7263,6 +7272,15 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                 imageViewer.display(fname[i],
                                         receiver_multi_msg, R.drawable.refresh);
                                 final String path = fname[i];
+                                receiver_multi_msg.setTag(path);
+                                receiver_multi_msg.setContentDescription(gcBean.getMimetype());
+                                receiver_multi_msg.setOnLongClickListener(new View.OnLongClickListener() {
+                                    @Override
+                                    public boolean onLongClick(View v) {
+                                        saveFile(v.getContentDescription().toString(),v.getTag().toString());
+                                        return true;
+                                    }
+                                });
                                 receiver_multi_msg.setOnClickListener(new OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -7276,6 +7294,15 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                 TextView tv_pathname = (TextView) holder.findViewById(R.id.tv_pathname);
                                 tv_pathname.setText(fname[i].split("COMMedia/")[1]);
                                 final String path = fname[i];
+                                tv_pathname.setTag(path);
+                                tv_pathname.setContentDescription(gcBean.getMimetype());
+                                tv_pathname.setOnLongClickListener(new View.OnLongClickListener() {
+                                    @Override
+                                    public boolean onLongClick(View v) {
+                                        saveFile(v.getContentDescription().toString(), v.getTag().toString());
+                                        return true;
+                                    }
+                                });
                                 tv_pathname.setOnClickListener(new OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -12694,7 +12721,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         });
 
     }
-    private void saveFile(final GroupChatBean gcBean){
+    private void saveFile(final String mimetype, final String mediaName){
         final AlertDialog.Builder alert = new AlertDialog.Builder(
                 context);
         alert.setTitle("Save File");
@@ -12707,20 +12734,20 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if (gcBean.getMimetype().equalsIgnoreCase("audio"))
-                            DBAccess.getdbHeler(context).putDBEntry(4, gcBean.getMediaName(),
+                        if (mimetype.equalsIgnoreCase("audio"))
+                            DBAccess.getdbHeler(context).putDBEntry(4, mediaName,
                                     WebServiceReferences.getNoteCreateTimeForFiles(), "Audio Note", null, "");
-                        else if (gcBean.getMimetype().equalsIgnoreCase("video"))
-                            DBAccess.getdbHeler(context).putDBEntry(5, gcBean.getMediaName(),
+                        else if (mimetype.equalsIgnoreCase("video"))
+                            DBAccess.getdbHeler(context).putDBEntry(5, mediaName,
                                     WebServiceReferences.getNoteCreateTimeForFiles(), "Video Note", null, "");
-                        else if (gcBean.getMimetype().equalsIgnoreCase("image"))
-                            DBAccess.getdbHeler(context).putDBEntry(2, gcBean.getMediaName(),
+                        else if (mimetype.equalsIgnoreCase("image"))
+                            DBAccess.getdbHeler(context).putDBEntry(2, mediaName,
                                     WebServiceReferences.getNoteCreateTimeForFiles(), "Photo Note", null, "");
-                        else if (gcBean.getMimetype().equalsIgnoreCase("document"))
-                            DBAccess.getdbHeler(context).putDBEntry(9, gcBean.getMediaName(),
+                        else if (mimetype.equalsIgnoreCase("document"))
+                            DBAccess.getdbHeler(context).putDBEntry(9, mediaName,
                                     WebServiceReferences.getNoteCreateTimeForFiles(), "Document Note", null, "");
-                        else if (gcBean.getMimetype().equalsIgnoreCase("mixedfile")) {
-                            String[] paths = gcBean.getMediaName().split(",");
+                        else if (mimetype.equalsIgnoreCase("mixedfile")) {
+                            String[] paths = mediaName.split(",");
                             for (int i = 0; i < paths.length; i++) {
                                 if (paths[i].endsWith(".jpg") || paths[i].endsWith(".png"))
                                     DBAccess.getdbHeler(context).putDBEntry(2, paths[i],
