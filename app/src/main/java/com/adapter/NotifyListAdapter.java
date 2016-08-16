@@ -430,19 +430,40 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                             }
 
                             if (notifyBean.getType().trim().equalsIgnoreCase("image"))
-                                holder.fileType.setText(notifyBean.getUsername());
+                                if(notifyBean.getCategory().equalsIgnoreCase("I")){
+                                    holder.fileType.setText(notifyBean.getUsername());
+                                }else
+                                    holder.fileType.setText(notifyBean.getOwner());
                             else if (notifyBean.getType().trim().equalsIgnoreCase("text"))
-                                holder.fileType.setText(notifyBean.getUsername());
+                                if(notifyBean.getCategory().equalsIgnoreCase("I")){
+                                    holder.fileType.setText(notifyBean.getUsername());
+                                }else
+                                    holder.fileType.setText(notifyBean.getOwner());
                             else if (notifyBean.getType().trim().equalsIgnoreCase("audio"))
-                                holder.fileType.setText(notifyBean.getUsername());
+                                if(notifyBean.getCategory().equalsIgnoreCase("I")){
+                                    holder.fileType.setText(notifyBean.getUsername());
+                                }else
+                                    holder.fileType.setText(notifyBean.getOwner());
                             else if (notifyBean.getType().trim().equalsIgnoreCase("video"))
-                                holder.fileType.setText(notifyBean.getUsername());
+                                if(notifyBean.getCategory().equalsIgnoreCase("I")){
+                                    holder.fileType.setText(notifyBean.getUsername());
+                                }else
+                                    holder.fileType.setText(notifyBean.getOwner());
                             else if (notifyBean.getType().trim().equalsIgnoreCase("sketch"))
-                                holder.fileType.setText(notifyBean.getUsername());
+                                if(notifyBean.getCategory().equalsIgnoreCase("I")){
+                                    holder.fileType.setText(notifyBean.getUsername());
+                                }else
+                                    holder.fileType.setText(notifyBean.getOwner());
                             else if(notifyBean.getType().trim().equalsIgnoreCase("document"))
-                                holder.fileType.setText(notifyBean.getUsername());
+                                if(notifyBean.getCategory().equalsIgnoreCase("I")){
+                                    holder.fileType.setText(notifyBean.getUsername());
+                                }else
+                                    holder.fileType.setText(notifyBean.getOwner());
                             else if(notifyBean.getType().trim().equalsIgnoreCase("mixedfile"))
-                                holder.fileType.setText(notifyBean.getUsername());
+                                if(notifyBean.getCategory().equalsIgnoreCase("I")){
+                                    holder.fileType.setText(notifyBean.getUsername());
+                                }else
+                                    holder.fileType.setText(notifyBean.getOwner());
                             if (notifyBean.getType().trim().equalsIgnoreCase("text")) {
                                 if (notifyBean.getContent() != null)
                                     holder.fileName.setText(notifyBean.getContent());

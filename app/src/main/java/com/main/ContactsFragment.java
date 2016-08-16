@@ -632,8 +632,10 @@ public class ContactsFragment extends Fragment{
 				final LinearLayout tv12 = (LinearLayout) _rootView.findViewById(R.id.my_group);
 				final TextView contacts = (TextView) _rootView.findViewById(R.id.contacts);
 				final TextView list_1 = (TextView) _rootView.findViewById(R.id.list_1);
+				final TextView listvalue_3 = (TextView) _rootView.findViewById(R.id.listvalue_3);
 				final TextView groups = (TextView) _rootView.findViewById(R.id.groups);
 				final TextView list_2 = (TextView) _rootView.findViewById(R.id.list_2);
+				final TextView listvalueof_3 = (TextView) _rootView.findViewById(R.id.listvalueof_3);
 				final View view_mycontact = (View) _rootView.findViewById(R.id.view_mycontact);
 				final View view_mygroup = (View) _rootView.findViewById(R.id.view_mygroup);
 
@@ -665,8 +667,10 @@ public class ContactsFragment extends Fragment{
 								EditText myFilter = (EditText) _rootView.findViewById(R.id.searchtext);
 								myFilter.setText("");
 								contacts.setTextColor(getResources().getColor(R.color.white));
-									list_1.setText("LIST");
+									list_1.setText("Contacts");
 								list_1.setTextColor(getResources().getColor(R.color.white));
+									listvalue_3.setTextColor(getResources().getColor(R.color.black));
+									listvalueof_3.setTextColor(getResources().getColor(R.color.black));
 								groups.setTextColor(getResources().getColor(R.color.black));
 								list_2.setTextColor(getResources().getColor(R.color.black));
 								view_mycontact.setVisibility(View.VISIBLE);
@@ -692,8 +696,9 @@ public class ContactsFragment extends Fragment{
 									Log.d("Stringadapter", "values" + notifyAdapter);
 									notifyAdapter.notifyDataSetChanged();
 									contacts.setTextColor(getResources().getColor(R.color.pale_white));
-									list_1.setText("RECENT");
-									list_1.setTextColor(getResources().getColor(R.color.snazgray));
+									listvalue_3.setTextColor(getResources().getColor(R.color.white));
+									listvalueof_3.setTextColor(getResources().getColor(R.color.black));
+									list_1.setTextColor(getResources().getColor(R.color.black));
 									groups.setTextColor(getResources().getColor(R.color.black));
 									list_2.setTextColor(getResources().getColor(R.color.black));
 									view_mycontact.setVisibility(View.VISIBLE);
@@ -728,7 +733,8 @@ public class ContactsFragment extends Fragment{
 								groups.setTextColor(getResources().getColor(R.color.white));
 								plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_pluswhite));
 								list_2.setTextColor(getResources().getColor(R.color.white));
-								list_2.setText("LIST");
+								listvalueof_3.setTextColor(getResources().getColor(R.color.black));
+								list_2.setText("Groups");
 								contacts.setTextColor(getResources().getColor(R.color.black));
 								list_1.setTextColor(getResources().getColor(R.color.black));
 								view_mycontact.setVisibility(View.GONE);
@@ -755,10 +761,11 @@ public class ContactsFragment extends Fragment{
 
 								groups.setTextColor(getResources().getColor(R.color.white));
 								plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_pluswhite));
-								list_2.setTextColor(getResources().getColor(R.color.pale_white));
-								list_2.setText("RECENT");
+								listvalueof_3.setTextColor(getResources().getColor(R.color.pale_white));
+								list_2.setTextColor(getResources().getColor(R.color.black));
 								contacts.setTextColor(getResources().getColor(R.color.black));
 								list_1.setTextColor(getResources().getColor(R.color.black));
+								listvalue_3.setTextColor(getResources().getColor(R.color.black));
 								view_mycontact.setVisibility(View.GONE);
 								view_mygroup.setVisibility(View.VISIBLE);
 								plusBtn.setVisibility(View.VISIBLE);
@@ -4070,51 +4077,83 @@ public class ContactsFragment extends Fragment{
 					.commitAllowingStateLoss();
 		}
 	}
-	private void loadRecents()
-	{
+	private void loadRecents() {
 		tempnotifylist.clear();
 		contactrecentlist.clear();
 		grouprecentlist.clear();
-		tempnotifylist = DashBoardFragment.newInstance(mainContext).LoadFilesList(CallDispatcher.LoginUser);
-		for(NotifyListBean bean:tempnotifylist){
-			if(bean.getNotifttype().equalsIgnoreCase("F"))
-				contactrecentlist.add(bean);
-			else if(bean.getNotifttype().equalsIgnoreCase("C")){
-				if(isNumeric(bean.getFileid()))
-					grouprecentlist.add(bean);
-				else
-					contactrecentlist.add(bean);
-			}else if(bean.getNotifttype().equalsIgnoreCase("I")) {
-				if (bean.getCategory().equalsIgnoreCase("G")) {
-					grouprecentlist.add(bean);
+		Vector<NotifyListBean> notifyList = new Vector<NotifyListBean>();
+		notifyList = DBAccess.getdbHeler().getNotifyFilesList(CallDispatcher.LoginUser);
+		Log.d("AAAAc", "Notifyidlistvalue" + notifyList.size());
+		Log.d("AAAAc", "Notifyidname" + CallDispatcher.LoginUser);
+		if(notifyList!=null) {
+			for (NotifyListBean nBean : notifyList) {
+				Log.i("AAAAc", "NOTIFY LIST from user " + nBean.getNotifttype() + " , " + nBean.getSortdate() + " , " + nBean.getFrom());
+				Log.d("AAAAc", "Notifyid" + nBean.getFileid());
+				if (nBean.getViewed() == 0 && nBean.getNotifttype().equals("I")) {
+					if (!nBean.getCategory().equalsIgnoreCase("call")) {
+						ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+						nBean.setProfilePic(pBean.getPhoto());
+						if (pBean != null)
+							nBean.setUsername(pBean.getFirstname() + " " + pBean.getLastname());
+						if(nBean.getCategory()!=null && nBean.getCategory().equalsIgnoreCase("I"))
+							contactrecentlist.add(nBean);
+						else {
+							for (GroupBean gbean : GroupActivity.groupList) {
+								if (gbean.getGroupId().equalsIgnoreCase(nBean.getFileid()))
+									nBean.setOwner(gbean.getGroupName());
+								Log.i("notifylistsize","grupname"+nBean.getOwner());
+							}
+							grouprecentlist.add(nBean);
+						}
+					}
 				}
-				else if(bean.getCategory().equalsIgnoreCase("I"))
-					contactrecentlist.add(bean);
 			}
 		}
 
-		for(BuddyInformationBean bean:ContactsFragment.getBuddyList() ){
-			if(bean.getStatus().equalsIgnoreCase("new")) {
-				NotifyListBean nBean=new NotifyListBean();
-				nBean.setUsername(bean.getFirstname()+" "+bean.getLastname());
-				nBean.setNotifttype("Invite");
-				nBean.setType("contact");
-				contactrecentlist.add(nBean);
-			}
-		}
-		for(GroupBean gbean: GroupActivity.groupList){
-			if(gbean.getStatus().equalsIgnoreCase("request")){
-				NotifyListBean nbean = new NotifyListBean();
-				ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(gbean.getOwnerName());
-				String fullname=bean.getFirstname()+" "+bean.getLastname();
-				nbean.setSortdate(gbean.getCreatedDate());
-				nbean.setUsername(fullname);
-				nbean.setOwner(gbean.getGroupName());
-				nbean.setNotifttype("Invite");
-				nbean.setType("group");
-				grouprecentlist.add(nbean);
-			}
-		}
+//		tempnotifylist = DashBoardFragment.newInstance(mainContext).tempnotifylist;
+		Log.i("notifylistsize","sizevalue1"+tempnotifylist.size());
+//		for(NotifyListBean bean:tempnotifylist){
+//			if(bean.getNotifttype().equalsIgnoreCase("F"))
+//				contactrecentlist.add(bean);
+//			else if(bean.getNotifttype().equalsIgnoreCase("C")){
+//				if(isNumeric(bean.getFileid()))
+//					grouprecentlist.add(bean);
+//				else
+//					contactrecentlist.add(bean);
+//			}
+//			else if(bean.getNotifttype().equalsIgnoreCase("I")) {
+//				if (bean.getCategory().equalsIgnoreCase("G")) {
+//					grouprecentlist.add(bean);
+//				}
+//				else if(bean.getCategory().equalsIgnoreCase("I"))
+//					contactrecentlist.add(bean);
+//			}
+//		}
+//
+
+
+//		for(BuddyInformationBean bean:ContactsFragment.getBuddyList() ){
+//			if(bean.getStatus().equalsIgnoreCase("new")) {
+//				NotifyListBean nBean=new NotifyListBean();
+//				nBean.setUsername(bean.getFirstname()+" "+bean.getLastname());
+//				nBean.setNotifttype("Invite");
+//				nBean.setType("contact");
+//				contactrecentlist.add(nBean);
+//			}
+//		}
+//		for(GroupBean gbean: GroupActivity.groupList){
+//			if(gbean.getStatus().equalsIgnoreCase("request")){
+//				NotifyListBean nbean = new NotifyListBean();
+//				ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(gbean.getOwnerName());
+//				String fullname=bean.getFirstname()+" "+bean.getLastname();
+//				nbean.setSortdate(gbean.getCreatedDate());
+//				nbean.setUsername(fullname);
+//				nbean.setOwner(gbean.getGroupName());
+//				nbean.setNotifttype("Invite");
+//				nbean.setType("group");
+//				grouprecentlist.add(nbean);
+//			}
+//		}
 	}
 	public void deleteContact(ArrayList<String> buddynames){
 		showprogress();

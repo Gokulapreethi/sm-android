@@ -6118,6 +6118,14 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                             deadlineReplyText.setVisibility(View.GONE);
                         }
                         saveMsg.setTag(gcBean);
+                        mainlayout.setTag(gcBean);
+                        mainlayout.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                GroupChatBean gcBean = (GroupChatBean) v.getTag();
+                                saveFile(gcBean);
+                            }
+                        });
 
                     } else {
                         Log.i("reply","not loginuser");
@@ -6215,6 +6223,16 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                 img_status.setBackgroundResource(R.drawable.offline_icon);
                             }
                         }
+
+                        senderLayout.setTag(gcBean);
+                        senderLayout.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                GroupChatBean gcBean = (GroupChatBean) v.getTag();
+                                saveFile(gcBean);
+                            }
+                        });
+
 
                         // RadioGroup deadLineReply = (RadioGroup) convertView
                         // .findViewById(R.id.deadlineOption);
@@ -6565,10 +6583,12 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     } else {
                         audio_play.setBackgroundResource(R.drawable.play);
                     }
+
                     audio_play.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            File newfile=new File(gcBean.getMediaName());
+                            if(!CallDispatcher.isCallInitiate) {
+                                File newfile=new File(gcBean.getMediaName());
                             if (finalPlayBean == null) {
                                 audio_play.setBackgroundResource(R.drawable.audiopause);
                                 if(newfile.exists()) {
@@ -6599,26 +6619,10 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                     showToast("No audio to play");
 
                             }
+                            } else {
+                                showToast("Please Try again...call  in progress");
+                            }
 
-//                        if (mPlayer.isPlaying()) {
-//                            if (signalid.equalsIgnoreCase(gcBean.getSignalid())) {
-//                                mPlayer.pause();
-//                                audio_play.setBackgroundResource(R.drawable.audiopause);
-//                            } else{
-//                                audio_play.setBackgroundResource(R.drawable.play);
-//                                playAudio(gcBean.getMediaName(), position);
-//                                signalid=gcBean.getSignalid();
-//                            }
-//                        } else {
-//                            if (signalid.equalsIgnoreCase(gcBean.getSignalid())) {
-//                                audio_play.setBackgroundResource(R.drawable.play);
-//                                playAudio(gcBean.getMediaName(), position);
-//                            } else {
-//                                mPlayer.pause();
-//                                signalid=gcBean.getSignalid();
-//                                audio_play.setBackgroundResource(R.drawable.audiopause);
-//                            }
-//                        }
                         }
 
                     });
@@ -6818,6 +6822,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
                         }
                     }
+
                     im_pin.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -6856,16 +6861,16 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
                         @Override
                         public void onClick(View v) {
-                            playMultimedia(v);
+                            if (v.getContentDescription().toString().equalsIgnoreCase("audio") ||
+                                    v.getContentDescription().toString().equalsIgnoreCase("video")) {
+                                if(!CallDispatcher.isCallInitiate)
+                                    playMultimedia(v);
+                                else
+                                showToast("Please Try again...call  in progress");
+                        }else
+                                playMultimedia(v);
                         }
                     });
-//				receiverLayout.setOnClickListener(new OnClickListener() {
-//
-//					@Override
-//					public void onClick(View v) {
-//						showMessageDialog(gcBean);
-//					}
-//				});
 
                     btn_confrm.setTag(gcBean);
                     btn_confrm.setOnClickListener(new OnClickListener() {
@@ -7162,12 +7167,17 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                 receiver_multi_msg.setOnClickListener(new OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        if (mPlayer != null && mPlayer.isPlaying())
+                                        if(!CallDispatcher.isCallInitiate) {
+                                            if (mPlayer != null && mPlayer.isPlaying())
                                             mPlayer.stop();
                                         Intent intent = new Intent(context, VideoPlayer.class);
                                         intent.putExtra("video", path);
                                         startActivity(intent);
+                                    } else {
+                                        showToast("Please Try again...call  in progress");
                                     }
+
+                                }
                                 });
                             } else if (fname[i].split("COMMedia/")[1].endsWith("mp3")
                                     || fname[i].split("COMMedia/")[1].endsWith("amr")) {
@@ -7186,20 +7196,25 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                 multiplay_button.setOnClickListener(new OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
+                                        if(!CallDispatcher.isCallInitiate) {
                                         File newfile=new File(path);
                                         if (mPlayer.isPlaying()) {
                                             mPlayer.pause();
-                                            multiplay_button.setBackgroundResource(R.drawable.audiopause);
-                                        } else {
                                             multiplay_button.setBackgroundResource(R.drawable.play);
+                                        } else {
+                                            multiplay_button.setBackgroundResource(R.drawable.audiopause);
                                             if(newfile.exists())
                                             playAudio(path, position);
                                             else
                                                 showToast("No audio to play");
                                         }
                                         click = pos;
-
+                                    } else {
+                                        showToast("Please Try again...call  in progress");
                                     }
+
+
+                                }
                                 });
                                 if (click == i) {
                                     if (position == mPlayingPosition) {
@@ -7716,6 +7731,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                 showAudioMessageDialog();
                                 dialog.dismiss();
                             } else if (pos == 4) {
+
                                 isReplyBack = true;
                                 showVideoMessageDialog();
                                 dialog.dismiss();
@@ -12677,6 +12693,62 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             }
         });
 
+    }
+    private void saveFile(final GroupChatBean gcBean){
+        final AlertDialog.Builder alert = new AlertDialog.Builder(
+                context);
+        alert.setTitle("Save File");
+        alert.setMessage("Are you sure want to save this to snazbox files?");
+        alert.setCancelable(false);
+        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (gcBean.getMimetype().equalsIgnoreCase("audio"))
+                            DBAccess.getdbHeler(context).putDBEntry(4, gcBean.getMediaName(),
+                                    WebServiceReferences.getNoteCreateTimeForFiles(), "Audio Note", null, "");
+                        else if (gcBean.getMimetype().equalsIgnoreCase("video"))
+                            DBAccess.getdbHeler(context).putDBEntry(5, gcBean.getMediaName(),
+                                    WebServiceReferences.getNoteCreateTimeForFiles(), "Video Note", null, "");
+                        else if (gcBean.getMimetype().equalsIgnoreCase("image"))
+                            DBAccess.getdbHeler(context).putDBEntry(2, gcBean.getMediaName(),
+                                    WebServiceReferences.getNoteCreateTimeForFiles(), "Photo Note", null, "");
+                        else if (gcBean.getMimetype().equalsIgnoreCase("document"))
+                            DBAccess.getdbHeler(context).putDBEntry(9, gcBean.getMediaName(),
+                                    WebServiceReferences.getNoteCreateTimeForFiles(), "Document Note", null, "");
+                        else if (gcBean.getMimetype().equalsIgnoreCase("mixedfile")) {
+                            String[] paths = gcBean.getMediaName().split(",");
+                            for (int i = 0; i < paths.length; i++) {
+                                if (paths[i].endsWith(".jpg") || paths[i].endsWith(".png"))
+                                    DBAccess.getdbHeler(context).putDBEntry(2, paths[i],
+                                            WebServiceReferences.getNoteCreateTimeForFiles(), "Photo Note", null, "");
+                                if (paths[i].endsWith("mp4")) {
+                                    DBAccess.getdbHeler(context).putDBEntry(5, paths[i],
+                                            WebServiceReferences.getNoteCreateTimeForFiles(), "Video Note", null, "");
+                                } else if (paths[i].endsWith("mp3") || paths[i].endsWith("amr")) {
+                                    DBAccess.getdbHeler(context).putDBEntry(4, paths[i],
+                                            WebServiceReferences.getNoteCreateTimeForFiles(), "Audio Note", null, "");
+                                } else
+                                    DBAccess.getdbHeler(context).putDBEntry(9, paths[i],
+                                            WebServiceReferences.getNoteCreateTimeForFiles(), "Document Note", null, "");
+                            }
+                        }
+                    }
+
+                });
+            }
+        });
+        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        alert.show();
     }
 
 }

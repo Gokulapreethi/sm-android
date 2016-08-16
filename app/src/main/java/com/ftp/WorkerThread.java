@@ -158,6 +158,11 @@ public class WorkerThread implements Runnable {
 
 				uploadFile(username, password, gBean.getMimetype(), fname, base64,filename,SingleInstance.mainContext,ftpBean);
 			}
+			else if(gBean.getMimetype().equalsIgnoreCase("document")){
+				String fname = filename.split("/")[5];
+				String base64 = encodeAudioVideoToBase64(path);
+				uploadFile(username, password, gBean.getMimetype(), fname, base64,filename,SingleInstance.mainContext,ftpBean);
+			}
 			notifyStatus(true);
 
             //end changes thendral renu 23-12-15
