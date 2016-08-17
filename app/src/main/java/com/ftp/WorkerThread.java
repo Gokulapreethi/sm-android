@@ -12,11 +12,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.util.Base64;
@@ -31,6 +34,15 @@ import com.cg.instancemessage.NotePickerScreen;
 import com.crypto.AESFileCrypto;
 import com.main.AppMainActivity;
 import com.util.SingleInstance;
+
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
+import org.lib.xml.XmlComposer;
+import org.lib.xml.XmlParser;
+import org.net.AndroidInsecureKeepAliveHttpsTransportSE;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * @author GopalaKrishnan D
@@ -608,7 +620,85 @@ public class WorkerThread implements Runnable {
 			length = length/1024;
 		temp[5]="im";
 		temp[6]= String.valueOf(length);
-		Log.i("FileUpload", "Inside CallDisp_UploadFile---> " +temp[6]);
-		WebServiceReferences.webServiceClient.FileUpload(temp,context1,obj);
+		Log.i("FileUpload", "Inside CallDisp_UploadFile---> " + temp[6]);
+//		WebServiceReferences.webServiceClient.FileUpload(temp,context1,obj);
+		ChatLoadWebservice taskrunner=new ChatLoadWebservice();
+		taskrunner.execute(temp,obj);
+	}
+	public class ChatLoadWebservice extends
+			AsyncTask<Object, Object, String> {
+
+		@Override
+		protected String doInBackground(Object... params) {
+			try {
+				String[] param=(String[])params[0];
+				ChatFTPBean chatFTPBean=(ChatFTPBean)params[1];
+
+				String parse="";
+				String url= SingleInstance.mainContext.getResources().getString(R.string.service_url);
+				String loginIP = url.substring(url.indexOf("://") + 3);
+				loginIP = loginIP.substring(0, loginIP.indexOf(":"));
+				loginIP = loginIP.trim();
+
+				String urlPort = url.substring(url.indexOf("://") + 3);
+				urlPort = urlPort.substring(urlPort.indexOf(":") + 1);
+				urlPort = urlPort.substring(0, urlPort.indexOf("/"));
+
+				String server_ip = loginIP;
+				int connect_ort = Integer.parseInt(urlPort);
+				String namespace = "http://ltws.com/";
+				String wsdl_link = url.trim()+"?wsdl";
+				String quotes = "\"";
+
+				parse= wsdl_link.substring(wsdl_link.indexOf("://") + 3);
+				parse = parse.substring(parse.indexOf(":") + 1);
+				parse = parse.substring(parse.indexOf("/"),
+						parse.indexOf("?"));
+
+				AndroidInsecureKeepAliveHttpsTransportSE androidHttpTransport = new AndroidInsecureKeepAliveHttpsTransportSE(
+						server_ip, connect_ort, parse, 30000);
+
+				SoapObject mRequest = new SoapObject(namespace, "FileUpload");
+				XmlComposer xmlComposer = new XmlComposer();
+				String fuploadxml = xmlComposer.fileUploadXml(param);
+
+				HashMap<String,String> propert_map = new HashMap<String,String>();
+				propert_map.put("uploadxml", fuploadxml);
+
+				if (propert_map != null) {
+					for (Map.Entry<String, String> set : propert_map.entrySet()) {
+						mRequest.addProperty(set.getKey().trim(), set
+								.getValue().trim());
+					}
+				}
+
+				Log.d("webservice", "My Server Request  :" + mRequest);
+
+				SoapSerializationEnvelope mEnvelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+				mEnvelope.setOutputSoapObject(mRequest);
+
+				androidHttpTransport.call(quotes + namespace + "FileUpload" + quotes, mEnvelope);
+
+
+				SoapPrimitive mSp = (SoapPrimitive) mEnvelope.getResponse();
+				XmlParser mParser = new XmlParser();
+				boolean mChk = false;
+				mChk = mParser.getResult(mSp.toString());
+				Log.d("webservice", "My Server Resopnse  :" + mSp.toString());
+				if(mChk){
+					SingleInstance.mainContext.showToast("File upload successfully");
+					SingleInstance.mainContext.notifyFileUploadResponse(chatFTPBean);
+				}
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (XmlPullParserException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+		protected void onPreExecute() {
+		}
+
 	}
 }

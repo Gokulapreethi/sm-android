@@ -180,6 +180,10 @@ import org.audio.AudioProperties;
 import org.audio.AudioRecorderStateListener;
 import org.core.CallSessionListener;
 import org.core.VideoCallback;
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.lib.model.BuddyInformationBean;
 import org.lib.model.CallHistoryBean;
 import org.lib.model.ConnectionBrokerBean;
@@ -209,12 +213,16 @@ import org.lib.webservice.EnumWebServiceMethods;
 import org.lib.webservice.Servicebean;
 import org.lib.webservice.WebServiceCallback;
 import org.lib.webservice.WebServiceClient;
+import org.lib.xml.XmlComposer;
+import org.lib.xml.XmlParser;
+import org.net.AndroidInsecureKeepAliveHttpsTransportSE;
 import org.net.rtp.RtpPacket;
 import org.util.Queue;
 import org.util.Utility;
 import org.wifi.NetworkBroadcastReceiver;
 import org.wifi.NetworkListener;
 import org.wifi.WifiEngine;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -11374,8 +11382,10 @@ private TrustManager[] get_trust_mgr() {
 						+ "/COMMedia/" + fname[i];
 				File file=new File(strIPath);
 				if(!file.exists()) {
-					Log.d("XP WSD","enters into filedownload webservice");
-					WebServiceReferences.webServiceClient.FileDownload(dtemp);
+					Log.d("XP WSD", "enters into filedownload webservice");
+//					WebServiceReferences.webServiceClient.FileDownload(dtemp);
+					ChatLoadWebservice taskrunner=new ChatLoadWebservice();
+					taskrunner.execute(dtemp);
 				}
             }
         }else{
@@ -11387,8 +11397,10 @@ private TrustManager[] get_trust_mgr() {
 					+ "/COMMedia/" + filename;
 			File file=new File(strIPath);
 			if(!file.exists()) {
-				Log.d("XP WSD","enters into filedownload webservice");
-				WebServiceReferences.webServiceClient.FileDownload(dtemp);
+				Log.d("XP WSD", "enters into filedownload webservice");
+//				WebServiceReferences.webServiceClient.FileDownload(dtemp);
+				ChatLoadWebservice taskrunner=new ChatLoadWebservice();
+				taskrunner.execute(dtemp);
 			}
         }
 
@@ -17180,6 +17192,83 @@ private TrustManager[] get_trust_mgr() {
 			}
 		}
 		return name;
+	}
+
+	public class ChatLoadWebservice extends
+			AsyncTask<String[], String, String> {
+		String[] ser = null;
+
+		@Override
+		protected String doInBackground(String[]... params) {
+			try {
+				String[] param=params[0];
+
+				String parse="";
+				String url= SingleInstance.mainContext.getResources().getString(R.string.service_url);
+				String loginIP = url.substring(url.indexOf("://") + 3);
+				loginIP = loginIP.substring(0, loginIP.indexOf(":"));
+				loginIP = loginIP.trim();
+
+				String urlPort = url.substring(url.indexOf("://") + 3);
+				urlPort = urlPort.substring(urlPort.indexOf(":") + 1);
+				urlPort = urlPort.substring(0, urlPort.indexOf("/"));
+
+				String server_ip = loginIP;
+				int connect_ort = Integer.parseInt(urlPort);
+				String namespace = "http://ltws.com/";
+				String wsdl_link = url.trim()+"?wsdl";
+				String quotes = "\"";
+
+				parse= wsdl_link.substring(wsdl_link.indexOf("://") + 3);
+				parse = parse.substring(parse.indexOf(":") + 1);
+				parse = parse.substring(parse.indexOf("/"),
+						parse.indexOf("?"));
+
+				AndroidInsecureKeepAliveHttpsTransportSE androidHttpTransport = new AndroidInsecureKeepAliveHttpsTransportSE(
+						server_ip, connect_ort, parse, 30000);
+
+				SoapObject mRequest = new SoapObject(namespace, "FileDownload");
+				XmlComposer xmlComposer = new XmlComposer();
+				String fdloadxml =xmlComposer.fileDownloadXml(param);
+
+				HashMap<String,String> propert_map = new HashMap<String,String>();
+				propert_map.put("downloadxml", fdloadxml);
+
+				if (propert_map != null) {
+					for (Map.Entry<String, String> set : propert_map.entrySet()) {
+						mRequest.addProperty(set.getKey().trim(), set
+								.getValue().trim());
+					}
+				}
+
+				Log.d("webservice", "My Server Request  :" + mRequest);
+
+				SoapSerializationEnvelope mEnvelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+				mEnvelope.setOutputSoapObject(mRequest);
+
+				androidHttpTransport.call(quotes + namespace + "FileDownload" + quotes, mEnvelope);
+
+
+				SoapPrimitive mSp = (SoapPrimitive) mEnvelope.getResponse();
+				XmlParser mParser = new XmlParser();
+				boolean mChk = false;
+				mChk = mParser.getResult(mSp.toString());
+				Log.d("webservice", "My Server Resopnse  :" + mSp.toString());
+				if(mChk){
+					String[] file=mParser.parsedownloadxml(mSp.toString());
+					SingleInstance.mainContext.notifyFiledetails(file);
+				}
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (XmlPullParserException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+		protected void onPreExecute() {
+		}
+
 	}
 
 }

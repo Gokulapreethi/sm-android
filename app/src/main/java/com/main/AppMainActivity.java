@@ -9040,32 +9040,29 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			showToast(((WebServiceBean) obj).getText());
 		}
 	}
-	public void notifyFileUploadResponse(Servicebean servicebean) {
+	public void notifyFileUploadResponse(ChatFTPBean chatFTPBean) {
 		Log.i("fileupload", "Appmain notifyFileUploadReponse");
-		if (servicebean.getUploadOrDownloadFor() != null && servicebean.getUploadOrDownloadFor().equalsIgnoreCase("im")) {
-			if (servicebean.getFileUplaod() != null && servicebean.getFileUplaod() instanceof ChatFTPBean) {
-				ChatFTPBean chatFTPBean = (ChatFTPBean) servicebean.getFileUplaod();
 				GroupChatBean gcBean = (GroupChatBean) chatFTPBean.getSourceObject();
 				if (gcBean != null)
 					if (chatFTPBean.getOperation().equalsIgnoreCase("UPLOAD")) {
 						String fname="";
-						if(!gcBean.getMimetype().equalsIgnoreCase("mixedfile"))
-							fname = gcBean.getMediaName().split("/")[5];
-						else{
-							String[] paths=gcBean.getMediaName().split(",");
-							for(int i=0; i<paths.length;i++){
-								String filename = paths[i].split("/")[5];
-								fname=fname+filename+",";
+						if(gcBean.getMediaName().contains("/")) {
+							if (!gcBean.getMimetype().equalsIgnoreCase("mixedfile"))
+								fname = gcBean.getMediaName().split("/")[5];
+							else {
+								String[] paths = gcBean.getMediaName().split(",");
+								for (int i = 0; i < paths.length; i++) {
+										String filename = paths[i].split("/")[5];
+										fname = fname + filename + ",";
+								}
+								fname = fname.substring(0, fname.length() - 1);
 							}
-							fname=fname.substring(0, fname.length() - 1);
+							gcBean.setMediaName(fname);
+							gcBean.setSessionid(CallDispatcher.LoginUser + gcBean.getSessionid());
+							SingleInstance.getGroupChatProcesser().getQueue()
+									.addObject(gcBean);
 						}
-						gcBean.setMediaName(fname);
-						gcBean.setSessionid(CallDispatcher.LoginUser+gcBean.getSessionid());
-						SingleInstance.getGroupChatProcesser().getQueue()
-								.addObject(gcBean);
 					}
-			}
-		}
 	}
 
 	/*
