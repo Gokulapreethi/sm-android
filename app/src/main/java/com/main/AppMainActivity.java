@@ -7797,34 +7797,34 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					directory.mkdir();
 				directory = null;
 				String file_name = directory_path + filedetails[0];
-				Log.d("decode12", "decode12 : " + file_name);
+				Log.d("decode12", "decode123 : " + file_name);
 				if (file_name.trim().toLowerCase().endsWith("jpg")) {
 					Log.d("decode12", "decode12img1 : " + directory_path);
-//					byte[] imageAsBytes = Base64.decode(filedetails[1], 0);
-//					File img_file = new File(file_name);
-//					img_file.createNewFile();
-//					FileOutputStream image_writter = new FileOutputStream(
-//							img_file);
-//					image_writter.write(imageAsBytes);
-//					image_writter.flush();
-//					image_writter.close();
-//
-//					Bitmap bmp = AppMainActivity.this.ShrinkBitmap(
-//							file_name, 150, 150);
-//					image_writter = new FileOutputStream(img_file);
-//					bmp.compress(CompressFormat.JPEG, 100, image_writter);
-//					bmp.recycle();
-//					bmp = null;
-//					image_writter.flush();
-//					image_writter.close();
-//					Log.d("decode12", "decode12img1a : " + directory_path);
-//					// img_file = null;
-//					if (img_file.exists()) {
-//						Log.d("decode12", "decode12img1a1 : " + directory_path);
-//						notifyChatFTPStatus(chatFTPBean, true);
-//						Log.d("decode12", "decode12img1b : " + directory_path);
-//					}
-					new DownloadImage(file_name,filedetails[0],chatFTPBean).execute();
+					byte[] imageAsBytes = Base64.decode(filedetails[1], 0);
+					File img_file = new File(file_name);
+					img_file.createNewFile();
+					FileOutputStream image_writter = new FileOutputStream(
+							img_file);
+					image_writter.write(imageAsBytes);
+					image_writter.flush();
+					image_writter.close();
+
+					Bitmap bmp = AppMainActivity.this.ShrinkBitmap(
+							file_name, 150, 150);
+					image_writter = new FileOutputStream(img_file);
+					bmp.compress(CompressFormat.JPEG, 100, image_writter);
+					bmp.recycle();
+					bmp = null;
+					image_writter.flush();
+					image_writter.close();
+					Log.d("decode12", "decode12img1a : " + directory_path);
+					// img_file = null;
+					if (img_file.exists()) {
+						Log.d("decode12", "decode12img1a1 : " + directory_path);
+						notifyChatFTPStatus(chatFTPBean, true);
+						Log.d("decode12", "decode12img1b : " + directory_path);
+					}
+//					new DownloadImage(file_name,filedetails[0],chatFTPBean).execute();
 				} else {
 					if (decodeAudioVideoToBase64(file_name, filedetails[1])) {
 						notifyChatFTPStatus(chatFTPBean,true);

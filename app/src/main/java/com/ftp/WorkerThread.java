@@ -358,14 +358,19 @@ public class WorkerThread implements Runnable {
             final String fileName = ftpBean.getInputFile();
             try {
 				Log.d("input","inputfile"+ftpBean.getInputFile());
+				String[] paths=this.ftpBean.getInputFile().split(",");
+				for(String filename:paths){
+					Log.d("input", "inputfile177777777 " + filename);
+					AppMainActivity.imFiles.put(filename, this.ftpBean);
+				}
 
-				AppMainActivity.imFiles.put(this.ftpBean.getInputFile(), this.ftpBean);
+//				AppMainActivity.imFiles.put(this.ftpBean.getInputFile(), this.ftpBean);
 
 				Log.d("input", "inputfile1" + ftpBean.getInputFile());
 
 				callDisp.downloadFile(CallDispatcher.LoginUser,CallDispatcher.Password,ftpBean.getInputFile());
 
-				Log.d("input", "inputfile2" + ftpBean.getInputFile());
+				Log.d("XP WSD", "inputfile2" + ftpBean.getInputFile());
 
 				Log.i("download1","newdownload"+fileName);
 //                final AppMainActivity activity = ((AppMainActivity) SingleInstance.contextTable
@@ -635,7 +640,7 @@ public class WorkerThread implements Runnable {
 				ChatFTPBean chatFTPBean=(ChatFTPBean)params[1];
 
 				String parse="";
-				String url= SingleInstance.mainContext.getResources().getString(R.string.service_url);
+				String url= SingleInstance.mainContext.getResources().getString(R.string.service_url1);
 				String loginIP = url.substring(url.indexOf("://") + 3);
 				loginIP = loginIP.substring(0, loginIP.indexOf(":"));
 				loginIP = loginIP.trim();

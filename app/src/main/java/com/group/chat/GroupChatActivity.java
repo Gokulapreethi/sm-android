@@ -12,6 +12,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
@@ -34,6 +35,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -136,6 +138,10 @@ import com.util.SingleInstance;
 import com.util.Utils;
 import com.util.VideoPlayer;
 
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.lib.PatientDetailsBean;
 import org.lib.model.BuddyInformationBean;
 import org.lib.model.GroupBean;
@@ -147,7 +153,11 @@ import org.lib.model.RolePatientManagementBean;
 import org.lib.model.TaskDetailsBean;
 import org.lib.model.UdpMessageBean;
 import org.lib.model.WebServiceBean;
+import org.lib.xml.XmlComposer;
+import org.lib.xml.XmlParser;
+import org.net.AndroidInsecureKeepAliveHttpsTransportSE;
 import org.util.Utility;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -2533,15 +2543,21 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         SpecialMessageBean spBean) {
 
         try {
-            if(isPrivateBack){
-                LL_privateReply.setVisibility(View.GONE);
-            }else {
-                msgoptionview.setVisibility(View.GONE);
-            }
-            rel_quoted.setVisibility(View.GONE);
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (isPrivateBack) {
+                        LL_privateReply.setVisibility(View.GONE);
+                    } else {
+                        msgoptionview.setVisibility(View.GONE);
+                    }
+                    rel_quoted.setVisibility(View.GONE);
 
-            audio_call.setTag(0);
-            audio_call.setBackgroundResource(R.drawable.dashboard_call_white);
+                    audio_call.setTag(0);
+                    audio_call.setBackgroundResource(R.drawable.dashboard_call_white);
+                }
+            });
+
             if (CallDispatcher.LoginUser != null
                     && SingleInstance.mainContext
                     .isNetworkConnectionAvailable()) {
@@ -2865,6 +2881,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         pId = null;
         privateMembers = null;
         isReplyBack = false;
+        isUrgent=false;
+        isconfirmBack=false;
         isPrivateBack=false;
         PrivateReply_view=null;
         privateParentID=null;
@@ -2928,6 +2946,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         }if(current_open_activity_detail.containsKey("document3")){
             current_open_activity_detail.remove("document3");
         }
+        msgoptionview.setVisibility(View.GONE);
 
     }
 
@@ -2971,7 +2990,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 chatFTPBean.setCallback(appMainActivity);
                 SingleInstance.mainContext.insertOrUpdateUploadOrDownload(
                         chatFTPBean, "0", "groupchat");
-                FTPPoolManager.processRequest(chatFTPBean);
+//                FTPPoolManager.processRequest(chatFTPBean);
+                ftpUpload(chatFTPBean);
 
             }
         } catch (Exception e) {
@@ -3220,7 +3240,21 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                             adapter.notifyDataSetChanged();
                                             maintainListPosition();
                                         }
-                                    } else {
+                                    }
+                                    else if (!gcBean.getFrom().equals(CallDispatcher.LoginUser) && gcBean.getSubCategory() != null
+                                            && gcBean.getSubCategory().equalsIgnoreCase("gc_r")) {
+                                        for (int i = 0; i < chatList.size(); i++) {
+                                            GroupChatBean gChat = chatList.get(i);
+                                            if (gChat.getParentId()!=null &&gChat.getParentId().equals(gcBean.getParentId())) {
+                                                Log.i("AAAA","chat confirm requst if part ");
+                                                gChat.setReply("gc_r");
+                                                chatList.remove(gcBean);
+                                                adapter.notifyDataSetChanged();
+                                                maintainListPosition();
+                                            }
+                                        }
+                                    }
+                                    else {
                                         chatList.add(gcBean);
                                         Collections.sort(chatList, new GroupMessageComparator());
                                         adapter.notifyDataSetChanged();
@@ -3258,23 +3292,28 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
                         }
                         if (!gcBean.getFrom().equals(CallDispatcher.LoginUser) && gcBean.getSubCategory() != null && gcBean.getSubCategory().equalsIgnoreCase("gc_r")) {
+                            Log.i("AAAA", "chat confirm requst ");
                             for (int i = 0; i < chatList.size(); i++) {
                                 GroupChatBean gChat = chatList.get(i);
-                                if (gChat.getParentId().equals(gcBean.getParentId())) {
+                                if (gChat.getParentId()!=null &&gChat.getParentId().equalsIgnoreCase(gcBean.getParentId())) {
+                                    Log.i("AAAA","chat confirm requst if part ");
                                     gChat.setReply("gc_r");
                                     chatList.remove(gcBean);
+                                    adapter.notifyDataSetChanged();
+                                    maintainListPosition();
                                 }
                             }
                         }
                         if (gcBean.getSubCategory() != null && gcBean.getSubCategory().equalsIgnoreCase("GRB_R")) {
                             for (int i = 0; i < chatList.size(); i++) {
                                 GroupChatBean gChat = chatList.get(i);
-                                if (gChat.getParentId().equals(gcBean.getParentId())) {
+                                if (gChat.getParentId()!=null&&gChat.getParentId().equals(gcBean.getParentId())) {
                                     gChat.setReply("GRB_R");
                                 }
                             }
                         }
                         adapter.notifyDataSetChanged();
+                        maintainListPosition();
                         Log.i("groupchat123",
                                 "chatlist size " + chatList.size());
                     } catch (Exception e) {
@@ -7202,21 +7241,40 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                 final int pos = i;
                                 Log.d("viwVlist", "count " + chat_view.getChildCount());
 
+                                    if (mPlayer.isPlaying()) {
+                                        multiplay_button.setBackgroundResource(R.drawable.audiopause);
+                                    } else {
+                                        multiplay_button.setBackgroundResource(R.drawable.play);
+                                    }
                                 multiplay_button.setOnClickListener(new OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
                                         if(!CallDispatcher.isCallInitiate) {
                                         File newfile=new File(path);
-                                        if (mPlayer.isPlaying()) {
-                                            mPlayer.pause();
-                                            multiplay_button.setBackgroundResource(R.drawable.play);
-                                        } else {
-                                            multiplay_button.setBackgroundResource(R.drawable.audiopause);
-                                            if(newfile.exists())
-                                            playAudio(path, position);
-                                            else
-                                                showToast("No audio to play");
-                                        }
+                                            multiplay_button.setTag(path);
+                                            if (path.equalsIgnoreCase(multiplay_button.getTag().toString())) {
+                                                if (mPlayer.isPlaying()) {
+                                                    mPlayer.pause();
+                                                    multiplay_button.setBackgroundResource(R.drawable.play);
+                                                } else {
+                                                    multiplay_button.setBackgroundResource(R.drawable.audiopause);
+                                                    if (newfile.exists())
+                                                        playAudio(path, position);
+                                                    else
+                                                        showToast("No audio to play");
+                                                }
+                                            }else {
+                                                if (mPlayer.isPlaying()) {
+                                                    mPlayer.pause();
+                                                    multiplay_button.setBackgroundResource(R.drawable.play);
+                                                } else {
+                                                    multiplay_button.setBackgroundResource(R.drawable.audiopause);
+                                                    if (newfile.exists())
+                                                        playAudio(path, position);
+                                                    else
+                                                        showToast("No audio to play");
+                                                }
+                                            }
                                         click = pos;
                                     } else {
                                         showToast("Please Try again...call  in progress");
@@ -12776,6 +12834,232 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         });
 
         alert.show();
+    }
+     public void ftpUpload(ChatFTPBean ftpBean) {
+        Log.i("check","Inside ftpUploadwebservice workerThread");
+
+//        final int notificationID = getNotificationID();
+        try {
+
+            String username = CallDispatcher.LoginUser;
+            String password = CallDispatcher.Password;
+            GroupChatBean gBean= (GroupChatBean) ftpBean.getSourceObject();
+            String filename = ftpBean.getInputFile();
+            String path = filename;
+            Log.i("FileUploadIM1", "path3" +filename);
+
+            Log.i("FileUpload1", "type--->" + gBean.getMimetype());
+            SingleInstance.getGroupChatHistoryWriter().getQueue()
+                    .addObject(gBean);
+
+            if((gBean.getMimetype().equals("mixedfile"))||gBean.getMimetype().equalsIgnoreCase("image")) {
+                String[] paths=filename.split(",");
+                if(paths.length>0) {
+                    for (int i = 0; i < paths.length; i++) {
+                        if(paths[i].endsWith(".jpg")){
+                            Bitmap bitmap = BitmapFactory.decodeFile(paths[i]);
+                            String base64 = encodeTobase64(bitmap);
+                            String fname = paths[i].split("/")[5];
+                            uploadFile(username, password, "photo", fname, base64, filename,SingleInstance.mainContext,ftpBean);
+                        }else
+                        {
+                            String type=gBean.getMimetype();
+                            if (paths[i].split("COMMedia/")[1].endsWith("mp4")) {
+                                type="video";
+                            }else if(paths[i].split("COMMedia/")[1].endsWith("mp3")
+                                    || paths[i].split("COMMedia/")[1].endsWith("amr")){
+                                type="audio";
+                            }else{
+                                type="document";
+                            }
+                            String base64 = encodeAudioVideoToBase64(paths[i]);
+                            String fname = paths[i].split("/")[5];
+                            uploadFile(username, password, type, fname, base64, filename,SingleInstance.mainContext,ftpBean);
+
+                        }
+                    }
+                }else{
+                    Log.i("FileUploadIM", "IF PHOTO||Handsketch--->");
+                    Log.i("FileUploadIM", "path" +filename);
+                    Bitmap bitmap = BitmapFactory.decodeFile(path);
+                    String base64 = encodeTobase64(bitmap);
+                    String fname = filename.split("/")[5];
+                    Log.i("FileUploadIM", "path2" +filename);
+                    Log.i("FileUpload1", "fname--->" + fname);
+                    Log.i("FileUpload1", "uname--->" + username);
+                    Log.i("FileUpload1", "password--->" + password);
+                    Log.i("FileUpload1", "type--->" + gBean.getMimetype());
+                    Log.i("FileUpload1", "base64--->" + base64);
+                    uploadFile(username, password, "photo", fname, base64, filename,SingleInstance.mainContext,ftpBean);
+                }
+            }
+            else if(gBean.getMimetype().equalsIgnoreCase("audio")||gBean.getMimetype().equalsIgnoreCase("video"))
+            {
+//                encodeAudioVideoToBase64
+                Log.i("FileUpload1", "ELSE IF AUDIO||Video--->" );
+                Log.i("FileUpload1", "type--->" + gBean.getMimetype());
+                Log.i("FileUploadIM", "path" +filename);
+                String base64 = encodeAudioVideoToBase64(path);
+                String fname = filename.split("/")[5];
+                Log.i("FileUpload1", "fname--->" + fname);
+                Log.i("FileUpload1", "uname--->" + username);
+                Log.i("FileUpload1", "password--->" + password);
+                Log.i("FileUpload1", "type--->" + gBean.getMimetype());
+                Log.i("FileUpload1", "base64--->" + base64);
+
+                uploadFile(username, password, gBean.getMimetype(), fname, base64,filename,SingleInstance.mainContext,ftpBean);
+            }
+            else if(gBean.getMimetype().equalsIgnoreCase("document")){
+                String fname = filename.split("/")[5];
+                String base64 = encodeAudioVideoToBase64(path);
+                uploadFile(username, password, gBean.getMimetype(), fname, base64,filename,SingleInstance.mainContext,ftpBean);
+            }
+//            notifyStatus(true);
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private String encodeTobase64(Bitmap image) {
+        Bitmap immagex = image;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        immagex.compress(Bitmap.CompressFormat.JPEG, 75, baos);
+        byte[] b = baos.toByteArray();
+        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
+
+        return imageEncoded;
+    }
+
+    private String encodeAudioVideoToBase64(String path){
+        String strFile=null;
+        File file=new File(path);
+        try {
+            FileInputStream file1=new FileInputStream(file);
+            byte[] Bytearray=new byte[(int)file.length()];
+            file1.read(Bytearray);
+            strFile = Base64.encodeToString(Bytearray, Base64.NO_WRAP);//Convert byte array into string
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.i("FileUpload", "audioVideoEncode========" + strFile);
+        return strFile;
+    }
+
+    public void uploadFile(String username, String password,String componenttype,
+                           String filename, String contents,String componentpath,Context context1, Object obj)
+    {
+        Log.i("FileUpload", "Inside CallDisp_UploadFile---> " +componentpath);
+        Log.i("check","worker thread uploadFile ");
+        String[] temp = new String[7];
+        temp[0]=username;
+        temp[1]=password;
+        temp[2]=componenttype;
+        temp[3]=filename;
+        temp[4]=contents;
+        File file = new File(componentpath);
+        long length = (int) file.length();
+        if(!componenttype.equalsIgnoreCase("photo"))
+            length = length/1024;
+        temp[5]="im";
+        temp[6]= String.valueOf(length);
+        Log.i("FileUpload", "Inside CallDisp_UploadFile---> " + temp[6]);
+//  WebServiceReferences.webServiceClient.FileUpload(temp,context1,obj);
+        ChatLoadWebservice taskrunner=new ChatLoadWebservice();
+        taskrunner.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,temp,obj);
+//  taskrunner.execute(temp,obj);
+
+//  UploadThread uploadThread=new UploadThread(temp,obj);
+//  uploadThread.start();
+    }
+
+
+    public class ChatLoadWebservice extends
+            AsyncTask<Object, Object, String> {
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Log.i("check","ChatLoadWebservice onPostExcute ");
+        }
+
+        @Override
+        protected String doInBackground(Object... params) {
+            try {
+                Log.i("check","ChatLoadWebservice doInBackground ");
+                String[] param=(String[])params[0];
+                ChatFTPBean chatFTPBean=(ChatFTPBean)params[1];
+
+                String parse="";
+                String url= SingleInstance.mainContext.getResources().getString(com.cg.snazmed.R.string.service_url1);
+
+                String urlPort = url.substring(url.indexOf("://") + 3);
+                String loginIP = url.substring(url.indexOf("://") + 3);
+                loginIP = loginIP.substring(0, loginIP.indexOf(":"));
+                loginIP = loginIP.trim();
+                urlPort = urlPort.substring(urlPort.indexOf(":") + 1);
+                urlPort = urlPort.substring(0, urlPort.indexOf("/"));
+
+                String server_ip = loginIP;
+                int connect_ort = Integer.parseInt(urlPort);
+                String namespace = "http://ltws.com/";
+                String wsdl_link = url.trim()+"?wsdl";
+                String quotes = "\"";
+
+                parse= wsdl_link.substring(wsdl_link.indexOf("://") + 3);
+                parse = parse.substring(parse.indexOf(":") + 1);
+                parse = parse.substring(parse.indexOf("/"),
+                        parse.indexOf("?"));
+
+                AndroidInsecureKeepAliveHttpsTransportSE androidHttpTransport = new AndroidInsecureKeepAliveHttpsTransportSE(
+                        server_ip, connect_ort, parse, 30000);
+
+                SoapObject mRequest = new SoapObject(namespace, "FileUpload");
+                XmlComposer xmlComposer = new XmlComposer();
+                String fuploadxml = xmlComposer.fileUploadXml(param);
+
+                HashMap<String,String> propert_map = new HashMap<String,String>();
+                propert_map.put("uploadxml", fuploadxml);
+
+                if (propert_map != null) {
+                    for (Map.Entry<String, String> set : propert_map.entrySet()) {
+                        mRequest.addProperty(set.getKey().trim(), set
+                                .getValue().trim());
+                    }
+                }
+
+                Log.d("webservice", "My Server Request  :" + mRequest);
+
+                SoapSerializationEnvelope mEnvelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+                mEnvelope.setOutputSoapObject(mRequest);
+
+                androidHttpTransport.call(quotes + namespace + "FileUpload" + quotes, mEnvelope);
+
+
+                SoapPrimitive mSp = (SoapPrimitive) mEnvelope.getResponse();
+                XmlParser mParser = new XmlParser();
+                boolean mChk = false;
+                mChk = mParser.getResult(mSp.toString());
+                Log.d("webservice", "My Server Resopnse  :" + mSp.toString());
+                if(mChk){
+                    SingleInstance.mainContext.showToast("File upload successfully");
+                    SingleInstance.mainContext.notifyFileUploadResponse(chatFTPBean);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (XmlPullParserException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        protected void onPreExecute() {
+            Log.i("check","ChatLoadWebservice onPreExecute ");
+
+        }
+
     }
 
 }

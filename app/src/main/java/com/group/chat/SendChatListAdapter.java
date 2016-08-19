@@ -29,6 +29,7 @@ import com.util.FullScreenImage;
 import com.util.SingleInstance;
 import com.util.VideoPlayer;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
@@ -115,22 +116,35 @@ public class SendChatListAdapter extends ArrayAdapter<SendListUIBean> {
             });
 
             final SendListUIBean gcBean = userList.get(position);
+            holder.seekBar.setTag(gcBean);
+            holder.play_button.setTag(gcBean);
             if (gcBean.isPlaying()) {
+                Log.i("Audioplay","pusebtn");
                 holder.play_button.setBackgroundResource(R.drawable.audiopause);
             } else {
+                Log.i("Audioplay","playbtn");
                 holder.play_button.setBackgroundResource(R.drawable.play);
             }
             holder.play_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    gcBean.setType("audio");
+                    File newfile=new File(gcBean.getPath());
+                    Log.d("Audioplay1","pathname"+newfile);
+                    Log.d("Audioplay1","positionavlue"+position);
+
                     if(mPlayer.isPlaying()) {
-                        mPlayer.pause();
-                        holder.play_button.setBackgroundResource(R.drawable.audiopause);
                         gcBean.setPlaying(false);
+                        holder.seekBar.setTag(position);
+                        mPlayer.pause();
+                        Log.i("Audioplay1", "pusebtn");
+                        holder.play_button.setBackgroundResource(R.drawable.play);
 
                     }else {
                         gcBean.setPlaying(true);
-                        holder.play_button.setBackgroundResource(R.drawable.play);
+                        Log.i("Audioplay1", "playbtn");
+                        holder.seekBar.setTag(position);
+                        holder.play_button.setBackgroundResource(R.drawable.audiopause);
                         playAudio(gcBean.getPath(), position);
                     }
                 }
@@ -139,48 +153,58 @@ public class SendChatListAdapter extends ArrayAdapter<SendListUIBean> {
 
                 holder.filelayout.setVisibility(View.GONE);
                 holder.ad_play.setVisibility(View.VISIBLE);
-                if (gcBean.getType().equals("audio"))
+                if (gcBean.getType() != null &&gcBean.getType().equalsIgnoreCase("audio"))
                 {
+                    Log.d("Audio","type"+gcBean.getType());
+                    Log.d("Audio","typep"+position);
+                    Log.d("Audio","typem"+mPlayingPosition);
+
                     if (position == mPlayingPosition) {
                         //pb.setVisibility(View.VISIBLE);
+                        Log.i("Audio","typep1"+position);
+                        Log.i("Audio","typem1"+mPlayingPosition);
+
                         Log.d("Audio","seekbar");
                         mProgressUpdater.mBarToUpdate = holder.seekBar;
-                        mProgressUpdater.tvToUpdate = holder.
-                                buddyName;
+                        mProgressUpdater.tvToUpdate = holder.buddyName;
                         mHandler.postDelayed(mProgressUpdater, 100);
                     } else {
-                        //pb.setVisibility(View.GONE);
-                        if (gcBean.getType().equals("audio")) {
-                            try {
-                                holder.seekBar.setProgress(0);
-                                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                                mmr.setDataSource(gcBean.getPath());
-                                String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-                                mmr.release();
-                                String min, sec;
-                                min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration)));
-                                sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(Long.parseLong(duration)) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration))));
-                                if (Integer.parseInt(min) < 10) {
-                                    min = 0 + String.valueOf(min);
-                                }
-                                if (Integer.parseInt(sec) < 10) {
-                                    sec = 0 + String.valueOf(sec);
-                                }
-                                holder.buddyName.setText(min + ":" + sec);
-//                            audio_tv.setText(duration);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                        Log.i("Audio","typep2"+position);
+                        Log.i("Audio","typem2"+mPlayingPosition);
 
-                            holder.seekBar.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+                        Log.d("Audio","seekbar1");
+                        //pb.setVisibility(View.GONE);
+//                        if (gcBean.getType() != null &&gcBean.getType().equalsIgnoreCase("audio")) {
+                        try {
                             holder.seekBar.setProgress(0);
-                            if (mProgressUpdater.mBarToUpdate == holder.seekBar) {
-                                //this progress would be updated, but this is the wrong position
-                                mProgressUpdater.mBarToUpdate = null;
+                            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                            mmr.setDataSource(gcBean.getPath());
+                            String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                            mmr.release();
+                            String min, sec;
+                            min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration)));
+                            sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(Long.parseLong(duration)) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(duration))));
+                            if (Integer.parseInt(min) < 10) {
+                                min = 0 + String.valueOf(min);
                             }
+                            if (Integer.parseInt(sec) < 10) {
+                                sec = 0 + String.valueOf(sec);
+                            }
+                            holder.buddyName.setText(min + ":" + sec);
+//                            audio_tv.setText(duration);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
+
+                        holder.seekBar.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+                        holder.seekBar.setProgress(0);
+                        if (mProgressUpdater.mBarToUpdate == holder.seekBar) {
+                            //this progress would be updated, but this is the wrong position
+                            mProgressUpdater.mBarToUpdate = null;
+                        }
+//                        }
                     }
-            }else{
+                }else{
                     holder.filelayout.setVisibility(View.VISIBLE);
                     holder.ad_play.setVisibility(View.GONE);
                     holder.tv_fname.setText(gcBean.getPath().split("COMMedia/")[1]);

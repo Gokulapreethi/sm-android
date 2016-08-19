@@ -22,6 +22,7 @@ import android.media.MediaRecorder.OnInfoListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -60,6 +61,8 @@ public class CustomVideoCamera extends Activity {
 	private boolean ispaused = false;
 	private Handler handler = new Handler();
 	Context context=null;
+	PowerManager powerManager;
+	PowerManager.WakeLock wakeLock;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +84,9 @@ public class CustomVideoCamera extends Activity {
 			context = this;
 			SingleInstance.contextTable.put("customvideocallscreen",context);
 			recording = false;
+			powerManager = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
+			wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "My Lock");
+			wakeLock.acquire();
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 			setContentView(R.layout.customvideo);
 			filepath = getIntent().getStringExtra("filePath");
@@ -618,6 +624,7 @@ public class CustomVideoCamera extends Activity {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		Locale locale = null;
+		wakeLock.release();
 		SharedPreferences sharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(SingleInstance.mainContext);
 		String locale_string = sharedPreferences.getString("locale",

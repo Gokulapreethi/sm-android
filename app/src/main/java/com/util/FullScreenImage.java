@@ -4,6 +4,7 @@ import java.io.File;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -50,7 +51,11 @@ public class FullScreenImage extends Activity {
 
 					// start 07-10-15 changes //
 
-					Bitmap bitmap = AESFileCrypto.decryptBitmap(file.getAbsolutePath());
+//					Bitmap bitmap = AESFileCrypto.decryptBitmap(file.getAbsolutePath());
+					Bitmap d= BitmapFactory.decodeFile(file.getAbsolutePath());
+					int newHeight = (int) ( d.getHeight() * (512.0 / d.getWidth()) );
+					Bitmap putImage = Bitmap.createScaledBitmap(d, 512, newHeight, true);
+
 //					bitmap = ImageViewer.getResizedBitmap(bitmap,480,640);
 
 					// end 07-10-15 changes //
@@ -64,7 +69,7 @@ public class FullScreenImage extends Activity {
 					touch.setLayoutParams(new LinearLayout.LayoutParams(
 							LinearLayout.LayoutParams.MATCH_PARENT,
 							LinearLayout.LayoutParams.MATCH_PARENT));
-					touch.setImageBitmap(bitmap);
+					touch.setImageBitmap(putImage);
 					touch.setMaxZoom(3f);
 
 					layout.addView(touch);

@@ -7311,6 +7311,9 @@ public class DBAccess extends SQLiteOpenHelper {
 				if(cur.getString(28)!=null)
 				groupChatBean.setSenderWithdraw(cur.getString(28));
 				groupChatBean.setDateandtime(cur.getString(29));
+				String status=LoadChatInfo(groupChatBean.getSignalid());
+				groupChatBean.setSent(status);
+				Log.i("BBB","chat staus "+status);
 
 				groupChatList.add(groupChatBean);
 				cur.moveToNext();
@@ -10922,14 +10925,14 @@ public class DBAccess extends SQLiteOpenHelper {
 	public void updateseallcomments(String value, String commentdate,String patientID){
 		try{
 			Log.d("updateseeall", "incoming");
-			Log.d("updateseeall", "incoming1"+value+commentdate+patientID);
+			Log.d("updateseeall", "incoming1" + value + commentdate + patientID);
 			String s = "update seeallpatientdetails set active=1 where diagnosis='"+value+ "' and commentdate='"+commentdate+"' and patientid='"+patientID+"'";
 			String s1 = "update seeallpatientdetails set active=0 where diagnosis!='"+value+ "' and commentdate!='"+commentdate+"' and patientid='"+patientID+"'";
 			db.execSQL(s);
 			db.execSQL(s1);
 			Log.d("updateseeall", "SQL => " + s);
 		}catch(Exception e){
-			Log.d("updateseeall","novalue in DB for "+value+ commentdate+patientID+" returns with error "+e.toString());
+			Log.d("updateseeall", "novalue in DB for " + value + commentdate + patientID + " returns with error " + e.toString());
 		}
 
 	}
@@ -11333,7 +11336,31 @@ public class DBAccess extends SQLiteOpenHelper {
 		}
 		return dateandtime;
 	}
+	public String LoadChatInfo(String sid) {
+		int row_id = 0;
+		String status=new String();
+		try {
+			Cursor cur = null;
+			if (db.isOpen()) {
+			} else
+				openDatabase();
+			String strGetQry = null;
+			strGetQry = "select status from chatinfo where sid='" + sid + "'";
+			cur = db.rawQuery(strGetQry, null);
+			int len = cur.getCount();
+			cur.moveToFirst();
 
+			while (cur.isAfterLast() == false) {
+				status=cur.getString(0);
+				cur.moveToNext();
+			}
+			cur.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return status;
+	}
 
 
 }

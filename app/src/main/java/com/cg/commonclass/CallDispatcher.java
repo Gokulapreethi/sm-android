@@ -11369,15 +11369,16 @@ private TrustManager[] get_trust_mgr() {
 	public void downloadFile(String username, String password,
 							 String filename)
 	{
-		String[] dtemp = new String[3];
+
         String[] fname=filename.split(",");
         if(fname.length>0)
         {
             for(int i=0;i<fname.length;i++) {
+				String[] dtemp = new String[3];
                 dtemp[0] = username;
                 dtemp[1] = password;
                 dtemp[2] = fname[i];
-                Log.d("XP WSD", "User Name " + username + " Password " + password + " File Name " + filename);
+                Log.d("XP WSD", "User Name " + username + " Password " + password + " File Name " + fname[i]);
 				String strIPath = Environment.getExternalStorageDirectory()
 						+ "/COMMedia/" + fname[i];
 				File file=new File(strIPath);
@@ -11389,6 +11390,7 @@ private TrustManager[] get_trust_mgr() {
 				}
             }
         }else{
+			String[] dtemp = new String[3];
             dtemp[0]=username;
             dtemp[1]=password;
             dtemp[2]=filename;
@@ -17202,9 +17204,10 @@ private TrustManager[] get_trust_mgr() {
 		protected String doInBackground(String[]... params) {
 			try {
 				String[] param=params[0];
+				Log.i("XP WSD","file name ********** "+param[2]);
 
 				String parse="";
-				String url= SingleInstance.mainContext.getResources().getString(R.string.service_url);
+				String url= SingleInstance.mainContext.getResources().getString(R.string.service_url1);
 				String loginIP = url.substring(url.indexOf("://") + 3);
 				loginIP = loginIP.substring(0, loginIP.indexOf(":"));
 				loginIP = loginIP.trim();
