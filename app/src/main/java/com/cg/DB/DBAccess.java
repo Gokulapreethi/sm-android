@@ -10810,23 +10810,19 @@ public class DBAccess extends SQLiteOpenHelper {
 		String val="3";
 		try {
 			ContentValues cv = new ContentValues();
-
-			if (isRecordExists("select * from chatinfo where sid='" + sid + "' and members='" + members + "'")){
+			if (isRecordExists("select * from chatinfo where sid='" + sid + "' and members='" + members + "'")) {
 				cv.put("members", members);
 				cv.put("status", status);
 				cv.put("datetime", date);
-				row_id = (int) db.update("chatinfo", cv, "sid='"+ sid + "' and members='"+ members + "'", null);
-				}
-			else {
+				row_id = (int) db.update("chatinfo", cv, "sid='" + sid + "' and members='" + members + "'", null);
+			}else {
 				cv.put("sid", sid);
 				cv.put("members", members);
 				cv.put("status", status);
 				cv.put("datetime", date);
-				if (isRecordExists("select * from chatinfo where sid='"+ sid + "' and members='"+ members + "' and status='"+ val + "'"))
-				{}else {
-					row_id = (int) db.insert("chatinfo", null, cv);
-				}
+				row_id = (int) db.insert("chatinfo", null, cv);
 			}
+
 			return 1;
 		} catch (Exception e) {
 			e.printStackTrace();

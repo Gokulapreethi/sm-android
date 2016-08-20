@@ -49,6 +49,7 @@ public class SendChatListAdapter extends ArrayAdapter<SendListUIBean> {
     private int checkboxcount;
     ImageLoader imageLoader;
     GroupChatActivity groupChatActivity;
+    private int mPlayingPosition = -1;
 
 
     /**
@@ -160,19 +161,14 @@ public class SendChatListAdapter extends ArrayAdapter<SendListUIBean> {
                     Log.d("Audio","typem"+mPlayingPosition);
 
                     if (position == mPlayingPosition) {
-                        //pb.setVisibility(View.VISIBLE);
-                        Log.i("Audio","typep1"+position);
-                        Log.i("Audio","typem1"+mPlayingPosition);
+                        Log.i("AAAA","enters into same position ");
 
                         Log.d("Audio","seekbar");
                         mProgressUpdater.mBarToUpdate = holder.seekBar;
                         mProgressUpdater.tvToUpdate = holder.buddyName;
                         mHandler.postDelayed(mProgressUpdater, 100);
                     } else {
-                        Log.i("Audio","typep2"+position);
-                        Log.i("Audio","typem2"+mPlayingPosition);
-
-                        Log.d("Audio","seekbar1");
+                        Log.i("AAAA", "enters into update else part ");
                         //pb.setVisibility(View.GONE);
 //                        if (gcBean.getType() != null &&gcBean.getType().equalsIgnoreCase("audio")) {
                         try {
@@ -257,7 +253,7 @@ public class SendChatListAdapter extends ArrayAdapter<SendListUIBean> {
         RelativeLayout ad_play;
     }
     private final MediaPlayer mPlayer = new MediaPlayer();
-    private int mPlayingPosition = -1;
+
     private Handler mHandler = new Handler();
     private PlaybackUpdater mProgressUpdater = new PlaybackUpdater();
     private class PlaybackUpdater implements Runnable {
@@ -266,6 +262,7 @@ public class SendChatListAdapter extends ArrayAdapter<SendListUIBean> {
         @Override
         public void run() {
             if ((mPlayingPosition != -1) && (null != mBarToUpdate)) {
+                Log.i("AAAA","enters into update ");
                 double tElapsed = mPlayer.getCurrentPosition();
                 int fTime = mPlayer.getDuration();
                 double timeRemaining = fTime - tElapsed;
@@ -305,7 +302,7 @@ public class SendChatListAdapter extends ArrayAdapter<SendListUIBean> {
             mPlayingPosition = position;
             mHandler.postDelayed(mProgressUpdater, 500);
             //trigger list refresh, this will make progressbar start updating if visible
-           this.notifyDataSetChanged();
+           notifyDataSetChanged();
         } catch (IOException e) {
             e.printStackTrace();
             stopPlayback();

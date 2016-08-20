@@ -348,7 +348,7 @@
     <string name="option2">Option 2</string>
     <string name="option3">Option 3</string>
 
-    <string name="app_version">09Aug2016</string>
+    <string name="app_version">20Aug2016 06:00 PM</string>
     <string name="app_date">2014-12-12 00:00:00</string>
     <!-- <string name="service_url"> https://172.16.1.92:443/NOTESServices/Service</string> -->
     <!-- <string name="service_url"> https://122.165.92.171:443/NOTESServices/Service</string> -->
@@ -365,7 +365,7 @@
     <!--<string name="service_url">https://122.165.92.35:443/SNAZMEDServices/Service</string>-->
     <string name="service_url">https://66.36.228.47:443/SNAZMEDServices/Service</string>
     <!--<string name="service_url">https://www.snazevents.com/SNAZMEDServices/Service</string>-->
-    <!--<string name="service_url">https://10.20.95.201:443/SNAZMEDServices/Service</string>-->
+    <string name="service_url1">https://66.36.228.50:443/AddressAgentService/Service</string>
     <!--<string name="service_url">https://172.16.1.92:8443/SNAZMEDServices/Service</string>-->
     <!--<string name="service_url">https://172.16.1.112:8443/SNAZMEDServices/Service</string>-->
        <string name="error">Sorry, unable to continue with Notes. Please try again later.

@@ -330,6 +330,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
     ImageView btMenu;
     private RelativeLayout mainHeader;
     boolean chattemplate=false;
+    private String finalPlayFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -2798,7 +2799,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 //                            if (position == -1) {
                                 chatList.add(gcBean);
                                 adapter.notifyDataSetChanged();
-//                                maintainListPosition();
+                                maintainListPosition();
 //                            } else {
 //                                chatList.add(position + 1, gcBean);
 //                                adapter.notifyDataSetChanged();
@@ -2862,6 +2863,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                             chatList);
                 }
                 adapter.notifyDataSetChanged();
+                maintainListPosition();
             } else {
                 if (!SingleInstance.mainContext.isNetworkConnectionAvailable()) {
                     showToast("Sorry no internet connection");
@@ -3167,6 +3169,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                             chatList.add(gcBean);
                                         Collections.sort(chatList, new GroupMessageComparator());
                                             adapter.notifyDataSetChanged();
+                                        maintainListPosition();
 //                                            maintainListPosition();
 //                                        } else {
 //                                            chatList.add(position + 1, gcBean);
@@ -3352,7 +3355,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                lv.setSelection(chatList.size() - 1);
+                lv.setSelection(lv.getCount() - 1);
             }
         });
 
@@ -5836,6 +5839,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                             }
                         }
                     });
+                    receive_quotedLayout=(RelativeLayout)convertView.findViewById(R.id.sen_quoted);
+                    receiver_tvquoted_msg=(TextView)convertView.findViewById(R.id.sen_tvquoted_msg);
 //				senderLayout.setBackgroundResource(R.color.gchat_bg);
 //				receiverLayout.setBackgroundResource(R.color.gchat_bg);
                     if (gcBean.getFrom().equals(CallDispatcher.LoginUser)) {
@@ -6211,9 +6216,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
                         //For Receiver Quote
                         //Start
-                        receive_quotedLayout=(RelativeLayout)convertView.findViewById(R.id.sen_quoted);
                         receive_quotedLayout.setVisibility(View.GONE);
-                        receiver_tvquoted_msg=(TextView)convertView.findViewById(R.id.sen_tvquoted_msg);
+
                         receiver_tvquoted_msg.setVisibility(View.GONE);
                         //End
 
@@ -6269,291 +6273,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                                 pb.getPhoto(),
                                         Sender_img, R.drawable.icon_buddy_aoffline);
                         }
-                        if (gcBean.getSubCategory() != null) {
-                            if (gcBean.getSubCategory().equalsIgnoreCase("gp")) {
-                                // deadLineReply.setVisibility(View.GONE);
-                                if(gcBean.getReply()!=null && (gcBean.getReply().equalsIgnoreCase("gp_r") || gcBean.getReply().equalsIgnoreCase("gp"))){
-                                    btn_private.setVisibility(View.GONE);
-                                }else {
-                                    tv_user.setText(gcBean.getFrom());
-                                    if (gcBean.getReply() != null && gcBean.getReply().equals("private")) {
-                                        btn_private.setVisibility(View.GONE);
-                                        tv_replied.setText("Private Reply to :" + gcBean.getFrom());
-                                    } else {
-                                        btn_private.setVisibility(View.VISIBLE);
-                                    }
-                                    convertView.setBackgroundResource(R.color.gchat_bg);
-                                    deadlineReplyText.setVisibility(View.GONE);
-                                    btn_private.setTag(gcBean);
-                                }
-                            }else if(gcBean.getSubCategory()!=null && gcBean.getSubCategory().equalsIgnoreCase("gp_r")){
-//
-                            }else if (gcBean.getSubCategory().equalsIgnoreCase(
-                                    "gs")) {
-                                // deadLineReply.setVisibility(View.GONE);
-                                deadlineReplyText.setVisibility(View.GONE);
-//                                convertView.setBackgroundResource(R.color.gchat_bg);
-//                                senderLayout
-//                                        .setBackgroundResource(R.color.gchat_bg);
-                                if (SingleInstance.scheduledMsg.containsKey(gcBean
-                                        .getSignalid())) {
-                                    senderLayout.setVisibility(View.GONE);
-                                } else {
-                                    senderLayout.setVisibility(View.VISIBLE);
-                                    scheduleMsg.setVisibility(View.VISIBLE);
-                                    scheduleMsg
-                                            .setImageResource(R.drawable.icon_footer_reminder);
-                                    scheduleMsg.setTag(gcBean);
-                                    tv_user.setText(SingleInstance.mainContext.getResources().getString(R.string.message_schedule_by)
-                                            + gcBean.getFrom());
-                                }
-                            } else if (gcBean.getSubCategory().equalsIgnoreCase(
-                                    "gd")) {
-//                                senderLayout
-//                                        .setBackgroundResource(R.color.deadlingclr);
-//                                convertView
-//                                        .setBackgroundResource(R.color.deadlingclr);
-                                scheduleMsg.setVisibility(View.VISIBLE);
-                                scheduleMsg
-                                        .setImageResource(R.drawable.icon_footer_reminder);
-                                scheduleMsg.setTag(gcBean);
-                                // tv_user.setText("DeadLine set by : "
-                                // + gcBean.getFrom() + "\nAssigned to : "
-                                // + gcBean.getPrivateMembers() + "\nTime : "
-                                // + gcBean.getReminderTime() + "\n");
-                                tv_user.setText(SingleInstance.mainContext.getResources().getString(R.string.dead_line_assigned_to)
-                                        + gcBean.getPrivateMembers() + "\nAt : "
-                                        + gcBean.getReminderTime() + "\n");
-                                if (gcBean.getMessage() != null) {
-                                    String msg = gcBean.getMessage();
-                                    Log.i("msg123", "message1 contains status : "
-                                            + gcBean.getMessage());
-                                    if (gcBean.getMessage().contains("Status : ")) {
-                                        Log.i("msg123",
-                                                "message2 contains status : "
-                                                        + gcBean.getMessage());
-                                        String tempMsg = msg.substring(0,
-                                                msg.indexOf("Status"));
-                                        String originalMsg = msg.replace(tempMsg,
-                                                "");
-                                        Log.i("msg123", "temp msg : " + tempMsg
-                                                + "original msg : " + originalMsg);
-                                        deadlineReplyText.setText(originalMsg);
-                                    } else {
-                                        deadlineReplyText.setText("");
-                                    }
-                                } else {
-                                    deadlineReplyText.setText("");
-                                }
-                                deadlineReplyText.setVisibility(View.VISIBLE);
 
-                                if (gcBean.getPrivateMembers() != null
-                                        && gcBean.getPrivateMembers().length() > 0) {
-                                    String[] privateMembers = gcBean
-                                            .getPrivateMembers().split(",");
-                                    for (String tmp : privateMembers) {
-                                        if (tmp.equalsIgnoreCase(CallDispatcher.LoginUser)) {
-                                            // deadLineReply
-                                            // .setVisibility(View.VISIBLE);
-                                            // deadLineReply(deadLineReply, gcBean);
-                                            break;
-                                        } else {
-                                            // deadLineReply.setVisibility(View.GONE);
-                                        }
-                                    }
-                                }
-                            } else if (gcBean.getSubCategory().equalsIgnoreCase(
-                                    "gc") || gcBean.getSubCategory().equalsIgnoreCase(
-                                    "gc_r")) {
-                                tv_user.setText(gcBean.getFrom());
-                                if (gcBean.getReply() != null && gcBean.getReply().equals("gc_r")) {
-                                    btn_confrm.setVisibility(View.GONE);
-                                    tv_replied.setVisibility(View.VISIBLE);
-                                    tv_replied.setText("Confirmed" + Html.fromHtml(tick));
-                                    //For withdraw message
-                                    //start
-//                                    if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-//                                            && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
-                                    if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
-                                        tv_replied.setVisibility(View.GONE);
-                                    }else{
-                                        tv_replied.setVisibility(View.VISIBLE);
-                                    }
-                                    //End
-
-                                } else {
-                                    btn_confrm.setVisibility(View.VISIBLE);
-                                    //For withdraw message
-                                    //start
-//                                    if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-//                                            && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
-                                    if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
-                                        btn_confrm.setVisibility(View.GONE);
-                                    }else{
-                                        btn_confrm.setVisibility(View.VISIBLE);
-                                    }
-                                    //End
-                                }
-                            } else if (gcBean.getSubCategory().equalsIgnoreCase(
-                                    "gu")) {
-                                tv_urgent.setVisibility(View.VISIBLE);
-                                tv_urgent.setTextColor(Color.parseColor("#daa520"));
-                                tv_urgent.setText("  Urgent  !  ");
-                                //For withdraw message
-                                //start
-//                                if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-//                                        && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
-                                if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
-                                    tv_urgent.setVisibility(View.GONE);
-                                }else{
-                                    tv_urgent.setVisibility(View.VISIBLE);
-                                }
-                                //End
-                            } else if (gcBean.getSubCategory().equalsIgnoreCase(
-                                    "grb") || gcBean.getSubCategory().equalsIgnoreCase(
-                                    "GRB_R")) {
-                                // deadLineReply.setVisibility(View.GONE);
-                                Log.i("reply","receiver side grb|| GRB_R");
-                                deadlineReplyText.setVisibility(View.GONE);
-//                                if (gcBean.getPrivateMembers() != null
-//                                        && gcBean.getPrivateMembers().length() > 0) {
-//                                    String[] privateMembers = gcBean
-//                                            .getPrivateMembers().split(",");
-//                                    for (String tmp : privateMembers) {
-//                                        if (tmp.equalsIgnoreCase(CallDispatcher.LoginUser)) {
-//										tv_user.setText(SingleInstance.mainContext.getResources().getString(R.string.reply_back_message_from)
-//												+ gcBean.getFrom()
-//										 + "\nTo : "
-//										 + gcBean.getPrivateMembers());
-                                            Log.i("reply","receiver side grb|| GRB_R loginuser");
-                                            tv_user.setText(gcBean.getFrom());
-//                                            senderLayout
-//                                                    .setBackgroundResource(R.color.greenlight);
-//                                            convertView
-//                                                    .setBackgroundResource(R.color.lgreen);
-                                            scheduleMsg.setTag(gcBean);
-                                            btn_reply.setTag(gcBean);
-                                            scheduleMsg
-                                                    .setImageResource(R.drawable.replybg);
-                                            scheduleMsg.setVisibility(View.VISIBLE);
-                                            if (gcBean.getReply() != null && !gcBean.getReply().equals("") && gcBean.getReply().equalsIgnoreCase("GRB_R")) {
-                                                Log.i("reply","receiver side GRB_R loginuser");
-                                                btn_reply.setVisibility(View.GONE);
-
-                                                //For Receiver Quote
-                                                //Start
-//                                                if(gcBean.getMimetype()!=null && gcBean.getMimetype().equalsIgnoreCase("text") &&
-//                                                        gcBean.getMessage()!=null){
-                                                    Log.i("reply","receiver side GRB_R loginuser quote visible");
-                                                    //Old Code start
-//                                                    if(position>0){
-//                                                    GroupChatBean groupChatBean=chatList.get(position-1);
-//                                                    receive_quotedLayout.setVisibility(View.VISIBLE);
-//                                                    receiver_tvquoted_msg.setVisibility(View.VISIBLE);
-//                                                    if(getReplyMessage(groupChatBean)!=null) {
-//                                                        receiver_tvquoted_msg.setText(getReplyMessage(groupChatBean));
-//                                                    }
-//                                                        //For withdraw message
-//                                                        //start
-////                                                        if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-////                                                                && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
-//                                                        if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
-//                                                            receive_quotedLayout.setVisibility(View.GONE);
-//                                                        }else{
-//                                                            receive_quotedLayout.setVisibility(View.VISIBLE);
-//                                                        }
-//                                                        //End
-//                                                    }
-                                                    //Old Code End
-
-
-                                                    //New Code Start
-                                                    for (int i = 0; i < chatList.size(); i++) {
-                                                        GroupChatBean groupChatBean = chatList
-                                                                .get(i);
-                                                        if (groupChatBean != null
-                                                                && groupChatBean.getParentId() != null&& gcBean.getParentId()!=null
-                                                                && groupChatBean
-                                                                .getParentId()
-                                                                .equals(gcBean
-                                                                        .getParentId())) {
-                                                            receive_quotedLayout.setVisibility(View.VISIBLE);
-                                                            receiver_tvquoted_msg.setVisibility(View.VISIBLE);
-                                                            if(getReplyMessage(groupChatBean)!=null) {
-                                                                receiver_tvquoted_msg.setText("'' "+getReplyMessage(groupChatBean)+" ''");
-                                                            }
-                                                            //For withdraw message
-                                                            //start
-//                                                        if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-//                                                                && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
-                                                            if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
-                                                                receive_quotedLayout.setVisibility(View.GONE);
-                                                            }else{
-                                                                receive_quotedLayout.setVisibility(View.VISIBLE);
-                                                            }
-                                                            //End
-                                                            break;
-                                                        }
-                                                    }
-                                                    //New Code End
-//                                                }
-                                                //End
-                                            } else {
-                                                Log.i("reply","receiver side GRB_R loginuser else btn_reply visble");
-                                                btn_reply.setVisibility(View.VISIBLE);
-                                                //For withdraw message
-                                                //start
-//                                                if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-//                                                        && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
-                                                if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
-                                                    btn_reply.setVisibility(View.GONE);
-                                                }else{
-                                                    btn_reply.setVisibility(View.VISIBLE);
-                                                }
-                                                //End
-                                            }
-                                            if (gcBean.getReplied() != null && gcBean.getReplied().equals("reply")) {
-                                                tv_replied.setVisibility(View.VISIBLE);
-                                                tv_replied.setText("Replied " + Html.fromHtml(tick));
-                                                //For Receiver Quote
-                                                //Start
-                                                receive_quotedLayout.setVisibility(View.GONE);
-                                                receiver_tvquoted_msg.setVisibility(View.GONE);
-                                                //End
-                                                //For withdraw message
-                                                //start
-//                                                if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
-//                                                        && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
-                                                if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
-                                                    tv_replied.setVisibility(View.GONE);
-                                                }else{
-                                                    tv_replied.setVisibility(View.VISIBLE);
-                                                }
-                                                //End
-                                            }
-//                                            break;
-//                                        } else {
-//                                            Log.i("reply","receiver side grb|| GRB_R not loginuser");
-//                                            senderLayout
-//                                                    .setBackgroundResource(R.color.lgreen);
-//                                            scheduleMsg.setVisibility(View.GONE);
-//                                            convertView
-//                                                    .setBackgroundResource(R.color.lgreen);
-//                                        }
-//                                    }
-//                                }
-
-                            } else {
-                                Log.i("reply","receiver side grb|| GRB_R else ");
-                                deadlineReplyText.setVisibility(View.GONE);
-                                tv_user.setText(gcBean.getFrom());
-                                scheduleMsg.setVisibility(View.GONE);
-                            }
-                        } else {
-                            deadlineReplyText.setVisibility(View.GONE);
-                            tv_user.setText(gcBean.getFrom());
-                            scheduleMsg.setVisibility(View.GONE);
-                        }
                         saveMsg.setTag(gcBean);
                         if (Buddyname(gcBean.getFrom()) != null) {
                             tv_user.setText(Buddyname(gcBean.getFrom()));
@@ -6844,6 +6564,291 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                             // notify_icon.setVisibility(View.VISIBLE);
 
                         }
+                    }
+                    if (gcBean.getSubCategory() != null) {
+                        if (gcBean.getSubCategory().equalsIgnoreCase("gp")) {
+                            // deadLineReply.setVisibility(View.GONE);
+                            if(gcBean.getReply()!=null && (gcBean.getReply().equalsIgnoreCase("gp_r") || gcBean.getReply().equalsIgnoreCase("gp"))){
+                                btn_private.setVisibility(View.GONE);
+                            }else {
+                                tv_user.setText(Buddyname(gcBean.getFrom()));
+                                if (gcBean.getReply() != null && gcBean.getReply().equals("private")) {
+                                    btn_private.setVisibility(View.GONE);
+                                    tv_replied.setText("Private Reply to :" + gcBean.getFrom());
+                                } else {
+                                    btn_private.setVisibility(View.VISIBLE);
+                                }
+                                convertView.setBackgroundResource(R.color.gchat_bg);
+                                deadlineReplyText.setVisibility(View.GONE);
+                                btn_private.setTag(gcBean);
+                            }
+                        }else if(gcBean.getSubCategory()!=null && gcBean.getSubCategory().equalsIgnoreCase("gp_r")){
+//
+                        }else if (gcBean.getSubCategory().equalsIgnoreCase(
+                                "gs")) {
+                            // deadLineReply.setVisibility(View.GONE);
+                            deadlineReplyText.setVisibility(View.GONE);
+//                                convertView.setBackgroundResource(R.color.gchat_bg);
+//                                senderLayout
+//                                        .setBackgroundResource(R.color.gchat_bg);
+                            if (SingleInstance.scheduledMsg.containsKey(gcBean
+                                    .getSignalid())) {
+                                senderLayout.setVisibility(View.GONE);
+                            } else {
+                                senderLayout.setVisibility(View.VISIBLE);
+                                scheduleMsg.setVisibility(View.VISIBLE);
+                                scheduleMsg
+                                        .setImageResource(R.drawable.icon_footer_reminder);
+                                scheduleMsg.setTag(gcBean);
+                                tv_user.setText(SingleInstance.mainContext.getResources().getString(R.string.message_schedule_by)
+                                        + gcBean.getFrom());
+                            }
+                        } else if (gcBean.getSubCategory().equalsIgnoreCase(
+                                "gd")) {
+//                                senderLayout
+//                                        .setBackgroundResource(R.color.deadlingclr);
+//                                convertView
+//                                        .setBackgroundResource(R.color.deadlingclr);
+                            scheduleMsg.setVisibility(View.VISIBLE);
+                            scheduleMsg
+                                    .setImageResource(R.drawable.icon_footer_reminder);
+                            scheduleMsg.setTag(gcBean);
+                            // tv_user.setText("DeadLine set by : "
+                            // + gcBean.getFrom() + "\nAssigned to : "
+                            // + gcBean.getPrivateMembers() + "\nTime : "
+                            // + gcBean.getReminderTime() + "\n");
+                            tv_user.setText(SingleInstance.mainContext.getResources().getString(R.string.dead_line_assigned_to)
+                                    + gcBean.getPrivateMembers() + "\nAt : "
+                                    + gcBean.getReminderTime() + "\n");
+                            if (gcBean.getMessage() != null) {
+                                String msg = gcBean.getMessage();
+                                Log.i("msg123", "message1 contains status : "
+                                        + gcBean.getMessage());
+                                if (gcBean.getMessage().contains("Status : ")) {
+                                    Log.i("msg123",
+                                            "message2 contains status : "
+                                                    + gcBean.getMessage());
+                                    String tempMsg = msg.substring(0,
+                                            msg.indexOf("Status"));
+                                    String originalMsg = msg.replace(tempMsg,
+                                            "");
+                                    Log.i("msg123", "temp msg : " + tempMsg
+                                            + "original msg : " + originalMsg);
+                                    deadlineReplyText.setText(originalMsg);
+                                } else {
+                                    deadlineReplyText.setText("");
+                                }
+                            } else {
+                                deadlineReplyText.setText("");
+                            }
+                            deadlineReplyText.setVisibility(View.VISIBLE);
+
+                            if (gcBean.getPrivateMembers() != null
+                                    && gcBean.getPrivateMembers().length() > 0) {
+                                String[] privateMembers = gcBean
+                                        .getPrivateMembers().split(",");
+                                for (String tmp : privateMembers) {
+                                    if (tmp.equalsIgnoreCase(CallDispatcher.LoginUser)) {
+                                        // deadLineReply
+                                        // .setVisibility(View.VISIBLE);
+                                        // deadLineReply(deadLineReply, gcBean);
+                                        break;
+                                    } else {
+                                        // deadLineReply.setVisibility(View.GONE);
+                                    }
+                                }
+                            }
+                        } else if (gcBean.getSubCategory().equalsIgnoreCase(
+                                "gc") || gcBean.getSubCategory().equalsIgnoreCase(
+                                "gc_r")) {
+                            tv_user.setText(Buddyname(gcBean.getFrom()));
+                            if (gcBean.getReply() != null && gcBean.getReply().equals("gc_r")) {
+                                btn_confrm.setVisibility(View.GONE);
+                                tv_replied.setVisibility(View.VISIBLE);
+                                tv_replied.setText("Confirmed" + Html.fromHtml(tick));
+                                //For withdraw message
+                                //start
+//                                    if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+//                                            && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+                                if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
+                                    tv_replied.setVisibility(View.GONE);
+                                }else{
+                                    tv_replied.setVisibility(View.VISIBLE);
+                                }
+                                //End
+
+                            } else {
+                                btn_confrm.setVisibility(View.VISIBLE);
+                                //For withdraw message
+                                //start
+//                                    if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+//                                            && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+                                if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
+                                    btn_confrm.setVisibility(View.GONE);
+                                }else{
+                                    btn_confrm.setVisibility(View.VISIBLE);
+                                }
+                                //End
+                            }
+                        } else if (gcBean.getSubCategory().equalsIgnoreCase(
+                                "gu")) {
+                            tv_urgent.setVisibility(View.VISIBLE);
+                            tv_urgent.setTextColor(Color.parseColor("#daa520"));
+                            tv_urgent.setText("  Urgent  !  ");
+                            //For withdraw message
+                            //start
+//                                if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+//                                        && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+                            if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
+                                tv_urgent.setVisibility(View.GONE);
+                            }else{
+                                tv_urgent.setVisibility(View.VISIBLE);
+                            }
+                            //End
+                        } else if (gcBean.getSubCategory().equalsIgnoreCase(
+                                "grb") || gcBean.getSubCategory().equalsIgnoreCase(
+                                "GRB_R")) {
+                            // deadLineReply.setVisibility(View.GONE);
+                            Log.i("reply","receiver side grb|| GRB_R");
+                            deadlineReplyText.setVisibility(View.GONE);
+//                                if (gcBean.getPrivateMembers() != null
+//                                        && gcBean.getPrivateMembers().length() > 0) {
+//                                    String[] privateMembers = gcBean
+//                                            .getPrivateMembers().split(",");
+//                                    for (String tmp : privateMembers) {
+//                                        if (tmp.equalsIgnoreCase(CallDispatcher.LoginUser)) {
+//										tv_user.setText(SingleInstance.mainContext.getResources().getString(R.string.reply_back_message_from)
+//												+ gcBean.getFrom()
+//										 + "\nTo : "
+//										 + gcBean.getPrivateMembers());
+                            Log.i("reply","receiver side grb|| GRB_R loginuser");
+                            tv_user.setText(Buddyname(gcBean.getFrom()));
+//                                            senderLayout
+//                                                    .setBackgroundResource(R.color.greenlight);
+//                                            convertView
+//                                                    .setBackgroundResource(R.color.lgreen);
+                            scheduleMsg.setTag(gcBean);
+                            btn_reply.setTag(gcBean);
+                            scheduleMsg
+                                    .setImageResource(R.drawable.replybg);
+                            scheduleMsg.setVisibility(View.GONE);
+                            if (gcBean.getReply() != null && !gcBean.getReply().equals("") && gcBean.getReply().equalsIgnoreCase("GRB_R")) {
+                                Log.i("reply","receiver side GRB_R loginuser");
+                                btn_reply.setVisibility(View.GONE);
+
+                                //For Receiver Quote
+                                //Start
+//                                                if(gcBean.getMimetype()!=null && gcBean.getMimetype().equalsIgnoreCase("text") &&
+//                                                        gcBean.getMessage()!=null){
+                                Log.i("reply","receiver side GRB_R loginuser quote visible");
+                                //Old Code start
+//                                                    if(position>0){
+//                                                    GroupChatBean groupChatBean=chatList.get(position-1);
+//                                                    receive_quotedLayout.setVisibility(View.VISIBLE);
+//                                                    receiver_tvquoted_msg.setVisibility(View.VISIBLE);
+//                                                    if(getReplyMessage(groupChatBean)!=null) {
+//                                                        receiver_tvquoted_msg.setText(getReplyMessage(groupChatBean));
+//                                                    }
+//                                                        //For withdraw message
+//                                                        //start
+////                                                        if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+////                                                                && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+//                                                        if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
+//                                                            receive_quotedLayout.setVisibility(View.GONE);
+//                                                        }else{
+//                                                            receive_quotedLayout.setVisibility(View.VISIBLE);
+//                                                        }
+//                                                        //End
+//                                                    }
+                                //Old Code End
+
+
+                                //New Code Start
+                                for (int i = 0; i < chatList.size(); i++) {
+                                    GroupChatBean groupChatBean = chatList
+                                            .get(i);
+                                    if (groupChatBean != null
+                                            && groupChatBean.getParentId() != null&& gcBean.getParentId()!=null
+                                            && groupChatBean
+                                            .getParentId()
+                                            .equals(gcBean
+                                                    .getParentId())) {
+                                        receive_quotedLayout.setVisibility(View.VISIBLE);
+                                        receiver_tvquoted_msg.setVisibility(View.VISIBLE);
+                                        if(getReplyMessage(groupChatBean)!=null) {
+                                            receiver_tvquoted_msg.setText("'' "+getReplyMessage(groupChatBean)+" ''");
+                                        }
+                                        //For withdraw message
+                                        //start
+//                                                        if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+//                                                                && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+                                        if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
+                                            receive_quotedLayout.setVisibility(View.GONE);
+                                        }else{
+                                            receive_quotedLayout.setVisibility(View.VISIBLE);
+                                        }
+                                        //End
+                                        break;
+                                    }
+                                }
+                                //New Code End
+//                                                }
+                                //End
+                            } else {
+                                Log.i("reply","receiver side GRB_R loginuser else btn_reply visble");
+                                btn_reply.setVisibility(View.VISIBLE);
+                                //For withdraw message
+                                //start
+//                                                if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+//                                                        && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+                                if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
+                                    btn_reply.setVisibility(View.GONE);
+                                }else{
+                                    btn_reply.setVisibility(View.VISIBLE);
+                                }
+                                //End
+                            }
+                            if (gcBean.getReplied() != null && gcBean.getReplied().equals("reply")) {
+                                tv_replied.setVisibility(View.VISIBLE);
+                                tv_replied.setText("Replied " + Html.fromHtml(tick));
+                                //For Receiver Quote
+                                //Start
+                                receive_quotedLayout.setVisibility(View.GONE);
+                                receiver_tvquoted_msg.setVisibility(View.GONE);
+                                //End
+                                //For withdraw message
+                                //start
+//                                                if(gcBean.getMimetype()!=null && gcBean.getMessage()!=null && gcBean.getMimetype().equalsIgnoreCase("text")
+//                                                        && gcBean.getMessage().equalsIgnoreCase("Message withdrawn")){
+                                if(gcBean.getWithdrawn()!=null && gcBean.getWithdrawn().equalsIgnoreCase("1")){
+                                    tv_replied.setVisibility(View.GONE);
+                                }else{
+                                    tv_replied.setVisibility(View.VISIBLE);
+                                }
+                                //End
+                            }
+//                                            break;
+//                                        } else {
+//                                            Log.i("reply","receiver side grb|| GRB_R not loginuser");
+//                                            senderLayout
+//                                                    .setBackgroundResource(R.color.lgreen);
+//                                            scheduleMsg.setVisibility(View.GONE);
+//                                            convertView
+//                                                    .setBackgroundResource(R.color.lgreen);
+//                                        }
+//                                    }
+//                                }
+
+                        } else {
+                            Log.i("reply","receiver side grb|| GRB_R else ");
+                            deadlineReplyText.setVisibility(View.GONE);
+                            tv_user.setText(Buddyname(gcBean.getFrom()));
+                            scheduleMsg.setVisibility(View.GONE);
+                        }
+                    } else {
+                        deadlineReplyText.setVisibility(View.GONE);
+                        tv_user.setText(Buddyname(gcBean.getFrom()));
+                        scheduleMsg.setVisibility(View.GONE);
                     }
                     im_pin.setTag(gcBean.getMediaName());
                     im_pin.setContentDescription(gcBean.getMimetype());
@@ -7241,47 +7246,51 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                 final int pos = i;
                                 Log.d("viwVlist", "count " + chat_view.getChildCount());
 
-                                    if (mPlayer.isPlaying()) {
-                                        multiplay_button.setBackgroundResource(R.drawable.audiopause);
-                                    } else {
-                                        multiplay_button.setBackgroundResource(R.drawable.play);
-                                    }
+
+                                if(finalPlayFile != null && finalPlayFile.equals(path) && gcBean.isPlaying())
+                                {
+                                    multiplay_button.setBackgroundResource(R.drawable.audiopause);
+                                }else
+                                {
+                                    multiplay_button.setBackgroundResource(R.drawable.play);
+                                }
                                 multiplay_button.setOnClickListener(new OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        if(!CallDispatcher.isCallInitiate) {
                                         File newfile=new File(path);
-                                            multiplay_button.setTag(path);
-                                            if (path.equalsIgnoreCase(multiplay_button.getTag().toString())) {
-                                                if (mPlayer.isPlaying()) {
-                                                    mPlayer.pause();
-                                                    multiplay_button.setBackgroundResource(R.drawable.play);
-                                                } else {
-                                                    multiplay_button.setBackgroundResource(R.drawable.audiopause);
-                                                    if (newfile.exists())
-                                                        playAudio(path, position);
-                                                    else
-                                                        showToast("No audio to play");
-                                                }
-                                            }else {
-                                                if (mPlayer.isPlaying()) {
-                                                    mPlayer.pause();
-                                                    multiplay_button.setBackgroundResource(R.drawable.play);
-                                                } else {
-                                                    multiplay_button.setBackgroundResource(R.drawable.audiopause);
-                                                    if (newfile.exists())
-                                                        playAudio(path, position);
-                                                    else
-                                                        showToast("No audio to play");
-                                                }
+                                        if (finalPlayBean == null) {
+                                            multiplay_button.setBackgroundResource(R.drawable.audiopause);
+                                            if(newfile.exists()) {
+                                                playAudio(path, position);
+                                                gcBean.setPlaying(true);
+                                                finalPlayBean = gcBean;
+                                                finalPlayFile = path;
+                                            }else
+                                                showToast("No audio to play");
+                                        } else if (finalPlayBean == gcBean && finalPlayFile.equals(path)) {
+                                            if (mPlayer.isPlaying()) {
+                                                mPlayer.pause();
+                                                multiplay_button.setBackgroundResource(R.drawable.play);
+                                                gcBean.setPlaying(false);
+                                            } else {
+                                                gcBean.setPlaying(true);
+                                                multiplay_button.setBackgroundResource(R.drawable.audiopause);
+                                                mPlayer.start();
                                             }
+                                        } else {
+                                            finalPlayBean.setPlaying(false);
+                                            finalPlayBean = gcBean;
+                                            finalPlayBean.setPlaying(true);
+                                            finalPlayFile = path;
+                                            multiplay_button.setBackgroundResource(R.drawable.audiopause);
+                                            if(newfile.exists())
+                                                playAudio(path, position);
+                                            else
+                                                showToast("No audio to play");
+
+                                        }
                                         click = pos;
-                                    } else {
-                                        showToast("Please Try again...call  in progress");
                                     }
-
-
-                                }
                                 });
                                 if (click == i) {
                                     if (position == mPlayingPosition) {
