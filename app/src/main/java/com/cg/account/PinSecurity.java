@@ -121,6 +121,7 @@ public class PinSecurity extends Activity implements View.OnClickListener {
                 pin4.setBackgroundDrawable(getResources().getDrawable(R.drawable.pinentered));
                 if(AppMainActivity.pinNo!=null && AppMainActivity.pinNo.equals(pin.toString())) {
                     finish();
+                    SingleInstance.mainContext.openPinActivity=false;
                     wrongCount = 0;
                     wrongcoutn.setVisibility(View.INVISIBLE);
                 }else{

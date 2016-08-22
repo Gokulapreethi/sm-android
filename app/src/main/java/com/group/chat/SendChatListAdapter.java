@@ -228,6 +228,13 @@ public class SendChatListAdapter extends ArrayAdapter<SendListUIBean> {
                         }
                     });
                 }
+                mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        gcBean.setPlaying(false);
+                        notifyDataSetChanged();
+                    }
+                });
 
             }
             return convertView;

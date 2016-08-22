@@ -725,7 +725,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		AppReference.fileOpen=false;
 		if(isPinEnable) {
 			if (openPinActivity) {
-				openPinActivity=false;
+//				openPinActivity=false;
 				if(Build.VERSION.SDK_INT>20 && isTouchIdEnabled) {
 					Intent i = new Intent(AppMainActivity.this, MainActivity.class);
 					startActivity(i);

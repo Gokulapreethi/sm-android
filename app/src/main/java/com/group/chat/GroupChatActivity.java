@@ -7393,6 +7393,14 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     tv_senderwithdraw.setText(gcBean.getSenderWithdraw());
 
                 }
+                mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        finalPlayFile = "";
+                        finalPlayBean.setPlaying(false);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
 
                 if(gcBean.getThumb()==2){
                     rr_send.setVisibility(View.VISIBLE);
