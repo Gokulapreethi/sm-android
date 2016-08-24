@@ -331,6 +331,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
     private RelativeLayout mainHeader;
     boolean chattemplate=false;
     private String finalPlayFile;
+    GroupChatBean finalPlayBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1567,8 +1568,6 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     dashboard.LoadFilesList(CallDispatcher.LoginUser);
                     dashboard.notifyAdapter = new NotifyListAdapter(context, dashboard.tempnotifylist);
                     dashboard.notifylistview.setAdapter(dashboard.notifyAdapter);
-                    int i =  dashboard.notifylistview.getAdapter().getCount();
-                    Log.d("Valueofcount", "listvalue"+i);
                     dashboard.notifyAdapter.notifyDataSetChanged();
                     dashboard.tempnotifylist.size();
                     dashboard.updateCount();
@@ -5476,7 +5475,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         int i = 0;
         ImageLoader imageLoader;
 
-        GroupChatBean finalPlayBean;
+//        GroupChatBean finalPlayBean;
 
         /*************
          * CustomAdapter Constructor
@@ -7393,14 +7392,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     tv_senderwithdraw.setText(gcBean.getSenderWithdraw());
 
                 }
-                mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        finalPlayFile = "";
-                        finalPlayBean.setPlaying(false);
-                        adapter.notifyDataSetChanged();
-                    }
-                });
+
 
                 if(gcBean.getThumb()==2){
                     rr_send.setVisibility(View.VISIBLE);
@@ -10856,6 +10848,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
         finalTime = mediaPlayer.getDuration();
         startTime = mediaPlayer.getCurrentPosition();
+
 //        seekBar.setMax((int) finalTime);
 //        seekBar.setProgress((int) startTime);
         history_handler.postDelayed(UpdateSongTime, 100);
@@ -11104,6 +11097,14 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             mPlayingPosition = position;
 
             mHandler.postDelayed(mProgressUpdater, 500);
+            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    finalPlayFile = "";
+                    finalPlayBean.setPlaying(false);
+                    adapter.notifyDataSetChanged();
+                }
+            });
 
             //trigger list refresh, this will make progressbar start updating if visible
             adapter.notifyDataSetChanged();

@@ -813,8 +813,9 @@ public class DashBoardFragment extends Fragment {
         }
         Collections.sort(tempnotifylist, new DateComparator());
         Collections.sort(seacrhnotifylist, new DateComparator());
+            return listcount();
 
-        return listcount();
+
     }
 
     private void viewFileInfo(CompleteListBean cBean, int position) {

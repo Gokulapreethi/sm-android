@@ -3008,6 +3008,7 @@ public class XmlComposer {
 		return "<?xml version=\"1.0\"?>" + buffer.toString();
 	}
 	public String fileDownloadXml(String[] param) {
+		Log.i("STringvalue", "filepath"+param);
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("<filedownload ");
 		
