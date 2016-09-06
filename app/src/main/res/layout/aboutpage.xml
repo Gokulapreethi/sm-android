@@ -27,10 +27,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Version 1.22"
+            android:text="Version 1.27"
             android:textColor="@color/snazlgray"
             android:textSize="14dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="30dp"
             android:layout_below="@+id/textView1"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"/>

@@ -3,6 +3,12 @@ package com.image.utils;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
+import android.util.Log;
+
+import java.io.File;
+import java.io.IOException;
 
 public class ImageUtils {
 	public static Bitmap decodeScaledBitmapFromSdCard(String filePath,
@@ -63,5 +69,42 @@ public class ImageUtils {
 		}
 
 		return inSampleSize;
+	}
+	public static int resolveBitmapOrientation(String path) throws IOException {
+
+		File bitmapFile = new File(path);
+		ExifInterface exif = null;
+		exif = new ExifInterface(bitmapFile.getAbsolutePath());
+
+		return exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+				ExifInterface.ORIENTATION_NORMAL);
+	}
+
+	public static Bitmap applyOrientation(Bitmap bitmap, int orientation) {
+		int rotate = 0;
+		switch (orientation) {
+			case ExifInterface.ORIENTATION_ROTATE_270:
+
+				Log.d("Camera123", "ORIENTATION_ROTATE_270");
+				rotate = 270;
+				break;
+			case ExifInterface.ORIENTATION_ROTATE_180:
+				Log.d("Camera123", "ORIENTATION_ROTATE_180");
+				rotate = 180;
+				break;
+			case ExifInterface.ORIENTATION_ROTATE_90:
+				Log.d("Camera123", "ORIENTATION_ROTATE_90");
+				rotate = 90;
+				break;
+			default:
+				Log.d("Camera123", "Default");
+//    return bitmap;
+		}
+
+		int w = bitmap.getWidth();
+		int h = bitmap.getHeight();
+		Matrix mtx = new Matrix();
+		mtx.postRotate(90);
+		return Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, true);
 	}
 }

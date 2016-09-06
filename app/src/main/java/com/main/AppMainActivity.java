@@ -226,6 +226,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.TreeSet;
 import java.util.Vector;
 
 
@@ -9058,7 +9059,43 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 								fname = fname.substring(0, fname.length() - 1);
 							}
 							gcBean.setMediaName(fname);
-							gcBean.setSessionid(CallDispatcher.LoginUser + gcBean.getSessionid());
+							if(gcBean.getCategory().equalsIgnoreCase("G")){
+								gcBean.setSessionid(gcBean.getSessionid());
+							}else {
+								TreeSet<String> treeSet = new TreeSet<>();
+								treeSet.add(CallDispatcher.LoginUser);
+								treeSet.add(gcBean.getSessionid());
+								String chatnames = null;
+								for (String s : treeSet) {
+									Log.i("name", "notifyFileUploadResponse s name--->" + s);
+									if (chatnames == null) {
+										chatnames = s;
+									} else {
+										chatnames = chatnames + s;
+									}
+								}
+								Log.i("name", "notifyFileUploadResponse chatnames--->" + chatnames);
+								if (chatnames != null)
+									gcBean.setSessionid(chatnames);
+							}
+//							TreeSet<String> treeSet=new TreeSet<>();
+//							treeSet.add(CallDispatcher.LoginUser);
+//							treeSet.add(gcBean.getSessionid());
+//							String chatnames=null;
+//							for(String s:treeSet){
+//								Log.i("name","notifyFileUploadResponse s name--->"+s);
+//								if(chatnames==null){
+//									chatnames=s;
+//								}else{
+//									chatnames=chatnames+s;
+//								}
+//							}
+//							Log.i("name","notifyFileUploadResponse chatnames--->"+chatnames);
+//							if(chatnames!=null)
+//								gcBean.setSessionid(chatnames);
+//							Log.i("name", "notifyFileUploadResponse sessionid--->" + gcBean.getSessionid());
+//							gcBean.setSessionid(CallDispatcher.LoginUser + gcBean.getSessionid());
+
 							SingleInstance.getGroupChatProcesser().getQueue()
 									.addObject(gcBean);
 						}

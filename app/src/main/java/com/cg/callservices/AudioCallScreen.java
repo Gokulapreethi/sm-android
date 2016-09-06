@@ -108,7 +108,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 	private Button btnHangup, btnemergency;
 	
-	private ImageView  btn_onlineb,btnSpeaker_video, btn_onlineb_video, btnMic_video, btnHangup_video;
+	private ImageView  btn_onlineb,btnSpeaker_video, btn_onlineb_video, btnMic_video, btnHangup_video, videoEnableBtn;
 
 	private Button btnMic,promote_call;
 
@@ -1022,7 +1022,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			btn_onlineb_video = (ImageView) llayAudioCall.findViewById(R.id.add_videousers);
 			btnMic_video = (ImageView) llayAudioCall.findViewById(R.id.speaker_video);
 			btnSpeaker_video = (ImageView) llayAudioCall.findViewById(R.id.loudspeaker_video);
-			final ImageView videoEnableBtn = (ImageView) llayAudioCall.findViewById(R.id.promotecall_video);
+			videoEnableBtn = (ImageView) llayAudioCall.findViewById(R.id.promotecall_video);
 			videoEnableBtn.setTag(true);
 
 			btnMic_video.setOnClickListener(new OnClickListener() {
@@ -1217,7 +1217,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 				}
 			});
 
-
+			AppMainActivity.commEngine.enable_disable_VideoPreview(true);
 			videoEnableBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -1226,7 +1226,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
                     if(shown){
 
-//						videoEnableBtn.setImageResource(R.drawable.call_video);
+						videoEnableBtn.setImageResource(R.drawable.call_video);
 						RecordTransactionBean transactionBean = new RecordTransactionBean();
 						transactionBean.setSessionid(strSessionId);
 						transactionBean.setHost(CallDispatcher.LoginUser);
@@ -1252,7 +1252,9 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 //                            imageLoader.DisplayImage("", ownimageview, R.drawable.icon_buddy_aoffline);
 //                        }
                     } else {
-//						videoEnableBtn.setImageResource(R.drawable.call_video_active);
+						preview_hided = false;
+						hideOwnVideo();
+						videoEnableBtn.setImageResource(R.drawable.call_video_active);
 
 						RecordTransactionBean transactionBean = new RecordTransactionBean();
 						transactionBean.setSessionid(strSessionId);
@@ -1488,9 +1490,13 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 	private void hideOwnVideo() {
 		if (WebServiceReferences.videoSSRC_total_list.size() == 0) {
-			own_video_layout.getLayoutParams().height = 1;
-			own_video_layout.getLayoutParams().width = 1;
-			own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(1, 1, 1.0f));
+			if (preview_hided) {
+				own_video_layout.getLayoutParams().height = 1;
+				own_video_layout.getLayoutParams().width = 1;
+				own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(1, 1, 1.0f));
+			} else {
+				own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.0f));
+			}
 		} else if (WebServiceReferences.videoSSRC_total_list.size() > 0) {
 			int size = WebServiceReferences.videoSSRC_total_list.size();
 			if (size == 1) {
@@ -1846,6 +1852,14 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 				try {
 					if(getActivity() != null)
 						getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+					videoEnableBtn.setImageResource(R.drawable.call_video);
+					videoEnableBtn.setTag(false);
+					AppMainActivity.commEngine.enable_disable_VideoPreview(false);
+					preview_hided = true;
+					own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
+					own_video_layout.getLayoutParams().width = 1;
+					hideOwnVideo();
 
 					currentcall_type = "VC";
 					video_layouts.setVisibility(View.VISIBLE);
@@ -2867,6 +2881,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 //			} else {
 //				AppReference.mainContext.stopService(new Intent(AppReference.mainContext, FloatingCallService.class));
 //			}
+
+			AppMainActivity.commEngine.enable_disable_VideoPreview(true);
 			AppReference.mainContext.stopService(new Intent(AppReference.mainContext, ChatHeadDrawerService.class));
 			preview_hided = false;
 			currentcall_type = "AC";

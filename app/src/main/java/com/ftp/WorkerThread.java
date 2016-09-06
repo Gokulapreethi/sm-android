@@ -627,8 +627,8 @@ public class WorkerThread implements Runnable {
 		temp[6]= String.valueOf(length);
 		Log.i("FileUpload", "Inside CallDisp_UploadFile---> " + temp[6]);
 //		WebServiceReferences.webServiceClient.FileUpload(temp,context1,obj);
-		ChatLoadWebservice taskrunner=new ChatLoadWebservice();
-		taskrunner.execute(temp,obj);
+//		ChatLoadWebservice taskrunner=new ChatLoadWebservice();
+//		taskrunner.execute(temp,obj);
 	}
 	public class ChatLoadWebservice extends
 			AsyncTask<Object, Object, String> {

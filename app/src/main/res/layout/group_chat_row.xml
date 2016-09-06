@@ -209,7 +209,7 @@
                             android:layout_below="@+id/sender_multi_msg"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="8dp"
-                            android:layout_marginTop="22dp"
+                            android:layout_marginTop="24dp"
                             android:text=""
                             android:textColor="@color/white"
                             android:textSize="12dp" />
@@ -843,20 +843,7 @@
                     android:text="@string/_29_10_2014_07_34_pm"
                     android:textColor="@color/snazlgray"
                     android:textSize="9dp" />
-                <TextView
-                    android:id="@+id/waitforreply"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Waiting for Reply"
-                    android:layout_below="@+id/lintest"
-                    android:layout_marginTop="8dp"
-                    android:layout_toRightOf="@+id/userDP1"
-                    android:background="@drawable/tv_bgblack_color"
-                    android:textColor="@color/pink_tv"
-                    android:layout_marginLeft="13dp"
-                    android:padding="8dp"
-                    android:textSize="15dp"
-                    android:textStyle="bold" />
+
                 <LinearLayout
                     android:id="@+id/privatelay"
                     android:layout_width="wrap_content"
@@ -930,7 +917,7 @@
                     android:layout_height="wrap_content"
                     android:text="  Waiting for Reply "
                     android:padding="8dp"
-                    android:layout_below="@+id/ad_play"
+                    android:layout_below="@+id/lintest"
                     android:layout_marginTop="8dp"
                     android:layout_toRightOf="@+id/userDP1"
                     android:background="@drawable/tv_bgblack_color"
@@ -939,6 +926,20 @@
                     android:textSize="15dp"
                     android:textStyle="bold"
                     />
+                    <TextView
+                        android:id="@+id/waitforreply"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Waiting for Reply"
+                        android:layout_below="@+id/lintest"
+                        android:layout_marginTop="8dp"
+                        android:layout_toRightOf="@+id/userDP1"
+                        android:background="@drawable/tv_bgblack_color"
+                        android:textColor="@color/pink_tv"
+                        android:layout_marginLeft="13dp"
+                        android:padding="8dp"
+                        android:textSize="15dp"
+                        android:textStyle="bold" />
                 </RelativeLayout>
                 <TextView
                     android:layout_width="wrap_content"

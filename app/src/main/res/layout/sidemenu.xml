@@ -103,7 +103,7 @@
             android:textColor="@color/grey3"
             android:gravity="center_vertical"
             android:layout_weight="1"
-            android:text="CONTACTS"
+            android:text="CHATS &amp; CONTACTS"
             android:drawableLeft="@drawable/menu_contacts"
             android:drawablePadding="15dp"/>
 

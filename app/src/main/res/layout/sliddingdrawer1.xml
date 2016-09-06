@@ -52,14 +52,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
-                    <TextView
-                        android:id="@+id/list_1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="1dp"
-                        android:textSize="12dp"
-                        android:text="Contacts"
-                        android:textColor="@color/white" />
+                        <TextView
+                            android:id="@+id/listvalue_3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="1dp"
+                            android:textSize="12dp"
+                            android:text="CHATS"
+                            android:textColor="@color/white" />
                         <TextView
                             android:id="@+id/listvalue_2"
                             android:layout_width="wrap_content"
@@ -69,14 +69,14 @@
                             android:text=" / "
                             android:textColor="@color/black" />
 
-                    <TextView
-                        android:id="@+id/listvalue_3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="1dp"
-                        android:textSize="12dp"
-                        android:text="Chat"
-                        android:textColor="@color/black" />
+                        <TextView
+                            android:id="@+id/list_1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="1dp"
+                            android:textSize="12dp"
+                            android:text="CONTACTS"
+                            android:textColor="@color/black" />
                     </LinearLayout>
 
                     <View
@@ -110,12 +110,12 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:id="@+id/list_2"
+                            android:id="@+id/listvalueof_3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="1dp"
                             android:textSize="12dp"
-                            android:text="Groups"
+                            android:text="CHATS"
                             android:textColor="@color/black" />
 
                         <TextView
@@ -128,12 +128,12 @@
                             android:textColor="@color/black" />
 
                         <TextView
-                            android:id="@+id/listvalueof_3"
+                            android:id="@+id/list_2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="1dp"
                             android:textSize="12dp"
-                            android:text="Chat"
+                            android:text="CONTACTS"
                             android:textColor="@color/black" />
 
                     </LinearLayout>
@@ -183,7 +183,8 @@
                     android:layout_height="25dp"
                     android:layout_margin="10dp"
                     android:weightSum="2"
-                    android:gravity="right">
+                    android:gravity="right"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="wrap_content"

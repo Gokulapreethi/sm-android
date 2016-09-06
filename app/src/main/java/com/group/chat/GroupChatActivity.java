@@ -123,6 +123,7 @@ import com.group.BuddyAdapter;
 import com.group.GroupActivity;
 import com.group.ViewGroups;
 import com.image.utils.ImageLoader;
+import com.image.utils.ImageUtils;
 import com.image.utils.ImageViewer;
 import com.main.AppMainActivity;
 import com.main.CalendarActivity;
@@ -182,6 +183,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.TreeSet;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -332,6 +334,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
     boolean chattemplate=false;
     private String finalPlayFile;
     GroupChatBean finalPlayBean;
+    SeekBar multiaudio_seekbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1568,6 +1571,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     dashboard.LoadFilesList(CallDispatcher.LoginUser);
                     dashboard.notifyAdapter = new NotifyListAdapter(context, dashboard.tempnotifylist);
                     dashboard.notifylistview.setAdapter(dashboard.notifyAdapter);
+                    int i =  dashboard.notifylistview.getAdapter().getCount();
+                    Log.d("Valueofcount", "listvalue"+i);
                     dashboard.notifyAdapter.notifyDataSetChanged();
                     dashboard.tempnotifylist.size();
                     dashboard.updateCount();
@@ -2637,13 +2642,26 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 gcBean.setSenttimez("GMT");
                 gcBean.setDateandtime(getCurrentDateandTime());
                 if (isGroup || isRounding) {
+
                     gcBean.setTo(groupBean.getGroupId());
                     gcBean.setSessionid(groupBean.getGroupId());
                     gcBean.setGroupId(groupBean.getGroupId());
                     gcBean.setCategory("G");
                 } else {
                     gcBean.setTo(buddy);
-                    gcBean.setSessionid(CallDispatcher.LoginUser + buddy);
+//                    gcBean.setSessionid(CallDispatcher.LoginUser + buddy);
+                    TreeSet<String> treeSet=new TreeSet<>();
+                    treeSet.add(CallDispatcher.LoginUser);
+                    treeSet.add(buddy);String chatnames=null;
+                    for(String s:treeSet){
+                        Log.i("name","name-->"+s);
+                        if(chatnames==null){
+                            chatnames=s;
+                        }else{
+                            chatnames=chatnames+s;
+                        }}
+                    Log.i("name","chatnames-->"+chatnames);
+                    if(chatnames!=null)gcBean.setSessionid(chatnames);
                     gcBean.setGroupId(buddy);
                     gcBean.setCategory("I");
                     gcBean.setSubCategory(null);
@@ -3343,7 +3361,9 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         handler.post(new Runnable() {
             @Override
             public void run() {
-                adapter.notifyDataSetChanged();
+                if(adapter!=null) {
+                    adapter.notifyDataSetChanged();
+                }
             }
         });
     }
@@ -3837,44 +3857,44 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     if (strIPath != null) {
                         File fileCheck = new File(strIPath);
                         if (fileCheck.exists()) {
-                            btn_grid.setBackgroundDrawable(getResources().getDrawable(R.drawable.grid_grid));
-                            atachlay.setVisibility(View.GONE);
-                            audio_layout.setVisibility(View.GONE);
-                            isGrid = false;
-//                            relative_send_layout.getLayoutParams().height = 400;
-                            SendListUIBean uIbean = new SendListUIBean();
-                            uIbean.setType("image");
-                            uIbean.setPath(strIPath);
-                            uIbean.setUser(buddy);
-                            SendListUI.add(uIbean);
-                            sendlistadapter.notifyDataSetChanged();
-
-
-                            if(!current_open_activity_detail.containsKey("thirdimage1")) {
-                                current_open_activity_detail.put("thirdimage1", uIbean);
-                            }else if(!current_open_activity_detail.containsKey("thirdimage2")){
-                                current_open_activity_detail.put("thirdimage2", uIbean);
-                            }else if(!current_open_activity_detail.containsKey("thirdimage3")){
-                                current_open_activity_detail.put("thirdimage3", uIbean);
-                            }
-
-                            list_all.removeAllViews();
-                            final int adapterCount = sendlistadapter.getCount();
-
-                            for (int i = 0; i < adapterCount; i++) {
-                                View item = sendlistadapter.getView(i, null, null);
-                                list_all.addView(item);
-                            }
-                            if(adapterCount>=2){
-                                multi_send.getLayoutParams().height=280;
-                            }
-                            if(isPrivateBack){
-                                LL_privateReply.setVisibility(View.VISIBLE);
-                            }else {
-                                msgoptionview.setVisibility(View.VISIBLE);
-                            }
-                            audio_call.setBackgroundResource(R.drawable.chat_send);
-                            audio_call.setTag(1);
+//                            btn_grid.setBackgroundDrawable(getResources().getDrawable(R.drawable.grid_grid));
+//                            atachlay.setVisibility(View.GONE);
+//                            audio_layout.setVisibility(View.GONE);
+//                            isGrid = false;
+////                            relative_send_layout.getLayoutParams().height = 400;
+//                            SendListUIBean uIbean = new SendListUIBean();
+//                            uIbean.setType("image");
+//                            uIbean.setPath(strIPath);
+//                            uIbean.setUser(buddy);
+//                            SendListUI.add(uIbean);
+//                            sendlistadapter.notifyDataSetChanged();
+//
+//
+//                            if(!current_open_activity_detail.containsKey("thirdimage1")) {
+//                                current_open_activity_detail.put("thirdimage1", uIbean);
+//                            }else if(!current_open_activity_detail.containsKey("thirdimage2")){
+//                                current_open_activity_detail.put("thirdimage2", uIbean);
+//                            }else if(!current_open_activity_detail.containsKey("thirdimage3")){
+//                                current_open_activity_detail.put("thirdimage3", uIbean);
+//                            }
+//
+//                            list_all.removeAllViews();
+//                            final int adapterCount = sendlistadapter.getCount();
+//
+//                            for (int i = 0; i < adapterCount; i++) {
+//                                View item = sendlistadapter.getView(i, null, null);
+//                                list_all.addView(item);
+//                            }
+//                            if(adapterCount>=2){
+//                                multi_send.getLayoutParams().height=280;
+//                            }
+//                            if(isPrivateBack){
+//                                LL_privateReply.setVisibility(View.VISIBLE);
+//                            }else {
+//                                msgoptionview.setVisibility(View.VISIBLE);
+//                            }
+//                            audio_call.setBackgroundResource(R.drawable.chat_send);
+//                            audio_call.setTag(1);
                             // sendMsg("", strIPath, "image", null);
 //							Intent pMsgIntent = new Intent(context,
 //									PrivateMessageActivity.class);
@@ -3886,6 +3906,9 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 //							pMsgIntent.putExtra("pMembers", privateMembers);
 //							pMsgIntent.putExtra("parentid", parentId);
 //							startActivity(pMsgIntent);
+                            showprogress();
+                            Log.i("AAAA","onactivity result ");
+                            new imageOrientation().execute("image");
                         } else {
                             showToast("Not able to process. Please try again");
                         }
@@ -3939,43 +3962,14 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         Log.i("AAA","New activity 33*************");
                         Uri selectedImageUri = data.getData();
                         strIPath = callDisp.getRealPathFromURI(selectedImageUri);
+//
                         final String path = Environment.getExternalStorageDirectory()
                                 + "/COMMedia/" + callDisp.getFileName() + ".mp4";
 
-                        Log.i("AAA","New activity "+strIPath);
+//                        Log.i("AAA","New activity "+strIPath);
                         strIPath = path;
                         Log.i("AAA", "New activity " + strIPath);
-                        SendListUIBean uIbean = new SendListUIBean();
-                        uIbean.setType("video");
-                        uIbean.setPath(strIPath);
-                        SendListUI.add(uIbean);
-                        sendlistadapter.notifyDataSetChanged();
 
-                        if(!current_open_activity_detail.containsKey("secondvideo1")) {
-                            current_open_activity_detail.put("secondvideo1", uIbean);
-                        }else if(!current_open_activity_detail.containsKey("secondvideo2")){
-                            current_open_activity_detail.put("secondvideo2", uIbean);
-                        }else if(!current_open_activity_detail.containsKey("secondvideo3")){
-                            current_open_activity_detail.put("secondvideo3", uIbean);
-                        }
-
-                        list_all.removeAllViews();
-                        final int adapterCount = sendlistadapter.getCount();
-
-                        for (int i = 0; i < adapterCount; i++) {
-                            View item = sendlistadapter.getView(i, null, null);
-                            list_all.addView(item);
-                        }
-                        if(adapterCount>=2){
-                            multi_send.getLayoutParams().height=280;
-                        }
-                        if(isPrivateBack){
-                            LL_privateReply.setVisibility(View.VISIBLE);
-                        }else {
-                            msgoptionview.setVisibility(View.VISIBLE);
-                        }
-                        audio_call.setBackgroundResource(R.drawable.chat_send);
-                        audio_call.setTag(1);
                         FileInputStream fin = (FileInputStream) getContentResolver()
                                 .openInputStream(selectedImageUri);
                         ByteArrayOutputStream straam = new ByteArrayOutputStream();
@@ -3995,6 +3989,56 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         fout.flush();
                         fout.close();
                         fout = null;
+
+                        File file = new File(strIPath);
+//
+// Get length of file in bytes
+                        long fileSizeInBytes = file.length();
+// Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
+                        long fileSizeInKB = fileSizeInBytes / 1024;
+// Convert the KB to MegaBytes (1 MB = 1024 KBytes)
+                        long fileSizeInMB = fileSizeInKB / 1024;
+                        Log.i("filesize","Files size bytes--->"+fileSizeInBytes);
+                        Log.i("filesize","Files size kb--->"+fileSizeInKB);
+                        Log.i("filesize","Files size mb--->"+fileSizeInMB);
+                        if (fileSizeInMB <10) {
+                            SendListUIBean uIbean = new SendListUIBean();
+                            uIbean.setType("video");
+                            uIbean.setPath(strIPath);
+                            SendListUI.add(uIbean);
+                            sendlistadapter.notifyDataSetChanged();
+
+                            if(!current_open_activity_detail.containsKey("secondvideo1")) {
+                                current_open_activity_detail.put("secondvideo1", uIbean);
+                            }else if(!current_open_activity_detail.containsKey("secondvideo2")){
+                                current_open_activity_detail.put("secondvideo2", uIbean);
+                            }else if(!current_open_activity_detail.containsKey("secondvideo3")){
+                                current_open_activity_detail.put("secondvideo3", uIbean);
+                            }
+
+                            list_all.removeAllViews();
+                            final int adapterCount = sendlistadapter.getCount();
+
+                            for (int i = 0; i < adapterCount; i++) {
+                                View item = sendlistadapter.getView(i, null, null);
+                                list_all.addView(item);
+                            }
+                            if(adapterCount>=2){
+                                multi_send.getLayoutParams().height=280;
+                            }
+                            if(isPrivateBack){
+                                LL_privateReply.setVisibility(View.VISIBLE);
+                            }else {
+                                msgoptionview.setVisibility(View.VISIBLE);
+                            }
+                            audio_call.setBackgroundResource(R.drawable.chat_send);
+                            audio_call.setTag(1);
+                        }else{
+                            showToast("Pick less than 10 MB files");
+                        }
+
+
+
                     }
                 }else if (requestCode == 34) {
                     Bundle bun = data.getBundleExtra("share");
@@ -4899,6 +4943,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                             else {
 
                                 if (SendListUI.size() == 1) {
+                                    Log.i("sendlist","ifpart");
                                     Log.i("audioplay", "path--->" + strIPath);
                                     SendListUIBean bean = SendListUI.get(0);
                                     sendMsg(message.getText().toString().trim(),
@@ -4924,8 +4969,10 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 //                                relative_send_layout.getLayoutParams().height = 90;
                                 } else if (SendListUI.size() > 1) {
                                     String path = null;
+                                    Log.i("sendlist","elsepart");
                                     for (int i = 0; i < SendListUI.size(); i++) {
                                         SendListUIBean bean = SendListUI.get(i);
+                                        Log.i("sendlist","forloop");
                                         if (path == null) {
                                             path = bean.getPath();
                                         } else {
@@ -6519,6 +6566,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                         message.setVisibility(View.VISIBLE);
 
                                     // ended 07-10-15 changes
+                                    multimediaIcon.setContentDescription(gcBean
+                                            .getMimetype());
 
                                 } else if (gcBean.getMimetype().equalsIgnoreCase("sketch")) {
 
@@ -6531,18 +6580,41 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                         message.setVisibility(View.VISIBLE);
 
                                     // ended 07-10-15 changes
+                                    multimediaIcon.setContentDescription(gcBean
+                                            .getMimetype());
 
                                 } else if (!gcBean.getMimetype().equals("audio")) {
                                     multimediaIcon.setVisibility(View.VISIBLE);
                                     im_pin.setVisibility(View.VISIBLE);
                                     im_pin.setText(gcBean.getMediaName().split("COMMedia/")[1]);
+                                    Log.i("entering", "mediname" + gcBean.getMediaName());
+                                    Log.i("entering", "mediname1" + gcBean.getMediaName().split("COMMedia/")[1]);
                                     multimediaIcon.setPadding(2, 2, 2, 2);
                                     if (gcBean.getMimetype().equalsIgnoreCase(
                                             "video")) {
+                                        Log.i("entering", "videotype" + gcBean.getMimetype());
                                         Bitmap bMap = ThumbnailUtils.createVideoThumbnail(gcBean.getMediaName(), MediaStore.Video.Thumbnails.MICRO_KIND);
-                                       multimediaIcon.setImageBitmap(bMap);
-                                        videoPlay.setVisibility(View.VISIBLE);
-                                        receiver_videoPlay.setVisibility(View.VISIBLE);
+                                        Log.i("videoplay", "bitmap-->" + bMap);
+                                        if(bMap==null){
+                                            multimediaIcon.getLayoutParams().height = 50;
+                                            multimediaIcon.getLayoutParams().width = 50;
+                                            videoPlay.setVisibility(View.GONE);
+                                            receiver_videoPlay.setVisibility(View.GONE);
+                                            multimediaIcon
+                                                    .setImageResource(R.drawable.videoview1);
+                                            multimediaIcon.setContentDescription(gcBean
+                                                    .getMimetype()+"bmapnull");
+
+                                        }else{
+                                            multimediaIcon.getLayoutParams().height= ViewGroup.LayoutParams.WRAP_CONTENT;
+                                            multimediaIcon.getLayoutParams().width= ViewGroup.LayoutParams.WRAP_CONTENT;
+                                            multimediaIcon.setImageBitmap(bMap);
+                                            videoPlay.setVisibility(View.VISIBLE);
+                                            receiver_videoPlay.setVisibility(View.VISIBLE);
+                                            multimediaIcon.setContentDescription(gcBean
+                                                    .getMimetype());
+
+                                        }
 //                                        multimediaIcon
 //                                                .setImageResource(R.drawable.videoview1);
                                     }
@@ -6552,12 +6624,14 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 //                                         .setImageResource(R.drawable.doc_chat);
                                         if (gcBean.getMessage() != null)
                                             message.setVisibility(View.VISIBLE);
+                                        multimediaIcon.setContentDescription(gcBean
+                                                .getMimetype());
                                     }
                                 }
                             }
                             multimediaIcon.setTag(gcBean.getMediaName());
-                            multimediaIcon.setContentDescription(gcBean
-                                    .getMimetype());
+//                            multimediaIcon.setContentDescription(gcBean
+//                                    .getMimetype());
 
                         } else {
                             // notify_icon.setVisibility(View.VISIBLE);
@@ -7204,11 +7278,24 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 //                                receiver_multi_msg
 //                                        .setImageResource(R.drawable.videoview1);
                                 Bitmap bMap = ThumbnailUtils.createVideoThumbnail(fname[i], MediaStore.Video.Thumbnails.MICRO_KIND);
-                                receiver_multi_msg.setImageBitmap(bMap);
+//                                receiver_multi_msg.setImageBitmap(bMap);
+                                if(bMap==null){
+                                    receiver_multi_msg.getLayoutParams().height = 50;
+                                    receiver_multi_msg.getLayoutParams().width = 50;
+                                    receiver_multi_msg
+                                            .setImageResource(R.drawable.videoview1);
+                                    receiver_multi_msg.setContentDescription("videobmapnull");
+
+                                }else{
+                                    receiver_multi_msg.getLayoutParams().height= ViewGroup.LayoutParams.WRAP_CONTENT;
+                                    receiver_multi_msg.getLayoutParams().width= ViewGroup.LayoutParams.WRAP_CONTENT;
+                                    receiver_multi_msg.setImageBitmap(bMap);
+                                    receiver_multi_msg.setContentDescription("video");
+                                }
 
                                 final String path = fname[i];
                                 receiver_multi_msg.setTag(path);
-                                receiver_multi_msg.setContentDescription(gcBean.getMimetype());
+//                                receiver_multi_msg.setContentDescription(gcBean.getMimetype());
                                 receiver_multi_msg.setOnLongClickListener(new View.OnLongClickListener() {
                                     @Override
                                     public boolean onLongClick(View v) {
@@ -7221,10 +7308,20 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                     public void onClick(View view) {
                                         if(!CallDispatcher.isCallInitiate) {
                                             if (mPlayer != null && mPlayer.isPlaying())
-                                            mPlayer.stop();
-                                        Intent intent = new Intent(context, VideoPlayer.class);
-                                        intent.putExtra("video", path);
-                                        startActivity(intent);
+                                                mPlayer.stop();
+                                            Log.i("videoplay", "mixed file call not process");
+                                            if(view.getContentDescription().toString().equalsIgnoreCase("video")) {
+                                                Log.i("videoplay","mixed file call not process video");
+                                                Intent intent = new Intent(context, VideoPlayer.class);
+                                                intent.putExtra("video", path);
+                                                startActivity(intent);
+                                            }
+                                            else if(view.getContentDescription().toString().equalsIgnoreCase("videobmpnull")){
+                                                Log.i("videoplay","mixed file call not process videobmpnull");
+                                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(path));
+                                                intent.setDataAndType(Uri.parse(path), "video/mp4");
+                                                startActivity(intent);
+                                            }
                                     } else {
                                         showToast("Please Try again...call  in progress");
                                     }
@@ -7234,7 +7331,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                             } else if (fname[i].split("COMMedia/")[1].endsWith("mp3")
                                     || fname[i].split("COMMedia/")[1].endsWith("amr")) {
                                 holder = inflater.inflate(R.layout.listaudiolayout, parent, false);
-                                SeekBar multiaudio_seekbar = (SeekBar) holder.findViewById(R.id.sendseekBar1);
+                                multiaudio_seekbar = (SeekBar) holder.findViewById(R.id.sendseekBar1);
                                 TextView tvview = (TextView) holder.findViewById(R.id.sendtxt_time);
                                 final ImageView multiplay_button = (ImageView) holder.findViewById(R.id.sendplay_button);
                                 View v = chat_view.getChildAt(i);
@@ -7270,6 +7367,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                             if (mPlayer.isPlaying()) {
                                                 mPlayer.pause();
                                                 multiplay_button.setBackgroundResource(R.drawable.play);
+                                                mHandler.postDelayed(mProgressUpdater, 100);
                                                 gcBean.setPlaying(false);
                                             } else {
                                                 gcBean.setPlaying(true);
@@ -7393,7 +7491,6 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
                 }
 
-
                 if(gcBean.getThumb()==2){
                     rr_send.setVisibility(View.VISIBLE);
                     mainlayout.setBackgroundColor(Color.parseColor("#3D2831"));
@@ -7503,6 +7600,15 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             Intent intent = new Intent(context, VideoPlayer.class);
             intent.putExtra("video", path);
             startActivity(intent);
+        }else if (v.getContentDescription().toString()
+                .equalsIgnoreCase("videobmapnull")) {
+            Log.i("group123", "icon clicked video");
+            if (mPlayer != null && mPlayer.isPlaying())
+                mPlayer.stop();
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(path));
+            intent.setDataAndType(Uri.parse(path), "video/mp4");
+            startActivity(intent);
+
         } else if (v.getContentDescription().toString()
                 .equalsIgnoreCase("image")) {
             Log.i("group123", "icon clicked image");
@@ -9364,7 +9470,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
     public void sendWithDeadline(final String members) {
 
-        try {
+//        try {
 //		   Button btnSet;
 //		   final DatePicker dp;
 //		   final TimePicker tp;
@@ -9447,7 +9553,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 SpecialMessageBean spBean = new SpecialMessageBean();
                 spBean.setSubcategory("gu");
 
-                if (isReplyBack) {
+                if (isUrgent) {
                     spBean.setSubcategory("gu");
                     spBean.setParentId(pId);
                     if (isGroup || isRounding) {
@@ -9464,34 +9570,74 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 }
 
                 if (SendListUI.size() > 0) {
-                    Log.i("audioplay", "path--->" + strIPath);
-                    SendListUIBean bean = SendListUI.get(0);
-                    sendMsg(message.getText().toString(), bean.getPath(), bean.getType(), spBean);
-                    message.setVisibility(View.VISIBLE);
-                    SendListUI.remove(0);
-                    if (SendListUI.size() == 0) {
-                        SendListUI.clear();
-                    }
-                    sendlistadapter.notifyDataSetChanged();
-                    list_all.removeAllViews();
-                    final int adapterCount = sendlistadapter.getCount();
+                    if (SendListUI.size() == 1) {
+                        Log.i("audioplay", "path--->" + strIPath);
+                        SendListUIBean bean = SendListUI.get(0);
+                        sendMsg(message.getText().toString(), bean.getPath(), bean.getType(), spBean);
+                        message.setVisibility(View.VISIBLE);
+                        SendListUI.remove(0);
+                        if (SendListUI.size() == 0) {
+                            SendListUI.clear();
+                        }
+                        sendlistadapter.notifyDataSetChanged();
+                        list_all.removeAllViews();
+                        final int adapterCount = sendlistadapter.getCount();
 
-                    for (int i = 0; i < adapterCount; i++) {
-                        View item = sendlistadapter.getView(i, null, null);
-                        list_all.addView(item);
+                        for (int i = 0; i < adapterCount; i++) {
+                            View item = sendlistadapter.getView(i, null, null);
+                            list_all.addView(item);
+                        }
+                        if (adapterCount >= 2) {
+                            multi_send.getLayoutParams().height = 280;
+                        }
+                        if (isPrivateBack) {
+                            LL_privateReply.setVisibility(View.VISIBLE);
+                        } else {
+                            msgoptionview.setVisibility(View.VISIBLE);
+                        }
+                        audio_call.setBackgroundResource(R.drawable.chat_send);
+                        audio_call.setTag(1);
+                        relative_send_layout.getLayoutParams().height = 90;
+                    } else if (SendListUI.size() > 1) {
+                        String path = null;
+                        for (int i = 0; i < SendListUI.size(); i++) {
+                            SendListUIBean bean = SendListUI.get(i);
+                            if (path == null) {
+                                path = bean.getPath();
+                            } else {
+                                path = path + "," + bean.getPath();
+                            }
+                        }
+//                    SendListUIBean bean = SendListUI.get(0);
+                        sendMsg(message.getText().toString(), path, "mixedfile", spBean);
+                        message.setVisibility(View.VISIBLE);
+//                    SendListUI.remove(0);
+//                    if (SendListUI.size() == 0) {
+//                        SendListUI.clear();
+//                    }
+                        SendListUI.clear();
+                        sendlistadapter.notifyDataSetChanged();
+                        list_all.removeAllViews();
+                        final int adapterCount = sendlistadapter.getCount();
+
+                        for (int i = 0; i < adapterCount; i++) {
+                            View item = sendlistadapter.getView(i, null, null);
+                            list_all.addView(item);
+                        }
+                        if (adapterCount >= 2) {
+                            multi_send.getLayoutParams().height = 280;
+                        }
+                        if (isPrivateBack) {
+                            LL_privateReply.setVisibility(View.GONE);
+                        } else {
+                            msgoptionview.setVisibility(View.GONE);
+                        }
+                        audio_call.setBackgroundResource(R.drawable.chat_send);
+                        audio_call.setTag(1);
                     }
-                    if(adapterCount>=2){
-                        multi_send.getLayoutParams().height=280;
-                    }
-                    if(isPrivateBack){
-                        LL_privateReply.setVisibility(View.VISIBLE);
-                    }else {
-                        msgoptionview.setVisibility(View.VISIBLE);
-                    }
-                    audio_call.setBackgroundResource(R.drawable.chat_send);
-                    audio_call.setTag(1);
-//                    relative_send_layout.getLayoutParams().height = 90;
-                } else {
+                    //End
+
+                }else {
                     sendMsg(message.getText().toString(), null, "text", spBean);
                 }
 
@@ -9500,10 +9646,10 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             }
 
 
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+//        } catch (Exception e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
 
     }
 
@@ -11056,6 +11202,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 double sTime = mPlayer.getCurrentPosition();
 
                 String min, sec;
+
                 //for decreasing
 //                min = String.valueOf(TimeUnit.MILLISECONDS.toMinutes((long) timeRemaining));
 //                sec = String.valueOf(TimeUnit.MILLISECONDS.toSeconds((long) timeRemaining) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) timeRemaining)));
@@ -11070,9 +11217,17 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     sec = 0 + String.valueOf(sec);
                 }
                 tvToUpdate.setText(min + ":" + sec);
-                mBarToUpdate.setProgress((100 * mPlayer.getCurrentPosition() / mPlayer.getDuration()));
+                int result= 100 * mPlayer.getCurrentPosition() / mPlayer.getDuration();
+                Log.i("valueof","intvalue"+result);
+
+                if(result>=99){
+                    mProgressUpdater.mBarToUpdate.setProgress(0);
+                }else{
+                    mBarToUpdate.setProgress(result);
+                }
+
 //                tvToUpdate.setText(String.format("%d:%d ",TimeUnit.MILLISECONDS.toMinutes((long) fTime),TimeUnit.MILLISECONDS.toSeconds((long) fTime) -TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) fTime))));
-                mHandler.postDelayed(this, 500);
+                mHandler.postDelayed(this, 100);
 
             } else {
                 //not playing so stop updating
@@ -11084,8 +11239,11 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         mPlayingPosition = -1;
         mProgressUpdater.mBarToUpdate = null;
         mProgressUpdater.tvToUpdate = null;
-        if (mPlayer != null && mPlayer.isPlaying())
+        Log.i("hellowrld","stopplayback");
+        if (mPlayer != null && mPlayer.isPlaying()) {
             mPlayer.stop();
+//            mHandler.postDelayed(mProgressUpdater, 100);
+        }
     }
 
     private void playAudio(String fname, int position) {
@@ -11100,6 +11258,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
+//                    mHandler.postDelayed(mProgressUpdater, 100);
                     finalPlayFile = "";
                     finalPlayBean.setPlaying(false);
                     adapter.notifyDataSetChanged();
@@ -13035,8 +13194,14 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         server_ip, connect_ort, parse, 30000);
 
                 SoapObject mRequest = new SoapObject(namespace, "FileUpload");
-                XmlComposer xmlComposer = new XmlComposer();
-                String fuploadxml = xmlComposer.fileUploadXml(param);
+//                XmlComposer xmlComposer = new XmlComposer();
+//                String fuploadxml = xmlComposer.fileUploadXml(param);
+
+                String fuploadxml ="<?xml version=\"1.0\"?>"+"<fileupload "+" " +
+                        "username=" + quotes + param[0] + quotes+" password=" + quotes +
+                        param[1] + quotes+" mimetype=" + quotes + param[2] + quotes+" filename=" +
+                        quotes + param[3] + quotes+" content=" + quotes + param[4] + quotes+" branchtype=" +
+                        quotes + param[5] + quotes+" filesize=" + quotes + param[6] + quotes+" />";
 
                 HashMap<String,String> propert_map = new HashMap<String,String>();
                 propert_map.put("uploadxml", fuploadxml);
@@ -13067,8 +13232,13 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 }
 
             } catch (IOException e) {
+                SingleInstance.mainContext.showToast("File upload Failed");
                 e.printStackTrace();
             } catch (XmlPullParserException e) {
+                SingleInstance.mainContext.showToast("File upload Failed");
+                e.printStackTrace();
+            }catch (Exception e){
+                SingleInstance.mainContext.showToast("File upload Failed");
                 e.printStackTrace();
             }
             return null;
@@ -13078,6 +13248,90 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
         }
 
+    }
+    public class imageOrientation extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            try {
+                Log.i("profiledownload", "my profile download");
+                Bitmap bitmap = ImageUtils.decodeScaledBitmapFromSdCard(strIPath, 320, 240);
+                int orientation = ImageUtils.resolveBitmapOrientation(strIPath);
+                Log.i("profiledownload", "orientation--->"+orientation);
+                bitmap = ImageUtils.applyOrientation(bitmap, orientation);
+                File file = new File(strIPath);
+                if (file.exists())
+                    file.delete();
+                FileOutputStream fOut = null;
+                try {
+                    Log.d("size", "........6------------->");
+                    fOut = new FileOutputStream(file);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                    fOut.flush();
+                    fOut.close();
+                    Log.d("size", "........ after file write is------------->");
+                } catch (Exception e) {
+                    Log.d("size", "........7------------->");
+                    e.printStackTrace();
+                }
+                bitmap=null;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            cancelDialog();
+            File new_file = new File(strIPath);
+            if (new_file.exists()) {
+                btn_grid.setBackgroundDrawable(getResources().getDrawable(R.drawable.grid_grid));
+                atachlay.setVisibility(View.GONE);
+                audio_layout.setVisibility(View.GONE);
+                isGrid = false;
+//                            relative_send_layout.getLayoutParams().height = 400;
+                SendListUIBean uIbean = new SendListUIBean();
+                uIbean.setType("image");
+                uIbean.setPath(strIPath);
+                uIbean.setUser(buddy);
+                SendListUI.add(uIbean);
+                sendlistadapter.notifyDataSetChanged();
+
+
+                if(!current_open_activity_detail.containsKey("thirdimage1")) {
+                    current_open_activity_detail.put("thirdimage1", uIbean);
+                }else if(!current_open_activity_detail.containsKey("thirdimage2")){
+                    current_open_activity_detail.put("thirdimage2", uIbean);
+                }else if(!current_open_activity_detail.containsKey("thirdimage3")){
+                    current_open_activity_detail.put("thirdimage3", uIbean);
+                }
+
+                list_all.removeAllViews();
+                final int adapterCount = sendlistadapter.getCount();
+
+                for (int i = 0; i < adapterCount; i++) {
+                    View item = sendlistadapter.getView(i, null, null);
+                    list_all.addView(item);
+                }
+                if(adapterCount>=2){
+                    multi_send.getLayoutParams().height=280;
+                }
+                if(isPrivateBack){
+                    LL_privateReply.setVisibility(View.VISIBLE);
+                }else {
+                    msgoptionview.setVisibility(View.VISIBLE);
+                }
+                audio_call.setBackgroundResource(R.drawable.chat_send);
+                audio_call.setTag(1);
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+
+            super.onPreExecute();
+        }
     }
 
 }
