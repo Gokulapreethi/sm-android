@@ -11201,17 +11201,25 @@ public class DBAccess extends SQLiteOpenHelper {
 				openDatabase();
 			ContentValues cv = new ContentValues();
 			cv.put("category", "call");
-			if(groupChatBean.getChatid().equalsIgnoreCase(CallDispatcher.LoginUser)) {
-				if(!groupChatBean.getTo().equalsIgnoreCase(CallDispatcher.LoginUser)){
+			if(groupChatBean.getChatid()!=null) {
+				if (groupChatBean.getChatid().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+					if (!groupChatBean.getTo().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+						cv.put("groupid", groupChatBean.getTo());
+					} else if (!groupChatBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+						cv.put("groupid", groupChatBean.getFrom());
+					}
+				} else if (groupChatBean.getChatid().contains(CallDispatcher.LoginUser)) {
+					cv.put("groupid", groupChatBean.getChatid());
+				} else {
+
+					cv.put("groupid", groupChatBean.getChatid());
+				}
+			}else {
+				if (!groupChatBean.getTo().equalsIgnoreCase(CallDispatcher.LoginUser)) {
 					cv.put("groupid", groupChatBean.getTo());
-				} else if(!groupChatBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)){
+				} else if (!groupChatBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)) {
 					cv.put("groupid", groupChatBean.getFrom());
 				}
-			} else if(groupChatBean.getChatid().contains(CallDispatcher.LoginUser)) {
-				cv.put("groupid", groupChatBean.getChatid());
-			} else {
-
-				cv.put("groupid", groupChatBean.getChatid());
 			}
 
 			cv.put("fromuser",groupChatBean.getHost());

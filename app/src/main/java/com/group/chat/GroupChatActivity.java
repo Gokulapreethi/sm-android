@@ -6643,6 +6643,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                             // deadLineReply.setVisibility(View.GONE);
                             if(gcBean.getReply()!=null && (gcBean.getReply().equalsIgnoreCase("gp_r") || gcBean.getReply().equalsIgnoreCase("gp"))){
                                 btn_private.setVisibility(View.GONE);
+                                tv_replied.setVisibility(View.VISIBLE);
+                                tv_replied.setText("Replied " + Html.fromHtml(tick));
                             }else {
                                 tv_user.setText(Buddyname(gcBean.getFrom()));
                                 if (gcBean.getReply() != null && gcBean.getReply().equals("private")) {
@@ -9426,7 +9428,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     spBean.setMembers(buddy);
                 }
 
-                if (SendListUI.size() > 0) {
+                if (SendListUI.size() == 1) {
                     Log.i("audioplay", "path--->" + strIPath);
                     SendListUIBean bean = SendListUI.get(0);
                     sendMsg(message.getText().toString(), bean.getPath(), bean.getType(), spBean);
@@ -9454,6 +9456,46 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     audio_call.setBackgroundResource(R.drawable.chat_send);
                     audio_call.setTag(1);
 //                    relative_send_layout.getLayoutParams().height = 90;
+                } else if (SendListUI.size() > 1) {
+                    String path = null;
+                    for (int i = 0; i < SendListUI.size(); i++) {
+                        SendListUIBean bean = SendListUI.get(i);
+                        if (path == null) {
+                            path = bean.getPath();
+                        } else {
+                            path = path + "," + bean.getPath();
+                        }
+                    }
+
+
+                    sendMsg(message.getText().toString().trim(),
+                            path, "mixedfile", spBean);
+                    message.setVisibility(View.VISIBLE);
+                    SendListUI.remove(0);
+                    if (SendListUI.size() > 0) {
+                        SendListUI.clear();
+                    }
+                    sendlistadapter.notifyDataSetChanged();
+                    list_all.removeAllViews();
+                    final int adapterCount = sendlistadapter.getCount();
+
+                    for (int i = 0; i < adapterCount; i++) {
+                        View item = sendlistadapter.getView(i, null, null);
+                        list_all.addView(item);
+                    }
+                    if(adapterCount>=2){
+                        multi_send.getLayoutParams().height=280;
+                    }
+                    if(isPrivateBack){
+                        LL_privateReply.setVisibility(View.GONE);
+                    }else {
+                        msgoptionview.setVisibility(View.GONE);
+                    }
+                    audio_call.setBackgroundResource(R.drawable.chat_send);
+                    audio_call.setTag(1);
+//                relative_send_layout.getLayoutParams().height = 90;
+
+
                 } else {
                     sendMsg(message.getText().toString(), null, "text", spBean);
                 }
