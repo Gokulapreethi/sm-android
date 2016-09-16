@@ -1,7 +1,5 @@
 package org.lib.xml;
 
-import android.content.ContentValues;
-import android.telecom.Call;
 import android.util.Base64;
 import android.util.Log;
 
@@ -20,7 +18,6 @@ import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.SipNotificationListener;
 import com.cg.commonclass.WebServiceReferences;
 import com.group.chat.ChatInfoBean;
-import com.group.chat.GroupChatActivity;
 import com.main.AppMainActivity;
 import com.main.ContactsFragment;
 import com.util.SingleInstance;
@@ -68,7 +65,6 @@ import org.lib.model.UtilityResponse;
 import org.lib.model.VirtualBuddyBean;
 import org.lib.model.WebServiceBean;
 import org.lib.model.chattemplatebean;
-import org.lib.webservice.WebServiceClient;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -86,7 +82,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -166,6 +161,10 @@ public class XmlParser {
 
 			if (nodeMap.getNamedItem("calltype") != null) {
 				sb.setCallType(nodeMap.getNamedItem("calltype").getNodeValue());
+			}
+
+			if(nodeMap.getNamedItem("previousCallType") != null) {
+				sb.setPreviouscalltype(nodeMap.getNamedItem("previousCallType").getNodeValue());
 			}
 
 			if (nodeMap.getNamedItem("ftpusername") != null) {

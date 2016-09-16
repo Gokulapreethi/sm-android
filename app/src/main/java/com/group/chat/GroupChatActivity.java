@@ -5727,11 +5727,21 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                             startActivity(intent);
                         }
                     });
-                    String total_users = gcBean.getFtpUsername()+","+gcBean.getFtpPassword();
-                    String[] total_users_array = total_users.split(",");
+//                    String total_users = gcBean.getFtpUsername()+","+gcBean.getFtpPassword();
+                    String total_users = gcBean.getFtpUsername();
+                    if(gcBean.getFtpPassword() != null) {
+                        total_users = total_users + "," + gcBean.getFtpPassword();
+                    }
+                    ArrayList<String> tot_users_arraylist = new ArrayList<String>();
+                    if(total_users.contains(",")) {
+                        String[] total_users_array = total_users.split(",");
+                        tot_users_arraylist = new ArrayList<>(Arrays.asList(total_users_array));
+                    } else {
+                        tot_users_arraylist.add(total_users);
+                    }
 
                     String callbuddies = null, call_buddy_fullnames = null;
-                    for(String call_buddy : total_users_array) {
+                    for(String call_buddy : tot_users_arraylist) {
                         if(!call_buddy.equalsIgnoreCase(CallDispatcher.LoginUser)) {
 
                             if(callbuddies == null) {
@@ -5747,6 +5757,33 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                     call_buddy_fullnames = call_buddy_fullnames+","+call_buddy;
                                 } else {
                                     call_buddy_fullnames = call_buddy_fullnames+","+Buddyname(call_buddy);
+                                }
+                            }
+                        }
+                    }
+
+                    if(call_buddy_fullnames == null) {
+
+                        total_users = gcBean.getFrom()+","+gcBean.getTo();
+                        String[]  total_users_array = total_users.split(",");
+
+                        for(String call_buddy : total_users_array) {
+                            if(!call_buddy.equalsIgnoreCase(CallDispatcher.LoginUser)) {
+
+                                if(callbuddies == null) {
+                                    callbuddies = call_buddy;
+                                    if( Buddyname(call_buddy) == null) {
+                                        call_buddy_fullnames = call_buddy;
+                                    } else {
+                                        call_buddy_fullnames = Buddyname(call_buddy);
+                                    }
+                                } else {
+                                    callbuddies = callbuddies+","+call_buddy;
+                                    if( Buddyname(call_buddy) == null) {
+                                        call_buddy_fullnames = call_buddy_fullnames+","+call_buddy;
+                                    } else {
+                                        call_buddy_fullnames = call_buddy_fullnames+","+Buddyname(call_buddy);
+                                    }
                                 }
                             }
                         }
@@ -5798,8 +5835,11 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         } else {
                             call_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.icon_incoming_call));
                         }
-                        if (gcBean.getReminderTime() != null)
+                        if (gcBean.getReminderTime() != null) {
                             tv_missed.setText(gcBean.getReminderTime());
+                        } else {
+                            tv_missed.setText("00:00:00");
+                        }
                         tv_missed.setTextColor(getResources().getColor(R.color.blue2));
                         time.setVisibility(View.VISIBLE);
 

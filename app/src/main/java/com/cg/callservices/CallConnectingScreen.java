@@ -325,11 +325,60 @@ public class CallConnectingScreen extends Fragment {
 											.getStartTime(),
 									CallDispatcher.sb
 											.getEndTime()));
+			Log.i("callentry", "db entry 4");
+//			DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+//			DBAccess.getdbHeler()
+//					.saveOrUpdateRecordtransactiondetails(
+//							CallDispatcher.sb);
 
-			DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
-			DBAccess.getdbHeler()
-					.saveOrUpdateRecordtransactiondetails(
-							CallDispatcher.sb);
+			if(CallDispatcher.callHistoryDetails != null) {
+				String participant=null;
+				if(CallDispatcher.conferenceMembers!=null && CallDispatcher.conferenceMembers.size()>0){
+					for(String name:CallDispatcher.conferenceMembers){
+						if(!name.equalsIgnoreCase(CallDispatcher.sb.getHost())){
+							if(participant==null){
+								participant=name;
+							}else{
+								participant=participant+","+name;
+							}
+						}
+					}
+				}
+
+				if(CallDispatcher.removed_current_conf_members!=null && CallDispatcher.removed_current_conf_members.size()>0){
+					for(String name:CallDispatcher.removed_current_conf_members){
+						if(!name.equalsIgnoreCase(CallDispatcher.sb.getHost())){
+							if(participant==null){
+								participant=name;
+							}else{
+								participant=participant+","+name;
+							}
+
+						}
+					}
+				}
+
+				if(!CallDispatcher.sb.getHost().equalsIgnoreCase(CallDispatcher.LoginUser)){
+					if(participant==null){
+						participant=CallDispatcher.LoginUser;
+					}else{
+						participant=participant+","+CallDispatcher.LoginUser;
+					}
+				}
+
+				if(participant!=null){
+					CallDispatcher.sb.setParticipant_name(participant);
+				}
+				SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
+				hist_bean.setParticipant_name(participant);
+				hist_bean.setEndTime(hist_bean.getStartTime());
+				hist_bean.setCallDuration(SingleInstance.mainContext
+						.getCallDuration(hist_bean.getStartTime(),
+								hist_bean.getEndTime()));
+				hist_bean.setCallstatus("callattended");
+				DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
+				DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -437,11 +486,58 @@ public class CallConnectingScreen extends Fragment {
 													.getStartTime(),
 											CallDispatcher.sb
 													.getEndTime()));
+					Log.i("callentry", "db entry 5");
+//					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+//					DBAccess.getdbHeler()
+//							.saveOrUpdateRecordtransactiondetails(
+//									CallDispatcher.sb);
 
-					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
-					DBAccess.getdbHeler()
-							.saveOrUpdateRecordtransactiondetails(
-									CallDispatcher.sb);
+					if(CallDispatcher.callHistoryDetails != null) {
+						String participant = null;
+						if (CallDispatcher.conferenceMembers != null && CallDispatcher.conferenceMembers.size() > 0) {
+							for (String name : CallDispatcher.conferenceMembers) {
+								if(!name.equalsIgnoreCase(CallDispatcher.sb.getHost())) {
+									if (participant == null) {
+										participant = name;
+									} else {
+										participant = participant + "," + name;
+									}
+								}
+							}
+						}
+						if(CallDispatcher.removed_current_conf_members!=null && CallDispatcher.removed_current_conf_members.size()>0){
+							for(String name:CallDispatcher.removed_current_conf_members){
+								if(!name.equalsIgnoreCase(CallDispatcher.sb.getHost())){
+									if(participant==null){
+										participant=name;
+									}else{
+										participant=participant+","+name;
+									}
+
+								}
+							}
+						}
+
+						if(!CallDispatcher.sb.getHost().equalsIgnoreCase(CallDispatcher.LoginUser)){
+							if(participant==null){
+								participant=CallDispatcher.LoginUser;
+							}else{
+								participant=participant+","+CallDispatcher.LoginUser;
+							}
+						}
+						if (participant != null) {
+							CallDispatcher.sb.setParticipant_name(participant);
+						}
+						SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
+						hist_bean.setParticipant_name(participant);
+						hist_bean.setEndTime(hist_bean.getStartTime());
+						hist_bean.setCallDuration(SingleInstance.mainContext
+								.getCallDuration(hist_bean.getStartTime(),
+										hist_bean.getEndTime()));
+						hist_bean.setCallstatus("callattended");
+						DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
+						DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
@@ -476,11 +572,59 @@ public class CallConnectingScreen extends Fragment {
 													.getStartTime(),
 											CallDispatcher.sb
 													.getEndTime()));
+					Log.i("callentry", "db entry 6");
+//					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+//					DBAccess.getdbHeler()
+//							.saveOrUpdateRecordtransactiondetails(
+//									CallDispatcher.sb);
+					if(CallDispatcher.callHistoryDetails != null) {
+						String participant = null;
+						if (CallDispatcher.conferenceMembers != null && CallDispatcher.conferenceMembers.size() > 0) {
+							for (String name : CallDispatcher.conferenceMembers) {
+								if(!name.equalsIgnoreCase(CallDispatcher.sb.getHost())) {
+									if (participant == null) {
+										participant = name;
+									} else {
+										participant = participant + "," + name;
+									}
+								}
+							}
+						}
 
-					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
-					DBAccess.getdbHeler()
-							.saveOrUpdateRecordtransactiondetails(
-									CallDispatcher.sb);
+						if(CallDispatcher.removed_current_conf_members!=null && CallDispatcher.removed_current_conf_members.size()>0){
+							for(String name:CallDispatcher.removed_current_conf_members){
+								if(!name.equalsIgnoreCase(CallDispatcher.sb.getHost())){
+									if(participant==null){
+										participant=name;
+									}else{
+										participant=participant+","+name;
+									}
+
+								}
+							}
+						}
+
+						if(!CallDispatcher.sb.getHost().equalsIgnoreCase(CallDispatcher.LoginUser)){
+							if(participant==null){
+								participant=CallDispatcher.LoginUser;
+							}else{
+								participant=participant+","+CallDispatcher.LoginUser;
+							}
+						}
+
+						if (participant != null) {
+							CallDispatcher.sb.setParticipant_name(participant);
+						}
+						SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
+						hist_bean.setParticipant_name(participant);
+						hist_bean.setEndTime(hist_bean.getStartTime());
+						hist_bean.setCallDuration(SingleInstance.mainContext
+								.getCallDuration(hist_bean.getStartTime(),
+										hist_bean.getEndTime()));
+						hist_bean.setCallstatus("callattended");
+						DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
+						DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+					}
 					Log.d("hang", "Hang up from the call");
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -614,12 +758,13 @@ public class CallConnectingScreen extends Fragment {
 	}
 
 	private void OpenCallscreen(final SignalingBean sbean) {
+		CallDispatcher.callHistoryDetails.setStartTime(callDisp.getCurrentDateandTime());
 		final String from = sbean.getTo();
 //		if (SingleInstance.contextTable.containsKey("groupchat")) {
 //			GroupChatActivity groupChatActivity = (GroupChatActivity) SingleInstance.contextTable.get("groupchat");
 //			groupChatActivity.finish();
 //		}
-		if (sbean.getCallType().equals("AC")) {
+		if (sbean.getCallType().equals("AC") || (sbean.getPreviouscalltype() != null && sbean.getPreviouscalltype().equalsIgnoreCase("AC"))) {
 
 			CallDispatcher.isAudioCallWindowOpened = true;
 
@@ -656,6 +801,10 @@ public class CallConnectingScreen extends Fragment {
 			bun.putString("host",from);
 //			bun.putExtra("signal", bun);
 			bun.putBoolean("isreceiver", true);
+			if(sbean.getPreviouscalltype() != null && sbean.getPreviouscalltype().equalsIgnoreCase("AC")){
+				bun.putString("previouscalltype", "AC");
+				bun.putString("currentcalltype", "VC");
+			}
 			FragmentTransaction ft = fm.beginTransaction();
 			AudioCallScreen audioCallScreen = AudioCallScreen
 					.getInstance(context);

@@ -1,48 +1,43 @@
 package com.callHistory;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-
-import org.lib.model.BuddyInformationBean;
-import org.lib.model.RecordTransactionBean;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.Chronometer;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.cg.DB.DBAccess;
-import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
-import com.cg.commongui.MultimediaUtils;
+import com.cg.snazmed.R;
 import com.main.AppMainActivity;
 import com.main.ContactsFragment;
 import com.util.SingleInstance;
+
+import org.lib.model.BuddyInformationBean;
+import org.lib.model.RecordTransactionBean;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class CallHistoryActivity extends Activity {
 	private Context context;
@@ -226,13 +221,13 @@ public class CallHistoryActivity extends Activity {
 			//For this set From and To name
 			//start
 
-			if (recordTransactionBean.getFromName() != null) {
-				Log.i("callhistory","fromname-->"+recordTransactionBean.getFromName());
+			if (recordTransactionBean.getHost() != null) {
+				Log.i("callhistory","fromname-->"+recordTransactionBean.getHost());
 				Log.i("callhistory","LoginUser-->"+CallDispatcher.LoginUser);
 				if(ContactsFragment.buddyList!=null && ContactsFragment.buddyList.size()>0){
 					for(BuddyInformationBean bean:ContactsFragment.buddyList){
 						if(bean.getEmailid()!=null) {
-							if (bean.getEmailid().equalsIgnoreCase(recordTransactionBean.getFromName())) {
+							if (bean.getEmailid().equalsIgnoreCase(recordTransactionBean.getHost())) {
 								if (bean.getFirstname() != null && bean.getLastname() != null) {
 									from.setText(bean.getFirstname() + " " + bean.getLastname());
 									break;
@@ -245,11 +240,11 @@ public class CallHistoryActivity extends Activity {
 
 					}
 
-					if(recordTransactionBean.getFromName().trim().equalsIgnoreCase(CallDispatcher.LoginUser.trim())){
+					if(recordTransactionBean.getHost().trim().equalsIgnoreCase(CallDispatcher.LoginUser.trim())){
 						from.setText("Me");
 					}
 				}else {
-					from.setText(recordTransactionBean.getFromName());
+					from.setText(recordTransactionBean.getHost());
 				}
 			}
 
@@ -280,31 +275,31 @@ public class CallHistoryActivity extends Activity {
 				}
 			}
 
-			if (recordTransactionBean.getToName() != null) {
-				if(ContactsFragment.buddyList!=null && ContactsFragment.buddyList.size()>0){
-					for(BuddyInformationBean bean:ContactsFragment.buddyList){
-						if(bean.getEmailid()!=null) {
-							if (bean.getEmailid().equalsIgnoreCase(recordTransactionBean.getToName())) {
-								if (bean.getFirstname() != null && bean.getLastname() != null) {
-									to.setText(bean.getFirstname() + " " + bean.getLastname());
-									break;
-								} else if (bean.getFirstname() != null) {
-									to.setText(bean.getFirstname());
-									break;
-								}
-							}
-						}
-
-					}
-					if(recordTransactionBean.getHost_emailid()!=null) {
-						if (recordTransactionBean.getToName().equalsIgnoreCase(recordTransactionBean.getHost_emailid())) {
-							to.setText("Me");
-						}
-					}
-				}else {
-					to.setText(recordTransactionBean.getToName());
-				}
-			}
+//			if (recordTransactionBean.getToName() != null) {
+//				if(ContactsFragment.buddyList!=null && ContactsFragment.buddyList.size()>0){
+//					for(BuddyInformationBean bean:ContactsFragment.buddyList){
+//						if(bean.getEmailid()!=null) {
+//							if (bean.getEmailid().equalsIgnoreCase(recordTransactionBean.getToName())) {
+//								if (bean.getFirstname() != null && bean.getLastname() != null) {
+//									to.setText(bean.getFirstname() + " " + bean.getLastname());
+//									break;
+//								} else if (bean.getFirstname() != null) {
+//									to.setText(bean.getFirstname());
+//									break;
+//								}
+//							}
+//						}
+//
+//					}
+//					if(recordTransactionBean.getHost_emailid()!=null) {
+//						if (recordTransactionBean.getToName().equalsIgnoreCase(recordTransactionBean.getHost_emailid())) {
+//							to.setText("Me");
+//						}
+//					}
+//				}else {
+//					to.setText(recordTransactionBean.getToName());
+//				}
+//			}
 
 			if (recordTransactionBean.getTot_participant() != null) {
 				if(ContactsFragment.buddyList!=null && ContactsFragment.buddyList.size()>0){
@@ -316,15 +311,56 @@ public class CallHistoryActivity extends Activity {
 					if(recordTransactionBean.getTot_participant().contains(",")) {
 						String s[] = recordTransactionBean.getTot_participant().split(",");
 						for (int i=0;i<s.length;i++) {
+							if(s[i].equalsIgnoreCase(CallDispatcher.LoginUser)){
+								if (buddies == null) {
+									buddies = "Me";
+								} else {
+									buddies = buddies + "," + "Me";
+								}
+
+							} else {
+								for (BuddyInformationBean bean : ContactsFragment.buddyList) {
+									if (bean.getEmailid() != null) {
+										if (bean.getEmailid().equalsIgnoreCase(s[i])) {
+											if (bean.getFirstname() != null && bean.getLastname() != null) {
+												if (buddies == null) {
+													buddies = bean.getFirstname() + " " + bean.getLastname();
+												} else {
+													buddies = buddies + "," + bean.getFirstname() + " " + bean.getLastname();
+												}
+
+											} else if (bean.getFirstname() != null) {
+												if (buddies == null) {
+													buddies = bean.getFirstname();
+												} else {
+													buddies = buddies + "," + bean.getFirstname();
+												}
+											}
+										}
+									}
+
+								}
+							}
+						}
+					}else{
+						if(recordTransactionBean.getTot_participant().equalsIgnoreCase(CallDispatcher.LoginUser)){
+							if (buddies == null) {
+								buddies = "Me";
+							} else {
+								buddies = buddies + "," + "Me";
+							}
+
+						} else {
 							for (BuddyInformationBean bean : ContactsFragment.buddyList) {
 								if (bean.getEmailid() != null) {
-									if (bean.getEmailid().equalsIgnoreCase(s[i])) {
+									if (bean.getEmailid().equalsIgnoreCase(recordTransactionBean.getTot_participant())) {
 										if (bean.getFirstname() != null && bean.getLastname() != null) {
 											if (buddies == null) {
 												buddies = bean.getFirstname() + " " + bean.getLastname();
 											} else {
 												buddies = buddies + "," + bean.getFirstname() + " " + bean.getLastname();
 											}
+
 
 										} else if (bean.getFirstname() != null) {
 											if (buddies == null) {
@@ -335,34 +371,13 @@ public class CallHistoryActivity extends Activity {
 										}
 									}
 								}
-
 							}
-						}
-					}else{
-						for (BuddyInformationBean bean : ContactsFragment.buddyList) {
-							if (bean.getEmailid() != null) {
-								if (bean.getEmailid().equalsIgnoreCase(recordTransactionBean.getTot_participant())) {
-									if (bean.getFirstname() != null && bean.getLastname() != null) {
-										if (buddies == null) {
-											buddies = bean.getFirstname() + " " + bean.getLastname();
-										} else {
-											buddies = buddies + "," + bean.getFirstname() + " " + bean.getLastname();
-										}
-
-
-									} else if (bean.getFirstname() != null) {
-										if (buddies == null) {
-											buddies = bean.getFirstname();
-										} else {
-											buddies = buddies + "," + bean.getFirstname();
-										}
-									}
-								}
-							}
-
 						}
 					}
 					if(buddies!=null){
+						if(buddies.contains(CallDispatcher.LoginUser)) {
+							buddies.replace(CallDispatcher.LoginUser,"Me");
+						}
 						to.setText(buddies);
 					}
 
@@ -398,7 +413,7 @@ public class CallHistoryActivity extends Activity {
 			//End
 			if (recordTransactionBean.getStartTime() != null) {
 				SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
-				SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss a");
+				SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy hh:mm a");
 				Date d1 = dateformat.parse(recordTransactionBean.getStartTime());
 				String newdate = sdf.format(d1);
 				date.setText(newdate);

@@ -11,10 +11,13 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.cg.callservices.AudioCallScreen;
+import com.cg.callservices.VideoCallScreen;
 import com.cg.callservices.VideoThreadBean;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.hostedconf.AppReference;
+import com.util.SingleInstance;
 
 import org.audio.AudioRecorder;
 import org.audio.AudioRecorderListener;
@@ -1848,10 +1851,23 @@ public class CommunicationEngine implements AudioRecorderListener,
 							Log.i("NotesVideo", "inside if");
 							VideoThreadBean videoThreadBean = new VideoThreadBean();
 							videoThreadBean.setMember_name(sb.getTo());
-							videoThreadBean.setVideoDisabled(false);
+							videoThreadBean.setVideoDisabled(true);
 							Log.i("VideoSSRC", "videoSSRC_total.put 1");
 							WebServiceReferences.videoSSRC_total.put(Integer.parseInt(sb.getVideossrc()), videoThreadBean);
 							Log.i("NotesVideo", "videoSSRC size : " + WebServiceReferences.videoSSRC_total.size());
+							Object objCallScreen = SingleInstance.instanceTable
+									.get("callscreen");
+							if (objCallScreen != null) {
+
+								if (objCallScreen instanceof AudioCallScreen) {
+									AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
+									acalObj.notifyNewSSRC(Integer.parseInt(sb.getVideossrc()));
+								}
+//								else if (objCallScreen instanceof VideoCallScreen) {
+//									VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
+//									acalObj.notifyVideoStoped(sb);
+//								}
+							}
 						}
 					}
 
@@ -2963,6 +2979,20 @@ public class CommunicationEngine implements AudioRecorderListener,
 					} else {
 						if(!WebServiceReferences.removed_videoSSRC_list.contains((int) (long) ssrc)) {
 							WebServiceReferences.videoSSRC_total_list.add((int) (long) ssrc);
+
+							Object objCallScreen = SingleInstance.instanceTable
+									.get("callscreen");
+							if (objCallScreen != null) {
+
+								if (objCallScreen instanceof AudioCallScreen) {
+									AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
+									acalObj.notifyNumFeedChanged();
+								}
+//								else if (objCallScreen instanceof VideoCallScreen) {
+//									VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
+//									acalObj.notifyVideoStoped(sb);
+//								}
+							}
 						}
 //						if(WebServiceReferences.videoSSRC_total.containsKey((int) (long) ssrc)){
 //

@@ -354,16 +354,49 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 									}
 								}
 							}
+
+							if(CallDispatcher.removed_current_conf_members!=null && CallDispatcher.removed_current_conf_members.size()>0){
+								for(String name:CallDispatcher.removed_current_conf_members){
+									if(!name.equalsIgnoreCase(host)){
+										if(participant==null){
+											participant=name;
+										}else{
+											participant=participant+","+name;
+										}
+
+									}
+								}
+							}
+
+							if(!host.equalsIgnoreCase(CallDispatcher.LoginUser)){
+								if(participant==null){
+									participant=CallDispatcher.LoginUser;
+								}else{
+									participant=participant+","+CallDispatcher.LoginUser;
+								}
+							}
+
 							if(participant!=null){
 								CallDispatcher.sb.setParticipant_name(participant);
 							}
 							//end
-
-							DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+							Log.i("callentry", "db entry 8");
+//							DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 							DBAccess.getdbHeler()
 									.saveOrUpdateRecordtransactiondetails(
-                                            CallDispatcher.sb);
+											CallDispatcher.sb);
 
+							if(CallDispatcher.callHistoryDetails != null) {
+								SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
+								hist_bean.setParticipant_name(participant);
+								hist_bean.setEndTime(objCallDispatcher.getCurrentDateandTime());
+								hist_bean.setCallDuration(SingleInstance.mainContext
+										.getCallDuration(hist_bean.getStartTime(),
+												hist_bean.getEndTime()));
+								hist_bean.setCallstatus("callattended");
+								DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
+								DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+							}
 							// }
 							// Log.d("test", "From leave/bye");
 							for (int i = 0; i < CallDispatcher.conferenceMembers
@@ -577,15 +610,48 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 										}
 									}
 								}
+
+								if(CallDispatcher.removed_current_conf_members!=null && CallDispatcher.removed_current_conf_members.size()>0){
+									for(String name:CallDispatcher.removed_current_conf_members){
+										if(!name.equalsIgnoreCase(host)){
+											if(participant==null){
+												participant=name;
+											}else{
+												participant=participant+","+name;
+											}
+
+										}
+									}
+								}
+
+								if(!host.equalsIgnoreCase(CallDispatcher.LoginUser)){
+									if(participant==null){
+										participant=CallDispatcher.LoginUser;
+									}else{
+										participant=participant+","+CallDispatcher.LoginUser;
+									}
+								}
+
 								if(participant!=null){
 									CallDispatcher.sb.setParticipant_name(participant);
 								}
 								//end
-
-								DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+								Log.i("callentry", "db entry 9");
+//								DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
 								DBAccess.getdbHeler()
 										.saveOrUpdateRecordtransactiondetails(
-                                                CallDispatcher.sb);
+												CallDispatcher.sb);
+								if(CallDispatcher.callHistoryDetails != null) {
+									SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
+									hist_bean.setParticipant_name(participant);
+									hist_bean.setEndTime(objCallDispatcher.getCurrentDateandTime());
+									hist_bean.setCallDuration(SingleInstance.mainContext
+											.getCallDuration(hist_bean.getStartTime(),
+													hist_bean.getEndTime()));
+									hist_bean.setCallstatus("callattended");
+									DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
+									DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+								}
 								showCallHistory();
 								Log.d("Test","Inside Videocallscreen SelfHangUp@@@@@");
 							}
@@ -941,6 +1007,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 						i.putExtra("calltype","VC");
 						i.putExtra("host", host);
 						i.putExtra("fromscreen","videocallscreen");
+						i.putExtra("precalltype","VC");
 						AppReference.mainContext.startActivity(i);
 					}
 				});
@@ -2901,7 +2968,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							if (objCallDispatcher != null) {
 								SignalingBean sb = objCallDispatcher.callconfernceUpdate(
 										bib.getBuddyName(),
-										"VC", sessionid);
+										"VC", sessionid,"");
 								// june04-Implementation
 								CallDispatcher.conferenceRequest
 										.put(bib.getBuddyName(), sb);
@@ -3996,7 +4063,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 								SignalingBean sb = objCallDispatcher
 										.callconfernceUpdate(
                                                 choiceList[which].toString(),
-                                                callType, sessionid);
+                                                callType, sessionid,"");
 
 								CallDispatcher.conferenceRequest.put(
 										choiceList[which].toString(), sb);

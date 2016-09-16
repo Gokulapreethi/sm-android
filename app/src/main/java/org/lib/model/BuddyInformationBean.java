@@ -49,6 +49,8 @@ public class BuddyInformationBean {
 	private String profile_picpath;
     private boolean selected;
 	private String role;
+	private boolean video_removed;
+	private String video_ssrc;
 
 	public ArrayList<String[]> getProfileModifiedDate() {
 		return profileModifiedDate;
@@ -337,7 +339,23 @@ public class BuddyInformationBean {
 		this.lastname = lastname;
 	}
 
-    public String toString(){
+	public boolean isVideo_removed() {
+		return video_removed;
+	}
+
+	public void setVideo_removed(boolean video_removed) {
+		this.video_removed = video_removed;
+	}
+
+	public String getVideo_ssrc() {
+		return video_ssrc;
+	}
+
+	public void setVideo_ssrc(String video_ssrc) {
+		this.video_ssrc = video_ssrc;
+	}
+
+	public String toString(){
         return " ==== " + name +
                 " ==== " + emailid +
                 " ==== " + nickname +

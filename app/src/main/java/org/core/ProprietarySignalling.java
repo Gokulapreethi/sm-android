@@ -1,32 +1,10 @@
 package org.core;
 
-import java.io.ByteArrayOutputStream;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import org.lib.model.SignalingBean;
-import org.lib.model.UdpMessageBean;
-import org.lib.xml.XmlComposer;
-import org.lib.xml.XmlParser;
-import org.net.rtp.RtpEngine;
-import org.net.rtp.RtpPacket;
-import org.net.udp.UDPDataListener;
-import org.net.udp.UDPEngine;
-import org.tcp.TCPEngine;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -41,6 +19,25 @@ import com.cg.timer.KeepAliveReceiver;
 import com.group.chat.GroupChatActivity;
 import com.main.AppMainActivity;
 import com.util.SingleInstance;
+
+import org.lib.model.SignalingBean;
+import org.lib.model.UdpMessageBean;
+import org.lib.xml.XmlComposer;
+import org.lib.xml.XmlParser;
+import org.net.rtp.RtpEngine;
+import org.net.rtp.RtpPacket;
+import org.net.udp.UDPDataListener;
+import org.net.udp.UDPEngine;
+
+import java.io.ByteArrayOutputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * This class is used to send and Receive UDP signal. This class implement
@@ -676,9 +673,23 @@ public class ProprietarySignalling implements UDPDataListener {
 					if(!WebServiceReferences.videoSSRC_total.containsKey(Integer.parseInt(sb.getVideossrc()))){
 						VideoThreadBean videoThreadBean = new VideoThreadBean();
 						videoThreadBean.setMember_name(sb.getFrom());
-						videoThreadBean.setVideoDisabled(false);
+						videoThreadBean.setVideoDisabled(true);
 						Log.i("VideoSSRC", "videoSSRC_total.put 2");
+						Log.i("NotesVideo", "videoSSRC_total.put 2");
 						WebServiceReferences.videoSSRC_total.put((Integer.parseInt(sb.getVideossrc())),videoThreadBean);
+						Object objCallScreen = SingleInstance.instanceTable
+								.get("callscreen");
+						if (objCallScreen != null) {
+
+							if (objCallScreen instanceof AudioCallScreen) {
+								AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
+								acalObj.notifyNewSSRC(Integer.parseInt(sb.getVideossrc()));
+							}
+//								else if (objCallScreen instanceof VideoCallScreen) {
+//									VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
+//									acalObj.notifyVideoStoped(sb);
+//								}
+						}
 					}
 				}
 

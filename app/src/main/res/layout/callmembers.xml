@@ -122,7 +122,12 @@
                     android:text="Prof.Designation"
                     android:textColor="#7E8080"
                     android:textSize="12sp" />
-
+                <ImageView
+                    android:id="@+id/refreshviews"
+                    android:src="@drawable/state_not_sent"
+                    android:layout_width="20dp"
+                    android:visibility="gone"
+                    android:layout_height="20dp" />
             </LinearLayout>
 
             <LinearLayout

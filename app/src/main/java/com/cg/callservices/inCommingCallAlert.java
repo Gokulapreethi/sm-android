@@ -370,21 +370,53 @@ public class inCommingCallAlert extends Fragment {
 						}
 					}
 				}
+
+				if(CallDispatcher.removed_current_conf_members!=null && CallDispatcher.removed_current_conf_members.size()>0){
+					for(String name:CallDispatcher.removed_current_conf_members){
+						if(!name.equalsIgnoreCase(CallDispatcher.sb.getHost())){
+							if(participant==null){
+								participant=name;
+							}else{
+								participant=participant+","+name;
+							}
+
+						}
+					}
+				}
+
+				if(!CallDispatcher.sb.getHost().equalsIgnoreCase(CallDispatcher.LoginUser)){
+					if(participant==null){
+						participant=CallDispatcher.LoginUser;
+					}else{
+						participant=participant+","+CallDispatcher.LoginUser;
+					}
+				}
+
 				if(participant!=null){
 					CallDispatcher.sb.setParticipant_name(participant);
 				}
 				//end
 
 				CallDispatcher.sb.setCallstatus("callattended");
+				Log.i("callentry", "db entry 7");
+//				DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+//				DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
+//						CallDispatcher.sb);
 
-				DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
-				DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
-						CallDispatcher.sb);
+				if(CallDispatcher.callHistoryDetails != null) {
+					SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
+					hist_bean.setParticipant_name(participant);
+					hist_bean.setEndTime(callDisp.getCurrentDateandTime());
+					hist_bean.setCallDuration(SingleInstance.mainContext
+							.getCallDuration(hist_bean.getStartTime(),
+									hist_bean.getEndTime()));
+					hist_bean.setCallstatus("callattended");
+					DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
+					DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+				}
 			}
 			CallDispatcher.currentSessionid = null;
 			callDisp.isHangUpReceived = false;
-
-			//
 
 			CallDispatcher.conferenceMembers.clear();
 			CallDispatcher.buddySignall.clear();

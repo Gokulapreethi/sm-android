@@ -1,7 +1,16 @@
 package org.lib.xml;
 
-import java.util.ArrayList;
-import java.util.Vector;
+import android.util.Base64;
+import android.util.Log;
+
+import com.bean.BuddyPermission;
+import com.bean.DefaultPermission;
+import com.bean.EditFormBean;
+import com.bean.GroupChatBean;
+import com.bean.GroupChatPermissionBean;
+import com.bean.ProfileBean;
+import com.cg.commonclass.CallDispatcher;
+import com.cg.hostedconf.AppReference;
 
 import org.lib.PatientDetailsBean;
 import org.lib.model.CallHistoryBean;
@@ -13,7 +22,6 @@ import org.lib.model.OfflineRequestConfigBean;
 import org.lib.model.PatientCommentsBean;
 import org.lib.model.PatientDescriptionBean;
 import org.lib.model.PermissionBean;
-import org.lib.model.RoleAccessBean;
 import org.lib.model.RoleCommentsViewBean;
 import org.lib.model.RoleEditRndFormBean;
 import org.lib.model.RolePatientManagementBean;
@@ -25,20 +33,11 @@ import org.lib.model.SubscribeBean;
 import org.lib.model.TaskDetailsBean;
 import org.lib.model.UdpMessageBean;
 import org.lib.model.UtilityBean;
-import org.lib.webservice.Servicebean;
 
-import android.util.Base64;
-import android.util.Log;
+import java.util.ArrayList;
+import java.util.Vector;
 
-import com.bean.BuddyPermission;
-import com.bean.DefaultPermission;
-import com.bean.EditFormBean;
-import com.bean.GroupChatBean;
-import com.bean.GroupChatPermissionBean;
-import com.bean.ProfileBean;
 //import com.bean.SurveyApplicantFormBean;
-import com.cg.commonclass.CallDispatcher;
-import com.cg.hostedconf.AppReference;
 
 /**
  * This class is used to Compose the XML.
@@ -465,7 +464,9 @@ public class XmlComposer {
 		buffer.append(" localip=" + quotes + sb.getLocalip() + quotes);
 		buffer.append(" publicip=" + quotes + sb.getPublicip() + quotes);
 		buffer.append(" calltype=" + quotes + sb.getCallType() + quotes);
-
+		if(sb.getPreviouscalltype() != null) {
+			buffer.append(" previousCallType=" + quotes + sb.getPreviouscalltype() + quotes);
+		}
 		buffer.append(" sessionid=" + quotes + sb.getSessionid() + quotes);
 
 		buffer.append(" signalid=" + quotes + sb.getSignalid() + quotes);

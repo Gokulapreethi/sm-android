@@ -107,7 +107,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	private HashMap<String, Object> xmlmap = new HashMap<String, Object>();
 
 	private Button btnHangup, btnemergency;
-	
+
 	private ImageView  btn_onlineb,btnSpeaker_video, btn_onlineb_video, btnMic_video, btnHangup_video, videoEnableBtn;
 
 	private Button btnMic,promote_call;
@@ -161,7 +161,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 	TextView on_off1,on_off12,on_off2,on_off3,onoff_preview,participant_name1,participant_name12,participant_name2,participant_name3;
 
-	ImageView buddyimageview1, buddyimageview2, buddyimageview3, ownimageview;
+	ImageView buddyimageview1, buddyimageview12, buddyimageview2, buddyimageview3, ownimageview;
 
 	private FrameLayout.LayoutParams surfaceview_layoutParams;
 
@@ -186,7 +186,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	private boolean isReceiver = false;
 
 	private boolean selfHangup = false;
-	
+
 	private boolean isbuddyaudio=false;
 
 	private boolean isBuddyinCall = false;
@@ -275,6 +275,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 //					| WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 //			win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 //					| WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+			Log.i("VideoCall","AudioCallScreen onCreate");
 			final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
 			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 			if(rootView==null) {
@@ -334,6 +335,39 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 				signBean = (SignalingBean) bundlevalues.getSerializable("signal");
 				strSessionId = signBean.getSessionid();
 				CallDispatcher.currentSessionid = strSessionId;
+
+				if(bundlevalues.getString("previouscalltype")!=null && bundlevalues.getString("previouscalltype").equalsIgnoreCase("AC")) {
+
+					calltype = "VC";
+					currentcall_type = "VC";
+					video_layouts.setVisibility(View.VISIBLE);
+					video_lay.setVisibility(View.VISIBLE);
+					audio_button_layouts.setVisibility(View.GONE);
+//					audio_host_layout.setVisibility(View.GONE);
+//					audio_participant_layout.setVisibility(View.GONE);
+//					initializevideoIntent();
+
+					videoEnableBtn.setImageResource(R.drawable.call_video);
+					videoEnableBtn.setTag(false);
+					AppMainActivity.commEngine.enable_disable_VideoPreview(false);
+					preview_hided = true;
+					own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
+					own_video_layout.getLayoutParams().width = 1;
+					hideOwnVideo();
+
+					pv = AppMainActivity.commEngine.getVideoPreview(context);
+					pv.setZOrderOnTop(false);
+					preview_frameLayout.addView(pv);
+
+					for (int i = 0; i < CallDispatcher.conferenceMembers.size(); i++) {
+						String user = CallDispatcher.conferenceMembers.get(i);
+						onOffVideo(user,true);
+					}
+
+					resetVideoViews();
+
+//					getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+				}
 				handler = new Handler() {
 					@Override
 					public void handleMessage(Message msg) {
@@ -377,21 +411,54 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 												}else{
 													participant=participant+","+name;
 												}
+											}
+										}
+									}
+
+									if(CallDispatcher.removed_current_conf_members!=null && CallDispatcher.removed_current_conf_members.size()>0){
+										for(String name:CallDispatcher.removed_current_conf_members){
+											if(!name.equalsIgnoreCase(host)){
+												if(participant==null){
+													participant=name;
+												}else{
+													participant=participant+","+name;
+												}
 
 											}
 										}
 									}
+
+									if(!host.equalsIgnoreCase(CallDispatcher.LoginUser)){
+										if(participant==null){
+											participant=CallDispatcher.LoginUser;
+										}else{
+											participant=participant+","+CallDispatcher.LoginUser;
+										}
+									}
+
 									if(participant!=null){
 										CallDispatcher.sb.setParticipant_name(participant);
 									}
 									//end
 
 									if (selfHangup) {
-										DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
-										DBAccess.getdbHeler()
-												.saveOrUpdateRecordtransactiondetails(
-														CallDispatcher.sb);
+										Log.i("callentry", "db entry 2");
+//										DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+//										DBAccess.getdbHeler()
+//												.saveOrUpdateRecordtransactiondetails(
+//														CallDispatcher.sb);
 
+										if(CallDispatcher.callHistoryDetails != null) {
+											SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
+											hist_bean.setParticipant_name(participant);
+											hist_bean.setEndTime(objCallDispatcher.getCurrentDateandTime());
+											hist_bean.setCallDuration(SingleInstance.mainContext
+													.getCallDuration(hist_bean.getStartTime(),
+															hist_bean.getEndTime()));
+											hist_bean.setCallstatus("callattended");
+											DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
+											DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+										}
 										showCallHistory();
 
 
@@ -511,6 +578,29 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 												getNames());
 
 										showToast("Connected member :" + buddy);
+										for (int i = 0; i < CallDispatcher.conferenceMembers.size(); i++) {
+											String user = CallDispatcher.conferenceMembers.get(i);
+											onOffVideo(user,true);
+										}
+
+										if(currentcall_type.equalsIgnoreCase("VC")) {
+											handler.postDelayed(new Runnable() {
+												@Override
+												public void run() {
+
+													RecordTransactionBean transactionBean = new RecordTransactionBean();
+													transactionBean.setSessionid(strSessionId);
+													transactionBean.setHost(CallDispatcher.LoginUser);
+													transactionBean.setParticipants("");
+													if (preview_hided) {
+														transactionBean.setDisableVideo("yes");
+													} else {
+														transactionBean.setDisableVideo("no");
+													}
+													processCallRequest(2, transactionBean, "disablevideo");
+												}
+											},2000);
+										}
 
 									} else {
 										// Log.e("test", "false state buddy");
@@ -519,7 +609,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 										CallDispatcher.buddySignall.remove(buddy);
 										CallDispatcher.conferenceMembers.remove(buddy);
-
+										CallDispatcher.removed_current_conf_members.add(buddy);
 										if (CallDispatcher.conferenceMembers.size() == 0
 												&& CallDispatcher.conferenceRequest
 												.size() == 0) {
@@ -639,9 +729,22 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	}
 
 
-    @Override
-    public void onResume() {
-        super.onResume();
+	private void changeorientation(String req_orientation){
+
+		if(req_orientation.equals("p")){
+			if (getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+				getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			}
+		} else {
+			if (getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+				getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+			}
+		}
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
 		try {
 			Log.i("Minimise","AudioCallScreen OnResume");
 			if(mainHeader != null) {
@@ -650,8 +753,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 			AppMainActivity.inActivity = context;
 			if (AppMainActivity.commEngine != null) {
-                AppMainActivity.commEngine.setmDecodeFrame(true);
-            }
+				AppMainActivity.commEngine.setmDecodeFrame(true);
+			}
 //			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 //
 //			} else {
@@ -671,11 +774,19 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 //			}
 
 			if(currentcall_type.equalsIgnoreCase("VC")){
-				getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                preview_frameLayout.removeView(pv);
-                pv.stopPreview();
-                pv = AppMainActivity.commEngine.getVideoPreview(context);
-                preview_frameLayout.addView(pv, 0);
+				if (WebServiceReferences.videoSSRC_total_list.size() == 0) {
+					if (preview_hided) {
+						changeorientation("p");
+					} else {
+						changeorientation("l");
+					}
+				} else {
+					changeorientation("l");
+				}
+				preview_frameLayout.removeView(pv);
+				pv.stopPreview();
+				pv = AppMainActivity.commEngine.getVideoPreview(context);
+				preview_frameLayout.addView(pv, 0);
 
 				buddyframelayout01.removeView(buddysurfaceview_01);
 				buddyframelayout0102.removeView(buddysurfaceview_0102);
@@ -711,8 +822,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 				buddysurfaceview_0102.onResume();
 				buddysurfaceview_02.onResume();
 				buddysurfaceview_03.onResume();
-
-            }
+				refreshBuddyProfiles();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -805,7 +916,81 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 		}
 	}
 
-    public String getCurrentDateandTime() {
+	private void refreshBuddyProfiles() {
+		Log.i("NotesVideo","came to refreshBuddyProfiles");
+		for(int i=0;i<WebServiceReferences.videoSSRC_total_list.size();i++) {
+			int turn_ssrc = WebServiceReferences.videoSSRC_total_list.get(i);
+			final int total_size = WebServiceReferences.videoSSRC_total_list.size();
+
+			VideoThreadBean videoThreadBean = WebServiceReferences.videoSSRC_total.get(turn_ssrc);
+			if (videoThreadBean != null && videoThreadBean.isVideoDisabled()) {
+				final String buddy_name = (WebServiceReferences.videoSSRC_total.get(turn_ssrc)).getMember_name();
+
+				boolean have_image = false;
+				for (BuddyInformationBean buddyInformationBean : buddyList) {
+					if (buddyInformationBean.getName().equalsIgnoreCase(buddy_name)) {
+						String pic_path = buddyInformationBean.getProfile_picpath();
+
+						if (pic_path == null || pic_path.length() == 0) {
+							ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(buddy_name);
+							if (pBean != null) {
+								pic_path = pBean.getPhoto();
+								Log.i("Join", "pic_path 2 : " + pic_path);
+							}
+						}
+						if (pic_path != null && pic_path.length() > 0) {
+							if (!pic_path.contains("COMMedia")) {
+								pic_path = Environment
+										.getExternalStorageDirectory()
+										+ "/COMMedia/" + pic_path;
+							}
+							have_image = true;
+							if (i == 0) {
+								imageLoader.DisplayImage(pic_path, buddyimageview1, R.drawable.icon_buddy_aoffline);
+							} else if (i == 1) {
+								if (total_size == 2) {
+									imageLoader.DisplayImage(pic_path, buddyimageview12, R.drawable.icon_buddy_aoffline);
+								} else {
+									imageLoader.DisplayImage(pic_path, buddyimageview2, R.drawable.icon_buddy_aoffline);
+								}
+							} else if (i == 2) {
+								imageLoader.DisplayImage(pic_path, buddyimageview3, R.drawable.icon_buddy_aoffline);
+							}
+						}
+					}
+				}
+				if (i == 0) {
+					if (!have_image) {
+						imageLoader.DisplayImage("", buddyimageview1, R.drawable.icon_buddy_aoffline);
+					}
+					buddyimageview1.setVisibility(View.VISIBLE);
+					buddysurfaceview_01.setVisibility(View.GONE);
+				} else if (i == 1) {
+					if (total_size == 2) {
+						if (!have_image) {
+							imageLoader.DisplayImage("", buddyimageview12, R.drawable.icon_buddy_aoffline);
+						}
+						buddyimageview12.setVisibility(View.VISIBLE);
+						buddysurfaceview_0102.setVisibility(View.GONE);
+					} else {
+						if (!have_image) {
+							imageLoader.DisplayImage("", buddyimageview2, R.drawable.icon_buddy_aoffline);
+						}
+						buddyimageview2.setVisibility(View.VISIBLE);
+						buddysurfaceview_02.setVisibility(View.GONE);
+					}
+				} else if (i == 2) {
+					if (!have_image) {
+						imageLoader.DisplayImage("", buddyimageview3, R.drawable.icon_buddy_aoffline);
+					}
+					buddyimageview3.setVisibility(View.VISIBLE);
+					buddysurfaceview_03.setVisibility(View.GONE);
+				}
+			}
+		}
+	}
+
+	public String getCurrentDateandTime() {
 		try {
 			// Calendar c = Calendar.getInstance();
 			// SimpleDateFormat sdf = new
@@ -841,7 +1026,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			member_count=(TextView)llayAudioCall.findViewById(R.id.members_count);
 			Button members=(Button)llayAudioCall.findViewById(R.id.members);
 			Button btn_video=(Button)llayAudioCall.findViewById(R.id.btn_video);
-			 minimize=(Button)llayAudioCall.findViewById(R.id.minimize_btn);
+			minimize=(Button)llayAudioCall.findViewById(R.id.minimize_btn);
 			members.setVisibility(View.VISIBLE);
 			new Handler().postDelayed(new Runnable() {
 				@Override
@@ -927,6 +1112,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 			ownimageview = (ImageView)llayAudioCall.findViewById(R.id.own_image);
 			buddyimageview1 = (ImageView)llayAudioCall.findViewById(R.id.user_image2);
+			buddyimageview12 = (ImageView)llayAudioCall.findViewById(R.id.user_image23);
 			buddyimageview2 = (ImageView)llayAudioCall.findViewById(R.id.user_image3);
 			buddyimageview3 = (ImageView)llayAudioCall.findViewById(R.id.user_image4);
 
@@ -998,6 +1184,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 					i.putExtra("sessionId", strSessionId);
 					i.putExtra("host", host);
 					i.putExtra("fromscreen","audiocallscreen");
+					i.putExtra("precalltype","AC");
+					i.putExtra("previewdiabled",preview_hided);
 					AppReference.mainContext.startActivity(i);
 
 				}
@@ -1005,38 +1193,38 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 			btnMic.setOnClickListener(new OnClickListener() {
 
-                @Override
-                public void onClick(View v) {
+				@Override
+				public void onClick(View v) {
 
-                    try {
-                        if (!micmute) {
-                            micmute = true;
-                            btnMic.setBackgroundResource(R.drawable.call_mic_active);
+					try {
+						if (!micmute) {
+							micmute = true;
+							btnMic.setBackgroundResource(R.drawable.call_mic_active);
 
-                        } else if (micmute) {
-                            micmute = false;
-                            btnMic.setBackgroundResource(R.drawable.call_mic);
+						} else if (micmute) {
+							micmute = false;
+							btnMic.setBackgroundResource(R.drawable.call_mic);
 
-                        }
+						}
 
-                        AppMainActivity.commEngine.micMute(micmute);
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                    }
+						AppMainActivity.commEngine.micMute(micmute);
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
 
-                }
-            });
+				}
+			});
 			btnSpeaker = (Button) llayAudioCall.findViewById(R.id.loudspeaker);
 			btnSpeaker.setVisibility(View.VISIBLE);
 			if (SingleInstance.mainContext.isAutoAcceptEnabled(
-                    CallDispatcher.LoginUser, callerName)) {
-                speaker = true;
-                btnSpeaker.setBackgroundResource(R.drawable.call_speaker_active);
+					CallDispatcher.LoginUser, callerName)) {
+				speaker = true;
+				btnSpeaker.setBackgroundResource(R.drawable.call_speaker_active);
 
-            } else {
-                speaker = false;
-                btnSpeaker.setBackgroundResource(R.drawable.call_speaker);
-            }
+			} else {
+				speaker = false;
+				btnSpeaker.setBackgroundResource(R.drawable.call_speaker);
+			}
 			btnSpeaker.setVisibility(View.VISIBLE);
 			audioProperties.setSpeakerphoneOn(speaker);
 			btnSpeaker.setOnClickListener(new OnClickListener() {
@@ -1059,25 +1247,25 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			chTimer = (Chronometer) llayAudioCall.findViewById(R.id.call_timer);
 			chTimer.setVisibility(View.VISIBLE);
 //			if (isReceiver) {
-                chTimer.start();
+			chTimer.start();
 			AppMainActivity.ctimer.setBase(SystemClock.elapsedRealtime());
 			AppMainActivity.ctimer.start();
-                isTimer_running = true;
+			isTimer_running = true;
 //            }
 			chTimer.setOnChronometerTickListener(new OnChronometerTickListener() {
-                @Override
-                public void onChronometerTick(Chronometer arg0) {
+				@Override
+				public void onChronometerTick(Chronometer arg0) {
 
-                    CharSequence text = chTimer.getText();
-                    if (text.length() == 5) {
-                        chTimer.setText( text);
-                    } else if (text.length() == 7) {
+					CharSequence text = chTimer.getText();
+					if (text.length() == 5) {
+						chTimer.setText( text);
+					} else if (text.length() == 7) {
 
-                        chTimer.setText( text);
-                    }
+						chTimer.setText( text);
+					}
 
-                }
-            });
+				}
+			});
 			btnHangup = (Button) llayAudioCall.findViewById(R.id.btn_han);
 			btnHangup_video =(ImageView)llayAudioCall.findViewById(R.id.hang_video);
 
@@ -1089,53 +1277,53 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 			btnMic_video.setOnClickListener(new OnClickListener() {
 
-                @Override
-                public void onClick(View v) {
+				@Override
+				public void onClick(View v) {
 
-                    try {
-                        if (!micmute) {
-                            micmute = true;
-                            btnMic_video.setImageResource(R.drawable.call_mic_active);
+					try {
+						if (!micmute) {
+							micmute = true;
+							btnMic_video.setImageResource(R.drawable.call_mic_active);
 
-                        } else if (micmute) {
-                            micmute = false;
-                            btnMic_video.setImageResource(R.drawable.call_mic);
+						} else if (micmute) {
+							micmute = false;
+							btnMic_video.setImageResource(R.drawable.call_mic);
 
-                        }
+						}
 
-                        AppMainActivity.commEngine.micMute(micmute);
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                    }
+						AppMainActivity.commEngine.micMute(micmute);
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
 
-                }
-            });
+				}
+			});
 
 			btnSpeaker_video.setOnClickListener(new OnClickListener() {
 
-                @Override
-                public void onClick(View v) {
-                    Log.i("thread", "################## speaker" + speaker);
-                    if (!speaker) {
-                        speaker = true;
-                        btnSpeaker_video.setImageResource(R.drawable.call_speaker_active);
-                    } else if (speaker) {
-                        btnSpeaker_video.setImageResource(R.drawable.call_speaker);
-                        speaker = false;
+				@Override
+				public void onClick(View v) {
+					Log.i("thread", "################## speaker" + speaker);
+					if (!speaker) {
+						speaker = true;
+						btnSpeaker_video.setImageResource(R.drawable.call_speaker_active);
+					} else if (speaker) {
+						btnSpeaker_video.setImageResource(R.drawable.call_speaker);
+						speaker = false;
 
-                    }
-                    audioProperties.setSpeakerphoneOn(speaker);
-                }
-            });
+					}
+					audioProperties.setSpeakerphoneOn(speaker);
+				}
+			});
 
 			promote_call = (Button) llayAudioCall.findViewById(R.id.btn_video);
 			btnemergency = (Button) llayAudioCall
-                    .findViewById(R.id.btn_emergencybuddy);
+					.findViewById(R.id.btn_emergencybuddy);
 			btnemergency.setBackgroundResource(R.drawable.loc_pin);
 
 			if (!receiver.equalsIgnoreCase("true")) {
-                btnemergency.setVisibility(View.GONE);
-            }
+				btnemergency.setVisibility(View.GONE);
+			}
 			btnemergency.setVisibility(View.GONE);
 			btnemergency.setOnClickListener(new OnClickListener() {
 
@@ -1175,47 +1363,47 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 			btnHangup.setOnClickListener(new OnClickListener() {
 
-                @Override
-                public void onClick(View v) {
+				@Override
+				public void onClick(View v) {
 
-                    // Log.d("WIFI",
-                    // "size btnHangup  "+CallDispatcher.conferenceRequest.size());
+					// Log.d("WIFI",
+					// "size btnHangup  "+CallDispatcher.conferenceRequest.size());
 
-                    if (alert == null) {
+					if (alert == null) {
 
-                        showHangUpAlert();
+						showHangUpAlert();
 
-                    } else if (!alert.isShowing()) {
-                        showHangUpAlert();
-                    }
+					} else if (!alert.isShowing()) {
+						showHangUpAlert();
+					}
 
-                }
-            });
+				}
+			});
 
 			btnHangup_video.setOnClickListener(new OnClickListener() {
 
-                @Override
-                public void onClick(View v) {
+				@Override
+				public void onClick(View v) {
 
-                    // Log.d("WIFI",
-                    // "size btnHangup  "+CallDispatcher.conferenceRequest.size());
+					// Log.d("WIFI",
+					// "size btnHangup  "+CallDispatcher.conferenceRequest.size());
 
-                    if (alert == null) {
+					if (alert == null) {
 
-                        showHangUpAlert();
+						showHangUpAlert();
 
-                    } else if (!alert.isShowing()) {
-                        showHangUpAlert();
-                    }
+					} else if (!alert.isShowing()) {
+						showHangUpAlert();
+					}
 
-                }
-            });
+				}
+			});
 
 			Button btn_con = (Button) llayAudioCall
-                    .findViewById(R.id.btn_connectedbuddies);
+					.findViewById(R.id.btn_connectedbuddies);
 
 			Button btn_onlineb = (Button) llayAudioCall
-                    .findViewById(R.id.btn_addbuddy1);
+					.findViewById(R.id.btn_addbuddy1);
 			btn_onlineb.setVisibility(View.VISIBLE);
 
 			btn_con.setOnClickListener(new OnClickListener() {
@@ -1230,26 +1418,47 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 			btn_onlineb.setOnClickListener(new OnClickListener() {
 
-                @Override
-                public void onClick(View v) {
-                    // TODO Auto-generated method stub
-                    ShowOnlineBuddies("AC");
-                }
-            });
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					ShowOnlineBuddies("AC");
+				}
+			});
 
 			btn_onlineb_video.setOnClickListener(new OnClickListener() {
 
-                @Override
-                public void onClick(View v) {
-                    // TODO Auto-generated method stub
-                    ShowOnlineBuddies("VC");
-                }
-            });
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					ShowOnlineBuddies("VC");
+				}
+			});
 
 			promote_call.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View view) {
 					try {
+						if(WebServiceReferences.videoSSRC_total != null && WebServiceReferences.videoSSRC_total.size() > 0){
+
+							for(String strBuddyName :CallDispatcher.conferenceMembers) {
+								Set set = WebServiceReferences.videoSSRC_total.entrySet();
+								Iterator i = set.iterator();
+								// Display elements
+								while (i.hasNext()) {
+									Map.Entry me = (Map.Entry) i.next();
+									Log.i("Join", " key :" + me.getKey() + ": ");
+									Log.i("Join", " value :" + me.getValue());
+									VideoThreadBean value = (VideoThreadBean) me.getValue();
+									if (strBuddyName.equalsIgnoreCase(value.getMember_name())) {
+										if (!WebServiceReferences.videoSSRC_total_list.contains(me.getKey())) {
+											WebServiceReferences.videoSSRC_total_list.add((Integer) me.getKey());
+											value.setVideoDisabled(true);
+											showBuddyProfileImage(value.getMember_name(),(WebServiceReferences.videoSSRC_total_list.size()-1));
+										}
+									}
+								}
+							}
+						}
 						video_layouts.setVisibility(View.VISIBLE);
 						video_lay.setVisibility(View.VISIBLE);
 						audio_button_layouts.setVisibility(View.GONE);
@@ -1273,6 +1482,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 							String user = CallDispatcher.conferenceMembers.get(i);
 							onOffVideo(user, true);
 						}
+						hideOwnVideo();
+						refreshBuddyProfiles();
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -1281,12 +1492,12 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 			AppMainActivity.commEngine.enable_disable_VideoPreview(true);
 			videoEnableBtn.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    boolean shown = (boolean) videoEnableBtn.getTag();
-                    AppMainActivity.commEngine.enable_disable_VideoPreview(!shown);
+				@Override
+				public void onClick(View view) {
+					boolean shown = (boolean) videoEnableBtn.getTag();
+					AppMainActivity.commEngine.enable_disable_VideoPreview(!shown);
 
-                    if(shown){
+					if(shown){
 						preview_hided = true;
 						own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
 						own_video_layout.getLayoutParams().width = 1;
@@ -1317,7 +1528,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 //                        if (!have_image) {
 //                            imageLoader.DisplayImage("", ownimageview, R.drawable.icon_buddy_aoffline);
 //                        }
-                    } else {
+					} else {
 						preview_hided = false;
 						hideOwnVideo();
 						videoEnableBtn.setImageResource(R.drawable.call_video_active);
@@ -1331,10 +1542,11 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 //                        ownimageview.setVisibility(View.GONE);
 //                        preview_frameLayout.setVisibility(View.VISIBLE);
-                    }
-                    videoEnableBtn.setTag(!shown);
-                }
-            });
+					}
+					videoEnableBtn.setTag(!shown);
+					notifyNumFeedChanged();
+				}
+			});
 			onoff_preview.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View view) {
@@ -1351,17 +1563,17 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			});
 
 			on_off1.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    boolean shown = (boolean) on_off1.getTag();
+				@Override
+				public void onClick(View view) {
+					boolean shown = (boolean) on_off1.getTag();
 
-                    onOffVideoForSelectedUser(0, !shown);
+					onOffVideoForSelectedUser(0, !shown);
 //                    on_off1.setTag(!shown);
 					if(preview_hided){
 						hideOwnVideo();
 					}
-                }
-            });
+				}
+			});
 			on_off12.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View view) {
@@ -1376,28 +1588,28 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			});
 
 			on_off2.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    boolean shown = (boolean) on_off2.getTag();
-                    onOffVideoForSelectedUser(1, !shown);
+				@Override
+				public void onClick(View view) {
+					boolean shown = (boolean) on_off2.getTag();
+					onOffVideoForSelectedUser(1, !shown);
 //                    on_off2.setTag(!shown);
 					if(preview_hided){
 						hideOwnVideo();
 					}
-                }
-            });
+				}
+			});
 
 			on_off3.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    boolean shown = (boolean) on_off3.getTag();
-                    onOffVideoForSelectedUser(2, !shown);
+				@Override
+				public void onClick(View view) {
+					boolean shown = (boolean) on_off3.getTag();
+					onOffVideoForSelectedUser(2, !shown);
 //                    on_off3.setTag(!shown);
 					if(preview_hided){
 						hideOwnVideo();
 					}
-                }
-            });
+				}
+			});
 			//For this used set Profile picture for owner and buddies
 			//start
 			buddyList= ContactsFragment.getBuddyList();
@@ -1603,7 +1815,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 				bottom_videowindows.setVisibility(View.GONE);
 				buddyframelayout01.setVisibility(View.VISIBLE);
 				buddyframelayout0102.setVisibility(View.VISIBLE);
-				buddyframelayout02.setVisibility(View.VISIBLE);
+				buddyframelayout02.setVisibility(View.GONE);
 				buddyframelayout03.setVisibility(View.GONE);
 				buddysurfaceview_0102.setVisibility(View.VISIBLE);
 				if (preview_hided) {
@@ -1652,7 +1864,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			WebServiceReferences.videoSSRC_total_list.remove(selectedposition);
 
 			final String buddy_name = (WebServiceReferences.videoSSRC_total.get(turn_ssrc)).getMember_name();
-			onOffVideo(buddy_name,onoff);
+			WebServiceReferences.videoSSRC_total.get(turn_ssrc).setVideoRemoved(!onoff);
+			onOffVideo(buddy_name, onoff);
 			handler.post(new Runnable() {
 				@Override
 				public void run() {
@@ -1783,81 +1996,82 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 			if (videoQueue.getSize() < 1) {
 
-					handler.post(new Runnable() {
+				handler.post(new Runnable() {
 
-						@Override
-						public void run() {
+					@Override
+					public void run() {
 
-							try {
-								member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+1));
-								if (WebServiceReferences.videoSSRC_total_list.size() > 0) {
+						try {
+							member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
+							if (WebServiceReferences.videoSSRC_total_list.size() > 0) {
 
-									if (getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-										Log.i("NotesVideo","notifyDecodedVideoCallback change orintation");
-										getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-									}
-
-									int size = WebServiceReferences.videoSSRC_total_list.size();
-									if (size == 1) {
-										bottom_videowindows.setVisibility(View.GONE);
-										buddyframelayout01.setVisibility(View.VISIBLE);
-										buddyframelayout0102.setVisibility(View.GONE);
-										buddyframelayout02.setVisibility(View.GONE);
-										buddyframelayout03.setVisibility(View.GONE);
-										buddysurfaceview_0102.setVisibility(View.GONE);
+								if (getActivity() != null && getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+									Log.i("NotesVideo", "notifyDecodedVideoCallback change orintation");
+									getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+									resetVideoViews();
+								}
+								VideoThreadBean threadBean = WebServiceReferences.videoSSRC_total.get(ssrc);
+								int size = WebServiceReferences.videoSSRC_total_list.size();
+								if (size == 1) {
+									bottom_videowindows.setVisibility(View.GONE);
+									buddyframelayout01.setVisibility(View.VISIBLE);
+									buddyframelayout0102.setVisibility(View.GONE);
+									buddyframelayout02.setVisibility(View.GONE);
+									buddyframelayout03.setVisibility(View.GONE);
+									buddysurfaceview_0102.setVisibility(View.GONE);
 //										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
 //										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
-										if(preview_hided) {
-											own_video_layout.getLayoutParams().height = 1;
-											own_video_layout.getLayoutParams().width = 1;
-											buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.0f));
-											own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 3.0f));
-										} else {
-											buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
-											own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+									if (preview_hided) {
+										own_video_layout.getLayoutParams().height = 1;
+										own_video_layout.getLayoutParams().width = 1;
+										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.0f));
+										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 3.0f));
+									} else {
+										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
 //
-										}
-									} else if (size == 2) {
-										bottom_videowindows.setVisibility(View.GONE);
-										buddyframelayout01.setVisibility(View.VISIBLE);
-										buddyframelayout0102.setVisibility(View.VISIBLE);
-										buddyframelayout02.setVisibility(View.VISIBLE);
-										buddyframelayout03.setVisibility(View.GONE);
-										buddysurfaceview_0102.setVisibility(View.VISIBLE);
+									}
+								} else if (size == 2) {
+									bottom_videowindows.setVisibility(View.GONE);
+									buddyframelayout01.setVisibility(View.VISIBLE);
+									buddyframelayout0102.setVisibility(View.VISIBLE);
+									buddyframelayout02.setVisibility(View.GONE);
+									buddyframelayout03.setVisibility(View.GONE);
+									buddysurfaceview_0102.setVisibility(View.VISIBLE);
 //										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
 //										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
-										if(preview_hided ) {
-											own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
-											own_video_layout.getLayoutParams().width = 1;
+									if (preview_hided) {
+										own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
+										own_video_layout.getLayoutParams().width = 1;
 
-											buddyframelayout0102.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.75f));
-											buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.75f));
-											own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
-										} else {
-											buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f));
-											own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f));
-											buddyframelayout0102.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f));
-										}
-									} else if (size == 3) {
-										bottom_videowindows.setVisibility(View.VISIBLE);
-										buddyframelayout01.setVisibility(View.VISIBLE);
-										buddyframelayout0102.setVisibility(View.GONE);
-										buddyframelayout02.setVisibility(View.VISIBLE);
-										buddyframelayout03.setVisibility(View.VISIBLE);
-										buddysurfaceview_0102.setVisibility(View.GONE);
+										buddyframelayout0102.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.75f));
+										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.75f));
+										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+									} else {
+										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f));
+										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f));
+										buddyframelayout0102.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f));
+									}
+								} else if (size == 3) {
+									bottom_videowindows.setVisibility(View.VISIBLE);
+									buddyframelayout01.setVisibility(View.VISIBLE);
+									buddyframelayout0102.setVisibility(View.GONE);
+									buddyframelayout02.setVisibility(View.VISIBLE);
+									buddyframelayout03.setVisibility(View.VISIBLE);
+									buddysurfaceview_0102.setVisibility(View.GONE);
 //										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
 //										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
-										if(preview_hided ) {
-											own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
-											own_video_layout.getLayoutParams().width = 1;
+									if (preview_hided) {
+										own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
+										own_video_layout.getLayoutParams().width = 1;
 
-											buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.0f));
-											own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 3.0f));
-										} else {
-											buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
-											own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
-										}
+										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.0f));
+										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 3.0f));
+									} else {
+										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
+										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
 									}
+								}
 //									if(on_off1.getTag()==false) {
 //										buddyframelayout01.setVisibility(View.GONE);
 //										buddysurfaceview_0102.setVisibility(View.GONE);
@@ -1875,13 +2089,14 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 //										buddyframelayout01.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
 //										own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.5f));
 //									}
-									String mem_name = "";
-									if (WebServiceReferences.videoSSRC_total.containsKey((int) (long) ssrc)) {
-//										mem_name = WebServiceReferences.videoSSRC_total.get((int) (long) ssrc);
-									}
-									if (WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc) == 0) {
+								String mem_name = "";
+								if (WebServiceReferences.videoSSRC_total.containsKey((int) (long) ssrc)) {
+									mem_name = (WebServiceReferences.videoSSRC_total.get((int) (long) ssrc)).getMember_name();
+								}
+								if (WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc) == 0) {
 
 //										participant_name1.setText(mem_name);
+//										buddyimageview1.setVisibility(View.VISIBLE);
 //										if (buddyTimerTask1 != null) {
 //											Log.i("OnOff", "VideoOnOffTimerTask != null : " + ssrc);
 //											buddyTimerTask1.cancel();
@@ -1891,37 +2106,41 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 //												buddytimer1 = null;
 //											}
 //										}
-									}
-									if (WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc) == 1) {
-//										participant_name2.setText(mem_name);
-									}
-									if (WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc) == 2) {
-//										participant_name3.setText(mem_name);
-									}
 								}
-							} catch (Exception e) {
-								// TODO: handle exception
-								e.printStackTrace();
+								if (WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc) == 1) {
+//										participant_name2.setText(mem_name);
+//										buddyimageview2.setVisibility(View.VISIBLE);
+								}
+								if (WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc) == 2) {
+//									participant_name3.setText(mem_name);
+//									buddyimageview3.setVisibility(View.VISIBLE);
+
+								}
+								refreshBuddyProfiles();
 							}
+						} catch (Exception e) {
+							// TODO: handle exception
+							e.printStackTrace();
 						}
-					});
+					}
+				});
 
 				int size = WebServiceReferences.videoSSRC_total_list.size();
 
 				VideoThreadBean videoThreadBean = new VideoThreadBean();
-					videoThreadBean.setData(data);
-					if ((size == 2) && (WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc) == 1)) {
-						videoThreadBean.setWindow(12);
-					} else {
-						videoThreadBean.setWindow(WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc));
-					}
-					if(WebServiceReferences.videoSSRC_total.containsKey((int) (long) ssrc)){
-						videoThreadBean.setMember_name((WebServiceReferences.videoSSRC_total.get((int) (long) ssrc)).getMember_name());
-					} else {
-						videoThreadBean.setMember_name("");
-					}
-					videoThreadBean.setVideoSssrc((int) (long) ssrc);
-					videoQueue.addMsg(videoThreadBean);
+				videoThreadBean.setData(data);
+				if ((size == 2) && (WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc) == 1)) {
+					videoThreadBean.setWindow(12);
+				} else {
+					videoThreadBean.setWindow(WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc));
+				}
+				if(WebServiceReferences.videoSSRC_total.containsKey((int) (long) ssrc)){
+					videoThreadBean.setMember_name((WebServiceReferences.videoSSRC_total.get((int) (long) ssrc)).getMember_name());
+				} else {
+					videoThreadBean.setMember_name("");
+				}
+				videoThreadBean.setVideoSssrc((int) (long) ssrc);
+				videoQueue.addMsg(videoThreadBean);
 
 			}
 
@@ -1939,7 +2158,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 	}
 
-	public void notifyCallvIDEOPromotionRequest(SignalingBean vidsignBean){
+	public void notifyCallvIDEOPromotionRequest(final SignalingBean vidsignBean){
 		handler.post(new Runnable() {
 			@Override
 			public void run() {
@@ -1959,6 +2178,27 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 //					own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
 //					own_video_layout.getLayoutParams().width = 1;
 //					hideOwnVideo();
+					int requiredKey = 0;
+					Set set = WebServiceReferences.videoSSRC_total.entrySet();
+					Iterator j = set.iterator();
+
+					while(j.hasNext()) {
+						Map.Entry me = (Map.Entry)j.next();
+						Log.i("Join", " key :" + me.getKey() + ": ");
+						Log.i("Join", " value :" + me.getValue());
+						VideoThreadBean value = (VideoThreadBean) me.getValue();
+						Log.i("Join", " name :" + value.getMember_name()+ " vidsignBean.getFrom()  : "+vidsignBean.getFrom());
+						if(vidsignBean.getFrom().equalsIgnoreCase(value.getMember_name())){
+							requiredKey = (int) me.getKey();
+						}
+					}
+
+					if(requiredKey != 0) {
+						VideoThreadBean threadBean = WebServiceReferences.videoSSRC_total.get(requiredKey);
+						if(threadBean != null) {
+							threadBean.setVideoDisabled(false);
+						}
+					}
 
 					currentcall_type = "VC";
 					video_layouts.setVisibility(View.VISIBLE);
@@ -1981,9 +2221,9 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 					preview_frameLayout.addView(pv);
 
 					for (int i = 0; i < CallDispatcher.conferenceMembers.size(); i++) {
-                        String user = CallDispatcher.conferenceMembers.get(i);
-                        onOffVideo(user,true);
-                    }
+						String user = CallDispatcher.conferenceMembers.get(i);
+						onOffVideo(user,true);
+					}
 
 					resetVideoViews();
 				} catch (Exception e) {
@@ -1994,27 +2234,57 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 	}
 
+	public void notifyNumFeedChanged(){
+		handler.post(new Runnable() {
+			@Override
+			public void run() {
+				resetVideoViews();
+				refreshBuddyProfiles();
+			}
+		});
+
+	}
+
+	public void notifyNewSSRC(int ssrc){
+		Log.i("NotesVideo","came to notifyNewSSRC");
+		if(!WebServiceReferences.videoSSRC_total_list.contains(ssrc)) {
+			WebServiceReferences.videoSSRC_total_list.add(ssrc);
+		}
+
+		handler.post(new Runnable() {
+			@Override
+			public void run() {
+				if(currentcall_type.equalsIgnoreCase("VC")) {
+					hideOwnVideo();
+					refreshBuddyProfiles();
+				}
+			}
+		});
+	}
+
 	public void notifyVideoStoped(final SignalingBean vidsignBean){
 		if(vidsignBean != null && WebServiceReferences.videoSSRC_total != null && WebServiceReferences.videoSSRC_total.size()>0){
-
+			Log.i("NotesVideo","came to notifyVideoStoped  : "+vidsignBean.getVideoStoped());
+			final int total_size = WebServiceReferences.videoSSRC_total_list.size();
 			int requiredKey = 0;
 			Set set = WebServiceReferences.videoSSRC_total.entrySet();
 			Iterator i = set.iterator();
 
 			while(i.hasNext()) {
 				Map.Entry me = (Map.Entry)i.next();
-				Log.i("Join", " key :" + me.getKey() + ": ");
-				Log.i("Join", " value :" + me.getValue());
+				Log.i("NotesVideo", " key :" + me.getKey() + ": ");
+				Log.i("NotesVideo", " value :" + me.getValue());
 				VideoThreadBean value = (VideoThreadBean) me.getValue();
-				Log.i("Join", " name :" + value.getMember_name()+ " vidsignBean.getFrom()  : "+vidsignBean.getFrom());
+				Log.i("NotesVideo", " name :" + value.getMember_name()+ " vidsignBean.getFrom()  : "+vidsignBean.getFrom());
 				if(vidsignBean.getFrom().equalsIgnoreCase(value.getMember_name())){
 					requiredKey = (int) me.getKey();
 				}
 			}
 
 			if(requiredKey != 0){
-				VideoThreadBean threadBean = WebServiceReferences.videoSSRC_total.get(requiredKey);
-				threadBean.setVideoDisabled(true);
+				Log.i("NotesVideo","requiredKey != 0");
+//				VideoThreadBean threadBean = WebServiceReferences.videoSSRC_total.get(requiredKey);
+//				threadBean.setVideoDisabled(true);
 
 				if(WebServiceReferences.videoSSRC_total_list != null && WebServiceReferences.videoSSRC_total_list.contains(requiredKey)){
 					final int selectedposition =	WebServiceReferences.videoSSRC_total_list.indexOf(requiredKey);
@@ -2023,77 +2293,172 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 					handler.post(new Runnable() {
 						@Override
 						public void run() {
+							VideoThreadBean threadBean = WebServiceReferences.videoSSRC_total.get(finalRequiredKey);
 							if (vidsignBean.getVideoStoped() == null || vidsignBean.getVideoStoped().equalsIgnoreCase("no")) {
+
+								threadBean.setVideoDisabled(false);
 								if(selectedposition == 0) {
 									buddyimageview1.setVisibility(View.GONE);
 									buddysurfaceview_01.setVisibility(View.VISIBLE);
 
 								} else if(selectedposition == 1) {
-									buddyimageview2.setVisibility(View.GONE);
-									buddysurfaceview_02.setVisibility(View.VISIBLE);
+									if(total_size == 2) {
+										buddyimageview12.setVisibility(View.GONE);
+										buddysurfaceview_0102.setVisibility(View.VISIBLE);
+									} else {
+										buddyimageview2.setVisibility(View.GONE);
+										buddysurfaceview_02.setVisibility(View.VISIBLE);
+									}
 								} else if(selectedposition == 2) {
 									buddyimageview3.setVisibility(View.GONE);
 									buddysurfaceview_03.setVisibility(View.VISIBLE);
 								}
-							} else {
-								WebServiceReferences.videoSSRC_total_list.remove(Integer.valueOf(finalRequiredKey));
-								hideOwnVideo();
 
-//								boolean have_image = false;
-//								for (BuddyInformationBean buddyInformationBean : buddyList) {
-//									if (buddyInformationBean.getName().equalsIgnoreCase(vidsignBean.getFrom())) {
-//										String pic_path = buddyInformationBean.getProfile_picpath();
-//
-//										if (pic_path == null || pic_path.length() == 0) {
-//											ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(vidsignBean.getFrom());
-//											if(pBean != null) {
-//												pic_path = pBean.getPhoto();
-//												Log.i("Join","pic_path 2 : "+pic_path);
-//											}
-//										}
-//										if (pic_path != null && pic_path.length() > 0) {
-//											if (!pic_path.contains("COMMedia")) {
-//												pic_path = Environment
-//														.getExternalStorageDirectory()
-//														+ "/COMMedia/" + pic_path;
-//											}
-//											have_image = true;
-//											if(selectedposition == 0) {
-//												imageLoader.DisplayImage(pic_path, buddyimageview1, R.drawable.icon_buddy_aoffline);
-//											} else if(selectedposition == 1) {
-//												imageLoader.DisplayImage(pic_path, buddyimageview2, R.drawable.icon_buddy_aoffline);
-//											} else if(selectedposition == 2) {
-//												imageLoader.DisplayImage(pic_path, buddyimageview3, R.drawable.icon_buddy_aoffline);
-//											}
-//										}
-//									}
-//								}
-//								if(selectedposition == 0) {
-//									if (!have_image) {
-//										imageLoader.DisplayImage("", buddyimageview1, R.drawable.icon_buddy_aoffline);
-//									}
-//									buddyimageview1.setVisibility(View.VISIBLE);
-//									buddysurfaceview_01.setVisibility(View.GONE);
-//								} else if(selectedposition == 1) {
-//									if (!have_image) {
-//										imageLoader.DisplayImage("", buddyimageview2, R.drawable.icon_buddy_aoffline);
-//									}
-//									buddyimageview2.setVisibility(View.VISIBLE);
-//									buddysurfaceview_02.setVisibility(View.GONE);
-//								} else if(selectedposition == 2) {
-//									if (!have_image) {
-//										imageLoader.DisplayImage("", buddyimageview3, R.drawable.icon_buddy_aoffline);
-//									}
-//									buddyimageview3.setVisibility(View.VISIBLE);
-//									buddysurfaceview_03.setVisibility(View.GONE);
-//								}
+								notifyNumFeedChanged();
+
+							} else {
+//								WebServiceReferences.videoSSRC_total_list.remove(Integer.valueOf(finalRequiredKey));
+//								hideOwnVideo();
+								threadBean.setVideoDisabled(true);
+								boolean have_image = false;
+								for (BuddyInformationBean buddyInformationBean : buddyList) {
+									if (buddyInformationBean.getName().equalsIgnoreCase(vidsignBean.getFrom())) {
+										String pic_path = buddyInformationBean.getProfile_picpath();
+
+										if (pic_path == null || pic_path.length() == 0) {
+											ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(vidsignBean.getFrom());
+											if(pBean != null) {
+												pic_path = pBean.getPhoto();
+												Log.i("Join","pic_path 2 : "+pic_path);
+											}
+										}
+										if (pic_path != null && pic_path.length() > 0) {
+											if (!pic_path.contains("COMMedia")) {
+												pic_path = Environment
+														.getExternalStorageDirectory()
+														+ "/COMMedia/" + pic_path;
+											}
+											have_image = true;
+											if(selectedposition == 0) {
+												imageLoader.DisplayImage(pic_path, buddyimageview1, R.drawable.icon_buddy_aoffline);
+											} else if(selectedposition == 1) {
+												if(total_size == 2) {
+													imageLoader.DisplayImage(pic_path, buddyimageview12, R.drawable.icon_buddy_aoffline);
+												} else {
+													imageLoader.DisplayImage(pic_path, buddyimageview2, R.drawable.icon_buddy_aoffline);
+												}
+											} else if(selectedposition == 2) {
+												imageLoader.DisplayImage(pic_path, buddyimageview3, R.drawable.icon_buddy_aoffline);
+											}
+										}
+									}
+								}
+								if(selectedposition == 0) {
+									if (!have_image) {
+										imageLoader.DisplayImage("", buddyimageview1, R.drawable.icon_buddy_aoffline);
+									}
+									buddyimageview1.setVisibility(View.VISIBLE);
+									buddysurfaceview_01.setVisibility(View.GONE);
+								} else if(selectedposition == 1) {
+									if(total_size == 2) {
+										if (!have_image) {
+											imageLoader.DisplayImage("", buddyimageview12, R.drawable.icon_buddy_aoffline);
+										}
+										buddyimageview12.setVisibility(View.VISIBLE);
+										buddysurfaceview_0102.setVisibility(View.GONE);
+									} else {
+										if (!have_image) {
+											imageLoader.DisplayImage("", buddyimageview2, R.drawable.icon_buddy_aoffline);
+										}
+										buddyimageview2.setVisibility(View.VISIBLE);
+										buddysurfaceview_02.setVisibility(View.GONE);
+									}
+								} else if(selectedposition == 2) {
+									if (!have_image) {
+										imageLoader.DisplayImage("", buddyimageview3, R.drawable.icon_buddy_aoffline);
+									}
+									buddyimageview3.setVisibility(View.VISIBLE);
+									buddysurfaceview_03.setVisibility(View.GONE);
+								}
 							}
 						}
 					});
+
+					handler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							refreshBuddyProfiles();
+						}
+					},5000);
 				}
 			}
 		}
 
+	}
+
+	private void showBuddyProfileImage(String buddy_name , int selectedposition) {
+		Log.i("NotesVideo","came to showBuddyProfileImage buddy_name :"+buddy_name+selectedposition);
+		boolean have_image = false;
+		final int total_size = WebServiceReferences.videoSSRC_total_list.size();
+		for (BuddyInformationBean buddyInformationBean : buddyList) {
+			if (buddyInformationBean.getName().equalsIgnoreCase(buddy_name)) {
+				String pic_path = buddyInformationBean.getProfile_picpath();
+
+				if (pic_path == null || pic_path.length() == 0) {
+					ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(buddy_name);
+					if(pBean != null) {
+						pic_path = pBean.getPhoto();
+						Log.i("Join","pic_path 2 : "+pic_path);
+					}
+				}
+				if (pic_path != null && pic_path.length() > 0) {
+					if (!pic_path.contains("COMMedia")) {
+						pic_path = Environment
+								.getExternalStorageDirectory()
+								+ "/COMMedia/" + pic_path;
+					}
+					have_image = true;
+					if(selectedposition == 0) {
+						imageLoader.DisplayImage(pic_path, buddyimageview1, R.drawable.icon_buddy_aoffline);
+					} else if(selectedposition == 1) {
+						if(total_size == 2) {
+							imageLoader.DisplayImage(pic_path, buddyimageview12, R.drawable.icon_buddy_aoffline);
+						} else {
+							imageLoader.DisplayImage(pic_path, buddyimageview2, R.drawable.icon_buddy_aoffline);
+						}
+					} else if(selectedposition == 2) {
+						imageLoader.DisplayImage(pic_path, buddyimageview3, R.drawable.icon_buddy_aoffline);
+					}
+				}
+			}
+		}
+		if(selectedposition == 0) {
+			if (!have_image) {
+				imageLoader.DisplayImage("", buddyimageview1, R.drawable.icon_buddy_aoffline);
+			}
+			buddyimageview1.setVisibility(View.VISIBLE);
+			buddysurfaceview_01.setVisibility(View.GONE);
+		} else if(selectedposition == 1) {
+			if(total_size == 2){
+				if (!have_image) {
+					imageLoader.DisplayImage("", buddyimageview12, R.drawable.icon_buddy_aoffline);
+				}
+				buddyimageview12.setVisibility(View.VISIBLE);
+				buddysurfaceview_0102.setVisibility(View.GONE);
+			} else {
+				if (!have_image) {
+					imageLoader.DisplayImage("", buddyimageview2, R.drawable.icon_buddy_aoffline);
+				}
+				buddyimageview2.setVisibility(View.VISIBLE);
+				buddysurfaceview_02.setVisibility(View.GONE);
+			}
+		} else if(selectedposition == 2) {
+			if (!have_image) {
+				imageLoader.DisplayImage("", buddyimageview3, R.drawable.icon_buddy_aoffline);
+			}
+			buddyimageview3.setVisibility(View.VISIBLE);
+			buddysurfaceview_03.setVisibility(View.GONE);
+		}
 	}
 
 	private void showConnectedBuddies() {
@@ -2130,7 +2495,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog,
-									int which) {
+												int which) {
 								dialog.cancel();
 							}
 						});
@@ -2239,16 +2604,49 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 														}
 													}
 												}
+
+												if(CallDispatcher.removed_current_conf_members!=null && CallDispatcher.removed_current_conf_members.size()>0){
+													for(String name:CallDispatcher.removed_current_conf_members){
+														if(!name.equalsIgnoreCase(host)){
+															if(participant==null){
+																participant=name;
+															}else{
+																participant=participant+","+name;
+															}
+
+														}
+													}
+												}
+
+												if(!host.equalsIgnoreCase(CallDispatcher.LoginUser)){
+													if(participant==null){
+														participant=CallDispatcher.LoginUser;
+													}else{
+														participant=participant+","+CallDispatcher.LoginUser;
+													}
+												}
+
 												if (participant != null) {
 													CallDispatcher.sb.setParticipant_name(participant);
 												}
 												//end
+												Log.i("callentry", "db entry 3");
+//												DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+//												DBAccess.getdbHeler()
+//														.saveOrUpdateRecordtransactiondetails(
+//																CallDispatcher.sb);
 
-												DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
-												DBAccess.getdbHeler()
-														.saveOrUpdateRecordtransactiondetails(
-																CallDispatcher.sb);
-
+												if(CallDispatcher.callHistoryDetails != null) {
+													SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
+													hist_bean.setParticipant_name(participant);
+													hist_bean.setEndTime(objCallDispatcher.getCurrentDateandTime());
+													hist_bean.setCallDuration(SingleInstance.mainContext
+															.getCallDuration(hist_bean.getStartTime(),
+																	hist_bean.getEndTime()));
+													hist_bean.setCallstatus("callattended");
+													DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
+													DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+												}
 												showCallHistory();
 
 
@@ -2289,15 +2687,15 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			msg.obj = bun;
 			selfHangup = true;
 			if (selfHangup) {
-                CallDispatcher.sb
+				CallDispatcher.sb
 						.setEndTime(objCallDispatcher.getCurrentDateandTime());
-                CallDispatcher.sb
-                        .setCallDuration(SingleInstance.mainContext
+				CallDispatcher.sb
+						.setCallDuration(SingleInstance.mainContext
 								.getCallDuration(CallDispatcher.sb
 												.getStartTime(),
 										CallDispatcher.sb
 												.getEndTime()));
-                CallDispatcher.sb.setCallstatus("callattended");
+				CallDispatcher.sb.setCallstatus("callattended");
 
 				//For Callhistory host and participant name entry
 				//Start
@@ -2315,25 +2713,56 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 						}
 					}
 				}
+				if(CallDispatcher.removed_current_conf_members!=null && CallDispatcher.removed_current_conf_members.size()>0){
+					for(String name:CallDispatcher.removed_current_conf_members){
+						if(!name.equalsIgnoreCase(host)){
+							if(participant==null){
+								participant=name;
+							}else{
+								participant=participant+","+name;
+							}
+
+						}
+					}
+				}
+
+				if(!host.equalsIgnoreCase(CallDispatcher.LoginUser)){
+						if(participant==null){
+							participant=CallDispatcher.LoginUser;
+						}else{
+							participant=participant+","+CallDispatcher.LoginUser;
+						}
+				}
+
 				if(participant!=null){
 					CallDispatcher.sb.setParticipant_name(participant);
 				}
 				//end
+				Log.i("callentry", "db entry 1");
+//				DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+//				DBAccess.getdbHeler()
+//						.saveOrUpdateRecordtransactiondetails(
+//								CallDispatcher.sb);
 
-                DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
-                DBAccess.getdbHeler()
-                        .saveOrUpdateRecordtransactiondetails(
-								CallDispatcher.sb);
+				if(CallDispatcher.callHistoryDetails != null) {
+					SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
+					hist_bean.setParticipant_name(participant);
+					hist_bean.setEndTime(objCallDispatcher.getCurrentDateandTime());
+					hist_bean.setCallDuration(SingleInstance.mainContext
+							.getCallDuration(hist_bean.getStartTime(),
+									hist_bean.getEndTime()));
+					hist_bean.setCallstatus("callattended");
+					DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
+					DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+				}
+				showCallHistory();
 
-                showCallHistory();
-
-
-            }
+			}
 			final String[] choiceList = returnBuddies();
 			if (choiceList.length != 0) {
-                isBuddyinCall = true;
-                selfHangup = false;
-            }
+				isBuddyinCall = true;
+				selfHangup = false;
+			}
 			handler.sendMessage(msg);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -2642,7 +3071,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 //						Log.i("Join"," key : "+ key );
 //						if(from.equalsIgnoreCase(key))
 //					}
-
+					int removed_user_ssrc = 0;
 					Set set = WebServiceReferences.videoSSRC_total.entrySet();
 					Iterator i = set.iterator();
 					// Display elements
@@ -2653,8 +3082,15 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 						VideoThreadBean value = (VideoThreadBean) me.getValue();
 						if(strBuddyName.equalsIgnoreCase(value.getMember_name())){
 							if(WebServiceReferences.videoSSRC_total_list.contains(me.getKey())){
+								removed_user_ssrc= (int) me.getKey();
 								WebServiceReferences.videoSSRC_total_list.remove(me.getKey());
 							}
+						}
+					}
+
+					if(removed_user_ssrc != 0) {
+						if (WebServiceReferences.videoSSRC_total.containsKey(removed_user_ssrc)) {
+							WebServiceReferences.videoSSRC_total.remove(removed_user_ssrc);
 						}
 					}
 				}
@@ -2912,12 +3348,15 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 							@Override
 							public void onClick(DialogInterface dialog,
-									int which) {
-
+												int which) {
+								String p_c_type = "";
+								if(currentcall_type.equalsIgnoreCase("VC")) {
+									p_c_type = "AC";
+								}
 								SignalingBean sb = objCallDispatcher
 										.callconfernceUpdate(
 												choiceList[which].toString(),
-												callType, strSessionId);
+												callType, strSessionId , p_c_type);
 
 								CallDispatcher.conferenceRequest.put(
 										choiceList[which].toString(), sb);
@@ -3012,29 +3451,29 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			objCallDispatcher.whenCallHangedUp();
 
 			if(videoQueue != null){
-                videoQueue.clear();
-            }
+				videoQueue.clear();
+			}
 			if (pv != null) {
-                pv.stopPreview();
-            }
+				pv.stopPreview();
+			}
 
 			if (SingleInstance.instanceTable.containsKey("callscreen")) {
-                SingleInstance.instanceTable.remove("callscreen");
-                Log.e("note", "Call screen instance removed ACS!!");
-            }
+				SingleInstance.instanceTable.remove("callscreen");
+				Log.e("note", "Call screen instance removed ACS!!");
+			}
 
 			objCallDispatcher.startPlayer(context);
 			if (WebServiceReferences.contextTable.containsKey("audiocall")) {
-                WebServiceReferences.contextTable.remove("audiocall");
-            }
+				WebServiceReferences.contextTable.remove("audiocall");
+			}
 			try {
-                objCallDispatcher.isHangUpReceived = false;
-                if (audioProperties != null) {
-                    audioProperties.setSpeakerphoneOn(false);
-                }
-            } catch (Exception e) {
-                // TODO: handle exception
-            }
+				objCallDispatcher.isHangUpReceived = false;
+				if (audioProperties != null) {
+					audioProperties.setSpeakerphoneOn(false);
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 
 
 			if (handler != null) {
@@ -3049,7 +3488,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			rootView=null;
 			CallDispatcher.isCallInitiate = false;
 			FragmentManager fm =
-                    AppReference.mainContext.getSupportFragmentManager();
+					AppReference.mainContext.getSupportFragmentManager();
 			FragmentTransaction ft = fm.beginTransaction();
 //			ContactsFragment contactsFragment = ContactsFragment
 //                    .getInstance(context);
@@ -3091,9 +3530,13 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 							member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+1));
 
 							if (objCallDispatcher != null) {
+								String p_c_type = "";
+								if(currentcall_type.equalsIgnoreCase("VC")) {
+									p_c_type = "AC";
+								}
 								SignalingBean sb = objCallDispatcher.callconfernceUpdate(
 										bib.getBuddyName(),
-										calltype, strSessionId);
+										calltype, strSessionId,p_c_type);
 								// june04-Implementation
 								CallDispatcher.conferenceRequest
 										.put(bib.getBuddyName(), sb);
@@ -3116,7 +3559,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	String file = "";
 	private void showCallHistory()
 	{
-		objCallDispatcher.showCallHistoryWithoutRecord(strSessionId, calltype);
+		objCallDispatcher.showCallHistoryWithoutRecord(strSessionId, "AC");
 
 //		objCallDispatcher.showCallHistory(strSessionId , calltype);
 //		try {
@@ -3408,9 +3851,9 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 //					} else {
 //						if (state != null && !state.equalsIgnoreCase("pending")) {
 //							SingleInstance.parentId = record_TransactionBean.getParentID();
-							objCallDispatcher.MakeCallFromCallHistory(caseid,
-									user, context, record_TransactionBean, 2, feature);
-							con_scr_opened = con_scr_opened + 1;
+					objCallDispatcher.MakeCallFromCallHistory(caseid,
+							user, context, record_TransactionBean, 2, feature);
+					con_scr_opened = con_scr_opened + 1;
 //						}
 //
 //					}
@@ -3419,6 +3862,27 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public void re_get_buddyViews(BuddyInformationBean bib) {
+		try {
+			if(bib.getFirstname().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+                preview_hided = false;
+            } else {
+                WebServiceReferences.removed_videoSSRC_list.remove(Integer.valueOf(Integer.parseInt(bib.getVideo_ssrc())));
+                WebServiceReferences.videoSSRC_total_list.add(Integer.parseInt(bib.getVideo_ssrc()));
+
+                VideoThreadBean v_bean = WebServiceReferences.videoSSRC_total.get(Integer.parseInt(bib.getVideo_ssrc()));
+                v_bean.setVideoRemoved(false);
+				onOffVideo(v_bean.getMember_name(), true);
+			}
+
+			hideOwnVideo();
+
+		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
 

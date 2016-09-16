@@ -75,6 +75,8 @@ public class CallActiveMembersList extends Activity {
     private AlertDialog alert = null;
     private String timer;
     String calltype = "";
+    private String previous_call_type = "";
+    private boolean preview_disabled = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +104,14 @@ public class CallActiveMembersList extends Activity {
             }
             timer = getIntent().getStringExtra("timer");
             calltype = getIntent().getStringExtra("calltype");
+
+            if(getIntent().getStringExtra("precalltype") != null){
+                previous_call_type = getIntent().getStringExtra("precalltype");
+            }
+
+//            if(getIntent().getBooleanExtra("previewdiabled",false) != null) {
+                preview_disabled = getIntent().getBooleanExtra("previewdiabled", false);
+//            }
 
             if (WebServiceReferences.callDispatch.containsKey("calldisp"))
                 objCallDispatcher = (CallDispatcher) WebServiceReferences.callDispatch
@@ -145,6 +155,7 @@ public class CallActiveMembersList extends Activity {
             ownbean.setStatus(CallDispatcher.myStatus);
             ownbean.setMode("connected");
             ownbean.setProfile_picpath(bean.getPhoto());
+            ownbean.setVideo_removed(preview_disabled);
 
             if (host.equalsIgnoreCase(CallDispatcher.LoginUser)) {
                 total_objects.add(ownbean);
@@ -155,6 +166,23 @@ public class CallActiveMembersList extends Activity {
 
             for (String user : CallDispatcher.conferenceMembers) {
                 boolean havebuddy = false;
+                boolean videoremoved = false;
+                String v_ssrc = "";
+                Set set = WebServiceReferences.videoSSRC_total.entrySet();
+                Iterator j = set.iterator();
+
+                while(j.hasNext()) {
+                    Map.Entry me = (Map.Entry)j.next();
+                    Log.i("Join", " key :" + me.getKey() + ": ");
+                    Log.i("Join", " value :" + me.getValue());
+                    VideoThreadBean value = (VideoThreadBean) me.getValue();
+                    Log.i("Join", " name :" + value.getMember_name()+ " user  : "+user);
+                    if(user.equalsIgnoreCase(value.getMember_name())) {
+                        v_ssrc = ""+(Integer) me.getKey();
+                        videoremoved = value.isVideoRemoved();
+                    }
+                }
+
                 for (BuddyInformationBean buddyInformationBean : ContactsFragment.getBuddyList()) {
                     if (user.equalsIgnoreCase(buddyInformationBean.getEmailid())) {
                         havebuddy = true;
@@ -169,6 +197,8 @@ public class CallActiveMembersList extends Activity {
                         buddyInformationBean.setMode("connected");
                         ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(user);
                         buddyInformationBean.setProfile_picpath(pBean.getPhoto());
+                        buddyInformationBean.setVideo_removed(videoremoved);
+                        buddyInformationBean.setVideo_ssrc(v_ssrc);
                         Log.i("AudioCall", "");
                         if (user.equalsIgnoreCase(host)) {
                             total_objects.add(buddyInformationBean);
@@ -184,6 +214,8 @@ public class CallActiveMembersList extends Activity {
                     BuddyInformationBean informationBean = new BuddyInformationBean();
                     informationBean.setEmailid(user);
                     informationBean.setMode("connected");
+                    informationBean.setVideo_removed(videoremoved);
+                    informationBean.setVideo_ssrc(v_ssrc);
                     participant_objects.add(informationBean);
                 }
             }
@@ -192,7 +224,7 @@ public class CallActiveMembersList extends Activity {
                 total_objects.addAll(participant_objects);
             }
 
-            CallMembersList calladapter = new CallMembersList(context, R.layout.find_people_item, total_objects);
+            CallMembersList calladapter = new CallMembersList(context, R.layout.callmembers, total_objects);
             searchResult.setAdapter(calladapter);
 
             cancel.setOnClickListener(new View.OnClickListener() {
@@ -243,6 +275,7 @@ public class CallActiveMembersList extends Activity {
                     holder.header_title = (TextView) convertView.findViewById(R.id.header_title);
                     holder.overlay_image = (ImageView) convertView.findViewById(R.id.overlay);
                     holder.overlay_image1 = (ImageView) convertView.findViewById(R.id.overlay1);
+                    holder.refresh = (ImageView)convertView.findViewById(R.id.refreshviews);
                     convertView.setTag(holder);
                 } else
                     holder = (ViewHolder) convertView.getTag();
@@ -313,6 +346,29 @@ public class CallActiveMembersList extends Activity {
                         else
                             holder.occupation.setTextColor(getResources().getColor(R.color.yellow));
                     }
+
+                    if(bib.isVideo_removed()) {
+                        holder.refresh.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.refresh.setVisibility(View.GONE);
+                    }
+
+                    holder.refresh.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            bib.setVideo_removed(!bib.isVideo_removed());
+                            v.setVisibility(View.GONE);
+                             Object objCallScreen = SingleInstance.instanceTable
+                                    .get("callscreen");
+                            if (objCallScreen != null) {
+                                if(objCallScreen instanceof AudioCallScreen) {
+                                    AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
+                                    acalObj.re_get_buddyViews(bib);
+                                }
+                            }
+                        }
+                    });
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -378,7 +434,7 @@ public class CallActiveMembersList extends Activity {
     public static class ViewHolder {
         CheckBox selectUser;
         ImageView buddyicon, edit;
-        ImageView statusIcon, overlay_image, overlay_image1;
+        ImageView statusIcon, overlay_image, overlay_image1,refresh;
         TextView buddyName, timer, position;
         TextView occupation;
         TextView header_title;
@@ -440,7 +496,7 @@ public class CallActiveMembersList extends Activity {
                             if (objCallDispatcher != null) {
                                 SignalingBean sb = objCallDispatcher.callconfernceUpdate(
                                         bib.getBuddyName(),
-                                        calltype, strSessionId);
+                                        calltype, strSessionId , previous_call_type);
                                 // june04-Implementation
                                 CallDispatcher.conferenceRequest
                                         .put(bib.getBuddyName(), sb);

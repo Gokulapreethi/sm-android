@@ -11194,14 +11194,182 @@ public class DBAccess extends SQLiteOpenHelper {
 		}
 		return groupChatList;
 	}
+
+	public int insertOrUpdateCallHistory(SignalingBean sb) {
+		int row_id = 0;
+		try {
+
+
+			Log.d("CallHistory123", "Start Time : "+sb.getStartTime());
+			Log.d("CallHistory123", "End Time : "+sb.getEndTime());
+
+			if (!db.isOpen())
+				openDatabase();
+
+			ContentValues cv = new ContentValues();
+			if (sb.getFrom() != null) {
+				cv.put("fromname", sb.getFrom());
+			}
+			if (sb.getTo() != null) {
+				cv.put("toname", sb.getTo());
+			}
+			if (sb.getBs_parentid() != null) {
+				cv.put("parentid", sb.getBs_parentid());
+			} else {
+				cv.put("parentid", "");
+			}
+			if (sb.getType() != null) {
+				cv.put("type", sb.getType());
+			}
+			if (sb.getCallType() != null) {
+				cv.put("calltype", sb.getCallType());
+			}
+			if (sb.getCallType().equalsIgnoreCase("ABC")
+					|| sb.getCallType().equalsIgnoreCase("VBC")
+					|| sb.getCallType().equalsIgnoreCase("AP")
+					|| sb.getCallType().equalsIgnoreCase("VP")) {
+				if (sb.getSignalid() != null) {
+					cv.put("sessionid", sb.getSignalid());
+				}
+			} else {
+				if (sb.getSessionid() != null) {
+					cv.put("sessionid", sb.getSessionid());
+				}
+			}
+			if (sb.getStartTime() != null) {
+				cv.put("starttime", sb.getStartTime());
+			}
+			if (sb.getEndTime() != null) {
+				cv.put("endtime", sb.getEndTime());
+			}
+			if (sb.getUserId() != null) {
+				cv.put("userid", sb.getUserId());
+			} else {
+				cv.put("userid", CallDispatcher.LoginUser);
+			}
+			if (sb.getNetWork() != null) {
+				cv.put("network", sb.getNetWork());
+			}
+			if (sb.getDeviceOs() != null) {
+				cv.put("deviceos", sb.getDeviceOs());
+			}
+			if (sb.getCallDuration() != null) {
+				cv.put("calltime", sb.getCallDuration());
+			}
+			if(sb.getChatid() !=null){
+				cv.put("chatid",sb.getChatid());
+			}
+			if(sb.getCallstatus() !=null){
+				cv.put("activecallstatus",sb.getCallstatus());
+			}
+			if (sb.getBs_calltype() != null) {
+				cv.put("bs_calltype", sb.getBs_calltype());
+			}
+			if (sb.getBs_callstatus() != null) {
+				cv.put("bs_callstatus", sb.getBs_callstatus());
+			}
+			if (sb.getBs_callCategory() != null) {
+				cv.put("bs_callcategory", sb.getBs_callCategory());
+			}
+			if (sb.getEndTime() != null) {
+				cv.put("sortdate", sb.getEndTime());
+			}
+			if(sb.getCallstatus().equalsIgnoreCase("missedcall"))
+				cv.put("status", "0");
+			else
+				cv.put("status", "1");
+			if(sb.getHost() != null){
+				cv.put("host", sb.getHost());
+			}
+
+			if(sb.getParticipants() != null){
+				cv.put("participants",sb.getParticipants());
+			}
+
+			if(sb.getHost_name()!=null){
+				cv.put("hostname",sb.getHost_name());
+			}
+
+			if(sb.getParticipant_name()!=null){
+				cv.put("participantname",sb.getParticipant_name());
+			}
+
+			if (isRecordExists("select * from recordtransactiondetails where sessionid = '"
+					+ sb.getSessionid()
+					+ "' and starttime = '"
+					+ sb.getStartTime() + "'")) {
+				row_id = UpdateRecordtransactionEndtime(sb.getEndTime(),
+						"parentid = '" + sb.getBs_parentid()
+								+ "' and starttime = '" + sb.getStartTime()
+								+ "'");
+			} else
+				row_id = (int) db.insert("recordtransactiondetails", null, cv);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+
+		} finally {
+			return row_id;
+		}
+	}
+
+	public int insertGroupCallChatHistory(SignalingBean groupChatBean){
+		int row = 0;
+		try {
+			if (!db.isOpen())
+				openDatabase();
+			ContentValues cv = new ContentValues();
+
+
+			cv.put("category", "call");
+			cv.put("groupid", groupChatBean.getChatid());
+
+			cv.put("fromuser",groupChatBean.getHost());
+			if(groupChatBean.getHost().equalsIgnoreCase(groupChatBean.getTo())) {
+				cv.put("touser", groupChatBean.getFrom());
+			} else if(groupChatBean.getHost().equalsIgnoreCase(groupChatBean.getFrom())){
+				cv.put("touser", groupChatBean.getTo());
+			}
+			cv.put("message", groupChatBean.getCallType());
+			cv.put("ftpusername", groupChatBean.getHost());
+			cv.put("ftppassword", groupChatBean.getParticipant_name());
+			cv.put("sessionid", groupChatBean.getSessionid());
+			cv.put("senttime", groupChatBean.getStartTime());
+			cv.put("username", CallDispatcher.LoginUser);
+
+			cv.put("remindertime", groupChatBean.getCallDuration());
+			cv.put("subcategory", groupChatBean.getCallstatus());
+			cv.put("dateandtime", groupChatBean.getEndTime());
+
+			if(groupChatBean.getCallstatus() != null && groupChatBean.getCallstatus().equalsIgnoreCase("missedcall")) {
+				cv.put("unview","join");
+			} else {
+				cv.put("unview","normal");
+			}
+
+			if (isRecordExists("select * from chat where sessionid='"
+					+ groupChatBean.getSessionid() + "'")) {
+				row = (int) db.update("chat", cv,
+						"sessionid='" + groupChatBean.getSessionid() + "'", null);
+			} else {
+				row = (int) db.insert("chat", null, cv);
+			}
+			return row;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+
 	public int insertGroupCallChat(SignalingBean groupChatBean) {
+		Log.i("callentry","came to insertGroupCallChat :"+groupChatBean.getParticipants());
 		int row = 0;
 		try {
 			if (!db.isOpen())
 				openDatabase();
 			ContentValues cv = new ContentValues();
 			cv.put("category", "call");
-			if(groupChatBean.getChatid()!=null) {
+			if(groupChatBean.getChatid() != null) {
 				if (groupChatBean.getChatid().equalsIgnoreCase(CallDispatcher.LoginUser)) {
 					if (!groupChatBean.getTo().equalsIgnoreCase(CallDispatcher.LoginUser)) {
 						cv.put("groupid", groupChatBean.getTo());
@@ -11214,7 +11382,7 @@ public class DBAccess extends SQLiteOpenHelper {
 
 					cv.put("groupid", groupChatBean.getChatid());
 				}
-			}else {
+			} else {
 				if (!groupChatBean.getTo().equalsIgnoreCase(CallDispatcher.LoginUser)) {
 					cv.put("groupid", groupChatBean.getTo());
 				} else if (!groupChatBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)) {
@@ -11235,7 +11403,8 @@ public class DBAccess extends SQLiteOpenHelper {
 			cv.put("sessionid", groupChatBean.getSessionid());
 			cv.put("senttime", groupChatBean.getEndTime());
 			cv.put("username", CallDispatcher.LoginUser);
-			cv.put("ftppassword", groupChatBean.getParticipants());
+//			cv.put("ftppassword", groupChatBean.getParticipants());
+			cv.put("ftppassword", groupChatBean.getParticipant_name());
 			cv.put("remindertime", groupChatBean.getCallDuration());
 			cv.put("subcategory", groupChatBean.getCallstatus());
 			cv.put("dateandtime", groupChatBean.getEndTime());
@@ -11246,10 +11415,10 @@ public class DBAccess extends SQLiteOpenHelper {
 				cv.put("unview","normal");
 			}
 
-			if (isRecordExists("select * from chat where signalid='"
+			if (isRecordExists("select * from chat where sessionid='"
 					+ groupChatBean.getSessionid() + "'")) {
 				row = (int) db.update("chat", cv,
-						"signalid='" + groupChatBean.getSessionid() + "'", null);
+						"sessionid='" + groupChatBean.getSessionid() + "'", null);
 			} else {
 				row = (int) db.insert("chat", null, cv);
 			}

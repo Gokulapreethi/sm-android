@@ -483,6 +483,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	public static SignalingBean sb = null;
 
+	public static SignalingBean callHistoryDetails = null;
+
 	// private MediaPlayer player = null;
 
 	public static String currentSessionid = null;
@@ -504,6 +506,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	 * used to store and retrive conference members.
 	 */
 	public static ArrayList<String> conferenceMembers = new ArrayList<String>();
+
+	public static ArrayList<String> removed_current_conf_members = new ArrayList<>();
 
 	public static HashMap<String, SignalingBean> conferenceMember_Details = new HashMap<String, SignalingBean>();
 	/**
@@ -2489,7 +2493,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					String participant=null;
 					if(CallDispatcher.conferenceMembers!=null && CallDispatcher.conferenceMembers.size()>0){
 						for(String name:CallDispatcher.conferenceMembers){
-							if(!name.equalsIgnoreCase(CallDispatcher.sb.getHost())){
+							if(!name.equalsIgnoreCase(CallDispatcher.callHistoryDetails.getHost())){
 								if(participant==null){
 									participant=name;
 								}else{
@@ -2497,6 +2501,26 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								}
 
 							}
+						}
+					}
+					if(CallDispatcher.removed_current_conf_members!=null && CallDispatcher.removed_current_conf_members.size()>0){
+						for(String name:CallDispatcher.removed_current_conf_members){
+							if(!name.equalsIgnoreCase(CallDispatcher.callHistoryDetails.getHost())){
+								if(participant==null){
+									participant=name;
+								}else{
+									participant=participant+","+name;
+								}
+
+							}
+						}
+					}
+
+					if(!CallDispatcher.callHistoryDetails.getHost().equalsIgnoreCase(CallDispatcher.LoginUser)){
+						if(participant==null){
+							participant=CallDispatcher.LoginUser;
+						}else{
+							participant=participant+","+CallDispatcher.LoginUser;
 						}
 					}
 					if(participant!=null){
@@ -2512,10 +2536,29 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						isCallInitiate=false;
 						Log.i("callscreenfinish","conferenceMembers.size()==1 name-->"+conferenceMembers.get(0));
 						Log.i("callscreenfinish", "sb.name-->" + sb.getFrom() + " sb.getTo() :" + sb.getTo());
+						Log.i("callentry", "db entry 10");
+//						DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+//						DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
+//								CallDispatcher.sb);
 
-						DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
-						DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
-								CallDispatcher.sb);
+						if(CallDispatcher.callHistoryDetails != null) {
+							SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
+							if (objCallScreen == null) {
+								hist_bean.setStartTime(getCurrentDateandTime());
+								hist_bean.setCallstatus("missedcall");
+							} else {
+								hist_bean.setCallstatus("callattended");
+							}
+
+							hist_bean.setParticipant_name(participant);
+							hist_bean.setEndTime(getCurrentDateandTime());
+							hist_bean.setCallDuration(SingleInstance.mainContext
+									.getCallDuration(hist_bean.getStartTime(),
+											hist_bean.getEndTime()));
+							hist_bean.setCallstatus("callattended");
+							DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
+							DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+						}
 						SingleInstance.mainContext.notifyUI();
 
 						if(conferenceMembers.get(0) != null && conferenceMembers.get(0).equalsIgnoreCase(sb.getFrom())) {
@@ -2826,7 +2869,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								});
 
 								if (objCallScreen == null) {
-									if (sb.getCallType().equals("AC")) {
+									CallDispatcher.callHistoryDetails.setStartTime(getCurrentDateandTime());
+									if (sb.getCallType().equals("AC") || (sb.getPreviouscalltype() != null && sb.getPreviouscalltype().equalsIgnoreCase("AC"))) {
 										isCalledAudiocallScreen = true;
 										isHangUpReceived = false;
 //										Intent i = new Intent(context
@@ -2876,6 +2920,11 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 										Bundle bundle = new Bundle();
 										bundle.putSerializable("signal", sb);
 //										i.putExtra("signal", bundle);
+										if(sb.getPreviouscalltype() != null && sb.getPreviouscalltype().equalsIgnoreCase("AC")){
+											bundle.putString("previouscalltype", "AC");
+											bundle.putString("currentcalltype", "VC");
+										}
+
 										bundle.putString("buddy", from);
 										bundle.putString("receive", "false");
 										bundle.putString("host",CallDispatcher.LoginUser);
@@ -2997,6 +3046,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									sb.setType("2");
 									sb.setFrom(to);
 									sb.setTo(from);
+									Log.i("NotesVideo", "1 came to send type 2");
 									AppMainActivity.commEngine.acceptCall(sb);
 								} else if (objCallScreen instanceof AudioCallScreen) {
 									stopRingTone();
@@ -3019,7 +3069,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 										sb.setRunningcallstate("Connected");
 										CallDispatcher.conferenceMember_Details.put(from, (SignalingBean) sb.clone());
-
+										Log.i("NotesVideo","2 came to send type 2");
 										AppMainActivity.commEngine
 												.acceptCall(sb);
 										Log.e("test",
@@ -3046,7 +3096,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 									sb.setType("2");
 									sb.setFrom(to);
 									sb.setTo(from);
-
+									Log.i("NotesVideo", "3 came to send type 2");
 									sb.setRunningcallstate("Connected");
 									CallDispatcher.conferenceMember_Details.put(from, (SignalingBean) sb.clone());
 
@@ -3074,6 +3124,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 										sb.setType("2");
 										sb.setFrom(to);
 										sb.setTo(from);
+										Log.i("NotesVideo", "4 came to send type 2");
 										AppMainActivity.commEngine
 												.acceptCall(sb);
 										Log.e("test",
@@ -3101,6 +3152,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 										sb.setType("2");
 										sb.setFrom(to);
 										sb.setTo(from);
+										Log.i("NotesVideo", "5 came to send type 2");
 										AppMainActivity.commEngine
 												.acceptCall(sb);
 										Log.e("test",
@@ -3164,14 +3216,48 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							}
 						}
 					}
+
+					if(CallDispatcher.removed_current_conf_members!=null && CallDispatcher.removed_current_conf_members.size()>0){
+						for(String name:CallDispatcher.removed_current_conf_members){
+							if(!name.equalsIgnoreCase(CallDispatcher.sb.getHost())){
+								if(participant==null){
+									participant=name;
+								}else{
+									participant=participant+","+name;
+								}
+
+							}
+						}
+					}
+
+					if(!CallDispatcher.sb.getHost().equalsIgnoreCase(CallDispatcher.LoginUser)){
+						if(participant==null){
+							participant=CallDispatcher.LoginUser;
+						}else{
+							participant=participant+","+CallDispatcher.LoginUser;
+						}
+					}
+
 					if(participant!=null){
 						CallDispatcher.sb.setParticipant_name(participant);
 					}
 					//end
+					Log.i("callentry", "db entry 11");
+//					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+//					DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
+//							CallDispatcher.sb);
 
-					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
-					DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
-							CallDispatcher.sb);
+					if(CallDispatcher.callHistoryDetails != null) {
+						SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
+						hist_bean.setParticipant_name(participant);
+						hist_bean.setEndTime(getCurrentDateandTime());
+						hist_bean.setCallDuration(SingleInstance.mainContext
+								.getCallDuration(hist_bean.getStartTime(),
+										hist_bean.getEndTime()));
+						hist_bean.setCallstatus("callattended");
+						DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
+						DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+					}
 					// }
 					// DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
 					// CallDispatcher.sb);
@@ -3363,15 +3449,48 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							}
 						}
 					}
+
+					if(CallDispatcher.removed_current_conf_members!=null && CallDispatcher.removed_current_conf_members.size()>0){
+						for(String name:CallDispatcher.removed_current_conf_members){
+							if(!name.equalsIgnoreCase(CallDispatcher.sb.getHost())){
+								if(participant==null){
+									participant=name;
+								}else{
+									participant=participant+","+name;
+								}
+
+							}
+						}
+					}
+
+					if(!CallDispatcher.sb.getHost().equalsIgnoreCase(CallDispatcher.LoginUser)){
+						if(participant==null){
+							participant=CallDispatcher.LoginUser;
+						}else{
+							participant=participant+","+CallDispatcher.LoginUser;
+						}
+					}
 					if(participant!=null){
 						CallDispatcher.sb.setParticipant_name(participant);
 					}
 					//end
-
+					Log.i("callentry", "db entry 12");
 					CallDispatcher.sb.setCallstatus("callattended");
-					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
-					DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
-							CallDispatcher.sb);
+//					DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
+//					DBAccess.getdbHeler().saveOrUpdateRecordtransactiondetails(
+//							CallDispatcher.sb);
+
+					if(CallDispatcher.callHistoryDetails != null) {
+						SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
+						hist_bean.setParticipant_name(participant);
+						hist_bean.setEndTime(getCurrentDateandTime());
+						hist_bean.setCallDuration(SingleInstance.mainContext
+								.getCallDuration(hist_bean.getStartTime(),
+										hist_bean.getEndTime()));
+						hist_bean.setCallstatus("callattended");
+						DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
+						DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+					}
 					NoAnswer(sb.getTo(),sb.getCallType());
 
 //					closeDialWindow("No Answer from " + sb.getTo(), "", "");
@@ -11618,7 +11737,7 @@ private TrustManager[] get_trust_mgr() {
 	}
 
 	public SignalingBean callconfernceUpdate(String selectedBuddy,
-			String calltype, String strSessionId) {
+			String calltype, String strSessionId, String previous_call_type) {
 
 		SignalingBean sbConf = new SignalingBean();
 		try {
@@ -11646,6 +11765,9 @@ private TrustManager[] get_trust_mgr() {
 			sbConf.setToSignalPort(bib.getSignalingPort());
 			sbConf.setChatid(CallDispatcher.LoginUser);
 			sbConf.setHost(CallDispatcher.LoginUser);
+			if(previous_call_type.equalsIgnoreCase("AC")) {
+				sbConf.setPreviouscalltype(previous_call_type);
+			}
 			String participant=null;
 			for(String temp:CallDispatcher.conferenceMembers){
 				if(participant==null)
@@ -11854,7 +11976,12 @@ private TrustManager[] get_trust_mgr() {
 									roundingFragment.checkandcloseDialog();
 								}
 							}
+							callHistoryDetails = (SignalingBean) signBean.clone();
+							if(signBean.getPreviouscalltype() != null && signBean.getPreviouscalltype().equalsIgnoreCase("AC")) {
+								callHistoryDetails.setCallType("AC");
+							}
 
+							removed_current_conf_members = new ArrayList<String>();
 							FragmentManager fm =
 									AppReference.mainContext.getSupportFragmentManager();
 							FragmentTransaction ft = fm.beginTransaction();
@@ -13684,7 +13811,9 @@ private TrustManager[] get_trust_mgr() {
 				SignalingBean toSave = (SignalingBean) CallDispatcher.sb
 						.clone();
 				CallDispatcher.contConferencemembers.put(username, toSave);
-
+				callHistoryDetails = sb;
+				removed_current_conf_members = new ArrayList<String>();
+				callHistoryDetails.setSessionid(sessionIdGenerated);
 				ShowConnectionScreen(sb, LoginUser, context, true);
 
 				for (int i = 0; i < CallDispatcher.conConference.size(); i++) {
@@ -14873,9 +15002,12 @@ private TrustManager[] get_trust_mgr() {
 				CallDispatcher.dialChecker = true;
 				SignalingBean vbcsb = (SignalingBean) CallDispatcher.sb.clone();
 				ShowConnectionScreen(vbcsb, username, context, false);
+				callHistoryDetails = vbcsb;
+				removed_current_conf_members = new ArrayList<String>();
 				CallDispatcher.isCallInitiate = true;
 				SingleInstance.parentId = null;
 				AppMainActivity.commEngine.makeCall(CallDispatcher.sb);
+				callHistoryDetails.setSessionid(CallDispatcher.sb.getSessionid());
 			} else if (bib != null && !bib.getStatus().equalsIgnoreCase("online")) {
 					String b_name = Buddyname(username);
 				if(b_name != null) {

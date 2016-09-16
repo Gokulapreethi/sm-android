@@ -1,15 +1,15 @@
 package org.core;
 
+import android.util.Log;
+
+import org.net.rtp.MediaFrameListener;
+import org.net.rtp.RtpEngineRelay;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Timer;
-
-import org.net.rtp.MediaFrameListener;
-import org.net.rtp.RtpEngineRelay;
-
-import android.util.Log;
 
 public class RelayClientNew implements MediaFrameListener {
 
@@ -332,6 +332,7 @@ public class RelayClientNew implements MediaFrameListener {
 		String msgid = "0021";
 		String msg = msgid + "," + sessionId + "," + loginUser + "," + buddy;
 		Log.d("call",new Date()+" ((((((((((())))))))) VIDEO stop message" + msg);
+		Log.d("NotesVideo",new Date()+" ((((((((((())))))))) VIDEO stop message" + msg);
 		RelayTimer relayTimer = new RelayTimer(rtpEngineRelay, relayServerIp,
 				relayPort, msg.getBytes());
 
@@ -440,7 +441,7 @@ public class RelayClientNew implements MediaFrameListener {
 			msgid = "0020";
 			data = (msgid + "," + sessionid + "," + loginuser + "," + buddyInterested)
 					.getBytes();
-
+			Log.d("NotesVideo",new Date()+"join video" + new String(data));
 			Log.d("call",new Date()+"join video" + new String(data));
 			RelayTimer relayTimer = new RelayTimer(rtpEngineRelay,
 					relayServerIp, relayPort, data);

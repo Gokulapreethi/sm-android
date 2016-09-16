@@ -44,7 +44,7 @@ public class SignalingBean implements Serializable, Cloneable {
 	private String callstatus;
 	private String chatid;
 
-
+	private String previouscalltype;
 
 	private String host_name;
 	private String participant_name;
@@ -614,6 +614,14 @@ public class SignalingBean implements Serializable, Cloneable {
 			// TODO: handle exception
 			return null;
 		}
+	}
+
+	public String getPreviouscalltype() {
+		return previouscalltype;
+	}
+
+	public void setPreviouscalltype(String previouscalltype) {
+		this.previouscalltype = previouscalltype;
 	}
 
 	public String getHost_name() {

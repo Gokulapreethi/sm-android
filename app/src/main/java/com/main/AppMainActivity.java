@@ -6926,7 +6926,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			if(secstr.length() == 1){
 				secstr = "0"+secstr;
 			}
-			String minstr = String.valueOf(diffHours);
+			String minstr = String.valueOf(diffMinutes);
 			if(minstr.length() == 1){
 				minstr = "0"+minstr;
 			}
