@@ -73,7 +73,8 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:text="photofile.jpg"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="11dp"/>
 
         <ImageView
             android:id="@+id/filexbutton"

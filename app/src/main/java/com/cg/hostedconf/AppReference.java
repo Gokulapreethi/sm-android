@@ -1,15 +1,21 @@
 package com.cg.hostedconf;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.cg.commonclass.Logger;
 import com.cg.commonclass.SipNotificationListener;
+import com.image.utils.ImageUtils;
 import com.main.AppMainActivity;
 import com.thread.SipCommunicator;
 import com.thread.SipQueue;
@@ -102,4 +108,50 @@ public class AppReference {
 	public static Fragment bacgroundFragment=null;
 
 	public static boolean fileOpen=false;
+
+	public static class imageOrientation extends AsyncTask<String, Void, String> {
+		@Override
+		protected String doInBackground(String... urls) {
+			String response = "";
+			try {
+				String changeorientation=urls[0];
+				Log.i("profiledownload", "changeorientation--->"+changeorientation);
+				Log.i("profiledownload", "my profile download");
+				Bitmap bitmap = ImageUtils.decodeScaledBitmapFromSdCard(urls[1], 320, 240);
+				int orientation = ImageUtils.resolveBitmapOrientation(urls[1]);
+				Log.i("profiledownload", "orientation--->"+orientation);
+				bitmap = ImageUtils.applyOrientation(bitmap, Integer.parseInt(changeorientation));
+				File file = new File(urls[1]);
+				if (file.exists())
+					file.delete();
+				FileOutputStream fOut = null;
+				try {
+					Log.d("size", "........6------------->");
+					fOut = new FileOutputStream(file);
+					bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+					fOut.flush();
+					fOut.close();
+					Log.d("size", "........ after file write is------------->");
+				} catch (Exception e) {
+					Log.d("size", "........7------------->");
+					e.printStackTrace();
+				}
+				bitmap=null;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return response;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+
+		}
+
+		@Override
+		protected void onPreExecute() {
+
+			super.onPreExecute();
+		}
+	}
 }

@@ -17,6 +17,7 @@ import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
+import android.hardware.SensorManager;
 import android.media.MediaRecorder;
 import android.media.MediaRecorder.OnInfoListener;
 import android.os.AsyncTask;
@@ -27,6 +28,7 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -63,7 +65,8 @@ public class CustomVideoCamera extends Activity {
 	Context context=null;
 	PowerManager powerManager;
 	PowerManager.WakeLock wakeLock;
-
+	OrientationEventListener myOrientationEventListener;
+	String orientation=null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Button.OnClickListener myButtonOnClickListener = new Button.OnClickListener() {
@@ -82,6 +85,44 @@ public class CustomVideoCamera extends Activity {
 		try {
 			super.onCreate(savedInstanceState);
 			context = this;
+			myOrientationEventListener
+					= new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL){
+
+				@Override
+				public void onOrientationChanged(int arg0) {
+					// TODO Auto-generated method stub
+					Log.i("orientation","Orientation: " + String.valueOf(arg0));
+					if(camera_no==0) {
+						if (arg0 > 250 && arg0 < 290) {
+							orientation = "0";
+							Log.i("orientation", "values 1-->" + orientation);
+						} else if (arg0 > 80 && arg0 < 100) {
+							orientation = "180";
+						} else if (arg0 > 170 && arg0 < 190) {
+							orientation = "270";
+						} else {
+							orientation = "90";
+
+						}
+					}else if(camera_no==1){
+						if (arg0 > 250 && arg0 < 290) {
+							orientation = "0";
+							Log.i("orientation", "values 1-->" + orientation);
+						} else if (arg0 > 80 && arg0 < 100) {
+							orientation = "180";
+						} else if (arg0 > 170 && arg0 < 190) {
+							orientation = "90";
+						} else {
+							orientation = "270";
+
+						}
+					}
+					Log.i("orientation","values 2-->"+orientation);
+				}};
+			if (myOrientationEventListener.canDetectOrientation()){
+//    Toast.makeText(this, "Can DetectOrientation", Toast.LENGTH_LONG).show();
+				myOrientationEventListener.enable();
+			}
 			SingleInstance.contextTable.put("customvideocallscreen",context);
 			recording = false;
 			powerManager = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
@@ -614,6 +655,9 @@ public class CustomVideoCamera extends Activity {
 			Intent intent = new Intent();
 			intent.putExtra("others", pos);
 			intent.putExtra("filePath", path);
+			if(orientation!=null){
+				intent.putExtra("orientation", orientation);
+			}
 			setResult(RESULT_OK, intent);
 			finish();
 		}
@@ -661,6 +705,7 @@ public class CustomVideoCamera extends Activity {
 		
 		
 		onConfigurationChanged(config);
+		myOrientationEventListener.disable();
 
 	}
 

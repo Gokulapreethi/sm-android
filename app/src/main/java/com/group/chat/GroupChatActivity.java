@@ -2404,6 +2404,15 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         isurgentclicked = false;
                         isReplyclicked = false;
                         memlist_splmsg.setVisibility(View.VISIBLE);
+                        if(membersList!=null && membersList.size()>0){
+                            for(UserBean userBean:membersList){
+                                userBean.setSelected(false);
+                            }
+                        }
+
+                        if(mem_adapter!=null){
+                            mem_adapter.notifyDataSetChanged();
+                        }
                         try {
                             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(message.getWindowToken(), 0);
@@ -3857,58 +3866,66 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     if (strIPath != null) {
                         File fileCheck = new File(strIPath);
                         if (fileCheck.exists()) {
-//                            btn_grid.setBackgroundDrawable(getResources().getDrawable(R.drawable.grid_grid));
-//                            atachlay.setVisibility(View.GONE);
-//                            audio_layout.setVisibility(View.GONE);
-//                            isGrid = false;
-////                            relative_send_layout.getLayoutParams().height = 400;
-//                            SendListUIBean uIbean = new SendListUIBean();
-//                            uIbean.setType("image");
-//                            uIbean.setPath(strIPath);
-//                            uIbean.setUser(buddy);
-//                            SendListUI.add(uIbean);
-//                            sendlistadapter.notifyDataSetChanged();
-//
-//
-//                            if(!current_open_activity_detail.containsKey("thirdimage1")) {
-//                                current_open_activity_detail.put("thirdimage1", uIbean);
-//                            }else if(!current_open_activity_detail.containsKey("thirdimage2")){
-//                                current_open_activity_detail.put("thirdimage2", uIbean);
-//                            }else if(!current_open_activity_detail.containsKey("thirdimage3")){
-//                                current_open_activity_detail.put("thirdimage3", uIbean);
-//                            }
-//
-//                            list_all.removeAllViews();
-//                            final int adapterCount = sendlistadapter.getCount();
-//
-//                            for (int i = 0; i < adapterCount; i++) {
-//                                View item = sendlistadapter.getView(i, null, null);
-//                                list_all.addView(item);
-//                            }
-//                            if(adapterCount>=2){
-//                                multi_send.getLayoutParams().height=280;
-//                            }
-//                            if(isPrivateBack){
-//                                LL_privateReply.setVisibility(View.VISIBLE);
-//                            }else {
-//                                msgoptionview.setVisibility(View.VISIBLE);
-//                            }
-//                            audio_call.setBackgroundResource(R.drawable.chat_send);
-//                            audio_call.setTag(1);
-                            // sendMsg("", strIPath, "image", null);
-//							Intent pMsgIntent = new Intent(context,
-//									PrivateMessageActivity.class);
-//							pMsgIntent.putExtra("groupid", groupId);
-//							pMsgIntent.putExtra("type", "image");
-//							pMsgIntent.putExtra("localpath", strIPath);
-//							pMsgIntent.putExtra("buddyname", buddy);
-//							pMsgIntent.putExtra("replyback", isReplyBack);
-//							pMsgIntent.putExtra("pMembers", privateMembers);
-//							pMsgIntent.putExtra("parentid", parentId);
-//							startActivity(pMsgIntent);
-                            showprogress();
-                            Log.i("AAAA","onactivity result ");
-                            new imageOrientation().execute("image");
+                            String orientation=null;
+                            if (data != null) {
+                                orientation=data.getStringExtra("orientation");
+                                Log.i("orientation","chatActivity orientation-->"+orientation);
+                            }
+                            if(orientation!=null && orientation.equalsIgnoreCase("0")) {
+                                btn_grid.setBackgroundDrawable(getResources().getDrawable(R.drawable.grid_grid));
+                                atachlay.setVisibility(View.GONE);
+                                audio_layout.setVisibility(View.GONE);
+                                isGrid = false;
+//                            relative_send_layout.getLayoutParams().height = 400;
+                                SendListUIBean uIbean = new SendListUIBean();
+                                uIbean.setType("image");
+                                uIbean.setPath(strIPath);
+                                uIbean.setUser(buddy);
+                                SendListUI.add(uIbean);
+                                sendlistadapter.notifyDataSetChanged();
+
+
+                                if (!current_open_activity_detail.containsKey("thirdimage1")) {
+                                    current_open_activity_detail.put("thirdimage1", uIbean);
+                                } else if (!current_open_activity_detail.containsKey("thirdimage2")) {
+                                    current_open_activity_detail.put("thirdimage2", uIbean);
+                                } else if (!current_open_activity_detail.containsKey("thirdimage3")) {
+                                    current_open_activity_detail.put("thirdimage3", uIbean);
+                                }
+
+                                list_all.removeAllViews();
+                                final int adapterCount = sendlistadapter.getCount();
+
+                                for (int i = 0; i < adapterCount; i++) {
+                                    View item = sendlistadapter.getView(i, null, null);
+                                    list_all.addView(item);
+                                }
+                                if (adapterCount >= 2) {
+                                    multi_send.getLayoutParams().height = 280;
+                                }
+                                if (isPrivateBack) {
+                                    LL_privateReply.setVisibility(View.VISIBLE);
+                                } else {
+                                    msgoptionview.setVisibility(View.VISIBLE);
+                                }
+                                audio_call.setBackgroundResource(R.drawable.chat_send);
+                                audio_call.setTag(1);
+//                             sendMsg("", strIPath, "image", null);
+//       Intent pMsgIntent = new Intent(context,
+//         PrivateMessageActivity.class);
+//       pMsgIntent.putExtra("groupid", groupId);
+//       pMsgIntent.putExtra("type", "image");
+//       pMsgIntent.putExtra("localpath", strIPath);
+//       pMsgIntent.putExtra("buddyname", buddy);
+//       pMsgIntent.putExtra("replyback", isReplyBack);
+//       pMsgIntent.putExtra("pMembers", privateMembers);
+//       pMsgIntent.putExtra("parentid", parentId);
+//       startActivity(pMsgIntent);
+                            }else {
+                                showprogress();
+                                Log.i("AAAA", "onactivity result ");
+                                new imageOrientation().execute(orientation);
+                            }
                         } else {
                             showToast("Not able to process. Please try again");
                         }
@@ -5949,6 +5966,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                 .findViewById(R.id.receiver_datetime);
                         multimediaIcon = (ImageView) convertView
                                 .findViewById(R.id.receiver_multi_msg);
+                        multimediaIcon.getLayoutParams().height= ViewGroup.LayoutParams.WRAP_CONTENT;
+                        multimediaIcon.getLayoutParams().width= ViewGroup.LayoutParams.WRAP_CONTENT;
                         iconContainer = (RelativeLayout) convertView
                                 .findViewById(R.id.receiver_icon_container);
                         locationIcon = (ImageView) convertView
@@ -6269,6 +6288,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                 .findViewById(R.id.sendtv_pathname);
                         multimediaIcon = (ImageView) convertView
                                 .findViewById(R.id.sender_multi_msg);
+                        multimediaIcon.getLayoutParams().height= ViewGroup.LayoutParams.WRAP_CONTENT;
+                        multimediaIcon.getLayoutParams().width= ViewGroup.LayoutParams.WRAP_CONTENT;
                         dateTime = (TextView) convertView
                                 .findViewById(R.id.sender_datetime);
                         iconContainer = (RelativeLayout) convertView
@@ -7020,14 +7041,18 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
                         @Override
                         public void onClick(View v) {
-                            if (v.getContentDescription().toString().equalsIgnoreCase("audio") ||
-                                    v.getContentDescription().toString().equalsIgnoreCase("video")) {
-                                if(!CallDispatcher.isCallInitiate)
+                            if (v != null && v.getContentDescription()!=null) {
+                                if (v.getContentDescription().toString().equalsIgnoreCase("audio") ||
+                                        v.getContentDescription().toString().equalsIgnoreCase("video")) {
+                                    if (!CallDispatcher.isCallInitiate)
+                                        playMultimedia(v);
+                                    else
+                                        showToast("Please Try again...call  in progress");
+                                } else
                                     playMultimedia(v);
-                                else
-                                showToast("Please Try again...call  in progress");
-                        }else
-                                playMultimedia(v);
+                            }else{
+                                showToast("File does not Exist");
+                            }
                         }
                     });
 
@@ -7352,14 +7377,15 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                             if (mPlayer != null && mPlayer.isPlaying())
                                                 mPlayer.stop();
                                             Log.i("videoplay", "mixed file call not process");
+                                            Log.i("videoplay", "mixed file call not process content-->"+view.getContentDescription().toString());
                                             if(view.getContentDescription().toString().equalsIgnoreCase("video")) {
                                                 Log.i("videoplay","mixed file call not process video");
                                                 Intent intent = new Intent(context, VideoPlayer.class);
                                                 intent.putExtra("video", path);
                                                 startActivity(intent);
                                             }
-                                            else if(view.getContentDescription().toString().equalsIgnoreCase("videobmpnull")){
-                                                Log.i("videoplay","mixed file call not process videobmpnull");
+                                            else if(view.getContentDescription().toString().equalsIgnoreCase("videobmapnull")){
+                                                Log.i("videoplay","mixed file call not process videobmapnull");
                                                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(path));
                                                 intent.setDataAndType(Uri.parse(path), "video/mp4");
                                                 startActivity(intent);
@@ -13337,10 +13363,11 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             String response = "";
             try {
                 Log.i("profiledownload", "my profile download");
+                String changeorientation=urls[0];
                 Bitmap bitmap = ImageUtils.decodeScaledBitmapFromSdCard(strIPath, 320, 240);
                 int orientation = ImageUtils.resolveBitmapOrientation(strIPath);
                 Log.i("profiledownload", "orientation--->"+orientation);
-                bitmap = ImageUtils.applyOrientation(bitmap, orientation);
+                bitmap = ImageUtils.applyOrientation(bitmap, Integer.parseInt(changeorientation));
                 File file = new File(strIPath);
                 if (file.exists())
                     file.delete();

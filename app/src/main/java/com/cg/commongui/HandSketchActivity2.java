@@ -21,8 +21,10 @@ import android.graphics.BitmapFactory.Options;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -43,6 +45,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
@@ -502,10 +505,14 @@ getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.Layou
 		gallery.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-					Intent intent = new Intent(
-							Intent.ACTION_PICK,
-							android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-					startActivityForResult(intent, GALLERY_REQUEST);
+//					Intent intent = new Intent(
+//							Intent.ACTION_PICK,
+//							android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//					startActivityForResult(intent, GALLERY_REQUEST);
+				Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+				intent.addCategory(Intent.CATEGORY_OPENABLE);
+				intent.setType("image/*");
+				startActivityForResult(intent, GALLERY_REQUEST);
 				dialog.dismiss();
 			}
 		});
@@ -693,22 +700,42 @@ getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.Layou
 			Bitmap board;
 
 			if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-				String filePath = data.getStringExtra("filePath");
-				StoredFilepath = filePath;
-				imageSelectedOption=0;
-				File file = new File(filePath);
-				if (file.exists()) {
-					Log.i("handsketch123", "file name : " + file.getPath());
-					Bitmap bitMap = callDisp.ResizeImage(filePath);
-					if (bitMap != null) {
-						Log.i("handsketch123", "bitmap not null");
+				if(data!=null) {
+					String filePath = data.getStringExtra("filePath");
+					String orientation=data.getStringExtra("orientation");
+					Log.i("orientation","chatActivity orientation-->"+orientation);
+					StoredFilepath = filePath;
+					imageSelectedOption = 0;
+					File file = new File(filePath);
+					if (file.exists()) {
+						Log.i("handsketch123", "file name : " + file.getPath());
+						if(orientation!=null && orientation.equalsIgnoreCase("0")) {
+							Bitmap bitMap = callDisp.ResizeImage(filePath);
+							if (bitMap != null) {
+								Log.i("handsketch123", "bitmap not null");
 //						Bitmap output = bitMap.createBitmap(200,200,
 //								Bitmap.Config.ARGB_8888);
-						Log.i("handsketch123", "bitmap name : " + bitMap);
-						//drawView.setImage(bitMap);
-						int h = drawView.getHeight(); // 320; // Height in pixels
-						int w = drawView.getWidth();// 480; // Width in pixels
-						drawView.setImage(Bitmap.createScaledBitmap(bitMap , w, h, true));
+								Log.i("handsketch123", "bitmap name : " + bitMap);
+								//drawView.setImage(bitMap);
+								int h = drawView.getHeight(); // 320; // Height in pixels
+								int w = drawView.getWidth();// 480; // Width in pixels
+								drawView.setImage(Bitmap.createScaledBitmap(bitMap, w, h, true));
+							}
+						}else{
+							AppReference.imageOrientation imageOrientation=new AppReference.imageOrientation();
+							imageOrientation.execute(orientation,filePath);
+							Bitmap bitMap = callDisp.ResizeImage(filePath);
+							if (bitMap != null) {
+								Log.i("handsketch123", "bitmap not null");
+//						Bitmap output = bitMap.createBitmap(200,200,
+//								Bitmap.Config.ARGB_8888);
+								Log.i("handsketch123", "bitmap name : " + bitMap);
+								//drawView.setImage(bitMap);
+								int h = drawView.getHeight(); // 320; // Height in pixels
+								int w = drawView.getWidth();// 480; // Width in pixels
+								drawView.setImage(Bitmap.createScaledBitmap(bitMap, w, h, true));
+							}
+						}
 					}
 				}
 			} else if (requestCode == GALLERY_REQUEST
@@ -716,21 +743,28 @@ getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.Layou
 				imageSelectedOption=1;
 				Uri selectedImage = data.getData();
 				SelectedGallaryImage = selectedImage;
-				String[] filePathColumn = { MediaStore.Images.Media.DATA };
-
-				Cursor cursor = getContentResolver().query(selectedImage,
-						filePathColumn, null, null, null);
-				cursor.moveToFirst();
-
-				int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-				String picturePath = cursor.getString(columnIndex);
-				cursor.close();
+//				String[] filePathColumn = { MediaStore.Images.Media.DATA };
+//				Cursor cursor = getContentResolver().query(selectedImage,
+//						filePathColumn, null, null, null);
+//				cursor.moveToFirst();
+//
+//				int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//				String picturePath = cursor.getString(columnIndex);
+//				cursor.close();
 
 				// board=BitmapFactory.decodeFile(picturePath);
+//				int h = drawView.getHeight(); // 320; // Height in pixels
+//				int w = drawView.getWidth();// 480; // Width in pixels
+//				board = Bitmap.createScaledBitmap(
+//						BitmapFactory.decodeFile(picturePath), w, h, true);
+//				drawView.setImage(board);
+//				Log.i("handsketch123", "picturePath--->"+picturePath);
+
 				int h = drawView.getHeight(); // 320; // Height in pixels
 				int w = drawView.getWidth();// 480; // Width in pixels
 				board = Bitmap.createScaledBitmap(
-						BitmapFactory.decodeFile(picturePath), w, h, true);
+						BitmapFactory.decodeFile(getPath(selectedImage)), w, h, true);
+
 				drawView.setImage(board);
 
 			}
@@ -817,6 +851,46 @@ getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.Layou
 		redoButt.setBackgroundColor(getResources().getColor(R.color.black2));
 		maxBtn.setBackgroundColor(getResources().getColor(R.color.black2));
 		minBtn.setBackgroundColor(getResources().getColor(R.color.black2));
+	}
+
+
+	private String getPath(Uri uri) {
+		if( uri == null ) {
+			return null;
+		}
+
+		String[] projection = { MediaStore.Images.Media.DATA };
+
+		Cursor cursor;
+		if(Build.VERSION.SDK_INT >19)
+		{
+			// Will return "image:x*"
+			String wholeID = DocumentsContract.getDocumentId(uri);
+			// Split at colon, use second item in the array
+			String id = wholeID.split(":")[1];
+			// where id is equal to
+			String sel = MediaStore.Images.Media._ID + "=?";
+
+			cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+					projection, sel, new String[]{ id }, null);
+		}
+		else
+		{
+			cursor = getContentResolver().query(uri, projection, null, null, null);
+		}
+		String path = null;
+		try
+		{
+			int column_index = cursor
+					.getColumnIndex(MediaStore.Images.Media.DATA);
+			cursor.moveToFirst();
+			path = cursor.getString(column_index).toString();
+			cursor.close();
+		}
+		catch(NullPointerException e) {
+              e.printStackTrace();
+		}
+		return path;
 	}
 
 }

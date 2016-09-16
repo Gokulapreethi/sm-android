@@ -104,7 +104,7 @@ public class ImageUtils {
 		int w = bitmap.getWidth();
 		int h = bitmap.getHeight();
 		Matrix mtx = new Matrix();
-		mtx.postRotate(90);
+		mtx.postRotate(orientation);
 		return Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, true);
 	}
 }
