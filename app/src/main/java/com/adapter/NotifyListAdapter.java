@@ -194,10 +194,10 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
 
 
             if(iscontact){
-                holder.buddyicon.setVisibility(View.GONE);
-               holder.fileIcon.setVisibility(View.VISIBLE);
-                holder.chat_info.setVisibility(View.GONE);
-                holder.imagestatus.setVisibility(View.GONE);
+                holder.buddyicon.setVisibility(View.VISIBLE);
+               holder.fileIcon.setVisibility(View.GONE);
+                holder.chat_info.setVisibility(View.VISIBLE);
+                holder.imagestatus.setVisibility(View.VISIBLE);
                 holder.list_container.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -330,7 +330,7 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                     String time = notifyBean.getSortdate().split(" ")[1];
                     String[] times = time.split(":");
                     holder.time.setText(times[0] + ":" + times[1]);
-                    Log.i("AAAA", "NOTIFYLIST ADAPTER Values " + times);
+                    Log.i("AAAA", "NOTIFYLIST ADAPTER Values " + time);
                 }
 
 
@@ -338,8 +338,8 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                         Log.i("AAAA", "NOTIFYLIST ADAPTER type " + notifyBean.getNotifttype());
                         if (notifyBean.getNotifttype().trim().equalsIgnoreCase("F")) {
                             if (iscontact) {
-                                holder.buddyicon.setVisibility(View.GONE);
-                                holder.fileIcon.setBackgroundResource(R.drawable.recent_files);
+                                holder.buddyicon.setVisibility(View.VISIBLE);
+//                                holder.fileIcon.setBackgroundResource(R.drawable.recent_files);
                             } else {
                                 holder.buddyicon.setVisibility(View.VISIBLE);
                                 holder.fileIcon.setVisibility(View.GONE);
@@ -365,8 +365,8 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                             holder.file_txt1.setVisibility(View.VISIBLE);
                             holder.fileName.setVisibility(View.GONE);
                             if (iscontact) {
-                                holder.buddyicon.setVisibility(View.GONE);
-                                holder.fileIcon.setBackgroundResource(R.drawable.recent_calls);
+                                holder.buddyicon.setVisibility(View.VISIBLE);
+//                                holder.fileIcon.setBackgroundResource(R.drawable.recent_calls);
                             } else {
                                 holder.buddyicon.setVisibility(View.VISIBLE);
                                 holder.fileIcon.setVisibility(View.GONE);
@@ -384,8 +384,8 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                                 holder.file_txt1.setText(notifyBean.getUsername());
                             else if (notifyBean.getType().trim().equalsIgnoreCase("VP"))
                                 holder.file_txt1.setText(notifyBean.getUsername());
-//                        if(notifyBean.getContent()!=null)
-//                            holder.fileName.setText(notifyBean.getContent());
+                        if(notifyBean.getContent()!=null)
+                            holder.fileName.setText(notifyBean.getContent());
                         } else if (notifyBean.getNotifttype().trim().equalsIgnoreCase("Invite")) {
 
                             holder.file_type1.setVisibility(View.GONE);
@@ -393,8 +393,8 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                             holder.fileName.setVisibility(View.VISIBLE);
                             holder.fileType.setVisibility(View.VISIBLE);
                             if (iscontact) {
-                                holder.buddyicon.setVisibility(View.GONE);
-                                holder.fileIcon.setVisibility(View.VISIBLE);
+                                holder.buddyicon.setVisibility(View.VISIBLE);
+//                                holder.fileIcon.setVisibility(View.VISIBLE);
 
                             } else {
                                 holder.buddyicon.setVisibility(View.VISIBLE);
@@ -422,13 +422,13 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
 
                         } else if (notifyBean.getNotifttype().trim().equalsIgnoreCase("I")) {
                             if (iscontact) {
-                                holder.buddyicon.setVisibility(View.GONE);
-                                holder.fileIcon.setBackgroundResource(R.drawable.recent_message);
+                                holder.buddyicon.setVisibility(View.VISIBLE);
+//                                holder.fileIcon.setBackgroundResource(R.drawable.recent_message);
                             } else {
                                 holder.buddyicon.setVisibility(View.VISIBLE);
                                 holder.fileIcon.setVisibility(View.GONE);
                             }
-
+                            Log.i("nameof","username"+notifyBean.getOwner());
                             if (notifyBean.getType().trim().equalsIgnoreCase("image"))
                                 if(notifyBean.getCategory().equalsIgnoreCase("I")){
                                     holder.fileType.setText(notifyBean.getUsername());

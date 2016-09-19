@@ -7386,6 +7386,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                             }
                                             else if(view.getContentDescription().toString().equalsIgnoreCase("videobmapnull")){
                                                 Log.i("videoplay","mixed file call not process videobmapnull");
+                                                AppReference.fileOpen=true;
                                                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(path));
                                                 intent.setDataAndType(Uri.parse(path), "video/mp4");
                                                 startActivity(intent);
@@ -7671,6 +7672,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         }else if (v.getContentDescription().toString()
                 .equalsIgnoreCase("videobmapnull")) {
             Log.i("group123", "icon clicked video");
+            AppReference.fileOpen=true;
             if (mPlayer != null && mPlayer.isPlaying())
                 mPlayer.stop();
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(path));

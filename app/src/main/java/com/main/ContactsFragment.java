@@ -96,6 +96,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Vector;
 
 /**
@@ -4124,36 +4125,27 @@ public class ContactsFragment extends Fragment{
 					.commitAllowingStateLoss();
 		}
 	}
-	private void loadRecents() {
+	private void loadRecents()
+	{
 		tempnotifylist.clear();
 		contactrecentlist.clear();
 		grouprecentlist.clear();
-		Vector<NotifyListBean> notifyList = new Vector<NotifyListBean>();
-		notifyList = DBAccess.getdbHeler().getNotifyFilesList(CallDispatcher.LoginUser);
-		Log.d("AAAAc", "Notifyidlistvalue" + notifyList.size());
-		Log.d("AAAAc", "Notifyidname" + CallDispatcher.LoginUser);
-		if(notifyList!=null) {
-			for (NotifyListBean nBean : notifyList) {
-				Log.i("AAAAc", "NOTIFY LIST from user " + nBean.getNotifttype() + " , " + nBean.getSortdate() + " , " + nBean.getFrom());
-				Log.d("AAAAc", "Notifyid" + nBean.getFileid());
-				if (nBean.getViewed() == 0 && nBean.getNotifttype().equals("I")) {
-					if (!nBean.getCategory().equalsIgnoreCase("call")) {
-						ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
-						nBean.setProfilePic(pBean.getPhoto());
-						if (pBean != null)
-							nBean.setUsername(pBean.getFirstname() + " " + pBean.getLastname());
-						if(nBean.getCategory()!=null && nBean.getCategory().equalsIgnoreCase("I"))
-							contactrecentlist.add(nBean);
-						else if(GroupActivity.groupList!=null){
-							for (GroupBean gbean : GroupActivity.groupList) {
-								if (gbean.getGroupId().equalsIgnoreCase(nBean.getFileid()))
-									nBean.setOwner(gbean.getGroupName());
-								Log.i("notifylistsize","grupname"+nBean.getOwner());
-							}
-							grouprecentlist.add(nBean);
-						}
-					}
+		tempnotifylist = DashBoardFragment.newInstance(mainContext).LoadFilesList(CallDispatcher.LoginUser);
+
+		for(NotifyListBean bean:tempnotifylist){
+			if(bean.getNotifttype().equalsIgnoreCase("F"))
+				contactrecentlist.add(bean);
+			else if(bean.getNotifttype().equalsIgnoreCase("C")){
+				if(isNumeric(bean.getFileid()))
+					grouprecentlist.add(bean);
+				else
+					contactrecentlist.add(bean);
+			}else if(bean.getNotifttype().equalsIgnoreCase("I")) {
+				if (bean.getCategory().equalsIgnoreCase("G")) {
+					grouprecentlist.add(bean);
 				}
+				else if(bean.getCategory().equalsIgnoreCase("I"))
+					contactrecentlist.add(bean);
 			}
 		}
 

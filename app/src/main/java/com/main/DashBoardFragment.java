@@ -262,8 +262,8 @@ public class DashBoardFragment extends Fragment {
                         public void onClick(View view) {
                             setType = "ll_msg";
                             notification.performClick();
-                            DBAccess.getdbHeler(mainContext)
-                                    .setReadAllCount(CallDispatcher.LoginUser, "");
+//                            DBAccess.getdbHeler(mainContext)
+//                                    .setReadAllCount(CallDispatcher.LoginUser, "");
                         }
                     });
                     ll_call.setOnClickListener(new View.OnClickListener() {

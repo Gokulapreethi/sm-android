@@ -370,6 +370,10 @@ public class CallConnectingScreen extends Fragment {
 					CallDispatcher.sb.setParticipant_name(participant);
 				}
 				SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
+				Log.i("callentry","time 1--->"+hist_bean.getStartTime());
+				if(hist_bean.getStartTime()==null){
+					hist_bean.setStartTime(callDisp.getCurrentDateandTime());
+				}
 				hist_bean.setParticipant_name(participant);
 				hist_bean.setEndTime(hist_bean.getStartTime());
 				hist_bean.setCallDuration(SingleInstance.mainContext
@@ -529,6 +533,7 @@ public class CallConnectingScreen extends Fragment {
 							CallDispatcher.sb.setParticipant_name(participant);
 						}
 						SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
+						Log.i("callentry","time 2--->"+hist_bean.getStartTime());
 						hist_bean.setParticipant_name(participant);
 						hist_bean.setEndTime(hist_bean.getStartTime());
 						hist_bean.setCallDuration(SingleInstance.mainContext
@@ -616,6 +621,10 @@ public class CallConnectingScreen extends Fragment {
 							CallDispatcher.sb.setParticipant_name(participant);
 						}
 						SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
+						Log.i("callentry","time 3--->"+hist_bean.getStartTime());
+						if(hist_bean.getStartTime()==null){
+							hist_bean.setStartTime(callDisp.getCurrentDateandTime());
+						}
 						hist_bean.setParticipant_name(participant);
 						hist_bean.setEndTime(hist_bean.getStartTime());
 						hist_bean.setCallDuration(SingleInstance.mainContext

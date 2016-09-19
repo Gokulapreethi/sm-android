@@ -1945,7 +1945,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						if (chatList != null) {
 							if (chatList.size() > 0) {
 								for (GroupChatBean groupChatBean : chatList) {
-									if (groupChatBean.getSignalid()
+									if (groupChatBean.getSignalid()!=null && gcBean.getSignalid()!=null && groupChatBean.getSignalid()
 											.equalsIgnoreCase(
 													gcBean.getSignalid())) {
 										isExists = true;
@@ -2000,6 +2000,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				}
 			});
 		} catch (Exception e) {
+			e.printStackTrace();
 			SingleInstance.printLog(null, e.getMessage(), null, e);
 		}
 
