@@ -535,6 +535,9 @@ public class CallConnectingScreen extends Fragment {
 						SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
 						Log.i("callentry","time 2--->"+hist_bean.getStartTime());
 						hist_bean.setParticipant_name(participant);
+						if(hist_bean.getStartTime() == null) {
+							hist_bean.setStartTime(callDisp.getCurrentDateandTime());
+						}
 						hist_bean.setEndTime(hist_bean.getStartTime());
 						hist_bean.setCallDuration(SingleInstance.mainContext
 								.getCallDuration(hist_bean.getStartTime(),

@@ -3483,6 +3483,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 					if(CallDispatcher.callHistoryDetails != null) {
 						SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
 						hist_bean.setParticipant_name(participant);
+						if(hist_bean.getStartTime() == null) {
+							hist_bean.setStartTime(getCurrentDateandTime());
+						}
 						hist_bean.setEndTime(getCurrentDateandTime());
 						hist_bean.setCallDuration(SingleInstance.mainContext
 								.getCallDuration(hist_bean.getStartTime(),
