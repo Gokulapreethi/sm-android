@@ -3871,61 +3871,61 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                 orientation=data.getStringExtra("orientation");
                                 Log.i("orientation","chatActivity orientation-->"+orientation);
                             }
-                            if(orientation!=null && orientation.equalsIgnoreCase("0")) {
-                                btn_grid.setBackgroundDrawable(getResources().getDrawable(R.drawable.grid_grid));
-                                atachlay.setVisibility(View.GONE);
-                                audio_layout.setVisibility(View.GONE);
-                                isGrid = false;
-//                            relative_send_layout.getLayoutParams().height = 400;
-                                SendListUIBean uIbean = new SendListUIBean();
-                                uIbean.setType("image");
-                                uIbean.setPath(strIPath);
-                                uIbean.setUser(buddy);
-                                SendListUI.add(uIbean);
-                                sendlistadapter.notifyDataSetChanged();
-
-
-                                if (!current_open_activity_detail.containsKey("thirdimage1")) {
-                                    current_open_activity_detail.put("thirdimage1", uIbean);
-                                } else if (!current_open_activity_detail.containsKey("thirdimage2")) {
-                                    current_open_activity_detail.put("thirdimage2", uIbean);
-                                } else if (!current_open_activity_detail.containsKey("thirdimage3")) {
-                                    current_open_activity_detail.put("thirdimage3", uIbean);
-                                }
-
-                                list_all.removeAllViews();
-                                final int adapterCount = sendlistadapter.getCount();
-
-                                for (int i = 0; i < adapterCount; i++) {
-                                    View item = sendlistadapter.getView(i, null, null);
-                                    list_all.addView(item);
-                                }
-                                if (adapterCount >= 2) {
-                                    multi_send.getLayoutParams().height = 280;
-                                }
-                                if (isPrivateBack) {
-                                    LL_privateReply.setVisibility(View.VISIBLE);
-                                } else {
-                                    msgoptionview.setVisibility(View.VISIBLE);
-                                }
-                                audio_call.setBackgroundResource(R.drawable.chat_send);
-                                audio_call.setTag(1);
-//                             sendMsg("", strIPath, "image", null);
-//       Intent pMsgIntent = new Intent(context,
-//         PrivateMessageActivity.class);
-//       pMsgIntent.putExtra("groupid", groupId);
-//       pMsgIntent.putExtra("type", "image");
-//       pMsgIntent.putExtra("localpath", strIPath);
-//       pMsgIntent.putExtra("buddyname", buddy);
-//       pMsgIntent.putExtra("replyback", isReplyBack);
-//       pMsgIntent.putExtra("pMembers", privateMembers);
-//       pMsgIntent.putExtra("parentid", parentId);
-//       startActivity(pMsgIntent);
-                            }else {
+//                            if(orientation!=null && orientation.equalsIgnoreCase("0")) {
+//                                btn_grid.setBackgroundDrawable(getResources().getDrawable(R.drawable.grid_grid));
+//                                atachlay.setVisibility(View.GONE);
+//                                audio_layout.setVisibility(View.GONE);
+//                                isGrid = false;
+////                            relative_send_layout.getLayoutParams().height = 400;
+//                                SendListUIBean uIbean = new SendListUIBean();
+//                                uIbean.setType("image");
+//                                uIbean.setPath(strIPath);
+//                                uIbean.setUser(buddy);
+//                                SendListUI.add(uIbean);
+//                                sendlistadapter.notifyDataSetChanged();
+//
+//
+//                                if (!current_open_activity_detail.containsKey("thirdimage1")) {
+//                                    current_open_activity_detail.put("thirdimage1", uIbean);
+//                                } else if (!current_open_activity_detail.containsKey("thirdimage2")) {
+//                                    current_open_activity_detail.put("thirdimage2", uIbean);
+//                                } else if (!current_open_activity_detail.containsKey("thirdimage3")) {
+//                                    current_open_activity_detail.put("thirdimage3", uIbean);
+//                                }
+//
+//                                list_all.removeAllViews();
+//                                final int adapterCount = sendlistadapter.getCount();
+//
+//                                for (int i = 0; i < adapterCount; i++) {
+//                                    View item = sendlistadapter.getView(i, null, null);
+//                                    list_all.addView(item);
+//                                }
+//                                if (adapterCount >= 2) {
+//                                    multi_send.getLayoutParams().height = 280;
+//                                }
+//                                if (isPrivateBack) {
+//                                    LL_privateReply.setVisibility(View.VISIBLE);
+//                                } else {
+//                                    msgoptionview.setVisibility(View.VISIBLE);
+//                                }
+//                                audio_call.setBackgroundResource(R.drawable.chat_send);
+//                                audio_call.setTag(1);
+////                             sendMsg("", strIPath, "image", null);
+////       Intent pMsgIntent = new Intent(context,
+////         PrivateMessageActivity.class);
+////       pMsgIntent.putExtra("groupid", groupId);
+////       pMsgIntent.putExtra("type", "image");
+////       pMsgIntent.putExtra("localpath", strIPath);
+////       pMsgIntent.putExtra("buddyname", buddy);
+////       pMsgIntent.putExtra("replyback", isReplyBack);
+////       pMsgIntent.putExtra("pMembers", privateMembers);
+////       pMsgIntent.putExtra("parentid", parentId);
+////       startActivity(pMsgIntent);
+//                            }else {
                                 showprogress();
                                 Log.i("AAAA", "onactivity result ");
                                 new imageOrientation().execute(orientation);
-                            }
+//                            }
                         } else {
                             showToast("Not able to process. Please try again");
                         }

@@ -21,6 +21,7 @@ import android.hardware.SensorManager;
 import android.media.MediaRecorder;
 import android.media.MediaRecorder.OnInfoListener;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
@@ -29,6 +30,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.OrientationEventListener;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -67,6 +69,8 @@ public class CustomVideoCamera extends Activity {
 	PowerManager.WakeLock wakeLock;
 	OrientationEventListener myOrientationEventListener;
 	String orientation=null;
+	String PhoneModel=null;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Button.OnClickListener myButtonOnClickListener = new Button.OnClickListener() {
@@ -85,6 +89,8 @@ public class CustomVideoCamera extends Activity {
 		try {
 			super.onCreate(savedInstanceState);
 			context = this;
+			PhoneModel = android.os.Build.MODEL;
+			Log.i("camera","Device model-->"+PhoneModel);
 			myOrientationEventListener
 					= new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL){
 
@@ -92,31 +98,46 @@ public class CustomVideoCamera extends Activity {
 				public void onOrientationChanged(int arg0) {
 					// TODO Auto-generated method stub
 					Log.i("orientation","Orientation: " + String.valueOf(arg0));
-					if(camera_no==0) {
+					if(PhoneModel!=null && PhoneModel.equalsIgnoreCase("Nexus 5X") && camera_no==0){
 						if (arg0 > 250 && arg0 < 290) {
-							orientation = "0";
+							orientation = "180";
 							Log.i("orientation", "values 1-->" + orientation);
 						} else if (arg0 > 80 && arg0 < 100) {
-							orientation = "180";
+							orientation = "0";
 						} else if (arg0 > 170 && arg0 < 190) {
-							orientation = "270";
-						} else {
 							orientation = "90";
+						} else {
+							orientation = "270";
 
 						}
-					}else if(camera_no==1){
-						if (arg0 > 250 && arg0 < 290) {
-							orientation = "0";
-							Log.i("orientation", "values 1-->" + orientation);
-						} else if (arg0 > 80 && arg0 < 100) {
-							orientation = "180";
-						} else if (arg0 > 170 && arg0 < 190) {
-							orientation = "90";
-						} else {
-							orientation = "270";
+					}else{
+						if(camera_no==0) {
+							if (arg0 > 250 && arg0 < 290) {
+								orientation = "0";
+								Log.i("orientation", "values 1-->" + orientation);
+							} else if (arg0 > 80 && arg0 < 100) {
+								orientation = "180";
+							} else if (arg0 > 170 && arg0 < 190) {
+								orientation = "270";
+							} else {
+								orientation = "90";
 
+							}
+						}else if(camera_no==1){
+							if (arg0 > 250 && arg0 < 290) {
+								orientation = "0";
+								Log.i("orientation", "values 1-->" + orientation);
+							} else if (arg0 > 80 && arg0 < 100) {
+								orientation = "180";
+							} else if (arg0 > 170 && arg0 < 190) {
+								orientation = "90";
+							} else {
+								orientation = "270";
+
+							}
 						}
 					}
+
 					Log.i("orientation","values 2-->"+orientation);
 				}};
 			if (myOrientationEventListener.canDetectOrientation()){
@@ -169,6 +190,8 @@ public class CustomVideoCamera extends Activity {
 					camera_no = 0;
 					myCamera = Camera
 							.open(Camera.CameraInfo.CAMERA_FACING_BACK);
+					if(PhoneModel!=null && PhoneModel.equalsIgnoreCase("Nexus 5X"))
+					setCameraDisplayOrientation(this,CameraInfo.CAMERA_FACING_BACK,myCamera);
 					//end
 				} else {
 					//For Change Camera front from back
@@ -243,6 +266,8 @@ public class CustomVideoCamera extends Activity {
 						myCamera = null;
 						myCamera = Camera
 								.open(Camera.CameraInfo.CAMERA_FACING_BACK);
+						if(PhoneModel!=null && PhoneModel.equalsIgnoreCase("Nexus 5X"))
+						setCameraDisplayOrientation(CustomVideoCamera.this,CameraInfo.CAMERA_FACING_BACK,myCamera);
 						myCameraSurfaceView = new MyCameraSurfaceView(
 								CustomVideoCamera.this, myCamera);
 						myCameraPreview.addView(myCameraSurfaceView);
@@ -346,6 +371,8 @@ public class CustomVideoCamera extends Activity {
 			if (front_back == 0) {
 
 				myCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
+				if(PhoneModel!=null && PhoneModel.equalsIgnoreCase("Nexus 5X"))
+					setCameraDisplayOrientation(this,CameraInfo.CAMERA_FACING_BACK,myCamera);
 			} else if (front_back == 1) {
 
 				myCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
@@ -708,5 +735,34 @@ public class CustomVideoCamera extends Activity {
 		myOrientationEventListener.disable();
 
 	}
+
+	public static void setCameraDisplayOrientation(Activity activity,
+												   int cameraId, android.hardware.Camera camera) {
+		Log.i("camera","setCameraDisplayOrientation");
+		android.hardware.Camera.CameraInfo info =
+				new android.hardware.Camera.CameraInfo();
+		android.hardware.Camera.getCameraInfo(cameraId, info);
+		int rotation = activity.getWindowManager().getDefaultDisplay()
+				.getRotation();
+		int degrees = 0;
+		switch (rotation) {
+			case Surface.ROTATION_0: degrees = 0; break;
+			case Surface.ROTATION_90: degrees = 90; break;
+			case Surface.ROTATION_180: degrees = 180; break;
+			case Surface.ROTATION_270: degrees = 270; break;
+		}
+
+		int result;
+		if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+			result = (info.orientation + degrees) % 360;
+			result = (360 - result) % 360;  // compensate the mirror
+		} else {  // back-facing
+			result = (info.orientation - degrees + 360) % 360;
+		}
+		Log.i("camera","result--->"+result);
+		camera.setDisplayOrientation(result);
+	}
+
+
 
 }

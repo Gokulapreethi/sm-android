@@ -1226,7 +1226,7 @@ public class LoginPageFragment extends Fragment {
                             // getActivity()
                             // .findViewById(R.id.userimageview);
 
-                            CallDispatcher.myStatus = "1";
+//                            CallDispatcher.myStatus = "1";
                             if (CallDispatcher.LoginUser != null) {
                                 handler.post(new Runnable() {
 

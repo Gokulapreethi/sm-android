@@ -6097,6 +6097,17 @@ public class XmlParser {
 							.getNodeValue().trim();
 			}
 
+			list = doc.getElementsByTagName("presence");
+			for (int i = 0; i < list.getLength(); i++) {
+				node = list.item(i);
+				nodeMap = node.getAttributes();
+				if (nodeMap.getNamedItem("status") != null){
+					CallDispatcher.myStatus=nodeMap.getNamedItem("status").getNodeValue().trim();
+				}else{
+					CallDispatcher.myStatus="0";
+				}
+			}
+
 			list = doc.getElementsByTagName("com");
 			node = list.item(0);
 			nodeMap = node.getAttributes();
