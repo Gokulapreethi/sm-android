@@ -3736,6 +3736,9 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 if (data != null) {
                     String mgs = data.getStringExtra("MESSAGE");
                     message.setText(mgs);
+                    if(mgs!=null){
+                        message.setSelection(message.getText().toString().length());
+                    }
                 }
             }
             attachment_layout.setVisibility(View.GONE);
@@ -9707,7 +9710,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         }
                         audio_call.setBackgroundResource(R.drawable.chat_send);
                         audio_call.setTag(1);
-                        relative_send_layout.getLayoutParams().height = 90;
+//                        relative_send_layout.getLayoutParams().height = 90;
                     } else if (SendListUI.size() > 1) {
                         String path = null;
                         for (int i = 0; i < SendListUI.size(); i++) {

@@ -60,9 +60,11 @@ public class RoundedImageView extends ImageView {
 			if (drawable.getClass() == NinePatchDrawable.class)
 				return;
 			Bitmap b = ((BitmapDrawable) drawable).getBitmap();
-			Bitmap bitmap = null;
-			if (b != null)
-				bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
+			try {
+				Bitmap bitmap = null;
+				if (b != null)
+					bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
+
 
 			int w = getWidth(), h = getHeight();
 			if (bitmap == null)
@@ -83,6 +85,11 @@ public class RoundedImageView extends ImageView {
 			paint.setColor(mBorderColor);
 			canvas.drawCircle(w / 2, h / 2, radius + mBorderThickness, paint);
 			canvas.drawBitmap(roundBitmap, w / 2 - radius, h / 2 - radius, null);
+			}catch (OutOfMemoryError error){
+				error.printStackTrace();
+			}catch (Exception e){
+				e.printStackTrace();
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

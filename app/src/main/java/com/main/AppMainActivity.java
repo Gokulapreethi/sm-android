@@ -1123,10 +1123,10 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				final GroupChatBean groupChatBean = (GroupChatBean) responseObject;
 
 				if (groupChatBean.getType().equals("100")) {
-					if (groupChatBean.getSenttime() == null
-							|| groupChatBean.getSenttime().length() == 0) {
+//					if (groupChatBean.getSenttime() == null
+//							|| groupChatBean.getSenttime().length() == 0) {
 						groupChatBean.setSenttime(getCurrentDateandTime());
-					}
+//					}
 					if (groupChatBean.getMimetype().equals("text")
 							|| groupChatBean.getMimetype().equals("location")) {
 						processGroupChatChanges(groupChatBean);
@@ -7808,12 +7808,12 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					FileOutputStream image_writter = new FileOutputStream(
 							img_file);
 					image_writter.write(imageAsBytes);
-					image_writter.flush();
-					image_writter.close();
+//					image_writter.flush();
+//					image_writter.close();
 
 					Bitmap bmp = AppMainActivity.this.ShrinkBitmap(
 							file_name, 150, 150);
-					image_writter = new FileOutputStream(img_file);
+//					image_writter = new FileOutputStream(img_file);
 					bmp.compress(CompressFormat.JPEG, 100, image_writter);
 					bmp.recycle();
 					bmp = null;
