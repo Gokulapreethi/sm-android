@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="StunClient">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/libs/StunClient.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

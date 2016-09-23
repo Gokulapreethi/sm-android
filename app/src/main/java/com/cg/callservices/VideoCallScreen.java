@@ -1469,7 +1469,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							transactionBean.setParticipants("");
 							transactionBean.setDisableVideo("yes");
 							processCallRequest(2, transactionBean, "disablevideo");
-//							btn_video.setImageResource(R.drawable.call_video);
+							btn_video.setImageResource(R.drawable.call_video);
 //
 //							ownimageview.setVisibility(View.VISIBLE);
 //							ownername.setVisibility(View.VISIBLE);
@@ -1497,7 +1497,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 //								imageLoader.DisplayImage("", ownimageview, R.drawable.icon_buddy_aoffline);
 //							}
 						} else {
-//							btn_video.setImageResource(R.drawable.call_video_active);
+							btn_video.setImageResource(R.drawable.call_video_active);
 							RecordTransactionBean transactionBean = new RecordTransactionBean();
 							transactionBean.setSessionid(sessionid);
 							transactionBean.setHost(CallDispatcher.LoginUser);
