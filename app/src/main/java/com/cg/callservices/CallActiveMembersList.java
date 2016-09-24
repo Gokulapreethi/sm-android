@@ -365,6 +365,9 @@ public class CallActiveMembersList extends Activity {
                                 if(objCallScreen instanceof AudioCallScreen) {
                                     AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
                                     acalObj.re_get_buddyViews(bib);
+                                } else if(objCallScreen instanceof VideoCallScreen) {
+                                    VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
+                                    acalObj.re_get_buddyViews(bib);
                                 }
                             }
                         }

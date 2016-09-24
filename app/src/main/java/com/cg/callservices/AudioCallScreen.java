@@ -786,6 +786,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 				preview_frameLayout.removeView(pv);
 				pv.stopPreview();
 				pv = AppMainActivity.commEngine.getVideoPreview(context);
+				pv.setZOrderOnTop(false);
 				preview_frameLayout.addView(pv, 0);
 
 				buddyframelayout01.removeView(buddysurfaceview_01);
@@ -876,6 +877,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			preview_frameLayout.removeView(pv);
 			pv.stopPreview();
 			pv = AppMainActivity.commEngine.getVideoPreview(context);
+			pv.setZOrderOnTop(false);
 			preview_frameLayout.addView(pv, 0);
 
 			buddyframelayout01.removeView(buddysurfaceview_01);
@@ -1135,6 +1137,9 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 						Intent serviceIntent = new Intent(AppReference.mainContext.getApplication(),ChatHeadDrawerService.class);
 						serviceIntent.putExtra("sview",2);
 						serviceIntent.putExtra("callscreen","ACS");
+						if(currentcall_type.equalsIgnoreCase("VC")) {
+							serviceIntent.putExtra("calltype", "VC");
+						}
 						AppReference.mainContext.startService(serviceIntent);
 //						}
 //						getActivity().startService(new Intent(getActivity(), FloatingCallService.class));
@@ -3886,6 +3891,12 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			e.printStackTrace();
 		}
 
+	}
+
+	public void change_orientation(int orientation) {
+//		if(pv != null) {
+//			pv.changeOrientation(orientation);
+//		}
 	}
 
 }

@@ -1008,6 +1008,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 						i.putExtra("host", host);
 						i.putExtra("fromscreen","videocallscreen");
 						i.putExtra("precalltype","VC");
+						i.putExtra("previewdiabled",preview_hided);
 						AppReference.mainContext.startActivity(i);
 					}
 				});
@@ -1728,6 +1729,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			WebServiceReferences.videoSSRC_total_list.remove(selectedposition);
 
 			final String buddy_name = (WebServiceReferences.videoSSRC_total.get(turn_ssrc)).getMember_name();
+			WebServiceReferences.videoSSRC_total.get(turn_ssrc).setVideoRemoved(!onoff);
 			onOffVideo(buddy_name,onoff);
 			handler.post(new Runnable() {
 				@Override
@@ -3788,7 +3790,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			mainHeader.setVisibility(View.GONE);
 		}
 
-		Activity parent = getActivity();
+//		Activity parent = getActivity();
 //		if(parent != null){
 ////			video_minimize.setVisibility(View.GONE);
 //			if(min_outcall != null) {
@@ -4503,6 +4505,26 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		}
 	}
 
+	public void re_get_buddyViews(BuddyInformationBean bib) {
+		try {
+			if(bib.getFirstname().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+				preview_hided = false;
+			} else {
+				WebServiceReferences.removed_videoSSRC_list.remove(Integer.valueOf(Integer.parseInt(bib.getVideo_ssrc())));
+				WebServiceReferences.videoSSRC_total_list.add(Integer.parseInt(bib.getVideo_ssrc()));
+
+				VideoThreadBean v_bean = WebServiceReferences.videoSSRC_total.get(Integer.parseInt(bib.getVideo_ssrc()));
+				v_bean.setVideoRemoved(false);
+				onOffVideo(v_bean.getMember_name(), true);
+			}
+
+			hideOwnVideo();
+
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
+
+	}
 
 	public void assignMediaStop(){
 		hasRemoved = true;

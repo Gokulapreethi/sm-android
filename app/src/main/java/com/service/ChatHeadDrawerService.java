@@ -42,6 +42,7 @@ public class ChatHeadDrawerService extends Service {
     private Chronometer call_time_chronometer;
     private FrameLayout video_frame_layout;
     private Preview video_preview;
+    private String call_type;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -133,7 +134,15 @@ public class ChatHeadDrawerService extends Service {
                                 if (selected_view == 2) {
                                     mLayout.addView(call_time_chronometer);
                                     if (current_callscrren != null && current_callscrren.equalsIgnoreCase("ACS")) {
+                                        if(call_type.equalsIgnoreCase("VC")) {
+                                            AppMainActivity.commEngine.stopPreview();
+                                            video_frame_layout.removeView(video_preview);
+                                            video_preview = null;
+                                            video_preview = AppMainActivity.commEngine.getVideoPreview(ChatHeadDrawerService.this);
 
+                                            video_frame_layout.addView(video_preview);
+                                            mLayout.addView(video_frame_layout);
+                                        }
                                     } else {
                                         AppMainActivity.commEngine.stopPreview();
                                         video_frame_layout.removeView(video_preview);
@@ -152,7 +161,15 @@ public class ChatHeadDrawerService extends Service {
                                 if (selected_view == 2) {
                                     mLayout.addView(call_time_chronometer);
                                     if (current_callscrren != null && current_callscrren.equalsIgnoreCase("ACS")) {
+                                        if(call_type.equalsIgnoreCase("VC")) {
+                                            AppMainActivity.commEngine.stopPreview();
+                                            video_frame_layout.removeView(video_preview);
+                                            video_preview = null;
+                                            video_preview = AppMainActivity.commEngine.getVideoPreview(ChatHeadDrawerService.this);
 
+                                            video_frame_layout.addView(video_preview);
+                                            mLayout.addView(video_frame_layout);
+                                        }
                                     } else {
                                         AppMainActivity.commEngine.stopPreview();
                                         video_frame_layout.removeView(video_preview);
@@ -208,8 +225,14 @@ public class ChatHeadDrawerService extends Service {
                 current_callscrren = intent.getStringExtra("callscreen");
                 call_time_chronometer.setVisibility(View.VISIBLE);
                 if (current_callscrren != null && current_callscrren.equalsIgnoreCase("ACS")) {
+                    call_type = intent.getStringExtra("calltype");
                     call_time_chronometer.setBase(AppReference.mainContext.ctimer.getBase());
                     mChatHeadImageView.setImageResource(R.drawable.ic_action_call);
+                    if(call_type.equalsIgnoreCase("VC")) {
+                        AppMainActivity.commEngine.stopPreview();
+                        video_preview = AppMainActivity.commEngine.getVideoPreview(this);
+                        video_frame_layout.addView(video_preview);
+                    }
                 } else {
                     call_time_chronometer.setBase(AppReference.mainContext.cvtimer.getBase());
                     mChatHeadImageView.setImageResource(R.drawable.ic_action_video_white);
@@ -251,7 +274,9 @@ public class ChatHeadDrawerService extends Service {
 //            Toast.makeText(ChatHeadDrawerService.this, "Hi You Single Tap Me", Toast.LENGTH_SHORT).show();
             if (selected_view == 2) {
                 if (current_callscrren != null && current_callscrren.equalsIgnoreCase("ACS")) {
-
+                    if(call_type.equalsIgnoreCase("VC")) {
+                        AppMainActivity.commEngine.stopPreview();
+                    }
                 } else {
                     AppMainActivity.commEngine.stopPreview();
                 }
