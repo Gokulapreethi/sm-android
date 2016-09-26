@@ -28,11 +28,12 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:gravity="center"
-            android:textStyle="bold" >
+            android:textStyle="bold"
+            android:visibility="visible">
         </TextView>
 
         <EditText
-            android:id="@+id/searchet"
+            android:id="@+id/searchet1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -72,8 +73,60 @@
             android:background="@drawable/navigation_search"
             android:layout_toLeftOf="@+id/dot"
             android:layout_alignTop="@+id/txtView01"
-            android:visibility="gone"/>
+            android:visibility="visible"/>
     </RelativeLayout>
+
+       <RelativeLayout
+           android:id="@+id/search_prnt"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:background="@color/blue2"
+           android:visibility="gone">
+
+           <RelativeLayout
+               android:id="@+id/srch_prnt"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginBottom="15dp"
+               android:layout_marginLeft="5dp"
+               android:layout_marginRight="10dp"
+               android:background="@color/blue2"
+               android:layout_marginTop="15dp"
+               android:layout_toLeftOf="@+id/btn_close_search">
+
+               <EditText
+                   android:id="@+id/searchet"
+                   android:layout_width="fill_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginLeft="10dp"
+                   android:hint="Search"
+                   android:textColorHint="#FFFFFF"
+                   android:textColor="#FFFFFF"
+                   android:textSize="20dp"
+                   android:visibility="visible"
+                   />
+
+           </RelativeLayout>
+
+           <ImageButton
+               android:id="@+id/iv_searchclear"
+               android:layout_width="20dp"
+               android:layout_height="21dp"
+               android:layout_toLeftOf="@+id/btn_close_search"
+               android:layout_centerVertical="true"
+               android:layout_marginRight="8dp"
+               android:layout_marginTop="22dp"
+               android:src="@drawable/search_clear"
+               android:visibility="gone" />
+           <Button
+               android:id="@+id/btn_close_search"
+               android:layout_width="40dp"
+               android:layout_height="40dp"
+               android:layout_centerInParent="true"
+               android:layout_alignParentRight="true"
+               android:background="@drawable/close_2"/>
+
+       </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/header1"

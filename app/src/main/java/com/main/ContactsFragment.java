@@ -117,7 +117,7 @@ public class ContactsFragment extends Fragment{
 
 	public boolean isPendingshowing = false;
 	public boolean groupstatus = false;
-	public boolean contactrecent = true;
+	public boolean contactrecent = false;
 	private boolean grouprecent = true;
 	public boolean isazsort = true;
 	private boolean isGroupAZ=true;
@@ -208,6 +208,8 @@ public class ContactsFragment extends Fragment{
 	private AudioManager am = null;
 	public static Vector<GroupBean> mygroupList = new Vector<GroupBean>();
 	public static Vector<GroupBean> buddygroupList = new Vector<GroupBean>();
+	public LinearLayout ll_nochats;
+
 	public static synchronized Vector<GroupBean> getGroupList() {
 
 		return mygroupList;
@@ -357,6 +359,7 @@ public class ContactsFragment extends Fragment{
 			getActivity().getWindow().setSoftInputMode(
 					WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 			try {
+				contactrecent = false;
 				Button selectall = (Button) getActivity().findViewById(
 						R.id.btn_brg);
 				selectall.setVisibility(View.GONE);
@@ -371,6 +374,7 @@ public class ContactsFragment extends Fragment{
 //				lv = (IndexableListView) _rootView.findViewById(R.id.listview_coontact);
 				lv = (SwipeMenuListView) _rootView.findViewById(R.id.listview_coontact);
 				lv2 = (ListView) _rootView.findViewById(R.id.listview_group);
+				ll_nochats=(LinearLayout)_rootView.findViewById(R.id.ll_nochats);
 				loadRecents();
 				notifySortList();
 
@@ -677,6 +681,19 @@ public class ContactsFragment extends Fragment{
 									myFilter.setText("");
 
 //									lv.setAdapter(null);
+									LayoutInflater layoutInflater = (LayoutInflater)mainContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+									View v1 = layoutInflater.inflate(R.layout.notification, ll_nochats);
+									TextView tv_nochats=(TextView)v1.findViewById(R.id.tv_notification);
+									tv_nochats.setText("No Chats");
+									if(contactrecentlist.size()>0){
+										ll_nochats.setVisibility(View.GONE);
+										lv.setVisibility(View.VISIBLE);
+									}else{
+										ll_nochats.setVisibility(View.VISIBLE);
+										lv.setVisibility(View.GONE);
+									}
+
+
 									notifyAdapter = new NotifyListAdapter(mainContext, contactrecentlist);
 									lv.setAdapter(notifyAdapter);
 									notifyAdapter.isFromOther(true);
@@ -708,8 +725,12 @@ public class ContactsFragment extends Fragment{
 										showToast("No Contacts");
 //								lv.setAdapter(null);
 //									lv.setAdapter(contactAdapter);
+									ll_nochats.setVisibility(View.GONE);
 									lv2.setVisibility(View.GONE);
 									lv.setVisibility(View.VISIBLE);
+									SortType="ONLINE";
+									online_sort.setTextColor(getResources().getColor(R.color.white));
+									alph_sort.setTextColor(getResources().getColor(R.color.snazlgray));
 									contactAdapter = new ContactAdapter(mainContext, GroupChatActivity.getAdapterList(ContactsFragment.getBuddyList()));
 									lv.setAdapter(contactAdapter);
 									contactAdapter.notifyDataSetChanged();
@@ -759,6 +780,18 @@ public class ContactsFragment extends Fragment{
 								lv.setVisibility(View.GONE);
 								lv2.setVisibility(View.VISIBLE);
 
+								LayoutInflater layoutInflater = (LayoutInflater)mainContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+								View v1 = layoutInflater.inflate(R.layout.notification, ll_nochats);
+								TextView tv_nochats=(TextView)v1.findViewById(R.id.tv_notification);
+								tv_nochats.setText("No Chats");
+								if(grouprecentlist.size()>0){
+									ll_nochats.setVisibility(View.GONE);
+									lv2.setVisibility(View.VISIBLE);
+								}else{
+									ll_nochats.setVisibility(View.VISIBLE);
+									lv2.setVisibility(View.GONE);
+								}
+
 								notifyAdapter = new NotifyListAdapter(mainContext, grouprecentlist);
 								notifyAdapter.isFromOther(true);
 								lv2.setAdapter(notifyAdapter);
@@ -785,6 +818,7 @@ public class ContactsFragment extends Fragment{
 								grouprecent = true;
 								lv2.setAdapter(null);
 								lv2.setAdapter(GroupActivity.groupAdapter);
+								ll_nochats.setVisibility(View.GONE);
 								lv.setVisibility(View.GONE);
 								lv2.setVisibility(View.VISIBLE);
 								GroupActivity.groupAdapter.notifyDataSetChanged();
@@ -890,6 +924,17 @@ public class ContactsFragment extends Fragment{
 				@Override
 				public void run() {
 
+					LayoutInflater layoutInflater = (LayoutInflater)mainContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+					View v1 = layoutInflater.inflate(R.layout.notification, ll_nochats);
+					TextView tv_nochats=(TextView)v1.findViewById(R.id.tv_notification);
+					tv_nochats.setText("No Chats");
+					if(contactrecentlist.size()>0){
+						ll_nochats.setVisibility(View.GONE);
+						lv.setVisibility(View.VISIBLE);
+					}else{
+						ll_nochats.setVisibility(View.VISIBLE);
+						lv.setVisibility(View.GONE);
+					}
 					notifyAdapter = new NotifyListAdapter(mainContext, contactrecentlist);
 					notifyAdapter.isFromOther(true);
 					notifyAdapter.notifyDataSetChanged();
@@ -998,6 +1043,7 @@ public class ContactsFragment extends Fragment{
 	@Override
 	public void onDestroy() {
 		try {
+			SortType="ALPH";
 			SingleInstance.isbcontacts = false;
 			// TODO Auto-generated method stub
 			WebServiceReferences.contextTable.remove("buddiesList");

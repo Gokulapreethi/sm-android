@@ -249,6 +249,12 @@
                             android:layout_marginRight="5dp" />
 
                 </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/ll_nochats"
+                    android:orientation="vertical">
+                </LinearLayout>
                 <com.cg.commongui.listswipe.SwipeMenuListView
                     android:id="@+id/listview_coontact"
                     android:layout_width="fill_parent"
@@ -258,7 +264,8 @@
                     android:cacheColorHint="@color/gchat_bg"
                     android:divider="@null"
                     android:listSelector="@android:color/transparent"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
+
                 <ListView
                     android:id="@+id/listview_group"
                     android:layout_width="match_parent"

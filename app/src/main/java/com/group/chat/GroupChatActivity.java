@@ -336,21 +336,37 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
     GroupChatBean finalPlayBean;
     SeekBar multiaudio_seekbar;
 
+
+    //For chatSearch
+    EditText searchet;
+    TextView txtView01;
+    RelativeLayout rl_search,rl_titleheader;
+    Button btn_searchClose;
+    ImageView iv_searchclear;
+    boolean search_enable=false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.fragment_chat_profile2);
-        final TextView txtView01 = (TextView) findViewById(R.id.txtView01);
-        final EditText searchet = (EditText) findViewById(R.id.searchet);
+        txtView01 = (TextView) findViewById(R.id.txtView01);
+
+        search_enable=true;
+        rl_titleheader=(RelativeLayout)findViewById(R.id.header);
+        searchet = (EditText) findViewById(R.id.searchet);
+        rl_search=(RelativeLayout)findViewById(R.id.search_prnt);
+        btn_searchClose=(Button)findViewById(R.id.btn_close_search);
+        iv_searchclear=(ImageView)findViewById(R.id.iv_searchclear);
+
         final LinearLayout chat = (LinearLayout) findViewById(R.id.chat);
         final LinearLayout profilechat = (LinearLayout) findViewById(R.id.profilechat);
         dot = (Button) findViewById(R.id.dot);
         search = (Button) findViewById(R.id.search);
-        search.setVisibility(View.GONE);
-        LinearLayout snazbox_chat = (LinearLayout) findViewById(R.id.snazbox_chat);
-        LinearLayout link_chat = (LinearLayout) findViewById(R.id.link_chat);
+        search.setVisibility(View.VISIBLE);
+        final LinearLayout snazbox_chat = (LinearLayout) findViewById(R.id.snazbox_chat);
+        final LinearLayout link_chat = (LinearLayout) findViewById(R.id.link_chat);
         final LinearLayout content = (LinearLayout) findViewById(R.id.content);
         cancel = (Button) findViewById(R.id.cancel);
 
@@ -433,8 +449,68 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         search.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+//                txtView01.setVisibility(View.GONE);
+//                searchet.setVisibility(View.VISIBLE);
+                if(search_enable) {
+                    search_enable=false;
+                    chatprocess();
+                }else {
+                    adapter = new GroupChatAdapter(GroupChatActivity.this, chatList);
+                    lv.setAdapter(adapter);
+                }
+                try {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(message.getWindowToken(), 0);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                searchet.setText("");
+                btn_grid.setEnabled(false);
+                sendBtn.setEnabled(false);
+                audio_call.setEnabled(false);
+                message.setEnabled(false);
+                profilechat.setEnabled(false);
+                snazbox_chat.setEnabled(false);
+                link_chat.setEnabled(false);
+                chat.setEnabled(false);
+
+
+                rl_titleheader.setVisibility(View.GONE);
+                rl_search.setVisibility(View.VISIBLE);
             }
         });
+
+        btn_searchClose.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btn_grid.setEnabled(true);
+                sendBtn.setEnabled(true);
+                audio_call.setEnabled(true);
+                message.setEnabled(true);
+                profilechat.setEnabled(true);
+                snazbox_chat.setEnabled(true);
+                link_chat.setEnabled(true);
+                chat.setEnabled(true);
+                rl_titleheader.setVisibility(View.VISIBLE);
+                rl_search.setVisibility(View.GONE);
+                if(adapter!=null){
+                    adapter.filter("");
+                }
+            }
+        });
+
+        iv_searchclear.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(searchet!=null){
+                    searchet.setText("");
+                }
+                if(adapter!=null){
+                    adapter.filter("");
+                }
+            }
+        });
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         menu_side = (LinearLayout) findViewById(R.id.menu_side);
@@ -2211,6 +2287,38 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 adapter = new GroupChatAdapter(GroupChatActivity.this, chatList);
                 CallDispatcher.pdialog = new ProgressDialog(context);
                 lv.setAdapter(adapter);
+
+                searchet.addTextChangedListener(new TextWatcher() {
+
+                    @Override
+                    public void afterTextChanged(Editable arg0) {
+                        // TODO Auto-generated method stub
+                        if(searchet!=null && searchet.getText().toString().length()>0 && adapter!=null) {
+                            Log.i("filter","afterTextChanged");
+                            String text = searchet.getText().toString().toLowerCase(Locale.getDefault());
+                            adapter.filter(text);
+                            iv_searchclear.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence arg0, int arg1,
+                                                  int arg2, int arg3) {
+                        // TODO Auto-generated method stub
+                        adapter.filter("");
+                        iv_searchclear.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2,
+                                              int arg3) {
+                        // TODO Auto-generated method stub
+                    }
+                });
+
+
+
+
                 loadGroupMembers(groupId);
                 mem_adapter = new BuddyAdapter(GroupChatActivity.this, membersList);
                 memlist_splmsg.setAdapter(mem_adapter);
@@ -5542,6 +5650,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         int i = 0;
         ImageLoader imageLoader;
 
+        private Vector<GroupChatBean> arraylist;
+
 //        GroupChatBean finalPlayBean;
 
         /*************
@@ -5554,7 +5664,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             this.context = context;
             this.chatList = chatList;
             imageLoader = new ImageLoader(context.getApplicationContext());
-
+            this.arraylist = new Vector<>();
+            this.arraylist.addAll(chatList);
             /*********** Layout inflator to call external xml layout () ***********/
         }
 
@@ -7583,6 +7694,32 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             }
             return convertView;
         }
+
+
+        public void filter(String charText) {
+            Log.i("filter","filter mathod");
+            charText = charText.toLowerCase(Locale.getDefault());
+            chatList.clear();
+            if (charText.length() == 0) {
+                chatList.addAll(arraylist);
+                Log.i("filter","filter mathod if");
+            }
+            else
+            {
+                for (GroupChatBean groupChatBean : arraylist)
+                {
+                    if ((groupChatBean.getMessage()!=null && groupChatBean.getMessage().toLowerCase(Locale.getDefault()).contains(charText))
+                            || (groupChatBean.getMediaName()!=null && groupChatBean.getMediaName().contains("COMMedia") &&
+                                groupChatBean.getMediaName().split("COMMedia/")[1].toLowerCase(Locale.getDefault()).contains(charText)))
+                    {
+                        Log.i("filter","filter mathod for if");
+                        chatList.add(groupChatBean);
+                    }
+                }
+            }
+            notifyDataSetChanged();
+        }
+
     }
 
     public void BuddyStatus() {

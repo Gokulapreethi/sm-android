@@ -374,7 +374,11 @@ public class FilePicker extends Activity {
                                                         || destinationPath.endsWith("docx") || destinationPath.endsWith("odt")
                                                         || destinationPath.endsWith("xls") || destinationPath.endsWith("xlsx")
                                                         || destinationPath.endsWith("ppt") || destinationPath.endsWith("pptx")
-                                                        || destinationPath.endsWith("php") || destinationPath.endsWith("psd")||destinationPath.endsWith("csv")) {
+                                                        || destinationPath.endsWith("php") || destinationPath.endsWith("psd")||destinationPath.endsWith("csv")
+                                                        || destinationPath.endsWith("jpg") || destinationPath.endsWith("png") || destinationPath.endsWith("gif")
+                                                        || destinationPath.endsWith("csv") || destinationPath.endsWith("bmp") || destinationPath.endsWith("svg")
+                                                        || destinationPath.endsWith("ppm") || destinationPath.endsWith("pgm") || destinationPath.endsWith("jpeg")
+                                                        || destinationPath.endsWith("pbm")) {
                                                     Intent i = new Intent();
                                                     i.putExtra("filePath", destinationPath);
                                                     setResult(RESULT_OK, i);
