@@ -12091,7 +12091,11 @@ private TrustManager[] get_trust_mgr() {
 						ft.commitAllowingStateLoss();
 
 					}
-					ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(sbean.getFrom());
+					String missed_call_from = sbean.getFrom();
+					if(sbean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+						missed_call_from = sbean.getTo();
+					}
+					ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(missed_call_from);
 					String fullname=bean.getFirstname()+" "+bean.getLastname();
 					if (mdialog != null) {
 
@@ -12103,6 +12107,7 @@ private TrustManager[] get_trust_mgr() {
 						mdialog.setMessage("(" + Integer.toString(count) + ")"
 								+ " missed call from " + fullname);
 						mdialog.setCancelable(true);
+						final String finalMissed_call_from = missed_call_from;
 						mdialog.setButton("OK",
 								new DialogInterface.OnClickListener() {
 									@Override
@@ -12110,9 +12115,9 @@ private TrustManager[] get_trust_mgr() {
 											int which) {
 										// TODO Auto-generated method stub
 										if (WebServiceReferences.missedcallCount
-                                                .containsKey(sbean.getFrom()))
+                                                .containsKey(finalMissed_call_from))
 											WebServiceReferences.missedcallCount
-                                                    .remove(sbean.getFrom());
+                                                    .remove(finalMissed_call_from);
 										isCallignored = false;
 										mdialog.cancel();
 										mdialog = null;
@@ -12126,6 +12131,7 @@ private TrustManager[] get_trust_mgr() {
 						mdialog.setMessage("(" + Integer.toString(count) + ")"
 								+ "missed call from " +fullname );
 						mdialog.setCancelable(true);
+						final String finalMissed_call_from1 = missed_call_from;
 						mdialog.setButton("OK",
 								new DialogInterface.OnClickListener() {
 									@Override
@@ -12133,9 +12139,9 @@ private TrustManager[] get_trust_mgr() {
 											int which) {
 										// TODO Auto-generated method stub
 										if (WebServiceReferences.missedcallCount
-                                                .containsKey(sbean.getFrom()))
+                                                .containsKey(finalMissed_call_from1))
 											WebServiceReferences.missedcallCount
-                                                    .remove(sbean.getFrom());
+                                                    .remove(finalMissed_call_from1);
 										isCallignored = false;
 										mdialog = null;
 									}
