@@ -1139,6 +1139,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 						serviceIntent.putExtra("callscreen","ACS");
 						if(currentcall_type.equalsIgnoreCase("VC")) {
 							serviceIntent.putExtra("calltype", "VC");
+						} else {
+							serviceIntent.putExtra("calltype", "AC");
 						}
 						AppReference.mainContext.startService(serviceIntent);
 //						}

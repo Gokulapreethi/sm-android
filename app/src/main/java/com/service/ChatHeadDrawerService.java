@@ -42,7 +42,7 @@ public class ChatHeadDrawerService extends Service {
     private Chronometer call_time_chronometer;
     private FrameLayout video_frame_layout;
     private Preview video_preview;
-    private String call_type;
+    private String call_type = "AC";
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -299,6 +299,10 @@ public class ChatHeadDrawerService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if(call_type != null) {
+            call_type = "AC";
+        }
+
         if (mChatHead != null)
             mWindowManager.removeView(mChatHead);
     }
