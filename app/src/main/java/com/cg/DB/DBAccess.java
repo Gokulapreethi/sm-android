@@ -159,6 +159,8 @@ public class DBAccess extends SQLiteOpenHelper {
 	String hospitaldetails ="create table if not exists hospitaldetails(hospitalname nvarchar(200))";
 	String medicalsocieties ="create table if not exists medicalsocieties(id nvarchar(25),medicalsociety nvarchar(200))";
 	String seeallpatientdetails = "create table if not exists seeallpatientdetails(groupid nvarchar(25), patientid nvarchar(100), diagnosis nvarchar(100), active nvarchar(100), commentdate nvarchar(100))";
+	String chatrecentlist ="create table if not exists chatrecentlist(fromuser text,touser text,owner text,type text,content text,media text,sortdate text,notifytype text,viewed integer,fileid text,category text,username text,profilepic text)";
+	String groupchatrecentlist ="create table if not exists groupchatrecentlist(fromuser text,touser text,owner text,type text,content text,media text,sortdate text,notifytype text,viewed integer,fileid text,category text,username text,profilepic text)";
 	private CallDispatcher callDisp;
 
 	public DBAccess(Context context) {
@@ -291,6 +293,8 @@ public class DBAccess extends SQLiteOpenHelper {
 		db.execSQL(hospitaldetails);
 		db.execSQL(medicalsocieties);
 		db.execSQL(seeallpatientdetails);
+		db.execSQL(chatrecentlist);
+		db.execSQL(groupchatrecentlist);
 	}
 
     public void updateThumbs(String signalID){
@@ -11535,5 +11539,141 @@ public class DBAccess extends SQLiteOpenHelper {
 		return status;
 	}
 
+
+	public int insertChatRecentList(NotifyListBean bean,boolean groupchatlist) {
+		int row = 0;
+		try {
+			if (!db.isOpen())
+				openDatabase();
+			ContentValues cv = new ContentValues();
+			cv.put("fromuser", bean.getFrom());
+			cv.put("touser", bean.getTo());
+			cv.put("owner", bean.getOwner());
+			cv.put("type",bean.getType());
+			cv.put("content",bean.getContent());
+			cv.put("media",bean.getMedia());
+			cv.put("sortdate",bean.getSortdate());
+			cv.put("notifytype",bean.getNotifttype());
+			cv.put("viewed",bean.getViewed());
+			cv.put("fileid",bean.getFileid());
+			cv.put("category",bean.getCategory());
+			cv.put("username",bean.getUsername());
+			cv.put("profilepic",bean.getProfilePic());
+//			if (isRecordExists("select * from chattemplate where userid='"
+//					+ CallDispatcher.LoginUser + "'and id='" + bean.getTempletid() + "'"))
+//				row = (int) db.update("chattemplate", cv, "userid='" + CallDispatcher.LoginUser + "'and id='" + bean.getTempletid() + "'",null);
+//			else
+			if(!groupchatlist) {
+				row = (int) db.insert("chatrecentlist", null, cv);
+			}else{
+				row = (int) db.insert("groupchatrecentlist", null, cv);
+			}
+			return row;
+		} catch (Exception e) {
+				e.printStackTrace();
+			return 0;
+		}
+
+	}
+
+
+	public Vector<NotifyListBean> getChatRecentList(String username,boolean groupchatlist) {
+		Cursor cur = null;
+		Vector<NotifyListBean> filesList = new Vector<NotifyListBean>();
+		try {
+			String strquery=null;
+			if(!groupchatlist) {
+				strquery = "select * from chatrecentlist WHERE owner='" + username + "'";
+			}else{
+				strquery = "select * from groupchatrecentlist WHERE owner='" + username + "'";
+			}
+			if (!db.isOpen()) {
+				openDatabase();
+			}
+
+			cur = db.rawQuery(strquery, null);
+			cur.moveToFirst();
+			while (cur.isAfterLast() == false) {
+				NotifyListBean nBean = new NotifyListBean();
+				nBean.setFrom(cur.getString(0));
+				nBean.setTo(cur.getString(1));
+				nBean.setOwner(cur.getString(2));
+				nBean.setType(cur.getString(3));
+				nBean.setContent(cur.getString(4));
+				nBean.setMedia(cur.getString(5));
+				nBean.setSortdate(cur.getString(6));
+				nBean.setNotifttype(cur.getString(7));
+				nBean.setViewed(cur.getInt(8));
+				nBean.setFileid(cur.getString(9));
+				nBean.setCategory(cur.getString(10));
+				nBean.setUsername(cur.getString(11));
+				nBean.setProfilePic(cur.getString(12));
+
+				cur.moveToNext();
+				filesList.add(nBean);
+			}
+			return filesList;
+		} catch (Exception e) {
+			Log.e("db", "getNotifyFiles:" + e.getMessage());
+			return null;
+		} finally {
+			if (cur != null) {
+				cur.close();
+			}
+
+		}
+
+	}
+
+	public int updateChatRecentList(String fileid,boolean groupchatlist) {
+
+		int row = 0;
+		try {
+			if (!db.isOpen())
+				openDatabase();
+			ContentValues cv = new ContentValues();
+			cv.put("viewed", "1");
+			if(!groupchatlist) {
+				row = (int) db.update("chatrecentlist", cv,
+						"fileid ='" + fileid + "' and owner='" + CallDispatcher.LoginUser + "'", null);
+			}else{
+				row = (int) db.update("groupchatrecentlist", cv,
+						"fileid ='" + fileid + "' and owner='" + CallDispatcher.LoginUser + "'", null);
+			}
+			return row;
+
+		} catch (Exception e) {
+				e.printStackTrace();
+		}
+		return 0;
+
+	}
+
+	public String getGroupName(String query) {
+		String groupname = null;
+		Cursor cur = null;
+		try {
+			if (db.isOpen()) {
+			} else {
+				openDatabase();
+			}
+			cur = db.rawQuery(query, null);
+			cur.moveToFirst();
+			while (cur.isAfterLast() == false) {
+				groupname=cur.getString(2);
+				cur.moveToNext();
+			}
+			return groupname;
+		} catch (Exception e) {
+			Log.e("db", "getGroup:" + e.getMessage());
+			return null;
+		} finally {
+			if (cur != null) {
+				cur.close();
+			}
+
+		}
+
+	}
 
 }

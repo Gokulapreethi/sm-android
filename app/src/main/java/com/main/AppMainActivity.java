@@ -1162,6 +1162,13 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						 */
 
 					}
+					if(SingleInstance.instanceTable.containsKey("contactspage")){
+						if(ContactsFragment.contactsFragment.chatIndivijaul_recent) {
+							ContactsFragment.contactsFragment.RefereceRecentlist();
+						}else if(ContactsFragment.contactsFragment.chatgroup_recent){
+							ContactsFragment.contactsFragment.RefereceGroupRecentlist();
+						}
+					}
 				} else {
 					processGroupChatChanges(groupChatBean);
 				}

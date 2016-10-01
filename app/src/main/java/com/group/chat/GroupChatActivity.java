@@ -1601,6 +1601,11 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 if (isGroup || isRounding) {
                     settingsBtn.setVisibility(View.GONE);
                     loadTotalChatHistory(groupBean.getGroupId());
+                    //For chatrecentUpdate
+                    //Start
+                    Log.i("recent","id--->"+groupBean.getGroupId());
+                    DBAccess.getdbHeler().updateChatRecentList(groupBean.getGroupId(),true);
+                    //End
                     if (SingleInstance.unreadCount.containsKey(groupBean
                             .getGroupId())) {
                         SingleInstance.unreadCount.remove(groupBean.getGroupId());
@@ -1624,6 +1629,11 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     // settingsBtn.setVisibility(View.GONE);
                     settingsBtn.setVisibility(View.GONE);
                     loadTotalChatHistory(buddy);
+                    Log.i("chatrecent","buddyname-->"+buddy);
+                    //For chatrecentUpdate
+                    //Start
+                    DBAccess.getdbHeler().updateChatRecentList(buddy,false);
+                    //End
                     if (SingleInstance.individualMsgUnreadCount.containsKey(buddy)) {
                         SingleInstance.individualMsgUnreadCount.remove(buddy);
                     }

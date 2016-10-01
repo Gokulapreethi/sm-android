@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.telecom.Call;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -53,6 +54,7 @@ import com.cg.callservices.SipCallConnectingScreen;
 import com.cg.callservices.VideoCallScreen;
 import com.cg.commonclass.BuddyListComparator;
 import com.cg.commonclass.CallDispatcher;
+import com.cg.commonclass.DateComparator;
 import com.cg.commonclass.GroupListComparator;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.commongui.listswipe.SwipeMenu;
@@ -97,6 +99,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Vector;
 
 /**
@@ -174,7 +177,7 @@ public class ContactsFragment extends Fragment{
 
 	private ProgressDialog dialog = null;
 
-	private static ContactsFragment contactsFragment;
+	public static ContactsFragment contactsFragment;
 	private boolean isContact = false;
 	public Context mainContext;
 	private  GroupBean groupManagementBean;
@@ -209,6 +212,9 @@ public class ContactsFragment extends Fragment{
 	public static Vector<GroupBean> mygroupList = new Vector<GroupBean>();
 	public static Vector<GroupBean> buddygroupList = new Vector<GroupBean>();
 	public LinearLayout ll_nochats;
+	public boolean chatIndivijaul_recent=false;
+	public boolean chatgroup_recent=false;
+	Button plusBtn;
 
 	public static synchronized Vector<GroupBean> getGroupList() {
 
@@ -281,14 +287,14 @@ public class ContactsFragment extends Fragment{
 
 		final Button search = (Button) getActivity().findViewById(R.id.btn_settings);
 		search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
-		search.setVisibility(View.VISIBLE);
+		search.setVisibility(View.GONE);
 		search.setText("");
 
 		final EditText btn_1 = (EditText) getActivity().findViewById(R.id.searchet);
 
-		final Button plusBtn = (Button) getActivity().findViewById(R.id.add_group);
-		plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_add_contact));
-		plusBtn.setVisibility(View.VISIBLE);
+		plusBtn = (Button) getActivity().findViewById(R.id.add_group);
+		plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
+		plusBtn.setVisibility(View.GONE);
 
 		imageLoader = new ImageLoader(mainContext);
 
@@ -360,6 +366,9 @@ public class ContactsFragment extends Fragment{
 					WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 			try {
 				contactrecent = false;
+				chatIndivijaul_recent=true;
+				chatgroup_recent=false;
+
 				Button selectall = (Button) getActivity().findViewById(
 						R.id.btn_brg);
 				selectall.setVisibility(View.GONE);
@@ -559,6 +568,7 @@ public class ContactsFragment extends Fragment{
 							if (title.getVisibility() == View.VISIBLE) {
 								title.setVisibility(View.GONE);
 								btn_1.setVisibility(View.VISIBLE);
+								btn_1.setText("");
 								search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_close));
 							} else {
 								title.setVisibility(View.VISIBLE);
@@ -573,15 +583,44 @@ public class ContactsFragment extends Fragment{
 				btn_1.addTextChangedListener(new TextWatcher() {
 
 					public void afterTextChanged(Editable s) {
+						if(chatIndivijaul_recent) {
+							if (btn_1 != null && btn_1.getText().toString().length() > 0 && notifyAdapter != null) {
+								Log.i("filter", "afterTextChanged");
+								String text = btn_1.getText().toString().toLowerCase(Locale.getDefault());
+								notifyAdapter.SearchFilter(text);
+							}
+						}else if(chatgroup_recent){
+							if (btn_1 != null && btn_1.getText().toString().length() > 0 && notifyAdapter != null) {
+								Log.i("filter", "afterTextChanged");
+								String text = btn_1.getText().toString().toLowerCase(Locale.getDefault());
+								notifyAdapter.SearchFilter(text);
+							}
+						}
 					}
 
 					public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+						if(chatIndivijaul_recent) {
+							notifyAdapter.SearchFilter("");
+							notifyAdapter = new NotifyListAdapter(mainContext, contactrecentlist);
+							lv.setAdapter(notifyAdapter);
+							notifyAdapter.isFromOther(true);
+							notifyAdapter.notifyDataSetChanged();
+						}else if(chatgroup_recent){
+							notifyAdapter.SearchFilter("");
+							notifyAdapter = new NotifyListAdapter(mainContext, grouprecentlist);
+							notifyAdapter.isFromOther(true);
+							lv2.setAdapter(notifyAdapter);
+							notifyAdapter.notifyDataSetChanged();
+						}
 					}
 
 					public void onTextChanged(CharSequence s, int start, int before, int count) {
 //                        }
-						if (s != null && s != "")
-							GroupActivity.groupAdapter.getFilter().filter(s);
+						if(!chatIndivijaul_recent && !chatgroup_recent) {
+							if (s != null && s != "")
+								GroupActivity.groupAdapter.getFilter().filter(s);
+						}
+
 					}
 				});
 
@@ -670,6 +709,7 @@ public class ContactsFragment extends Fragment{
 									Log.i("entering","into recents");
 									Log.i("entering","into contacts"+isContact);
 									Log.i("entering", "into contacts" + contactrecent);
+									chatIndivijaul_recent=true;
 									loadRecents();
 									isContact = false;
 									contactrecent = false;
@@ -688,9 +728,15 @@ public class ContactsFragment extends Fragment{
 									if(contactrecentlist.size()>0){
 										ll_nochats.setVisibility(View.GONE);
 										lv.setVisibility(View.VISIBLE);
+										if(plusBtn!=null){
+											plusBtn.setVisibility(View.VISIBLE);
+										}
 									}else{
 										ll_nochats.setVisibility(View.VISIBLE);
 										lv.setVisibility(View.GONE);
+										if(plusBtn!=null){
+											plusBtn.setVisibility(View.GONE);
+										}
 									}
 
 
@@ -710,14 +756,15 @@ public class ContactsFragment extends Fragment{
 									sort_lay.setVisibility(View.GONE);
 									group_sort.setVisibility(View.GONE);
 									view_mygroup.setVisibility(View.GONE);
-									plusBtn.setVisibility(View.VISIBLE);
-									plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_add_contact));
-									search.setVisibility(View.VISIBLE);
+//									plusBtn.setVisibility(View.VISIBLE);
+									plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
+									search.setVisibility(View.GONE);
 
 								}else{
 									Log.i("entering","into contacts");
 									Log.i("entering","into contacts"+isContact);
 									Log.i("entering","into contacts"+contactrecent);
+									chatIndivijaul_recent=false;
 									isContact = true;
 									contactrecent = true;
 									grouprecent = true;
@@ -760,6 +807,7 @@ public class ContactsFragment extends Fragment{
 
 
 								}
+								chatgroup_recent=false;
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
@@ -772,7 +820,9 @@ public class ContactsFragment extends Fragment{
 					public void onClick(View v) {
 						try {
 							if(grouprecent) {
-								loadRecents();
+//								loadRecents();
+								chatgroup_recent=true;
+								loadGroupRecents();
 								isContact = false;
 								contactrecent = true;
 								grouprecent = false;
@@ -787,9 +837,15 @@ public class ContactsFragment extends Fragment{
 								if(grouprecentlist.size()>0){
 									ll_nochats.setVisibility(View.GONE);
 									lv2.setVisibility(View.VISIBLE);
+									if(plusBtn!=null){
+										plusBtn.setVisibility(View.VISIBLE);
+									}
 								}else{
 									ll_nochats.setVisibility(View.VISIBLE);
 									lv2.setVisibility(View.GONE);
+									if(plusBtn!=null){
+										plusBtn.setVisibility(View.GONE);
+									}
 								}
 
 								notifyAdapter = new NotifyListAdapter(mainContext, grouprecentlist);
@@ -799,7 +855,7 @@ public class ContactsFragment extends Fragment{
 								notifyAdapter.notifyDataSetChanged();
 
 								groups.setTextColor(getResources().getColor(R.color.white));
-								plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_pluswhite));
+								plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
 								listvalueof_3.setTextColor(getResources().getColor(R.color.pale_white));
 								list_2.setTextColor(getResources().getColor(R.color.black));
 								contacts.setTextColor(getResources().getColor(R.color.black));
@@ -807,21 +863,28 @@ public class ContactsFragment extends Fragment{
 								listvalue_3.setTextColor(getResources().getColor(R.color.black));
 								view_mycontact.setVisibility(View.GONE);
 								view_mygroup.setVisibility(View.VISIBLE);
-								plusBtn.setVisibility(View.VISIBLE);
+//								plusBtn.setVisibility(View.VISIBLE);
 								sort_lay.setVisibility(View.GONE);
 								group_sort.setVisibility(View.GONE);
 								main_search.setVisibility(View.GONE);
-								search.setVisibility(View.VISIBLE);
+								search.setVisibility(View.GONE);
+
+								btn_1.setVisibility(View.GONE);
+								btn_1.setText("");
+								title.setVisibility(View.VISIBLE);
+								search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
 							}else{
 								isContact = false;
 								contactrecent = true;
 								grouprecent = true;
-								lv2.setAdapter(null);
-								lv2.setAdapter(GroupActivity.groupAdapter);
+								chatgroup_recent=false;
+//								lv2.setAdapter(null);
+//								lv2.setAdapter(GroupActivity.groupAdapter);
+								sortGroups();
 								ll_nochats.setVisibility(View.GONE);
 								lv.setVisibility(View.GONE);
 								lv2.setVisibility(View.VISIBLE);
-								GroupActivity.groupAdapter.notifyDataSetChanged();
+//								GroupActivity.groupAdapter.notifyDataSetChanged();
 								groups.setTextColor(getResources().getColor(R.color.white));
 								plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_pluswhite));
 								list_2.setTextColor(getResources().getColor(R.color.white));
@@ -836,7 +899,13 @@ public class ContactsFragment extends Fragment{
 								group_sort.setVisibility(View.VISIBLE);
 								main_search.setVisibility(View.GONE);
 								search.setVisibility(View.VISIBLE);
+
+								btn_1.setVisibility(View.GONE);
+								btn_1.setText("");
+								title.setVisibility(View.VISIBLE);
+								search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
 							}
+							chatIndivijaul_recent=false;
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -848,7 +917,30 @@ public class ContactsFragment extends Fragment{
 					@Override
 					public void onClick(View v) {
 						try {
-							if(isContact) {
+							if(chatIndivijaul_recent){
+								if (title.getVisibility() == View.VISIBLE) {
+									title.setVisibility(View.GONE);
+									btn_1.setVisibility(View.VISIBLE);
+									plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_close));
+								} else {
+									title.setVisibility(View.VISIBLE);
+									btn_1.setVisibility(View.GONE);
+									btn_1.setText("");
+									plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
+								}
+							}else if(chatgroup_recent){
+								if (title.getVisibility() == View.VISIBLE) {
+									title.setVisibility(View.GONE);
+									btn_1.setVisibility(View.VISIBLE);
+									plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_close));
+								} else {
+									title.setVisibility(View.VISIBLE);
+									btn_1.setVisibility(View.GONE);
+									btn_1.setText("");
+									plusBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
+								}
+							}
+							else if(isContact) {
 								SearchPeopleFragment searchPeopleFragment = SearchPeopleFragment.newInstance(mainContext);
 								FragmentManager fragmentManager = SingleInstance.mainContext
 										.getSupportFragmentManager();
@@ -897,6 +989,11 @@ public class ContactsFragment extends Fragment{
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub
+		if(chatIndivijaul_recent){
+			RefereceRecentlist();
+		}else if(chatgroup_recent){
+			RefereceGroupRecentlist();
+		}
 		super.onResume();
 	}
 
@@ -908,8 +1005,10 @@ public class ContactsFragment extends Fragment{
 				public void run() {
 					contactAdapter = new ContactAdapter(mainContext, GroupChatActivity.getAdapterList(ContactsFragment.getBuddyList()));
 //					lv.setAdapter(null);
-					lv.setAdapter(contactAdapter);
-					ContactsFragment.contactAdapter.notifyDataSetChanged();
+					if(!chatIndivijaul_recent) {
+						lv.setAdapter(contactAdapter);
+						ContactsFragment.contactAdapter.notifyDataSetChanged();
+					}
 				}
 			});
 		} catch (Exception e) {
@@ -917,7 +1016,7 @@ public class ContactsFragment extends Fragment{
 			e.printStackTrace();
 		}
 	}
-	private void notifySortList() {
+	public void notifySortList() {
 		try {
 			Log.d("entering", "Shortlist loaded1.");
 			handler.post(new Runnable() {
@@ -930,10 +1029,16 @@ public class ContactsFragment extends Fragment{
 					tv_nochats.setText("No Chats");
 					if(contactrecentlist.size()>0){
 						ll_nochats.setVisibility(View.GONE);
+						if(plusBtn!=null){
+							plusBtn.setVisibility(View.VISIBLE);
+						}
 						lv.setVisibility(View.VISIBLE);
 					}else{
 						ll_nochats.setVisibility(View.VISIBLE);
 						lv.setVisibility(View.GONE);
+						if(plusBtn!=null){
+							plusBtn.setVisibility(View.GONE);
+						}
 					}
 					notifyAdapter = new NotifyListAdapter(mainContext, contactrecentlist);
 					notifyAdapter.isFromOther(true);
@@ -1051,6 +1156,8 @@ public class ContactsFragment extends Fragment{
 			Button search = (Button) getActivity().findViewById(R.id.btn_settings);
 			search.setBackgroundDrawable(getResources().getDrawable(R.drawable.navigation_search));
 			search.setVisibility(View.GONE);
+			EditText btn_1 = (EditText) getActivity().findViewById(R.id.searchet);
+			btn_1.setVisibility(View.GONE);
 			SingleInstance.instanceTable.remove("contactspage");
 			// MemoryProcessor.getInstance().unbindDrawables(_rootView);
 			// _rootView = null;
@@ -4171,30 +4278,49 @@ public class ContactsFragment extends Fragment{
 					.commitAllowingStateLoss();
 		}
 	}
-	private void loadRecents()
+	public void loadRecents()
 	{
 		tempnotifylist.clear();
 		contactrecentlist.clear();
 		grouprecentlist.clear();
-		tempnotifylist = DashBoardFragment.newInstance(mainContext).LoadFilesList(CallDispatcher.LoginUser);
+//		tempnotifylist = DashBoardFragment.newInstance(mainContext).LoadFilesList(CallDispatcher.LoginUser);
+		LoadFilesList(CallDispatcher.LoginUser);
+		Vector<BuddyInformationBean> buddylist=ContactsFragment.getBuddyList();
+		if(DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,false)!=null) {
+			tempnotifylist = listcount(DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,false));
 
-		for(NotifyListBean bean:tempnotifylist){
-			if(bean.getNotifttype().equalsIgnoreCase("F"))
-				contactrecentlist.add(bean);
-			else if(bean.getNotifttype().equalsIgnoreCase("C")){
-				if(isNumeric(bean.getFileid()))
-					grouprecentlist.add(bean);
-				else
+			for (NotifyListBean bean : tempnotifylist) {
+				innerloop:
+				for(BuddyInformationBean buddyInformationBean:buddylist) {
+					if(buddyInformationBean.getEmailid()!=null &&bean.getFrom()!=null &&
+							buddyInformationBean.getEmailid().equalsIgnoreCase(bean.getFrom())) {
+						if(buddyInformationBean.getStatus()!=null)
+						bean.setSetStatus(buddyInformationBean.getStatus());
+						if (bean.getNotifttype().equalsIgnoreCase("F"))
+							contactrecentlist.add(bean);
+						else if (bean.getNotifttype().equalsIgnoreCase("C")) {
+//				if(isNumeric(bean.getFileid()))
+//					grouprecentlist.add(bean);
+//				else
 					contactrecentlist.add(bean);
-			}else if(bean.getNotifttype().equalsIgnoreCase("I")) {
-				if (bean.getCategory().equalsIgnoreCase("G")) {
-					grouprecentlist.add(bean);
+				} else if (bean.getNotifttype().equalsIgnoreCase("I")) {
+					if (bean.getCategory().equalsIgnoreCase("G")) {
+						grouprecentlist.add(bean);
+					} else if (bean.getCategory().equalsIgnoreCase("I")) {
+						contactrecentlist.add(bean);
+					}
+					//For this add call count in Indijual
+					else if (bean.getCategory().equalsIgnoreCase("call")) {
+						contactrecentlist.add(bean);
+					}
+
+						}
+						break innerloop;
+					}
 				}
-				else if(bean.getCategory().equalsIgnoreCase("I"))
-					contactrecentlist.add(bean);
 			}
 		}
-
+		Collections.sort(contactrecentlist, new DateComparator());
 //		tempnotifylist = DashBoardFragment.newInstance(mainContext).tempnotifylist;
 		Log.i("notifylistsize","sizevalue1"+tempnotifylist.size());
 //		for(NotifyListBean bean:tempnotifylist){
@@ -4247,4 +4373,385 @@ public class ContactsFragment extends Fragment{
 					CallDispatcher.LoginUser, name, contactsFragment);
 		}
 	}
+
+
+
+	public void LoadFilesList(String username)
+	{
+		Log.i("Multi", "username : " + username);
+//		tempnotifylist.clear();
+//		seacrhnotifylist.clear();
+		Vector<NotifyListBean>notifyList = DBAccess.getdbHeler()
+				.getNotifyFilesList(username);
+		if(notifyList!=null) {
+				for(NotifyListBean nBean:notifyList) {
+					Log.i("AAAA","NOTIFY LIST from user "+nBean.getNotifttype()+" , "+nBean.getSortdate()+" , "+nBean.getFrom());
+					Log.d("AAAA", "Notifyid"+nBean.getFileid());
+					if(nBean.getViewed()==0 && nBean.getNotifttype().equals("F")) {
+						ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+						nBean.setProfilePic(pBean.getPhoto());
+						if(pBean!=null)
+							nBean.setUsername(pBean.getFirstname()+" "+pBean.getLastname());
+						tempnotifylist.add(nBean);
+//						seacrhnotifylist.add(nBean);
+					}
+					if(nBean.getViewed()==0 && nBean.getNotifttype().equals("I")) {
+						if(!nBean.getCategory().equalsIgnoreCase("call")) {
+							ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+							nBean.setProfilePic(pBean.getPhoto());
+							if (pBean != null)
+								nBean.setUsername(pBean.getFirstname() + " " + pBean.getLastname());
+							tempnotifylist.add(nBean);
+//							seacrhnotifylist.add(nBean);
+						}else if(nBean.getCategory().equalsIgnoreCase("call")){
+							ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+							nBean.setProfilePic(pBean.getPhoto());
+							if (pBean != null)
+								nBean.setUsername(pBean.getFirstname() + " " + pBean.getLastname());
+							tempnotifylist.add(nBean);
+						}
+					}
+					if(nBean.getViewed()==0 && nBean.getNotifttype().equals("C")) {
+						ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+						nBean.setProfilePic(pBean.getPhoto());
+						if(pBean!=null)
+							nBean.setUsername(pBean.getFirstname()+" "+pBean.getLastname());
+						tempnotifylist.add(nBean);
+//						seacrhnotifylist.add(nBean);
+					}
+					if(nBean.getViewed()==0 && nBean.getNotifttype().equals("F")) {
+						ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+						nBean.setProfilePic(pBean.getPhoto());
+						if(pBean!=null)
+							nBean.setUsername(pBean.getFirstname()+" "+pBean.getLastname());
+						tempnotifylist.add(nBean);
+//						seacrhnotifylist.add(nBean);
+					}
+//					if(nBean.getViewed()==0) {
+//						if(nBean.getCategory()!=null&&!nBean.getCategory().equalsIgnoreCase("call")) {
+//							ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+//							nBean.setProfilePic(pBean.getPhoto());
+//							if (pBean != null)
+//								nBean.setUsername(pBean.getFirstname() + " " + pBean.getLastname());
+//							tempnotifylist.add(nBean);
+////							seacrhnotifylist.add(nBean);
+//						}
+//					}
+				}
+
+		}
+		Collections.sort(tempnotifylist, new DateComparator());
+//		Collections.sort(seacrhnotifylist, new DateComparator());
+		Log.i("values","templist-->"+tempnotifylist.size());
+		//For IndivijualRecent
+		//Start
+		HashMap<String,NotifyListBean> templist=new HashMap<>();
+		if(DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,false)!=null){
+			Vector<NotifyListBean> dbvalues=DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,false);
+			for(NotifyListBean notifyListBean:dbvalues){
+				templist.put(notifyListBean.getFrom()+notifyListBean.getSortdate(),notifyListBean);
+			}
+		}
+
+//
+		for(NotifyListBean notifyListBean:tempnotifylist){
+			if(!templist.containsKey(notifyListBean.getFrom()+notifyListBean.getSortdate())) {
+				if(!notifyListBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser) && notifyListBean.getFileid().contains("@")) {
+					DBAccess.getdbHeler().insertChatRecentList(notifyListBean,false);
+				}
+			}
+		}
+        //End
+
+		//For groupRecent
+		//Start
+		HashMap<String,NotifyListBean> tempgrouplist=new HashMap<>();
+		if(DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,true)!=null){
+			Vector<NotifyListBean> dbvalues=DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,true);
+			for(NotifyListBean notifyListBean:dbvalues){
+				tempgrouplist.put(notifyListBean.getFileid()+notifyListBean.getSortdate(),notifyListBean);
+			}
+		}
+
+		for(NotifyListBean notifyListBean:tempnotifylist){
+			if(!tempgrouplist.containsKey(notifyListBean.getFileid()+notifyListBean.getSortdate())) {
+				if(!notifyListBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser) && !notifyListBean.getFileid().contains("@")) {
+					if(DBAccess.getdbHeler().getGroupName(
+							"select * from grouplist where groupid='" + notifyListBean.getFileid() + "'")!=null) {
+						notifyListBean.setUsername(DBAccess.getdbHeler().getGroupName(
+								"select * from grouplist where groupid='" + notifyListBean.getFileid() + "'"));
+						DBAccess.getdbHeler().insertChatRecentList(notifyListBean, true);
+					}
+				}
+			}
+		}
+		//End
+//		Vector<NotifyListBean> dateVector=new Vector<>();
+//		for (NotifyListBean notifyListBean:tempnotifylist){
+//			if(dateSplit.containsKey(notifyListBean.getSortdate())){
+//
+//			}
+//		}
+//		if()
+//		return listcount();
+
+
+	}
+
+
+	private Vector<NotifyListBean> listcount(Vector<NotifyListBean> tempnotifylist){
+		HashMap<String,Integer > fileslist = new HashMap<String,Integer>();
+		HashMap<String,Integer > chatlist = new HashMap<String,Integer>();
+		HashMap<String,Integer > calllist = new HashMap<String,Integer>();
+
+		int i=0,j=0,k=0;
+		HashMap<String,NotifyListBean > usernotifylist = new HashMap<String,NotifyListBean>();
+		for(NotifyListBean nbean : tempnotifylist){
+			Log.i("chatrecent","date-->"+nbean.getSortdate().split(" ")[0]);
+			if(nbean.getViewed()==0) {
+				if (nbean.getNotifttype().equalsIgnoreCase("F")) {
+					if (fileslist.containsKey(nbean.getFrom() + nbean.getSortdate().split(" ")[0]))
+						fileslist.put(nbean.getFrom() + nbean.getSortdate().split(" ")[0], ++i);
+					else {
+						i = 0;
+						fileslist.put(nbean.getFrom() + nbean.getSortdate().split(" ")[0], ++i);
+					}
+				} else if (nbean.getNotifttype().equalsIgnoreCase("I")) {
+					Log.d("chatlist", "entry");
+					if (nbean.getCategory().equalsIgnoreCase("I")) {
+						if (chatlist.containsKey(nbean.getFrom() + nbean.getSortdate().split(" ")[0])) {
+							Log.d("chatlist", "entries" + nbean.getFrom() + nbean.getSortdate().split(" ")[0]);
+							Log.d("chatlist", "entry1");
+							chatlist.put(nbean.getFrom() + nbean.getSortdate().split(" ")[0], ++j);
+						} else {
+							Log.d("chatlist", "entry2");
+							j = 0;
+							chatlist.put(nbean.getFrom() + nbean.getSortdate().split(" ")[0], ++j);
+						}
+					}
+					//For this add call count in Indijual
+					else if (nbean.getCategory().equalsIgnoreCase("call")) {
+						if (calllist.containsKey(nbean.getFrom() + nbean.getSortdate().split(" ")[0])) {
+							calllist.put(nbean.getFrom() + nbean.getSortdate().split(" ")[0], ++k);
+						} else {
+							k = 0;
+							calllist.put(nbean.getFrom() + nbean.getSortdate().split(" ")[0], ++k);
+						}
+					}
+				} else if (nbean.getNotifttype().equalsIgnoreCase("C")) {
+					if (calllist.containsKey(nbean.getFrom() + nbean.getSortdate().split(" ")[0])) {
+						calllist.put(nbean.getFrom() + nbean.getSortdate().split(" ")[0], ++k);
+					} else {
+						k = 0;
+						calllist.put(nbean.getFrom() + nbean.getSortdate().split(" ")[0], ++k);
+					}
+				}
+			}
+//			if(!usernotifylist.containsKey(nbean.getFrom()+nbean.getSortdate().split(" ")[0]))
+				usernotifylist.put(nbean.getFrom()+nbean.getSortdate().split(" ")[0], nbean);
+		}
+		Vector<NotifyListBean> templist=new Vector<NotifyListBean>();
+		templist.addAll(usernotifylist.values());
+		for(NotifyListBean bean:templist){
+			if(chatlist.get(bean.getFrom()+bean.getSortdate().split(" ")[0])!=null)
+				bean.setChatcount(String.valueOf(chatlist.get(bean.getFrom()+bean.getSortdate().split(" ")[0])));
+			if(calllist.get(bean.getFrom()+bean.getSortdate().split(" ")[0])!=null)
+				bean.setCallcount(String.valueOf(calllist.get(bean.getFrom()+bean.getSortdate().split(" ")[0])));
+			if(fileslist.get(bean.getFrom()+bean.getSortdate().split(" ")[0])!=null)
+				bean.setFilecount(String.valueOf(fileslist.get(bean.getFrom()+bean.getSortdate().split(" ")[0])));
+		}
+		Log.d("listcount","fileslist"+fileslist.size());
+		Log.d("listcount","chatlist"+chatlist.size());
+		Log.d("listcount","calllist"+calllist.size());
+		return templist;
+	}
+
+	public void RefereceRecentlist(){
+		handler.post(new Runnable() {
+			@Override
+			public void run() {
+				Log.i("recentlist","contactpage RefereceRecentlist");
+//				loadRecents();
+
+//				notifyAdapter = new NotifyListAdapter(mainContext, contactrecentlist);
+//				lv.setAdapter(notifyAdapter);
+//				notifyAdapter.isFromOther(true);
+//				notifyAdapter.notifyDataSetChanged();
+				loadRecents();
+				isContact = false;
+				contactrecent = false;
+				grouprecent = true;
+				lv2.setVisibility(View.GONE);
+				lv.setVisibility(View.VISIBLE);
+//									lv.setAdapter(notifyAdapter);
+				EditText myFilter = (EditText) _rootView.findViewById(R.id.searchtext);
+				myFilter.setText("");
+
+//									lv.setAdapter(null);
+				LayoutInflater layoutInflater = (LayoutInflater)mainContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				View v1 = layoutInflater.inflate(R.layout.notification, ll_nochats);
+				TextView tv_nochats=(TextView)v1.findViewById(R.id.tv_notification);
+				tv_nochats.setText("No Chats");
+				if(contactrecentlist.size()>0){
+					ll_nochats.setVisibility(View.GONE);
+					lv.setVisibility(View.VISIBLE);
+					if(plusBtn!=null){
+						plusBtn.setVisibility(View.VISIBLE);
+					}
+				}else{
+					ll_nochats.setVisibility(View.VISIBLE);
+					lv.setVisibility(View.GONE);
+					if(plusBtn!=null){
+						plusBtn.setVisibility(View.GONE);
+					}
+				}
+
+				Log.i("recentlist","contactrecentlist size-->"+contactrecentlist.size());
+				notifyAdapter = new NotifyListAdapter(mainContext, contactrecentlist);
+				lv.setAdapter(notifyAdapter);
+				notifyAdapter.isFromOther(true);
+
+				Log.d("Stringadapter", "values" + notifyAdapter);
+				notifyAdapter.notifyDataSetChanged();
+			}
+		});
+
+	}
+
+	public void RefereceGroupRecentlist(){
+		handler.post(new Runnable() {
+			@Override
+			public void run() {
+//				loadGroupRecents();
+//				notifyAdapter = new NotifyListAdapter(mainContext, grouprecentlist);
+//				notifyAdapter.isFromOther(true);
+//				lv2.setAdapter(notifyAdapter);
+//				notifyAdapter.notifyDataSetChanged();
+				chatgroup_recent=true;
+				loadGroupRecents();
+				isContact = false;
+				contactrecent = true;
+				grouprecent = false;
+				lv2.setAdapter(null);
+				lv.setVisibility(View.GONE);
+				lv2.setVisibility(View.VISIBLE);
+
+				LayoutInflater layoutInflater = (LayoutInflater)mainContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				View v1 = layoutInflater.inflate(R.layout.notification, ll_nochats);
+				TextView tv_nochats=(TextView)v1.findViewById(R.id.tv_notification);
+				tv_nochats.setText("No Chats");
+				if(grouprecentlist.size()>0){
+					ll_nochats.setVisibility(View.GONE);
+					lv2.setVisibility(View.VISIBLE);
+					if(plusBtn!=null){
+						plusBtn.setVisibility(View.VISIBLE);
+					}
+				}else{
+					ll_nochats.setVisibility(View.VISIBLE);
+					lv2.setVisibility(View.GONE);
+					if(plusBtn!=null){
+						plusBtn.setVisibility(View.GONE);
+					}
+				}
+
+				notifyAdapter = new NotifyListAdapter(mainContext, grouprecentlist);
+				notifyAdapter.isFromOther(true);
+				lv2.setAdapter(notifyAdapter);
+				Log.d("Stringadapter", "values" + notifyAdapter);
+				notifyAdapter.notifyDataSetChanged();
+			}
+		});
+
+	}
+
+	private Vector<NotifyListBean> grouplistcount(Vector<NotifyListBean> tempnotifylist){
+		HashMap<String,Integer > fileslist = new HashMap<String,Integer>();
+		HashMap<String,Integer > chatlist = new HashMap<String,Integer>();
+		HashMap<String,Integer > calllist = new HashMap<String,Integer>();
+
+		int i=0,j=0,k=0;
+		HashMap<String,NotifyListBean > usernotifylist = new HashMap<String,NotifyListBean>();
+		for(NotifyListBean nbean : tempnotifylist){
+			Log.i("chatrecent","date-->"+nbean.getSortdate().split(" ")[0]);
+			if(nbean.getViewed()==0) {
+				if (nbean.getNotifttype().equalsIgnoreCase("F")) {
+					if (fileslist.containsKey(nbean.getFileid() + nbean.getSortdate().split(" ")[0]))
+						fileslist.put(nbean.getFileid() + nbean.getSortdate().split(" ")[0], ++i);
+					else {
+						i = 0;
+						fileslist.put(nbean.getFileid() + nbean.getSortdate().split(" ")[0], ++i);
+					}
+				} else if (nbean.getNotifttype().equalsIgnoreCase("I")) {
+					Log.d("chatlist", "entry");
+					if (nbean.getCategory().equalsIgnoreCase("G")) {
+						if (chatlist.containsKey(nbean.getFileid() + nbean.getSortdate().split(" ")[0])) {
+							Log.d("chatlist", "entries" + nbean.getFileid() + nbean.getSortdate().split(" ")[0]);
+							Log.d("chatlist", "entry1");
+							chatlist.put(nbean.getFileid() + nbean.getSortdate().split(" ")[0], ++j);
+						} else {
+							Log.d("chatlist", "entry2");
+							j = 0;
+							chatlist.put(nbean.getFileid() + nbean.getSortdate().split(" ")[0], ++j);
+						}
+					}
+					//For this add call count in Indijual
+					else if (nbean.getCategory().equalsIgnoreCase("call")) {
+						if (calllist.containsKey(nbean.getFileid() + nbean.getSortdate().split(" ")[0])) {
+							calllist.put(nbean.getFileid() + nbean.getSortdate().split(" ")[0], ++k);
+						} else {
+							k = 0;
+							calllist.put(nbean.getFileid() + nbean.getSortdate().split(" ")[0], ++k);
+						}
+					}
+				} else if (nbean.getNotifttype().equalsIgnoreCase("C")) {
+					if (calllist.containsKey(nbean.getFileid() + nbean.getSortdate().split(" ")[0])) {
+						calllist.put(nbean.getFileid() + nbean.getSortdate().split(" ")[0], ++k);
+					} else {
+						k = 0;
+						calllist.put(nbean.getFileid() + nbean.getSortdate().split(" ")[0], ++k);
+					}
+				}
+			}
+//			if(!usernotifylist.containsKey(nbean.getFrom()+nbean.getSortdate().split(" ")[0]))
+			usernotifylist.put(nbean.getFileid()+nbean.getSortdate().split(" ")[0], nbean);
+		}
+		Vector<NotifyListBean> templist=new Vector<NotifyListBean>();
+		templist.addAll(usernotifylist.values());
+		for(NotifyListBean bean:templist){
+			if(chatlist.get(bean.getFileid()+bean.getSortdate().split(" ")[0])!=null)
+				bean.setChatcount(String.valueOf(chatlist.get(bean.getFileid()+bean.getSortdate().split(" ")[0])));
+			if(calllist.get(bean.getFileid()+bean.getSortdate().split(" ")[0])!=null)
+				bean.setCallcount(String.valueOf(calllist.get(bean.getFileid()+bean.getSortdate().split(" ")[0])));
+			if(fileslist.get(bean.getFileid()+bean.getSortdate().split(" ")[0])!=null)
+				bean.setFilecount(String.valueOf(fileslist.get(bean.getFileid()+bean.getSortdate().split(" ")[0])));
+		}
+		Log.d("listcount","fileslist"+fileslist.size());
+		Log.d("listcount","chatlist"+chatlist.size());
+		Log.d("listcount","calllist"+calllist.size());
+		return templist;
+	}
+
+	public void loadGroupRecents()
+	{
+		tempnotifylist.clear();
+		grouprecentlist.clear();
+		LoadFilesList(CallDispatcher.LoginUser);
+		if(DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,true)!=null) {
+			tempnotifylist = grouplistcount(DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,true));
+			for (NotifyListBean bean : tempnotifylist) {
+				  if (bean.getNotifttype().equalsIgnoreCase("I")) {
+					if (bean.getCategory().equalsIgnoreCase("G")) {
+						grouprecentlist.add(bean);
+					}
+					//For this add call count in Indijual
+					else if (bean.getCategory().equalsIgnoreCase("call")) {
+						grouprecentlist.add(bean);
+					}
+
+				}
+			}
+		}
+		Collections.sort(grouprecentlist, new DateComparator());
+	}
+
 }

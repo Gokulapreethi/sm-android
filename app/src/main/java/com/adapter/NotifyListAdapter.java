@@ -59,12 +59,15 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
     Vector<BuddyInformationBean> buddylist = new Vector<BuddyInformationBean>();
     private ArrayList<String> usermessage = new ArrayList<String>();
     private  boolean iscontact = false;
+    private Vector<NotifyListBean> searchFilter;
 
     public NotifyListAdapter(Context context, Vector<NotifyListBean> notifyList) {
 
         super(context, R.layout.notify_list_row, notifyList);
         this.context = context;
         this.fileList = notifyList;
+        searchFilter=new Vector<>();
+        searchFilter.addAll(notifyList);
         inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         dashBoardFragment = DashBoardFragment.newInstance(context);
@@ -197,20 +200,38 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                 holder.buddyicon.setVisibility(View.VISIBLE);
                holder.fileIcon.setVisibility(View.GONE);
                 holder.chat_info.setVisibility(View.VISIBLE);
-                holder.imagestatus.setVisibility(View.VISIBLE);
+                if(notifyBean.getFileid()!=null && notifyBean.getFileid().contains("@")) {
+                    holder.imagestatus.setVisibility(View.VISIBLE);
+                }else{
+                    holder.imagestatus.setVisibility(View.GONE);
+                }
                 holder.list_container.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(notifyBean.getCategory().equalsIgnoreCase("I")){
-                            Intent intent = new Intent(context, GroupChatActivity.class);
-                            intent.putExtra("isGroup", false);
-                            intent.putExtra("buddy", notifyBean.getFileid());
-                            context.startActivity(intent);
-                        }else if(notifyBean.getCategory().equalsIgnoreCase("G")){
-                            Intent intent = new Intent(context, GroupChatActivity.class);
-                            intent.putExtra("isGroup", true);
-                            intent.putExtra("groupid", notifyBean.getFileid());
-                            context.startActivity(intent);
+                        if(iscontact){
+                            if(notifyBean.getFileid()!=null && notifyBean.getFileid().contains("@")){
+                                Intent intent = new Intent(context, GroupChatActivity.class);
+                                intent.putExtra("isGroup", false);
+                                intent.putExtra("buddy", notifyBean.getFileid());
+                                context.startActivity(intent);
+                            }else if(notifyBean.getFileid()!=null && !notifyBean.getFileid().contains("@")){
+                                Intent intent = new Intent(context, GroupChatActivity.class);
+                                intent.putExtra("isGroup", true);
+                                intent.putExtra("groupid", notifyBean.getFileid());
+                                context.startActivity(intent);
+                            }
+                        }else {
+                            if (notifyBean.getCategory().equalsIgnoreCase("I")) {
+                                Intent intent = new Intent(context, GroupChatActivity.class);
+                                intent.putExtra("isGroup", false);
+                                intent.putExtra("buddy", notifyBean.getFileid());
+                                context.startActivity(intent);
+                            } else if (notifyBean.getCategory().equalsIgnoreCase("G")) {
+                                Intent intent = new Intent(context, GroupChatActivity.class);
+                                intent.putExtra("isGroup", true);
+                                intent.putExtra("groupid", notifyBean.getFileid());
+                                context.startActivity(intent);
+                            }
                         }
                     }
                 });
@@ -325,7 +346,13 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                             }
                         }
                         datelist.add(senttime);
-                        holder.header.setText(senttime);
+                        if(iscontact) {
+                            if (senttime != null && senttime.contains(" ")) {
+                                holder.header.setText(senttime.split(" ")[0].toUpperCase());
+                            }
+                        }else{
+                            holder.header.setText(senttime);
+                        }
                     }
                     String time = notifyBean.getSortdate().split(" ")[1];
                     String[] times = time.split(":");
@@ -423,48 +450,59 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                         } else if (notifyBean.getNotifttype().trim().equalsIgnoreCase("I")) {
                             if (iscontact) {
                                 holder.buddyicon.setVisibility(View.VISIBLE);
+                                //For chatRecentlist
+                                //Start
+                                if(notifyBean.getCategory().equalsIgnoreCase("call")){
+                                    holder.fileType.setText(notifyBean.getUsername());
+                                    holder.fileName.setText("Missed Call");
+                                }
+//
+                                if(notifyBean.getType()!=null && !notifyBean.getType().trim().equalsIgnoreCase("text")){
+                                    holder.fileName.setText(notifyBean.getType());
+                                }
+                                //End
 //                                holder.fileIcon.setBackgroundResource(R.drawable.recent_message);
                             } else {
                                 holder.buddyicon.setVisibility(View.VISIBLE);
                                 holder.fileIcon.setVisibility(View.GONE);
                             }
                             Log.i("nameof","username"+notifyBean.getOwner());
-                            if (notifyBean.getType().trim().equalsIgnoreCase("image"))
+                            if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("image"))
                                 if(notifyBean.getCategory().equalsIgnoreCase("I")){
                                     holder.fileType.setText(notifyBean.getUsername());
                                 }else
                                     holder.fileType.setText(notifyBean.getOwner());
-                            else if (notifyBean.getType().trim().equalsIgnoreCase("text"))
+                            else if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("text"))
                                 if(notifyBean.getCategory().equalsIgnoreCase("I")){
                                     holder.fileType.setText(notifyBean.getUsername());
                                 }else
                                     holder.fileType.setText(notifyBean.getOwner());
-                            else if (notifyBean.getType().trim().equalsIgnoreCase("audio"))
+                            else if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("audio"))
                                 if(notifyBean.getCategory().equalsIgnoreCase("I")){
                                     holder.fileType.setText(notifyBean.getUsername());
                                 }else
                                     holder.fileType.setText(notifyBean.getOwner());
-                            else if (notifyBean.getType().trim().equalsIgnoreCase("video"))
+                            else if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("video"))
                                 if(notifyBean.getCategory().equalsIgnoreCase("I")){
                                     holder.fileType.setText(notifyBean.getUsername());
                                 }else
                                     holder.fileType.setText(notifyBean.getOwner());
-                            else if (notifyBean.getType().trim().equalsIgnoreCase("sketch"))
+                            else if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("sketch"))
                                 if(notifyBean.getCategory().equalsIgnoreCase("I")){
                                     holder.fileType.setText(notifyBean.getUsername());
                                 }else
                                     holder.fileType.setText(notifyBean.getOwner());
-                            else if(notifyBean.getType().trim().equalsIgnoreCase("document"))
+                            else if(notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("document"))
                                 if(notifyBean.getCategory().equalsIgnoreCase("I")){
                                     holder.fileType.setText(notifyBean.getUsername());
                                 }else
                                     holder.fileType.setText(notifyBean.getOwner());
-                            else if(notifyBean.getType().trim().equalsIgnoreCase("mixedfile"))
+                            else if(notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("mixedfile"))
                                 if(notifyBean.getCategory().equalsIgnoreCase("I")){
                                     holder.fileType.setText(notifyBean.getUsername());
                                 }else
                                     holder.fileType.setText(notifyBean.getOwner());
-                            if (notifyBean.getType().trim().equalsIgnoreCase("text")) {
+                            if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("text")) {
                                 if (notifyBean.getContent() != null)
                                     holder.fileName.setText(notifyBean.getContent());
                             } else {
@@ -472,10 +510,46 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                                     File newFile = new File(notifyBean.getMedia());
                                     if (newFile.exists())
                                         holder.fileName.setText(notifyBean.getType() + " received");
-                                    else
-                                        holder.fileName.setText("Files Received");
-                                } else
-                                    holder.fileName.setText("File Not Found");
+                                    else {
+                                        if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("image")){
+                                            holder.fileName.setText("Image File Received");
+                                        }else if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("audio")){
+                                            holder.fileName.setText("Audio File Received");
+                                        }else if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("video")){
+                                            holder.fileName.setText("Video File Received");
+                                        }else if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("sketch")){
+                                            holder.fileName.setText("Sketch File Received");
+                                        }else if(notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("document")){
+                                            holder.fileName.setText("Document File Received");
+                                        }else if(notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("mixedfile")){
+                                            holder.fileName.setText("Mixed File Received");
+                                        }else {
+                                            holder.fileName.setText("Files Received");
+                                        }
+                                    }
+                                } else {
+                                    if (iscontact) {
+                                        holder.fileName.setText("Missed Call");
+                                    } else{
+                                        holder.fileName.setText("File Not Found");
+                                     }
+                                }
+                            }
+
+                            if(iscontact){
+                                if(notifyBean.getCategory()!=null && notifyBean.getFileid()!=null &&
+                                       !notifyBean.getFileid().contains("@")&& notifyBean.getCategory().equalsIgnoreCase("call")){
+                                    holder.fileType.setText(notifyBean.getUsername());
+                                    holder.fileName.setText("Missed Call");
+                                }
+                                if(notifyBean.getType()!=null && notifyBean.getContent()!=null){
+                                    holder.fileName.setText(notifyBean.getContent());
+                                }
+                                if(notifyBean.getUsername()!=null){
+                                    holder.fileType.setText(notifyBean.getUsername());
+                                }else if(notifyBean.getFrom()!=null){
+                                    holder.fileType.setText(notifyBean.getFrom());
+                                }
                             }
                         }
                     }
@@ -560,4 +634,30 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
         iscontact=isOther;
     }
 
+    public void SearchFilter(String charText) {
+        Log.i("filter","filter mathod");
+        Log.i("filter","Search Fiter-->"+searchFilter.size());
+        charText = charText.toLowerCase(Locale.getDefault());
+        fileList.clear();
+        if (charText.length() == 0) {
+            fileList.addAll(searchFilter);
+            Log.i("filter","filter mathod if");
+        }
+        else
+        {
+            for (NotifyListBean notifyListBean : searchFilter)
+            {
+                if (notifyListBean.getUsername()!=null && notifyListBean.getUsername().toLowerCase(Locale.getDefault()).contains(charText))
+                {
+                    Log.i("filter","filter mathod for if");
+                    fileList.add(notifyListBean);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
+
+    }
+
+
+
