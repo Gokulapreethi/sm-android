@@ -30,6 +30,7 @@ import com.cg.forms.FormFieldAccessActivity;
 import com.cg.forms.FormPermissionViewer;
 import com.cg.forms.FormRecordsCreators;
 import com.cg.forms.FormViewer;
+import com.cg.hostedconf.AppReference;
 import com.cg.rounding.AssignPatientActivity;
 import com.cg.rounding.AttendingRightsActivity;
 import com.cg.rounding.DuplicateExistingGroups;
@@ -39,6 +40,7 @@ import com.cg.rounding.RoundNewPatientActivity;
 import com.cg.rounding.RoundingEditActivity;
 import com.cg.rounding.RoundingGroupActivity;
 import com.cg.rounding.TaskCreationActivity;
+import com.cg.snazmed.R;
 import com.cg.utilities.UtilityBuyer;
 import com.cg.utilities.UtilityBuyerNew;
 import com.cg.utilities.UtilitySeller;
@@ -137,6 +139,30 @@ public class WSRunner implements Runnable {
 			if (mServicebean != null) {
 
 				try {
+					if(mServicebean.getServiceMethods()!=null){
+						switch (mServicebean.getServiceMethods()) {
+							case FileUpload:
+								Log.i("webservice","UPLOAD  Webservices");
+								mServer_ip="66.36.228.50";
+								mWsdl_link= AppReference.mainContext.getResources().getString(R.string.service_url1).trim()+"?wsdl";
+								break;
+//							case DOWNLOAD:
+//								Log.i("webservice","Download Webservices");
+//								mWsdl_link= AppReference.mainContext.getResources().getString(R.string.service_url1).trim()+"?wsdl";
+//								break;
+							default:
+								Log.i("webservice","Other Webservices");
+								mServer_ip=AppReference.serverIP;
+								mWsdl_link=AppReference.mainContext.getResources().getString(R.string.service_url).trim()+"?wsdl";
+								break;
+						}
+
+
+					}else{
+						Log.i("webservice","Other Webservices");
+						mServer_ip=AppReference.serverIP;
+						mWsdl_link=AppReference.mainContext.getResources().getString(R.string.service_url).trim()+"?wsdl";
+					}
 					parse = mWsdl_link.substring(mWsdl_link.indexOf("://") + 3);
 
 					parse = parse.substring(parse.indexOf(":") + 1);
@@ -492,7 +518,7 @@ public class WSRunner implements Runnable {
 
 //					mService_callback.notifyWebServiceResponse(mServicebean);
 					break;
-					case UPLOAD:
+					case FileUpload:
 						mChk = mParser.getResult(mSp.toString());
 						String upload_result = mParser.parseResultXml(mSp.toString());
 						if(mChk) {
@@ -2425,7 +2451,7 @@ public class WSRunner implements Runnable {
 						editFormFields.notifyWebserviceResponse(mServicebean);
 					}
 					break;
-					case UPLOAD:
+					case FileUpload:
 						mServicebean.setObj(errorMsg);
 //						if(SingleInstance.fileDetailsBean!=null){
 //							SingleInstance.pendingFiles.add(SingleInstance.fileDetailsBean);
@@ -2536,11 +2562,18 @@ public class WSRunner implements Runnable {
 	public void setserviceInfo(String ipAddress, int port, String wsdlLink,
 			String namespace, WebServiceCallback call_back) {
 
+		Log.i("webdetails","serverip-->"+ipAddress);
+		Log.i("webdetails","port-->"+port);
+		Log.i("webdetails","wsdlLink-->"+wsdlLink);
+		Log.i("webdetails","Namespace-->"+namespace);
+		Log.i("webdetails","Callback-->"+call_back);
+
 		this.mServer_ip = ipAddress;
 		this.mPort = port;
 		this.mWsdl_link = wsdlLink;
 		this.mNamespace = namespace;
 		this.mService_callback = call_back;
+		AppReference.serverIP=ipAddress;
 
 	}
 

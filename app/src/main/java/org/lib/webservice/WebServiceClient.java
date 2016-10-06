@@ -520,7 +520,7 @@ public class WebServiceClient {
 		servicebean.setCallBack(obj);
 		servicebean.setUploadOrDownloadFor(parm[5]);
 		servicebean.setFileUplaod(fileuplaod);
-		servicebean.setServiceMethods(EnumWebServiceMethods.UPLOAD);
+		servicebean.setServiceMethods(EnumWebServiceMethods.FileUpload);
 		if (wsNotifier != null)
 			wsNotifier.addTasktoExecutor(servicebean);
 	}

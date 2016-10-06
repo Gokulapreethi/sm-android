@@ -92,6 +92,9 @@ public class AppReference {
 
 	public static HashMap<String,Object> getValuesinChat=new HashMap<>();
 
+	public static String serverIP=null;
+
+
 
 
 	@SuppressLint("ShowToast")

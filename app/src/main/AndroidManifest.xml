@@ -855,7 +855,7 @@
         </activity>
         <activity
             android:name="com.cg.account.PinSecurity"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -932,7 +932,7 @@
         <activity
             android:name="com.Fingerprint.MainActivity"
             android:screenOrientation="portrait"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="stateHidden">
         </activity>
         <activity

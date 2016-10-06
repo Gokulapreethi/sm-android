@@ -29,6 +29,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -215,6 +216,7 @@ public class ContactsFragment extends Fragment{
 	public boolean chatIndivijaul_recent=false;
 	public boolean chatgroup_recent=false;
 	Button plusBtn;
+	boolean firstClick=false;
 
 	public static synchronized Vector<GroupBean> getGroupList() {
 
@@ -368,6 +370,7 @@ public class ContactsFragment extends Fragment{
 				contactrecent = false;
 				chatIndivijaul_recent=true;
 				chatgroup_recent=false;
+				firstClick=false;
 
 				Button selectall = (Button) getActivity().findViewById(
 						R.id.btn_brg);
@@ -656,6 +659,8 @@ public class ContactsFragment extends Fragment{
 					public void onClick(View view) {
 						online_sort.setTextColor(getResources().getColor(R.color.white));
 						alph_sort.setTextColor(getResources().getColor(R.color.snazlgray));
+						alph_sort.setText("A>Z");
+						firstClick=false;
 						SortType = "ONLINE";
 						SortList();
 					}
@@ -666,10 +671,17 @@ public class ContactsFragment extends Fragment{
 					public void onClick(View view) {
 						online_sort.setTextColor(getResources().getColor(R.color.snazlgray));
 						alph_sort.setTextColor(getResources().getColor(R.color.white));
-						if (isazsort) {
-							alph_sort.setText("Z>A");
-							isazsort = false;
-						} else {
+
+						if(firstClick) {
+							if (isazsort) {
+								alph_sort.setText("Z>A");
+								isazsort = false;
+							} else {
+								isazsort = true;
+								alph_sort.setText("A>Z");
+							}
+						}else {
+							firstClick=true;
 							isazsort = true;
 							alph_sort.setText("A>Z");
 						}
@@ -709,6 +721,8 @@ public class ContactsFragment extends Fragment{
 									Log.i("entering","into recents");
 									Log.i("entering","into contacts"+isContact);
 									Log.i("entering", "into contacts" + contactrecent);
+									alph_sort.setText("A>Z");
+									firstClick=false;
 									chatIndivijaul_recent=true;
 									loadRecents();
 									isContact = false;
@@ -764,6 +778,8 @@ public class ContactsFragment extends Fragment{
 									Log.i("entering","into contacts");
 									Log.i("entering","into contacts"+isContact);
 									Log.i("entering","into contacts"+contactrecent);
+									alph_sort.setText("A>Z");
+									firstClick=false;
 									chatIndivijaul_recent=false;
 									isContact = true;
 									contactrecent = true;
@@ -1158,6 +1174,12 @@ public class ContactsFragment extends Fragment{
 			search.setVisibility(View.GONE);
 			EditText btn_1 = (EditText) getActivity().findViewById(R.id.searchet);
 			btn_1.setVisibility(View.GONE);
+			try {
+				InputMethodManager imm = (InputMethodManager) mainContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(btn_1.getWindowToken(), 0);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			SingleInstance.instanceTable.remove("contactspage");
 			// MemoryProcessor.getInstance().unbindDrawables(_rootView);
 			// _rootView = null;
