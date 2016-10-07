@@ -3548,7 +3548,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 								CallDispatcher.conferenceRequest
 										.put(bib.getBuddyName(), sb);
 							}
-						} else
+						} else {
 							Toast.makeText(
 									context,
 									SingleInstance.mainContext
@@ -3556,6 +3556,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 											.getString(
 													R.string.max_conf_members),
 									Toast.LENGTH_SHORT).show();
+						}
 					}
 				}
 			}
