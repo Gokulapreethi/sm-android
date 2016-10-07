@@ -874,6 +874,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 txtView01.setText(groupBean.getGroupName().toUpperCase());
             header.setWeightSum(5);
             info_lay.setVisibility(View.VISIBLE);
+            search.setVisibility(View.GONE);
             tv_info.setText("Calendar");
             tv_profie.setText("Members");
             tv_file.setText("Patients");
@@ -886,6 +887,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
         if (isOpen.equalsIgnoreCase("C")) {
             chatprocess();
+
         }else if (isOpen.equalsIgnoreCase("F")) {
             setDefault();
             tv_file.setTextColor(getResources().getColor(R.color.white));
@@ -937,6 +939,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             @Override
             public void onClick(View v) {
                 setDefault();
+                search.setVisibility(View.GONE);
                 isMemberTab=true;
                 if (!isGroup && !isRounding)
                     profile_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_profile_white));
@@ -960,6 +963,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             @Override
             public void onClick(View v) {
                 setDefault();
+                search.setVisibility(View.GONE);
                 isMemberTab=false;
                 if (isRounding) {
                     PatientDetails();
@@ -976,6 +980,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             @Override
             public void onClick(View v) {
                 setDefault();
+                search.setVisibility(View.GONE);
                 isMemberTab=false;
                 if (isRounding) {
                     TaskProcess();
@@ -998,6 +1003,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 chat_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_chat_white));
                 tv_chat.setTextColor(getResources().getColor(R.color.white));
                 view_chat.setVisibility(View.VISIBLE);
+                if(search.getVisibility() == View.GONE)
+                search.setVisibility(View.VISIBLE);
                 chatprocess();
             }
         });
@@ -1005,6 +1012,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             @Override
             public void onClick(View view) {
                 setDefault();
+                search.setVisibility(View.GONE);
                 isMemberTab=false;
                 if (isGroup) {
                     info_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_info_white));
@@ -1297,10 +1305,11 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 officeaddre.setText(pb.getOfficeaddress());
             if (pb.getHospitalaffiliation() != null && pb.getHospitalaffiliation().length() > 0)
                 hospitalspec.setText(pb.getHospitalaffiliation());
+            if (pb.getOrganizationmembership() != null && pb.getOrganizationmembership().length() > 0)
+                association.setText(pb.getOrganizationmembership());
             if (pb.getCitationpublications() != null && pb.getCitationpublications().length() > 0)
                 citation.setText(pb.getCitationpublications());
-            if (pb.getOrganizationmembership() != null && pb.getOrganizationmembership().length() > 0)
-                citation.setText(pb.getOrganizationmembership());
+
         }
 
 
@@ -10343,6 +10352,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
         search_header = (RelativeLayout) v1.findViewById(R.id.search_header);
         ed_search = (EditText) v1.findViewById(R.id.ed_search);
+        ed_search.setVisibility(View.GONE);
         ImageView plusBtn = (ImageView) v1.findViewById(R.id.plusBtn_patient);
 
         PatientList = new Vector<PatientDetailsBean>();

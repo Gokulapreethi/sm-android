@@ -843,13 +843,18 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						String[] buddy_profile = (String[]) obj;
 						profileDetails.add(buddy_profile);
 					} else if (obj instanceof ShareReminder) {
+						Log.d("SYNC","--->Login Responnse==>shareReminder");
+
 						ShareReminder sr = (ShareReminder) obj;
 						if (sr.getStatus().equalsIgnoreCase("new")) {
+							Log.d("SYNC","--->Login Respose==>shareReminder if File is New");
 
 							String message = "getReminderdatetime : "
 									+ sr.getReminderdatetime() + ", id : "
 									+ sr.getId() + ", getRemindertz : "
 									+ sr.getRemindertz();
+							Log.d("SYNC","-->if file New,message is "+message);
+
 							SingleInstance.printLog("Signin", message, "INFO",
 									null);
 							if (sr.getStatus().equals("new")) {
@@ -887,7 +892,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						.add(value);
 
 			}
-			Log.i("share123", "shared file size : "
+			Log.i("SYNC", "shared file size : "
 					+ WebServiceReferences.shareRemainderArray.size());
 			if (WebServiceReferences.shareRemainderArray.size() > 0) {
 				FilesFragment filesFragment = FilesFragment

@@ -160,18 +160,18 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
 			Log.i("dateformat", "yesterday :: " + yesterday);
 
 			if (receivedDate.compareTo(today) == 0) {
-				holder.dateTime.setText("Today " + receivedTimes[1] + todayDate[2]);
+				holder.header.setText("Today ");
 				header1="Today";
 
 			} else if (receivedDate.compareTo(yesterday) == 0) {
-				holder.dateTime.setText("Yesterday");
+				holder.header.setText("Yesterday");
 				header1="Yesterday";
 			} else {
 				SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
 				SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
 				Date d1 = dateformat.parse(time(df));
 				String newdate = sdf.format(d1);
-				holder.dateTime.setText(newdate);
+				holder.header.setText(newdate);
 				header1=time(df);
 				holder.header.setText(newdate);
 

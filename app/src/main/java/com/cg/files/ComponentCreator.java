@@ -426,6 +426,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 					deletePatient.setVisibility(View.GONE);
 					audio.setText("Record Audio File");
 					document.setText("Upload document");
+					document.setBackgroundColor(getResources().getColor(R.color.blue2));
 					cancel.setOnClickListener(new View.OnClickListener() {
 						@Override
 						public void onClick(View view) {
