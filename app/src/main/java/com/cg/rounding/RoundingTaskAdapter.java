@@ -2,6 +2,7 @@ package com.cg.rounding;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
@@ -37,6 +39,8 @@ public class RoundingTaskAdapter extends ArrayAdapter<TaskDetailsBean> {
     private Context context;
     ImageLoader imageLoader;
     Vector<TaskDetailsBean> tasklist;
+    Handler handler = new Handler();
+
 
     public RoundingTaskAdapter(Context context, int textViewResourceId,
                                   Vector<TaskDetailsBean> taskList) {
@@ -136,13 +140,20 @@ public class RoundingTaskAdapter extends ArrayAdapter<TaskDetailsBean> {
                             @Override
                             public void onCheckedChanged(CompoundButton arg0,
                                                          boolean isChecked) {
-                                if (isChecked) {
-                                    holder.chbox1.setEnabled(false);
-                                    tBean.setTaskstatus("1");
-                                    DBAccess.getdbHeler().insertorUpdatTaskDetails(tBean);
-                                    WebServiceReferences.webServiceClient.SetTaskRecord(tBean, SingleInstance.mainContext);
-                                } else {
+                                if(holder.doctorname.getText().toString().equalsIgnoreCase("Unassigned")) {
+                                    Log.i("ppp", "else Unassigned");
+                                    showToast("Please assigned the task to the member ");
+                                    holder.chbox1.setChecked(false);
+                                }else{
+                                    Log.i("ppp", "Unassigned");
+                                    if (isChecked) {
+                                        holder.chbox1.setEnabled(false);
+                                        tBean.setTaskstatus("1");
+                                        DBAccess.getdbHeler().insertorUpdatTaskDetails(tBean);
+                                        WebServiceReferences.webServiceClient.SetTaskRecord(tBean, SingleInstance.mainContext);
+                                    } else {
 
+                                    }
                                 }
                             }
                         });
@@ -157,7 +168,15 @@ public class RoundingTaskAdapter extends ArrayAdapter<TaskDetailsBean> {
     }
 
 
-
+    private void showToast(final String msg) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
     class ViewHolder {
         TextView patientname;
         TextView doctorname;
@@ -168,4 +187,5 @@ public class RoundingTaskAdapter extends ArrayAdapter<TaskDetailsBean> {
         LinearLayout linear_list;
         CheckBox chbox1;
     }
+
 }

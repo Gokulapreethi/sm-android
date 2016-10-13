@@ -314,6 +314,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
     private RoleAccessBean roleAccessBean;
     private GroupMemberBean memberbean;
     Integer itemID;
+    private String SelectedtaskMember;
 
     //For this boolean used for private button click
     boolean isPrivateBack=false;
@@ -10087,6 +10088,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         Vector<TaskDetailsBean> upcoming = new Vector<TaskDetailsBean>();
         for (TaskDetailsBean bean : tasklist) {
             try {
+                Log.d("ppp", "%%%%%%%% assigned members for the task  " + bean.getAssignedMembers());
                 date1 = myFormat.parse(Today);
                 bean = setDate(bean);
                 date2 = myFormat.parse(bean.getDuedate());
@@ -11817,10 +11819,14 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 //                tv_assigned.setText(assignedMode);
 
                 String addMembers = "";
+
                 for (UserBean bean : memberslist) {
                     if (bean.isSelected())
                         addMembers = addMembers + "" + bean.getBuddyName() + ",";
                 }
+                SelectedtaskMember=addMembers;
+                Log.i("patientdetails", "%%%%%%%%********Memberslisted" +SelectedtaskMember);
+
             }
         });
         dialog1.show();
@@ -11865,7 +11871,22 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         else if (assignedMode.equalsIgnoreCase("Unassigned") && statusMode.equalsIgnoreCase("Completed"))
             strQuery = "select * from taskdetails where groupid='" + groupid + "'and taskstatus ='" + "1" +
                     "'and assignmembers ='" + "" + "'";
-        Log.i("patientdetails", "statusDialog " + statusMode + " query " + strQuery);
+
+        else if (assignedMode.equalsIgnoreCase("Assigntoteam") && statusMode.equalsIgnoreCase("ALL")){
+            strQuery = "select * from taskdetails where groupid='" + groupid + "'and assignmembers  NOT LIKE '%" + "" + "%'";
+        Log.i("patientdetails", "team +show all======> " + statusMode + " query " + strQuery);}
+
+        else if (assignedMode.equalsIgnoreCase("Assigntoteam") && statusMode.equalsIgnoreCase("Active")){
+            strQuery = "select * from taskdetails where groupid='" + groupid + "'and taskstatus ='" + "0" +
+                     "'and assignmembers NOT LIKE '%" + "" + "%'";
+        Log.i("patientdetails", "team +active " + statusMode + " query " + strQuery);}
+
+        else if (assignedMode.equalsIgnoreCase("Assigntoteam") && statusMode.equalsIgnoreCase("Completed")){
+            strQuery = "select * from taskdetails where groupid='" + groupid + "'and taskstatus ='" + "1" +
+                    "'and assignmembers NOT LIKE '%" + "" + "%'";
+        Log.i("patientdetails", "team +completed " + statusMode + " query " + strQuery);}
+
+        Log.i("patientdetails", "statusDialog 1" + statusMode + " query " + strQuery);
         Vector<TaskDetailsBean> tasklist = DBAccess.getdbHeler().getAllTaskDetails(strQuery);
         Collections.sort(tasklist, new TaskDateComparator());
         Vector<TaskDetailsBean> taskList = getdatelist(tasklist);
