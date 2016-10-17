@@ -82,6 +82,7 @@ public class SingleInstance {
 	public static Vector<FileDetailsBean> fileDetails=new Vector<FileDetailsBean>();
 //	public static HashMap<String,Object> current_open_activity_detail = new HashMap<String,Object>();
 	public static HashMap<Context,HashMap<String,Object>> current_open_activity_detail = new HashMap<Context,HashMap<String,Object>>();
+	public static String build_version;
 
 	public static ChatProcesser getChatProcesser() {
 		if (chatProcesser == null) {

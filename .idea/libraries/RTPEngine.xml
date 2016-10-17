@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="RTPEngine">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/app/libs/RTPEngine.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

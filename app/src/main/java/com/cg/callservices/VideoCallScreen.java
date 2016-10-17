@@ -10,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.media.MediaPlayer;
@@ -34,6 +33,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.FrameLayout;
@@ -125,43 +125,43 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	private boolean hasRemoved = false;
 	private boolean hasRemoved2 = false;
 	Preview pv = null;
-	FrameLayout videopreview = null;
+	FrameLayout preview_frameLayout , buddyframelayout01,  buddyframelayout02, buddyframelayout03;
 	Button flipcamera;
 	public static Context context = null;
 	boolean mReceiveVideo = false;
 	boolean mReceiveVideo2 = false;
 	// private AudioProperties audioProperties=null;
-	RelativeLayout layout , own_video_layout;
-	RelativeLayout relative_layout12, relative_layout2 , relative_layout3;
+	RelativeLayout layout , own_video_layout,video_layouts, profile_view1, profile_view2, profile_view3;
+
+	private  int video_viewWidth , video_viewHeight;
+
 	private PlaybackUpdater mProgressUpdater = new PlaybackUpdater();
 	int mPlayingPosition = 0;
 	//
 	int obtainWidth = 0;
 	int obtainHeight = 0;
 	String callTypeForServer = "201";
-	private ArrayList<UserBean> membersList=new ArrayList<UserBean>();
+//	private ArrayList<UserBean> membersList=new ArrayList<UserBean>();
 
 	// test
 	private CallDispatcher objCallDispatcher = (CallDispatcher) WebServiceReferences.callDispatch
 			.get("calldispatch");
 
 //	GLSurfaceView gls = null;
-	private static GLSurfaceView glSurfaceView = null;
-	private static GLSurfaceView glSurfaceView12 = null;
+	private static GLSurfaceView glSurfaceView1 = null;
 	private static GLSurfaceView glSurfaceView2 = null;
 	private static GLSurfaceView glSurfaceView3 = null;
 
 	TextView on_off1,onoff_preview,participant_name1,participant_name12,participant_name2,participant_name3,ownername;
 	ImageView buddyimageview1, buddyimageview12, buddyimageview2, buddyimageview3, ownimageview ,on_off12,on_off2,on_off3;
-	Timer buddytimer1 = null, buddytimer2 = null, buddyTimer3 = null;
-	VideoOnOffTimerTask buddyTimerTask1 = null, buddyTimerTask2 = null, buddyTimerTask3 = null;
-//	private VideoFrameRenderer frameRenderer = null;
+	Timer buddytimer1 = null;
+	VideoOnOffTimerTask buddyTimerTask1 = null;
+
 	private PreviewFrameSink frameSink = null, frameSink12 = null, frameSink2 = null, frameSink3 = null;
 
-//	private byte[] frame = null;
 	private ByteBuffer frameBuffer = null, frameBuffer12 = null, frameBuffer2 = null, frameBuffer3 = null;
 
-	private boolean preview_hided = false,preview_hided_completed = false;
+	private boolean preview_hided = false;
 	private String buddyName;
 	private Queue videoQueue;
 	private String host;
@@ -177,7 +177,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 	private String strCallStartTime = "";
 
-	private FrameLayout videosurface, videosurface12, videosurface2, videosurface3;
+//	private FrameLayout videosurface, videosurface2, videosurface3;
 
 	private AudioProperties audioProperties = null;
 	private boolean speaker = false;
@@ -188,11 +188,12 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	private ImageView loudSpeaker;
 	// TextView tvTitle;
 	String tvTitlename = null;
-	FrameLayout.LayoutParams layoutParamsf, layoutParamsf12, layoutParamsf2, layoutParamsf3;
+
+	private FrameLayout.LayoutParams surfaceview_layoutParams;
 
 	String conferenceWindowTitle = "Conference People";
 	String title = conferenceWindowTitle;
-	// RenderBitmap renderBitmap = null;
+
 	private KeyguardManager keyguardManager;
 	private KeyguardLock lock;
 
@@ -204,12 +205,11 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 	MediaPlayer mediaPlayer;
 	boolean video_1_shown= true, video_2_shown= true;
-	// String acStatus=null;
 
 	private static VideoCallScreen videoCallScreen;
 	public View rootView;
 	Bundle bundlevalues;
-	RelativeLayout mainHeader,video_minimize;
+	RelativeLayout mainHeader;
 
 	public static VideoCallScreen getInstance(Context maincontext) {
 		try {
@@ -233,7 +233,6 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		super.onAttach(arg0);
 		activityOrientation = arg0.getRequestedOrientation();
 
-		arg0.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 	}
 
 	/**
@@ -277,15 +276,6 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);
 			mainHeader.setVisibility(View.GONE);
 
-//			min_outcall=(ImageView)getActivity().findViewById(R.id.min_outcall);
-//			min_outcall.setVisibility(View.GONE);
-
-//			min_incall=(ImageView)getActivity().findViewById(R.id.min_incall);
-//			min_incall.setVisibility(View.GONE);
-
-//			video_minimize = (RelativeLayout) getActivity().findViewById(R.id.video_minimize);
-//			video_minimize.setVisibility(View.GONE);
-
 			keyguardManager = (KeyguardManager) context.getSystemService(Activity.KEYGUARD_SERVICE);
 			lock = keyguardManager.newKeyguardLock(context.KEYGUARD_SERVICE);
 			lock.disableKeyguard();
@@ -319,6 +309,22 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							// }
 							// switchVideo(bundle.getString("newbuddy"));
 							member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
+							handler.postDelayed(new Runnable() {
+								@Override
+								public void run() {
+
+									RecordTransactionBean transactionBean = new RecordTransactionBean();
+									transactionBean.setSessionid(sessionid);
+									transactionBean.setHost(CallDispatcher.LoginUser);
+									transactionBean.setParticipants("");
+									if (preview_hided) {
+										transactionBean.setDisableVideo("yes");
+									} else {
+										transactionBean.setDisableVideo("no");
+									}
+									processCallRequest(2, transactionBean, "disablevideo");
+								}
+							}, 2000);
 						} else if (bundle.containsKey("newrequest")) {
 							SignalingBean bean = (SignalingBean) bundle
 									.getSerializable("newrequest");
@@ -480,8 +486,9 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							}
 
 							if (CallDispatcher.conferenceMembers.size() > 0) {
-								switchVideo(CallDispatcher.conferenceMembers
-										.get(0));
+								resetVideoViews(!preview_hided);
+//								switchVideo(CallDispatcher.conferenceMembers
+//										.get(0));
 								if (bundle.getString("bye").equals(
 										tvTitlename.trim())) {
 									tvTitlename = CallDispatcher.conferenceMembers
@@ -534,18 +541,10 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 								frameSink.setNextFrame(frameBuffer);
 								frameSink.getFrameLock().unlock();
 
-								glSurfaceView.requestRender();
+								glSurfaceView1.requestRender();
 
 //							}
-							} else if(bundle.getInt("windowid") == 12) {
-								frameSink12.getFrameLock().lock();
-								frameBuffer12.position(0);
-								frameBuffer12.put(bundle.getByteArray("img"));
-								frameBuffer12.position(0);
-								frameSink12.setNextFrame(frameBuffer12);
-								frameSink12.getFrameLock().unlock();
-								glSurfaceView12.requestRender();
-							} else if(bundle.getInt("windowid") == 1) {
+							}  else if(bundle.getInt("windowid") == 1) {
 //							if(video_2_shown) {
 								Log.i("NotesVideo","video_2_shown");
 								frameSink2.getFrameLock().lock();
@@ -858,24 +857,30 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 //			rotation.setRepeatCount(Animation.INFINITE);
 //			rootView.startAnimation(rotation);
 //
-				LinearLayout callControls = (LinearLayout) rootView.findViewById
-						(R.id.LinearLayout01);
-				videopreview = (FrameLayout) rootView
-						.findViewById(R.id.VideoView01);
-				flipcamera = (Button) rootView.findViewById(R.id.flipcamera);
+				video_layouts = (RelativeLayout)rootView.findViewById(R.id.video_views);
 
-//			RotateAnimation rotate= (RotateAnimation)AnimationUtils.loadAnimation(context,R.anim.rotate_xml);
-//			callControls.setAnimation(rotate);
+				preview_frameLayout = new FrameLayout(context);
+				preview_frameLayout.setId(0);
+				buddyframelayout01 = new FrameLayout(context);
+				buddyframelayout01.setId(1);
+				buddyframelayout02 = new FrameLayout(context);
+				buddyframelayout02.setId(2);
+				buddyframelayout03 = new FrameLayout(context);
+				buddyframelayout03.setId(3);
 
-				videosurface = (FrameLayout) rootView
-						.findViewById(R.id.VideoView02);
-				videosurface12 = (FrameLayout) rootView
-						.findViewById(R.id.VideoView0203);
-				videosurface2 = (FrameLayout) rootView
-						.findViewById(R.id.VideoView03);
+				profile_view1 = new RelativeLayout(context);
+				profile_view1.setId(1);
+				profile_view2 = new RelativeLayout(context);
+				profile_view2.setId(2);
+				profile_view3 = new RelativeLayout(context);
+				profile_view3.setId(3);
 
-				videosurface3 = (FrameLayout) rootView
-						.findViewById(R.id.VideoView04);
+				LayoutParams layoutParams_flipcamera=new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, Gravity.LEFT | Gravity.CENTER_VERTICAL);
+
+				flipcamera = new Button(context);
+				flipcamera.setLayoutParams(layoutParams_flipcamera);
+				flipcamera.setBackgroundResource(R.drawable.call_flip_camera);
+
 				chTimer = (Chronometer)rootView.findViewById(R.id.call_timer);
 				chTimer.setVisibility(View.VISIBLE);
 				chTimer.start();
@@ -898,55 +903,32 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 				final ImageView btn_video = (ImageView) rootView.findViewById(R.id.btn_video);
 
-//				glSurfaceView = (GLSurfaceView) rootView.findViewById(R.id.surfaceview02);
-//				glSurfaceView12 = (GLSurfaceView) rootView.findViewById(R.id.surfaceview0203);
-//				glSurfaceView2 = (GLSurfaceView) rootView.findViewById(R.id.surfaceview03);
-//				glSurfaceView3 = (GLSurfaceView) rootView.findViewById(R.id.surfaceview04);
-
-				onoff_preview = (TextView) rootView.findViewById(R.id.onoffpreview);
+//				onoff_preview = (TextView) rootView.findViewById(R.id.onoffpreview);
 				btn_video.setTag(true);
-//				TextView textView = new TextView();
-//				on_off1 = (ImageView) rootView.findViewById(R.id.onoff2);
-//				on_off1.setTag(true);
-//				on_off12 = (ImageView) rootView.findViewById(R.id.onoff23);
-//				on_off12.setTag(true);
-//				on_off2 = (ImageView) rootView.findViewById(R.id.onoff3);
-//				on_off2.setTag(true);
-//				on_off3 = (ImageView) rootView.findViewById(R.id.onoff4);
-//				on_off3.setTag(true);
 
 				ownername = (TextView) rootView.findViewById(R.id.name1);
 				own_video_layout = (RelativeLayout) rootView.findViewById(R.id.ownvideolayout);
 				top_videoWindows = (LinearLayout) rootView.findViewById(R.id.top_videowindowlayouts);
 				bottom_videowindows = (LinearLayout) rootView.findViewById(R.id.bottom_videowindowlayout);
-				participant_name1 = (TextView) rootView.findViewById(R.id.name2);
-				participant_name12 = (TextView) rootView.findViewById(R.id.name23);
-				participant_name2 = (TextView) rootView.findViewById(R.id.name3);
-				participant_name3 = (TextView) rootView.findViewById(R.id.name4);
-
-				ownimageview = (ImageView) rootView.findViewById(R.id.own_image);
-				buddyimageview1 = (ImageView) rootView.findViewById(R.id.user_image2);
-				buddyimageview12 = (ImageView) rootView.findViewById(R.id.user_image23);
-				buddyimageview2 = (ImageView) rootView.findViewById(R.id.user_image3);
-				buddyimageview3 = (ImageView) rootView.findViewById(R.id.user_image4);
+				ViewTreeObserver viewTreeObserver = video_layouts.getViewTreeObserver();
+				if (viewTreeObserver.isAlive()) {
+					viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+						@Override
+						public void onGlobalLayout() {
+							video_layouts.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+							video_viewWidth = video_layouts.getWidth();
+							video_viewHeight = video_layouts.getHeight();
+//						Log.i(TAG,"video_viewWidth : "+video_viewWidth+" video_viewHeight : "+video_viewHeight);
+						}
+					});
+				}
 
 				total_buddyList = ContactsFragment.getBuddyList();
 				imageLoader = new ImageLoader(context);
 
 				numOfCam = Camera.getNumberOfCameras();
 
-//				LinearLayout llCallControl = (LinearLayout) rootView
-//						.findViewById(R.id.LinearLayout01);
-
 				CallDispatcher.videoScreenVisibleState = true;
-//				ScrollView llControlss = new ScrollView(context);
-//				llControlss.setLayoutParams(new LayoutParams(
-//						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-//				llControlss.setVerticalScrollBarEnabled(false);
-//			LinearLayout llControls = new LinearLayout(context);
-//			llControls.setLayoutParams(new LayoutParams(
-//					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-//			llControls.setOrientation(LinearLayout.VERTICAL);
 
 				ImageView add = (ImageView) rootView.findViewById(R.id.add);
 
@@ -958,7 +940,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 				add.setImageResource(R.drawable.call_add);
 				add.setPadding(0, 20, 0, 0);
 
-				minimize_btn.setOnClickListener(new View.OnClickListener() {
+				minimize_btn.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						addShowHideListener();
@@ -1177,60 +1159,53 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 					}
 				});
 
-//			llControls.addView(add, layoutParams);
-//			llControls.addView(mic, layoutParams);
-//			llControls.addView(loudSpeaker, layoutParams);
-//			llControls.addView(hangup, layoutParams);
-//			llControls.addView(buddies, layoutParams);
-//			llControls.addView(btn_loc, layoutParams);
-//			llControlss.addView(llControls);
-
-//				RelativeLayout rlForAlignment = new RelativeLayout(context);
-//				rlForAlignment.setLayoutParams(new LayoutParams(
-//						RelativeLayout.LayoutParams.FILL_PARENT,
-//						RelativeLayout.LayoutParams.FILL_PARENT));
-
-//				RelativeLayout.LayoutParams lpAlignCenter = new RelativeLayout.LayoutParams(
-//						RelativeLayout.LayoutParams.WRAP_CONTENT,
-//						RelativeLayout.LayoutParams.WRAP_CONTENT);
-//				lpAlignCenter.addRule(RelativeLayout.CENTER_IN_PARENT);
-
-//				rlForAlignment.addView(llControlss, lpAlignCenter);
-
-//			llCallControl.addView(rlForAlignment);
-				// 2222222222
-
-//				final LinearLayout showBuddies = new LinearLayout(context);
-//				showBuddies.setBackgroundColor(Color.TRANSPARENT);
-//			/* Code Clean up */
-//				showBuddies.setOrientation(LinearLayout.VERTICAL);
-//				showBuddies.setGravity(Gravity.CENTER);
-//				showBuddies.setLayoutParams(new LayoutParams(
-//						LayoutParams.FILL_PARENT, 50));
-//				MyAbsoluteLayout mal = new MyAbsoluteLayout(context);
-
-//				TextView tv = new TextView(context);
-//				tv.setText("Test");
-//				tv.setTextSize(20);
-//				tv.setGravity(Gravity.CENTER);
-				// showBuddies.addView(tv);
-//				showBuddies.setVisibility(View.VISIBLE);
-				// showBuddies.setVisibility(View.INVISIBLE);
 
 				videoQueue = new Queue();
 
 				AppMainActivity.commEngine.setVideoCallback(this);
 				getGLSurfaceView(context);
-				getGLSurfaceView12(context);
 				getGLSurfaceView2(context);
 				getGLSurfaceView3(context);
 
 				assignOnOffIcons(context);
-
+				surfaceview_layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
+						ViewGroup.LayoutParams.MATCH_PARENT);
 				on_off1.setTag(true);
 				on_off12.setTag(true);
 				on_off2.setTag(true);
 				on_off3.setTag(true);
+
+				RelativeLayout.LayoutParams buddyimageview_params = new RelativeLayout.LayoutParams(130,
+						130);
+				buddyimageview_params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+				buddyimageview1 = new org.cryse.android.controls.RoundedImageView(context);
+				buddyimageview1.setId(1);
+				buddyimageview2 = new org.cryse.android.controls.RoundedImageView(context);
+				buddyimageview2.setId(2);
+				buddyimageview3 = new org.cryse.android.controls.RoundedImageView(context);
+				buddyimageview3.setId(3);
+				buddyimageview1.setLayoutParams(buddyimageview_params);
+				buddyimageview2.setLayoutParams(buddyimageview_params);
+				buddyimageview3.setLayoutParams(buddyimageview_params);
+
+				participant_name1 = new TextView(context);
+				participant_name2 = new TextView(context);
+				participant_name3 = new TextView(context);
+				RelativeLayout.LayoutParams participant_name_params1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+						ViewGroup.LayoutParams.MATCH_PARENT);
+				participant_name_params1.addRule(RelativeLayout.BELOW, buddyimageview1.getId());
+				participant_name_params1.addRule(RelativeLayout.CENTER_HORIZONTAL,RelativeLayout.TRUE);
+				RelativeLayout.LayoutParams participant_name_params2 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+						ViewGroup.LayoutParams.MATCH_PARENT);
+				participant_name_params2.addRule(RelativeLayout.BELOW, buddyimageview2.getId());
+				participant_name_params2.addRule(RelativeLayout.CENTER_HORIZONTAL,RelativeLayout.TRUE);
+				RelativeLayout.LayoutParams participant_name_params3 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+						ViewGroup.LayoutParams.MATCH_PARENT);
+				participant_name_params3.addRule(RelativeLayout.BELOW, buddyimageview3.getId());
+				participant_name_params3.addRule(RelativeLayout.CENTER_HORIZONTAL,RelativeLayout.TRUE);
+				participant_name1.setLayoutParams(participant_name_params1);
+				participant_name2.setLayoutParams(participant_name_params2);
+				participant_name3.setLayoutParams(participant_name_params3);
 
 				boolean hasFrontCamera = context.getPackageManager()
 						.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT);
@@ -1255,17 +1230,11 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 				pv.setZOrderOnTop(false);
 
-				videopreview.addView(pv);
-				// ......
+				preview_frameLayout.addView(pv);
 
-				glSurfaceView.setZOrderOnTop(false);
-//				glSurfaceView.setZOrderMediaOverlay(true);
+				glSurfaceView1.setZOrderOnTop(false);
 				glSurfaceView2.setZOrderOnTop(false);
-//			glSurfaceView2.setZOrderMediaOverlay(true);
-				glSurfaceView12.setZOrderOnTop(false);
-//				glSurfaceView12.setZOrderMediaOverlay(true);
 				glSurfaceView3.setZOrderOnTop(false);
-//				glSurfaceView3.setZOrderMediaOverlay(true);
 
 				double c = nosHeight * 1.1;
 				c1 = (int) c;
@@ -1288,40 +1257,15 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 //				}
 
 				// Log.d("NN", "height width " + c1);
-				layoutParamsf = new FrameLayout.LayoutParams(LayoutParams.FILL_PARENT,
-						LayoutParams.MATCH_PARENT);
 				layout = getCallConnectingView();
-
-				layoutParamsf12 = new FrameLayout.LayoutParams(LayoutParams.FILL_PARENT,
-						LayoutParams.MATCH_PARENT);
-				relative_layout12 = getCallConnectingView();
-
-				layoutParamsf2 = new FrameLayout.LayoutParams(LayoutParams.FILL_PARENT,
-						LayoutParams.MATCH_PARENT);
-				relative_layout2 = getCallConnectingView();
-
-				layoutParamsf3 = new FrameLayout.LayoutParams(LayoutParams.FILL_PARENT,
-						LayoutParams.MATCH_PARENT);
-				relative_layout3 = getCallConnectingView();
 
 				// layout.setLayoutParams(new
 				// LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT));
-
-			videosurface.addView(glSurfaceView, layoutParamsf);
-			videosurface12.addView(glSurfaceView12, layoutParamsf12);
-			videosurface2.addView(glSurfaceView2, layoutParamsf2);
-			videosurface3.addView(glSurfaceView3,layoutParamsf3);
-
-				videosurface.addView(on_off1);
-				videosurface2.addView(on_off2);
-				videosurface12.addView(on_off12);
-				videosurface3.addView(on_off3);
 
 				AnimationThread animationThread = new AnimationThread(
 						VideoCallScreen.this);
 				timer.schedule(animationThread, 500, 500);
 
-				// videosurface.addView(layout, layoutParamsf);
 
 //				final Runnable runnable = new Runnable() {
 //
@@ -1332,7 +1276,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 //					}
 //				};
 
-//			glSurfaceView.setOnTouchListener(new OnTouchListener() {
+//			glSurfaceView1.setOnTouchListener(new OnTouchListener() {
 //
 //				@Override
 //				public boolean onTouch(View v, MotionEvent event) {
@@ -1350,76 +1294,11 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 //				}
 //			});
 
-//			videocall = new Handler() {
-//				public void handleMessage(Message result) {
-//					super.handleMessage(result);
-//					/* Code Clean up */
-//					// Bundle bundle = (Bundle) result.obj;
-//
-//				}
-//			};
-//			mal.addView(callControls, new MyAbsoluteLayout.LayoutParams(
-//					LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 0, 0));
-
-//				mal.addView(showBuddies, new MyAbsoluteLayout.LayoutParams(
-//						LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 0,
-//						nosHeight - 200));
 
 				videoThread = new VideoThreadMultiWindow(videoQueue);
 				videoThread.setHandler(videoHandler);
 				videoThread.start();
 
-//			textView1 = new TextView(context);
-//			textView1.setText("one");
-//
-//			textView2 = new TextView(context);
-//			textView2.setText("two");
-//
-//			textView3 = new TextView(context);
-//			textView3.setText(" window ");
-
-//			mal.addView(textView1, new MyAbsoluteLayout.LayoutParams(
-//					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 0,
-//					nosHeight - 300));
-//			mal.addView(textView2, new MyAbsoluteLayout.LayoutParams(
-//					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 0,
-//					nosHeight - 200));
-//
-//			mal.addView(textView3, new MyAbsoluteLayout.LayoutParams(
-//					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 0,
-//					nosHeight - 400));
-//			setContentView(mal);
-
-
-//			textView1.setOnClickListener(new OnClickListener() {
-//				@Override
-//				public void onClick(View view) {
-//					if(CallDispatcher.conferenceMembers.size() > 0) {
-//						onOffVideo(CallDispatcher.conferenceMembers.get(0));
-//						Log.i("NotesVideo", "video_1_shown on click ");
-//					}
-////					video_1_shown = !video_1_shown;
-////					Log.i("NotesVideo"," video_1_shown = "+video_1_shown);
-//				}
-//			});
-
-//			textView2.setOnClickListener(new OnClickListener() {
-//				@Override
-//				public void onClick(View view) {
-//					if(CallDispatcher.conferenceMembers.size() > 1) {
-//						onOffVideo(CallDispatcher.conferenceMembers.get(1));
-//					}
-////					video_2_shown = !video_2_shown;
-//				}
-//			});
-//
-//			textView3.setOnClickListener(new OnClickListener() {
-//				@Override
-//				public void onClick(View view) {
-////					onOffVideo("preethi1");
-//					video_1_shown = !video_1_shown;
-//				}
-//			});
 
 				flipcamera.setOnClickListener(new OnClickListener() {
 					@Override
@@ -1435,7 +1314,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 								if (pv != null) {
 									pv.stopPreview();
-									videopreview.removeView(pv);
+									preview_frameLayout.removeView(pv);
 									pv = null;
 									AppMainActivity.commEngine.setVideoParameters(
 											WebServiceReferences.VIDEO_WIDTH,
@@ -1445,9 +1324,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 //								pv.setZOrderOnTop(false);
 
-//							videopreview.addView(pv);
-
-									videopreview.addView(pv, 0);
+									preview_frameLayout.addView(pv, 0);
 								}
 							}
 						}
@@ -1471,32 +1348,6 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							transactionBean.setDisableVideo("yes");
 							processCallRequest(2, transactionBean, "disablevideo");
 							btn_video.setImageResource(R.drawable.call_video);
-//
-//							ownimageview.setVisibility(View.VISIBLE);
-//							ownername.setVisibility(View.VISIBLE);
-//							flipcamera.setVisibility(View.GONE);
-//							videopreview.setVisibility(View.GONE);
-//							boolean have_image = false;
-//							ProfileBean bean = SingleInstance.myAccountBean;
-//							String name;
-//							if (bean.getFirstname() != null && bean.getLastname() != null)
-//								name = bean.getFirstname() + " " + bean.getLastname();
-//							else
-//								name = CallDispatcher.LoginUser;
-//							ownername.setText(name);
-//							String pic_path = bean.getPhoto();
-//							if (pic_path != null) {
-//								if (!pic_path.contains("COMMedia")) {
-//									pic_path = Environment
-//											.getExternalStorageDirectory()
-//											+ "/COMMedia/" + pic_path;
-//								}
-//								have_image = true;
-//								imageLoader.DisplayImage(pic_path, ownimageview, R.drawable.icon_buddy_aoffline);
-//							}
-//							if (!have_image) {
-//								imageLoader.DisplayImage("", ownimageview, R.drawable.icon_buddy_aoffline);
-//							}
 						} else {
 							btn_video.setImageResource(R.drawable.call_video_active);
 							RecordTransactionBean transactionBean = new RecordTransactionBean();
@@ -1518,12 +1369,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 					public void onClick(View view) {
 						Log.i("VideoCall","onoff_preview.setOnClickListener");
 						preview_hided = true;
-						own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
-						own_video_layout.getLayoutParams().width = 1;
-//						own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(1, 1, 1.0f));
-//						own_video_layout.setVisibility(View.GONE);
-//						videopreview.setVisibility(View.GONE);
-						hideOwnVideo();
+						resetVideoViews(!preview_hided);
 					}
 				});
 
@@ -1533,9 +1379,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 						boolean shown = (boolean) on_off1.getTag();
 
 						onOffVideoForSelectedUser(0, !shown);
-//						on_off1.setTag(!shown);
-						if(preview_hided)
-						hideOwnVideo();
+						resetVideoViews(!preview_hided);
 					}
 				});
 
@@ -1544,9 +1388,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 					public void onClick(View view) {
 						boolean shown = (boolean) on_off12.getTag();
 						onOffVideoForSelectedUser(1, !shown);
-//						on_off12.setTag(!shown);
-						if(preview_hided)
-						hideOwnVideo();
+						resetVideoViews(!preview_hided);
 					}
 				});
 
@@ -1555,9 +1397,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 					public void onClick(View view) {
 						boolean shown = (boolean) on_off2.getTag();
 						onOffVideoForSelectedUser(1, !shown);
-//						on_off2.setTag(!shown);
-						if(preview_hided)
-						hideOwnVideo();
+						resetVideoViews(!preview_hided);
 					}
 				});
 
@@ -1566,9 +1406,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 					public void onClick(View view) {
 						boolean shown = (boolean) on_off3.getTag();
 						onOffVideoForSelectedUser(2, !shown);
-//						on_off3.setTag(!shown);
-						if(preview_hided)
-						hideOwnVideo();
+						resetVideoViews(!preview_hided);
 					}
 				});
 
@@ -1653,73 +1491,6 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 	}
 
-	private void hideOwnVideo(){
-		if(WebServiceReferences.videoSSRC_total_list.size() == 0) {
-			own_video_layout.getLayoutParams().height = 1;
-			own_video_layout.getLayoutParams().width = 1;
-			own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(1, 1, 1.0f));
-		} else {
-			if (WebServiceReferences.videoSSRC_total_list.size() > 0) {
-				int size = WebServiceReferences.videoSSRC_total_list.size();
-				if (size == 1) {
-					bottom_videowindows.setVisibility(View.GONE);
-					videosurface.setVisibility(View.VISIBLE);
-					glSurfaceView12.setVisibility(View.GONE);
-					videosurface12.setVisibility(View.GONE);
-					videosurface2.setVisibility(View.GONE);
-					videosurface3.setVisibility(View.GONE);
-
-					if (preview_hided) {
-						own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
-						own_video_layout.getLayoutParams().width = 1;
-						videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 0.0f));
-						own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 3.0f));
-					} else {
-						videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-						own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-					}
-				} else if (size == 2) {
-					bottom_videowindows.setVisibility(View.GONE);
-					videosurface.setVisibility(View.VISIBLE);
-					glSurfaceView12.setVisibility(View.VISIBLE);
-					videosurface12.setVisibility(View.VISIBLE);
-					videosurface2.setVisibility(View.GONE);
-					videosurface3.setVisibility(View.GONE);
-					if (preview_hided) {
-						own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
-						own_video_layout.getLayoutParams().width = 1;
-
-						videosurface12.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 0.75f));
-						videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 0.75f));
-						own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-					} else {
-						videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.0f));
-						own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.0f));
-						videosurface12.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.0f));
-					}
-				} else if (size == 3) {
-					glSurfaceView12.setVisibility(View.GONE);
-					videosurface.setVisibility(View.VISIBLE);
-					videosurface12.setVisibility(View.GONE);
-					videosurface2.setVisibility(View.VISIBLE);
-					videosurface3.setVisibility(View.VISIBLE);
-					bottom_videowindows.setVisibility(View.VISIBLE);
-					if (preview_hided) {
-						own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
-						own_video_layout.getLayoutParams().width = 1;
-
-						videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 0.0f));
-						own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 3.0f));
-					} else {
-						videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-						own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-					}
-				}
-
-			}
-		}
-	}
-
 	private void onOffVideoForSelectedUser(final int selectedposition, final boolean onoff){
 		if(WebServiceReferences.videoSSRC_total_list != null && WebServiceReferences.videoSSRC_total_list.size() > selectedposition){
 			final int size = WebServiceReferences.videoSSRC_total_list.size();
@@ -1736,135 +1507,10 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 				public void run() {
 					Log.i("VideoCall","came to onOffVideoForSelectedUser : onoff : "+onoff);
 					if (onoff) {
-						if(selectedposition == 0) {
-							videosurface.setVisibility(View.GONE);
-//							buddyimageview1.setVisibility(View.GONE);
-							glSurfaceView.setVisibility(View.GONE);
 
-//							buddyTimerTask1 = new VideoOnOffTimerTask(buddy_name,onoff);
-//							buddytimer1 = new Timer();
-//							buddytimer1.schedule(buddyTimerTask1,2000,2000);
-
-						} else if(selectedposition == 1) {
-							if(size == 2) {
-								videosurface12.setVisibility(View.GONE);
-								glSurfaceView12.setVisibility(View.GONE);
-								videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-								own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-							} else {
-								videosurface2.setVisibility(View.GONE);
-								glSurfaceView2.setVisibility(View.GONE);
-								videosurface12.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-								own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-							}
-						} else if(selectedposition == 2) {
-							videosurface3.setVisibility(View.GONE);
-//							buddyimageview3.setVisibility(View.GONE);
-							glSurfaceView3.setVisibility(View.GONE);
-						}
 					} else {
 
-						int changed_size = WebServiceReferences.videoSSRC_total_list.size();
-						if (changed_size == 0) {
-							bottom_videowindows.setVisibility(View.GONE);
-							glSurfaceView.setVisibility(View.GONE);
-							videosurface.setVisibility(View.GONE);
-
-							glSurfaceView12.setVisibility(View.GONE);
-							glSurfaceView2.setVisibility(View.GONE);
-							glSurfaceView3.setVisibility(View.GONE);
-							videosurface12.setVisibility(View.GONE);
-							videosurface2.setVisibility(View.GONE);
-							videosurface3.setVisibility(View.GONE);
-							//							videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-							//							own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-						} else if (changed_size == 1) {
-							glSurfaceView.setVisibility(View.VISIBLE);
-							bottom_videowindows.setVisibility(View.GONE);
-							videosurface.setVisibility(View.VISIBLE);
-							glSurfaceView12.setVisibility(View.GONE);
-							glSurfaceView2.setVisibility(View.GONE);
-							glSurfaceView3.setVisibility(View.GONE);
-							videosurface12.setVisibility(View.GONE);
-							videosurface2.setVisibility(View.GONE);
-							videosurface3.setVisibility(View.GONE);
-							videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-							own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-						} else if (changed_size == 2) {
-							glSurfaceView.setVisibility(View.VISIBLE);
-							bottom_videowindows.setVisibility(View.GONE);
-							videosurface.setVisibility(View.VISIBLE);
-							glSurfaceView12.setVisibility(View.VISIBLE);
-							glSurfaceView2.setVisibility(View.GONE);
-							glSurfaceView3.setVisibility(View.GONE);
-							videosurface12.setVisibility(View.VISIBLE);
-							videosurface2.setVisibility(View.GONE);
-							videosurface3.setVisibility(View.GONE);
-							videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1f));
-							own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1f));
-						} else if (changed_size == 3) {
-							glSurfaceView.setVisibility(View.VISIBLE);
-							glSurfaceView2.setVisibility(View.VISIBLE);
-							glSurfaceView3.setVisibility(View.VISIBLE);
-							videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-							own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-							videosurface3.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1f));
-							glSurfaceView12.setVisibility(View.GONE);
-							bottom_videowindows.setVisibility(View.VISIBLE);
-							videosurface.setVisibility(View.VISIBLE);
-							videosurface12.setVisibility(View.GONE);
-							videosurface3.setVisibility(View.VISIBLE);
-							videosurface2.setVisibility(View.VISIBLE);
-						}
 					}
-//						boolean have_image = false;
-//						for (BuddyInformationBean buddyInformationBean : total_buddyList) {
-//							if (buddyInformationBean.getName().equalsIgnoreCase(buddy_name)) {
-//								String pic_path = buddyInformationBean.getProfile_picpath();
-//								if (pic_path != null) {
-//									have_image = true;
-//									if(selectedposition == 0) {
-//										imageLoader.DisplayImage(pic_path, buddyimageview1, R.drawable.icon_buddy_aoffline);
-//									} else if(selectedposition == 1) {
-//										if(size == 2) {
-//											imageLoader.DisplayImage(pic_path, buddyimageview12, R.drawable.icon_buddy_aoffline);
-//										} else {
-//											imageLoader.DisplayImage(pic_path, buddyimageview2, R.drawable.icon_buddy_aoffline);
-//										}
-//									} else if(selectedposition == 2) {
-//										imageLoader.DisplayImage(pic_path, buddyimageview3, R.drawable.icon_buddy_aoffline);
-//									}
-//								}
-//							}
-//						}
-//						if(selectedposition == 0) {
-//							if (!have_image) {
-//								imageLoader.DisplayImage("", buddyimageview1, R.drawable.icon_buddy_aoffline);
-//							}
-//							buddyimageview1.setVisibility(View.VISIBLE);
-//							glSurfaceView.setVisibility(View.GONE);
-//						} else if(selectedposition == 1) {
-//							if(size == 2) {
-//								if (!have_image) {
-//									imageLoader.DisplayImage("", buddyimageview12, R.drawable.icon_buddy_aoffline);
-//								}
-//								buddyimageview12.setVisibility(View.VISIBLE);
-//								glSurfaceView12.setVisibility(View.GONE);
-//							} else {
-//								if (!have_image) {
-//									imageLoader.DisplayImage("", buddyimageview2, R.drawable.icon_buddy_aoffline);
-//								}
-//								buddyimageview2.setVisibility(View.VISIBLE);
-//								glSurfaceView2.setVisibility(View.GONE);
-//							}
-//						} else if(selectedposition == 2) {
-//							if (!have_image) {
-//								imageLoader.DisplayImage("", buddyimageview3, R.drawable.icon_buddy_aoffline);
-//							}
-//							buddyimageview3.setVisibility(View.VISIBLE);
-//							glSurfaceView3.setVisibility(View.GONE);
-//						}
-//					}
 				}
 			});
 		}
@@ -1908,79 +1554,85 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			}
 
 			if(requiredKey != 0){
-				VideoThreadBean threadBean = WebServiceReferences.videoSSRC_total.get(requiredKey);
-				threadBean.setVideoDisabled(true);
+//				VideoThreadBean threadBean = WebServiceReferences.videoSSRC_total.get(requiredKey);
+//				threadBean.setVideoDisabled(true);
 
 				if(WebServiceReferences.videoSSRC_total_list != null && WebServiceReferences.videoSSRC_total_list.contains(requiredKey)){
 					final int selectedposition =	WebServiceReferences.videoSSRC_total_list.indexOf(requiredKey);
 //					final String buddy_name = (WebServiceReferences.videoSSRC_total.get(turn_ssrc)).getMember_name();
+					final int finalRequiredKey = requiredKey;
 					handler.post(new Runnable() {
 						@Override
 						public void run() {
+							VideoThreadBean threadBean = WebServiceReferences.videoSSRC_total.get(finalRequiredKey);
+//
 							if (vidsignBean.getVideoStoped() == null || vidsignBean.getVideoStoped().equalsIgnoreCase("no")) {
-								if(selectedposition == 0) {
-									buddyimageview1.setVisibility(View.GONE);
-									glSurfaceView.setVisibility(View.VISIBLE);
-
-								} else if(selectedposition == 1) {
-									buddyimageview2.setVisibility(View.GONE);
-									glSurfaceView2.setVisibility(View.VISIBLE);
-								} else if(selectedposition == 2) {
-									buddyimageview3.setVisibility(View.GONE);
-									glSurfaceView3.setVisibility(View.VISIBLE);
-								}
+								threadBean.setVideoDisabled(false);
+//								if(selectedposition == 0) {
+//									buddyimageview1.setVisibility(View.GONE);
+//									glSurfaceView1.setVisibility(View.VISIBLE);
+//
+//								} else if(selectedposition == 1) {
+//									buddyimageview2.setVisibility(View.GONE);
+//									glSurfaceView2.setVisibility(View.VISIBLE);
+//								} else if(selectedposition == 2) {
+//									buddyimageview3.setVisibility(View.GONE);
+//									glSurfaceView3.setVisibility(View.VISIBLE);
+//								}
 							} else {
-								boolean have_image = false;
-								for (BuddyInformationBean buddyInformationBean : total_buddyList) {
-									Log.i("Join","tb image : "+buddyInformationBean.getName()+" cb image : "+vidsignBean.getFrom());
-									if (buddyInformationBean.getName().equalsIgnoreCase(vidsignBean.getFrom())) {
-										String pic_path = buddyInformationBean.getProfile_picpath();
-										Log.i("Join","pic_path 1 : "+pic_path);
-										if (pic_path == null || pic_path.length() == 0) {
-											ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(vidsignBean.getFrom());
-											if(pBean != null) {
-												pic_path = pBean.getPhoto();
-												Log.i("Join","pic_path 2 : "+pic_path);
-											}
-										}
-
-										if (pic_path != null && pic_path.length() > 0) {
-											if (!pic_path.contains("COMMedia")) {
-												pic_path = Environment
-														.getExternalStorageDirectory()
-														+ "/COMMedia/" + pic_path;
-											}
-											have_image = true;
-											if (selectedposition == 0) {
-												imageLoader.DisplayImage(pic_path, buddyimageview1, R.drawable.icon_buddy_aoffline);
-											} else if (selectedposition == 1) {
-												imageLoader.DisplayImage(pic_path, buddyimageview2, R.drawable.icon_buddy_aoffline);
-											} else if (selectedposition == 2) {
-												imageLoader.DisplayImage(pic_path, buddyimageview3, R.drawable.icon_buddy_aoffline);
-											}
-										}
-									}
-								}
-								if(selectedposition == 0) {
-									if (!have_image) {
-										imageLoader.DisplayImage("", buddyimageview1, R.drawable.icon_buddy_aoffline);
-									}
-									buddyimageview1.setVisibility(View.VISIBLE);
-									glSurfaceView.setVisibility(View.GONE);
-								} else if(selectedposition == 1) {
-									if (!have_image) {
-										imageLoader.DisplayImage("", buddyimageview2, R.drawable.icon_buddy_aoffline);
-									}
-									buddyimageview2.setVisibility(View.VISIBLE);
-									glSurfaceView2.setVisibility(View.GONE);
-								} else if(selectedposition == 2) {
-									if (!have_image) {
-										imageLoader.DisplayImage("", buddyimageview3, R.drawable.icon_buddy_aoffline);
-									}
-									buddyimageview3.setVisibility(View.VISIBLE);
-									glSurfaceView3.setVisibility(View.GONE);
-								}
+								threadBean.setVideoDisabled(true);
+//								boolean have_image = false;
+//								for (BuddyInformationBean buddyInformationBean : total_buddyList) {
+//									Log.i("Join","tb image : "+buddyInformationBean.getName()+" cb image : "+vidsignBean.getFrom());
+//									if (buddyInformationBean.getName().equalsIgnoreCase(vidsignBean.getFrom())) {
+//										String pic_path = buddyInformationBean.getProfile_picpath();
+//										Log.i("Join","pic_path 1 : "+pic_path);
+//										if (pic_path == null || pic_path.length() == 0) {
+//											ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(vidsignBean.getFrom());
+//											if(pBean != null) {
+//												pic_path = pBean.getPhoto();
+//												Log.i("Join","pic_path 2 : "+pic_path);
+//											}
+//										}
+//
+//										if (pic_path != null && pic_path.length() > 0) {
+//											if (!pic_path.contains("COMMedia")) {
+//												pic_path = Environment
+//														.getExternalStorageDirectory()
+//														+ "/COMMedia/" + pic_path;
+//											}
+//											have_image = true;
+//											if (selectedposition == 0) {
+//												imageLoader.DisplayImage(pic_path, buddyimageview1, R.drawable.icon_buddy_aoffline);
+//											} else if (selectedposition == 1) {
+//												imageLoader.DisplayImage(pic_path, buddyimageview2, R.drawable.icon_buddy_aoffline);
+//											} else if (selectedposition == 2) {
+//												imageLoader.DisplayImage(pic_path, buddyimageview3, R.drawable.icon_buddy_aoffline);
+//											}
+//										}
+//									}
+//								}
+//								if(selectedposition == 0) {
+//									if (!have_image) {
+//										imageLoader.DisplayImage("", buddyimageview1, R.drawable.icon_buddy_aoffline);
+//									}
+//									buddyimageview1.setVisibility(View.VISIBLE);
+//									glSurfaceView1.setVisibility(View.GONE);
+//								} else if(selectedposition == 1) {
+//									if (!have_image) {
+//										imageLoader.DisplayImage("", buddyimageview2, R.drawable.icon_buddy_aoffline);
+//									}
+//									buddyimageview2.setVisibility(View.VISIBLE);
+//									glSurfaceView2.setVisibility(View.GONE);
+//								} else if(selectedposition == 2) {
+//									if (!have_image) {
+//										imageLoader.DisplayImage("", buddyimageview3, R.drawable.icon_buddy_aoffline);
+//									}
+//									buddyimageview3.setVisibility(View.VISIBLE);
+//									glSurfaceView3.setVisibility(View.GONE);
+//								}
 							}
+							notifyNumFeedChanged();
 						}
 					});
 				}
@@ -2779,10 +2431,6 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		// RenderBitmap.count=0;
 		// HomeTabViewScreen home =null;
 		try {
-			Activity parent = getActivity();
-			if(parent != null) {
-				getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-			}
 			final DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
 			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 //			AppMainActivity.commEngine.enable_disable_VideoPreview(true);
@@ -2834,6 +2482,10 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 		LayoutParams layoutParams=new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, Gravity.RIGHT | Gravity.CENTER_VERTICAL);
 
+		onoff_preview = new TextView(context);
+		onoff_preview.setLayoutParams(layoutParams);
+		onoff_preview.setBackgroundResource(R.drawable.call_close_video);
+
 		on_off1= new TextView(context);
 		on_off1.setLayoutParams(layoutParams);
 		on_off1.setBackgroundResource(R.drawable.call_close_video);
@@ -2852,13 +2504,13 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	}
 
 	public GLSurfaceView getGLSurfaceView(Context context) {
-		 glSurfaceView = new GLSurfaceView(context);
+		 glSurfaceView1 = new GLSurfaceView(context);
 		try {
 			VideoFrameRenderer frameRenderer = new VideoFrameRenderer();
 			frameRenderer.setPreviewFrameSize(512,
 					WebServiceReferences.VIDEO_WIDTH,
 					WebServiceReferences.VIDEO_HEIGHT);
-			glSurfaceView.setRenderer(frameRenderer);
+			glSurfaceView1.setRenderer(frameRenderer);
 			frameSink = frameRenderer;
 			byte[] frame = new byte[WebServiceReferences.VIDEO_WIDTH
 					* WebServiceReferences.VIDEO_WIDTH * 3];
@@ -2867,27 +2519,9 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			// TODO: handle exception
 			e.printStackTrace();
 		}
-		return glSurfaceView;
+		return glSurfaceView1;
 	}
 
-	public GLSurfaceView getGLSurfaceView12(Context context) {
-		glSurfaceView12 = new GLSurfaceView(context);
-		try {
-			VideoFrameRenderer frameRenderer = new VideoFrameRenderer();
-			frameRenderer.setPreviewFrameSize(512,
-					WebServiceReferences.VIDEO_WIDTH,
-					WebServiceReferences.VIDEO_HEIGHT);
-			glSurfaceView12.setRenderer(frameRenderer);
-			frameSink12 = frameRenderer;
-			byte[] frame = new byte[WebServiceReferences.VIDEO_WIDTH
-					* WebServiceReferences.VIDEO_WIDTH * 3];
-			frameBuffer12 = GraphicsUtil.makeByteBuffer(frame.length);
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-		return glSurfaceView12;
-	}
 
 	public GLSurfaceView getGLSurfaceView2(Context context) {
 		glSurfaceView2 = new GLSurfaceView(context);
@@ -2932,7 +2566,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 //			frameRenderer.setPreviewFrameSize(512,
 //					WebServiceReferences.VIDEO_WIDTH,
 //					WebServiceReferences.VIDEO_HEIGHT);
-////			glSurfaceView.setRenderer(frameRenderer);
+////			glSurfaceView1.setRenderer(frameRenderer);
 //
 //			frameSink = frameRenderer;
 //			byte[] frame = new byte[WebServiceReferences.VIDEO_WIDTH
@@ -2955,7 +2589,9 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 					Bundle bundle = data.getExtras();
 					ArrayList<UserBean> list = (ArrayList<UserBean>) bundle
 							.get("list");
+					Log.i("Promote","list.size : "+list.size());
 					HashMap<String, UserBean> membersMap = new HashMap<String, UserBean>();
+					Vector<UserBean> membersList=new Vector<UserBean>();
 					for (UserBean userBean : membersList) {
 						membersMap.put(userBean.getBuddyName(), userBean);
 					}
@@ -3016,16 +2652,6 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							isShowingMediaFailureIcon = false;
 							ismediaNotified = false;
 
-//							videosurface2.removeView(relative_layout2);
-//							videosurface2.addView(glSurfaceView2, layoutParamsf2);
-
-//							videosurface3.removeView(relative_layout3);
-//							videosurface3.addView(glSurfaceView3, layoutParamsf3);
-
-							// Log.d("NDVC1", "started completed");
-
-
-
 						} catch (Exception e) {
 							// TODO: handle exception
 							e.printStackTrace();
@@ -3052,17 +2678,8 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							timer.cancel();
 						}
 						try {
-							// if(layout.)
-							// {
-//							videosurface.removeView(layout);
 							isShowingMediaFailureIcon = false;
-//							glSurfaceView =
-//									getGLSurfaceView(context);
-//							videosurface.addView(glSurfaceView, layoutParamsf);
 							ismediaNotified = false;
-							// Log.d("NDVC1", "started completed");
-							// }
-							// TODO: handle exception
 
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -3083,137 +2700,6 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 								try {
 									member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+1));
-//									textView3.setText(" window " + String.valueOf(ssrc));
-									if (WebServiceReferences.videoSSRC_total_list.size() > 0) {
-										int size = WebServiceReferences.videoSSRC_total_list.size();
-										if (size == 1) {
-											bottom_videowindows.setVisibility(View.GONE);
-											videosurface.setVisibility(View.VISIBLE);
-											glSurfaceView12.setVisibility(View.GONE);
-											videosurface12.setVisibility(View.GONE);
-											videosurface2.setVisibility(View.GONE);
-											videosurface3.setVisibility(View.GONE);
-
-											if(preview_hided ) {
-												own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
-												own_video_layout.getLayoutParams().width = 1;
-//												preview_hided_completed = true;
-												Log.i("VIdeoCall","preview_hided");
-//												videopreview.setVisibility(View.GONE);
-//												own_video_layout.setVisibility(View.GONE);
-//												pv.setZOrderOnTop(false);
-//												videopreview.removeView(pv);
-												videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 0.0f));
-												own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 3.0f));
-											} else {
-												Log.i("VIdeoCall", "preview_hided - else");
-//												if(!preview_hided_completed) {
-													videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-													own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-//												    videosurface12.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-//												} else {
-//													videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-//													own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 0.0f));
-//												}
-											}
-										} else if (size == 2) {
-											bottom_videowindows.setVisibility(View.GONE);
-											videosurface.setVisibility(View.VISIBLE);
-											glSurfaceView12.setVisibility(View.VISIBLE);
-											videosurface12.setVisibility(View.VISIBLE);
-											videosurface2.setVisibility(View.GONE);
-											videosurface3.setVisibility(View.GONE);
-//											videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1f));
-//											own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1f));
-											if(preview_hided ) {
-												own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
-												own_video_layout.getLayoutParams().width = 1;
-
-												videosurface12.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 0.75f));
-												videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 0.75f));
-												own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-											} else {
-												videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.0f));
-												own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.0f));
-												videosurface12.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.0f));
-											}
-										} else if (size == 3) {
-
-//											videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-//											own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT,1.5f));
-//											videosurface3.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1f));
-											glSurfaceView12.setVisibility(View.GONE);
-
-											videosurface.setVisibility(View.VISIBLE);
-											videosurface12.setVisibility(View.GONE);
-
-											videosurface2.setVisibility(View.VISIBLE);
-											videosurface3.setVisibility(View.VISIBLE);
-											bottom_videowindows.setVisibility(View.VISIBLE);
-
-//											videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-//											own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-//											if(preview_hided ) {
-//												own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
-//												own_video_layout.getLayoutParams().width = 1;
-//												Log.i("VIdeoCall","preview_hided");
-//												videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 0.0f));
-//												own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 3.0f));
-//											} else {
-//												Log.i("VIdeoCall", "preview_hided - else");
-//												videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-//												own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-//											}
-											if(preview_hided ) {
-												own_video_layout.getLayoutParams().height = 1;  // replace 100 with your dimensions
-												own_video_layout.getLayoutParams().width = 1;
-
-												videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 0.0f));
-												own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 3.0f));
-											} else {
-												videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-												own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-											}
-										}
-
-//										if(on_off1.getTag()==false) {
-//											videosurface.setVisibility(View.GONE);
-//											glSurfaceView.setVisibility(View.GONE);
-//											videosurface12.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-//											own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-//										}if(on_off2.getTag()==false) {
-//											videosurface2.setVisibility(View.GONE);
-//											glSurfaceView2.setVisibility(View.GONE);
-//										}if(on_off3.getTag()==false) {
-//											videosurface3.setVisibility(View.GONE);
-//											glSurfaceView3.setVisibility(View.GONE);
-//										}if(on_off12.getTag()==false) {
-//											videosurface12.setVisibility(View.GONE);
-//											glSurfaceView12.setVisibility(View.GONE);
-//											videosurface.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-//											own_video_layout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.MATCH_PARENT, 1.5f));
-//										}
-										String mem_name = "";
-										if(WebServiceReferences.videoSSRC_total.containsKey((int) (long) ssrc)){
-											mem_name = (WebServiceReferences.videoSSRC_total.get((int) (long) ssrc)).getMember_name();
-										}
-										if (WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc) == 0) {
-//											participant_name1.setText(mem_name);
-											if (buddyTimerTask1 != null) {
-												Log.i("OnOff", "VideoOnOffTimerTask != null : " + ssrc);
-												buddyTimerTask1.cancel();
-												buddyTimerTask1 = null;
-												if (buddytimer1 != null) {
-													buddytimer1.cancel();
-													buddytimer1 = null;
-												}
-											}
-										} if (WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc) == 1) {
-//											participant_name2.setText(mem_name);
-										} if (WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc) == 2) {
-//											participant_name3.setText(mem_name);
-										}
-									}
 								} catch (Exception e) {
 									// TODO: handle exception
 									e.printStackTrace();
@@ -3240,11 +2726,11 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 						VideoThreadBean videoThreadBean = new VideoThreadBean();
 						videoThreadBean.setData(data);
 
-						if ((size == 2) && (WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc) == 1)) {
-							videoThreadBean.setWindow(12);
-						} else {
+//						if ((size == 2) && (WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc) == 1)) {
+//							videoThreadBean.setWindow(12);
+//						} else {
 							videoThreadBean.setWindow(WebServiceReferences.videoSSRC_total_list.indexOf((int) (long) ssrc));
-						}
+//						}
 						if(WebServiceReferences.videoSSRC_total.containsKey((int) (long) ssrc)){
 							videoThreadBean.setMember_name((WebServiceReferences.videoSSRC_total.get((int) (long) ssrc)).getMember_name());
 						} else {
@@ -3348,7 +2834,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 //										if (!ismediaNotified) {
 //											isSwitched = true;
 //											videosurface
-//													.removeView(glSurfaceView);
+//													.removeView(glSurfaceView1);
 //											layout = getCallConnectingView();
 //											if (timer != null) {
 //												// timer.schedule(;, when)
@@ -3752,12 +3238,8 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 		onIsOnpause = true;
 
-		if (glSurfaceView != null) {
-			glSurfaceView.onPause();
-		}
-
-		if (glSurfaceView12 != null) {
-			glSurfaceView12.onPause();
+		if (glSurfaceView1 != null) {
+			glSurfaceView1.onPause();
 		}
 
 		if (glSurfaceView2 != null) {
@@ -3780,12 +3262,8 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		//
 		// }
 		// else{
-//		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//
-//		} else {
 			AppReference.mainContext.stopService(new Intent(AppReference.mainContext, ChatHeadDrawerService.class));
-//		}
-
+		resetVideoViews(!preview_hided);
 		if(mainHeader != null) {
 			mainHeader.setVisibility(View.GONE);
 		}
@@ -3817,82 +3295,11 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			// used to remove Yellow icon...
 			try {
 				if (ismediaNotified) {
-//					videosurface.removeView(layout);
-//					videosurface2.removeView(relative_layout2);
-//					videosurface3.removeView(relative_layout3);
 					isShowingMediaFailureIcon = false;
 				}
 
 				CallDispatcher.videoSpeakerMute(false);
 
-				videopreview.removeView(pv);
-
-				videosurface.removeView(glSurfaceView);
-				videosurface12.removeView(glSurfaceView12);
-				videosurface2.removeView(glSurfaceView2);
-				videosurface3.removeView(glSurfaceView3);
-
-				videosurface.removeView(on_off1);
-				videosurface2.removeView(on_off2);
-				videosurface12.removeView(on_off12);
-				videosurface3.removeView(on_off3);
-
-				glSurfaceView.destroyDrawingCache();
-				glSurfaceView2.destroyDrawingCache();
-				glSurfaceView12.destroyDrawingCache();
-				glSurfaceView3.destroyDrawingCache();
-
-//				// Log.d("NDVC1", "glSurfaceView.destroyDrawingCache();");
-//				glSurfaceView2.destroyDrawingCache();
-//				// Log.d("NDVC1", "glSurfaceView2.destroyDrawingCache();");
-//				glSurfaceView3.destroyDrawingCache();
-
-				pv.stopPreview();
-				pv = AppMainActivity.commEngine.getVideoPreview(context);
-				videopreview.addView(pv, 0);
-
-				getGLSurfaceView(context);
-				getGLSurfaceView12(context);
-				getGLSurfaceView2(context);
-				getGLSurfaceView3(context);
-
-				videosurface.addView(glSurfaceView, layoutParamsf);
-				videosurface12.addView(glSurfaceView12, layoutParamsf12);
-				videosurface2.addView(glSurfaceView2, layoutParamsf2);
-				videosurface3.addView(glSurfaceView3, layoutParamsf3);
-
-				videosurface.addView(on_off1);
-				videosurface2.addView(on_off2);
-				videosurface12.addView(on_off12);
-				videosurface3.addView(on_off3);
-//				handler.postDelayed(new Runnable() {
-//
-//					@Override
-//					public void run() {
-//						// TODO Auto-generated method stub
-//						// Toast.makeText(
-//						// context,
-//						// "Preview Width :" + pv.getPreviewWidth()
-//						// + " Preview Height :"
-//						// + pv.getPreviewHeight(),
-//						// Toast.LENGTH_LONG).show();
-//					}
-//				}, 1000);
-//				glSurfaceView =
-// 				getGLSurfaceView(context);
-//				 videosurface.addView(glSurfaceView);
-				glSurfaceView.onResume();
-				glSurfaceView12.onResume();
-				glSurfaceView2.onResume();
-				glSurfaceView3.onResume();
-
-//				glSurfaceView2 =
-//						getGLSurfaceView2(context);
-//				glSurfaceView2.onResume();
-
-//				glSurfaceView3 =
-//						getGLSurfaceView3(context);
-//				glSurfaceView3.onResume();
 
 				if (timer != null) {
 					// Log.d("NDVC1", "On Resume....TIMER not null");
@@ -3923,6 +3330,67 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		super.onResume();
 
 	}
+
+	private void resetVideoViews(boolean havepreview) {
+		try {
+				if (glSurfaceView1 != null) {
+					glSurfaceView1.onPause();
+				}
+
+				if (glSurfaceView2 != null) {
+					glSurfaceView2.onPause();
+				}
+
+				if (glSurfaceView3 != null) {
+					glSurfaceView3.onPause();
+				}
+				remove_all_video_views();
+				//			preview_frameLayout.removeView(pv);
+				pv.stopPreview();
+				pv = AppMainActivity.commEngine.getVideoPreview(context);
+				pv.setZOrderOnTop(false);
+				preview_frameLayout.addView(pv, 0);
+
+				//			buddyframelayout01.removeView(buddysurfaceview_01);
+				//			buddyframelayout0102.removeView(buddysurfaceview_0102);
+				//			buddyframelayout02.removeView(buddysurfaceview_02);
+				//			buddyframelayout03.removeView(buddysurfaceview_03);
+				//
+				//			buddyframelayout01.removeView(on_off1);
+				//			buddyframelayout0102.removeView(on_off2);
+				//			buddyframelayout02.removeView(on_off12);
+				//			buddyframelayout03.removeView(on_off3);
+
+			glSurfaceView1.destroyDrawingCache();
+//                buddysurfaceview_0102.destroyDrawingCache();
+			glSurfaceView2.destroyDrawingCache();
+			glSurfaceView3.destroyDrawingCache();
+
+				getGLSurfaceView(context);
+//                getGLSurfaceView1(context);
+				getGLSurfaceView2(context);
+				getGLSurfaceView3(context);
+
+				//			buddyframelayout01.addView(buddysurfaceview_01, surfaceview_layoutParams);
+				//			buddyframelayout0102.addView(buddysurfaceview_0102, surfaceview_layoutParams);
+				//			buddyframelayout02.addView(buddysurfaceview_02, surfaceview_layoutParams);
+				//			buddyframelayout03.addView(buddysurfaceview_03, surfaceview_layoutParams);
+				//
+				//			buddyframelayout01.addView(on_off1);
+				//			buddyframelayout0102.addView(on_off2);
+				//			buddyframelayout02.addView(on_off12);
+				//			buddyframelayout03.addView(on_off3);
+				arrange_video_views(havepreview, WebServiceReferences.videoSSRC_total_list.size());
+			glSurfaceView1.onResume();
+//                buddysurfaceview_0102.onResume();
+			glSurfaceView2.onResume();
+			glSurfaceView3.onResume();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 
 	@Override
 	public void onLowMemory() {
@@ -3974,16 +3442,6 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 					isShowingMediaFailureIcon = true;
 					isSwitched = true;
 					ismediaNotified = true;
-//					videosurface.removeView(glSurfaceView);
-//					videosurface2.removeView(glSurfaceView2);
-//					videosurface3.removeView(glSurfaceView3);
-
-//					layout = showVideoFailure();
-//					videosurface.addView(layout, layoutParamsf);
-//					relative_layout2 = showVideoFailure();
-//					videosurface2.addView(relative_layout2, layoutParamsf2);
-//					relative_layout3 = showVideoFailure();
-//					videosurface3.addView(relative_layout3, layoutParamsf3);
 					isShowingMediaFailureIcon = true;
 
 					if (timer != null) {
@@ -3996,7 +3454,6 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 			// TODO: handle exception
 			e.printStackTrace();
 		}
-		// videosurface.add
 
 	}
 
@@ -4038,7 +3495,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	@Override
 	public void notifyResolution(int w, int h) {
 		// TODO Auto-generated method stub
-		Log.i("VideoCall","width : "+w+" height :"+h);
+		Log.i("VideoCall", "width : " + w + " height :" + h);
 	}
 
 	@SuppressWarnings("unused")
@@ -4141,8 +3598,35 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 		if(videoSSRC.containsKey(buddy)){
 			Log.i("NotesVideo","inside if");
 			videoSSRC.put(buddy, ssrc);
-			Log.i("NotesVideo", "videoSSRC size : "+videoSSRC.size());
+			Log.i("NotesVideo", "videoSSRC size : " + videoSSRC.size());
 		}
+	}
+
+	public void notifyNewSSRC(int ssrc){
+		Log.i("NotesVideo","came to notifyNewSSRC");
+		if(!WebServiceReferences.videoSSRC_total_list.contains(ssrc)) {
+			WebServiceReferences.videoSSRC_total_list.add(ssrc);
+		}
+
+		handler.post(new Runnable() {
+			@Override
+			public void run() {
+					resetVideoViews(!preview_hided);
+			}
+		});
+	}
+
+	public void notifyNumFeedChanged(){
+		Log.i("NotesVideo","Came to notifyNumFeedChanged");
+		handler.post(new Runnable() {
+			@Override
+			public void run() {
+//				resetVideoViews();
+//				refreshBuddyProfiles();
+				resetVideoViews(!preview_hided);
+			}
+		});
+
 	}
 
 	public class VideoOnOffTimerTask extends TimerTask {
@@ -4233,15 +3717,10 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 	public void finishVideocallScreen()
 	{
-		Log.i("Recording","finishVideocallScreen");
+		Log.i("Recording", "finishVideocallScreen");
 		try {
 //			AppReference.mainContext.startRecording();
-//			onToggleScreenShare(false);
-//			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//
-//			} else {
 				AppReference.mainContext.stopService(new Intent(AppReference.mainContext, ChatHeadDrawerService.class));
-//			}
 			if (SingleInstance.instanceTable.containsKey("callactivememberslist")) {
 				CallActiveMembersList activeMembersList = (CallActiveMembersList) SingleInstance.instanceTable.get("callactivememberslist");
 				activeMembersList.finishActivity();
@@ -4518,7 +3997,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 				onOffVideo(v_bean.getMember_name(), true);
 			}
 
-			hideOwnVideo();
+			resetVideoViews(!preview_hided);
 
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
@@ -4529,5 +4008,390 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	public void assignMediaStop(){
 		hasRemoved = true;
 		mRenderFrame = false;
+	}
+
+	private void remove_all_video_views(){
+		try {
+			if (((RelativeLayout) video_layouts).getChildCount() > 0) {
+				((RelativeLayout) video_layouts).removeAllViews();
+			}
+
+			if (((FrameLayout) buddyframelayout01).getChildCount() > 0) {
+				((FrameLayout) buddyframelayout01).removeAllViews();
+			}
+
+			if (((FrameLayout) buddyframelayout02).getChildCount() > 0) {
+				((FrameLayout) buddyframelayout02).removeAllViews();
+			}
+			if (((FrameLayout) buddyframelayout03).getChildCount() > 0) {
+				((FrameLayout) buddyframelayout03).removeAllViews();
+			}
+			if (((FrameLayout) preview_frameLayout).getChildCount() > 0) {
+				((FrameLayout) preview_frameLayout).removeAllViews();
+			}
+
+			if(profile_view1.getChildCount()>0) {
+				profile_view1.removeAllViews();
+			}
+			if(profile_view2.getChildCount()>0) {
+				profile_view2.removeAllViews();
+			}
+			if(profile_view3.getChildCount()>0) {
+				profile_view3.removeAllViews();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void arrange_video_views(boolean have_preview ,int totalviews){
+		try {
+			ViewGroup.LayoutParams onoff_layoutParams=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+			RelativeLayout.LayoutParams onoff_layoutParams_relative=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+			onoff_layoutParams_relative.addRule(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+			onoff_layoutParams_relative.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.ALIGN_RIGHT);
+			if(have_preview) {
+				if(chTimer != null) {
+					chTimer.setVisibility(View.GONE);
+				}
+				if (totalviews == 0) {
+					RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+							ViewGroup.LayoutParams.MATCH_PARENT);
+					preview_frameLayout.setLayoutParams(lp);
+					video_layouts.addView(preview_frameLayout);
+
+					preview_frameLayout.addView(onoff_preview);
+					preview_frameLayout.addView(flipcamera);
+				} else if (totalviews == 1) {
+					RelativeLayout.LayoutParams relative_layoutParams1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+							video_viewHeight/2);
+
+					RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+							video_viewHeight/2);
+					lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+//					lp.addRule(RelativeLayout.BELOW, buddyframelayout01.getId());
+					//                        lp.addRule(RelativeLayout.ALIGN_BASELINE, buddyframelayout01.getId());
+
+//					preview_frameLayout.setLayoutParams(lp);
+
+					if(have_video_frames(0)) {
+						video_layouts.addView(buddyframelayout01, relative_layoutParams1);
+						buddyframelayout01.addView(glSurfaceView1, surfaceview_layoutParams);
+						buddyframelayout01.addView(on_off1,onoff_layoutParams);
+						lp.addRule(RelativeLayout.BELOW, buddyframelayout01.getId());
+					} else {
+						video_layouts.addView(profile_view1,relative_layoutParams1);
+						profile_view1.addView(buddyimageview1);
+						profile_view1.addView(participant_name1);
+						profile_view1.addView(on_off1,onoff_layoutParams_relative);
+						lp.addRule(RelativeLayout.BELOW, profile_view1.getId());
+						set_profile_image(0);
+					}
+					preview_frameLayout.setLayoutParams(lp);
+					video_layouts.addView(preview_frameLayout);
+					preview_frameLayout.addView(onoff_preview);
+					preview_frameLayout.addView(flipcamera);
+				} else if (totalviews == 2) {
+					RelativeLayout.LayoutParams relative_layoutParams1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+							video_viewHeight/3);
+					RelativeLayout.LayoutParams relative_layoutParams2 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+							video_viewHeight/3);
+//					relative_layoutParams2.addRule(RelativeLayout.BELOW, buddyframelayout01.getId());
+					RelativeLayout.LayoutParams relative_layoutParams3 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+							video_viewHeight/3);
+//					relative_layoutParams3.addRule(RelativeLayout.BELOW, buddyframelayout02.getId());
+
+
+					if(have_video_frames(0)) {
+						video_layouts.addView(buddyframelayout01, relative_layoutParams1);
+						buddyframelayout01.addView(glSurfaceView1, surfaceview_layoutParams);
+						buddyframelayout01.addView(on_off1,onoff_layoutParams);
+						relative_layoutParams2.addRule(RelativeLayout.BELOW, buddyframelayout01.getId());
+					} else {
+						video_layouts.addView(profile_view1, relative_layoutParams1);
+						profile_view1.addView(buddyimageview1);
+						profile_view1.addView(participant_name1);
+						profile_view1.addView(on_off1,onoff_layoutParams_relative);
+						relative_layoutParams2.addRule(RelativeLayout.BELOW, profile_view1.getId());
+						set_profile_image(0);
+					}
+
+					if(have_video_frames(1)) {
+						video_layouts.addView(buddyframelayout02, relative_layoutParams2);
+						buddyframelayout02.addView(glSurfaceView2,surfaceview_layoutParams);
+						buddyframelayout02.addView(on_off2,onoff_layoutParams);
+						relative_layoutParams3.addRule(RelativeLayout.BELOW, buddyframelayout02.getId());
+					} else {
+						video_layouts.addView(profile_view2,relative_layoutParams2);
+						profile_view2.addView(buddyimageview2);
+						profile_view2.addView(participant_name2);
+						profile_view2.addView(on_off2,onoff_layoutParams_relative);
+						relative_layoutParams3.addRule(RelativeLayout.BELOW, profile_view2.getId());
+						set_profile_image(1);
+					}
+
+					video_layouts.addView(preview_frameLayout, relative_layoutParams3);
+					preview_frameLayout.addView(onoff_preview);
+					preview_frameLayout.addView(flipcamera);
+
+				} else if (totalviews == 3) {
+					RelativeLayout.LayoutParams relative_layoutParams1 = new RelativeLayout.LayoutParams(video_viewWidth/2,
+							video_viewHeight/2);
+					RelativeLayout.LayoutParams relative_layoutParams2 = new RelativeLayout.LayoutParams(video_viewWidth/2,
+							video_viewHeight/2);
+//					relative_layoutParams2.addRule(RelativeLayout.RIGHT_OF, buddyframelayout01.getId());
+					RelativeLayout.LayoutParams relative_layoutParams3 = new RelativeLayout.LayoutParams(video_viewWidth/2,
+							video_viewHeight/2);
+//					relative_layoutParams3.addRule(RelativeLayout.BELOW, buddyframelayout01.getId());
+					RelativeLayout.LayoutParams relative_layoutParams4 = new RelativeLayout.LayoutParams(video_viewWidth/2,
+							video_viewHeight/2);
+//					relative_layoutParams4.addRule(RelativeLayout.RIGHT_OF, buddyframelayout03.getId());
+//					relative_layoutParams4.addRule(RelativeLayout.BELOW, buddyframelayout02.getId());
+
+					if(have_video_frames(0)) {
+						video_layouts.addView(buddyframelayout01, relative_layoutParams1);
+						buddyframelayout01.addView(glSurfaceView1, surfaceview_layoutParams);
+						buddyframelayout01.addView(on_off1,onoff_layoutParams);
+						relative_layoutParams2.addRule(RelativeLayout.RIGHT_OF, buddyframelayout01.getId());
+					} else {
+						video_layouts.addView(profile_view1,relative_layoutParams1);
+						profile_view1.addView(buddyimageview1);
+						profile_view1.addView(participant_name1);
+						profile_view1.addView(on_off1,onoff_layoutParams_relative);
+						relative_layoutParams2.addRule(RelativeLayout.RIGHT_OF, profile_view1.getId());
+						set_profile_image(0);
+					}
+
+					if(have_video_frames(1)) {
+						video_layouts.addView(buddyframelayout02, relative_layoutParams2);
+						buddyframelayout02.addView(glSurfaceView2, surfaceview_layoutParams);
+						buddyframelayout02.addView(on_off2,onoff_layoutParams);
+						relative_layoutParams3.addRule(RelativeLayout.BELOW, buddyframelayout02.getId());
+					} else {
+						video_layouts.addView(profile_view2,relative_layoutParams2);
+						profile_view2.addView(buddyimageview2);
+						profile_view2.addView(participant_name2);
+						profile_view2.addView(on_off2,onoff_layoutParams_relative);
+						relative_layoutParams3.addRule(RelativeLayout.BELOW, profile_view2.getId());
+						set_profile_image(1);
+					}
+
+					video_layouts.addView(preview_frameLayout, relative_layoutParams3);
+					preview_frameLayout.addView(onoff_preview);
+					preview_frameLayout.addView(flipcamera);
+
+					relative_layoutParams4.addRule(RelativeLayout.RIGHT_OF, preview_frameLayout.getId());
+					relative_layoutParams4.addRule(RelativeLayout.BELOW, buddyframelayout02.getId());
+					relative_layoutParams4.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+
+					if(have_video_frames(2)) {
+						video_layouts.addView(buddyframelayout03, relative_layoutParams4);
+						buddyframelayout03.addView(glSurfaceView3, surfaceview_layoutParams);
+						buddyframelayout03.addView(on_off3,onoff_layoutParams);
+					} else {
+						video_layouts.addView(profile_view3,relative_layoutParams4);
+						profile_view3.addView(buddyimageview3);
+						profile_view3.addView(participant_name3);
+						profile_view3.addView(on_off3,onoff_layoutParams_relative);
+						set_profile_image(2);
+					}
+
+//					video_layouts.addView(preview_frameLayout, relative_layoutParams4);
+//					preview_frameLayout.addView(onoff_preview);
+//					preview_frameLayout.addView(flipcamera);
+				}
+			} else {
+				if(totalviews == 0) {
+					if(chTimer != null) {
+						chTimer.setVisibility(View.VISIBLE);
+					}
+				} else {
+					if(chTimer != null) {
+						chTimer.setVisibility(View.GONE);
+					}
+					if (totalviews == 1) {
+						RelativeLayout.LayoutParams relative_layoutParams1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+								ViewGroup.LayoutParams.MATCH_PARENT);
+						if (have_video_frames(0)) {
+							video_layouts.addView(buddyframelayout01, relative_layoutParams1);
+							buddyframelayout01.addView(glSurfaceView1, surfaceview_layoutParams);
+							buddyframelayout01.addView(on_off1, onoff_layoutParams);
+						} else {
+							video_layouts.addView(profile_view1, relative_layoutParams1);
+							profile_view1.addView(buddyimageview1);
+							profile_view1.addView(participant_name1);
+							profile_view1.addView(on_off1, onoff_layoutParams_relative);
+							set_profile_image(0);
+						}
+
+					} else if (totalviews == 2) {
+						RelativeLayout.LayoutParams relative_layoutParams1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+								video_viewHeight / 2);
+						RelativeLayout.LayoutParams relative_layoutParams2 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+								video_viewHeight / 2);
+						relative_layoutParams2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+//						relative_layoutParams2.addRule(RelativeLayout.BELOW, buddyframelayout01.getId());
+						//                        lp.addRule(RelativeLayout.ALIGN_BASELINE, buddyframelayout01.getId());
+
+						if (have_video_frames(0)) {
+							video_layouts.addView(buddyframelayout01, relative_layoutParams1);
+							buddyframelayout01.addView(glSurfaceView1, surfaceview_layoutParams);
+							buddyframelayout01.addView(on_off1,onoff_layoutParams);
+							relative_layoutParams2.addRule(RelativeLayout.BELOW, buddyframelayout01.getId());
+						} else {
+							video_layouts.addView(profile_view1, relative_layoutParams1);
+							profile_view1.addView(buddyimageview1);
+							profile_view1.addView(participant_name1);
+							profile_view1.addView(on_off1,onoff_layoutParams_relative);
+							relative_layoutParams2.addRule(RelativeLayout.BELOW, profile_view1.getId());
+							set_profile_image(0);
+						}
+
+						if (have_video_frames(1)) {
+							video_layouts.addView(buddyframelayout02, relative_layoutParams2);
+							buddyframelayout02.addView(glSurfaceView2, surfaceview_layoutParams);
+							buddyframelayout02.addView(on_off2,onoff_layoutParams);
+						} else {
+							video_layouts.addView(profile_view2, relative_layoutParams2);
+							profile_view2.addView(buddyimageview2);
+							profile_view2.addView(participant_name2);
+							profile_view2.addView(on_off2,onoff_layoutParams_relative);
+							set_profile_image(1);
+						}
+
+					} else if (totalviews == 3) {
+						RelativeLayout.LayoutParams relative_layoutParams1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+								video_viewHeight / 3);
+						RelativeLayout.LayoutParams relative_layoutParams2 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+								video_viewHeight / 3);
+//						relative_layoutParams2.addRule(RelativeLayout.BELOW, buddyframelayout01.getId());
+						RelativeLayout.LayoutParams relative_layoutParams3 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+								video_viewHeight / 3);
+//						relative_layoutParams3.addRule(RelativeLayout.BELOW, buddyframelayout02.getId());
+
+						if (have_video_frames(0)) {
+							video_layouts.addView(buddyframelayout01, relative_layoutParams1);
+							buddyframelayout01.addView(glSurfaceView1, surfaceview_layoutParams);
+							buddyframelayout01.addView(on_off1,onoff_layoutParams);
+							relative_layoutParams2.addRule(RelativeLayout.BELOW, buddyframelayout01.getId());
+						} else {
+							video_layouts.addView(profile_view1, relative_layoutParams1);
+							profile_view1.addView(buddyimageview1);
+							profile_view1.addView(participant_name1);
+							profile_view1.addView(on_off1,onoff_layoutParams_relative);
+							relative_layoutParams2.addRule(RelativeLayout.BELOW, profile_view1.getId());
+							set_profile_image(0);
+						}
+
+						if (have_video_frames(1)) {
+							video_layouts.addView(buddyframelayout02, relative_layoutParams2);
+							buddyframelayout02.addView(glSurfaceView2, surfaceview_layoutParams);
+							buddyframelayout02.addView(on_off2,onoff_layoutParams);
+							relative_layoutParams3.addRule(RelativeLayout.BELOW, buddyframelayout02.getId());
+						} else {
+							video_layouts.addView(profile_view2, relative_layoutParams2);
+							profile_view2.addView(buddyimageview2);
+							profile_view2.addView(participant_name2);
+							profile_view2.addView(on_off2,onoff_layoutParams_relative);
+							relative_layoutParams3.addRule(RelativeLayout.BELOW, profile_view2.getId());
+							set_profile_image(1);
+						}
+
+						if (have_video_frames(2)) {
+							video_layouts.addView(buddyframelayout03, relative_layoutParams3);
+							buddyframelayout03.addView(glSurfaceView3, surfaceview_layoutParams);
+							buddyframelayout03.addView(on_off3,onoff_layoutParams);
+						} else {
+							video_layouts.addView(profile_view3, relative_layoutParams3);
+							profile_view3.addView(buddyimageview3);
+							profile_view3.addView(participant_name3);
+							profile_view3.addView(on_off3,onoff_layoutParams_relative);
+							set_profile_image(2);
+						}
+					}
+					RelativeLayout.LayoutParams preview_layoutParams = new RelativeLayout.LayoutParams(1,
+							1);
+					video_layouts.addView(preview_frameLayout, preview_layoutParams);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private boolean have_video_frames(int i){
+		int turn_ssrc = WebServiceReferences.videoSSRC_total_list.get(i);
+		final int total_size = WebServiceReferences.videoSSRC_total_list.size();
+
+		VideoThreadBean videoThreadBean = WebServiceReferences.videoSSRC_total.get(turn_ssrc);
+		if (videoThreadBean != null && videoThreadBean.isVideoDisabled()) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	private void set_profile_image(int i){
+		int turn_ssrc = WebServiceReferences.videoSSRC_total_list.get(i);
+		final int total_size = WebServiceReferences.videoSSRC_total_list.size();
+
+		VideoThreadBean videoThreadBean = WebServiceReferences.videoSSRC_total.get(turn_ssrc);
+		if (videoThreadBean != null && videoThreadBean.isVideoDisabled()) {
+			final String buddy_name = (WebServiceReferences.videoSSRC_total.get(turn_ssrc)).getMember_name();
+			String full_name = buddy_name;
+			boolean have_image = false;
+			for (BuddyInformationBean buddyInformationBean : total_buddyList) {
+				if (buddyInformationBean.getName().equalsIgnoreCase(buddy_name)) {
+					String pic_path = buddyInformationBean.getProfile_picpath();
+					if(buddyInformationBean.getFirstname() != null && buddyInformationBean.getLastname()!= null) {
+						full_name =	buddyInformationBean.getFirstname() + " " + buddyInformationBean.getLastname();
+					} else if (buddyInformationBean.getFirstname() != null){
+						full_name =	buddyInformationBean.getFirstname();
+					}
+
+					if (pic_path == null || pic_path.length() == 0) {
+						ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(buddy_name);
+						if (pBean != null) {
+							pic_path = pBean.getPhoto();
+							Log.i("Join", "pic_path 2 : " + pic_path);
+						}
+					}
+					if (pic_path != null && pic_path.length() > 0) {
+						if (!pic_path.contains("COMMedia")) {
+							pic_path = Environment
+									.getExternalStorageDirectory()
+									+ "/COMMedia/" + pic_path;
+						}
+						have_image = true;
+						if (i == 0) {
+							imageLoader.DisplayImage(pic_path, buddyimageview1, R.drawable.icon_buddy_aoffline);
+						} else if (i == 1) {
+							imageLoader.DisplayImage(pic_path, buddyimageview2, R.drawable.icon_buddy_aoffline);
+						} else if (i == 2) {
+							imageLoader.DisplayImage(pic_path, buddyimageview3, R.drawable.icon_buddy_aoffline);
+						}
+					}
+				}
+			}
+			if (i == 0) {
+				if (!have_image) {
+					imageLoader.DisplayImage("", buddyimageview1, R.drawable.icon_buddy_aoffline);
+				}
+				buddyimageview1.setVisibility(View.VISIBLE);
+				participant_name1.setText(full_name);
+			} else if (i == 1) {
+				if (!have_image) {
+					imageLoader.DisplayImage("", buddyimageview2, R.drawable.icon_buddy_aoffline);
+				}
+				buddyimageview2.setVisibility(View.VISIBLE);
+				participant_name2.setText(full_name);
+			} else if (i == 2) {
+				if (!have_image) {
+					imageLoader.DisplayImage("", buddyimageview3, R.drawable.icon_buddy_aoffline);
+				}
+				buddyimageview3.setVisibility(View.VISIBLE);
+				participant_name3.setText(full_name);
+			}
+		}
 	}
 }

@@ -118,6 +118,7 @@ public class ProprietarySignalling implements UDPDataListener {
 	private boolean running = true;
 	private String loginUser = null;
 	int portno = 0;
+	public static boolean need_to_notify = false;
 
 	/**
 	 * used to Initialize ProprietarySignalling.
@@ -673,22 +674,36 @@ public class ProprietarySignalling implements UDPDataListener {
 					if(!WebServiceReferences.videoSSRC_total.containsKey(Integer.parseInt(sb.getVideossrc()))){
 						VideoThreadBean videoThreadBean = new VideoThreadBean();
 						videoThreadBean.setMember_name(sb.getFrom());
-						videoThreadBean.setVideoDisabled(true);
+//						videoThreadBean.setVideoDisabled(false);
+						if(sb.getCallType().equalsIgnoreCase("VC")) {
+							if(sb.getPreviouscalltype() == null || !sb.getPreviouscalltype().equalsIgnoreCase("AC")) {
+								videoThreadBean.setVideoDisabled(false);
+							} else {
+								videoThreadBean.setVideoDisabled(true);
+							}
+						} else {
+							videoThreadBean.setVideoDisabled(true);
+						}
 						Log.i("VideoSSRC", "videoSSRC_total.put 2");
 						Log.i("NotesVideo", "videoSSRC_total.put 2");
 						WebServiceReferences.videoSSRC_total.put((Integer.parseInt(sb.getVideossrc())),videoThreadBean);
+						if(!WebServiceReferences.videoSSRC_total_list.contains((Integer.parseInt(sb.getVideossrc())))) {
+							WebServiceReferences.videoSSRC_total_list.add((Integer.parseInt(sb.getVideossrc())));
+							need_to_notify = true;
+						}
 						Object objCallScreen = SingleInstance.instanceTable
 								.get("callscreen");
 						if (objCallScreen != null) {
 
 							if (objCallScreen instanceof AudioCallScreen) {
+								VideoThreadBean temp_video_Bean = WebServiceReferences.videoSSRC_total.get(Integer.parseInt(sb.getVideossrc()));
+								temp_video_Bean.setVideoDisabled(true);
 								AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
 								acalObj.notifyNewSSRC(Integer.parseInt(sb.getVideossrc()));
+							} else if (objCallScreen instanceof VideoCallScreen) {
+								VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
+								acalObj.notifyNewSSRC(Integer.parseInt(sb.getVideossrc()));
 							}
-//								else if (objCallScreen instanceof VideoCallScreen) {
-//									VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
-//									acalObj.notifyVideoStoped(sb);
-//								}
 						}
 					}
 				}

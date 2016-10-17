@@ -6,43 +6,6 @@
     android:clickable="true"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/frame_lay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:visibility="gone">
-
-        <org.cryse.android.controls.RoundedImageView
-            android:id="@+id/profilePic1"
-            android:layout_width="180dp"
-            android:layout_height="180dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="60dp"
-            android:background="@drawable/user_default"
-            android:visibility="gone" />
-
-        <org.cryse.android.controls.RoundedImageView
-            android:id="@+id/profilePic2"
-            android:layout_width="180dp"
-            android:layout_height="180dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="40dp"
-            android:background="@drawable/user_default"
-            android:visibility="gone" />
-
-        <org.cryse.android.controls.RoundedImageView
-            android:id="@+id/profilePic3"
-            android:layout_width="180dp"
-            android:layout_height="180dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="80dp"
-            android:background="@drawable/user_default"
-            android:visibility="gone" />
-    </FrameLayout>
-
     <RelativeLayout
         android:id="@+id/myrelative_layout1"
         android:layout_width="fill_parent"
@@ -155,7 +118,7 @@
         android:id="@+id/video_views"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -316,11 +279,11 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/bottom_videowindowlayout"
+                android:id="@+id/middle_videowindowlayout"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:orientation="horizontal"
                 android:weightSum="2">
 
@@ -368,6 +331,7 @@
                 </FrameLayout>
 
                 <RelativeLayout
+                    android:visibility="gone"
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1">

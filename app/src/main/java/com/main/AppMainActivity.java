@@ -147,7 +147,6 @@ import com.group.chat.ChatInfoBean;
 import com.group.chat.ForwardUserSelect;
 import com.group.chat.GroupChatActivity;
 import com.group.chat.GroupChatBroadCastReceiver;
-import com.group.chat.SendListUIBean;
 import com.image.utils.ImageLoader;
 import com.process.BGProcessor;
 import com.process.MemoryProcessor;
@@ -388,6 +387,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 				window.setStatusBarColor(getResources().getColor(R.color.blue2));
 			}
+
+			SingleInstance.build_version = android.os.Build.MODEL;
+			Log.i("NotesVideo","Model : "+SingleInstance.build_version);
 
 			AppReference.mainContext = this;
 			SipQueue sipQueue = new SipQueue();

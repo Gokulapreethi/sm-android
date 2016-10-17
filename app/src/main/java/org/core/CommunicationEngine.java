@@ -2,11 +2,16 @@ package org.core;
 
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.hardware.Camera;
 import android.media.MediaCodec;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.media.MediaMuxer;
 import android.opengl.GLSurfaceView;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
@@ -40,17 +45,20 @@ import org.video.VideoFrameCallback;
 import org.video.VideoFrameRenderer;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -244,6 +252,7 @@ public class CommunicationEngine implements AudioRecorderListener,
 	private boolean encodeVideo = false;
 	byte encoded_data[];
 	private int key_frame = 0;
+	int photocount = 1;
 	/**
 	 * Used to Draw the Captured Video Frame using GLSurfacce View.
 	 */
@@ -1851,7 +1860,16 @@ public class CommunicationEngine implements AudioRecorderListener,
 							Log.i("NotesVideo", "inside if");
 							VideoThreadBean videoThreadBean = new VideoThreadBean();
 							videoThreadBean.setMember_name(sb.getTo());
-							videoThreadBean.setVideoDisabled(true);
+//							videoThreadBean.setVideoDisabled(false);
+							if(sb.getCallType().equalsIgnoreCase("VC")) {
+								if(sb.getPreviouscalltype() == null || !sb.getPreviouscalltype().equalsIgnoreCase("AC")) {
+									videoThreadBean.setVideoDisabled(false);
+								} else {
+									videoThreadBean.setVideoDisabled(true);
+								}
+							} else {
+								videoThreadBean.setVideoDisabled(true);
+							}
 							Log.i("VideoSSRC", "videoSSRC_total.put 1");
 							WebServiceReferences.videoSSRC_total.put(Integer.parseInt(sb.getVideossrc()), videoThreadBean);
 							Log.i("NotesVideo", "videoSSRC size : " + WebServiceReferences.videoSSRC_total.size());
@@ -1860,13 +1878,15 @@ public class CommunicationEngine implements AudioRecorderListener,
 							if (objCallScreen != null) {
 
 								if (objCallScreen instanceof AudioCallScreen) {
+									VideoThreadBean temp_video_Bean = WebServiceReferences.videoSSRC_total.get(Integer.parseInt(sb.getVideossrc()));
+									temp_video_Bean.setVideoDisabled(true);
 									AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
 									acalObj.notifyNewSSRC(Integer.parseInt(sb.getVideossrc()));
 								}
-//								else if (objCallScreen instanceof VideoCallScreen) {
-//									VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
-//									acalObj.notifyVideoStoped(sb);
-//								}
+								else if (objCallScreen instanceof VideoCallScreen) {
+									VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
+									acalObj.notifyNewSSRC(Integer.parseInt(sb.getVideossrc()));
+								}
 							}
 						}
 					}
@@ -2765,6 +2785,7 @@ public class CommunicationEngine implements AudioRecorderListener,
 			 preview.setWidth(width);
 			 preview.setHeight(height);
 			preview.setVideoFrameCallback(this);
+			preview.setBuildVersion(SingleInstance.build_version);
 
 			return preview;
 
@@ -2971,27 +2992,27 @@ public class CommunicationEngine implements AudioRecorderListener,
 		byte[] yuvdata = null;
 		byte[] rgbdata = null;
 		try {
-			Log.i("Resolution","Before Decoding : Size : "+frame.length+" time : "+new Date());
+//			Log.i("Resolution","Before Decoding : Size : "+frame.length+" time : "+new Date());
 				if(WebServiceReferences.videoSSRC_total_list != null ) {
 
 					if (WebServiceReferences.videoSSRC_total_list.contains((int) (long) ssrc)) {
 
 					} else {
 						if(!WebServiceReferences.removed_videoSSRC_list.contains((int) (long) ssrc)) {
-							WebServiceReferences.videoSSRC_total_list.add((int) (long) ssrc);
+//							WebServiceReferences.videoSSRC_total_list.add((int) (long) ssrc);
 
 							Object objCallScreen = SingleInstance.instanceTable
 									.get("callscreen");
 							if (objCallScreen != null) {
-
+								WebServiceReferences.videoSSRC_total_list.add((int) (long) ssrc);
 								if (objCallScreen instanceof AudioCallScreen) {
 									AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
 									acalObj.notifyNumFeedChanged();
 								}
-//								else if (objCallScreen instanceof VideoCallScreen) {
-//									VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
-//									acalObj.notifyVideoStoped(sb);
-//								}
+								else if (objCallScreen instanceof VideoCallScreen) {
+									VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
+									acalObj.notifyNumFeedChanged();
+								}
 							}
 						}
 //						if(WebServiceReferences.videoSSRC_total.containsKey((int) (long) ssrc)){
@@ -3041,9 +3062,24 @@ public class CommunicationEngine implements AudioRecorderListener,
 								Log.d("VDO", "going to notify decoded video frame");
 								videoCodec.convertYUV4202RGB24(yuvdata, rgbdata,
 										mPreviewWidth, mPreviewHeight);
-								Log.i("Resolution", "After Decoding : Size : " + rgbdata.length + " time : " + new Date());
+//								Log.i("Resolution", "After Decoding : Size : " + rgbdata.length + " time : " + new Date());
 								videoCallback.notifyDecodedVideoCallback(rgbdata,
 										ssrc);
+								if(ProprietarySignalling.need_to_notify) {
+									Object objCallScreen = SingleInstance.instanceTable
+											.get("callscreen");
+									if (objCallScreen != null) {
+										ProprietarySignalling.need_to_notify = false;
+										if (objCallScreen instanceof AudioCallScreen) {
+											AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
+											acalObj.notifyNumFeedChanged();
+										}
+										else if (objCallScreen instanceof VideoCallScreen) {
+											VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
+											acalObj.notifyNumFeedChanged();
+										}
+									}
+								}
 
 							}
 						}
@@ -3548,12 +3584,19 @@ public class CommunicationEngine implements AudioRecorderListener,
 
 	}
 
+	public String getCurrentTimeStamp() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		Date now = new Date();
+		String strDate = sdf.format(now);
+		return strDate;
+	}
+
 	/**
 	 * This method is used to get the Video data and send it using RTPEngine.
 	 * Using RTPEngine we can send the Videoframe.
 	 */
 	@Override
-	public void notifyVideoFrame(byte[] arg0) {
+	public void notifyVideoFrame(byte[] data,Camera camera,Context camera_context) {
 		Log.i("minimizevideo","screenSharing  : "+screenSharing);
 		if (!screenSharing) {
 			try {
@@ -3561,8 +3604,21 @@ public class CommunicationEngine implements AudioRecorderListener,
 				Log.i("minimizevideo","videoCodec  : "+videoCodec+" video_preview :"+video_preview +" encodeVideo :"+encodeVideo);
 				if (videoCodec != null && video_preview) {
 
-					Log.i("Resolution","Before Encoding : Size : "+arg0.length+" time : "+new Date());
+//					Log.i("Resolution","Before Encoding : Size : "+data.length+" time : "+new Date()+""+data);
 					if (encodeVideo) {
+						Log.i("Resolution","Before Orientation : Size : "+data.length+" time : "+getCurrentTimeStamp());
+//						arg0 = rotateYUV420Degree90(arg0,width,height);
+						byte [] arg0 = new byte[width*height * 3 / 2];
+						if(camaera_id == 0) {
+							if(SingleInstance.build_version.contains("Nexus")) {
+								videoCodec.RotateYUV420Degree(data, width, height, 270, arg0);
+							} else {
+								videoCodec.RotateYUV420Degree(data, width, height, 90, arg0);
+							}
+						} else {
+							videoCodec.RotateYUV420Degree(data, width, height, 270, arg0);
+						}
+						Log.i("Resolution", "After Orientation : Size : " + arg0.length + " time : " + getCurrentTimeStamp());
 						byte[] yuvdata = new byte[width * height
 								+ (width * height) / 2];
 						byte[] coded_frame = new byte[1];
@@ -3589,11 +3645,11 @@ public class CommunicationEngine implements AudioRecorderListener,
 								videoCodec.yuv420spToYuv420(arg0, yuv420p,
 										width, height);
 							} else {
-								videoCodec.yuv420sp2rgb(arg0, width, height,
+								videoCodec.yuv420sp2rgb(arg0, height, width,
 										256, rgbdata);
 								Log.d("SCALE", "Width 1 " + width
 										+ " Height 1 " + height);
-								videoCodec.Scale(width, height, rgbdata, outW,
+								videoCodec.Scale(height, width, rgbdata, outW,
 										outH, outRGB);
 								yuv420p = new byte[(outW * outH * 3) / 2];
 								videoCodec.convertRGB2YUV420(outRGB, yuv420p,
@@ -3639,7 +3695,7 @@ public class CommunicationEngine implements AudioRecorderListener,
 						}
 
 						if (encoded_data != null) {
-							Log.i("Resolution","After Encoding : Size : "+encoded_data.length+" time : "+new Date());
+							Log.i("Resolution","After Encoding : Size : "+encoded_data.length+" time : "+getCurrentTimeStamp());
 							if (key_frame == 1) {
 
 								System.out.println("EEE" + key_frame);
@@ -3688,6 +3744,264 @@ public class CommunicationEngine implements AudioRecorderListener,
 			}
 		}
 
+	}
+	public void rotateNV21(byte[] input, byte[] output, int width, int height, int rotation) {
+		if (rotation==0){
+			System.arraycopy(input, 0, output, 0, input.length);
+			return;
+		}
+		boolean swap = (rotation == 90 || rotation == 270);
+		boolean yflip = (rotation == 90 || rotation == 180);
+		boolean xflip = (rotation == 270 || rotation == 180);
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				int xo = x, yo = y;
+				int w = width, h = height;
+				int xi = xo, yi = yo;
+				if (swap) {
+					xi = w * yo / h;
+					yi = h * xo / w;
+				}
+				if (yflip) {
+					yi = h - yi - 1;
+				}
+				if (xflip) {
+					xi = w - xi - 1;
+				}
+				Log.i("quality","output size :"+(w * yo + xo));
+				output[w * yo + xo] = input[w * yi + xi];
+				int fs = w * h;
+				int qs = (fs >> 2);
+				xi = (xi >> 1);
+				yi = (yi >> 1);
+				xo = (xo >> 1);
+				yo = (yo >> 1);
+				w = (w >> 1);
+				h = (h >> 1);
+				// adjust for interleave here
+				int ui = fs + (w * yi + xi) * 2;
+				int uo = fs + (w * yo + xo) * 2;
+				// and here
+				int vi = ui + 1;
+				int vo = uo + 1;
+				output[uo] = input[ui];
+				output[vo] = input[vi];
+			}
+		}
+	}
+	public Bitmap ByteArrayToBitmap(byte[] byteArray)
+	{
+		ByteArrayInputStream arrayInputStream = new ByteArrayInputStream(byteArray);
+		Bitmap bitmap = null;
+		try {
+			bitmap = BitmapFactory.decodeStream(arrayInputStream);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return bitmap;
+	}
+
+	public void saveBitmap(Bitmap bitmap) {
+		File imagePath = new File(Environment.getExternalStorageDirectory() + "/screenshot"+photocount+".png");
+		photocount++;
+		FileOutputStream fos;
+		try {
+			fos = new FileOutputStream(imagePath);
+			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+			fos.flush();
+			fos.close();
+		} catch (FileNotFoundException e) {
+			Log.e("GREC", e.getMessage(), e);
+		} catch (IOException e) {
+			Log.e("GREC", e.getMessage(), e);
+		}
+	}
+
+	private void writeimage(byte[] s){
+		File file = new File(Environment.getExternalStorageDirectory(), ""+photocount+"photo.jpg");
+		photocount++;
+		FileOutputStream fos = null;
+
+		try {
+
+			fos = new FileOutputStream(file);
+
+
+
+			// Writes bytes from the specified byte array to this file output stream
+
+			fos.write(s);
+		}
+
+		catch (FileNotFoundException e) {
+			e.printStackTrace();
+			System.out.println("File not found" + e);
+		}
+		catch (IOException ioe) {
+			ioe.printStackTrace();
+			System.out.println("Exception while writing file " + ioe);
+		}
+		finally {
+			// close the streams using close method
+			try {
+				if (fos != null) {
+					fos.close();
+				}
+			}
+			catch (IOException ioe) {
+				System.out.println("Error while closing stream: " + ioe);
+			}
+		}
+
+	}
+
+	public static class PlurkInputStream extends FilterInputStream {
+
+		protected PlurkInputStream(InputStream in) {
+			super(in);
+		}
+
+		@Override
+		public int read(byte[] buffer, int offset, int count)
+				throws IOException {
+			int ret = super.read(buffer, offset, count);
+			for ( int i = 2; i < buffer.length; i++ ) {
+				if ( buffer[i - 2] == 0x2c && buffer[i - 1] == 0x05
+						&& buffer[i] == 0 ) {
+					buffer[i - 1] = 0;
+				}
+			}
+			return ret;
+		}
+
+	}
+
+	class SavePhotoTask extends AsyncTask<byte[], String, String> {
+		@Override
+		protected String doInBackground(byte[]... jpeg) {
+
+			try {
+
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			Bitmap bmp = BitmapFactory.decodeByteArray(jpeg[0], 0, jpeg[0].length,options);
+
+			if(bmp == null) {
+				Log.i("Resolution","bmp null");
+			}
+			File photo=new File(Environment.getExternalStorageDirectory(), ""+photocount+"photo.jpg");
+			FileOutputStream outStream = new FileOutputStream(photo);
+
+			bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+			outStream.flush();
+			outStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+//			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+//			Bitmap _bitmapScaled = null;
+//			_bitmapScaled.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
+//
+//			File photo=new File(Environment.getExternalStorageDirectory(), ""+photocount+"photo.jpg");
+//
+//			if (photo.exists()) {
+//				photo.delete();
+//			}
+//
+//			try {
+//				FileOutputStream fos=new FileOutputStream(photo.getPath());
+//
+//				fos.write(jpeg[0]);
+//				fos.flush();
+//				fos.close();
+//			}
+//			catch (java.io.IOException e) {
+//				Log.e("PictureDemo", "Exception in photoCallback", e);
+//			}
+
+			return(null);
+		}
+	}
+
+	public Bitmap rotateImage(int angle, Bitmap bitmapSrc) {
+		Matrix matrix = new Matrix();
+		matrix.postRotate(angle);
+		return Bitmap.createBitmap(bitmapSrc, 0, 0,
+				bitmapSrc.getWidth(), bitmapSrc.getHeight(), matrix, true);
+	}
+
+	public static byte[] rotateYUV420Degree90(byte[] data, int imageWidth, int imageHeight) {
+		byte[] yuv = new byte[imageWidth * imageHeight * 3 / 2];
+		// Rotate the Y luma
+		int i = 0;
+		for (int x = 0; x < imageWidth; x++) {
+			for (int y = imageHeight - 1; y >= 0; y--) {
+				yuv[i] = data[y * imageWidth + x];
+				i++;
+			}
+		}
+		// Rotate the U and V color components
+		i = imageWidth * imageHeight * 3 / 2 - 1;
+		for (int x = imageWidth - 1; x > 0; x = x - 2) {
+			for (int y = 0; y < imageHeight / 2; y++) {
+				yuv[i] = data[(imageWidth * imageHeight) + (y * imageWidth) + x];
+				i--;
+				yuv[i] = data[(imageWidth * imageHeight) + (y * imageWidth)
+						+ (x - 1)];
+				i--;
+			}
+		}
+		return yuv;
+	}
+
+	private static byte[] rotateYUV420Degree180(byte[] data, int imageWidth, int imageHeight) {
+		byte[] yuv = new byte[imageWidth * imageHeight * 3 / 2];
+		int i = 0;
+		int count = 0;
+		for (i = imageWidth * imageHeight - 1; i >= 0; i--) {
+			yuv[count] = data[i];
+			count++;
+		}
+		i = imageWidth * imageHeight * 3 / 2 - 1;
+		for (i = imageWidth * imageHeight * 3 / 2 - 1; i >= imageWidth
+				* imageHeight; i -= 2) {
+			yuv[count++] = data[i - 1];
+			yuv[count++] = data[i];
+		}
+		return yuv;
+	}
+
+	public static byte[] rotateYUV420Degree270(byte[] data, int imageWidth,
+											   int imageHeight) {
+		byte[] yuv = new byte[imageWidth * imageHeight * 3 / 2];
+		int nWidth = 0, nHeight = 0;
+		int wh = 0;
+		int uvHeight = 0;
+		if (imageWidth != nWidth || imageHeight != nHeight) {
+			nWidth = imageWidth;
+			nHeight = imageHeight;
+			wh = imageWidth * imageHeight;
+			uvHeight = imageHeight >> 1;// uvHeight = height / 2
+		}
+		// ??Y
+		int k = 0;
+		for (int i = 0; i < imageWidth; i++) {
+			int nPos = 0;
+			for (int j = 0; j < imageHeight; j++) {
+				yuv[k] = data[nPos + i];
+				k++;
+				nPos += imageWidth;
+			}
+		}
+		for (int i = 0; i < imageWidth; i += 2) {
+			int nPos = wh;
+			for (int j = 0; j < uvHeight; j++) {
+				yuv[k] = data[nPos + i];
+				yuv[k + 1] = data[nPos + i + 1];
+				k += 2;
+				nPos += imageWidth;
+			}
+		}
+		return rotateYUV420Degree180(yuv, imageWidth, imageHeight);
 	}
 
 	public void enable_disable_VideoPreview(boolean enable_video){
