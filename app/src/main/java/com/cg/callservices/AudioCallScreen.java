@@ -811,79 +811,6 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 		}
 	}
 
-	private void refreshBuddyProfiles() {
-		Log.i("NotesVideo","came to refreshBuddyProfiles");
-		for(int i=0;i<WebServiceReferences.videoSSRC_total_list.size();i++) {
-			int turn_ssrc = WebServiceReferences.videoSSRC_total_list.get(i);
-			final int total_size = WebServiceReferences.videoSSRC_total_list.size();
-
-			VideoThreadBean videoThreadBean = WebServiceReferences.videoSSRC_total.get(turn_ssrc);
-			if (videoThreadBean != null && videoThreadBean.isVideoDisabled()) {
-				final String buddy_name = (WebServiceReferences.videoSSRC_total.get(turn_ssrc)).getMember_name();
-
-				boolean have_image = false;
-				for (BuddyInformationBean buddyInformationBean : buddyList) {
-					if (buddyInformationBean.getName().equalsIgnoreCase(buddy_name)) {
-						String pic_path = buddyInformationBean.getProfile_picpath();
-
-						if (pic_path == null || pic_path.length() == 0) {
-							ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(buddy_name);
-							if (pBean != null) {
-								pic_path = pBean.getPhoto();
-								Log.i("Join", "pic_path 2 : " + pic_path);
-							}
-						}
-						if (pic_path != null && pic_path.length() > 0) {
-							if (!pic_path.contains("COMMedia")) {
-								pic_path = Environment
-										.getExternalStorageDirectory()
-										+ "/COMMedia/" + pic_path;
-							}
-							have_image = true;
-							if (i == 0) {
-								imageLoader.DisplayImage(pic_path, buddyimageview1, R.drawable.icon_buddy_aoffline);
-							} else if (i == 1) {
-								if (total_size == 2) {
-//									imageLoader.DisplayImage(pic_path, buddyimageview12, R.drawable.icon_buddy_aoffline);
-								} else {
-									imageLoader.DisplayImage(pic_path, buddyimageview2, R.drawable.icon_buddy_aoffline);
-								}
-							} else if (i == 2) {
-								imageLoader.DisplayImage(pic_path, buddyimageview3, R.drawable.icon_buddy_aoffline);
-							}
-						}
-					}
-				}
-				if (i == 0) {
-					if (!have_image) {
-						imageLoader.DisplayImage("", buddyimageview1, R.drawable.icon_buddy_aoffline);
-					}
-					buddyimageview1.setVisibility(View.VISIBLE);
-//					buddysurfaceview_01.setVisibility(View.GONE);
-				} else if (i == 1) {
-					if (total_size == 2) {
-						if (!have_image) {
-//							imageLoader.DisplayImage("", buddyimageview12, R.drawable.icon_buddy_aoffline);
-						}
-//						buddyimageview12.setVisibility(View.VISIBLE);
-//						buddysurfaceview_0102.setVisibility(View.GONE);
-					} else {
-						if (!have_image) {
-							imageLoader.DisplayImage("", buddyimageview2, R.drawable.icon_buddy_aoffline);
-						}
-						buddyimageview2.setVisibility(View.VISIBLE);
-						buddysurfaceview_02.setVisibility(View.GONE);
-					}
-				} else if (i == 2) {
-					if (!have_image) {
-						imageLoader.DisplayImage("", buddyimageview3, R.drawable.icon_buddy_aoffline);
-					}
-					buddyimageview3.setVisibility(View.VISIBLE);
-					buddysurfaceview_03.setVisibility(View.GONE);
-				}
-			}
-		}
-	}
 
 	public String getCurrentDateandTime() {
 		try {
@@ -1745,7 +1672,22 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 						String user = CallDispatcher.conferenceMembers.get(i);
 						onOffVideo(user,true);
 					}
+					handler.post(new Runnable() {
+						@Override
+						public void run() {
 
+							RecordTransactionBean transactionBean = new RecordTransactionBean();
+							transactionBean.setSessionid(strSessionId);
+							transactionBean.setHost(CallDispatcher.LoginUser);
+							transactionBean.setParticipants("");
+							if (preview_hided) {
+								transactionBean.setDisableVideo("yes");
+							} else {
+								transactionBean.setDisableVideo("no");
+							}
+							processCallRequest(2, transactionBean, "disablevideo");
+						}
+					});
 					resetVideoViews(false);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -1786,7 +1728,6 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 	public void notifyVideoStoped(final SignalingBean vidsignBean){
 		if(vidsignBean != null && WebServiceReferences.videoSSRC_total != null && WebServiceReferences.videoSSRC_total.size()>0){
 			Log.i("NotesVideo","came to notifyVideoStoped  : "+vidsignBean.getVideoStoped());
-			final int total_size = WebServiceReferences.videoSSRC_total_list.size();
 			int requiredKey = 0;
 			Set set = WebServiceReferences.videoSSRC_total.entrySet();
 			Iterator i = set.iterator();
@@ -3542,7 +3483,6 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 	private boolean have_video_frames(int i){
 		int turn_ssrc = WebServiceReferences.videoSSRC_total_list.get(i);
-		final int total_size = WebServiceReferences.videoSSRC_total_list.size();
 
 		VideoThreadBean videoThreadBean = WebServiceReferences.videoSSRC_total.get(turn_ssrc);
 		if (videoThreadBean != null && videoThreadBean.isVideoDisabled()) {
@@ -3554,7 +3494,6 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 	private void set_profile_image(int i){
 		int turn_ssrc = WebServiceReferences.videoSSRC_total_list.get(i);
-		final int total_size = WebServiceReferences.videoSSRC_total_list.size();
 
 		VideoThreadBean videoThreadBean = WebServiceReferences.videoSSRC_total.get(turn_ssrc);
 		if (videoThreadBean != null && videoThreadBean.isVideoDisabled()) {

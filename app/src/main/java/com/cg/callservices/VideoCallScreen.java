@@ -90,7 +90,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	private boolean isShowingMediaFailureIcon = false;
 	Timer timer = null;
 	Handler handler = null;
-	LinearLayout bottom_videowindows , top_videoWindows;
+//	LinearLayout bottom_videowindows , top_videoWindows;
 //	RelativeLayout relativeLayout;
 	int orientation = 0;
 	int i = 0;
@@ -131,7 +131,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	boolean mReceiveVideo = false;
 	boolean mReceiveVideo2 = false;
 	// private AudioProperties audioProperties=null;
-	RelativeLayout layout , own_video_layout,video_layouts, profile_view1, profile_view2, profile_view3;
+	RelativeLayout layout , video_layouts, profile_view1, profile_view2, profile_view3;
 
 	private  int video_viewWidth , video_viewHeight;
 
@@ -907,9 +907,9 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 				btn_video.setTag(true);
 
 				ownername = (TextView) rootView.findViewById(R.id.name1);
-				own_video_layout = (RelativeLayout) rootView.findViewById(R.id.ownvideolayout);
-				top_videoWindows = (LinearLayout) rootView.findViewById(R.id.top_videowindowlayouts);
-				bottom_videowindows = (LinearLayout) rootView.findViewById(R.id.bottom_videowindowlayout);
+//				own_video_layout = (RelativeLayout) rootView.findViewById(R.id.ownvideolayout);
+//				top_videoWindows = (LinearLayout) rootView.findViewById(R.id.top_videowindowlayouts);
+//				bottom_videowindows = (LinearLayout) rootView.findViewById(R.id.bottom_videowindowlayout);
 				ViewTreeObserver viewTreeObserver = video_layouts.getViewTreeObserver();
 				if (viewTreeObserver.isAlive()) {
 					viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
