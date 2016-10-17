@@ -2347,6 +2347,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     @Override
                     public void onSwipeStart(int position) {
                         itemID = position;
+                        InputMethodManager imm = (InputMethodManager) getSystemService( INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                         Log.d("Swiselect1", "onSwipeStart : " + position);
 
                     }
@@ -10145,11 +10147,13 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             String Duedate = bean.getDuedate();
             String DueTime = bean.getDuetime();
             String DateTime;
-            if (DueTime != null)
+            if (DueTime != null && !DueTime.toString().equalsIgnoreCase(("0")) )
                 DateTime = Duedate + " " + DueTime;
             else
                 DateTime = Duedate + " " + "00:00";
-            Log.i("sss", "DateTime :======> " + DateTime);
+            Log.i("ppp", "DateTime :======> " + DateTime);
+            Log.i("ppp", "DateTime :======> " + DueTime);
+
             DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm");
             Date date = new Date();
             SimpleDateFormat myFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm");
@@ -10419,22 +10423,28 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 int questionsCount;
                 if (groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
-                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1"))||
+                        (memberbean.getAdmin() != null && memberbean.getAdmin().equalsIgnoreCase("1")) ||
                         (rolePatientManagementBean.getAdd() != null && rolePatientManagementBean.getAdd().equalsIgnoreCase("1"))) {
-                if(patientType.equalsIgnoreCase("mypatient"))
-                 questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where groupid='"
-                        + groupId + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser + "%'");
-                else
-                    questionsCount=DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where groupid='" + groupId + "' and assignedmembers=''");
-
-                if (questionsCount > 0) {
-                    Intent intent = new Intent(context, AssignPatientActivity.class);
-                    intent.putExtra("groupid", groupId);
-                    intent.putExtra("groupname", groupBean.getGroupName());
-                    startActivity(intent);
+                    if (patientType.equalsIgnoreCase("mypatient"))
+                        questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where groupid='"
+                                + groupId + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser + "%'");
+                    else
+                        questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where groupid='" + groupId + "' and assignedmembers=''");
+                    Log.i("BBB","entry count of mypatient and others**********"+questionsCount);
+                    if (questionsCount > 0 ) {
+                        Intent intent = new Intent(context, AssignPatientActivity.class);
+                        intent.putExtra("groupid", groupId);
+                        intent.putExtra("groupname", groupBean.getGroupName());
+                        startActivity(intent);
+                    } else if(patientType.equals("mypatient"))
+                    {
+                        Intent intent = new Intent(context, AssignPatientActivity.class);
+                        intent.putExtra("groupid", groupId);
+                        intent.putExtra("groupname", groupBean.getGroupName());
+                        startActivity(intent);
+                    }else
+                        showToast("Members already assigned to these patient ");
                 } else
-                    showToast("Members already assigned to these patient ");
-                }else
                     showToast("You have no access to assign members to these patient ");
                 return true;
             }
@@ -10449,6 +10459,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 location_image.setVisibility(View.GONE);
                 status.setTextColor(getResources().getColor(R.color.snazlgray));
                 status_image.setVisibility(View.GONE);
+                mypatients.setTextColor(getResources().getColor(R.color.snazlgray));
                 Collections.sort(PatientList, new PatientNameComparator());
                 handler.post(new Runnable() {
                     @Override
@@ -10471,6 +10482,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 location_image.setVisibility(View.VISIBLE);
                 status.setTextColor(getResources().getColor(R.color.snazlgray));
                 status_image.setVisibility(View.GONE);
+                mypatients.setTextColor(getResources().getColor(R.color.snazlgray));
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -10493,6 +10505,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 location_image.setVisibility(View.GONE);
                 name.setTextColor(getResources().getColor(R.color.snazlgray));
                 name_image.setVisibility(View.GONE);
+                mypatients.setTextColor(getResources().getColor(R.color.snazlgray));
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -10509,6 +10522,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             @Override
             public void onClick(View v) {
                 mypatients.setTextColor(getResources().getColor(R.color.white));
+//                patientType = "mypatient";
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -10522,14 +10536,16 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         }else {
                             mypatient=true;
                             patientType = "name";
+                            mypatients.setTextColor(getResources().getColor(R.color.snazlgray));
+                            name.setTextColor(getResources().getColor(R.color.white));
+                            name_image.setVisibility(View.VISIBLE);
                             strGetQry = "select * from patientdetails where groupid='"
                                     + groupBean.getGroupId() + "'";
                         }
                         PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
                         Collections.sort(PatientList, new PatientNameComparator());
-                        patientType = "name";
-                        name.setTextColor(getResources().getColor(R.color.white));
-                        name_image.setVisibility(View.VISIBLE);
+//                        patientType = "name";
+
                         location.setTextColor(getResources().getColor(R.color.snazlgray));
                         location_image.setVisibility(View.GONE);
                         status.setTextColor(getResources().getColor(R.color.snazlgray));

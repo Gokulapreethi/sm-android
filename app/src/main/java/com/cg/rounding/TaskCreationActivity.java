@@ -813,27 +813,32 @@ public class TaskCreationActivity extends Activity {
     }
     private void loadMembers()
     {
-        String memberslist="";
+        Log.i("task111", "loadMembers");
+        String memberslist = new String();
         members.clear();
         for (PatientDetailsBean bean : PatientList) {
             String name = bean.getFirstname() + " " + bean.getLastname();
             if (name.equalsIgnoreCase(patient.getText().toString())) {
-                if(bean.getAssignedmembers()!=null)
-                    memberslist=bean.getAssignedmembers();
+                if (bean.getAssignedmembers() != null)
+                    memberslist = bean.getAssignedmembers();
             }
         }
-            if (memberslist != null && memberslist.length() > 0) {
-                String[] mlist = memberslist.split(",");
-                for (String tmp : mlist) {
+        Log.i("task111", "loadMembers" + memberslist);
+        if (memberslist != null && memberslist.length() > 0) {
+            String[] mlist = memberslist.split(",");
+            for (String tmp : mlist) {
+                if (tmp.toString().length() > 0) {
                     BuddyInformationBean uBean = new BuddyInformationBean();
-                    ProfileBean pbean=DBAccess.getdbHeler().getProfileDetails(tmp);
+                    ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(tmp);
                     uBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
+                    Log.i("task111", "name " + tmp);
                     uBean.setName(tmp);
                     uBean.setProfile_picpath(pbean.getPhoto());
                     uBean.setType("0");
                     members.add(uBean);
                 }
             }
+        }
     }
 
     @Override

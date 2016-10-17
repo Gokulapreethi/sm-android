@@ -516,20 +516,20 @@ public class RoundNewPatientActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if (ed_firstname.getText().toString().trim().length() > 0
-                    && ed_lastname.getText().toString().trim().length() > 0
+                        && ed_lastname.getText().toString().trim().length() > 0
                         && ed_dob.getText().toString().trim().length() > 0
                         && ed_mrn.getText().toString().trim().length() > 0
                         && ed_floor.getText().toString().trim().length() > 0) {
 
-                int selectedId = gender_patient.getCheckedRadioButtonId();
-                    if(selectedId>0) {
+                    int selectedId = gender_patient.getCheckedRadioButtonId();
+                    if (selectedId > 0) {
                         genderSelected = (RadioButton) findViewById(selectedId);
                         pBean.setSex(genderSelected.getText().toString());
-                    }else
+                    } else
                         pBean.setSex("");
-                    addedMembers="";
+                    addedMembers = "";
                     for (String name : assignedMembers) {
-                        addedMembers= addedMembers+name+",";
+                        addedMembers = addedMembers + name + ",";
                     }
                     pBean.setGroupid(groupid);
                     pBean.setPatientid("");
@@ -546,18 +546,18 @@ public class RoundNewPatientActivity extends Activity {
                     pBean.setRoom(ed_room.getText().toString());
                     pBean.setBed(ed_bed.getText().toString());
                     pBean.setAdmissiondate(ed_Admitdate.getText().toString());
-                    if(addedMembers.length()>0)
-                    pBean.setAssignedmembers(addedMembers.substring(0,
-                            addedMembers.length() - 1));
+                    if (addedMembers.length() > 0)
+                        pBean.setAssignedmembers(addedMembers.substring(0,
+                                addedMembers.length() - 1));
                     else
                         pBean.setAssignedmembers("");
                     showprogress();
-                WebServiceReferences.webServiceClient.SetPatientRecord(pBean, context);
-            } else {
-                Toast.makeText(context,
-                        "Please enter all mandatory fields",
-                        Toast.LENGTH_SHORT).show();
-            }
+                    WebServiceReferences.webServiceClient.SetPatientRecord(pBean, context);
+                } else {
+                    Toast.makeText(context,
+                            "Please enter all mandatory fields",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

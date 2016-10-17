@@ -319,7 +319,6 @@
                 android:background="#272829"
                 android:maxLength="20"
                 android:gravity="center_vertical"
-                android:inputType="number"
                 android:textColor="#fff" />
             <View
                 android:layout_width="match_parent"

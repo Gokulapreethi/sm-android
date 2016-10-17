@@ -167,7 +167,7 @@ public class RoundingPatientAdapter extends ArrayAdapter<PatientDetailsBean> {
 
                     holder.age.setText("Age : " + age);
                 }
-                if(pBean.getSex()!=null)
+                if(pBean.getSex()!=null && pBean.getSex().length()>0 )
                     holder.sex.setText("Sex : "+String.valueOf(pBean.getSex().charAt(0)));
                 if(pBean.getMrn()!=null)
                     holder.mrn.setText("MRN : "+pBean.getMrn());

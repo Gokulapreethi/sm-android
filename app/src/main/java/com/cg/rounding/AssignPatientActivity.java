@@ -79,6 +79,8 @@ public class AssignPatientActivity extends Activity{
             strGetQry="select * from patientdetails where groupid='" + groupid + "' and assignedmembers=''";
 
         PatientList=DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
+        Log.i("BBB","patient isMyPatient@@@@@@@@@$$$$$  =="+GroupChatActivity.patientType);
+
         if(GroupChatActivity.patientType.equalsIgnoreCase("mypatient")){
             unassign_lay.setVisibility(View.VISIBLE);
             assign.setText("ASSIGN MEMBERS");
@@ -213,11 +215,17 @@ public class AssignPatientActivity extends Activity{
             Log.i("patientdetails", "notifySetPatientRecord ");
             GroupChatActivity gChat = (GroupChatActivity) SingleInstance.contextTable
                     .get("groupchat");
-            gChat.refreshPatient();
-
-            finish();
-
+            if(gChat!=null) {
+                Log.i("patientdetails", "notifySetPatientRecord call to refresh");
+                gChat.refreshPatient();
+            }
+            killActivity();
         }
+    }
+    private void killActivity() {
+        Log.i("patientdetails", "!!!!!!!!!!!killActivity *****");
+
+        finish();
     }
     @SuppressWarnings("unchecked")
     @Override
@@ -236,22 +244,23 @@ public class AssignPatientActivity extends Activity{
                     for (UserBean temp : list) {
                         addedMembers = addedMembers + "," + temp.getBuddyName();
                     }
-                    boolean isSelect=false;
-                    for(PatientDetailsBean bean:PatientList) {
-                        if(bean.isSelected()) {
-                            isSelect=true;
-                            if(bean.getAssignedmembers()!=null)
-                            bean.setAssignedmembers(bean.getAssignedmembers()+","+addedMembers);
+                    boolean isSelect = false;
+                    for (PatientDetailsBean bean : PatientList) {
+                        if (bean.isSelected()) {
+                            isSelect = true;
+                            if (bean.getAssignedmembers() != null)
+                                bean.setAssignedmembers(bean.getAssignedmembers() + "," + addedMembers);
                             else
                                 bean.setAssignedmembers(addedMembers);
                             WebServiceReferences.webServiceClient.SetPatientRecord(bean, context);
                             DBAccess.getdbHeler().insertorUpdatePatientDetails(bean);
                         }
                     }
-                    if(isSelect)
+                    if (isSelect)
                         showprogress();
                 }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

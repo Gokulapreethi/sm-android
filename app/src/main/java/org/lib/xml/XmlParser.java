@@ -2602,6 +2602,11 @@ public class XmlParser {
 					sb.setText(null);
 				}
 			}
+			if (xml.contains("eid=\"38\"")) {
+				Log.d("ppp", "eid 38**********......");
+			}
+
+
 			list = doc.getElementsByTagName("text");
 			Log.d("lg", "......" + list.getLength());
 
@@ -7705,10 +7710,13 @@ public class XmlParser {
 					bean.setPatientmanagement(nodeMap.getNamedItem("patientmanagement")
 							.getNodeValue());
 
-				if (nodeMap.getNamedItem("taskmanagement") != null)
+				if (nodeMap.getNamedItem("taskmanagement") != null) {
 					bean.setTaskmanagement(nodeMap.getNamedItem("taskmanagement")
 							.getNodeValue());
-				if (nodeMap.getNamedItem("editroundingform") != null)
+					Log.i("ppp", "parser**** roleAccess of the task_member" + nodeMap.getNamedItem("taskmanagement")
+							.getNodeValue());
+				}
+					if (nodeMap.getNamedItem("editroundingform") != null)
 					bean.setEditroundingform(nodeMap.getNamedItem("editroundingform")
 							.getNodeValue());
 				if (nodeMap.getNamedItem("commentsview") != null)

@@ -83,7 +83,7 @@ public class PatientRoundingFragment extends Fragment {
     private static CallDispatcher calldisp = null;
     private String pastingContentCopy;
     View _rootView;
-    private boolean islistAZ=true;
+    private boolean islistAZ = true;
     private String groupName;
     private Seealladapter seealladapter;
     public Boolean title = false;
@@ -152,7 +152,7 @@ public class PatientRoundingFragment extends Fragment {
         mainHeader.setVisibility(View.VISIBLE);
         LinearLayout contact_layout = (LinearLayout) getActivity().findViewById(R.id.contact_layout);
         contact_layout.setVisibility(View.GONE);
-        EditText search_box = (EditText)getActivity().findViewById(R.id.search_box);
+        EditText search_box = (EditText) getActivity().findViewById(R.id.search_box);
         search_box.setVisibility(View.GONE);
         final Button imVw = (Button) getActivity().findViewById(R.id.im_view);
         imVw.setVisibility(View.GONE);
@@ -175,19 +175,19 @@ public class PatientRoundingFragment extends Fragment {
                 "select * from groupdetails where groupid="
                         + gBean.getGroupId());
         final Vector<UserBean> memberslist = new Vector<UserBean>();
-        UserBean ubean=new UserBean();
+        UserBean ubean = new UserBean();
         ubean.setBuddyName(gmembersbean.getOwnerName());
-        if(gmembersbean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+        if (gmembersbean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
             ubean.setFirstname(SingleInstance.myAccountBean.getFirstname() + " " + SingleInstance.myAccountBean.getLastname());
             ubean.setProfilePic(SingleInstance.myAccountBean.getPhoto());
-        }else
-        for(BuddyInformationBean bib:ContactsFragment.getBuddyList()){
-            if(bib.getName().equalsIgnoreCase(gmembersbean.getOwnerName())) {
-                ubean.setFirstname(bib.getFirstname() + " " + bib.getLastname());
-                ubean.setProfilePic(bib.getProfile_picpath());
-                break;
+        } else
+            for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
+                if (bib.getName().equalsIgnoreCase(gmembersbean.getOwnerName())) {
+                    ubean.setFirstname(bib.getFirstname() + " " + bib.getLastname());
+                    ubean.setProfilePic(bib.getProfile_picpath());
+                    break;
+                }
             }
-        }
         if (gmembersbean != null) {
             if (gmembersbean.getActiveGroupMembers() != null
                     && gmembersbean.getActiveGroupMembers().length() > 0) {
@@ -247,26 +247,26 @@ public class PatientRoundingFragment extends Fragment {
                         dialog.dismiss();
                     }
                 });
-                if (!(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)||
-                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1")) ||
+                if (!(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                        (memberbean.getAdmin() != null && memberbean.getAdmin().equalsIgnoreCase("1")) ||
                         rolePatientManagementBean.getModify() != null && rolePatientManagementBean.getModify().equalsIgnoreCase("1"))) {
                     assign.setEnabled(false);
                     assign.setBackgroundColor(mainContext.getResources().getColor(R.color.black));
                 }
                 if (!(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
-                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1"))||
+                        (memberbean.getAdmin() != null && memberbean.getAdmin().equalsIgnoreCase("1")) ||
                         rolePatientManagementBean.getDischarge() != null && rolePatientManagementBean.getDischarge().equalsIgnoreCase("1"))) {
                     dischargePatient.setEnabled(false);
                     dischargePatient.setBackgroundColor(mainContext.getResources().getColor(R.color.black));
                 }
                 if (!(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
-                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1"))||
+                        (memberbean.getAdmin() != null && memberbean.getAdmin().equalsIgnoreCase("1")) ||
                         rolePatientManagementBean.getDelete() != null && rolePatientManagementBean.getDelete().equalsIgnoreCase("1"))) {
                     deletePatient.setEnabled(false);
                     deletePatient.setBackgroundColor(mainContext.getResources().getColor(R.color.black));
                 }
                 if (!(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
-                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1"))||
+                        (memberbean.getAdmin() != null && memberbean.getAdmin().equalsIgnoreCase("1")) ||
                         roleAccessBean.getTaskmanagement() != null && roleAccessBean.getTaskmanagement().equalsIgnoreCase("1"))) {
 //                    if(!(memberbean.getRole().equalsIgnoreCase(roleTaskMgtBean.getTattending())
 //                            || memberbean.getRole().equalsIgnoreCase(roleTaskMgtBean.getTchiefresident()) ||
@@ -285,8 +285,10 @@ public class PatientRoundingFragment extends Fragment {
                         for (UserBean userBean : memberslist) {
                             buddylist.add(userBean.getBuddyName());
                         }
+                        intent.putExtra("groupid", pBean.getGroupid());
+
                         intent.putStringArrayListExtra("buddylist", buddylist);
-                        intent.putExtra("frompatientfragment", true);
+                        intent.putExtra("fromRounding", true);
                         Log.i("AAAA", "members list " + buddylist.size());
                         startActivityForResult(intent, 3);
                         dialog.dismiss();
@@ -297,7 +299,7 @@ public class PatientRoundingFragment extends Fragment {
                     public void onClick(View v) {
                         Intent intent = new Intent(mainContext, TaskCreationActivity.class);
                         intent.putExtra("groupid", pBean.getGroupid());
-                        intent.putExtra("patientid",pBean.getPatientid());
+                        intent.putExtra("patientid", pBean.getPatientid());
                         startActivity(intent);
                         dialog.dismiss();
                     }
@@ -437,7 +439,6 @@ public class PatientRoundingFragment extends Fragment {
         final Button role_sort = (Button) v1.findViewById(R.id.role_sort);
 
 
-
         final Vector<UserBean> memberslist = new Vector<UserBean>();
         if (pBean != null) {
             if (pBean.getAssignedmembers() != null
@@ -454,14 +455,14 @@ public class PatientRoundingFragment extends Fragment {
                             uBean.setStatus(SingleInstance.mainContext.loadCurrentStatus());
                             String pic_Path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/COMMedia/" + bean.getPhoto();
                             uBean.setProfilePic(pic_Path);
-                        }else
-                        for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
-                            if (bib.getName().equalsIgnoreCase(tmp)) {
-                                uBean.setFirstname(bib.getFirstname() + " " + bib.getLastname());
-                                uBean.setStatus(bib.getStatus());
-                                uBean.setProfilePic(bib.getProfile_picpath());
+                        } else
+                            for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
+                                if (bib.getName().equalsIgnoreCase(tmp)) {
+                                    uBean.setFirstname(bib.getFirstname() + " " + bib.getLastname());
+                                    uBean.setStatus(bib.getStatus());
+                                    uBean.setProfilePic(bib.getProfile_picpath());
+                                }
                             }
-                        }
                         uBean.setBuddyName(tmp);
                         memberslist.add(uBean);
                     }
@@ -494,10 +495,10 @@ public class PatientRoundingFragment extends Fragment {
 
                 sorting = "alpha";
                 Collections.sort(memberslist, new PatientListComparator());
-                if(islistAZ) {
+                if (islistAZ) {
                     islistAZ = false;
                     alpha_sort.setText("A>Z");
-                }else {
+                } else {
                     islistAZ = true;
                     alpha_sort.setText("Z>A");
                     Collections.reverse(memberslist);
@@ -614,12 +615,12 @@ public class PatientRoundingFragment extends Fragment {
                         holder.header_title.setVisibility(View.VISIBLE);
                         String cname1, cname2;
 
-                        if( bib.getFirstname()!=null) {
+                        if (bib.getFirstname() != null) {
                             cname1 = String.valueOf(bib.getFirstname().charAt(0));
                             holder.header_title.setText(cname1.toUpperCase());
                         }
                         if (gmembersbean != null) {
-                            if (gmembersbean.getInviteMembers()!= null
+                            if (gmembersbean.getInviteMembers() != null
                                     && gmembersbean.getInviteMembers().length() > 0) {
                                 String[] listRole = (gmembersbean.getInviteMembers())
                                         .split(",");
@@ -627,13 +628,13 @@ public class PatientRoundingFragment extends Fragment {
                                     GroupMemberBean bean12 = DBAccess.getdbHeler().getMemberDetails(gBean.getGroupId(), tmp);
                                     boolean found = false;
                                     for (String element : listRole) {
-                                        if(tmp.equals(bib.getBuddyName())) {
-                                            Log.i("AAAA", "#########string Role "+bean12.getRole()+" element "+element);
+                                        if (tmp.equals(bib.getBuddyName())) {
+                                            Log.i("AAAA", "#########string Role " + bean12.getRole() + " element " + element);
                                             found = true;
                                             break;
                                         }
                                     }
-                                    if(found) {
+                                    if (found) {
                                         holder.memberRole.setText(bean12.getRole());
                                     }
                                 }
@@ -641,7 +642,7 @@ public class PatientRoundingFragment extends Fragment {
                         }
                         if (i > 0) {
                             final BuddyInformationBean bean = ContactsFragment.getBuddyList().get(i - 1);
-                            if(bean.getFirstname()!=null && bib.getFirstname()!=null) {
+                            if (bean.getFirstname() != null && bib.getFirstname() != null) {
                                 cname1 = String.valueOf(bib.getFirstname().charAt(0));
                                 cname2 = String.valueOf(bean.getFirstname().charAt(0));
                                 if (cname1.equalsIgnoreCase(cname2)) {
@@ -677,7 +678,7 @@ public class PatientRoundingFragment extends Fragment {
         ImageView statusIcon;
         TextView buddyName;
         TextView occupation;
-        TextView header_title, rights,memberRole;
+        TextView header_title, rights, memberRole;
     }
 
     public void setGroupBean(GroupBean bean) {
@@ -704,7 +705,7 @@ public class PatientRoundingFragment extends Fragment {
     }
 
     private void showDiagnosisHistory(String edit_content, String title) {
-       dialog1 = new Dialog(mainContext);
+        dialog1 = new Dialog(mainContext);
         dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog1.setContentView(R.layout.diagnosis_history);
         dialog1.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
@@ -740,15 +741,15 @@ public class PatientRoundingFragment extends Fragment {
         dialog1.show();
         Button cancel = (Button) dialog1.findViewById(R.id.cancel);
         Button edit_done = (Button) dialog1.findViewById(R.id.edit_diag_done);
-        ListView listview = (ListView)dialog1.findViewById(R.id.listview);
+        ListView listview = (ListView) dialog1.findViewById(R.id.listview);
         final TextView edit_title = (TextView) dialog1.findViewById(R.id.edit_title);
         edit_title.setText(edittitle);
         final TextView newDesc = (TextView) dialog1.findViewById(R.id.newDesc);
         newDesc.setText(edithint);
         final EditText newDescription = (EditText) dialog1.findViewById(R.id.new_descrip);
-        if(editingContent.length()>0){
+        if (editingContent.length() > 0) {
             newDescription.setText(editingContent);
-        }else {
+        } else {
             newDescription.setHint(edithint);
         }
         isfromedit_diagnosis = false;
@@ -756,7 +757,7 @@ public class PatientRoundingFragment extends Fragment {
                 + pBean.getGroupid() + "'and patientid='" + pBean.getPatientid() + "' ORDER BY active DESC";
 
         Vector<PatientDescriptionBean> comments = DBAccess.getdbHeler().getseallcomments(strGetQry);
-        Log.d("listvalues","string"+comments.size());
+        Log.d("listvalues", "string" + comments.size());
         seealladapter = new Seealladapter(mainContext, R.layout.seeall_row, comments);
         listview.setAdapter(seealladapter);
 
@@ -877,13 +878,13 @@ public class PatientRoundingFragment extends Fragment {
         plusBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
-                        (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1"))||
-                        (roleAccessBean.getTaskmanagement()!=null && roleAccessBean.getTaskmanagement().equalsIgnoreCase("1"))) {
+                if (gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                        (memberbean.getAdmin() != null && memberbean.getAdmin().equalsIgnoreCase("1")) ||
+                        (roleAccessBean.getTaskmanagement() != null && roleAccessBean.getTaskmanagement().equalsIgnoreCase("1"))) {
                     Intent intent = new Intent(mainContext, TaskCreationActivity.class);
                     intent.putExtra("groupid", gBean.getGroupId());
                     startActivity(intent);
-                }else
+                } else
                     showToast("You have no access to create Task ");
             }
         });
@@ -915,8 +916,9 @@ public class PatientRoundingFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 TaskDetailsBean tBean = (TaskDetailsBean) taskAdapter.getItem(i);
-                if(gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)&&
-                        tBean.getTaskstatus().equalsIgnoreCase("0")) {
+                if (gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                        tBean.getTaskstatus().equalsIgnoreCase("0") && (roleAccessBean.getTaskmanagement() != null && roleAccessBean.getTaskmanagement().equalsIgnoreCase("1"))) {
+                    Log.i("ppp", "roleAccess of the task_member" +roleAccessBean.getTaskmanagement());
                     Intent intent = new Intent(SingleInstance.mainContext, TaskCreationActivity.class);
                     intent.putExtra("groupid", tBean.getGroupid());
                     intent.putExtra("taskid", tBean.getTaskId());
@@ -956,7 +958,7 @@ public class PatientRoundingFragment extends Fragment {
         final Button edit_consults = (Button) v1.findViewById(R.id.edit_consults);
         final Button edit_status = (Button) v1.findViewById(R.id.edit_status);
         TextView tv_currentstatus = (TextView) v1.findViewById(R.id.tv_status);
-        LinearLayout status_click = (LinearLayout)v1.findViewById(R.id.status_click);
+        LinearLayout status_click = (LinearLayout) v1.findViewById(R.id.status_click);
         diagnosis = (TextView) v1.findViewById(R.id.diagnosis);
         medications = (TextView) v1.findViewById(R.id.medications);
         testandvitals = (TextView) v1.findViewById(R.id.testandvitals);
@@ -970,7 +972,7 @@ public class PatientRoundingFragment extends Fragment {
 
                 if (!Edit) {
                     if (gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
-                            (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1"))) {
+                            (memberbean.getAdmin() != null && memberbean.getAdmin().equalsIgnoreCase("1"))) {
                         edit_diagnosis.setVisibility(View.VISIBLE);
                         edit_medications.setVisibility(View.VISIBLE);
                         edit_tests.setVisibility(View.VISIBLE);
@@ -1307,7 +1309,7 @@ public class PatientRoundingFragment extends Fragment {
                 String birthdate = pBean.getDob();
                 Log.i("sss", "Current birthdate" + birthdate);
                 String[] str;
-                if(birthdate.contains("/"))
+                if (birthdate.contains("/"))
                     str = birthdate.split("/");
                 else
                     str = birthdate.split("-");
@@ -1361,7 +1363,7 @@ public class PatientRoundingFragment extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                los.setText("LOS : " + Result+" days");
+                los.setText("LOS : " + Result + " days");
             }
             if (pBean.getBed() != null)
                 bed.setText("Bed : " + pBean.getBed());
@@ -1577,14 +1579,14 @@ public class PatientRoundingFragment extends Fragment {
                         Map.Entry mapEntry = (Map.Entry) iterator1.next();
 
                         PatientCommentsBean bean = (PatientCommentsBean) mapEntry.getValue();
-                        if(bean.getGroupmember().equalsIgnoreCase(CallDispatcher.LoginUser)){
-                            ProfileBean pbean=SingleInstance.myAccountBean;
-                            bean.setMembername(pbean.getFirstname()+" "+pbean.getLastname());
-                        }else
-                        for(BuddyInformationBean bib: ContactsFragment.getBuddyList()){
-                            if(bib.getName().equalsIgnoreCase(bean.getGroupmember()))
-                            bean.setMembername(bib.getFirstname()+" "+bib.getLastname());
-                        }
+                        if (bean.getGroupmember().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+                            ProfileBean pbean = SingleInstance.myAccountBean;
+                            bean.setMembername(pbean.getFirstname() + " " + pbean.getLastname());
+                        } else
+                            for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
+                                if (bib.getName().equalsIgnoreCase(bean.getGroupmember()))
+                                    bean.setMembername(bib.getFirstname() + " " + bib.getLastname());
+                            }
                         patientCommentsBeen.add(bean);
                     }
                     cadapter = new CommentsAdapter(mainContext, R.layout.comments_row, patientCommentsBeen);
@@ -1762,7 +1764,7 @@ public class PatientRoundingFragment extends Fragment {
                 for (String tmp : mlist) {
                     UserBean uBean = new UserBean();
                     Log.d("listvalue", "listsize" + tmp);
-                    if(tmp.length()>0) {
+                    if (tmp.length() > 0) {
                         Log.d("listvalue", "listsize1" + tmp);
                         for (BuddyInformationBean bib : ContactsFragment.getBuddyList()) {
                             if (bib.getName().equalsIgnoreCase(tmp)) {
@@ -1801,7 +1803,7 @@ public class PatientRoundingFragment extends Fragment {
                 } else if (assignedMode.equalsIgnoreCase("unassigned")) {
                     tv_assigned.setText(" UNASSIGNED");
                 } else if (assignedMode.equalsIgnoreCase("assigntoteam")) {
-                    tv_assigned.setText(" TO " +adapterCount+" MEMBERS" );
+                    tv_assigned.setText(" TO " + adapterCount + " MEMBERS");
                 }
 //                tv_assigned.setText(assignedMode);
 
@@ -1970,6 +1972,7 @@ public class PatientRoundingFragment extends Fragment {
         LinearLayout member_lay;
         TextView rights, role;
     }
+
     public void onResume() {
         super.onResume();
         Log.d("ppp", "The onResume() event");
@@ -2058,8 +2061,8 @@ public class PatientRoundingFragment extends Fragment {
                     for (UserBean temp : list) {
                         addedMembers = addedMembers + "," + temp.getBuddyName();
                     }
-                    if(pBean.getAssignedmembers()!=null)
-                        pBean.setAssignedmembers(pBean.getAssignedmembers()+","+addedMembers);
+                    if (pBean.getAssignedmembers() != null)
+                        pBean.setAssignedmembers(pBean.getAssignedmembers() + "," + addedMembers);
                     else
                         pBean.setAssignedmembers(addedMembers);
                     WebServiceReferences.webServiceClient.SetPatientRecord(pBean, mainContext);
@@ -2106,8 +2109,8 @@ public class PatientRoundingFragment extends Fragment {
                     holder.old_message = (TextView) row.findViewById(R.id.old_message);
                     holder.active = (TextView) row.findViewById(R.id.active);
                     holder.message_date = (TextView) row.findViewById(R.id.message_date);
-                    holder.header_title = (TextView)row.findViewById(R.id.header_title);
-                    holder.relay_header= (RelativeLayout)row.findViewById(R.id.relay_header);
+                    holder.header_title = (TextView) row.findViewById(R.id.header_title);
+                    holder.relay_header = (RelativeLayout) row.findViewById(R.id.relay_header);
                     row.setTag(holder);
                 } else {
                     holder = (ViewHolder) row.getTag();
@@ -2115,13 +2118,12 @@ public class PatientRoundingFragment extends Fragment {
                 final PatientDescriptionBean pBean = (PatientDescriptionBean) commentList.get(position);
 
 
-
-                if(position==0){
+                if (position == 0) {
                     holder.header_title.setText("ACTIVE");
                     holder.active.setVisibility(View.GONE);
-                }else if(position ==1) {
+                } else if (position == 1) {
                     holder.header_title.setText("PREVIOUS");
-                }else{
+                } else {
                     holder.header_title.setVisibility(View.GONE);
                     holder.relay_header.setVisibility(View.GONE);
                 }
@@ -2158,7 +2160,7 @@ public class PatientRoundingFragment extends Fragment {
         }
 
         private class ViewHolder {
-            TextView old_message,active, message_date, header_title;
+            TextView old_message, active, message_date, header_title;
             RelativeLayout relay_header;
         }
     }

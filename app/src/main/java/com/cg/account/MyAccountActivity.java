@@ -177,15 +177,19 @@ public class MyAccountActivity extends Activity {
 //        final ImageView association_img=(ImageView)findViewById(R.id.association_img);
 //        Button img_edit=(Button)findViewById(R.id.addr_edit);
 //       Button img_close=(Button)findViewById(R.id.img_close);
-        statusTxt.setText(status);
-        if(status.equalsIgnoreCase("online"))
-            status_icon.setBackgroundResource(R.drawable.online_icon);
-        else if(status.equalsIgnoreCase("busy"))
-            status_icon.setBackgroundResource(R.drawable.busy_icon);
-        else if(status.equalsIgnoreCase("invisible"))
-            status_icon.setBackgroundResource(R.drawable.invisibleicon);
-        else if(status.equalsIgnoreCase("offline"))
-            status_icon.setBackgroundResource(R.drawable.offline_icon);
+        if(status!=null) {
+            statusTxt.setText(status);
+        }
+        if(status!=null) {
+            if (status.equalsIgnoreCase("online"))
+                status_icon.setBackgroundResource(R.drawable.online_icon);
+            else if (status.equalsIgnoreCase("busy"))
+                status_icon.setBackgroundResource(R.drawable.busy_icon);
+            else if (status.equalsIgnoreCase("invisible"))
+                status_icon.setBackgroundResource(R.drawable.invisibleicon);
+            else if (status.equalsIgnoreCase("offline"))
+                status_icon.setBackgroundResource(R.drawable.offline_icon);
+        }
 
 
         cancel.setOnClickListener(new View.OnClickListener() {

@@ -30,6 +30,7 @@ import org.lib.model.TaskDetailsBean;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
@@ -43,21 +44,21 @@ public class RoundingTaskAdapter extends ArrayAdapter<TaskDetailsBean> {
 
 
     public RoundingTaskAdapter(Context context, int textViewResourceId,
-                                  Vector<TaskDetailsBean> taskList) {
+                               Vector<TaskDetailsBean> taskList) {
 
         super(context, R.layout.rouding_patient_row, taskList);
         this.context = context;
-        tasklist=new Vector<TaskDetailsBean>();
+        tasklist = new Vector<TaskDetailsBean>();
         tasklist.addAll(taskList);
 
     }
+
     @Override
     public View getView(final int position, View view, ViewGroup arg2) {
         View row = view;
 
         try {
-             final ViewHolder holder;
-
+            final ViewHolder holder;
 
 
             if (row == null) {
@@ -69,90 +70,81 @@ public class RoundingTaskAdapter extends ArrayAdapter<TaskDetailsBean> {
                 holder.doctorname = (TextView) row.findViewById(R.id.doctor_name);
                 holder.taskname = (TextView) row.findViewById(R.id.taskname);
                 holder.pending_hours = (TextView) row.findViewById(R.id.pending_time);
-                holder.header=(RelativeLayout)row.findViewById(R.id.task_header);
-                holder.headertext=(TextView)row.findViewById(R.id.taskheader_text);
-                holder.linear_list=(LinearLayout)row.findViewById(R.id.linear_list);
-                holder.chbox1=(CheckBox)row.findViewById(R.id.chbox1);
+                holder.header = (RelativeLayout) row.findViewById(R.id.task_header);
+                holder.headertext = (TextView) row.findViewById(R.id.taskheader_text);
+                holder.linear_list = (LinearLayout) row.findViewById(R.id.linear_list);
+                holder.chbox1 = (CheckBox) row.findViewById(R.id.chbox1);
                 row.setTag(holder);
             } else {
                 holder = (ViewHolder) row.getTag();
             }
-            final TaskDetailsBean tBean = tasklist .get(position);
-            imageLoader=new ImageLoader(SingleInstance.mainContext);
-            if(tBean!=null){
-                if(tBean.getTaskdesc()!=null)
+            final TaskDetailsBean tBean = tasklist.get(position);
+            imageLoader = new ImageLoader(SingleInstance.mainContext);
+            if (tBean != null) {
+                if (tBean.getTaskdesc() != null)
                     holder.taskname.setText(tBean.getTaskdesc());
-                if(tBean.getPatientname()!=null)
+                if (tBean.getPatientname() != null)
                     holder.patientname.setText(tBean.getPatientname());
-                Log.i("taskdetails","adpater "+tBean.getAssignedMembers());
-                if(tBean.getAssignedMembers()!=null && !tBean.getAssignedMembers().equalsIgnoreCase("") &&
+                Log.i("taskdetails", "adpater " + tBean.getAssignedMembers());
+                if (tBean.getAssignedMembers() != null && !tBean.getAssignedMembers().equalsIgnoreCase("") &&
                         !tBean.getAssignedMembers().equalsIgnoreCase("null")) {
-                    String[] list=tBean.getAssignedMembers().split(",");
-                    String names="";
-                    for(String tmp:list) {
+                    String[] list = tBean.getAssignedMembers().split(",");
+                    String names = "";
+                    for (String tmp : list) {
                         ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(tmp);
-                        names=names+pBean.getTitle()+" "+pBean.getFirstname()+", ";
+                        names = names + pBean.getTitle() + " " + pBean.getFirstname() + ", ";
                     }
                     holder.doctorname.setText(names.substring(0, names.length() - 2));
-                }
-                else
+                } else
                     holder.doctorname.setText("Unassigned");
-                if(tBean.getHeadercode().equalsIgnoreCase("1")){
+                if (tBean.getHeadercode().equalsIgnoreCase("1")) {
                     holder.pending_hours.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.pink));
-                }else if(tBean.getHeadercode().equalsIgnoreCase("2")){
+                } else if (tBean.getHeadercode().equalsIgnoreCase("2")) {
                     holder.pending_hours.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.green));
-                }else if(tBean.getHeadercode().equalsIgnoreCase("3")){
+                } else if (tBean.getHeadercode().equalsIgnoreCase("3")) {
                     holder.pending_hours.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.white));
                 }
 
                 if (tBean.getDuedate() != null) {
-                   int Duetime=Integer.parseInt(tBean.getDuetime());
-                    Log.i("sss", "Due time"+Duetime);
-
-                    if(Duetime<=0) {
-//                    holder.pending_hours.setText(tBean.getDuedate());
-
-                        SimpleDateFormat dateformat = new SimpleDateFormat("MM-dd-yyyy");
-                        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd");
-                        Date d1 = new Date();
-                        String datevalue = tBean.getDuedate();
-                        d1 = dateformat.parse(datevalue);
-                        String date = sdf.format(d1);
-//                    String[] time = month[1].split(":");
-                        holder.pending_hours.setText(date+ ", "+tBean.getCrtDuetime());
-                    }
-
-                    else
+                    int Duetime = Integer.parseInt(tBean.getDuetime());
+                    Log.i("ppp", "adapter getDuedate" + tBean.getDuedate());
+                    if (Duetime <= 0) {
+                        DateFormat inputFormat = new SimpleDateFormat("MM-dd-yyyy");
+                        DateFormat outputFormat = new SimpleDateFormat("MMM dd");
+                        Date date = inputFormat.parse(tBean.getDuedate());
+                        String outputDateStr = outputFormat.format(date);
+                        Log.i("ppp", "duee date and time" + outputDateStr+""+tBean.getCrtDuetime());
+                        holder.pending_hours.setText(outputDateStr+" "+tBean.getCrtDuetime());
+                    } else
                         holder.pending_hours.setText(tBean.getDuetime() + " hours");
 
                 }
-                if(tBean.getHeader()!=null){
+                if (tBean.getHeader() != null) {
                     holder.headertext.setText(tBean.getHeader());
                     holder.header.setVisibility(View.VISIBLE);
                 }
-                if(tBean.getTaskstatus().equalsIgnoreCase("1")) {
+                if (tBean.getTaskstatus().equalsIgnoreCase("1")) {
                     holder.chbox1.setChecked(true);
                     holder.chbox1.setEnabled(false);
-                }else
+                } else
                     holder.chbox1.setChecked(false);
                 holder.chbox1
                         .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                             @Override
                             public void onCheckedChanged(CompoundButton arg0,
                                                          boolean isChecked) {
-                                if(holder.doctorname.getText().toString().equalsIgnoreCase("Unassigned")) {
+                                if (holder.doctorname.getText().toString().equalsIgnoreCase("Unassigned")) {
                                     Log.i("ppp", "else Unassigned");
                                     showToast("Please assigned the task to the member ");
-                                    holder.chbox1.setChecked(false);
-                                }else{
+                                    tBean.setTaskstatus("0");
+
+                                } else {
                                     Log.i("ppp", "Unassigned");
                                     if (isChecked) {
                                         holder.chbox1.setEnabled(false);
                                         tBean.setTaskstatus("1");
                                         DBAccess.getdbHeler().insertorUpdatTaskDetails(tBean);
                                         WebServiceReferences.webServiceClient.SetTaskRecord(tBean, SingleInstance.mainContext);
-                                    } else {
-
                                     }
                                 }
                             }
@@ -177,6 +169,7 @@ public class RoundingTaskAdapter extends ArrayAdapter<TaskDetailsBean> {
             }
         });
     }
+
     class ViewHolder {
         TextView patientname;
         TextView doctorname;
