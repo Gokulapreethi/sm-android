@@ -414,6 +414,8 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                             userBean.setProfilePic(pbean.getPhoto());
                             GroupMemberBean bean=DBAccess.getdbHeler().getMemberDetails(groupid,tmp);
                             userBean.setAdmin(bean.getAdmin());
+                            Log.i("BBBB", "Role setting &&&&&&&& "+bean.getRole()+" buddy "+tmp+" groupid "+groupid);
+
                             userBean.setRole((bean.getRole()));
                             for(BuddyInformationBean bib:ContactsFragment.getBuddyList()){
                                 if(bib.getName().equalsIgnoreCase(tmp)) {

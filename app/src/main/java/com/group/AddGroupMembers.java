@@ -68,7 +68,7 @@ public class AddGroupMembers extends Activity {
 	private TextView text_memeberscount;
 
     Vector<UserBean> contactList = new Vector<UserBean>();
-	Boolean fromCall,fromRounding;
+	Boolean fromCall,fromRounding,frompatientfragment;
 	String groupid,calltype;
 
 	@Override
@@ -87,6 +87,7 @@ public class AddGroupMembers extends Activity {
 
 			WebServiceReferences.contextTable.put("groupcontact", context);
 			fromCall=getIntent().getBooleanExtra("fromcall", false);
+			frompatientfragment=getIntent().getBooleanExtra("frompatientfragment", false);
 			groupid=getIntent().getStringExtra("groupid");
 			back = (Button) findViewById(R.id.btn_backaddcontact);
 			search = (Button) findViewById(R.id.search);
@@ -116,6 +117,10 @@ public class AddGroupMembers extends Activity {
 			}else if(fromRounding){
 				txtView01.setText("ASSIGN MEMBERS");
 				done.setText("ASSIGN MEMBERS TO PATIENT");
+			}else if(frompatientfragment)
+			{
+				txtView01.setText("ASSIGN MEMBERS");
+				done.setText("ASSIGN MEMBERS TO PATIENT");
 			}
 			search.setOnClickListener(new OnClickListener() {
 				@Override
@@ -142,7 +147,7 @@ public class AddGroupMembers extends Activity {
 					.getBuddyList();
 			
 			HashMap<String, BuddyInformationBean> bMap = new HashMap<String, BuddyInformationBean>();
-			if(!fromCall && !fromRounding) {
+			if(!fromCall && !fromRounding && !frompatientfragment) {
 				if (cList != null) {
 					for (BuddyInformationBean bib : cList) {
 						if (!bib.isTitle()) {
@@ -178,7 +183,7 @@ public class AddGroupMembers extends Activity {
 			presentbuddiescount=0;
 			Log.i("AAAA","loop before"+buddies.size());
 
-				if(!fromCall&& !fromRounding) {
+				if(!fromCall&& !fromRounding && !frompatientfragment) {
 					for (String tmp : buddies) {
 
 						if (!buddylist.contains(tmp)) {
@@ -292,7 +297,7 @@ public class AddGroupMembers extends Activity {
 
 						} else {
 							Intent intent = getIntent();
-							if (fromCall)
+							if (fromCall || frompatientfragment)
 								intent.putExtra("calltype", calltype);
 							intent.putExtra("list", users);
 							setResult(RESULT_OK, intent);
@@ -409,7 +414,7 @@ public class AddGroupMembers extends Activity {
 	{
 		Log.i("asdf", "count" + count);
 		countofselection.setText(Integer.toString(count) + " selected");
-		text_memeberscount.setText( "add " + Integer.toString(count) + "members to call");
+		//text_memeberscount.setText( "add " + Integer.toString(count) + "members to call");
 		if(count==contactList.size())
 			selectAll.setChecked(true);
 		else

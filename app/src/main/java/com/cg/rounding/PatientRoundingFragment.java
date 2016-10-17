@@ -19,6 +19,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -285,7 +286,7 @@ public class PatientRoundingFragment extends Fragment {
                             buddylist.add(userBean.getBuddyName());
                         }
                         intent.putStringArrayListExtra("buddylist", buddylist);
-                        intent.putExtra("fromcall", true);
+                        intent.putExtra("frompatientfragment", true);
                         Log.i("AAAA", "members list " + buddylist.size());
                         startActivityForResult(intent, 3);
                         dialog.dismiss();
@@ -580,6 +581,7 @@ public class PatientRoundingFragment extends Fragment {
                     holder.occupation = (TextView) convertView.findViewById(R.id.occupation);
                     holder.header_title = (TextView) convertView.findViewById(R.id.header_title);
                     holder.rights = (TextView) convertView.findViewById(R.id.rights);
+                    holder.memberRole = (TextView) convertView.findViewById(R.id.position);
                     convertView.setTag(holder);
                 } else
                     holder = (ViewHolder) convertView.getTag();
@@ -616,7 +618,27 @@ public class PatientRoundingFragment extends Fragment {
                             cname1 = String.valueOf(bib.getFirstname().charAt(0));
                             holder.header_title.setText(cname1.toUpperCase());
                         }
-
+                        if (gmembersbean != null) {
+                            if (gmembersbean.getInviteMembers()!= null
+                                    && gmembersbean.getInviteMembers().length() > 0) {
+                                String[] listRole = (gmembersbean.getInviteMembers())
+                                        .split(",");
+                                for (String tmp : listRole) {
+                                    GroupMemberBean bean12 = DBAccess.getdbHeler().getMemberDetails(gBean.getGroupId(), tmp);
+                                    boolean found = false;
+                                    for (String element : listRole) {
+                                        if(tmp.equals(bib.getBuddyName())) {
+                                            Log.i("AAAA", "#########string Role "+bean12.getRole()+" element "+element);
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                    if(found) {
+                                        holder.memberRole.setText(bean12.getRole());
+                                    }
+                                }
+                            }
+                        }
                         if (i > 0) {
                             final BuddyInformationBean bean = ContactsFragment.getBuddyList().get(i - 1);
                             if(bean.getFirstname()!=null && bib.getFirstname()!=null) {
@@ -655,7 +677,7 @@ public class PatientRoundingFragment extends Fragment {
         ImageView statusIcon;
         TextView buddyName;
         TextView occupation;
-        TextView header_title, rights;
+        TextView header_title, rights,memberRole;
     }
 
     public void setGroupBean(GroupBean bean) {
@@ -1832,6 +1854,19 @@ public class PatientRoundingFragment extends Fragment {
         else if (assignedMode.equalsIgnoreCase("unassigned") && statusMode.equalsIgnoreCase("completed"))
             strQuery = "select * from taskdetails where groupid='" + groupid + "'and taskstatus ='" + "1" +
                     "'and patientid='" + patientid + "'and assignmembers NOT LIKE '%" + CallDispatcher.LoginUser + "%'";
+
+
+//        else if (assignedMode.equalsIgnoreCase("assigntoteam") && statusMode.equalsIgnoreCase("showall"))
+//            strQuery = "select * from taskdetails where groupid='" + groupid + "'and patientid='" + patientid
+//                    + "'and assignmembers NOT LIKE '%" + " " + "%'";
+//        else if (assignedMode.equalsIgnoreCase("assigntoteam") && statusMode.equalsIgnoreCase("active"))
+//            strQuery = "select * from taskdetails where groupid='" + groupid + "'and taskstatus ='" + "0" +
+//                    "'and patientid='" + patientid + "'and assignmembers NOT LIKE '%" + " " + "%'";
+//        else if (assignedMode.equalsIgnoreCase("assigntoteam") && statusMode.equalsIgnoreCase("completed"))
+//            strQuery = "select * from taskdetails where groupid='" + groupid + "'and taskstatus ='" + "1" +
+//                    "'and patientid='" + patientid + "'and assignmembers NOT LIKE '%" + " " + "%'";
+
+
         Log.i("patientdetails", "statusDialog " + statusMode + " query " + strQuery);
         Vector<TaskDetailsBean> tasklist = DBAccess.getdbHeler().getAllTaskDetails(strQuery);
         Collections.sort(tasklist, new TaskDateComparator());
@@ -1934,6 +1969,12 @@ public class PatientRoundingFragment extends Fragment {
         TextView header_title;
         LinearLayout member_lay;
         TextView rights, role;
+    }
+    public void onResume() {
+        super.onResume();
+        Log.d("ppp", "The onResume() event");
+        WebServiceReferences.webServiceClient.GetPatientDescription(pBean.getPatientid(), "", SingleInstance.mainContext);
+
     }
 
     public void notifyPatientDischarge(Object obj) {

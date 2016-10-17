@@ -11492,6 +11492,8 @@ private TrustManager[] get_trust_mgr() {
 							 String filename)
 	{
 
+		Log.d("SYNC","--->SYNC==>downloading file callDisp");
+
         String[] fname=filename.split(",");
         if(fname.length>0)
         {

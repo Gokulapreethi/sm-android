@@ -314,6 +314,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
     private RoleAccessBean roleAccessBean;
     private GroupMemberBean memberbean;
     Integer itemID;
+    private String SelectedtaskMember;
 
     //For this boolean used for private button click
     boolean isPrivateBack=false;
@@ -874,6 +875,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 txtView01.setText(groupBean.getGroupName().toUpperCase());
             header.setWeightSum(5);
             info_lay.setVisibility(View.VISIBLE);
+            search.setVisibility(View.GONE);
             tv_info.setText("Calendar");
             tv_profie.setText("Members");
             tv_file.setText("Patients");
@@ -886,6 +888,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
         if (isOpen.equalsIgnoreCase("C")) {
             chatprocess();
+
         }else if (isOpen.equalsIgnoreCase("F")) {
             setDefault();
             tv_file.setTextColor(getResources().getColor(R.color.white));
@@ -937,6 +940,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             @Override
             public void onClick(View v) {
                 setDefault();
+                search.setVisibility(View.GONE);
                 isMemberTab=true;
                 if (!isGroup && !isRounding)
                     profile_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_profile_white));
@@ -960,6 +964,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             @Override
             public void onClick(View v) {
                 setDefault();
+                search.setVisibility(View.GONE);
                 isMemberTab=false;
                 if (isRounding) {
                     PatientDetails();
@@ -976,6 +981,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             @Override
             public void onClick(View v) {
                 setDefault();
+                search.setVisibility(View.GONE);
                 isMemberTab=false;
                 if (isRounding) {
                     TaskProcess();
@@ -998,6 +1004,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 chat_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_chat_white));
                 tv_chat.setTextColor(getResources().getColor(R.color.white));
                 view_chat.setVisibility(View.VISIBLE);
+                if(search.getVisibility() == View.GONE)
+                search.setVisibility(View.VISIBLE);
                 chatprocess();
             }
         });
@@ -1005,6 +1013,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             @Override
             public void onClick(View view) {
                 setDefault();
+                search.setVisibility(View.GONE);
                 isMemberTab=false;
                 if (isGroup) {
                     info_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_info_white));
@@ -1297,10 +1306,11 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 officeaddre.setText(pb.getOfficeaddress());
             if (pb.getHospitalaffiliation() != null && pb.getHospitalaffiliation().length() > 0)
                 hospitalspec.setText(pb.getHospitalaffiliation());
+            if (pb.getOrganizationmembership() != null && pb.getOrganizationmembership().length() > 0)
+                association.setText(pb.getOrganizationmembership());
             if (pb.getCitationpublications() != null && pb.getCitationpublications().length() > 0)
                 citation.setText(pb.getCitationpublications());
-            if (pb.getOrganizationmembership() != null && pb.getOrganizationmembership().length() > 0)
-                citation.setText(pb.getOrganizationmembership());
+
         }
 
 
@@ -10078,6 +10088,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         Vector<TaskDetailsBean> upcoming = new Vector<TaskDetailsBean>();
         for (TaskDetailsBean bean : tasklist) {
             try {
+                Log.d("ppp", "%%%%%%%% assigned members for the task  " + bean.getAssignedMembers());
                 date1 = myFormat.parse(Today);
                 bean = setDate(bean);
                 date2 = myFormat.parse(bean.getDuedate());
@@ -10343,6 +10354,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
         search_header = (RelativeLayout) v1.findViewById(R.id.search_header);
         ed_search = (EditText) v1.findViewById(R.id.ed_search);
+        ed_search.setVisibility(View.GONE);
         ImageView plusBtn = (ImageView) v1.findViewById(R.id.plusBtn_patient);
 
         PatientList = new Vector<PatientDetailsBean>();
@@ -11807,10 +11819,14 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 //                tv_assigned.setText(assignedMode);
 
                 String addMembers = "";
+
                 for (UserBean bean : memberslist) {
                     if (bean.isSelected())
                         addMembers = addMembers + "" + bean.getBuddyName() + ",";
                 }
+                SelectedtaskMember=addMembers;
+                Log.i("patientdetails", "%%%%%%%%********Memberslisted" +SelectedtaskMember);
+
             }
         });
         dialog1.show();
@@ -11855,7 +11871,22 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         else if (assignedMode.equalsIgnoreCase("Unassigned") && statusMode.equalsIgnoreCase("Completed"))
             strQuery = "select * from taskdetails where groupid='" + groupid + "'and taskstatus ='" + "1" +
                     "'and assignmembers ='" + "" + "'";
-        Log.i("patientdetails", "statusDialog " + statusMode + " query " + strQuery);
+
+        else if (assignedMode.equalsIgnoreCase("Assigntoteam") && statusMode.equalsIgnoreCase("ALL")){
+            strQuery = "select * from taskdetails where groupid='" + groupid + "'and assignmembers  NOT LIKE '%" + "" + "%'";
+        Log.i("patientdetails", "team +show all======> " + statusMode + " query " + strQuery);}
+
+        else if (assignedMode.equalsIgnoreCase("Assigntoteam") && statusMode.equalsIgnoreCase("Active")){
+            strQuery = "select * from taskdetails where groupid='" + groupid + "'and taskstatus ='" + "0" +
+                     "'and assignmembers NOT LIKE '%" + "" + "%'";
+        Log.i("patientdetails", "team +active " + statusMode + " query " + strQuery);}
+
+        else if (assignedMode.equalsIgnoreCase("Assigntoteam") && statusMode.equalsIgnoreCase("Completed")){
+            strQuery = "select * from taskdetails where groupid='" + groupid + "'and taskstatus ='" + "1" +
+                    "'and assignmembers NOT LIKE '%" + "" + "%'";
+        Log.i("patientdetails", "team +completed " + statusMode + " query " + strQuery);}
+
+        Log.i("patientdetails", "statusDialog 1" + statusMode + " query " + strQuery);
         Vector<TaskDetailsBean> tasklist = DBAccess.getdbHeler().getAllTaskDetails(strQuery);
         Collections.sort(tasklist, new TaskDateComparator());
         Vector<TaskDetailsBean> taskList = getdatelist(tasklist);
