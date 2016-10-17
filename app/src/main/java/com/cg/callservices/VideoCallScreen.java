@@ -1361,7 +1361,9 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 //							videopreview.setVisibility(View.VISIBLE);
 //							flipcamera.setVisibility(View.VISIBLE);
 						}
+						preview_hided =!preview_hided;
 						btn_video.setTag(!shown);
+						resetVideoViews(!preview_hided);
 					}
 				});
 				onoff_preview.setOnClickListener(new OnClickListener() {
@@ -3715,8 +3717,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 	}
 
-	public void finishVideocallScreen()
-	{
+	public void finishVideocallScreen() {
 		Log.i("Recording", "finishVideocallScreen");
 		try {
 //			AppReference.mainContext.startRecording();
