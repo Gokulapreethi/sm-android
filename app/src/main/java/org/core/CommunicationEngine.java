@@ -3639,12 +3639,12 @@ public class CommunicationEngine implements AudioRecorderListener,
 							byte[] outRGB = new byte[outW * outH * 3];
 							byte[] yuv420p = null;
 							byte[] h264data = new byte[115200];
-							if (mPreviewWidth == width
-									&& mPreviewHeight == height) {
-								yuv420p = new byte[(width * height * 3) / 2];
-								videoCodec.yuv420spToYuv420(arg0, yuv420p,
-										width, height);
-							} else {
+//							if (mPreviewWidth == width
+//									&& mPreviewHeight == height) {
+//								yuv420p = new byte[(width * height * 3) / 2];
+//								videoCodec.yuv420spToYuv420(arg0, yuv420p,
+//										width, height);
+//							} else {
 								videoCodec.yuv420sp2rgb(arg0, height, width,
 										256, rgbdata);
 								Log.d("SCALE", "Width 1 " + width
@@ -3654,7 +3654,7 @@ public class CommunicationEngine implements AudioRecorderListener,
 								yuv420p = new byte[(outW * outH * 3) / 2];
 								videoCodec.convertRGB2YUV420(outRGB, yuv420p,
 										outW, outH);
-							}
+//							}
 
 							int size = videoCodec.EncodeH264(yuv420p, h264data,
 									null, coded_frame);
