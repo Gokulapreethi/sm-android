@@ -329,7 +329,7 @@
                     android:layout_marginLeft="15dp"
                     android:gravity="left"
                     android:padding="7dp"
-                    android:text="Speciality"
+                    android:text="Specialty"
                     android:textColor="#808080"
                     android:textSize="15dp" />
 

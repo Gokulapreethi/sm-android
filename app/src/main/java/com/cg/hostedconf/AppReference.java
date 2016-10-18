@@ -94,6 +94,8 @@ public class AppReference {
 
 	public static String serverIP=null;
 
+	public static boolean Beginsync_chat=false;
+
 
 
 

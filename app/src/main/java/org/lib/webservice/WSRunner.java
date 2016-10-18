@@ -562,15 +562,16 @@ public class WSRunner implements Runnable {
 						break;
 					case SYNCCHAT:
 						mChk = mParser.getResult(mSp.toString());
-						ArrayList<Object> chatBean=mParser
-								.parseSyncChatDetails(mSp.toString());
-						mServicebean.setObj(chatBean);
-						Log.d("CHATSYNC", "--->SYNC CHAT");
-						if (mServicebean.getCallBack() instanceof AppMainActivity) {
-							Log.d("CHATSYNC","--->SYNC CHAT if");
-							((AppMainActivity) mServicebean.getCallBack())
-									.notifySyncChat(mServicebean.getObj());
-						}
+							ArrayList<Object> chatBean = mParser
+									.parseSyncChatDetails(mSp.toString());
+							mServicebean.setObj(chatBean);
+							Log.d("CHATSYNC", "--->SYNC CHAT-->" + mSp.toString());
+							if (mServicebean.getCallBack() instanceof AppMainActivity) {
+								Log.d("CHATSYNC", "--->SYNC CHAT if");
+								((AppMainActivity) mServicebean.getCallBack())
+										.notifySyncChat(mServicebean.getObj(),mChk);
+							}
+
 						break;
 					case GETSETUTILITY:
 

@@ -282,7 +282,9 @@ public class FindPeople extends Fragment {
                         FragmentTransaction ft = fm.beginTransaction();
                         Fragment fragments = null;
                         SingleInstance.myOrder = false;
-                        fragments = ContactsFragment.getInstance(SingleInstance.mainContext);
+                        SearchPeopleFragment searchPeopleFragment = SearchPeopleFragment.newInstance(mainContext);
+//                        fragments = ContactsFragment.getInstance(SingleInstance.mainContext);
+                        fragments=searchPeopleFragment;
                         if (fragments != null) {
                             // Replace current fragment by this new one
                             ft.replace(R.id.activity_main_content_fragment, fragments);

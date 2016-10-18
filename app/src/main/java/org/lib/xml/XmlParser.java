@@ -75,6 +75,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.StringReader;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8141,9 +8142,14 @@ public class XmlParser {
 					cBean.setSenttimez(nodeMap.getNamedItem("senttimezone").getNodeValue());
 				if (nodeMap.getNamedItem("status") != null)
 					cBean.setCstatus(nodeMap.getNamedItem("status").getNodeValue());
-				if (nodeMap.getNamedItem("dateandtime") != null)
-					cBean.setDateandtime(nodeMap.getNamedItem("dateandtime").getNodeValue());
-				cBean.setDateandtime(cBean.getSenttime());
+				if (nodeMap.getNamedItem("dateandtime") != null) {
+					DateFormat utcFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+					Date date = utcFormat.parse(nodeMap.getNamedItem("dateandtime").getNodeValue());
+					SimpleDateFormat day = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
+					cBean.setDateandtime(day.format(date));
+
+				}
+//				cBean.setDateandtime(cBean.getSenttime());
 				if (nodeMap.getNamedItem("sentstatustime") != null)
 					cBean.setSentstatustime(nodeMap.getNamedItem("sentstatustime").getNodeValue());
 				if (nodeMap.getNamedItem("deliverstatustime") != null)

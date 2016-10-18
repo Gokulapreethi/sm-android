@@ -11676,4 +11676,37 @@ public class DBAccess extends SQLiteOpenHelper {
 
 	}
 
+
+	public boolean ChatEntryAvailableOrNot(String unameOrgroupid){
+
+
+			Cursor cur = null;
+			boolean status = false;
+			try {
+				if (!db.isOpen())
+					openDatabase();
+				String query = "select * from chat where groupid='" + unameOrgroupid
+						+ "' and username ='" + CallDispatcher.LoginUser + "'";
+				cur = db.rawQuery(query, null);
+				cur.moveToFirst();
+
+				if (cur.getCount() > 0)
+					status = true;
+
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+
+			finally {
+
+				if (cur != null)
+					cur.close();
+
+				return status;
+			}
+
+	}
+
+
 }

@@ -30,6 +30,7 @@ import android.widget.TextView;
 
 import com.cg.DB.DBAccess;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.group.chat.GroupChatActivity;
@@ -167,9 +168,19 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 										R.id.activity_main_content_fragment, groupRequestFragment)
 										.commitAllowingStateLoss();
 							}else {
-								ContactsFragment contactsFragment = ContactsFragment
-										.getInstance(context);
-								contactsFragment.showGroupChatDialog(groupBean);
+								if(!DBAccess.getdbHeler().ChatEntryAvailableOrNot(groupBean.getGroupId())) {
+									ContactsFragment contactsFragment = ContactsFragment
+											.getInstance(context);
+									contactsFragment.showprogress();
+									contactsFragment.chatsync_grouplist=true;
+									contactsFragment.chatsync_groupbean=groupBean;
+									AppReference.Beginsync_chat = true;
+									WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"1",groupBean.getGroupId(),"","");
+								}else {
+									ContactsFragment contactsFragment = ContactsFragment
+											.getInstance(context);
+									contactsFragment.showGroupChatDialog(groupBean);
+								}
 							}
 
 						} catch (Exception e) {

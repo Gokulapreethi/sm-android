@@ -216,7 +216,13 @@ public class ContactsFragment extends Fragment{
 	public boolean chatIndivijaul_recent=false;
 	public boolean chatgroup_recent=false;
 	Button plusBtn;
+
+	//Sync chat variables
 	boolean firstClick=false;
+	int list_position;
+	boolean chatsync_contactlist=false;
+	public boolean chatsync_grouplist=false;
+	public GroupBean chatsync_groupbean=null;
 
 	public static synchronized Vector<GroupBean> getGroupList() {
 
@@ -512,15 +518,26 @@ public class ContactsFragment extends Fragment{
 									requestFragment.setFrom(false);
 								}
 							}else {
-								Intent intent = new Intent(SingleInstance.mainContext, GroupChatActivity.class);
-								intent.putExtra("groupid", CallDispatcher.LoginUser
-										+ bean.getName());
-								intent.putExtra("isGroup", false);
-								intent.putExtra("isReq", "C");
-								intent.putExtra("buddy", bean.getName());
-								intent.putExtra("buddystatus", bean.getStatus());
-								intent.putExtra("nickname", bean.getFirstname() + " " + bean.getLastname());
-								SingleInstance.mainContext.startActivity(intent);
+								if(!DBAccess.getdbHeler().ChatEntryAvailableOrNot(bean.getName())) {
+									Log.i("syncchat","chatentry not available");
+									showprogress();
+									AppReference.Beginsync_chat = true;
+									list_position = position;
+									chatsync_contactlist=true;
+									WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"1",bean.getName(),"","");
+								}else {
+									Log.i("syncchat","chatentry available");
+									Intent intent = new Intent(SingleInstance.mainContext, GroupChatActivity.class);
+									intent.putExtra("groupid", CallDispatcher.LoginUser
+											+ bean.getName());
+									intent.putExtra("isGroup", false);
+									intent.putExtra("isReq", "C");
+									intent.putExtra("buddy", bean.getName());
+									intent.putExtra("buddystatus", bean.getStatus());
+									intent.putExtra("nickname", bean.getFirstname() + " " + bean.getLastname());
+									SingleInstance.mainContext.startActivity(intent);
+								}
+
 							}
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
@@ -3033,7 +3050,7 @@ public class ContactsFragment extends Fragment{
 
 	}
 
-	private void showprogress() {
+	public void showprogress() {
 		// TODO Auto-generated method stub
 		pDialog = new ProgressDialog(mainContext);
 		pDialog.setCancelable(false);
@@ -4774,6 +4791,43 @@ public class ContactsFragment extends Fragment{
 			}
 		}
 		Collections.sort(grouprecentlist, new DateComparator());
+	}
+
+	public void CallGroupChatActivity(){
+		handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				cancelDialog();
+				AppReference.Beginsync_chat=false;
+				if(chatsync_contactlist) {
+					chatsync_contactlist=false;
+					if(contactAdapter!=null) {
+						BuddyInformationBean bean = contactAdapter.getItem(list_position);
+						if(bean!=null) {
+							Log.i("syncchat","ContactFragment CallGroupChatActivity bean!=null");
+							Intent intent = new Intent(SingleInstance.mainContext, GroupChatActivity.class);
+							intent.putExtra("groupid", CallDispatcher.LoginUser
+									+ bean.getName());
+							intent.putExtra("isGroup", false);
+							intent.putExtra("isReq", "C");
+							intent.putExtra("buddy", bean.getName());
+							intent.putExtra("buddystatus", bean.getStatus());
+							intent.putExtra("nickname", bean.getFirstname() + " " + bean.getLastname());
+							SingleInstance.mainContext.startActivity(intent);
+						}
+					}
+				}else if(chatsync_grouplist){
+					Log.i("syncchat","ContactFragment CallGroupChatActivity chatsync_grouplist");
+					chatsync_grouplist=false;
+					if(chatsync_groupbean!=null) {
+						Log.i("syncchat","ContactFragment CallGroupChatActivity chatsync_groupbean!=null");
+						showGroupChatDialog(chatsync_groupbean);
+					}
+					chatsync_groupbean=null;
+				}
+			}
+		},2000);
+
 	}
 
 }

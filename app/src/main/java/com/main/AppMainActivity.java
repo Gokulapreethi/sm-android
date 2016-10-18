@@ -62,8 +62,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -345,6 +347,8 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	public boolean isTouchIdEnabled=true;
 
 	private RelativeLayout mainHeader;
+
+	String buddyname=null;
 /* Video Recording
 	private static final String TAG = "Record";
 	private static final int REQUEST_CODE = 1000;
@@ -442,6 +446,14 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
                 @Override
                 public void onClick(View v) {
                     mDrawerLayout.openDrawer(menu_side);
+					EditText btn_1 = (EditText) findViewById(R.id.searchet);
+//					btn_1.setVisibility(View.GONE);
+					try {
+						InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+						imm.hideSoftInputFromWindow(btn_1.getWindowToken(), 0);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
                 }
             });
 			Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(
@@ -5732,6 +5744,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				BuddyInformationBean tempBuddy = null;
 				Servicebean servicebean = (Servicebean) response;
 				if (servicebean.getObj() instanceof ArrayList) {
+					Log.i("buddyrequest"," Appmain notifyBuddyRequestSent ArrayList");
 					ArrayList<BuddyInformationBean> list = (ArrayList<BuddyInformationBean>) servicebean
 							.getObj();
 					for (int i = 0; i < list.size(); i++) {
@@ -5756,22 +5769,31 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					}
 					if (tempBuddy != null) {
 						buddyName = tempBuddy.getName();
+						if(tempBuddy.getFirstname()!=null && tempBuddy.getLastname()!=null){
+							buddyname=tempBuddy.getFirstname()+" "+tempBuddy.getLastname();
+						}else if(tempBuddy.getFirstname()!=null){
+							buddyname=tempBuddy.getFirstname();
+						}else if(tempBuddy.getName()!=null){
+							buddyname=tempBuddy.getName();
+						}
 					}
 					handler.post(new Runnable() {
 
 						@Override
 						public void run() {
-							String fullname;
+							String fullname=null;
 							ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(buddyName);
-							if(buddyName!=null)
+							Log.i("buddyrequest","bean-->"+bean);
+							if(buddyname!=null)
+							fullname=buddyname;
+							else if(bean!=null)
 							fullname=bean.getFirstname()+" "+bean.getLastname();
-							else
-							fullname=buddyName;
+							Log.i("buddyrequest","fullname-->"+fullname);
 							// TODO Auto-generated method stub
 							Toast.makeText(
 									context,
 									SingleInstance.mainContext.getResources().getString(R.string.buddy_request_sent_successfully_to1)
-											+ fullname, 3000).show();
+											+" "+ fullname, 3000).show();
 							ContactsFragment.getInstance(context).SortList();
 
 						}
@@ -9008,7 +9030,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			super.onPreExecute();
 		}
 	}
-	public void notifySyncChat(Object obj) {
+	public void notifySyncChat(Object obj,boolean result) {
 		GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
 		if(groupChatActivity != null) {
 			groupChatActivity.cancelDialog();
@@ -9054,6 +9076,20 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			}
 		} else if (obj instanceof WebServiceBean) {
 			showToast(((WebServiceBean) obj).getText());
+		}
+		if(AppReference.Beginsync_chat){
+			Log.i("syncchat","Appmain Beginsync_chat-->"+AppReference.Beginsync_chat);
+			if(SingleInstance.instanceTable.containsKey("contactspage")){
+				Log.i("syncchat","Appmain contactspage available");
+				ContactsFragment contactsFragment=(ContactsFragment) SingleInstance.instanceTable.get("contactspage");
+				contactsFragment.CallGroupChatActivity();
+			}
+		}
+		if(!result){
+			showToast("No Updates Found");
+		}
+		if(groupChatActivity!=null){
+			groupChatActivity.CancelSwipeContainer();
 		}
 	}
 	public void notifyFileUploadResponse(ChatFTPBean chatFTPBean) {

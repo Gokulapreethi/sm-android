@@ -3675,11 +3675,11 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
         TextView days = (TextView) dialog.findViewById(R.id.edit_grp);
         days.setVisibility(View.GONE);
-        TextView threedays = (TextView) dialog.findViewById(R.id.invite_grp);
+        TextView oneday = (TextView) dialog.findViewById(R.id.invite_grp);
+        oneday.setText("1 Day");
+        TextView threedays = (TextView) dialog.findViewById(R.id.leave_grp);
         threedays.setText("3 Days");
-        TextView seven_days = (TextView) dialog.findViewById(R.id.leave_grp);
-        seven_days.setText("7 Days");
-        seven_days.setBackgroundColor(getResources().getColor(R.color.blue2));
+        threedays.setBackgroundColor(getResources().getColor(R.color.blue2));
         TextView all_chat = (TextView) dialog.findViewById(R.id.delete_grp);
         all_chat.setText("Load More");
         all_chat.setBackgroundColor(getResources().getColor(R.color.blue2));
@@ -3704,19 +3704,19 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 if(mindate!=null) {
                     String[] date = mindate.split(" ");
                     if (!isfromgroup)
-                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "3", buddy, date[0]);
+                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "3", buddy, date[0],"");
                     else
-                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "3", groupId, date[0]);
+                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "3", groupId, date[0],"");
                 }else{
                     if (!isfromgroup)
-                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "1", buddy, "");
+                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "1", buddy, "","");
                     else
-                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "1", groupId, "");
+                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "1", groupId, "","");
                 }
             }
         });
 
-        threedays.setOnClickListener(new View.OnClickListener() {
+        oneday.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -3724,21 +3724,21 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 dialog.dismiss();
                 showprogress();
                 if(!isfromgroup)
-                WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"1",buddy,"");
+                WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"1",buddy,"","");
                 else
-                    WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"1",groupId,"");
+                    WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"1",groupId,"","");
             }
         });
 
-        seven_days.setOnClickListener(new View.OnClickListener() {
+        threedays.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 dialog.dismiss();
                 showprogress();
                 if(!isfromgroup)
-                    WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"2",buddy,"");
+                    WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"2",buddy,"","");
                 else
-                    WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"2",groupId,"");
+                    WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"2",groupId,"","");
             }
         });
     }
@@ -13640,6 +13640,18 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
             super.onPreExecute();
         }
+    }
+    public void CancelSwipeContainer(){
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+//                if(swipeContainer!=null) {
+//                    swipeContainer.setRefreshing(false);
+//                }
+                chatprocess();
+            }
+        });
+
     }
 
 }

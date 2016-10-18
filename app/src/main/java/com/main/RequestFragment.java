@@ -168,12 +168,21 @@ public class RequestFragment extends Fragment {
                                         .showAlert1("Info",
                                                 "Check Internet Connection,Unable to Connect Server");
                             }
-                            ContactsFragment contactsFragment = ContactsFragment.getInstance(mainContext);
-                            FragmentManager fragmentManager = SingleInstance.mainContext
-                                    .getSupportFragmentManager();
-                            fragmentManager.beginTransaction().replace(
-                                    R.id.activity_main_content_fragment, contactsFragment)
-                                    .commitAllowingStateLoss();
+                            if(isSerach){
+                                SearchPeopleFragment searchPeopleFragment = SearchPeopleFragment.newInstance(mainContext);
+                                FragmentManager fragmentManager = SingleInstance.mainContext
+                                        .getSupportFragmentManager();
+                                fragmentManager.beginTransaction().replace(
+                                        R.id.activity_main_content_fragment, searchPeopleFragment)
+                                        .commitAllowingStateLoss();
+                            }else {
+                                ContactsFragment contactsFragment = ContactsFragment.getInstance(mainContext);
+                                FragmentManager fragmentManager = SingleInstance.mainContext
+                                        .getSupportFragmentManager();
+                                fragmentManager.beginTransaction().replace(
+                                        R.id.activity_main_content_fragment, contactsFragment)
+                                        .commitAllowingStateLoss();
+                            }
                         }
                     });
                     reject.setOnClickListener(new View.OnClickListener() {
@@ -239,7 +248,12 @@ public class RequestFragment extends Fragment {
                             FragmentTransaction ft = fm.beginTransaction();
                             Fragment fragments = null;
                             SingleInstance.myOrder = false;
-                            fragments = ContactsFragment.getInstance(SingleInstance.mainContext);
+
+                            if(isSerach) {
+                                fragments = SearchPeopleFragment.newInstance(mainContext);
+                            }else{
+                                fragments = ContactsFragment.getInstance(SingleInstance.mainContext);
+                            }
                             if (fragments != null) {
                                 // Replace current fragment by this new one
                                 ft.replace(R.id.activity_main_content_fragment, fragments);

@@ -12,15 +12,20 @@ public class GroupMessageComparator implements Comparator<GroupChatBean> {
 	@Override
 	public int compare(GroupChatBean gcBean1, GroupChatBean gcBean2) {
 		// TODO Auto-generated method stub
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss a");
-		Date date1=null, date2=null;
+		//		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss a");
+//		Date date1=null, date2=null;
+//		try {
+//			 date1 = dateFormat.parse(gcBean1.getDateandtime());
+//			 date2 = dateFormat.parse(gcBean2.getDateandtime());
+//		} catch (ParseException e) {
+//			e.printStackTrace();
+//		}
 		try {
-			 date1 = dateFormat.parse(gcBean1.getDateandtime());
-			 date2 = dateFormat.parse(gcBean2.getDateandtime());
-		} catch (ParseException e) {
+			return gcBean1.getDateandtime().compareTo(gcBean2.getDateandtime());
+		}catch (Exception e){
 			e.printStackTrace();
+			return 0;
 		}
-		return date1.compareTo(date2);
 	}
 
 }
