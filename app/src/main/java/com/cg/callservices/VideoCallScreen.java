@@ -34,6 +34,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.FrameLayout;
@@ -210,6 +212,8 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	public View rootView;
 	Bundle bundlevalues;
 	RelativeLayout mainHeader;
+
+	private Animation animSlideDown, animSlideUp;
 
 	public static VideoCallScreen getInstance(Context maincontext) {
 		try {
@@ -388,9 +392,9 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							//end
 							Log.i("callentry", "db entry 8");
 //							DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
-							DBAccess.getdbHeler()
-									.saveOrUpdateRecordtransactiondetails(
-											CallDispatcher.sb);
+//							DBAccess.getdbHeler()
+//									.saveOrUpdateRecordtransactiondetails(
+//											CallDispatcher.sb);
 
 							if(CallDispatcher.callHistoryDetails != null) {
 								SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
@@ -637,9 +641,9 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 								//end
 								Log.i("callentry", "db entry 9");
 //								DBAccess.getdbHeler().insertGroupCallChat(CallDispatcher.sb);
-								DBAccess.getdbHeler()
-										.saveOrUpdateRecordtransactiondetails(
-												CallDispatcher.sb);
+//								DBAccess.getdbHeler()
+//										.saveOrUpdateRecordtransactiondetails(
+//												CallDispatcher.sb);
 								if(CallDispatcher.callHistoryDetails != null) {
 									SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
 									hist_bean.setParticipant_name(participant);
@@ -857,6 +861,10 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 //			rotation.setRepeatCount(Animation.INFINITE);
 //			rootView.startAnimation(rotation);
 //
+				animSlideDown = AnimationUtils.loadAnimation(context,
+						R.anim.slide_down);
+				animSlideUp = AnimationUtils.loadAnimation(context,
+						R.anim.slide_up);
 				video_layouts = (RelativeLayout)rootView.findViewById(R.id.video_views);
 
 				preview_frameLayout = new FrameLayout(context);
@@ -982,7 +990,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 				members.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+1));
+						member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
 						Intent i = new Intent(AppReference.mainContext, CallActiveMembersList.class);
 						i.putExtra("timer", chTimer.getText().toString());
 						i.putExtra("sessionId", sessionid);
@@ -990,7 +998,11 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 						i.putExtra("host", host);
 						i.putExtra("fromscreen","videocallscreen");
 						i.putExtra("precalltype","VC");
-						i.putExtra("previewdiabled",preview_hided);
+						if((boolean) btn_video.getTag() && preview_hided) {
+							i.putExtra("previewdiabled", preview_hided);
+						} else {
+							i.putExtra("previewdiabled", false);
+						}
 						AppReference.mainContext.startActivity(i);
 					}
 				});
@@ -1341,6 +1353,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 						AppMainActivity.commEngine.enable_disable_VideoPreview(!shown);
 
 						if (shown) {
+							preview_hided = true;
 							RecordTransactionBean transactionBean = new RecordTransactionBean();
 							transactionBean.setSessionid(sessionid);
 							transactionBean.setHost(CallDispatcher.LoginUser);
@@ -1349,6 +1362,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							processCallRequest(2, transactionBean, "disablevideo");
 							btn_video.setImageResource(R.drawable.call_video);
 						} else {
+							preview_hided = false;
 							btn_video.setImageResource(R.drawable.call_video_active);
 							RecordTransactionBean transactionBean = new RecordTransactionBean();
 							transactionBean.setSessionid(sessionid);
@@ -1361,7 +1375,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 //							videopreview.setVisibility(View.VISIBLE);
 //							flipcamera.setVisibility(View.VISIBLE);
 						}
-						preview_hided =!preview_hided;
+//						preview_hided =!preview_hided;
 						btn_video.setTag(!shown);
 						resetVideoViews(!preview_hided);
 					}
@@ -1559,8 +1573,8 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 //				VideoThreadBean threadBean = WebServiceReferences.videoSSRC_total.get(requiredKey);
 //				threadBean.setVideoDisabled(true);
 
-				if(WebServiceReferences.videoSSRC_total_list != null && WebServiceReferences.videoSSRC_total_list.contains(requiredKey)){
-					final int selectedposition =	WebServiceReferences.videoSSRC_total_list.indexOf(requiredKey);
+//				if(WebServiceReferences.videoSSRC_total_list != null && WebServiceReferences.videoSSRC_total_list.contains(requiredKey)){
+//					final int selectedposition =	WebServiceReferences.videoSSRC_total_list.indexOf(requiredKey);
 //					final String buddy_name = (WebServiceReferences.videoSSRC_total.get(turn_ssrc)).getMember_name();
 					final int finalRequiredKey = requiredKey;
 					handler.post(new Runnable() {
@@ -1637,7 +1651,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							notifyNumFeedChanged();
 						}
 					});
-				}
+//				}
 			}
 		}
 	}
@@ -4014,6 +4028,14 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	private void remove_all_video_views(){
 		try {
 			if (((RelativeLayout) video_layouts).getChildCount() > 0) {
+//				if(video_layouts.getChildCount() > 0) {
+//					int child_count =video_layouts.getChildCount();
+//					Log.i("Notes","child_count : "+child_count);
+//					for(int i=child_count;i>0;i--) {
+//						video_layouts.startAnimation(animSlideUp);
+//						video_layouts.removeViewAt(i-1);
+//					}
+//				}
 				((RelativeLayout) video_layouts).removeAllViews();
 			}
 
@@ -4060,7 +4082,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							ViewGroup.LayoutParams.MATCH_PARENT);
 					preview_frameLayout.setLayoutParams(lp);
 					video_layouts.addView(preview_frameLayout);
-
+//					preview_frameLayout.startAnimation(animSlideDown);
 					preview_frameLayout.addView(onoff_preview);
 					preview_frameLayout.addView(flipcamera);
 				} else if (totalviews == 1) {
@@ -4077,11 +4099,13 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 					if(have_video_frames(0)) {
 						video_layouts.addView(buddyframelayout01, relative_layoutParams1);
+//						buddyframelayout01.startAnimation(animSlideDown);
 						buddyframelayout01.addView(glSurfaceView1, surfaceview_layoutParams);
 						buddyframelayout01.addView(on_off1,onoff_layoutParams);
 						lp.addRule(RelativeLayout.BELOW, buddyframelayout01.getId());
 					} else {
 						video_layouts.addView(profile_view1,relative_layoutParams1);
+//						profile_view1.startAnimation(animSlideDown);
 						profile_view1.addView(buddyimageview1);
 						profile_view1.addView(participant_name1);
 						profile_view1.addView(on_off1,onoff_layoutParams_relative);
@@ -4090,6 +4114,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 					}
 					preview_frameLayout.setLayoutParams(lp);
 					video_layouts.addView(preview_frameLayout);
+//					preview_frameLayout.startAnimation(animSlideDown);
 					preview_frameLayout.addView(onoff_preview);
 					preview_frameLayout.addView(flipcamera);
 				} else if (totalviews == 2) {
@@ -4215,10 +4240,12 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 								ViewGroup.LayoutParams.MATCH_PARENT);
 						if (have_video_frames(0)) {
 							video_layouts.addView(buddyframelayout01, relative_layoutParams1);
+//							buddyframelayout01.startAnimation(animSlideDown);
 							buddyframelayout01.addView(glSurfaceView1, surfaceview_layoutParams);
 							buddyframelayout01.addView(on_off1, onoff_layoutParams);
 						} else {
 							video_layouts.addView(profile_view1, relative_layoutParams1);
+//							profile_view1.startAnimation(animSlideDown);
 							profile_view1.addView(buddyimageview1);
 							profile_view1.addView(participant_name1);
 							profile_view1.addView(on_off1, onoff_layoutParams_relative);

@@ -1035,7 +1035,11 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 					i.putExtra("host", host);
 					i.putExtra("fromscreen","audiocallscreen");
 					i.putExtra("precalltype","AC");
-					i.putExtra("previewdiabled",preview_hided);
+					if((boolean) videoEnableBtn.getTag() && preview_hided) {
+						i.putExtra("previewdiabled", preview_hided);
+					} else {
+						i.putExtra("previewdiabled", false);
+					}
 					AppReference.mainContext.startActivity(i);
 
 				}
@@ -1748,8 +1752,8 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 //				VideoThreadBean threadBean = WebServiceReferences.videoSSRC_total.get(requiredKey);
 //				threadBean.setVideoDisabled(true);
 
-				if(WebServiceReferences.videoSSRC_total_list != null && WebServiceReferences.videoSSRC_total_list.contains(requiredKey)){
-					final int selectedposition =	WebServiceReferences.videoSSRC_total_list.indexOf(requiredKey);
+//				if(WebServiceReferences.videoSSRC_total_list != null && WebServiceReferences.videoSSRC_total_list.contains(requiredKey)){
+//					final int selectedposition =	WebServiceReferences.videoSSRC_total_list.indexOf(requiredKey);
 //					final String buddy_name = (WebServiceReferences.videoSSRC_total.get(turn_ssrc)).getMember_name();
 					final int finalRequiredKey = requiredKey;
 					handler.post(new Runnable() {
@@ -1770,7 +1774,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 						}
 					});
 
-				}
+//				}
 			}
 		}
 
