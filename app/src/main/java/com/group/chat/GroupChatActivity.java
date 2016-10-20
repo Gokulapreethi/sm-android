@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.Service;
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -6670,14 +6671,14 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         iconContainer.setVisibility(View.GONE);
                         locationIcon.setVisibility(View.GONE);
                         audioLayout.setVisibility(View.VISIBLE);
-                        if (!gcBean.getFrom().equals(CallDispatcher.LoginUser)) {
-                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT
-                            );
-                            params.setMargins(10, 250, 0, 4);
-                            splmsgview.setLayoutParams(params);
-                        }
+//                        if (!gcBean.getFrom().equals(CallDispatcher.LoginUser)) {
+//                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+//                                    ViewGroup.LayoutParams.WRAP_CONTENT,
+//                                    ViewGroup.LayoutParams.WRAP_CONTENT
+//                            );
+//                            params.setMargins(10, 250, 0, 4);
+//                            splmsgview.setLayoutParams(params);
+//                        }
                         audio_play.setTag(gcBean);
                     } else {
                         if (retryIcon != null) {
@@ -7526,7 +7527,13 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                                 AppReference.fileOpen=true;
                                                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(path));
                                                 intent.setDataAndType(Uri.parse(path), "video/mp4");
-                                                startActivity(intent);
+                                                try {
+                                                    startActivity(intent);
+                                                }catch (ActivityNotFoundException e){
+                                                    Toast.makeText(context,
+                                                            "No Application Available to Play this file",
+                                                            Toast.LENGTH_SHORT).show();
+                                                }
                                             }
                                     } else {
                                         showToast("Please Try again...call  in progress");
@@ -7840,7 +7847,13 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 mPlayer.stop();
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(path));
             intent.setDataAndType(Uri.parse(path), "video/mp4");
-            startActivity(intent);
+            try {
+                startActivity(intent);
+            }catch (ActivityNotFoundException e){
+                Toast.makeText(context,
+                        "No Application Available to Play this file",
+                        Toast.LENGTH_SHORT).show();
+            }
 
         } else if (v.getContentDescription().toString()
                 .equalsIgnoreCase("image")) {

@@ -175,7 +175,7 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 									contactsFragment.chatsync_grouplist=true;
 									contactsFragment.chatsync_groupbean=groupBean;
 									AppReference.Beginsync_chat = true;
-									WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"1",groupBean.getGroupId(),"","");
+									WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"0",groupBean.getGroupId(),"","");
 								}else {
 									ContactsFragment contactsFragment = ContactsFragment
 											.getInstance(context);

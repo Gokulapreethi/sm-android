@@ -39,7 +39,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone">
-
+            <RelativeLayout
+                android:id="@+id/rl_allui"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/black2">
 
             <RelativeLayout
                 android:id="@+id/sender_layout"
@@ -373,85 +377,6 @@
                     android:text="@string/_29_10_2014_07_34_pm"
                     android:textColor="@color/snazlgray"
                     android:textSize="9dp" />
-                <RelativeLayout
-                    android:id="@+id/splmsgview"
-                    android:layout_width="wrap_content"
-                    android:layout_below="@+id/sendlintest"
-                    android:layout_height="wrap_content">
-
-                    <Button
-                        android:id="@+id/btn_reply"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
-                        android:layout_marginTop="8dp"
-                        android:text="Reply"
-                        android:layout_marginLeft="60dp"
-                        android:textColor="@color/white"
-                        android:padding="8dp"
-                        android:background="@color/pink_tv"
-                        android:textSize="15dp"
-                        android:textStyle="bold"
-                        />
-                    <Button
-                        android:id="@+id/btn_private"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
-                        android:layout_marginTop="8dp"
-                        android:text="Private Reply"
-                        android:layout_marginLeft="60dp"
-                        android:textColor="@color/white"
-                        android:padding="8dp"
-                        android:background="@color/green"
-                        android:textSize="15dp"
-                        android:textStyle="bold"
-                        />
-                    <Button
-                        android:id="@+id/btn_confrm"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
-                        android:layout_marginTop="8dp"
-                        android:text="Confirm"
-                        android:layout_marginLeft="60dp"
-                        android:textColor="@color/white"
-                        android:padding="8dp"
-                        android:background="@color/pink_tv"
-                        android:textSize="15dp"
-                        android:textStyle="bold"
-                        />
-                    <TextView
-                        android:id="@+id/tv_replied"
-                        android:layout_width="wrap_content"
-
-                        android:layout_marginTop="8dp"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/tv_bgblack_color"
-                        android:text="Replied"
-                        android:layout_marginLeft="70dp"
-                        android:textColor="@color/green"
-                        android:padding="8dp"
-                        android:visibility="gone"
-                        android:textSize="17dp"
-                        android:textStyle="bold"
-                        />
-                    <TextView
-                        android:id="@+id/sendtv_urgent"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/tv_bgblack_color"
-                        android:layout_marginTop="28dp"
-                        android:layout_alignParentBottom="true"
-                        android:text="Replied"
-                        android:layout_marginLeft="70dp"
-                        android:textColor="@color/green"
-                        android:padding="8dp"
-                        android:visibility="gone"
-                        android:textSize="15dp"
-                        android:textStyle="bold"
-                        />
-                </RelativeLayout>
 
             </RelativeLayout>
 
@@ -495,6 +420,88 @@
                 android:layout_toRightOf="@+id/sender_layout"
                 android:src="@drawable/icon_footer_reminder"
                 android:visibility="gone" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/splmsgview"
+                android:layout_width="fill_parent"
+                android:background="@color/black2"
+                android:layout_below="@+id/rl_allui"
+                android:layout_height="wrap_content"
+                >
+
+                <Button
+                    android:id="@+id/btn_reply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="5dp"
+                    android:text="Reply"
+                    android:layout_marginLeft="60dp"
+                    android:textColor="@color/white"
+                    android:padding="8dp"
+                    android:background="@color/pink_tv"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    />
+                <Button
+                    android:id="@+id/btn_private"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="5dp"
+                    android:text="Private Reply"
+                    android:layout_marginLeft="60dp"
+                    android:textColor="@color/white"
+                    android:padding="8dp"
+                    android:background="@color/green"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    />
+                <Button
+                    android:id="@+id/btn_confrm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="5dp"
+                    android:text="Confirm"
+                    android:layout_marginLeft="60dp"
+                    android:textColor="@color/white"
+                    android:padding="8dp"
+                    android:background="@color/pink_tv"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/tv_replied"
+                    android:layout_width="wrap_content"
+
+                    android:layout_marginTop="5dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/tv_bgblack_color"
+                    android:text="Replied"
+                    android:layout_marginLeft="70dp"
+                    android:textColor="@color/green"
+                    android:padding="8dp"
+                    android:visibility="gone"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/sendtv_urgent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/tv_bgblack_color"
+                    android:layout_marginTop="5dp"
+                    android:layout_alignParentBottom="true"
+                    android:text="Replied"
+                    android:layout_marginLeft="70dp"
+                    android:textColor="@color/green"
+                    android:padding="8dp"
+                    android:visibility="gone"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    />
+            </RelativeLayout>
         </RelativeLayout>
 
         <RelativeLayout

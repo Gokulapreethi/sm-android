@@ -213,7 +213,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	Bundle bundlevalues;
 	RelativeLayout mainHeader;
 
-	private Animation animSlideDown, animSlideUp;
+//	private Animation animSlideDown, animSlideUp;
 
 	public static VideoCallScreen getInstance(Context maincontext) {
 		try {
@@ -861,10 +861,10 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 //			rotation.setRepeatCount(Animation.INFINITE);
 //			rootView.startAnimation(rotation);
 //
-				animSlideDown = AnimationUtils.loadAnimation(context,
-						R.anim.slide_down);
-				animSlideUp = AnimationUtils.loadAnimation(context,
-						R.anim.slide_up);
+//				animSlideDown = AnimationUtils.loadAnimation(context,
+//						R.anim.slide_down);
+//				animSlideUp = AnimationUtils.loadAnimation(context,
+//						R.anim.slide_up);
 				video_layouts = (RelativeLayout)rootView.findViewById(R.id.video_views);
 
 				preview_frameLayout = new FrameLayout(context);

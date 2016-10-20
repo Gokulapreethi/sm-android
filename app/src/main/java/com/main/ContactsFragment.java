@@ -524,7 +524,7 @@ public class ContactsFragment extends Fragment{
 									AppReference.Beginsync_chat = true;
 									list_position = position;
 									chatsync_contactlist=true;
-									WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"1",bean.getName(),"","");
+									WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"0",bean.getName(),"","");
 								}else {
 									Log.i("syncchat","chatentry available");
 									Intent intent = new Intent(SingleInstance.mainContext, GroupChatActivity.class);
