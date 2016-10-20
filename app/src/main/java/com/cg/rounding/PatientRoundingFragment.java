@@ -283,6 +283,7 @@ public class PatientRoundingFragment extends Fragment {
                         Intent intent = new Intent(SingleInstance.mainContext,
                                 AddGroupMembers.class);
                         for (UserBean userBean : memberslist) {
+
                             buddylist.add(userBean.getBuddyName());
                         }
                         intent.putExtra("groupid", pBean.getGroupid());
@@ -788,23 +789,30 @@ public class PatientRoundingFragment extends Fragment {
                 if (reportid != null)
                     pcBean.setReportid(reportid);
                 pcBean.setReportcreator(CallDispatcher.LoginUser);
+
                 if (editTag == 0) {
+                    if(pastingContentCopy!=null)
                     pcBean.setDiagnosis(pastingContentCopy);
                     diagnosis.setText(pastingContentCopy);
                 } else if (editTag == 1) {
-                    pcBean.setMedications(pastingContentCopy);
+                    if(pastingContentCopy!=null)
+                        pcBean.setMedications(pastingContentCopy);
                     medications.setText(pastingContentCopy);
                 } else if (editTag == 2) {
-                    pcBean.setTestandvitals(pastingContentCopy);
+                    if(pastingContentCopy!=null)
+                        pcBean.setTestandvitals(pastingContentCopy);
                     testandvitals.setText(pastingContentCopy);
                 } else if (editTag == 3) {
-                    pcBean.setHospitalcourse(pastingContentCopy);
+                    if(pastingContentCopy!=null)
+                        pcBean.setHospitalcourse(pastingContentCopy);
                     hospital.setText(pastingContentCopy);
                 } else if (editTag == 4) {
-                    pcBean.setConsults(pastingContentCopy);
+                    if(pastingContentCopy!=null)
+                        pcBean.setConsults(pastingContentCopy);
                     consults.setText(pastingContentCopy);
                 } else {
-                    pcBean.setCurrentstatus(pastingContentCopy);
+                    if(pastingContentCopy!=null)
+                        pcBean.setCurrentstatus(pastingContentCopy);
 //                    currentstatus.setText(pastingContentCopy);
                     if (pastingContentCopy.length() > 0) {
                         String[] split = pastingContentCopy.split(" ");
@@ -852,6 +860,7 @@ public class PatientRoundingFragment extends Fragment {
                     }
                 }
                 showprogress();
+                Log.i("BBB","call webservice from edit_done");
                 WebServiceReferences.webServiceClient.SetPatientDescription(pcBean, patientRoundingFragment);
                 pcBean.setDate(getCurrentDateandTime());
                 if (edithint.equalsIgnoreCase("diagnosis"))
@@ -958,7 +967,8 @@ public class PatientRoundingFragment extends Fragment {
         final Button edit_consults = (Button) v1.findViewById(R.id.edit_consults);
         final Button edit_status = (Button) v1.findViewById(R.id.edit_status);
         TextView tv_currentstatus = (TextView) v1.findViewById(R.id.tv_status);
-        LinearLayout status_click = (LinearLayout) v1.findViewById(R.id.status_click);
+        final LinearLayout status_click = (LinearLayout) v1.findViewById(R.id.status_click);
+
         diagnosis = (TextView) v1.findViewById(R.id.diagnosis);
         medications = (TextView) v1.findViewById(R.id.medications);
         testandvitals = (TextView) v1.findViewById(R.id.testandvitals);
@@ -979,6 +989,7 @@ public class PatientRoundingFragment extends Fragment {
                         edit_hospital.setVisibility(View.VISIBLE);
                         edit_consults.setVisibility(View.VISIBLE);
                         edit_status.setVisibility(View.VISIBLE);
+
                         Edit = true;
                     } else if (roleAccessBean.getEditroundingform() != null &&
                             roleAccessBean.getEditroundingform().equalsIgnoreCase("1")) {
@@ -1003,12 +1014,16 @@ public class PatientRoundingFragment extends Fragment {
                     edit_hospital.setVisibility(View.GONE);
                     edit_consults.setVisibility(View.GONE);
                     edit_status.setVisibility(View.GONE);
+
+
                     Edit = false;
                 }
             }
         });
 
         pDescBean = DBAccess.getdbHeler().getPatientDescriptionDetails(pBean.getPatientid());
+        Log.i("AAAA","getPatientDesc from DB medications "+pDescBean.getMedications()+" testndvitals###"+pDescBean.getTestandvitals()+" patientid###"+pDescBean.getPatientid());
+
         if (pDescBean != null) {
             reportid = pDescBean.getReportid();
             if (pDescBean.getCurrentstatus() != null) {
@@ -1053,6 +1068,8 @@ public class PatientRoundingFragment extends Fragment {
                     }
                 }
             }
+            Log.i("BBB","*******desc diag"+pDescBean.getDiagnosis()+" medi***"+pDescBean.getMedications()+"test***"+pDescBean.getTestandvitals()+"hosp***"+pDescBean.getHospitalcourse()
+                    +"cosult***"+pDescBean.getConsults());
             if (pDescBean.getDiagnosis() != null)
                 diagnosis.setText(pDescBean.getDiagnosis());
             if (pDescBean.getMedications() != null)
@@ -1110,89 +1127,95 @@ public class PatientRoundingFragment extends Fragment {
         status_click.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 AlertDialog.Builder builder3 = new AlertDialog.Builder(mainContext);
-                builder3.setItems(items, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int position) {
-                        if (position == 0)
-                            status[0] = "Fullcode";
-                        else if (position == 1)
-                            status[0] = "DNR";
-                        else if (position == 2)
-                            status[0] = "DNI";
-                        else if (position == 3)
-                            status[0] = "ComfortCare";
-                        else if (position == 4)
-                            status[0] = "Critical";
-                        else if (position == 5)
-                            status[0] = "Sick";
-                        else if (position == 6)
-                            status[0] = "Stable";
-                        else if (position == 7)
-                            status[0] = "Other";
-                        String currentstatus = "";
-                        pcBean.setPatientid(pBean.getPatientid());
-                        pcBean.setGroupid(gBean.getGroupId());
-                        if (reportid != null)
-                            pcBean.setReportid(reportid);
-                        pcBean.setReportcreator(CallDispatcher.LoginUser);
-                        if (pDescBean.getCurrentstatus() != null)
-                            currentstatus = pDescBean.getCurrentstatus();
-                        if (status[0] != null) {
+                if (gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                        editRndFormBean.getStatus() != null && editRndFormBean.getStatus().equalsIgnoreCase("1")) {
+                    builder3.setItems(items, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int position) {
+                            if (position == 0)
+                                status[0] = "Fullcode";
+                            else if (position == 1)
+                                status[0] = "DNR";
+                            else if (position == 2)
+                                status[0] = "DNI";
+                            else if (position == 3)
+                                status[0] = "ComfortCare";
+                            else if (position == 4)
+                                status[0] = "Critical";
+                            else if (position == 5)
+                                status[0] = "Sick";
+                            else if (position == 6)
+                                status[0] = "Stable";
+                            else if (position == 7)
+                                status[0] = "Other";
+                            String currentstatus = "";
+                            pcBean.setPatientid(pBean.getPatientid());
+                            pcBean.setGroupid(gBean.getGroupId());
+                            if (reportid != null)
+                                pcBean.setReportid(reportid);
+                            pcBean.setReportcreator(CallDispatcher.LoginUser);
+                            if (pDescBean.getCurrentstatus() != null)
+                                currentstatus = pDescBean.getCurrentstatus();
+                            if (status[0] != null) {
 //                            if (currentstatus.contains(status[0])) {
 //                                status[0] = "";
 //                            } else {
-                            pcBean.setCurrentstatus(currentstatus + " " + status[0]);
-                            pDescBean.setCurrentstatus(currentstatus + " " + status[0]);
+                                pcBean.setCurrentstatus(currentstatus + " " + status[0]);
+                                pDescBean.setCurrentstatus(currentstatus + " " + status[0]);
 
-                            if (currentstatus != null) {
-                                String[] split = pcBean.getCurrentstatus().split(" ");
-                                currentstatus_lay.removeAllViews();
-                                currentstatus_lay1.removeAllViews();
-                                for (int i = 0; i < split.length; i++) {
-                                    if (i <= 5) {
-                                        TextView dynamicTextView = new TextView(mainContext);
-                                        LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 60);
-                                        dim.leftMargin = 15;
-                                        dynamicTextView.setLayoutParams(dim);
-                                        dynamicTextView.setGravity(Gravity.CENTER);
-                                        dynamicTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.sender_border));
-                                        if (split[i].equalsIgnoreCase("critical"))
-                                            dynamicTextView.setTextColor(getResources().getColor(R.color.pink_tv));
-                                        else if (split[i].equalsIgnoreCase("stable")) {
-                                            dynamicTextView.setTextColor(getResources().getColor(R.color.green));
-                                        } else if (split[i].equalsIgnoreCase("sick")) {
-                                            dynamicTextView.setTextColor(getResources().getColor(R.color.yellow));
-                                        }
-                                        if (!split[i].equalsIgnoreCase("") && split.length > 0) {
+                                if (currentstatus != null) {
+                                    String[] split = pcBean.getCurrentstatus().split(" ");
+                                    currentstatus_lay.removeAllViews();
+                                    currentstatus_lay1.removeAllViews();
+                                    for (int i = 0; i < split.length; i++) {
+                                        if (i <= 5) {
+                                            TextView dynamicTextView = new TextView(mainContext);
+                                            LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 60);
+                                            dim.leftMargin = 15;
+                                            dynamicTextView.setLayoutParams(dim);
+                                            dynamicTextView.setGravity(Gravity.CENTER);
+                                            dynamicTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.sender_border));
+                                            if (split[i].equalsIgnoreCase("critical"))
+                                                dynamicTextView.setTextColor(getResources().getColor(R.color.pink_tv));
+                                            else if (split[i].equalsIgnoreCase("stable")) {
+                                                dynamicTextView.setTextColor(getResources().getColor(R.color.green));
+                                            } else if (split[i].equalsIgnoreCase("sick")) {
+                                                dynamicTextView.setTextColor(getResources().getColor(R.color.yellow));
+                                            }
+                                            if (!split[i].equalsIgnoreCase("") && split.length > 0) {
+                                                dynamicTextView.setText(split[i]);
+                                                currentstatus_lay.addView(dynamicTextView);
+                                            }
+                                        } else if (i > 5) {
+                                            TextView dynamicTextView = new TextView(mainContext);
+                                            LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 60);
+                                            dim.leftMargin = 15;
+                                            dynamicTextView.setLayoutParams(dim);
+                                            dynamicTextView.setGravity(Gravity.CENTER);
+                                            dynamicTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.sender_border));
+                                            if (split[i].equalsIgnoreCase("critical"))
+                                                dynamicTextView.setTextColor(getResources().getColor(R.color.pink_tv));
+                                            else if (split[i].equalsIgnoreCase("stable")) {
+                                                dynamicTextView.setTextColor(getResources().getColor(R.color.green));
+                                            } else if (split[i].equalsIgnoreCase("sick")) {
+                                                dynamicTextView.setTextColor(getResources().getColor(R.color.yellow));
+                                            }
                                             dynamicTextView.setText(split[i]);
-                                            currentstatus_lay.addView(dynamicTextView);
+                                            currentstatus_lay1.addView(dynamicTextView);
                                         }
-                                    } else if (i > 5) {
-                                        TextView dynamicTextView = new TextView(mainContext);
-                                        LinearLayout.LayoutParams dim = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 60);
-                                        dim.leftMargin = 15;
-                                        dynamicTextView.setLayoutParams(dim);
-                                        dynamicTextView.setGravity(Gravity.CENTER);
-                                        dynamicTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.sender_border));
-                                        if (split[i].equalsIgnoreCase("critical"))
-                                            dynamicTextView.setTextColor(getResources().getColor(R.color.pink_tv));
-                                        else if (split[i].equalsIgnoreCase("stable")) {
-                                            dynamicTextView.setTextColor(getResources().getColor(R.color.green));
-                                        } else if (split[i].equalsIgnoreCase("sick")) {
-                                            dynamicTextView.setTextColor(getResources().getColor(R.color.yellow));
-                                        }
-                                        dynamicTextView.setText(split[i]);
-                                        currentstatus_lay1.addView(dynamicTextView);
                                     }
                                 }
-                            }
 //                            }
-                            WebServiceReferences.webServiceClient.SetPatientDescription(pcBean, patientRoundingFragment);
+                                Log.i("BBB", "call webservice from status_click");
+
+                                WebServiceReferences.webServiceClient.SetPatientDescription(pcBean, patientRoundingFragment);
+                            }
                         }
-                    }
-                });
-                builder3.show();
+                    });
+                    builder3.show();
+                }
             }
         });
         seeAll_diagnosis.setOnClickListener(new View.OnClickListener() {
@@ -1378,6 +1401,7 @@ public class PatientRoundingFragment extends Fragment {
             String[] result = (String[]) obj;
             pcBean.setPatientid(result[0]);
             pcBean.setReportid(result[1]);
+            Log.i("BBB","insertorUpdate desc patientID "+result[0]);
             DBAccess.getdbHeler().insertorUpdatePatientDescriptions(pcBean);
             DBAccess.getdbHeler().updateseallcomments(pcBean.getDiagnosis(), pcBean.getDate(), pcBean.getPatientid());
         }
@@ -1976,6 +2000,8 @@ public class PatientRoundingFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d("ppp", "The onResume() event");
+        Log.i("BBB","call webservice getpatientdesc from rounding_patient refresh");
+
         WebServiceReferences.webServiceClient.GetPatientDescription(pBean.getPatientid(), "", SingleInstance.mainContext);
 
     }
@@ -2059,8 +2085,11 @@ public class PatientRoundingFragment extends Fragment {
                             .get("list");
                     String addedMembers = new String();
                     for (UserBean temp : list) {
+                        if(temp.getBuddyName()!=null)
                         addedMembers = addedMembers + "," + temp.getBuddyName();
                     }
+                    Log.i("ppp", "***assign Members patient--------->"+addedMembers);
+
                     if (pBean.getAssignedmembers() != null)
                         pBean.setAssignedmembers(pBean.getAssignedmembers() + "," + addedMembers);
                     else
@@ -2146,6 +2175,7 @@ public class PatientRoundingFragment extends Fragment {
                         DBAccess.getdbHeler().updateseallcomments(pBean.getDiagnosis(), pBean.getDate(), pBean.getPatientid());
                         Log.d("updateseeall", "clickevent" + pBean.getDiagnosis() + pBean.getDate() + pBean.getPatientid());
                         showprogress();
+                        Log.i("BBB","call webservice from active_click"+pcBean.getDiagnosis()+"-->"+pBean.getDiagnosis());
                         WebServiceReferences.webServiceClient.SetPatientDescription(pBean, patientRoundingFragment);
                         diagnosis.setText(pBean.getDiagnosis());
                         pcBean.setDate(pBean.getDate());

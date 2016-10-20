@@ -107,6 +107,7 @@ import com.cg.rounding.OwnershipActivity;
 import com.cg.rounding.PatientLocationComparator;
 import com.cg.rounding.PatientNameComparator;
 import com.cg.rounding.PatientRoundingFragment;
+import com.cg.rounding.PatientStatusComparator;
 import com.cg.rounding.RolesManagementFragment;
 import com.cg.rounding.RoundNewPatientActivity;
 import com.cg.rounding.RoundingFragment;
@@ -10340,6 +10341,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
     private void PatientDetails() {
         isUnderPatient = true;
+        context = GroupChatActivity.this;
+        SingleInstance.contextTable.put("groupchat", context);
         final LinearLayout content = (LinearLayout) findViewById(R.id.content);
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         content.removeAllViews();
@@ -10509,6 +10512,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+                        Collections.sort(PatientList, new PatientStatusComparator());
                         patientadapter = new RoundingPatientAdapter(context, R.layout.rouding_patient_row, PatientList);
                         listViewPatient.setAdapter(null);
                         listViewPatient.setAdapter(patientadapter);
@@ -10612,7 +10616,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         if (gBean != null) {
             if (gBean.getActiveGroupMembers() != null
                     && gBean.getActiveGroupMembers().length() > 0) {
-                Log.i("AAAA", "RoundingMember");
+                Log.i("AAAA", "RoundingMember++++");
                 String[] mlist = (gBean.getActiveGroupMembers())
                         .split(",");
                 ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(gBean.getOwnerName());
@@ -10622,6 +10626,9 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         ownerbean.setFirstname(pBean.getTitle() + pBean.getFirstname());
                     else
                         ownerbean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname());
+                if(pBean!=null)
+                    if(pBean.getProfession()!=null)
+                        ownerbean.setOccupation(pBean.getProfession());
                 ownerbean.setLastname(pBean.getLastname());
                 ownerbean.setName(gBean.getOwnerName());
                 ownerbean.setSelected(true);
@@ -10645,6 +10652,9 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                             uBean.setFirstname(pbean.getTitle() + pbean.getFirstname());
                         else
                             uBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
+                    if(pbean!=null)
+                        if(pbean.getProfession()!=null)
+                            uBean.setOccupation(pbean.getProfession());
                     uBean.setLastname(pbean.getLastname());
                     uBean.setName(tmp);
                     uBean.setStatus("offline");
@@ -10773,16 +10783,19 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         if (gBean != null) {
             if (gBean.getActiveGroupMembers() != null
                     && gBean.getActiveGroupMembers().length() > 0) {
-                Log.i("AAAA", "RoundingMember");
                 String[] mlist = (gBean.getActiveGroupMembers())
                         .split(",");
 
                 ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(gBean.getOwnerName());
+
                 if (pbean != null)
                     if (pbean.getTitle()!=null &&(pbean.getTitle().equalsIgnoreCase("Dr.") || pbean.getTitle().equalsIgnoreCase("Prof.")))
                         ownerbean.setFirstname(pbean.getTitle() + pbean.getFirstname());
                     else
                         ownerbean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
+                if(pbean!=null)
+                    if(pbean.getProfession()!=null)
+                        ownerbean.setOccupation(pbean.getProfession());
                 ownerbean.setLastname(pbean.getLastname());
                 ownerbean.setSelected(true);
                 ownerbean.setName(gBean.getOwnerName());
@@ -10807,6 +10820,9 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                             uBean.setFirstname(pBean.getTitle() + pBean.getFirstname());
                         else
                             uBean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname());
+                    if(pBean!=null)
+                        if(pBean.getProfession()!=null)
+                            uBean.setOccupation(pBean.getProfession());
                     uBean.setLastname(pBean.getLastname());
                     uBean.setName(tmp);
                     uBean.setStatus("offline");
@@ -10933,6 +10949,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     holder.buddyName.setText(bib.getFirstname());
                     else
                         holder.buddyName.setText(bib.getName());
+                    if (bib.getOccupation() != null)
+                        holder.occupation.setText(bib.getOccupation());
                     if (bib.getRole() != null)
                         holder.role.setText(bib.getRole());
                     else
@@ -11068,8 +11086,9 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 TaskDetailsBean tBean = (TaskDetailsBean) taskAdapter.getItem(i);
-                if(groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)&&
-                        tBean.getTaskstatus().equalsIgnoreCase("0")) {
+                if ((groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                        roleAccessBean.getTaskmanagement() != null && roleAccessBean.getTaskmanagement().equalsIgnoreCase("1"))&&
+                        tBean.getTaskstatus().equalsIgnoreCase("0") ) {
                     Intent intent = new Intent(context, TaskCreationActivity.class);
                     intent.putExtra("groupid", tBean.getGroupid());
                     intent.putExtra("taskid", tBean.getTaskId());
@@ -13653,5 +13672,4 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         });
 
     }
-
 }

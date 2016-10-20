@@ -97,12 +97,14 @@ public class RoundingTaskAdapter extends ArrayAdapter<TaskDetailsBean> {
                     holder.doctorname.setText(names.substring(0, names.length() - 2));
                 } else
                     holder.doctorname.setText("Unassigned");
-                if (tBean.getHeadercode().equalsIgnoreCase("1")) {
-                    holder.pending_hours.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.pink));
-                } else if (tBean.getHeadercode().equalsIgnoreCase("2")) {
-                    holder.pending_hours.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.green));
-                } else if (tBean.getHeadercode().equalsIgnoreCase("3")) {
-                    holder.pending_hours.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.white));
+                if(tBean.getHeadercode()!=null) {
+                    if (tBean.getHeadercode().equalsIgnoreCase("1")) {
+                        holder.pending_hours.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.pink));
+                    } else if (tBean.getHeadercode().equalsIgnoreCase("2")) {
+                        holder.pending_hours.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.green));
+                    } else if (tBean.getHeadercode().equalsIgnoreCase("3")) {
+                        holder.pending_hours.setTextColor(SingleInstance.mainContext.getResources().getColor(R.color.white));
+                    }
                 }
 
                 if (tBean.getDuedate() != null) {
@@ -124,10 +126,14 @@ public class RoundingTaskAdapter extends ArrayAdapter<TaskDetailsBean> {
                     holder.header.setVisibility(View.VISIBLE);
                 }
                 if (tBean.getTaskstatus().equalsIgnoreCase("1")) {
+                    Log.i("calender", "task status" + tBean.getPatientname()+"-=> "+tBean.getTaskstatus());
                     holder.chbox1.setChecked(true);
                     holder.chbox1.setEnabled(false);
-                } else
+                } else {
+                    Log.i("calender", "task status" + tBean.getPatientname()+"-=> "+tBean.getTaskstatus());
+
                     holder.chbox1.setChecked(false);
+                }
                 holder.chbox1
                         .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                             @Override

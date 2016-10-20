@@ -224,7 +224,12 @@ public class AssignPatientActivity extends Activity{
     }
     private void killActivity() {
         Log.i("patientdetails", "!!!!!!!!!!!killActivity *****");
-
+        if (SingleInstance.contextTable.containsKey("groupchat"))
+        {
+            Log.i("patientdetails", "****call to refresh");
+            GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
+            groupChatActivity.refreshPatient();
+        }
         finish();
     }
     @SuppressWarnings("unchecked")

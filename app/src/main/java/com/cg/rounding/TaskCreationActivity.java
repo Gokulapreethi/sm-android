@@ -46,6 +46,8 @@ import com.util.SingleInstance;
 
 import org.lib.PatientDetailsBean;
 import org.lib.model.BuddyInformationBean;
+import org.lib.model.GroupBean;
+import org.lib.model.GroupMemberBean;
 import org.lib.model.TaskDetailsBean;
 
 import java.io.File;
@@ -220,6 +222,7 @@ public class TaskCreationActivity extends Activity {
                     }
                     taskbean.setAssignedMembers(assignedMembers);
                     taskbean.setTaskstatus("0");
+
                     WebServiceReferences.webServiceClient.SetTaskRecord(taskbean, context);
                     showprogress();
                 }
@@ -685,6 +688,9 @@ public class TaskCreationActivity extends Activity {
                     holder.sel_buddy.setVisibility(View.GONE);
                     holder.header_title.setVisibility(View.GONE);
                     holder.edit.setVisibility(View.GONE);
+                    ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(bib.getName());
+                    if(pbean!=null)
+                        holder.occupation.setText(pbean.getProfession());
                     holder.buddyName.setText(bib.getFirstname());
                     if(bib.getName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
                         holder.buddyName.setText("Me");
@@ -697,6 +703,38 @@ public class TaskCreationActivity extends Activity {
                         holder.position.setTextColor(getResources().getColor(R.color.snazash));
                     }
                     holder.rights.setTextColor(getResources().getColor(R.color.snazash));
+                    GroupBean gmembersbean = DBAccess.getdbHeler().getGroupAndMembers(
+                            "select * from groupdetails where groupid="
+                                    + groupid);
+                    Log.i("AAAA", "#########active Mmber " + gmembersbean.getActiveGroupMembers());
+                    Log.i("AAAA", "######### Mmber name " + bib.getName());
+
+                    if (gmembersbean != null) {
+                        if (gmembersbean.getActiveGroupMembers() != null
+                                && gmembersbean.getActiveGroupMembers().length() > 0) {
+                            String[] listRole = (gmembersbean.getActiveGroupMembers())
+                                    .split(",");
+                            Log.i("AAAA", "#########Mmber " + listRole);
+
+                            for (String tmp : listRole) {
+                                GroupMemberBean bean12 = DBAccess.getdbHeler().getMemberDetails(groupid, tmp);
+                                boolean found = false;
+                                for (String element : listRole) {
+                                    if (tmp.equals(bib.getName())) {
+                                        Log.i("AAAA", "#########string Role " + bean12.getRole() + " element " + element);
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if (found) {
+                                    holder.rights.setVisibility(View.VISIBLE);
+                                    holder.position.setVisibility(View.GONE );
+                                    holder.rights.setText(bean12.getRole());
+                                }
+                            }
+                        }
+                    }
+
                     holder.statusIcon.setVisibility(View.GONE);
                     if (bib.getType().equalsIgnoreCase("1")) {
                         bib.setSelected(true);

@@ -13,7 +13,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bean.ProfileBean;
 import com.bean.UserBean;
+import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.snazmed.R;
@@ -109,10 +111,8 @@ public class ForwardUserSelectionAdapter extends ArrayAdapter<BuddyInformationBe
                         holder.header_title.setVisibility(View.VISIBLE);
                     }
                 }
-                if (userBean.getOccupation() != null && userBean.getOccupation().length()>0 && userBean.getOccupation().equalsIgnoreCase(""))  {
-
-                    holder.occupation.setText(userBean.getOccupation());
-                }
+                ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(userBean.getName());
+                    holder.occupation.setText(pBean.getProfession());
                 if(userBean.isSelected()){
                     holder.selectUser.setChecked(true);
                 }else{

@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bean.ProfileBean;
 import com.bean.UserBean;
 import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
@@ -122,10 +123,14 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 					holder.statusIcon.setVisibility(View.GONE);
 				else
 					holder.statusIcon.setVisibility(View.VISIBLE);
-				if (userBean.isOwner())
-					holder.occupation.setText("Owner");
-				else
-					holder.occupation.setText("Prof.Designation");
+				ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(userBean.getBuddyName());
+				if(pbean!=null)
+					holder.occupation.setText(pbean.getProfession());
+
+//				if (userBean.isOwner())
+//					holder.occupation.setText("Owner");
+//				else
+//					holder.occupation.setText("Prof.Designation");
 				if(userBean.getInvite()){
 					holder.selectUser.setVisibility(View.GONE);
 					holder.cancel_lay.setVisibility(View.VISIBLE);
