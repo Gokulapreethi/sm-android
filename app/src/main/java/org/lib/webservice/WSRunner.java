@@ -146,10 +146,11 @@ public class WSRunner implements Runnable {
 								mServer_ip="66.36.228.50";
 								mWsdl_link= AppReference.mainContext.getResources().getString(R.string.service_url1).trim()+"?wsdl";
 								break;
-//							case DOWNLOAD:
-//								Log.i("webservice","Download Webservices");
-//								mWsdl_link= AppReference.mainContext.getResources().getString(R.string.service_url1).trim()+"?wsdl";
-//								break;
+							case DOWNLOAD:
+								mServer_ip="66.36.228.50";
+								Log.i("webservice","Download Webservices");
+								mWsdl_link= AppReference.mainContext.getResources().getString(R.string.service_url1).trim()+"?wsdl";
+								break;
 							default:
 								Log.i("webservice","Other Webservices");
 								mServer_ip=AppReference.serverIP;

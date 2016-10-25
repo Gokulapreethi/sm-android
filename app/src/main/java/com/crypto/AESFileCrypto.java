@@ -6,6 +6,7 @@ package com.crypto;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import org.core.AESCrypto;
 import org.core.ProprietarySignalling;
@@ -64,7 +65,20 @@ public class AESFileCrypto {
 							decrypted.length);
 				}
 			}else{
-				return BitmapFactory.decodeFile(filePath);
+//				return BitmapFactory.decodeFile(filePath);
+				File file = new File(filePath);
+				if (file.exists() && file.isFile()) {
+					BitmapFactory.Options options = new BitmapFactory.Options();
+					options.inJustDecodeBounds = true;
+					BitmapFactory.decodeStream((new FileInputStream(file.getPath())), null, options);
+					int imageHeight = options.outHeight / 2;
+					int imageWidth = options.outWidth / 2;
+					Log.i("MemoryCheck", "imageHeight : " + imageHeight + " imageWidth : " + imageWidth);
+					options.inSampleSize = calculateInSampleSize(options, imageWidth / 2, imageHeight / 2);
+
+					options.inJustDecodeBounds = false;
+					return BitmapFactory.decodeStream(new FileInputStream(file), null, options);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -77,6 +91,26 @@ public class AESFileCrypto {
 		}
 
 		return null;
+	}
+
+	private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+
+		final int height = options.outHeight;
+		final int width = options.outWidth;
+		int inSampleSize = 1;
+
+		if (height > reqHeight || width > reqWidth) {
+
+			final int halfHeight = height / 2;
+			final int halfWidth = width / 2;
+
+			while ((halfHeight / inSampleSize) > reqHeight
+					&& (halfWidth / inSampleSize) > reqWidth) {
+				inSampleSize *= 2;
+			}
+		}
+
+		return inSampleSize;
 	}
 
 	public static String decryptFile(Context context,String filePath) {

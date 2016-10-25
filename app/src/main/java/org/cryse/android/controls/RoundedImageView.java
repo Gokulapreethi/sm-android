@@ -13,10 +13,17 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
+import android.os.Environment;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import com.cg.snazmed.R;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 
 public class RoundedImageView extends ImageView {
 	private int mBorderThickness = 0;
@@ -62,8 +69,10 @@ public class RoundedImageView extends ImageView {
 			Bitmap b = ((BitmapDrawable) drawable).getBitmap();
 			try {
 				Bitmap bitmap = null;
-				if (b != null)
+				if (b != null) {
+//					bitmap = bitmap_copy(b);
 					bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
+				}
 
 
 			int w = getWidth(), h = getHeight();
@@ -95,6 +104,54 @@ public class RoundedImageView extends ImageView {
 			e.printStackTrace();
 		}
 
+	}
+
+	private Bitmap bitmap_copy(Bitmap bitmap){
+		try {
+//this is the file going to use temporally to save the bytes.
+
+			File file = new File(Environment.getExternalStorageDirectory()
+					+ "/COMMedia/temp.txt");
+			if(file.exists()) {
+				file.delete();
+			}
+			if(!file.getParentFile().exists()) {
+				file.getParentFile().mkdirs();
+			}
+
+//Open an RandomAccessFile
+/*Make sure you have added uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+into AndroidManifest.xml file*/
+			RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
+
+// get the width and height of the source bitmap.
+			int width = getWidth();
+			int height = getHeight();
+
+//Copy the byte to the file
+//Assume source bitmap loaded using options.inPreferredConfig = Config.ARGB_8888;
+			FileChannel channel = randomAccessFile.getChannel();
+			MappedByteBuffer map = channel.map(FileChannel.MapMode.READ_WRITE, 0, width*height*4);
+			map.rewind();
+			bitmap.copyPixelsToBuffer(map);
+//recycle the source bitmap, this will be no longer used.
+			if (bitmap != null && !bitmap.isRecycled()) {
+				bitmap.recycle();
+			}
+//Create a new bitmap to load the bitmap again.
+			bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+			map.position(0);
+//load it back from temporary
+			bitmap.copyPixelsFromBuffer(map);
+//close the temporary file and channel , then delete that also
+			channel.close();
+			randomAccessFile.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		return bitmap;
 	}
 
 	public static Bitmap getCroppedBitmap(Bitmap bmp, int radius) {

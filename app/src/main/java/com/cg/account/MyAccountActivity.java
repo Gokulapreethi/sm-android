@@ -55,6 +55,7 @@ import org.lib.webservice.Servicebean;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -1404,34 +1405,50 @@ public class MyAccountActivity extends Activity {
             @Override
             public void onActivityResult(int requestCode, int resultCode, Intent data) {
                 super.onActivityResult(requestCode, resultCode, data);
-                if (requestCode == 1) {
+                try {
+                    if (requestCode == 1) {
 
-                    File new_file = new File(strIPath);
-                    if (new_file.exists()) {
-                        ImageLoader imageLoader;
-                        imageLoader = new ImageLoader(MyAccountActivity.this);
-                        imageLoader.DisplayImage(strIPath, profile_pic, R.drawable.userphoto);
-                        String[] param = new String[7];
-                        param[0] = CallDispatcher.LoginUser;
-                        param[1] = CallDispatcher.Password;
-                        param[2] = "image";
-                        File file = new File(strIPath);
-                        param[3] = file.getName();
-                        long length = (int) file.length();
-                        length = length / 1024;
-                        param[5] = "other";
-                        param[6] = String.valueOf(length);
-                        if (file.exists()) {
-                            param[4] = encodeTobase64(BitmapFactory.decodeFile(file.getPath()));
-                            WebServiceReferences.webServiceClient.FileUpload(param, MyAccountActivity.this,"");
-                            FileDetailsBean fBean = new FileDetailsBean();
-                            fBean.setFilename(param[3]);
-                            fBean.setFiletype("image");
-                            fBean.setFilecontent(param[4]);
-                            fBean.setServicetype("Upload");
-                            SingleInstance.fileDetailsBean = fBean;
+                        File new_file = new File(strIPath);
+                        if (new_file.exists()) {
+                            ImageLoader imageLoader;
+                            imageLoader = new ImageLoader(MyAccountActivity.this);
+                            imageLoader.DisplayImage(strIPath, profile_pic, R.drawable.userphoto);
+                            String[] param = new String[7];
+                            param[0] = CallDispatcher.LoginUser;
+                            param[1] = CallDispatcher.Password;
+                            param[2] = "image";
+                            File file = new File(strIPath);
+                            param[3] = file.getName();
+                            long length = (int) file.length();
+                            length = length / 1024;
+                            param[5] = "other";
+                            param[6] = String.valueOf(length);
+                            if (file.exists()) {
+                                BitmapFactory.Options options = new BitmapFactory.Options();
+                                options.inJustDecodeBounds = true;
+                                 BitmapFactory.decodeStream((new FileInputStream(file.getPath())),null,options);
+                                int imageHeight = options.outHeight/2;
+                                int imageWidth = options.outWidth/2;
+                                String imageType = options.outMimeType;
+                                Log.i("MemoryCheck","imageHeight : "+imageHeight+" imageWidth : "+imageWidth);
+                                options.inSampleSize = calculateInSampleSize(options, imageWidth/2, imageHeight/2);
+
+                                options.inJustDecodeBounds = false;
+                                Bitmap tb = BitmapFactory.decodeStream(new FileInputStream(file), null, options);
+
+                                param[4] = encodeTobase64(tb);
+                                WebServiceReferences.webServiceClient.FileUpload(param, MyAccountActivity.this,"");
+                                FileDetailsBean fBean = new FileDetailsBean();
+                                fBean.setFilename(param[3]);
+                                fBean.setFiletype("image");
+                                fBean.setFilecontent(param[4]);
+                                fBean.setServicetype("Upload");
+                                SingleInstance.fileDetailsBean = fBean;
+                            }
                         }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -1447,7 +1464,25 @@ public class MyAccountActivity extends Activity {
                 }
                 return strFilename;
             }
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
 
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
             private String encodeTobase64(Bitmap image) {
                 Bitmap immagex = image;
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();

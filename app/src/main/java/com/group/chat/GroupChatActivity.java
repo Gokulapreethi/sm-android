@@ -5079,7 +5079,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     break;
                 case R.id.c_audio_call:
                     if(!CallDispatcher.myStatus.equalsIgnoreCase("0")) {
-                        if (audio_call.getTag() == 1) {
+                        if ((int)audio_call.getTag() == 1) {
                             if(isPrivateBack){
                                 LL_privateReply.setVisibility(View.GONE);
                             }else {
