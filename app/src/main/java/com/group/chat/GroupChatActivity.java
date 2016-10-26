@@ -33,6 +33,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -347,6 +348,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
     Button btn_searchClose;
     ImageView iv_searchclear;
     boolean search_enable=false;
+
+    private SwipeRefreshLayout swipeContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1339,6 +1342,63 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 // this, GroupChatActivity.class));
                 context = GroupChatActivity.this;
                 SingleInstance.contextTable.put("groupchat", context);
+
+                swipeContainer = (SwipeRefreshLayout) v1.findViewById(R.id.swipeContainer);
+
+                swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        // Your code to refresh the list here.
+                        // Make sure you call swipeContainer.setRefreshing(false)
+                        // once the network request has completed successfully.
+
+                        if(isGroup || isRounding) {
+                            String minDate=DBAccess.getdbHeler().getminDateandTimeFromChat(groupId);
+                            if(minDate!=null){
+                                try {
+                                    Log.i("CHATSYNC","DB minDate-->"+minDate);
+//                                    SimpleDateFormat day = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
+//                                    Date date = day.parse(minDate);
+//                                    DateFormat serverFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+//                                    Log.i("CHATSYNC","minDate-->"+serverFormat.format(date));
+                                    WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "5", groupId, minDate, "");
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }else {
+                                WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "1", groupId, "", "");
+                            }
+                        }
+                        else {
+                            String minDate=DBAccess.getdbHeler().getminDateandTimeFromChat(buddy);
+                            if(minDate!=null){
+                                try {
+                                    Log.i("CHATSYNC","DB minDate-->"+minDate);
+//                                    SimpleDateFormat day = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
+//                                    Date date = day.parse(minDate);
+//                                    DateFormat serverFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+//                                    Log.i("CHATSYNC","minDate-->"+serverFormat.format(date));
+                                    WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "5", buddy, minDate, "");
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }else {
+                                WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "1", buddy, "", "");
+                            }
+
+                        }
+
+                    }
+                });
+
+                swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                        android.R.color.holo_green_light,
+                        android.R.color.holo_orange_light,
+                        android.R.color.holo_red_light);
+
+
+
+
                 settingsBtn = (ImageView) v1.findViewById(R.id.settings_image);
                 typingstatus = (TextView) v1.findViewById(R.id.typing);
                 typingstatus.setVisibility(View.GONE);
@@ -13674,15 +13734,15 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         }
     }
     public void CancelSwipeContainer(){
-        handler.post(new Runnable() {
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-//                if(swipeContainer!=null) {
-//                    swipeContainer.setRefreshing(false);
-//                }
+                if(swipeContainer!=null) {
+                    swipeContainer.setRefreshing(false);
+                }
                 chatprocess();
             }
-        });
+        },2000);
 
     }
 }

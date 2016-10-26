@@ -1437,6 +1437,7 @@ public class MyAccountActivity extends Activity {
                                 Bitmap tb = BitmapFactory.decodeStream(new FileInputStream(file), null, options);
 
                                 param[4] = encodeTobase64(tb);
+                                showDialog();
                                 WebServiceReferences.webServiceClient.FileUpload(param, MyAccountActivity.this,"");
                                 FileDetailsBean fBean = new FileDetailsBean();
                                 fBean.setFilename(param[3]);
@@ -1921,5 +1922,11 @@ public class MyAccountActivity extends Activity {
         super.onStop();
         AppReference.mainContext.isApplicationBroughtToBackground();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        WebServiceReferences.contextTable.remove("myaccountactivity");
     }
 }

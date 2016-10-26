@@ -40,6 +40,8 @@ public class GroupChatBean implements Serializable, Cloneable {
 	private String senderWithdraw;
 	private String messagestatus;
 	private String dateandtime;
+	private String serverdateandtime;
+
 
 	public String getDateandtime() {
 		return dateandtime;
@@ -517,5 +519,13 @@ public class GroupChatBean implements Serializable, Cloneable {
 
 	public void setSenderWithdraw(String senderWithdraw) {
 		this.senderWithdraw = senderWithdraw;
+	}
+
+	public String getServerdateandtime() {
+		return serverdateandtime;
+	}
+
+	public void setServerdateandtime(String serverdateandtime) {
+		this.serverdateandtime = serverdateandtime;
 	}
 }

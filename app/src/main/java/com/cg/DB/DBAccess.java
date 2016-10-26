@@ -128,7 +128,7 @@ public class DBAccess extends SQLiteOpenHelper {
 	String user_services = "create table if not exists UserServices(Id INTEGER PRIMARY KEY AUTOINCREMENT,servicename nvarchar(30),serviceid nvarchar(30))";
 	String create_group = "create table if not exists grouplist(id INTEGER PRIMARY KEY AUTOINCREMENT, groupid int(100), groupname varchar(225),groupowner varchar(100), createddate varchar(45), modifieddate varchar(45),username varchar(45),lastmsg varchar(100),category varchar(25),recentdate varchar(100),groupdescription varchar(100),groupicon varchar(200),grouptype varchar(45),adminmembers varchar(255))";
 	String create_group_members = "create table if not exists groupdetails(id INTEGER PRIMARY KEY AUTOINCREMENT, groupid int(100), active_members varchar(255), inactive_members varchar(255), createddate varchar(45) NOT NULL, modifieddate varchar(45) NOT NULL,groupowner varchar(100) NOT NULL,username varchar(45) NOT NULL,groupdescription varchar(100),groupicon varchar(200),invitemembers varchar(100),grouptype varchar(45), adminmembers varchar(255))";
-	String chat = "create table if not exists chat(id INTEGER PRIMARY KEY AUTOINCREMENT, category varchar(20), subcategory varchar(45), groupid int(100), username varchar(100), mimetype varchar(45), fromuser varchar(100), touser varchar(100), message varchar(200), media varchar(200), ftpusername varchar(100), ftppassword varchar(200), sessionid varchar(200), signalid varchar(200) unique, senttime varchar(200), senttimezone varchar(200),privatemembers varchar(200),parentid varchar(200),remindertime varchar(200),status tinyint(1),unreadstatus tinyint(1), thumb tinyint(1) DEFAULT 0,reply varchar(20),replied varchar(20),confirm varchar(20),urgent varchar(20),unview varchar(20),withdrawn varchar(20),senderwithdraw varchar(20) ,dateandtime varchar(100))";
+	String chat = "create table if not exists chat(id INTEGER PRIMARY KEY AUTOINCREMENT, category varchar(20), subcategory varchar(45), groupid int(100), username varchar(100), mimetype varchar(45), fromuser varchar(100), touser varchar(100), message varchar(200), media varchar(200), ftpusername varchar(100), ftppassword varchar(200), sessionid varchar(200), signalid varchar(200) unique, senttime varchar(200), senttimezone varchar(200),privatemembers varchar(200),parentid varchar(200),remindertime varchar(200),status tinyint(1),unreadstatus tinyint(1), thumb tinyint(1) DEFAULT 0,reply varchar(20),replied varchar(20),confirm varchar(20),urgent varchar(20),unview varchar(20),withdrawn varchar(20),senderwithdraw varchar(20) ,dateandtime varchar(100),serverdateandtime varchar(50))";
 	String imchat = "create table if not exists imchat(id INTEGER PRIMARY KEY AUTOINCREMENT, groupid int(100), groupname varchar(225),groupowner varchar(100), createddate varchar(45), modifieddate varchar(45),username varchar(45),lastmsg varchar(100),category varchar(25),recentdate varchar(100))";
 	String schedulemsg = "create table if not exists schedulemsg(id INTEGER PRIMARY KEY AUTOINCREMENT, category varchar(20), subcategory varchar(45), groupid int(100), username varchar(100), mimetype varchar(45), fromuser varchar(100), touser varchar(100), message varchar(200), media varchar(200), ftpusername varchar(100), ftppassword varchar(100), sessionid varchar(200), signalid varchar(200), senttime varchar(200), senttimezone varchar(200),privatemembers varchar(200))";
 	String uploaddownload = "create table if not exists uploaddownload(id INTEGER PRIMARY KEY AUTOINCREMENT, username varchar(100), media varchar(200), ftpusername varchar(100), ftppassword varchar(100), status tinyint(2), operations varchar(50),modules varchar(50),othervalues varchar(100))";
@@ -7123,6 +7123,9 @@ public class DBAccess extends SQLiteOpenHelper {
             cv.put("unview", groupChatBean.getUnview());
             cv.put("reply", groupChatBean.getReply());
 			cv.put("dateandtime",groupChatBean.getDateandtime());
+			if(groupChatBean.getServerdateandtime()!=null){
+				cv.put("serverdateandtime",groupChatBean.getServerdateandtime());
+			}
 			if (isRecordExists("select * from chat where signalid='"
 					+ groupChatBean.getSignalid() + "'")) {
 				row = (int) db.update("chat", cv,
@@ -11706,6 +11709,29 @@ public class DBAccess extends SQLiteOpenHelper {
 				return status;
 			}
 
+	}
+
+	public String getminDateandTimeFromChat(String buddyNameOrGroupId) {
+		String dateandtime=null;
+		try {
+			Cursor cur = null;
+			if (!db.isOpen())
+				openDatabase();
+			String strGetQry = "select min(serverdateandtime) from chat where username='"
+					+ CallDispatcher.LoginUser + "'and groupid='"+buddyNameOrGroupId+"'";
+			cur = db.rawQuery(strGetQry, null);
+			cur.moveToFirst();
+
+			while (cur.isAfterLast() == false) {
+				dateandtime = cur.getString(0);
+				cur.moveToNext();
+			}
+			cur.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dateandtime;
 	}
 
 

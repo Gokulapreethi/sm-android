@@ -163,18 +163,22 @@
             android:textColor="@color/white"
             android:textSize="15sp" />
     </RelativeLayout>
-
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipeContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/sending_layout"
+        android:layout_below="@+id/settingnotifications">
     <com.cg.commongui.listswipe.SwipeMenuListView
         android:id="@+id/chat_listview"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/sending_layout"
-        android:layout_below="@+id/settingnotifications"
         android:background="@color/black2"
         android:cacheColorHint="@color/gchat_bg"
         android:divider="@null"
         android:listSelector="@android:color/transparent"
         android:padding="2dp" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
     <LinearLayout

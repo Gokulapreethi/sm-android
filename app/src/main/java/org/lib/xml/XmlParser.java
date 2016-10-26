@@ -8147,6 +8147,7 @@ public class XmlParser {
 					Date date = utcFormat.parse(nodeMap.getNamedItem("dateandtime").getNodeValue());
 					SimpleDateFormat day = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
 					cBean.setDateandtime(day.format(date));
+					cBean.setServerdateandtime(nodeMap.getNamedItem("dateandtime").getNodeValue());
 
 				}
 //				cBean.setDateandtime(cBean.getSenttime());

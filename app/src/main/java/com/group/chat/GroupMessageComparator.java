@@ -12,7 +12,8 @@ public class GroupMessageComparator implements Comparator<GroupChatBean> {
 	@Override
 	public int compare(GroupChatBean gcBean1, GroupChatBean gcBean2) {
 		// TODO Auto-generated method stub
-				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss a");
+//				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss a");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
 		Date date1=null, date2=null;
 		try {
 			 date1 = dateFormat.parse(gcBean1.getDateandtime());

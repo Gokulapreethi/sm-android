@@ -522,6 +522,10 @@ public class WSRunner implements Runnable {
 					case FileUpload:
 						mChk = mParser.getResult(mSp.toString());
 						String upload_result = mParser.parseResultXml(mSp.toString());
+						if(WebServiceReferences.contextTable.containsKey("myaccountactivity")){
+							MyAccountActivity myAccountActivity=(MyAccountActivity)WebServiceReferences.contextTable.get("myaccountactivity");
+							myAccountActivity.cancelDialog();
+						}
 						if(mChk) {
 							Log.d("XP WSD", "file" + mChk);
 							SingleInstance.mainContext.showToast("File upload successfully");
