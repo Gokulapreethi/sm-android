@@ -72,6 +72,13 @@ public class FileInfoFragment extends Fragment {
     CallDispatcher calldisp = new CallDispatcher(SingleInstance.mainContext);
     private boolean isFromChat=false,isGroup=false;
     private String groupid;
+    View view_info, view_comments, view_access;
+    ImageView info_img,comments_img,access_img;
+    TextView tv_info,tv_comments,tv_access;
+    public FilesAdapter filesAdapter = null;
+    private FilesFragment filesFragment = null;
+
+
     public static FileInfoFragment newInstance(Context context) {
         try {
             if (fileInfoFragment == null) {
@@ -155,7 +162,7 @@ public class FileInfoFragment extends Fragment {
                             ComponentCreator.class);
                     Bundle bndl = new Bundle();
                     bndl.putString("type", "note");
-                    bndl.putBoolean("action", true);
+                    bndl.putBoolean("action", false);
                     bndl.putBoolean("fromNew",false);
                     intentComponent.putExtra("viewBean", cbean);
                     intentComponent.putExtras(bndl);
@@ -246,10 +253,65 @@ public class FileInfoFragment extends Fragment {
                             delete.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
+                                   try {
+                                    String strDeleteQry = "delete from component where componentid="
+                                            + cbean.getComponentId();
+
+                                    if (calldisp.getdbHeler(mainContext).ExecuteQuery(
+                                            strDeleteQry)) {
+//                                        filesList.remove(cBean);
+                                        if (cbean.getContentpath() != null
+                                                && cbean.getContentpath() != "") {
+                                            if (!cbean.getcomponentType()
+                                                    .equalsIgnoreCase("video")) {
+
+                                                File f = new File(cbean
+                                                        .getContentpath());
+                                                if (f.exists()) {
+                                                    f.delete();
+                                                }
+
+                                            } else if (cbean.getcomponentType()
+                                                    .equalsIgnoreCase("video")) {
+
+                                                File f = new File(cbean
+                                                        .getContentpath() + ".mp4");
+                                                if (f.exists()) {
+                                                    f.delete();
+                                                }
+                                                File f1 = new File(cbean
+                                                        .getContentpath() + ".jpg");
+                                                if (f1.exists()) {
+                                                    f1.delete();
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                       FilesFragment filesFragment = FilesFragment.newInstance(mainContext);
+                                       FragmentManager fragmentManager = SingleInstance.mainContext
+                                               .getSupportFragmentManager();
+                                       fragmentManager.beginTransaction().replace(
+                                               R.id.activity_main_content_fragment, filesFragment)
+                                               .commitAllowingStateLoss();
+                                } catch (Exception e) {
+                                    Log.i("callhistory", "" + e.getMessage());
+                                    if (AppReference.isWriteInFile)
+                                        AppReference.logger.error(e.getMessage(), e);
+
+                                }
+
+                                if (WebServiceReferences.contextTable
+                                        .containsKey("Component")) {
+                                    ((ComponentCreator) WebServiceReferences.contextTable
+                                            .get("Component")).finish();
+                                }
+                                    notifyUI();
                                     dialog.dismiss();
                                 }
                             });
                         }
+
                     });
 
                 }
@@ -258,21 +320,60 @@ public class FileInfoFragment extends Fragment {
             if (view == null) {
                 view = inflater.inflate(R.layout.file_info_fragment, null);
                 try {
-                    content = (LinearLayout)view. findViewById(R.id.content);
+                    final LinearLayout content = (LinearLayout) view.findViewById(R.id.content);
                     content.removeAllViews();
-                    LayoutInflater layoutInflater = (LayoutInflater)mainContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     View v1 = layoutInflater.inflate(R.layout.file_info, content);
-                    TextView modofieddate=(TextView)v1.findViewById(R.id.modifieddate);
-                    TextView size=(TextView)v1.findViewById(R.id.size);
-                    TextView available=(TextView)v1.findViewById(R.id.available);
-                    TextView type=(TextView)v1.findViewById(R.id.type);
-                    TextView filename=(TextView)v1.findViewById(R.id.filename);
-                    TextView filedesc=(TextView)v1.findViewById(R.id.filedesc);
-                    ImageView fileIcon=(ImageView)v1.findViewById(R.id.newfile);
-                    ImageView overlay=(ImageView)v1.findViewById(R.id.overlay);
+                    final LinearLayout info = (LinearLayout) view.findViewById(R.id.chat);
+                    final LinearLayout comments = (LinearLayout) view.findViewById(R.id.profilechat);
+                    final LinearLayout access = (LinearLayout) view.findViewById(R.id.snazbox_chat);
+                    TextView modofieddate=(TextView)view.findViewById(R.id.modifieddate);
+                    TextView size=(TextView)view.findViewById(R.id.size);
+                    TextView available=(TextView)view.findViewById(R.id.available);
+                    TextView type=(TextView)view.findViewById(R.id.type);
+                    TextView filename=(TextView)view.findViewById(R.id.filename);
+                    TextView filedesc=(TextView)view.findViewById(R.id.filedesc);
+                    ImageView fileIcon=(ImageView)view.findViewById(R.id.newfile);
+                    ImageView overlay=(ImageView)view.findViewById(R.id.overlay);
                     TextView tv_share = (TextView)view.findViewById(R.id.tv_share);
                     tv_send = (TextView)view.findViewById(R.id.tv_send);
+                    view_comments=(View)view.findViewById(R.id.view_comment);
+                    view_info=(View)view.findViewById(R.id.view_info);
+                    view_access=(View)view.findViewById(R.id.view_access);
+                    info_img=(ImageView)view.findViewById(R.id.info_img);
+                    comments_img=(ImageView)view.findViewById(R.id.comment_img);
+                    access_img=(ImageView)view.findViewById(R.id.access_img);
+                    tv_info=(TextView)view.findViewById(R.id.tv_info);
+                    tv_comments=(TextView)view.findViewById(R.id.tv_comment);
+                    tv_access=(TextView)view.findViewById(R.id.tv_access);
 
+                    info.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            setDefault();
+                            info_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.dashboard_message_white));
+                            tv_info.setTextColor(getResources().getColor(R.color.white));
+                            view_info.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    comments.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            setDefault();
+                            comments_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_comments_white));
+                            tv_comments.setTextColor(getResources().getColor(R.color.white));
+                            view_comments.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    access.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            setDefault();
+                            access_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_members_white));
+                            tv_access.setTextColor(getResources().getColor(R.color.white));
+                            view_access.setVisibility(View.VISIBLE);
+                        }
+                    });
 
                     fileImageLoader = new FileImageLoader(mainContext);
                     if(cbean!=null){
@@ -410,6 +511,22 @@ public class FileInfoFragment extends Fragment {
         groupid=groupId;
         isGroup=isgroup;
     }
+    public void notifyUI() {
+        try {
+            handler.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    // TODO Auto-generated method stub
+//                     filesAdapter.notifyDataSetChanged();
+                }
+            });
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
 
     String bytesToSize(int bytes) {
         int kilobyte = 1024;
@@ -467,6 +584,18 @@ public class FileInfoFragment extends Fragment {
         } catch (Exception e) {
 
         }
+    }
+
+    private void setDefault() {
+        info_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_chat));
+        comments_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_comments));
+        access_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_members));
+        tv_info.setTextColor(getResources().getColor(R.color.black));
+        tv_comments.setTextColor(getResources().getColor(R.color.black));
+        tv_access.setTextColor(getResources().getColor(R.color.black));
+        view_info.setVisibility(View.GONE);
+        view_comments.setVisibility(View.GONE);
+        view_access.setVisibility(View.GONE);
     }
 
     private void shareMultipleFiles() {

@@ -388,12 +388,16 @@ public class ComponentCreator extends Activity implements IMNotifier {
 					file_img.setVisibility(View.INVISIBLE);
 					if (complBean.getcomponentType().trim().equals("audio")) {
 						imageLoader.DisplayImage(complBean.getContentpath().replace(".mp4", ".jpg"), newFileImg, R.drawable.audionotesnew);
+						GET_RESOURCES=AUDIO;
 					} else if (complBean.getcomponentType().trim().equals("video")) {
 						imageLoader.DisplayImage(complBean.getContentpath() + ".mp4",newFileImg, R.drawable.videonotesnew);
+						GET_RESOURCES=CAPTURE_VIDEO;
 					} else if (complBean.getcomponentType().trim().equals("photo")) {
 						imageLoader.DisplayImage(complBean.getContentpath(), newFileImg, R.drawable.photonotesnew);
+						GET_RESOURCES=FROM_GALERY;
 					} else if (complBean.getcomponentType().trim().equalsIgnoreCase("document")) {
 						newFileImg.setBackgroundResource(R.drawable.attachfile);
+						GET_RESOURCES=DOCUMENT;
 					}
 				}
 			}
@@ -1462,6 +1466,8 @@ public class ComponentCreator extends Activity implements IMNotifier {
     private void saveFile() {
         try {
             onCreateFile=true;
+			Log.i("BBB","FILE currentResource   "+GET_RESOURCES);
+
             if (GET_RESOURCES == TEXT) {
 
 				if (edNotes.getText().toString().trim().length() != 0) {

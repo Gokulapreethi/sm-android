@@ -137,6 +137,7 @@ public class DuplicateExistingGroups extends Activity {
                                 members.length() - 1));
                         WebServiceReferences.webServiceClient.createGroup(groupBean, context);
                     }else {
+
                         Intent intent = new Intent(DuplicateExistingGroups.this,
                                 RoundingGroupActivity.class);
                         intent.putExtra("isEdit", true);

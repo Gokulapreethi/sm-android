@@ -13,20 +13,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.cg.DB.DBAccess;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.snazmed.R;
-import com.google.android.gms.wearable.internal.ChannelSendFileResponse;
-import com.group.AddGroupMembers;
 import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
 import com.util.SingleInstance;
-
 import org.lib.PatientDetailsBean;
-import org.lib.model.GroupBean;
-
-import java.lang.annotation.ElementType;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

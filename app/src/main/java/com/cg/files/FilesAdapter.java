@@ -456,6 +456,23 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
         notifyDataSetChanged();
 
     }
+    public void Typefilter(String charText) {
+        // TODO Auto-generated method stub
+        charText = charText.toLowerCase(Locale.getDefault());
+        filesFragment.filesList.clear();
+        if (charText.length() == 0) {
+            fileList.addAll(filesFragment.tempFilesList);
+        } else {
+            for (CompleteListBean storedData : filesFragment.tempFilesList) {
+                if (storedData.getcomponentType()
+                        .toLowerCase(Locale.getDefault()).startsWith(charText)) {
+                    fileList.add(storedData);
+                }
+            }
+        }
+        notifyDataSetChanged();
+
+    }
 
     public void Memeorycontrol(String Type) {
         // TODO Auto-generated method stub

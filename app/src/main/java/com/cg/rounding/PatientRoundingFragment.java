@@ -371,15 +371,15 @@ public class PatientRoundingFragment extends Fragment {
                 tv_members = (TextView) _rootView.findViewById(R.id.tv_members);
                 comments_img = (ImageView) _rootView.findViewById(R.id.comments_img);
                 members_img = (ImageView) _rootView.findViewById(R.id.members_img);
-
                 patientDetails();
-
+                edit.setVisibility(View.VISIBLE);
                 patientid = pBean.getPatientid();
                 rounding.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         patientDetails();
                         setDefault();
+                        edit.setVisibility(View.VISIBLE);
                         rounding_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_patients_white));
                         tv_rounding.setTextColor(getResources().getColor(R.color.white));
                         view_rounding.setVisibility(View.VISIBLE);
@@ -390,6 +390,7 @@ public class PatientRoundingFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         setDefault();
+                        edit.setVisibility(View.GONE);
                         task_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_tasks_white));
                         tv_task.setTextColor(getResources().getColor(R.color.white));
                         view_task.setVisibility(View.VISIBLE);
@@ -401,6 +402,7 @@ public class PatientRoundingFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         setDefault();
+                        edit.setVisibility(View.GONE);
                         comments_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_comments_white));
                         tv_comments.setTextColor(getResources().getColor(R.color.white));
                         view_comments.setVisibility(View.VISIBLE);
@@ -411,6 +413,7 @@ public class PatientRoundingFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         setDefault();
+                        edit.setVisibility(View.GONE);
                         members_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_members_white));
                         tv_members.setTextColor(getResources().getColor(R.color.white));
                         view_members.setVisibility(View.VISIBLE);
@@ -2083,15 +2086,18 @@ public class PatientRoundingFragment extends Fragment {
                     Bundle bundle = data.getExtras();
                     ArrayList<UserBean> list = (ArrayList<UserBean>) bundle
                             .get("list");
-                    String addedMembers = new String();
+                    String addedMembers = "";
                     for (UserBean temp : list) {
                         if(temp.getBuddyName()!=null)
-                        addedMembers = addedMembers + "," + temp.getBuddyName();
+                            if(addedMembers!=null && addedMembers.length()>0)
+                                addedMembers = addedMembers +","+ temp.getBuddyName();
+                        else
+                                addedMembers=temp.getBuddyName();
                     }
-                    Log.i("ppp", "***assign Members patient--------->"+addedMembers);
+                    Log.i("ppp", "***assign Members patient--------->"+pBean.getAssignedmembers());
 
-                    if (pBean.getAssignedmembers() != null)
-                        pBean.setAssignedmembers(pBean.getAssignedmembers() + "," + addedMembers);
+                    if (pBean.getAssignedmembers()!= null && pBean.getAssignedmembers().length()>0)
+                        pBean.setAssignedmembers(pBean.getAssignedmembers()+"," + addedMembers);
                     else
                         pBean.setAssignedmembers(addedMembers);
                     WebServiceReferences.webServiceClient.SetPatientRecord(pBean, mainContext);

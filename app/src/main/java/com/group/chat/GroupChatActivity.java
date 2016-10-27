@@ -10171,8 +10171,9 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 Log.i("xxx", "%%%%%%%% today  " + date1);
                 if (date2.compareTo(date1) > 0) {
                     Log.i("xxx", "%%%%%%%% bean date upcoming " + date2);
-                    long hour = Integer.parseInt(bean.getDuetime());
-                    Log.i("xxxx", "hours upcoming " + hour);
+                    String[] split = bean.getCrtDuetime().split(" ");
+                    long hour = Integer.parseInt(split[0]);
+                    Log.i("xxx", "hours upcoming " + hour);
                     if (hour != 0 && hour <= 12 && hour > 0) {
                         newtoday.add(bean);
                         bean.setHeadercode("2");
@@ -10187,8 +10188,6 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     overdue.add(bean);
                 } else if (date2.compareTo(date1) == 0) {
                     Log.i("xxx", "%%%%%%%% bean date today " + date2);
-                    long hour = Integer.parseInt(bean.getDuetime());
-                    Log.i("xxxx", "hours today " + hour);
                     newtoday.add(bean);
                     bean.setHeadercode("2");
                 }
@@ -10212,25 +10211,26 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
     }
 
-    private static TaskDetailsBean setDate(TaskDetailsBean bean) {
+    private static TaskDetailsBean setDate(TaskDetailsBean bean) throws ParseException {
         if (bean.getDuedate() != null) {
             bean.setCrtDuetime(bean.getDuetime());
             Log.i("sss", "Due date");
             long resultDay = 0;
             long resultHours = 0;
+            long resultMinutes=0;
             String Duedate = bean.getDuedate();
-            String DueTime = bean.getDuetime();
+            String DueTime = bean.getCrtDuetime();
             String DateTime;
-            if (DueTime != null && !DueTime.toString().equalsIgnoreCase(("0")) )
+            if (DueTime != null)
                 DateTime = Duedate + " " + DueTime;
             else
                 DateTime = Duedate + " " + "00:00";
             Log.i("ppp", "DateTime :======> " + DateTime);
             Log.i("ppp", "DateTime :======> " + DueTime);
 
-            DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm");
+            DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy h:mm aa");
             Date date = new Date();
-            SimpleDateFormat myFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm");
+            SimpleDateFormat myFormat = new SimpleDateFormat("MM-dd-yyyy h:mm aa");
             String inputString1 = DateTime;
             Log.i("sss", "From Date1 : " + inputString1);
             String inputString2 = dateFormat.format(date);
@@ -10239,16 +10239,9 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             Date date2 = null;
             long diff;
             try {
-
                 date1 = myFormat.parse(inputString1);
                 date2 = myFormat.parse(inputString2);
                 diff = date1.getTime() - date2.getTime();
-                Date newDate = new Date(date1.getTime() + TimeUnit.HOURS.toMillis(2)); // Adds 2 hours
-                Log.i("sss", "Date1 **************=======>" + date1.getTime());
-                Log.i("sss", "Date 2**************=======>" + date2.getTime());
-                String inputString3 = dateFormat.format(newDate);
-                Log.i("sss", "newDate format**************=======>" + inputString3);
-
                 Log.i("sss", "DIFF" + diff);
                 long diffSeconds = diff / 1000 % 60;
                 long diffMinutes = diff / (60 * 1000) % 60;
@@ -10261,7 +10254,17 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 Log.i("sss", "Total Days : " + diffDays + " Day " + diffHours + " Hours");
                 resultDay = diffDays;
                 resultHours = diffHours;
-                bean.setDuetime(Integer.toString((int) resultHours));
+                resultMinutes=diffMinutes;
+                if (diffHours <= 0 && diffMinutes<=0)
+                    bean.setCrtDuetime("0"+" "+"0");
+                else if(diffHours>0 && diffMinutes>0)
+                    bean.setCrtDuetime(Integer.toString((int) resultHours)+" "+Integer.toString((int) resultMinutes));
+                else if(diffHours >0 && diffMinutes<=0)
+                    bean.setCrtDuetime(Integer.toString((int) resultHours)+" "+"0");
+                else if(diffHours <=0 && diffMinutes>0)
+                    bean.setCrtDuetime("0"+" "+Integer.toString((int) resultMinutes));
+
+//                bean.setDuetime(Integer.toString((int) resultHours));
 
                 Log.i("xxxx", "hours adapter" + resultHours);
             } catch (ParseException e) {
@@ -10273,7 +10276,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 if (resultHours < 0)
                     bean.setDuedate(Duedate);
                 else
-                    bean.setDuetime(resultHours + "");
+                    bean.setCrtDuetime(resultHours +" "+resultMinutes);
             }
         }
         return bean;
@@ -10499,15 +10502,16 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 int questionsCount;
                 if (groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
-                        (memberbean.getAdmin() != null && memberbean.getAdmin().equalsIgnoreCase("1")) ||
-                        (rolePatientManagementBean.getAdd() != null && rolePatientManagementBean.getAdd().equalsIgnoreCase("1"))) {
+                        (memberbean.getAdmin() != null && memberbean.getAdmin().equalsIgnoreCase("1")||
+                                (rolePatientManagementBean.getAdd() != null || rolePatientManagementBean.getAdd().equalsIgnoreCase("0")))) {
                     if (patientType.equalsIgnoreCase("mypatient"))
                         questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where groupid='"
                                 + groupId + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser + "%'");
                     else
                         questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where groupid='" + groupId + "' and assignedmembers=''");
                     Log.i("BBB","entry count of mypatient and others**********"+questionsCount);
-                    if (questionsCount > 0 ) {
+                    if (questionsCount > 0 ||
+                            (rolePatientManagementBean.getAdd() != null && rolePatientManagementBean.getAdd().equalsIgnoreCase("1"))) {
                         Intent intent = new Intent(context, AssignPatientActivity.class);
                         intent.putExtra("groupid", groupId);
                         intent.putExtra("groupname", groupBean.getGroupName());

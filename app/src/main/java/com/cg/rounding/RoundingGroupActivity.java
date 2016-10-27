@@ -897,8 +897,8 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
     private void modifyGroupWebService() {
         try {
             if (groupBean != null) {
-                if(groupid!=null) groupBean.setGroupId(groupid);
-                if(isduplicate)
+                if (groupid != null) groupBean.setGroupId(groupid);
+                if (isduplicate)
                     groupBean.setGroupId("");
                 groupBean.setGroupStatus("1");
                 if (membersList.size() != 0) {
@@ -919,7 +919,6 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                             Log.d("Test", "GroupMembersDelete@@@ "
                                     + deleteMembers + " Length### "
                                     + deleteMembers.length());
-
                         }
                     }
                     if (addMembers.length() > 0)
@@ -928,7 +927,26 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                     if (deleteMembers.length() > 0)
                         groupBean.setDeleteGroupMembers(deleteMembers
                                 .substring(0, deleteMembers.length() - 1));
-                }else{
+                } else if (membersAcceptedList.size() != 0 && isduplicate) {
+                    String delete_Member = "";
+                    String addExistingMembers = "";
+                    for (UserBean userBean : membersAcceptedList) {
+                        if (!userBean.getBuddyName().equalsIgnoreCase(
+                                CallDispatcher.LoginUser)) {
+                                addExistingMembers = addExistingMembers
+                                        + userBean.getBuddyName() + ",";
+                                Log.d("Test", "GroupMembersAdd@@@ "
+                                        + addExistingMembers + " Length### "
+                                        + addExistingMembers.length());
+                        }
+                    }
+                    if (addExistingMembers.length() > 0)
+                        groupBean.setGroupMembers(addExistingMembers.substring(0,
+                                addExistingMembers.length() - 1));
+                    if (delete_Member.length() > 0)
+                        groupBean.setDeleteGroupMembers(delete_Member
+                                .substring(0, delete_Member.length() - 1));
+                } else {
                     groupBean.setGroupMembers("");
                     groupBean.setDeleteGroupMembers("");
                 }
@@ -940,7 +958,8 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
             e.printStackTrace();
         }
     }
-    public static  Vector<GroupBean> RoundingList ;
+
+    public static Vector<GroupBean> RoundingList;
 
 
     public  static Vector<GroupBean> getallRoundingGroups()
@@ -1145,8 +1164,9 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                             holder.rights.setVisibility(View.GONE);
                         holder.occupation.setTextColor(getResources().getColor(R.color.snazlgray));
                     }
-                    if(bib.getOccupation()!=null)
-                        holder.occupation.setText(bib.getOccupation());
+                    ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(bib.getBuddyName());
+                    if(pbean!=null)
+                        holder.occupation.setText(pbean.getProfession());
                     if(bib.getRole()!=null){
                         holder.role.setText(bib.getRole());
                     }else

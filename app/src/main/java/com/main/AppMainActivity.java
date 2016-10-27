@@ -58,6 +58,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -8038,11 +8039,15 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				KeyguardManager myKM = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
 				if (strAction.equals(Intent.ACTION_SCREEN_OFF) || strAction.equals(Intent.ACTION_SCREEN_ON))
 				{
-					if( myKM.inKeyguardRestrictedInputMode())
-					{
-						if(count==0 && !openPinActivity) {
-							Intent i = new Intent(AppMainActivity.this, PinSecurity.class);
-							startActivity(i);
+					if( myKM.inKeyguardRestrictedInputMode()) {
+						if (count==0 && !openPinActivity) {
+							if (Build.VERSION.SDK_INT > 20 && SingleInstance.mainContext.isTouchIdEnabled) {
+								Intent i = new Intent(AppMainActivity.this, MainActivity.class);
+								startActivity(i);
+							} else {
+								Intent i = new Intent(AppMainActivity.this, PinSecurity.class);
+								startActivity(i);
+							}
 							count++;
 						}
 					}
@@ -8343,6 +8348,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	}
 	public void notifyGetPatientRecords(Object obj){
 		Log.i("reopen","notifyGetPatientRecords");
+		GroupChatActivity groupchat =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
 		if(obj instanceof Vector){
 			GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
 			if(groupChatActivity != null) {
@@ -9152,6 +9158,8 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						}
 					}
 	}
+
+
 
 	/*
 	Video Recording

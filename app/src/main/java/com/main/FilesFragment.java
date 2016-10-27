@@ -489,7 +489,7 @@ public class FilesFragment extends Fragment implements OnClickListener {
 
 						String text = ed_search.getText().toString()
 								.toLowerCase(Locale.getDefault());
-						filesAdapter.filter(text);
+//						filesAdapter.filter(text);
 						if (filesAdapter.getCount() == 0) {
 							ShowToast(SingleInstance.mainContext.getResources().getString(R.string.no_result_found));
 						}
@@ -497,18 +497,22 @@ public class FilesFragment extends Fragment implements OnClickListener {
 							rl_file.setVisibility(View.VISIBLE);
 							tv_file.setText("Audio Files");
 							file_img.setBackgroundResource(R.drawable.audio_p);
+							filesAdapter.Typefilter(text);
 						} else if (text.contains("p")) {
 							rl_file.setVisibility(View.VISIBLE);
 							tv_file.setText("Photo Files");
 							file_img.setBackgroundResource(R.drawable.photo_p);
+							filesAdapter.Typefilter(text);
 						} else if (text.contains("v")) {
 							rl_file.setVisibility(View.VISIBLE);
 							tv_file.setText("Video Files");
 							file_img.setBackgroundResource(R.drawable.video_p);
+							filesAdapter.Typefilter(text);
 						} else {
 							rl_file.setVisibility(View.VISIBLE);
 							tv_file.setText("Other Files");
 							file_img.setBackgroundResource(R.drawable.other_p);
+							filesAdapter.Typefilter(text);
 						}
 						if (text.length() == 0)
 							rl_file.setVisibility(View.GONE);

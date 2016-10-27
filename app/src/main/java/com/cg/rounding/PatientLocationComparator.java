@@ -14,6 +14,16 @@ public class PatientLocationComparator implements Comparator<PatientDetailsBean>
                        PatientDetailsBean newBean) {
         // TODO Auto-generated method stub
         Log.i("order","locaation Comparator******");
-        return new BigDecimal(oldBean.getFloor().toString()).compareTo(new BigDecimal(newBean.getFloor().toString()));
+        try
+        {
+            int i1 = Integer.parseInt(oldBean.getFloor());
+            int i2 = Integer.parseInt(newBean.getFloor());
+            return i1 - i2;
+        }
+        catch (NumberFormatException e)
+        {
+            return (oldBean.getFloor().toString().compareTo(newBean.getFloor().toString()));
+        }
     }
+
 }
