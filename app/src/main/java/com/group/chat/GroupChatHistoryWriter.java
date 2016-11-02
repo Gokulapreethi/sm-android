@@ -1,15 +1,5 @@
 package com.group.chat;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import org.lib.model.BuddyInformationBean;
-import org.lib.model.GroupBean;
-
 import android.util.Log;
 
 import com.bean.GroupChatBean;
@@ -18,10 +8,18 @@ import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.SipNotificationListener;
 import com.cg.hostedconf.AppReference;
 import com.main.ContactsFragment;
-import com.main.ExchangesFragment;
 import com.util.Queue;
 import com.util.SingleInstance;
-import com.util.Utils;
+
+import org.lib.model.BuddyInformationBean;
+import org.lib.model.GroupBean;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class GroupChatHistoryWriter extends Thread {
 	private boolean isRunning;
@@ -254,11 +252,11 @@ public class GroupChatHistoryWriter extends Thread {
 								}
 							}
 						}
-						ExchangesFragment exchanges = ExchangesFragment
-								.newInstance(SipNotificationListener
-										.getCurrentContext());
-						if (exchanges != null)
-							exchanges.notifyGroupList();
+//						ExchangesFragment exchanges = ExchangesFragment
+//								.newInstance(SipNotificationListener
+//										.getCurrentContext());
+//						if (exchanges != null)
+//							exchanges.notifyGroupList();
 
 						SingleInstance.mainContext.notifyMessageCount();
 

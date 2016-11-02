@@ -1638,12 +1638,12 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				}
 			}
 		}
-		ExchangesFragment exchanges = ExchangesFragment
-				.newInstance(getApplicationContext());
-		if (exchanges != null) {
-			exchanges.notifyUI();
-
-		}
+//		ExchangesFragment exchanges = ExchangesFragment
+//				.newInstance(getApplicationContext());
+//		if (exchanges != null) {
+//			exchanges.notifyUI();
+//
+//		}
 	}
 
 	private void alertDeadLineMessage(GroupChatBean gcBean, GroupBean gBean) {
@@ -8245,7 +8245,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
     {
         final GroupChatActivity groupChatActivity = (GroupChatActivity) SingleInstance.contextTable
                 .get("groupchat");
-        if(groupChatActivity.chatList!=null) {
+        if(groupChatActivity != null && groupChatActivity.chatList!=null) {
             for (int i = 0; i < groupChatActivity.chatList.size(); i++) {
                 GroupChatBean gcBean1 = groupChatActivity.chatList
                         .get(i);
