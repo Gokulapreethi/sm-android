@@ -114,6 +114,10 @@ public class AppReference {
 
 	public static boolean fileOpen=false;
 
+	public static boolean chatRecentSync=false;
+
+	public static String chatRecentSyncBuddyOrGroupid=null;
+
 	public static class imageOrientation extends AsyncTask<String, Void, String> {
 		@Override
 		protected String doInBackground(String... urls) {

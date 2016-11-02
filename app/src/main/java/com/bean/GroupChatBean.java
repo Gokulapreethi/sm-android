@@ -42,6 +42,9 @@ public class GroupChatBean implements Serializable, Cloneable {
 	private String dateandtime;
 	private String serverdateandtime;
 
+	private String unreadchat;
+	private String callcount;
+
 
 	public String getDateandtime() {
 		return dateandtime;
@@ -528,4 +531,21 @@ public class GroupChatBean implements Serializable, Cloneable {
 	public void setServerdateandtime(String serverdateandtime) {
 		this.serverdateandtime = serverdateandtime;
 	}
+
+	public String getUnreadchat() {
+		return unreadchat;
+	}
+
+	public void setUnreadchat(String unreadchat) {
+		this.unreadchat = unreadchat;
+	}
+
+	public String getCallcount() {
+		return callcount;
+	}
+
+	public void setCallcount(String callcount) {
+		this.callcount = callcount;
+	}
+
 }

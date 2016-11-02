@@ -82,6 +82,7 @@ import com.bean.FormFieldBean;
 import com.bean.GroupChatBean;
 import com.bean.GroupChatPermissionBean;
 import com.bean.IndividualPermission;
+import com.bean.NotifyListBean;
 import com.bean.ProfileBean;
 import com.bean.SpecialMessageBean;
 import com.bean.UploadDownloadStatusBean;
@@ -192,6 +193,7 @@ import org.lib.model.RoleEditRndFormBean;
 import org.lib.model.RolePatientManagementBean;
 import org.lib.model.RoleTaskMgtBean;
 import org.lib.model.ShareReminder;
+import org.lib.model.SignalingBean;
 import org.lib.model.TaskDetailsBean;
 import org.lib.model.UdpMessageBean;
 import org.lib.model.WebServiceBean;
@@ -1142,6 +1144,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				final GroupChatBean groupChatBean = (GroupChatBean) responseObject;
 
 				if (groupChatBean.getType().equals("100")) {
+
+					if(groupChatBean.getMimetype()!=null && (!groupChatBean.getMimetype().equalsIgnoreCase("ac") &&
+							!groupChatBean.getMimetype().equalsIgnoreCase("vc"))) {
 //					if (groupChatBean.getSenttime() == null
 //							|| groupChatBean.getSenttime().length() == 0) {
 						groupChatBean.setSenttime(getCurrentDateandTime());
@@ -1180,12 +1185,13 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						 * callDisp.getFtpNotifier().addTasktoExecutor(bean);
 						 */
 
-					}
-					if(SingleInstance.instanceTable.containsKey("contactspage")){
-						if(ContactsFragment.contactsFragment.chatIndivijaul_recent) {
-							ContactsFragment.contactsFragment.RefereceRecentlist();
-						}else if(ContactsFragment.contactsFragment.chatgroup_recent){
-							ContactsFragment.contactsFragment.RefereceGroupRecentlist();
+						}
+						if (SingleInstance.instanceTable.containsKey("contactspage")) {
+							if (ContactsFragment.contactsFragment.chatIndivijaul_recent) {
+								ContactsFragment.contactsFragment.RefereceRecentlist();
+							} else if (ContactsFragment.contactsFragment.chatgroup_recent) {
+								ContactsFragment.contactsFragment.RefereceGroupRecentlist();
+							}
 						}
 					}
 				} else {
@@ -9054,20 +9060,192 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				if(reult.get(i) instanceof GroupChatBean) {
 					GroupChatBean groupChatBean = (GroupChatBean) reult.get(i);
 					Log.i("entering","groupchatbean----->");
-						if (groupChatBean.getMimetype().equals("text")
-								|| groupChatBean.getMimetype().equals("location")
-								|| groupChatBean.getMimetype().equals("link")) {
-							Log.i("entering", "text----->");
-							processGroupChatChanges(groupChatBean);
+					if(groupChatBean.getUnreadchat()!=null && groupChatBean.getCallcount()!=null){
+						Log.i("recentSync","Appmain notifySyncChat UnreadChat And UnreadCallCount");
+//						if(groupChatBean.getSessionid()!=null && groupChatBean.getSessionid().contains("@")){
+							Log.i("recentSync","Appmain notifySyncChat Indivijual Chat");
+//							if(!DBAccess.getdbHeler().ChatRecentSortdateAvailableOrNot(groupChatBean.getSenttime(),false)) {
+								Log.i("recentSync","Appmain notifySyncChat Indivijual Chat Sortdate Not Availabel In Db");
+//
+									Log.i("recentSync","Appmain notifySyncChat Indivijual Chat Ac or not");
+									NotifyListBean notifyListBean = new NotifyListBean();
+									notifyListBean.setFrom(groupChatBean.getFrom());
+									notifyListBean.setTo(groupChatBean.getTo());
+									notifyListBean.setOwner(CallDispatcher.LoginUser);
+									notifyListBean.setType(groupChatBean.getMimetype());
+									if (groupChatBean.getMessage() != null)
+										notifyListBean.setContent(groupChatBean.getMessage());
+									notifyListBean.setSortdate(groupChatBean.getSenttime());
+							if(groupChatBean.getSessionid()!=null && groupChatBean.getSessionid().contains("@")) {
+								notifyListBean.setFileid(groupChatBean.getFrom());
+							}else{
+								notifyListBean.setFileid(groupChatBean.getSessionid());
+							}
+									notifyListBean.setViewed(0);
+								if(groupChatBean.getMimetype()!=null && (groupChatBean.getMimetype().equalsIgnoreCase("ac") ||
+										groupChatBean.getMimetype().equalsIgnoreCase("vc"))) {
+									notifyListBean.setCategory("call");
+//									if(groupChatBean.getMimetype().equalsIgnoreCase("ac")){
+//										notifyListBean.setContent("AC");
+//									}else if(groupChatBean.getMimetype().equalsIgnoreCase("vc")){
+//										notifyListBean.setContent("VC");
+//									}
+									if(groupChatBean.getReminderTime().equalsIgnoreCase(CallDispatcher.LoginUser)){
+										notifyListBean.setContent("Call made");
+									}else if(!groupChatBean.getReminderTime().equalsIgnoreCase(CallDispatcher.LoginUser)){
+										if (groupChatBean.getComment() != null && groupChatBean.getComment().equalsIgnoreCase("callattended")) {
+											notifyListBean.setContent("Call received");
+										}else if (groupChatBean.getComment() != null && !groupChatBean.getComment().equalsIgnoreCase("callattended")) {
+											notifyListBean.setContent("Call missed");
+										}
+
+									}
+								}else {
+									if(groupChatBean.getSessionid()!=null && groupChatBean.getSessionid().contains("@")) {
+										notifyListBean.setCategory("I");
+									}else{
+										notifyListBean.setCategory("G");
+									}
+								}
+									notifyListBean.setNotifttype("I");
+									Log.i("recentSync", "Appmain notifySyncChat UnreadChat-->" + groupChatBean.getUnreadchat());
+									Log.i("recentSync", "Appmain notifySyncChat UnreadCall-->" + groupChatBean.getCallcount());
+									notifyListBean.setUnreadchat(groupChatBean.getUnreadchat());
+									notifyListBean.setUnreadcallcount(groupChatBean.getCallcount());
+//								if(DBAccess.getdbHeler().ChatRecentUserIDAvailableOrNot(notifyListBean.getFileid())!=null){
+//									int totcount[]=DBAccess.getdbHeler().ChatRecentUserIDAvailableOrNot(notifyListBean.getFileid());
+//									if(groupChatBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)){
+//										notifyListBean.setUnreadchat("0");
+//										notifyListBean.setUnreadcallcount("0");
+//									}else {
+//										notifyListBean.setUnreadchat(groupChatBean.getUnreadchat());
+//										notifyListBean.setUnreadcallcount(groupChatBean.getCallcount());
+//									}
+//								}
+									ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(groupChatBean.getFrom());
+									if (pBean != null) {
+										notifyListBean.setProfilePic(pBean.getPhoto());
+										if(groupChatBean.getSessionid()!=null && groupChatBean.getSessionid().contains("@")) {
+											notifyListBean.setUsername(pBean.getFirstname() + " " + pBean.getLastname());
+										}
+									}
+							if(groupChatBean.getSessionid()!=null && !groupChatBean.getSessionid().contains("@")) {
+								if (DBAccess.getdbHeler().getGroupName(
+										"select * from grouplist where groupid='" + groupChatBean.getSessionid() + "'") != null) {
+									notifyListBean.setUsername(DBAccess.getdbHeler().getGroupName(
+											"select * from grouplist where groupid='" + groupChatBean.getSessionid() + "'"));
+								}
+							}
+								    notifyListBean.setServerdatetime(groupChatBean.getServerdateandtime());
+									DBAccess.getdbHeler().insertChatRecentList(notifyListBean, false);
+//								}
+//							}
+
+//						}else{
+//							Log.i("recentSync","Appmain notifySyncChat Group Chat");
+//							if(!DBAccess.getdbHeler().ChatRecentSortdateAvailableOrNot(groupChatBean.getSenttime(),true)) {
+//								Log.i("recentSync","Appmain notifySyncChat Group Chat Sortdate Not Availabel In Db");
+////								if(groupChatBean.getMimetype()!=null && (!groupChatBean.getMimetype().equalsIgnoreCase("ac") &&
+////										!groupChatBean.getMimetype().equalsIgnoreCase("vc"))) {
+//									Log.i("recentSync", "Appmain notifySyncChat Group Chat Ac or not");
+//									NotifyListBean notifyListBean = new NotifyListBean();
+//									notifyListBean.setFrom(groupChatBean.getFrom());
+//									notifyListBean.setTo(groupChatBean.getSessionid());
+//									notifyListBean.setOwner(CallDispatcher.LoginUser);
+//									notifyListBean.setType(groupChatBean.getMimetype());
+//									if (groupChatBean.getMessage() != null)
+//										notifyListBean.setContent(groupChatBean.getMessage());
+//									notifyListBean.setSortdate(groupChatBean.getSenttime());
+//									notifyListBean.setFileid(groupChatBean.getSessionid());
+//									notifyListBean.setViewed(0);
+//								if(groupChatBean.getMimetype()!=null && (groupChatBean.getMimetype().equalsIgnoreCase("ac") ||
+//										groupChatBean.getMimetype().equalsIgnoreCase("vc"))) {
+//									notifyListBean.setCategory("call");
+//									if(groupChatBean.getMimetype().equalsIgnoreCase("ac")){
+//										notifyListBean.setContent("AC");
+//									}else if(groupChatBean.getMimetype().equalsIgnoreCase("vc")){
+//										notifyListBean.setContent("VC");
+//									}
+//								}else {
+//									notifyListBean.setCategory("G");
+//								}
+//									notifyListBean.setNotifttype("I");
+//									notifyListBean.setUnreadchat(groupChatBean.getUnreadchat());
+//									notifyListBean.setUnreadcallcount(groupChatBean.getCallcount());
+//									ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(groupChatBean.getFrom());
+//									if (pBean != null) {
+//										notifyListBean.setProfilePic(pBean.getPhoto());
+//									}
+//									if (DBAccess.getdbHeler().getGroupName(
+//											"select * from grouplist where groupid='" + groupChatBean.getSessionid() + "'") != null) {
+//										notifyListBean.setUsername(DBAccess.getdbHeler().getGroupName(
+//												"select * from grouplist where groupid='" + groupChatBean.getSessionid() + "'"));
+//									}
+//								    notifyListBean.setServerdatetime(groupChatBean.getServerdateandtime());
+//									DBAccess.getdbHeler().insertChatRecentList(notifyListBean, true);
+////								}
+//							}
+//						}
+
+					}else {
+						if (groupChatBean.getMimetype() != null && (groupChatBean.getMimetype().equalsIgnoreCase("ac")
+								|| groupChatBean.getMimetype().equalsIgnoreCase("vc"))) {
+							Log.i("entering", "groupchatbean type ac vc----->");
+							SignalingBean signalingBean = new SignalingBean();
+							signalingBean.setHost(groupChatBean.getReminderTime());
+							signalingBean.setFrom(groupChatBean.getFrom());
+							signalingBean.setTo(groupChatBean.getTo());
+							if (groupChatBean.getMimetype().equalsIgnoreCase("ac")) {
+								signalingBean.setCallType("AC");
+							} else if (groupChatBean.getMimetype().equalsIgnoreCase("vc")) {
+								signalingBean.setCallType("VC");
+							}
+							signalingBean.setSessionid(groupChatBean.getParentId());
+							signalingBean.setEndTime(groupChatBean.getSenttime());
+							if (groupChatBean.getPrivateMembers().contains(",")) {
+								String names[] = groupChatBean.getPrivateMembers().split(",");
+								String temp = null;
+								for (int j = 0; j < names.length; j++) {
+									if (!names[j].equalsIgnoreCase(CallDispatcher.LoginUser)) {
+										if (temp == null) {
+											temp = names[j];
+										} else {
+											temp = temp + "," + names[j];
+										}
+									}
+								}
+								if (temp != null)
+									signalingBean.setParticipant_name(temp);
+							} else {
+								signalingBean.setParticipant_name(groupChatBean.getPrivateMembers());
+							}
+							signalingBean.setCallDuration(groupChatBean.getMessage());
+							signalingBean.setCallstatus(groupChatBean.getComment());
+							if (!groupChatBean.getSessionid().contains("@")) {
+								signalingBean.setChatid(groupChatBean.getSessionid());
+							}
+
+							DBAccess.getdbHeler().insertGroupCallChat(signalingBean);
+
+
 						} else {
-							groupChatBean.setStatus(0);
-							Log.i("entering", "status----->");
-							processGroupChatChanges(groupChatBean.clone());
-							String fileName = groupChatBean.getMediaName();
-							groupChatBean.setMediaName(Utils
-									.getFilePathString(groupChatBean.getMediaName()));
-							downloadGroupChatFile(groupChatBean, fileName);
+							Log.i("entering", "groupchatbean type ac vc else----->");
+							if (groupChatBean.getMimetype().equals("text")
+									|| groupChatBean.getMimetype().equals("location")
+									|| groupChatBean.getMimetype().equals("link")) {
+								Log.i("entering", "text----->");
+								processGroupChatChanges(groupChatBean);
+							} else {
+								groupChatBean.setStatus(0);
+								Log.i("entering", "status----->");
+								processGroupChatChanges(groupChatBean.clone());
+								String fileName = groupChatBean.getMediaName();
+								groupChatBean.setMediaName(Utils
+										.getFilePathString(groupChatBean.getMediaName()));
+								downloadGroupChatFile(groupChatBean, fileName);
+							}
 						}
+					}
 					}
 				else if(reult.get(i) instanceof ChatInfoBean) {
 					ChatInfoBean cbean = (ChatInfoBean) reult.get(i);
@@ -9102,6 +9280,31 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		}
 		if(groupChatActivity!=null){
 			groupChatActivity.CancelSwipeContainer();
+		}
+
+		if(AppReference.chatRecentSync && AppReference.chatRecentSyncBuddyOrGroupid!=null){
+			Log.i("recentSync","Appmain notifySyncChat AppReference.chatRecentSync true");
+			Log.i("recentSync","AppReference.chatRecentSyncBuddyOrGroupid--->"+AppReference.chatRecentSyncBuddyOrGroupid);
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if(SingleInstance.instanceTable.containsKey("contactspage")){
+						ContactsFragment contactsFragment=(ContactsFragment) SingleInstance.instanceTable.get("contactspage");
+						contactsFragment.cancelDialog();
+					}
+					AppReference.chatRecentSync=false;
+					Intent intent = new Intent(context, GroupChatActivity.class);
+					if(AppReference.chatRecentSyncBuddyOrGroupid.contains("@")){
+						intent.putExtra("isGroup", false);
+						intent.putExtra("buddy", AppReference.chatRecentSyncBuddyOrGroupid);
+					}else{
+						intent.putExtra("isGroup", true);
+						intent.putExtra("groupid", AppReference.chatRecentSyncBuddyOrGroupid);
+					}
+					context.startActivity(intent);
+				}
+			},2000);
+
 		}
 	}
 	public void notifyFileUploadResponse(ChatFTPBean chatFTPBean) {
@@ -9340,4 +9543,211 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	}
 		*/
 
+
+	public void CallEntryToServer(SignalingBean signalingBean){
+		Log.i("recententry","CallEntryToServer Method");
+		if(signalingBean!=null && signalingBean.getParticipant_name()!=null) {
+			Log.i("recententry","CallEntryToServer Method participant availbe");
+			String names =signalingBean.getHost()+","+signalingBean.getParticipant_name();
+            String tem_names[]=names.split(",");
+			for(int i=0;i<tem_names.length;i++) {
+				Log.i("recententry","CallEntryToServer Method tem_names[i]-->"+tem_names[i]);
+				if(!tem_names[i].equalsIgnoreCase(CallDispatcher.LoginUser)) {
+					GroupChatBean gcBean = new GroupChatBean();
+					gcBean.setFrom(CallDispatcher.LoginUser);
+					gcBean.setType("100");
+					gcBean.setMimetype(signalingBean.getCallType());
+//                gcBean.setUnreadStatus(1);
+					gcBean.setMessage(signalingBean.getCallDuration());
+					gcBean.setSignalid(Utility.getSessionID());
+					gcBean.setSenttime(getCurrentDateandTime());
+					gcBean.setSenttimez("GMT");
+					gcBean.setDateandtime(getCurrentDateandTime());
+
+					if (signalingBean.getChatid() != null) {
+						if (signalingBean.getChatid().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+							if (!signalingBean.getTo().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+								gcBean.setGroupId(signalingBean.getTo());
+							} else if (!signalingBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+								gcBean.setGroupId(signalingBean.getFrom());
+							}
+						} else if (signalingBean.getChatid().contains(CallDispatcher.LoginUser)) {
+							gcBean.setGroupId(signalingBean.getChatid());
+						} else {
+
+							gcBean.setGroupId(signalingBean.getChatid());
+						}
+					} else {
+						if (!signalingBean.getTo().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+							gcBean.setGroupId(signalingBean.getTo());
+						} else if (!signalingBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+							gcBean.setGroupId(signalingBean.getFrom());
+						}
+					}
+
+					gcBean.setTo(tem_names[i]);
+//					if (!signalingBean.getTo().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+//						gcBean.setTo(signalingBean.getTo());
+//					} else if (!signalingBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+//						gcBean.setTo(signalingBean.getFrom());
+//					}
+
+//                    gcBean.setSessionid(CallDispatcher.LoginUser + buddy);
+		TreeSet<String> treeSet=new TreeSet<>();
+		treeSet.add(CallDispatcher.LoginUser);
+		treeSet.add(gcBean.getGroupId());String chatnames=null;
+		for(String s:treeSet){
+			Log.i("name","name-->"+s);
+			if(chatnames==null){
+				chatnames=s;
+			}else{
+				chatnames=chatnames+s;
+			}}
+		Log.i("name","chatnames-->"+chatnames);
+
+
+					if(gcBean.getGroupId().contains("@")) {
+						gcBean.setCategory("I");
+						if(chatnames!=null)
+						gcBean.setSessionid(chatnames);
+					}else{
+						gcBean.setCategory("G");
+						gcBean.setSessionid(gcBean.getGroupId());
+					}
+					gcBean.setSubCategory(CallDispatcher.LoginUser);
+					gcBean.setPrivateMembers(CallDispatcher.LoginUser+","+signalingBean.getParticipant_name());
+					gcBean.setReminderTime(signalingBean.getHost());
+					gcBean.setParentId(signalingBean.getSessionid());
+					gcBean.setComment(signalingBean.getCallstatus());
+
+
+					if(AppReference.mainContext!=null){
+						if(!DBAccess.getdbHeler().ChatRecentCallSessionidAvailableOrNot(signalingBean.getSessionid())) {
+							Log.i("recententry","CallEntryToServer SessionIdNotAvailable");
+							GroupChatBean groupChatBean = gcBean.clone();
+							groupChatBean.setFrom(signalingBean.getHost());
+							groupChatBean.setTo(groupChatBean.getGroupId());
+							groupChatBean.setSessionid(signalingBean.getSessionid());
+							if(signalingBean.getHost().equalsIgnoreCase(CallDispatcher.LoginUser)){
+								groupChatBean.setMessage("Call made");
+							}else if(signalingBean.getCallstatus().equalsIgnoreCase("callattended")){
+								groupChatBean.setMessage("Call received");
+							}else {
+								groupChatBean.setMessage("Call missed");
+							}
+							AppReference.mainContext.ChatRecentEntry(groupChatBean,false);
+						}
+					}
+
+					SignalingBean sb = new SignalingBean();
+					sb.setSignalid(gcBean.getSignalid());
+					sb.setSessionid(gcBean.getSessionid());
+					sb.setTo(gcBean.getTo());
+					sb.setType(gcBean.getType());
+					sb.setTolocalip(null);
+					sb.setTopublicip(null);
+					sb.setRequestSource(gcBean);
+
+					Log.d("chatentry", "Going to send : " + gcBean.getTo());
+
+					AppMainActivity.commEngine.makeIM(sb);
+
+
+				}
+
+			}
+
+
+
+		}
+	}
+
+
+	public void ChatRecentEntry(GroupChatBean groupChatBean,boolean chatEntry){
+		NotifyListBean notifyListBean = new NotifyListBean();
+		notifyListBean.setFrom(groupChatBean.getFrom());
+		notifyListBean.setTo(groupChatBean.getTo());
+		notifyListBean.setOwner(CallDispatcher.LoginUser);
+		notifyListBean.setType(groupChatBean.getMimetype());
+		Log.i("recententry","message-->"+groupChatBean.getMessage());
+		if (groupChatBean.getMessage() != null)
+			notifyListBean.setContent(groupChatBean.getMessage());
+		notifyListBean.setSortdate(groupChatBean.getSenttime());
+		notifyListBean.setFileid(groupChatBean.getGroupId());
+//		notifyListBean.setViewed(0);
+		if(groupChatBean.getMimetype()!=null && (groupChatBean.getMimetype().equalsIgnoreCase("ac") ||
+				groupChatBean.getMimetype().equalsIgnoreCase("vc"))) {
+			notifyListBean.setCategory("call");
+			notifyListBean.setCallsessionid(groupChatBean.getSessionid());
+//			if(groupChatBean.getMimetype().equalsIgnoreCase("ac")){
+//				notifyListBean.setContent("AC");
+//			}else if(groupChatBean.getMimetype().equalsIgnoreCase("vc")){
+//				notifyListBean.setContent("VC");
+//			}
+		}else {
+		notifyListBean.setCategory(groupChatBean.getCategory());
+		}
+		notifyListBean.setNotifttype("I");
+		Log.i("recententry", "DBAccess.getdbHeler().ChatRecentUserIDAvailableOrNot" + DBAccess.getdbHeler().ChatRecentUserIDAvailableOrNot(notifyListBean.getFileid()));
+		if(DBAccess.getdbHeler().ChatRecentUserIDAvailableOrNot(notifyListBean.getFileid())!=null){
+			int totcount[]=DBAccess.getdbHeler().ChatRecentUserIDAvailableOrNot(notifyListBean.getFileid());
+			if(groupChatBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)){
+				notifyListBean.setUnreadchat("0");
+				notifyListBean.setUnreadcallcount("0");
+			}else {
+				if (SingleInstance.contextTable.containsKey("groupchat")) {
+					GroupChatActivity chatActivity=(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
+					if(chatActivity.isGroup || chatActivity.isRounding){
+						if(chatActivity.groupBean!=null && chatActivity.groupBean.getGroupId().equalsIgnoreCase(groupChatBean.getGroupId())){
+							notifyListBean.setUnreadchat("0");
+							notifyListBean.setUnreadcallcount("0");
+						}else{
+							if(chatEntry) {
+								notifyListBean.setUnreadchat(String.valueOf(totcount[0] + 1));
+								notifyListBean.setUnreadcallcount(String.valueOf(totcount[1]));
+							}else{
+								notifyListBean.setUnreadchat(String.valueOf(totcount[0]));
+								notifyListBean.setUnreadcallcount(String.valueOf(totcount[1]+1));
+							}
+						}
+
+					}else if(chatActivity.buddy!=null && chatActivity.buddy.equalsIgnoreCase(groupChatBean.getGroupId())){
+						notifyListBean.setUnreadchat("0");
+						notifyListBean.setUnreadcallcount("0");
+					}else{
+						if(chatEntry) {
+							notifyListBean.setUnreadchat(String.valueOf(totcount[0] + 1));
+							notifyListBean.setUnreadcallcount(String.valueOf(totcount[1]));
+						}else{
+							notifyListBean.setUnreadchat(String.valueOf(totcount[0]));
+							notifyListBean.setUnreadcallcount(String.valueOf(totcount[1]+1));
+						}
+					}
+				}else {
+					if(chatEntry) {
+						notifyListBean.setUnreadchat(String.valueOf(totcount[0] + 1));
+						notifyListBean.setUnreadcallcount(String.valueOf(totcount[1]));
+					}else{
+						notifyListBean.setUnreadchat(String.valueOf(totcount[0]));
+						notifyListBean.setUnreadcallcount(String.valueOf(totcount[1]+1));
+					}
+				}
+			}
+		}
+
+		ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(groupChatBean.getGroupId());
+		if (pBean != null) {
+			notifyListBean.setProfilePic(pBean.getPhoto());
+			notifyListBean.setUsername(pBean.getFirstname() + " " + pBean.getLastname());
+		}
+		if(notifyListBean.getFileid()!=null && !notifyListBean.getFileid().contains("@")){
+			if (DBAccess.getdbHeler().getGroupName(
+					"select * from grouplist where groupid='" + notifyListBean.getFileid() + "'") != null) {
+				notifyListBean.setUsername(DBAccess.getdbHeler().getGroupName(
+						"select * from grouplist where groupid='" + notifyListBean.getFileid() + "'"));
+			}
+		}
+//		notifyListBean.setServerdatetime(groupChatBean.getServerdateandtime());
+		DBAccess.getdbHeler().insertChatRecentList(notifyListBean, false);
+	}
 }

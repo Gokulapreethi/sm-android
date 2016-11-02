@@ -18,6 +18,12 @@ public class NotifyListBean{
     private String username="";
     private String category = "";
 
+    private String unreadchat;
+    private String unreadcallcount;
+    private String serverdatetime;
+
+    private String callsessionid;
+
     public String getFilecount() {
         return filecount;
     }
@@ -193,5 +199,37 @@ public class NotifyListBean{
                 "==" + notifttype+
                 "==" + viewed+
                 "==" + fileid;
+    }
+
+    public String getUnreadchat() {
+        return unreadchat;
+    }
+
+    public void setUnreadchat(String unreadchat) {
+        this.unreadchat = unreadchat;
+    }
+
+    public String getUnreadcallcount() {
+        return unreadcallcount;
+    }
+
+    public void setUnreadcallcount(String unreadcallcount) {
+        this.unreadcallcount = unreadcallcount;
+    }
+
+    public String getServerdatetime() {
+        return serverdatetime;
+    }
+
+    public void setServerdatetime(String serverdatetime) {
+        this.serverdatetime = serverdatetime;
+    }
+
+    public String getCallsessionid() {
+        return callsessionid;
+    }
+
+    public void setCallsessionid(String callsessionid) {
+        this.callsessionid = callsessionid;
     }
 }

@@ -8150,6 +8150,13 @@ public class XmlParser {
 					cBean.setServerdateandtime(nodeMap.getNamedItem("dateandtime").getNodeValue());
 
 				}
+
+				if(nodeMap.getNamedItem("unreadchat")!=null) {
+					cBean.setUnreadchat(nodeMap.getNamedItem("unreadchat").getNodeValue());
+				}
+				if(nodeMap.getNamedItem("callcount")!=null) {
+					cBean.setCallcount(nodeMap.getNamedItem("callcount").getNodeValue());
+				}
 //				cBean.setDateandtime(cBean.getSenttime());
 				if (nodeMap.getNamedItem("sentstatustime") != null)
 					cBean.setSentstatustime(nodeMap.getNamedItem("sentstatustime").getNodeValue());

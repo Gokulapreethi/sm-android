@@ -134,6 +134,13 @@ public class GroupChatHistoryWriter extends Thread {
 						int row = DBAccess.getdbHeler(
 								SipNotificationListener.getCurrentContext())
 								.insertGroupChat(groupChatBean);
+                        if(AppReference.mainContext!=null) {
+							if(!AppReference.Beginsync_chat && !AppReference.chatRecentSync)
+							AppReference.mainContext.ChatRecentEntry(groupChatBean,true);
+						}
+
+
+
 						if (row > 0 && groupChatBean.getSubCategory() != null) {
 							if (groupChatBean.getSubCategory()
 									.equalsIgnoreCase("gs")) {

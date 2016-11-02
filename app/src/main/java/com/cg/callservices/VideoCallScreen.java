@@ -405,7 +405,10 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 												hist_bean.getEndTime()));
 								hist_bean.setCallstatus("callattended");
 								DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
-								DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+								int row=DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+								if(AppReference.mainContext != null && row==1) {
+									AppReference.mainContext.CallEntryToServer(hist_bean);
+								}
 							}
 							// }
 							// Log.d("test", "From leave/bye");
@@ -653,7 +656,10 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 													hist_bean.getEndTime()));
 									hist_bean.setCallstatus("callattended");
 									DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
-									DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+									int row=DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+									if(AppReference.mainContext != null && row==1) {
+										AppReference.mainContext.CallEntryToServer(hist_bean);
+									}
 								}
 								showCallHistory();
 								Log.d("Test","Inside Videocallscreen SelfHangUp@@@@@");

@@ -227,7 +227,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
     private LinearLayout attachment_layout;
     // private String fileHistoryName = null;
     private ProgressDialog dialog = null;
-    private GroupBean groupBean = null;
+    public GroupBean groupBean = null;
     public static TextView typingstatus;
     public String groupId;
     public boolean isconfirmclicked = false;

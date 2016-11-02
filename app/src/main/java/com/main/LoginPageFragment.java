@@ -1481,15 +1481,16 @@ public class LoginPageFragment extends Fragment {
             public void run() {
                 // TODO Auto-generated method stub
                 DBAccess.getdbHeler().deleteOldGroups();
+                WebServiceReferences.webServiceClient.getGroupAndMembers(
+                        CallDispatcher.LoginUser, "", SingleInstance.mainContext);
                 WebServiceReferences.webServiceClient.GetFileDetails(CallDispatcher.LoginUser, ""
                         , SingleInstance.mainContext);
                 WebServiceReferences.webServiceClient.GetAllProfile(
                         CallDispatcher.LoginUser, "", mainContext);
-                WebServiceReferences.webServiceClient.getGroupAndMembers(
-                        CallDispatcher.LoginUser, "", SingleInstance.mainContext);
                 WebServiceReferences.webServiceClient.getRoundingGroupAndMembers(
                         CallDispatcher.LoginUser, "", SingleInstance.mainContext);
                 WebServiceReferences.webServiceClient.GetMypin(CallDispatcher.LoginUser);
+                WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"6","*","","");
 
             }
         });

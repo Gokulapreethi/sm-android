@@ -4323,37 +4323,41 @@ public class ContactsFragment extends Fragment{
 		contactrecentlist.clear();
 		grouprecentlist.clear();
 //		tempnotifylist = DashBoardFragment.newInstance(mainContext).LoadFilesList(CallDispatcher.LoginUser);
-		LoadFilesList(CallDispatcher.LoginUser);
+//		LoadFilesList(CallDispatcher.LoginUser);
 		Vector<BuddyInformationBean> buddylist=ContactsFragment.getBuddyList();
 		if(DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,false)!=null) {
-			tempnotifylist = listcount(DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,false));
+//			tempnotifylist = listcount(DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,false));
+			tempnotifylist=DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,false);
 
 			for (NotifyListBean bean : tempnotifylist) {
 				innerloop:
 				for(BuddyInformationBean buddyInformationBean:buddylist) {
-					if(buddyInformationBean.getEmailid()!=null &&bean.getFrom()!=null &&
-							buddyInformationBean.getEmailid().equalsIgnoreCase(bean.getFrom())) {
-						if(buddyInformationBean.getStatus()!=null)
-						bean.setSetStatus(buddyInformationBean.getStatus());
-						if (bean.getNotifttype().equalsIgnoreCase("F"))
-							contactrecentlist.add(bean);
-						else if (bean.getNotifttype().equalsIgnoreCase("C")) {
-//				if(isNumeric(bean.getFileid()))
-//					grouprecentlist.add(bean);
-//				else
-					contactrecentlist.add(bean);
-				} else if (bean.getNotifttype().equalsIgnoreCase("I")) {
-					if (bean.getCategory().equalsIgnoreCase("G")) {
-						grouprecentlist.add(bean);
-					} else if (bean.getCategory().equalsIgnoreCase("I")) {
-						contactrecentlist.add(bean);
-					}
-					//For this add call count in Indijual
-					else if (bean.getCategory().equalsIgnoreCase("call")) {
-						contactrecentlist.add(bean);
-					}
+					if(buddyInformationBean.getEmailid()!=null &&bean.getFileid()!=null &&
+							buddyInformationBean.getEmailid().equalsIgnoreCase(bean.getFileid())) {
 
+
+//						if (bean.getNotifttype().equalsIgnoreCase("F"))
+//							contactrecentlist.add(bean);
+//						else if (bean.getNotifttype().equalsIgnoreCase("C")) {
+////				if(isNumeric(bean.getFileid()))
+////					grouprecentlist.add(bean);
+////				else
+//					contactrecentlist.add(bean);
+//				} else if (bean.getNotifttype().equalsIgnoreCase("I")) {
+					if(bean.getFileid()!=null && bean.getFileid().contains("@")) {
+						if(buddyInformationBean.getStatus()!=null)
+							bean.setSetStatus(buddyInformationBean.getStatus());
+//						if (bean.getCategory().equalsIgnoreCase("G")) {
+//							grouprecentlist.add(bean);
+						if (bean.getCategory().equalsIgnoreCase("I")) {
+							contactrecentlist.add(bean);
 						}
+						//For this add call count in Indijual
+						else if (bean.getCategory().equalsIgnoreCase("call")) {
+							contactrecentlist.add(bean);
+						}
+					}
+//						}
 						break innerloop;
 					}
 				}
@@ -4564,7 +4568,11 @@ public class ContactsFragment extends Fragment{
 							chatlist.put(nbean.getFrom() + nbean.getSortdate().split(" ")[0], ++j);
 						} else {
 							Log.d("chatlist", "entry2");
-							j = 0;
+							if(nbean.getUnreadchat()!=null && !nbean.getUnreadchat().equalsIgnoreCase("0")) {
+								j = (Integer.parseInt(nbean.getUnreadchat())-1);
+							}else{
+								j = 0;
+							}
 							chatlist.put(nbean.getFrom() + nbean.getSortdate().split(" ")[0], ++j);
 						}
 					}
@@ -4729,7 +4737,11 @@ public class ContactsFragment extends Fragment{
 							chatlist.put(nbean.getFileid() + nbean.getSortdate().split(" ")[0], ++j);
 						} else {
 							Log.d("chatlist", "entry2");
-							j = 0;
+							if(nbean.getUnreadchat()!=null && !nbean.getUnreadchat().equalsIgnoreCase("0")) {
+								j = (Integer.parseInt(nbean.getUnreadchat())-1);
+							}else{
+								j = 0;
+							}
 							chatlist.put(nbean.getFileid() + nbean.getSortdate().split(" ")[0], ++j);
 						}
 					}
@@ -4774,19 +4786,22 @@ public class ContactsFragment extends Fragment{
 	{
 		tempnotifylist.clear();
 		grouprecentlist.clear();
-		LoadFilesList(CallDispatcher.LoginUser);
-		if(DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,true)!=null) {
-			tempnotifylist = grouplistcount(DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,true));
+//		LoadFilesList(CallDispatcher.LoginUser);
+		if(DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,false)!=null) {
+//			tempnotifylist = grouplistcount(DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,true));
+			tempnotifylist=DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,false);
 			for (NotifyListBean bean : tempnotifylist) {
-				  if (bean.getNotifttype().equalsIgnoreCase("I")) {
-					if (bean.getCategory().equalsIgnoreCase("G")) {
-						grouprecentlist.add(bean);
-					}
-					//For this add call count in Indijual
-					else if (bean.getCategory().equalsIgnoreCase("call")) {
-						grouprecentlist.add(bean);
-					}
+				if(bean.getFileid()!=null && !bean.getFileid().contains("@")) {
+					if (bean.getNotifttype().equalsIgnoreCase("I")) {
+						if (bean.getCategory().equalsIgnoreCase("G")) {
+							grouprecentlist.add(bean);
+						}
+						//For this add call count in Indijual
+						else if (bean.getCategory().equalsIgnoreCase("call")) {
+							grouprecentlist.add(bean);
+						}
 
+					}
 				}
 			}
 		}

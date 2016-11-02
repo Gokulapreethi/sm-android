@@ -19,6 +19,7 @@ import com.bean.NotifyListBean;
 import com.bean.ProfileBean;
 import com.bean.UserBean;
 import com.cg.DB.DBAccess;
+import com.cg.commonclass.WebServiceReferences;
 import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.hostedconf.AppReference;
@@ -121,17 +122,23 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                     holder.call_relay.setVisibility(View.VISIBLE);
                     holder.call_count.setText(notifyBean.getCallcount());
                     Log.d("listcount", "beancallcountif " + notifyBean.getCallcount());
+                }else{
+                    holder.call_relay.setVisibility(View.GONE);
                 }
             if (notifyBean.getFilecount() != null&& notifyBean.getFilecount().length()>0) {
                     holder.file_relay.setVisibility(View.VISIBLE);
                     holder.file_count.setText(notifyBean.getFilecount());
                     Log.d("listcount", "beanfilecountif " + notifyBean.getFilecount());
-                }
+                }else{
+                holder.file_relay.setVisibility(View.GONE);
+            }
             if (notifyBean.getChatcount() != null&& notifyBean.getChatcount().length()>0) {
                     holder.chat_relay.setVisibility(View.VISIBLE);
                     holder.chat_count.setText(notifyBean.getChatcount());
                     Log.d("listcount", "beanchatcountif " + notifyBean.getChatcount());
-                }
+                }else{
+                holder.chat_relay.setVisibility(View.GONE);
+            }
 
 
 
@@ -210,15 +217,44 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                     public void onClick(View v) {
                         if(iscontact){
                             if(notifyBean.getFileid()!=null && notifyBean.getFileid().contains("@")){
-                                Intent intent = new Intent(context, GroupChatActivity.class);
-                                intent.putExtra("isGroup", false);
-                                intent.putExtra("buddy", notifyBean.getFileid());
-                                context.startActivity(intent);
+                                if(!DBAccess.getdbHeler().ChatEntryAvailableOrNot(notifyBean.getFileid())) {
+                                    Log.i("syncchat","chatentry not available");
+                                    if(SingleInstance.instanceTable.containsKey("contactspage")){
+                                        Log.i("syncchat","Appmain contactspage available");
+                                        ContactsFragment contactsFragment=(ContactsFragment) SingleInstance.instanceTable.get("contactspage");
+                                        contactsFragment.showprogress();
+                                    }
+                                    AppReference.chatRecentSync = true;
+                                    AppReference.chatRecentSyncBuddyOrGroupid=notifyBean.getFileid();
+//                                    list_position = position;
+//                                    chatsync_contactlist=true;
+                                    WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"0",notifyBean.getFileid(),"","");
+                                }else {
+                                    Intent intent = new Intent(context, GroupChatActivity.class);
+                                    intent.putExtra("isGroup", false);
+                                    intent.putExtra("buddy", notifyBean.getFileid());
+                                    context.startActivity(intent);
+                                }
                             }else if(notifyBean.getFileid()!=null && !notifyBean.getFileid().contains("@")){
-                                Intent intent = new Intent(context, GroupChatActivity.class);
-                                intent.putExtra("isGroup", true);
-                                intent.putExtra("groupid", notifyBean.getFileid());
-                                context.startActivity(intent);
+                                if(!DBAccess.getdbHeler().ChatEntryAvailableOrNot(notifyBean.getFileid())) {
+                                    Log.i("syncchat","chatentry not available");
+                                    if(SingleInstance.instanceTable.containsKey("contactspage")){
+                                        Log.i("syncchat","Appmain contactspage available");
+                                        ContactsFragment contactsFragment=(ContactsFragment) SingleInstance.instanceTable.get("contactspage");
+                                        contactsFragment.showprogress();
+                                    }
+                                    AppReference.chatRecentSync = true;
+                                    AppReference.chatRecentSyncBuddyOrGroupid=notifyBean.getFileid();
+//                                    AppReference.Beginsync_chat = true;
+//                                    list_position = position;
+//                                    chatsync_contactlist=true;
+                                    WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"0",notifyBean.getFileid(),"","");
+                                }else {
+                                    Intent intent = new Intent(context, GroupChatActivity.class);
+                                    intent.putExtra("isGroup", true);
+                                    intent.putExtra("groupid", notifyBean.getFileid());
+                                    context.startActivity(intent);
+                                }
                             }
                         }else {
                             if (notifyBean.getCategory().equalsIgnoreCase("I")) {
@@ -286,19 +322,36 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                     Log.i("dateformat", "yesterday :: " + yesterday);
 
                     if (receivedDate.compareTo(today) == 0) {
-                        if (!isEntered) {
+//                        if (!isEntered) {
                             holder.header_container.setVisibility(View.VISIBLE);
                             holder.header.setText("TODAY");
-                            isEntered = true;
-                        } else
-                            holder.header_container.setVisibility(View.GONE);
+//                            isEntered = true;
+//                        } else
+//                            holder.header_container.setVisibility(View.GONE);
+                        if (position > 0) {
+                            final NotifyListBean bean = fileList.get(position - 1);
+                            if (bean.getSortdate().split(" ")[0].equals(notifyBean.getSortdate().split(" ")[0])) {
+                                holder.header_container.setVisibility(View.GONE);
+                            } else {
+                                holder.header_container.setVisibility(View.VISIBLE);
+                            }
+                        }
                     } else if (receivedDate.compareTo(yesterday) == 0) {
-                        if (!isEnter) {
+//                        if (!isEnter) {
                             holder.header_container.setVisibility(View.VISIBLE);
                             holder.header.setText("YESTERDAY");
-                            isEnter = true;
-                        } else
-                            holder.header_container.setVisibility(View.GONE);
+//                            isEnter = true;
+//                        } else
+//                            holder.header_container.setVisibility(View.GONE);
+
+                        if (position > 0) {
+                            final NotifyListBean bean = fileList.get(position - 1);
+                            if (bean.getSortdate().split(" ")[0].equals(notifyBean.getSortdate().split(" ")[0])) {
+                                holder.header_container.setVisibility(View.GONE);
+                            } else {
+                                holder.header_container.setVisibility(View.VISIBLE);
+                            }
+                        }
                     } else {
                         holder.header_container.setVisibility(View.VISIBLE);
                         Log.i("abcd", "=========notifyBean.getSortdate()" + notifyBean.getSortdate());

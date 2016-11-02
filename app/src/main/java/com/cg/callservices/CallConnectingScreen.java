@@ -381,7 +381,10 @@ public class CallConnectingScreen extends Fragment {
 								hist_bean.getEndTime()));
 				hist_bean.setCallstatus("callattended");
 				DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
-				DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+				int row=DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+				if(AppReference.mainContext != null && row==1) {
+					AppReference.mainContext.CallEntryToServer(hist_bean);
+				}
 			}
 
 		} catch (Exception e) {
@@ -547,7 +550,10 @@ public class CallConnectingScreen extends Fragment {
 										hist_bean.getEndTime()));
 						hist_bean.setCallstatus("callattended");
 						DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
-						DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+						int row=DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+						if(AppReference.mainContext != null && row==1) {
+							AppReference.mainContext.CallEntryToServer(hist_bean);
+						}
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -638,7 +644,10 @@ public class CallConnectingScreen extends Fragment {
 										hist_bean.getEndTime()));
 						hist_bean.setCallstatus("callattended");
 						DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
-						DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+						int row=DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+						if(AppReference.mainContext != null && row==1) {
+							AppReference.mainContext.CallEntryToServer(hist_bean);
+						}
 					}
 					Log.d("hang", "Hang up from the call");
 				} catch (Exception e) {

@@ -159,8 +159,8 @@ public class DBAccess extends SQLiteOpenHelper {
 	String hospitaldetails ="create table if not exists hospitaldetails(hospitalname nvarchar(200))";
 	String medicalsocieties ="create table if not exists medicalsocieties(id nvarchar(25),medicalsociety nvarchar(200))";
 	String seeallpatientdetails = "create table if not exists seeallpatientdetails(groupid nvarchar(25), patientid nvarchar(100), diagnosis nvarchar(100), active nvarchar(100), commentdate nvarchar(100))";
-	String chatrecentlist ="create table if not exists chatrecentlist(fromuser text,touser text,owner text,type text,content text,media text,sortdate text,notifytype text,viewed integer,fileid text,category text,username text,profilepic text)";
-	String groupchatrecentlist ="create table if not exists groupchatrecentlist(fromuser text,touser text,owner text,type text,content text,media text,sortdate text,notifytype text,viewed integer,fileid text,category text,username text,profilepic text)";
+	String chatrecentlist ="create table if not exists chatrecentlist(fromuser text,touser text,owner text,type text,content text,media text,sortdate text,notifytype text,viewed integer,fileid text,category text,username text,profilepic text,unreadchat text,callcount text,serverdatetime text,callsessionid text)";
+	String groupchatrecentlist ="create table if not exists groupchatrecentlist(fromuser text,touser text,owner text,type text,content text,media text,sortdate text,notifytype text,viewed integer,fileid text,category text,username text,profilepic text,unreadchat text,callcount text,serverdatetime text)";
 	private CallDispatcher callDisp;
 
 	public DBAccess(Context context) {
@@ -11426,8 +11426,10 @@ public class DBAccess extends SQLiteOpenHelper {
 					+ groupChatBean.getSessionid() + "'")) {
 				row = (int) db.update("chat", cv,
 						"sessionid='" + groupChatBean.getSessionid() + "'", null);
+				row=2;
 			} else {
 				row = (int) db.insert("chat", null, cv);
+				row=1;
 			}
 			return row;
 		} catch (Exception e) {
@@ -11562,14 +11564,31 @@ public class DBAccess extends SQLiteOpenHelper {
 			cv.put("category",bean.getCategory());
 			cv.put("username",bean.getUsername());
 			cv.put("profilepic",bean.getProfilePic());
-//			if (isRecordExists("select * from chattemplate where userid='"
-//					+ CallDispatcher.LoginUser + "'and id='" + bean.getTempletid() + "'"))
-//				row = (int) db.update("chattemplate", cv, "userid='" + CallDispatcher.LoginUser + "'and id='" + bean.getTempletid() + "'",null);
-//			else
-			if(!groupchatlist) {
-				row = (int) db.insert("chatrecentlist", null, cv);
-			}else{
-				row = (int) db.insert("groupchatrecentlist", null, cv);
+			if(bean.getUnreadchat()!=null){
+				Log.i("recentSync","DbAccess bean.getUnreadchat()-->"+bean.getUnreadchat());
+				cv.put("unreadchat",bean.getUnreadchat());
+			}
+			if(bean.getUnreadcallcount()!=null){
+				Log.i("recentSync","DbAccess bean.getUnreadcallcount()-->"+bean.getUnreadcallcount());
+				cv.put("callcount",bean.getUnreadcallcount());
+			}
+			if(bean.getServerdatetime()!=null){
+				cv.put("serverdatetime",bean.getServerdatetime());
+			}
+
+			if(bean.getCallsessionid()!=null){
+				cv.put("callsessionid",bean.getCallsessionid());
+			}
+			if (isRecordExists("select * from chatrecentlist where owner='"
+					+ CallDispatcher.LoginUser + "'and fileid='" + bean.getFileid() + "'")) {
+				row = (int) db.update("chatrecentlist", cv, "owner='" + CallDispatcher.LoginUser + "'and fileid='" + bean.getFileid() + "'", null);
+			}
+			else {
+//				if (!groupchatlist) {
+					row = (int) db.insert("chatrecentlist", null, cv);
+//				} else {
+//					row = (int) db.insert("groupchatrecentlist", null, cv);
+//				}
 			}
 			return row;
 		} catch (Exception e) {
@@ -11585,11 +11604,11 @@ public class DBAccess extends SQLiteOpenHelper {
 		Vector<NotifyListBean> filesList = new Vector<NotifyListBean>();
 		try {
 			String strquery=null;
-			if(!groupchatlist) {
+//			if(!groupchatlist) {
 				strquery = "select * from chatrecentlist WHERE owner='" + username + "'";
-			}else{
-				strquery = "select * from groupchatrecentlist WHERE owner='" + username + "'";
-			}
+//			}else{
+//				strquery = "select * from groupchatrecentlist WHERE owner='" + username + "'";
+//			}
 			if (!db.isOpen()) {
 				openDatabase();
 			}
@@ -11611,6 +11630,12 @@ public class DBAccess extends SQLiteOpenHelper {
 				nBean.setCategory(cur.getString(10));
 				nBean.setUsername(cur.getString(11));
 				nBean.setProfilePic(cur.getString(12));
+				if(cur.getString(13)!=null && !cur.getString(13).equalsIgnoreCase("0")){
+					nBean.setChatcount(cur.getString(13));
+				}
+				if(cur.getString(14)!=null && !cur.getString(14).equalsIgnoreCase("0")){
+					nBean.setCallcount(cur.getString(14));
+				}
 
 				cur.moveToNext();
 				filesList.add(nBean);
@@ -11635,14 +11660,16 @@ public class DBAccess extends SQLiteOpenHelper {
 			if (!db.isOpen())
 				openDatabase();
 			ContentValues cv = new ContentValues();
-			cv.put("viewed", "1");
-			if(!groupchatlist) {
+//			cv.put("viewed", "1");
+			cv.put("unreadchat","0");
+			cv.put("callcount","0");
+//			if(!groupchatlist) {
 				row = (int) db.update("chatrecentlist", cv,
 						"fileid ='" + fileid + "' and owner='" + CallDispatcher.LoginUser + "'", null);
-			}else{
-				row = (int) db.update("groupchatrecentlist", cv,
-						"fileid ='" + fileid + "' and owner='" + CallDispatcher.LoginUser + "'", null);
-			}
+//			}else{
+//				row = (int) db.update("groupchatrecentlist", cv,
+//						"fileid ='" + fileid + "' and owner='" + CallDispatcher.LoginUser + "'", null);
+//			}
 			return row;
 
 		} catch (Exception e) {
@@ -11734,5 +11761,95 @@ public class DBAccess extends SQLiteOpenHelper {
 		return dateandtime;
 	}
 
+
+	public boolean ChatRecentCallSessionidAvailableOrNot(String Sessionid){
+
+
+		Cursor cur = null;
+		boolean status = false;
+		try {
+			if (!db.isOpen())
+				openDatabase();
+			String query;
+//			if(!indivijualOrgroup) {
+				query = "select * from chatrecentlist where callsessionid='" + Sessionid
+						+ "' and owner ='" + CallDispatcher.LoginUser + "'";
+//			}else{
+//				query = "select * from groupchatrecentlist where sortdate='" + dateandtime
+//						+ "' and owner ='" + CallDispatcher.LoginUser + "'";
+//			}
+
+			cur = db.rawQuery(query, null);
+			cur.moveToFirst();
+
+			if (cur.getCount() > 0)
+				status = true;
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+
+		finally {
+
+			if (cur != null)
+				cur.close();
+
+			return status;
+		}
+
+	}
+
+
+	public int[] ChatRecentUserIDAvailableOrNot(String UsernameOrGroupId){
+
+
+		Cursor cur = null;
+//		boolean status = false;
+		int totcount[]=new int[2];
+		try {
+			if (!db.isOpen())
+				openDatabase();
+			String query;
+//			if(!indivijualOrgroup) {
+				query = "select * from chatrecentlist where fileid='" + UsernameOrGroupId
+						+ "' and owner ='" + CallDispatcher.LoginUser + "'";
+//			}else{
+//				query = "select * from groupchatrecentlist where fileid='" + UsernameOrGroupId
+//						+ "' and owner ='" + CallDispatcher.LoginUser + "'";
+//			}
+
+			cur = db.rawQuery(query, null);
+			cur.moveToFirst();
+
+			if (cur.getCount() > 0) {
+//				status = true;
+				if(cur.getString(13)!=null)
+				totcount[0]=Integer.parseInt(cur.getString(13));
+				else
+					totcount[0]=0;
+				if(cur.getString(14)!=null)
+					totcount[1]=Integer.parseInt(cur.getString(14));
+				else
+					totcount[1]=0;
+			}else{
+				totcount[0]=0;
+				totcount[1]=0;
+			}
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+
+		finally {
+
+			if (cur != null)
+				cur.close();
+
+			return totcount;
+		}
+
+	}
 
 }

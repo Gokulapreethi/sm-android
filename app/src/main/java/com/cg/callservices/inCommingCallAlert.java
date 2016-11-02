@@ -412,7 +412,10 @@ public class inCommingCallAlert extends Fragment {
 									hist_bean.getEndTime()));
 					hist_bean.setCallstatus("callattended");
 					DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
-					DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+					int row=DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+					if(AppReference.mainContext != null && row==1) {
+						AppReference.mainContext.CallEntryToServer(hist_bean);
+					}
 				}
 			}
 			CallDispatcher.currentSessionid = null;
