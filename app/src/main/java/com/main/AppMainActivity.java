@@ -58,7 +58,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -5870,7 +5869,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 			String asText = hours + ":" + minutes + ":" + seconds;
 			Bitmap thumbImage = ThumbnailUtils.createVideoThumbnail(
-                    AESFileCrypto.decryptFile(context, strThumbPath + ".mp4"),
+					AESFileCrypto.decryptFile(context, strThumbPath + ".mp4"),
 					MediaStore.Images.Thumbnails.MINI_KIND);
 			if (thumbImage != null) {
 				thumbImage = ResizeVideoImage(thumbImage);
@@ -6143,41 +6142,43 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				for (UploadDownloadStatusBean uploadDownloadStatusBean : uploadDownloadList) {
 					Log.i("missed123", "inside for loop filename : "
 							+ uploadDownloadStatusBean.getFilename());
-					ChatFTPBean chatFTPBean = new ChatFTPBean();
-					chatFTPBean.setServerIp(cBean.getRouter().split(":")[0]);
-					chatFTPBean.setServerPort(40400);
-					chatFTPBean.setUsername(uploadDownloadStatusBean
-							.getFtpusername());
-					chatFTPBean.setPassword(uploadDownloadStatusBean
-							.getFtppassword());
-					chatFTPBean.setInputFile(uploadDownloadStatusBean
-							.getFilename());
-					chatFTPBean.setOutputFile(Utils
-							.getFilePathString(uploadDownloadStatusBean
-									.getFilename()));
-					chatFTPBean.setOperation(uploadDownloadStatusBean
-							.getOperation());
-					GroupChatBean gcBean = null;
-					if (uploadDownloadStatusBean.getModules().equalsIgnoreCase(
-							"groupchat")) {
-						Log.i("missed123",
-								"inside for groupchat if condition signal id : "
-										+ uploadDownloadStatusBean.getOthers());
-						gcBean = DBAccess.getdbHeler().getGroupChatBean(
-								uploadDownloadStatusBean.getOthers());
-						chatFTPBean.setSourceObject(gcBean);
-					}
-					File file = new File(chatFTPBean.getOutputFile());
-					if (file.exists()) {
-						file.delete();
-					}
-					chatFTPBean.setCallback(AppMainActivity.this);
-					if (gcBean != null) {
-						insertOrUpdateUploadOrDownload(chatFTPBean, "0",
-								"groupchat");
-						Log.i("missed123", "before calling processrequest : "
-								+ chatFTPBean.getInputFile());
-						FTPPoolManager.processRequest(chatFTPBean);
+					if(uploadDownloadStatusBean.getFilename() != null) {
+						ChatFTPBean chatFTPBean = new ChatFTPBean();
+						chatFTPBean.setServerIp(cBean.getRouter().split(":")[0]);
+						chatFTPBean.setServerPort(40400);
+						chatFTPBean.setUsername(uploadDownloadStatusBean
+								.getFtpusername());
+						chatFTPBean.setPassword(uploadDownloadStatusBean
+								.getFtppassword());
+						chatFTPBean.setInputFile(uploadDownloadStatusBean
+								.getFilename());
+						chatFTPBean.setOutputFile(Utils
+								.getFilePathString(uploadDownloadStatusBean
+										.getFilename()));
+						chatFTPBean.setOperation(uploadDownloadStatusBean
+								.getOperation());
+						GroupChatBean gcBean = null;
+						if (uploadDownloadStatusBean.getModules().equalsIgnoreCase(
+								"groupchat")) {
+							Log.i("missed123",
+									"inside for groupchat if condition signal id : "
+											+ uploadDownloadStatusBean.getOthers());
+							gcBean = DBAccess.getdbHeler().getGroupChatBean(
+									uploadDownloadStatusBean.getOthers());
+							chatFTPBean.setSourceObject(gcBean);
+						}
+						File file = new File(chatFTPBean.getOutputFile());
+						if (file.exists()) {
+							file.delete();
+						}
+						chatFTPBean.setCallback(AppMainActivity.this);
+						if (gcBean != null) {
+							insertOrUpdateUploadOrDownload(chatFTPBean, "0",
+									"groupchat");
+							Log.i("missed123", "before calling processrequest : "
+									+ chatFTPBean.getInputFile());
+							FTPPoolManager.processRequest(chatFTPBean);
+						}
 					}
 
 				}
@@ -7912,14 +7913,19 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 						// img_file = null;
 						if (img_file.exists()) {
-							shareReminder.setFilepath(file_name);
+							if(shareReminder != null) {
+								shareReminder.setFilepath(file_name);
+							}
 							ftpBean.setReq_object(shareReminder);
 							ftpBean.setFile_path(filedetails[0]);
 							notifyFileDownloaded("true", ftpBean);
 						}
 					} else {
 						if (decodeAudioVideoToBase64(file_name, filedetails[1])) {
-							shareReminder.setFilepath(file_name);
+							Log.i("sharereminder","file_name : "+file_name+" shareReminder : "+shareReminder);
+							if(shareReminder != null) {
+								shareReminder.setFilepath(file_name);
+							}
 							ftpBean.setReq_object(shareReminder);
 							ftpBean.setFile_path(filedetails[0]);
 							notifyFileDownloaded("true", ftpBean);

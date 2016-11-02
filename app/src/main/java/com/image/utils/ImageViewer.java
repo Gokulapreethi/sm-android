@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.crypto.AESFileCrypto;
@@ -63,6 +62,7 @@ public class ImageViewer {
         if (bitmap != null) {
             imageView.setImageBitmap(bitmap);
         } else {
+            if(!fileName.endsWith("COMMedia/"))
             queuePhoto(fileName, imageView, resource_id);
             imageView.setImageResource(resource_id);
         }

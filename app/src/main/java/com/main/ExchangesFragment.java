@@ -51,7 +51,7 @@ public class ExchangesFragment extends Fragment {
 	private static CallDispatcher callDisp;
 	// private Button btnBack;
 	// private Button addGroup;
-	private Handler handler = new Handler();
+	private Handler handler ;
 	private boolean isLaunch = false;
 
 	private PopupWindow popupWindowMenus;
@@ -102,7 +102,7 @@ public class ExchangesFragment extends Fragment {
 					getResources().getString(R.string.fontfamily));
 	        tf_bold = Typeface.createFromAsset(mainContext.getAssets(),
 					getResources().getString(R.string.fontfamilybold));
-
+			handler = new Handler();
 			Button select = (Button) getActivity().findViewById(R.id.btn_brg);
 			select.setVisibility(View.GONE);
 			RelativeLayout mainHeader=(RelativeLayout)getActivity().findViewById(R.id.mainheader);

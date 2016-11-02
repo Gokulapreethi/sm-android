@@ -1,14 +1,5 @@
 package com.image.utils;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Collections;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -18,6 +9,15 @@ import android.widget.ImageView;
 
 import com.cg.snazmed.R;
 import com.crypto.AESFileCrypto;
+
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ImageLoader {
 
@@ -198,7 +198,7 @@ public class ImageLoader {
 			return bitmap;
 
 		} catch (Exception e) {
-			Log.d("IMAGE_LOAD", "Bitmap : " + e.getMessage());
+			Log.d("IMAGE_LOAD", "Error Bitmap : " + e.getMessage());
 			e.printStackTrace();
 		}
 		return null;
@@ -243,12 +243,16 @@ public class ImageLoader {
 			if (imageViewReused(photoToLoad))
 				return;
 
-			Log.d("IMAGE_LOAD", "Bitmap : " + bitmap);
-			// Show bitmap on UI
-			if (bitmap != null)
-				photoToLoad.imageView.setImageBitmap(bitmap);
-			else
-				photoToLoad.imageView.setImageResource(photoToLoad.resourceId);
+			try {
+				Log.d("IMAGE_LOAD", "Image Loader Bitmap : " + bitmap);
+				// Show bitmap on UI
+				if (bitmap != null)
+                    photoToLoad.imageView.setImageBitmap(bitmap);
+                else
+                    photoToLoad.imageView.setImageResource(photoToLoad.resourceId);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

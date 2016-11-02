@@ -2555,7 +2555,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 							hist_bean.setCallDuration(SingleInstance.mainContext
 									.getCallDuration(hist_bean.getStartTime(),
 											hist_bean.getEndTime()));
-							hist_bean.setCallstatus("callattended");
+//							hist_bean.setCallstatus("callattended");
 							DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
 							DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
 						}

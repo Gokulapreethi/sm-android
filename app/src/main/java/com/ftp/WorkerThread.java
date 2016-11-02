@@ -3,18 +3,6 @@
  */
 package com.ftp;
 
-import it.sauronsoftware.ftp4j.FTPClient;
-import it.sauronsoftware.ftp4j.FTPDataTransferListener;
-import it.sauronsoftware.ftp4j.FTPFile;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -26,12 +14,10 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.bean.GroupChatBean;
-import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.hostedconf.AppReference;
-import com.cg.instancemessage.NotePickerScreen;
-import com.crypto.AESFileCrypto;
+import com.cg.snazmed.R;
 import com.main.AppMainActivity;
 import com.util.SingleInstance;
 
@@ -43,6 +29,16 @@ import org.lib.xml.XmlComposer;
 import org.lib.xml.XmlParser;
 import org.net.AndroidInsecureKeepAliveHttpsTransportSE;
 import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import it.sauronsoftware.ftp4j.FTPClient;
 
 /**
  * @author GopalaKrishnan D
@@ -357,22 +353,23 @@ public class WorkerThread implements Runnable {
             final int notificationID = getNotificationID();
             final String fileName = ftpBean.getInputFile();
             try {
-				Log.d("input","inputfile"+ftpBean.getInputFile());
-				String[] paths=this.ftpBean.getInputFile().split(",");
-				for(String filename:paths){
-					Log.d("input", "inputfile177777777 " + filename);
-					AppMainActivity.imFiles.put(filename, this.ftpBean);
-				}
+				if(fileName != null) {
+					Log.d("input", "inputfile" + ftpBean.getInputFile());
+					String[] paths = this.ftpBean.getInputFile().split(",");
+					for (String filename : paths) {
+						Log.d("input", "inputfile177777777 " + filename);
+						AppMainActivity.imFiles.put(filename, this.ftpBean);
+					}
 
 //				AppMainActivity.imFiles.put(this.ftpBean.getInputFile(), this.ftpBean);
 
-				Log.d("input", "inputfile1" + ftpBean.getInputFile());
+					Log.d("input", "inputfile1" + ftpBean.getInputFile());
 
-				callDisp.downloadFile(CallDispatcher.LoginUser,CallDispatcher.Password,ftpBean.getInputFile());
+					callDisp.downloadFile(CallDispatcher.LoginUser, CallDispatcher.Password, ftpBean.getInputFile());
 
-				Log.d("XP WSD", "inputfile2" + ftpBean.getInputFile());
+					Log.d("XP WSD", "inputfile2" + ftpBean.getInputFile());
 
-				Log.i("download1","newdownload"+fileName);
+					Log.i("download1", "newdownload" + fileName);
 //                final AppMainActivity activity = ((AppMainActivity) SingleInstance.contextTable
 //                        .get("MAIN"));
 //
@@ -482,7 +479,7 @@ public class WorkerThread implements Runnable {
 //			ftpClient.disconnect(true);
 //
 //			Log.d("FTP_STATUS", "Downlaod COMPLETED : " + fileName);
-
+				}
 		} catch (Exception e) {
 
 			Log.d("FTP_DOWNLOAD", "Error Exception : " + fileName);
