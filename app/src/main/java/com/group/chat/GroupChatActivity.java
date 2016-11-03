@@ -6598,6 +6598,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         if (gcBean.getMimetype() != null && gcBean.getMimetype().equals("audio")) {
                             try {
                                 audio_seekbar.setProgress(0);
+                                Log.i("Gchat", "gcBean.getMediaName() : " + gcBean.getMediaName());
                                 MediaMetadataRetriever mmr = new MediaMetadataRetriever();
                                 mmr.setDataSource(gcBean.getMediaName());
                                 String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
@@ -6819,6 +6820,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                     // start 07-10-15 changes
 
                                     im_pin.setText(gcBean.getMediaName().split("COMMedia/")[1]);
+                                    Log.i("GChat","imageViewer 1 :"+gcBean.getMediaName());
                                     imageViewer.display(gcBean.getMediaName(),
                                             multimediaIcon, R.drawable.refresh);
                                     if (gcBean.getMessage() != null)
@@ -6833,6 +6835,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                     // start 07-10-15 changes
 
                                     im_pin.setText(gcBean.getMediaName().split("COMMedia/")[1]);
+                                    Log.i("GChat", "imageViewer 2 :" + gcBean.getMediaName());
                                     imageViewer.display(gcBean.getMediaName(),
                                             multimediaIcon, R.drawable.refresh);
                                     if (gcBean.getMessage() != null)
@@ -7533,6 +7536,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                             audioLayout.setVisibility(View.GONE);
 
                             iconContainer.setVisibility(View.GONE);
+                            Log.i("Gchat","fname[i] : "+fname[i]);
                             if (fname[i].split("COMMedia/")[1].endsWith("mp4")) {
                                 holder = inflater.inflate(R.layout.videochatlist, parent, false);
                                 ImageView receiver_multi_msg = (ImageView) holder.findViewById(R.id.receiver_multi_msg);
@@ -7706,6 +7710,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                 ImageView receiver_multi_msg = (ImageView) holder.findViewById(R.id.receiver_multi_msg);
                                 TextView tv_pathname = (TextView) holder.findViewById(R.id.tv_pathname);
                                 tv_pathname.setText(fname[i].split("COMMedia/")[1]);
+                                Log.i("GChat", "imageViewer 2 :" + fname[i]);
                                 imageViewer.display(fname[i],
                                         receiver_multi_msg, R.drawable.refresh);
                                 final String path = fname[i];

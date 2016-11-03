@@ -1193,6 +1193,12 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 								ContactsFragment.contactsFragment.RefereceGroupRecentlist();
 							}
 						}
+					} else if(groupChatBean.getMimetype()!=null && (groupChatBean.getMimetype().equalsIgnoreCase("ac") ||
+							groupChatBean.getMimetype().equalsIgnoreCase("vc"))) {
+						UdpMessageBean bean = new UdpMessageBean();
+						bean.setType("101");
+						bean.setResponseObject(groupChatBean);
+						ReadMessageAck(bean);
 					}
 				} else {
 					processGroupChatChanges(groupChatBean);
