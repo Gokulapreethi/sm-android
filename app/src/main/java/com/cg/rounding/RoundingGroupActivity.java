@@ -1152,7 +1152,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
 
                     if(bib.getBuddyName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
                         holder.rights.setText("Owner");
-                        holder.delete_mark.setVisibility(View.GONE);
+//                        holder.delete_mark.setVisibility(View.GONE);
                         holder.rights.setTextColor(getResources().getColor(R.color.green));
                     }else {
                         if(bib.getAdmin()!=null){
@@ -1162,6 +1162,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                                 holder.rights.setVisibility(View.GONE);
                         } else
                             holder.rights.setVisibility(View.GONE);
+                        holder.delete_mark.setVisibility(View.VISIBLE);
                         holder.occupation.setTextColor(getResources().getColor(R.color.snazlgray));
                     }
                     ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(bib.getBuddyName());

@@ -293,7 +293,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	private Timer timerQA;
 
 	private MyTimerTask myTimerTask;
-	
+
 	private AlertDialog.Builder missedCallAlert;
 
 	private MyTimerTaskQA myTimerTaskQA;
@@ -2202,7 +2202,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 	/**
 	 * Logout Scenario
-	 * 
+	 *
 	 * @param status
 	 * @throws Exception
 	 */
@@ -7439,8 +7439,8 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 		Log.i("incoming", "AppmainActivity  - = - didReceiveIncomingCall");
 		Log.i("incoming", "callid :" + callid + " remoteinfo :" + remoteinfo);
-		
-		
+
+
 		handler.post(new Runnable() {
 
 			@Override
@@ -7535,9 +7535,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 			am.setStreamVolume(AudioManager.STREAM_MUSIC,
 					am.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
-			
+
 			// Missed Call Alert
-			
+
 			AlertDialog.Builder a = new AlertDialog.Builder(ctxt);
 			a.setTitle("Missed call alert");
 			a.setMessage("You missed a call from "+toUserName);
@@ -7547,9 +7547,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					dialog.dismiss();
 				}
 			});
-			
+
 			missedCallAlert = a;
-			
+
 			final Dialog dialog1 = new Dialog(ctxt);
 			dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
 			dialog1.setContentView(R.layout.callcustomdialog);
@@ -7558,7 +7558,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			TextView decline = (TextView) dialog1.findViewById(R.id.tv_cancel);
 			TextView tview = (TextView) dialog1.findViewById(R.id.call_alert1);
 			tview.setText("" + "\n" + toUserName);
-			
+
 
 			Message msg = new Message();
 			Bundle bndl = new Bundle();
@@ -7571,7 +7571,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				@Override
 				public void onClick(View v) {
 					Log.i("incoming", "accept clicked :  call_id :" + call_id);
-					callDisp.stopRingTone();	
+					callDisp.stopRingTone();
 					CommunicationBean bean = new CommunicationBean();
 					bean.setCall_id(call_id);
 					bean.setSendingStatusid("200");
@@ -7689,10 +7689,10 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			Log.i("Test", "WEBSERVICE RESPONSE RESULT: "+(String[])obj);
 			if (obj instanceof String[]) {
 				String[] temp = (String[]) obj;
-												
-				profession = Arrays.copyOf(temp, temp.length);																	
+
+				profession = Arrays.copyOf(temp, temp.length);
 					Log.i("Test", "RESULT String" + temp);
-			}							
+			}
 			Log.i("Test", "WEBSERVICE RESPONSE RESULT: "+profession);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -7797,7 +7797,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			e.printStackTrace();
 		}
 	}
-	
+
 	public Bitmap ShrinkBitmap(String file, int width, int height) {
 
 		BitmapFactory.Options bmpFactoryOptions = new BitmapFactory.Options();
@@ -8370,6 +8370,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			for(PatientDetailsBean pBean:pBeanList){
 				DBAccess.getdbHeler().insertorUpdatePatientDetails(pBean);
 			}
+            groupChatActivity.refreshPatient();
 		}else if(obj instanceof WebServiceBean){
 			GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
 			if(groupChatActivity != null) {

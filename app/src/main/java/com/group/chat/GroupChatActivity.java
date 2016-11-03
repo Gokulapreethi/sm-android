@@ -1166,7 +1166,6 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             }
 
     }
-
     public void refreshPatient() {
         handler.post(new Runnable() {
 
@@ -1181,7 +1180,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     for(PatientDetailsBean bean:PatientList){
                         bean.setIsFromPatienttab(true);
                     }
-
+                    Collections.sort(PatientList, new PatientNameComparator());
                     patientadapter = new RoundingPatientAdapter(context, R.layout.rouding_patient_row, PatientList);
                     listViewPatient.setAdapter(null);
                     listViewPatient.setAdapter(patientadapter);
@@ -11915,7 +11914,6 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         apply.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                taskSorting(groupBean.getGroupId());
                 dialog1.dismiss();
                 if (assignedMode.equalsIgnoreCase("showall")) {
                     tv_assigned.setText(" ALL");
@@ -11934,10 +11932,14 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
                 for (UserBean bean : memberslist) {
                     if (bean.isSelected())
-                        addMembers = addMembers + "" + bean.getBuddyName() + ",";
+                        if (addMembers!=null && addMembers.length()>0) {
+                            addMembers += "," + bean.getBuddyName();
+                        } else
+                            addMembers= bean.getBuddyName();
                 }
                 SelectedtaskMember=addMembers;
-                Log.i("patientdetails", "%%%%%%%%********Memberslisted" +SelectedtaskMember);
+                Log.i("patientdetails", "%%%%%%%%********Memberslisted****  " +SelectedtaskMember);
+                taskSorting(groupBean.getGroupId());
 
             }
         });
@@ -11984,20 +11986,21 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             strQuery = "select * from taskdetails where groupid='" + groupid + "'and taskstatus ='" + "1" +
                     "'and assignmembers ='" + "" + "'";
 
+
+
+
         else if (assignedMode.equalsIgnoreCase("Assigntoteam") && statusMode.equalsIgnoreCase("ALL")){
-            strQuery = "select * from taskdetails where groupid='" + groupid + "'and assignmembers  NOT LIKE '%" + "" + "%'";
-        Log.i("patientdetails", "team +show all======> " + statusMode + " query " + strQuery);}
+            strQuery = "select * from taskdetails where groupid='" + groupid + "'and assignmembers='"+SelectedtaskMember+"'";
+            Log.i("patientdetails", "team +show all======> " + statusMode + " query " + strQuery);}
 
         else if (assignedMode.equalsIgnoreCase("Assigntoteam") && statusMode.equalsIgnoreCase("Active")){
             strQuery = "select * from taskdetails where groupid='" + groupid + "'and taskstatus ='" + "0" +
-                     "'and assignmembers NOT LIKE '%" + "" + "%'";
-        Log.i("patientdetails", "team +active " + statusMode + " query " + strQuery);}
+                    "'and assignmembers='"+SelectedtaskMember+"'";
+            Log.i("patientdetails", "team +active " + statusMode + " query " + strQuery);}
 
         else if (assignedMode.equalsIgnoreCase("Assigntoteam") && statusMode.equalsIgnoreCase("Completed")){
             strQuery = "select * from taskdetails where groupid='" + groupid + "'and taskstatus ='" + "1" +
-                    "'and assignmembers NOT LIKE '%" + "" + "%'";
-        Log.i("patientdetails", "team +completed " + statusMode + " query " + strQuery);}
-
+                    "'and assignmembers='"+SelectedtaskMember+"'";}
         Log.i("patientdetails", "statusDialog 1" + statusMode + " query " + strQuery);
         Vector<TaskDetailsBean> tasklist = DBAccess.getdbHeler().getAllTaskDetails(strQuery);
         Collections.sort(tasklist, new TaskDateComparator());

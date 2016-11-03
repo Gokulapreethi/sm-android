@@ -225,7 +225,7 @@ public class DuplicateExistingGroups extends Activity {
                     int membercount = mlist.length + 1;
                     holder.members.setText(Integer.toString(membercount) + " members");
                 }else
-                    holder.members.setText(Integer.toString(1) + " members");
+                    holder.members.setText(Integer.toString(1)  + " members");
 
                 if (groupBean.getMessageCount() > 0) {
                     holder.contact_history.setVisibility(View.VISIBLE);

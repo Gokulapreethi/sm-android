@@ -798,8 +798,33 @@ public class DashBoardFragment extends Fragment {
                 for(NotifyListBean nBean:notifyList) {
                     Log.i("AAAA","NOTIFY LIST from user "+nBean.getNotifttype()+" , "+nBean.getSortdate()+" , "+nBean.getFrom());
                     Log.d("AAAA", "Notifyid" + nBean.getFileid());
-                    if(nBean.getViewed()==0) {
-                        if(nBean.getCategory()!=null&&!nBean.getCategory().equalsIgnoreCase("call")) {
+//                    if(nBean.getViewed()==0) {
+//                        if(nBean.getCategory()!=null&&!nBean.getCategory().equalsIgnoreCase("call")) {
+//                            ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+//                            nBean.setProfilePic(pBean.getPhoto());
+//                            if (pBean != null)
+//                                nBean.setUsername(pBean.getFirstname() + " " + pBean.getLastname());
+//                            tempnotifylist.add(nBean);
+//                            seacrhnotifylist.add(nBean);
+//                        }
+//                    }
+                    if(nBean.getViewed()==0 && nBean.getNotifttype().equals("F")) {
+                        ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+                        nBean.setProfilePic(pBean.getPhoto());
+                        if(pBean!=null)
+                            nBean.setUsername(pBean.getFirstname()+" "+pBean.getLastname());
+                        tempnotifylist.add(nBean);
+						seacrhnotifylist.add(nBean);
+                    }
+                    if(nBean.getViewed()==0 && nBean.getNotifttype().equals("I")) {
+                        if(!nBean.getCategory().equalsIgnoreCase("call")) {
+                            ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+                            nBean.setProfilePic(pBean.getPhoto());
+                            if (pBean != null)
+                                nBean.setUsername(pBean.getFirstname() + " " + pBean.getLastname());
+                            tempnotifylist.add(nBean);
+							seacrhnotifylist.add(nBean);
+                        }else if(nBean.getCategory().equalsIgnoreCase("call")){
                             ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
                             nBean.setProfilePic(pBean.getPhoto());
                             if (pBean != null)
@@ -807,6 +832,14 @@ public class DashBoardFragment extends Fragment {
                             tempnotifylist.add(nBean);
                             seacrhnotifylist.add(nBean);
                         }
+                    }
+                    if(nBean.getViewed()==0 && nBean.getNotifttype().equals("C")) {
+                        ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(nBean.getFrom());
+                        nBean.setProfilePic(pBean.getPhoto());
+                        if(pBean!=null)
+                            nBean.setUsername(pBean.getFirstname()+" "+pBean.getLastname());
+                        tempnotifylist.add(nBean);
+						seacrhnotifylist.add(nBean);
                     }
                 }
             }
@@ -965,52 +998,67 @@ public class DashBoardFragment extends Fragment {
     }
 
     private Vector<NotifyListBean> listcount(){
-        HashMap<String,Integer > fileslist = new HashMap<String,Integer>();
-        HashMap<String,Integer > chatlist = new HashMap<String,Integer>();
-        HashMap<String,Integer > calllist = new HashMap<String,Integer>();
+        HashMap<String, Integer> fileslist = new HashMap<String, Integer>();
+        HashMap<String, Integer> chatlist = new HashMap<String, Integer>();
+        HashMap<String, Integer> calllist = new HashMap<String, Integer>();
 
-        int i=0,j=0,k=0;
-        HashMap<String,NotifyListBean > usernotifylist = new HashMap<String,NotifyListBean>();
-        for(NotifyListBean nbean : tempnotifylist){
-            if(nbean.getNotifttype().equalsIgnoreCase("F")){
-                if(fileslist.containsKey(nbean.getFrom()))
-                    fileslist.put(nbean.getFrom(),++i);
-                else {
-                    i=0;
-                    fileslist.put(nbean.getFrom(), ++i);
-                }
-            }else if(nbean.getNotifttype().equalsIgnoreCase("I")){
-                Log.d("chatlist", "entry");
-                if(chatlist.containsKey(nbean.getFrom())) {
-                    Log.d("chatlist", "entries"+nbean.getFrom());
-                    Log.d("chatlist", "entry1");
-                    chatlist.put(nbean.getFrom(), ++j);
-                }
-                else{
-                    Log.d("chatlist", "entry2");
-                    j=0;
-                    chatlist.put(nbean.getFrom(), ++j);
-                }
-            }else if(nbean.getNotifttype().equalsIgnoreCase("C")){
-                if(calllist.containsKey(nbean.getFrom())) {
-                    calllist.put(nbean.getFrom(), ++k);
-                }
-                else{
-                    k=0;
-                    calllist.put(nbean.getFrom(),++k);
+        int i = 0, j = 0, k = 0;
+        HashMap<String, NotifyListBean> usernotifylist = new HashMap<String, NotifyListBean>();
+        for (NotifyListBean nbean : tempnotifylist) {
+            if (nbean.getViewed() == 0) {
+                if (nbean.getNotifttype().equalsIgnoreCase("F")) {
+                    if (fileslist.containsKey(nbean.getFrom()))
+                        fileslist.put(nbean.getFrom(), ++i);
+                    else {
+                        i = 0;
+                        fileslist.put(nbean.getFrom(), ++i);
+                    }
+                } else if (nbean.getNotifttype().equalsIgnoreCase("I")) {
+                    Log.d("chatlist", "entry");
+                    if (nbean.getCategory().equalsIgnoreCase("I")) {
+                        if (chatlist.containsKey(nbean.getFrom())) {
+                            Log.d("chatlist", "entries" + nbean.getFrom());
+                            Log.d("chatlist", "entry1");
+                            chatlist.put(nbean.getFrom(), ++j);
+                        } else {
+                            Log.d("chatlist", "entry2");
+                            if (nbean.getUnreadchat() != null && !nbean.getUnreadchat().equalsIgnoreCase("0")) {
+                                j = (Integer.parseInt(nbean.getUnreadchat()) - 1);
+                            } else {
+                                j = 0;
+                            }
+                            chatlist.put(nbean.getFrom(), ++j);
+                        }
+                    }
+                    //For this add call count in Indijual
+                    else if (nbean.getCategory().equalsIgnoreCase("call")) {
+                        if (calllist.containsKey(nbean.getFrom())) {
+                            calllist.put(nbean.getFrom(), ++k);
+                        } else {
+                            k = 0;
+                            calllist.put(nbean.getFrom(), ++k);
+                        }
+                    }
+                } else if (nbean.getNotifttype().equalsIgnoreCase("C")) {
+                    if (calllist.containsKey(nbean.getFrom())) {
+                        calllist.put(nbean.getFrom(), ++k);
+                    } else {
+                        k = 0;
+                        calllist.put(nbean.getFrom(), ++k);
+                    }
                 }
             }
-            if(!usernotifylist.containsKey(nbean.getFrom()))
+//            if(!usernotifylist.containsKey(nbean.getFrom()))
                 usernotifylist.put(nbean.getFrom(), nbean);
         }
         Vector<NotifyListBean> templist=new Vector<NotifyListBean>();
         templist.addAll(usernotifylist.values());
-        for(NotifyListBean bean:templist){
-            if(chatlist.get(bean.getFrom())!=null)
+        for (NotifyListBean bean : templist) {
+            if (chatlist.get(bean.getFrom()) != null)
                 bean.setChatcount(String.valueOf(chatlist.get(bean.getFrom())));
-            if(calllist.get(bean.getFrom())!=null)
+            if (calllist.get(bean.getFrom()) != null)
                 bean.setCallcount(String.valueOf(calllist.get(bean.getFrom())));
-            if(fileslist.get(bean.getFrom())!=null)
+            if (fileslist.get(bean.getFrom()) != null)
                 bean.setFilecount(String.valueOf(fileslist.get(bean.getFrom())));
         }
         Log.d("listcount","fileslist"+fileslist.size());
