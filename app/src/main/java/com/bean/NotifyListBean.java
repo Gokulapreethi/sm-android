@@ -21,6 +21,7 @@ public class NotifyListBean{
     private String unreadchat;
     private String unreadcallcount;
     private String serverdatetime;
+    private String sendtime;
 
     private String callsessionid;
 
@@ -231,5 +232,13 @@ public class NotifyListBean{
 
     public void setCallsessionid(String callsessionid) {
         this.callsessionid = callsessionid;
+    }
+
+    public String getSendtime() {
+        return sendtime;
+    }
+
+    public void setSendtime(String sendtime) {
+        this.sendtime = sendtime;
     }
 }

@@ -159,7 +159,7 @@ public class DBAccess extends SQLiteOpenHelper {
 	String hospitaldetails ="create table if not exists hospitaldetails(hospitalname nvarchar(200))";
 	String medicalsocieties ="create table if not exists medicalsocieties(id nvarchar(25),medicalsociety nvarchar(200))";
 	String seeallpatientdetails = "create table if not exists seeallpatientdetails(groupid nvarchar(25), patientid nvarchar(100), diagnosis nvarchar(100), active nvarchar(100), commentdate nvarchar(100))";
-	String chatrecentlist ="create table if not exists chatrecentlist(fromuser text,touser text,owner text,type text,content text,media text,sortdate text,notifytype text,viewed integer,fileid text,category text,username text,profilepic text,unreadchat text,callcount text,serverdatetime text,callsessionid text)";
+	String chatrecentlist ="create table if not exists chatrecentlist(fromuser text,touser text,owner text,type text,content text,media text,sortdate text,notifytype text,viewed integer,fileid text,category text,username text,profilepic text,unreadchat text,callcount text,serverdatetime text,callsessionid text,senttime text)";
 	String groupchatrecentlist ="create table if not exists groupchatrecentlist(fromuser text,touser text,owner text,type text,content text,media text,sortdate text,notifytype text,viewed integer,fileid text,category text,username text,profilepic text,unreadchat text,callcount text,serverdatetime text)";
 	private CallDispatcher callDisp;
 
@@ -11579,6 +11579,11 @@ public class DBAccess extends SQLiteOpenHelper {
 			if(bean.getCallsessionid()!=null){
 				cv.put("callsessionid",bean.getCallsessionid());
 			}
+
+			if(bean.getSendtime() != null) {
+				cv.put("senttime",bean.getSendtime());
+			}
+
 			if (isRecordExists("select * from chatrecentlist where owner='"
 					+ CallDispatcher.LoginUser + "'and fileid='" + bean.getFileid() + "'")) {
 				row = (int) db.update("chatrecentlist", cv, "owner='" + CallDispatcher.LoginUser + "'and fileid='" + bean.getFileid() + "'", null);
@@ -11801,19 +11806,19 @@ public class DBAccess extends SQLiteOpenHelper {
 	}
 
 
-	public int[] ChatRecentUserIDAvailableOrNot(String UsernameOrGroupId){
+	public String[] ChatRecentUserIDAvailableOrNot(String UsernameOrGroupId){
 
 
 		Cursor cur = null;
 //		boolean status = false;
-		int totcount[]=new int[2];
+		String recent_details[]=new String[3];
 		try {
 			if (!db.isOpen())
 				openDatabase();
 			String query;
 //			if(!indivijualOrgroup) {
-				query = "select * from chatrecentlist where fileid='" + UsernameOrGroupId
-						+ "' and owner ='" + CallDispatcher.LoginUser + "'";
+			query = "select * from chatrecentlist where fileid='" + UsernameOrGroupId
+					+ "' and owner ='" + CallDispatcher.LoginUser + "'";
 //			}else{
 //				query = "select * from groupchatrecentlist where fileid='" + UsernameOrGroupId
 //						+ "' and owner ='" + CallDispatcher.LoginUser + "'";
@@ -11824,17 +11829,28 @@ public class DBAccess extends SQLiteOpenHelper {
 
 			if (cur.getCount() > 0) {
 //				status = true;
-				if(cur.getString(13)!=null)
-				totcount[0]=Integer.parseInt(cur.getString(13));
-				else
-					totcount[0]=0;
-				if(cur.getString(14)!=null)
-					totcount[1]=Integer.parseInt(cur.getString(14));
-				else
-					totcount[1]=0;
-			}else{
-				totcount[0]=0;
-				totcount[1]=0;
+
+				if (cur.getString(13) != null) {
+					recent_details[0] = cur.getString(13);
+//					recent_details[0] = Integer.parseInt(cur.getString(13));
+				} else {
+					recent_details[0] = "0";
+				}
+				if (cur.getString(14) != null) {
+					recent_details[1] = cur.getString(14);
+//					recent_details[1] = Integer.parseInt(cur.getString(14));
+				} else {
+					recent_details[1] = "0";
+				}
+
+				if(cur.getString(17) != null) {
+					recent_details[2] = cur.getString(17);
+				}
+
+			} else {
+				recent_details[0] = "0";
+				recent_details[1] = "0";
+				recent_details[2] = "0";
 			}
 
 		} catch (Exception e) {
@@ -11847,7 +11863,7 @@ public class DBAccess extends SQLiteOpenHelper {
 			if (cur != null)
 				cur.close();
 
-			return totcount;
+			return recent_details;
 		}
 
 	}

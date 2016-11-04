@@ -216,6 +216,7 @@ import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DateFormatSymbols;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1149,6 +1150,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 							!groupChatBean.getMimetype().equalsIgnoreCase("vc"))) {
 //					if (groupChatBean.getSenttime() == null
 //							|| groupChatBean.getSenttime().length() == 0) {
+						groupChatBean.setOriginal_send_time(groupChatBean.getSenttime());
 						groupChatBean.setSenttime(getCurrentDateandTime());
 //					}
 					if (groupChatBean.getMimetype().equals("text")
@@ -9074,7 +9076,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 //							if(!DBAccess.getdbHeler().ChatRecentSortdateAvailableOrNot(groupChatBean.getSenttime(),false)) {
 								Log.i("recentSync","Appmain notifySyncChat Indivijual Chat Sortdate Not Availabel In Db");
 //
-									Log.i("recentSync","Appmain notifySyncChat Indivijual Chat Ac or not");
+									Log.i("recentSync", "Appmain notifySyncChat Indivijual Chat Ac or not");
 									NotifyListBean notifyListBean = new NotifyListBean();
 									notifyListBean.setFrom(groupChatBean.getFrom());
 									notifyListBean.setTo(groupChatBean.getTo());
@@ -9083,6 +9085,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 									if (groupChatBean.getMessage() != null)
 										notifyListBean.setContent(groupChatBean.getMessage());
 									notifyListBean.setSortdate(groupChatBean.getSenttime());
+									notifyListBean.setSendtime(groupChatBean.getOriginal_send_time());
 							if(groupChatBean.getSessionid()!=null && groupChatBean.getSessionid().contains("@")) {
 								notifyListBean.setFileid(groupChatBean.getFrom());
 							}else{
@@ -9681,6 +9684,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			notifyListBean.setContent(groupChatBean.getMessage());
 		notifyListBean.setSortdate(groupChatBean.getSenttime());
 		notifyListBean.setFileid(groupChatBean.getGroupId());
+		notifyListBean.setSendtime(groupChatBean.getOriginal_send_time());
 //		notifyListBean.setViewed(0);
 		if(groupChatBean.getMimetype()!=null && (groupChatBean.getMimetype().equalsIgnoreCase("ac") ||
 				groupChatBean.getMimetype().equalsIgnoreCase("vc"))) {
@@ -9696,65 +9700,93 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		}
 		notifyListBean.setNotifttype("I");
 		Log.i("recententry", "DBAccess.getdbHeler().ChatRecentUserIDAvailableOrNot" + DBAccess.getdbHeler().ChatRecentUserIDAvailableOrNot(notifyListBean.getFileid()));
+		boolean is_new_chat = false;
 		if(DBAccess.getdbHeler().ChatRecentUserIDAvailableOrNot(notifyListBean.getFileid())!=null){
-			int totcount[]=DBAccess.getdbHeler().ChatRecentUserIDAvailableOrNot(notifyListBean.getFileid());
+			String totcount[]=DBAccess.getdbHeler().ChatRecentUserIDAvailableOrNot(notifyListBean.getFileid());
 			if(groupChatBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)){
 				notifyListBean.setUnreadchat("0");
 				notifyListBean.setUnreadcallcount("0");
 			}else {
-				if (SingleInstance.contextTable.containsKey("groupchat")) {
-					GroupChatActivity chatActivity=(GroupChatActivity)SingleInstance.contextTable.get("groupchat");
-					if(chatActivity.isGroup || chatActivity.isRounding){
-						if(chatActivity.groupBean!=null && chatActivity.groupBean.getGroupId().equalsIgnoreCase(groupChatBean.getGroupId())){
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
+				try {
+
+					if (!totcount[2].equalsIgnoreCase("0")) {
+						Log.i("Gchat", "totcount[2] : " + totcount[2] + " groupChatBean.getSenttime() : " + groupChatBean.getSenttime());
+						Date last_Date = sdf.parse(totcount[2]);
+						Date received_Date = sdf.parse(groupChatBean.getSenttime());
+						Log.i("Gchat", "last_Date : " + last_Date + " received_Date : " + received_Date);
+						if (received_Date.after(last_Date)) {
+							Log.i("Gchat", "inside if");
+							is_new_chat = true;
+						} else {
+							Log.i("Gchat", "inside else");
+						}
+					} else {
+						is_new_chat = true;
+					}
+
+
+//					if (received_Date.after(last_Date)) {
+
+					if (SingleInstance.contextTable.containsKey("groupchat")) {
+						GroupChatActivity chatActivity = (GroupChatActivity) SingleInstance.contextTable.get("groupchat");
+						if (chatActivity.isGroup || chatActivity.isRounding) {
+							if (chatActivity.groupBean != null && chatActivity.groupBean.getGroupId().equalsIgnoreCase(groupChatBean.getGroupId())) {
+								notifyListBean.setUnreadchat("0");
+								notifyListBean.setUnreadcallcount("0");
+							} else {
+									if (chatEntry) {
+										notifyListBean.setUnreadchat(String.valueOf(Integer.parseInt(totcount[0]) + 1));
+										notifyListBean.setUnreadcallcount(totcount[1]);
+									} else {
+										notifyListBean.setUnreadchat(totcount[0]);
+										notifyListBean.setUnreadcallcount(String.valueOf(Integer.parseInt(totcount[1]) + 1));
+									}
+							}
+
+						} else if (chatActivity.buddy != null && chatActivity.buddy.equalsIgnoreCase(groupChatBean.getGroupId())) {
 							notifyListBean.setUnreadchat("0");
 							notifyListBean.setUnreadcallcount("0");
-						}else{
-							if(chatEntry) {
-								notifyListBean.setUnreadchat(String.valueOf(totcount[0] + 1));
-								notifyListBean.setUnreadcallcount(String.valueOf(totcount[1]));
-							}else{
-								notifyListBean.setUnreadchat(String.valueOf(totcount[0]));
-								notifyListBean.setUnreadcallcount(String.valueOf(totcount[1]+1));
+						} else {
+								if (chatEntry) {
+									notifyListBean.setUnreadchat(String.valueOf(Integer.parseInt(totcount[0]) + 1));
+									notifyListBean.setUnreadcallcount(totcount[1]);
+								} else {
+									notifyListBean.setUnreadchat(totcount[0]);
+									notifyListBean.setUnreadcallcount(String.valueOf(Integer.parseInt(totcount[1]) + 1));
+								}
+						}
+					} else {
+							if (chatEntry) {
+								notifyListBean.setUnreadchat(String.valueOf(Integer.parseInt(totcount[0]) + 1));
+								notifyListBean.setUnreadcallcount(totcount[1]);
+							} else {
+								notifyListBean.setUnreadchat(totcount[0]);
+								notifyListBean.setUnreadcallcount(String.valueOf(Integer.parseInt(totcount[1]) + 1));
 							}
-						}
-
-					}else if(chatActivity.buddy!=null && chatActivity.buddy.equalsIgnoreCase(groupChatBean.getGroupId())){
-						notifyListBean.setUnreadchat("0");
-						notifyListBean.setUnreadcallcount("0");
-					}else{
-						if(chatEntry) {
-							notifyListBean.setUnreadchat(String.valueOf(totcount[0] + 1));
-							notifyListBean.setUnreadcallcount(String.valueOf(totcount[1]));
-						}else{
-							notifyListBean.setUnreadchat(String.valueOf(totcount[0]));
-							notifyListBean.setUnreadcallcount(String.valueOf(totcount[1]+1));
-						}
 					}
-				}else {
-					if(chatEntry) {
-						notifyListBean.setUnreadchat(String.valueOf(totcount[0] + 1));
-						notifyListBean.setUnreadcallcount(String.valueOf(totcount[1]));
-					}else{
-						notifyListBean.setUnreadchat(String.valueOf(totcount[0]));
-						notifyListBean.setUnreadcallcount(String.valueOf(totcount[1]+1));
-					}
+//					}
+				} catch (ParseException e) {
+					e.printStackTrace();
 				}
 			}
 		}
+		if(is_new_chat) {
 
-		ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(groupChatBean.getGroupId());
-		if (pBean != null) {
-			notifyListBean.setProfilePic(pBean.getPhoto());
-			notifyListBean.setUsername(pBean.getFirstname() + " " + pBean.getLastname());
-		}
-		if(notifyListBean.getFileid()!=null && !notifyListBean.getFileid().contains("@")){
-			if (DBAccess.getdbHeler().getGroupName(
-					"select * from grouplist where groupid='" + notifyListBean.getFileid() + "'") != null) {
-				notifyListBean.setUsername(DBAccess.getdbHeler().getGroupName(
-						"select * from grouplist where groupid='" + notifyListBean.getFileid() + "'"));
+			ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(groupChatBean.getGroupId());
+			if (pBean != null) {
+				notifyListBean.setProfilePic(pBean.getPhoto());
+				notifyListBean.setUsername(pBean.getFirstname() + " " + pBean.getLastname());
 			}
-		}
+			if (notifyListBean.getFileid() != null && !notifyListBean.getFileid().contains("@")) {
+				if (DBAccess.getdbHeler().getGroupName(
+						"select * from grouplist where groupid='" + notifyListBean.getFileid() + "'") != null) {
+					notifyListBean.setUsername(DBAccess.getdbHeler().getGroupName(
+							"select * from grouplist where groupid='" + notifyListBean.getFileid() + "'"));
+				}
+			}
 //		notifyListBean.setServerdatetime(groupChatBean.getServerdateandtime());
-		DBAccess.getdbHeler().insertChatRecentList(notifyListBean, false);
+			DBAccess.getdbHeler().insertChatRecentList(notifyListBean, false);
+		}
 	}
 }

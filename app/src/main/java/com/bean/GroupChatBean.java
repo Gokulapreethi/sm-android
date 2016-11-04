@@ -44,6 +44,7 @@ public class GroupChatBean implements Serializable, Cloneable {
 
 	private String unreadchat;
 	private String callcount;
+	private String original_send_time;
 
 
 	public String getDateandtime() {
@@ -548,4 +549,11 @@ public class GroupChatBean implements Serializable, Cloneable {
 		this.callcount = callcount;
 	}
 
+	public String getOriginal_send_time() {
+		return original_send_time;
+	}
+
+	public void setOriginal_send_time(String original_send_time) {
+		this.original_send_time = original_send_time;
+	}
 }
