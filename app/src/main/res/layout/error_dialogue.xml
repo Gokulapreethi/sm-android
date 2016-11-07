@@ -28,7 +28,8 @@
                 android:gravity="center"
                 android:textColor="@color/pink"
                 android:textSize="17sp"
-                android:text="ERROR!"/>
+                android:visibility="invisible"
+                />
 
             <TextView
                 android:id="@+id/tv_firstLine"

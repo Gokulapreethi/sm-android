@@ -1218,6 +1218,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             TextView lastName = (TextView) v1.findViewById(R.id.lastName);
             TextView nickName = (TextView) v1.findViewById(R.id.nickName);
             TextView mf = (TextView) v1.findViewById(R.id.mf);
+            TextView sex=(TextView) v1.findViewById(R.id.sex);
             TextView atten_phys = (TextView) v1.findViewById(R.id.atten_phys);
             TextView statof = (TextView) v1.findViewById(R.id.statof);
             TextView profess = (TextView) v1.findViewById(R.id.profess);
@@ -1258,7 +1259,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         R.drawable.icon_buddy_aoffline);
             }
             if (pb.getUsername() != null && pb.getUsername().length() > 0)
-                username.setText(pb.getFirstname() + " " + pb.getLastname());
+                username.setText(pb.getFirstname());
             if (pb.getProfession() != null && pb.getProfession().length() > 0)
                 profession.setText(pb.getProfession());
             if (pb.getTitle() != null && pb.getTitle().length() > 0)
@@ -1267,6 +1268,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 fistName.setText(pb.getFirstname());
             if (pb.getLastname() != null && pb.getLastname().length() > 0)
                 lastName.setText(pb.getLastname());
+            if (pb.getSex() != null && pb.getSex().length() > 0)
+                sex.setText(pb.getSex());
             if (pb.getNickname() != null && pb.getNickname().length() > 0)
                 nickName.setText(pb.getNickname());
 
@@ -1350,7 +1353,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         // Your code to refresh the list here.
                         // Make sure you call swipeContainer.setRefreshing(false)
                         // once the network request has completed successfully.
-
+                        Log.i("pullsync","Refresh Lintener");
+                        AppReference.chatPullSync=true;
                         if(isGroup || isRounding) {
                             String minDate=DBAccess.getdbHeler().getminDateandTimeFromChat(groupId);
                             if(minDate!=null){
@@ -5898,13 +5902,43 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 LinearLayout chat_view = null;
 //                    selectAll_buddy.setSelected(gcBean.getSelect());
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+//                SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+                SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
+                SimpleDateFormat DayFormat = new SimpleDateFormat("EEEE MMMM dd");
                 Calendar cal = Calendar.getInstance();
                 String todayDate = format.format(cal.getTime());
                 if (todayDate.equals(gcBean.getSenttime().split(" ")[0])) {
                     tv_today.setText("Today");
-                } else if (getYesterdayDateString(format).equals(gcBean.getSenttime().split(" ")[0])) {
+                } else if (getYesterdayDateString(format,-1).equals(gcBean.getSenttime().split(" ")[0])) {
                     tv_today.setText("Yesterday");
+                } else if (getYesterdayDateString(format,-2).equals(gcBean.getSenttime().split(" ")[0])) {
+                    Date d1 = format.parse(gcBean.getSenttime().split(" ")[0]);
+                    String newdate = DayFormat.format(d1);
+                    tv_today.setText(newdate.split(" ")[0]);
+                }else if (getYesterdayDateString(format,-3).equals(gcBean.getSenttime().split(" ")[0])) {
+                    Date d1 = format.parse(gcBean.getSenttime().split(" ")[0]);
+                    String newdate = DayFormat.format(d1);
+                    tv_today.setText(newdate.split(" ")[0]);
+                }else if (getYesterdayDateString(format,-4).equals(gcBean.getSenttime().split(" ")[0])) {
+                    Date d1 = format.parse(gcBean.getSenttime().split(" ")[0]);
+                    String newdate = DayFormat.format(d1);
+                    tv_today.setText(newdate.split(" ")[0]);
+                }else if (getYesterdayDateString(format,-5).equals(gcBean.getSenttime().split(" ")[0])) {
+                    Date d1 = format.parse(gcBean.getSenttime().split(" ")[0]);
+                    String newdate = DayFormat.format(d1);
+                    tv_today.setText(newdate.split(" ")[0]);
+                }else if (getYesterdayDateString(format,-6).equals(gcBean.getSenttime().split(" ")[0])) {
+                    Date d1 = format.parse(gcBean.getSenttime().split(" ")[0]);
+                    String newdate = DayFormat.format(d1);
+                    tv_today.setText(newdate.split(" ")[0]);
+                }else if (getYesterdayDateString(format,-7).equals(gcBean.getSenttime().split(" ")[0])) {
+                    Date d1 = format.parse(gcBean.getSenttime().split(" ")[0]);
+                    String newdate = DayFormat.format(d1);
+                    tv_today.setText(newdate.split(" ")[0]);
+                }else if (getYesterdayDateString(format,-8).equals(gcBean.getSenttime().split(" ")[0])) {
+                    Date d1 = format.parse(gcBean.getSenttime().split(" ")[0]);
+                    String newdate = DayFormat.format(d1);
+                    tv_today.setText(newdate.split(" ")[0]);
                 } else {
                     Date d1 = format.parse(gcBean.getSenttime().split(" ")[0]);
                     String newdate = sdf.format(d1);
@@ -7847,10 +7881,10 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         return name;
     }
 
-    private String getYesterdayDateString(SimpleDateFormat dateFormat) {
+    private String getYesterdayDateString(SimpleDateFormat dateFormat,int value) {
         try {
             Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DATE, -1);
+            cal.add(Calendar.DATE, value);
             Log.i("dateformat",
                     "yesterday format change :: "
                             + dateFormat.format(cal.getTime()));
@@ -13752,7 +13786,15 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 if(swipeContainer!=null) {
                     swipeContainer.setRefreshing(false);
                 }
+                AppReference.chatPullSync=false;
                 chatprocess();
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        lv.setSelection(0);
+//                    }
+//                },1000);
+
             }
         },2000);
 

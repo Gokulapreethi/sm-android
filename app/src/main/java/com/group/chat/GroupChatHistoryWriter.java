@@ -134,9 +134,47 @@ public class GroupChatHistoryWriter extends Thread {
 						int row = DBAccess.getdbHeler(
 								SipNotificationListener.getCurrentContext())
 								.insertGroupChat(groupChatBean);
-                        if(AppReference.mainContext!=null) {
-							if(!AppReference.Beginsync_chat && !AppReference.chatRecentSync)
-							AppReference.mainContext.ChatRecentEntry(groupChatBean,true);
+
+
+						if(AppReference.mainContext!=null) {
+							if(AppReference.chatPullSync) {
+								Log.i("pullsync","Appreference chatPullsync true");
+								if (SingleInstance.contextTable.containsKey("groupchat")) {
+									String str = null;
+									if (groupChatBean != null && groupChatBean.getSessionid().contains("@")) {
+										Log.i("pullsync", "sessionid--->" + groupChatBean.getSessionid());
+										if(groupChatBean.getFrom()!=null  &&
+												!groupChatBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)){
+											str=groupChatBean.getFrom();
+										} else if(groupChatBean.getTo()!=null  &&
+												!groupChatBean.getTo().equalsIgnoreCase(CallDispatcher.LoginUser)){
+											str=groupChatBean.getTo();
+										}
+										Log.i("pullsync", "str--->"+str);
+									}
+									GroupChatActivity chatActivity = (GroupChatActivity) SingleInstance.contextTable.get("groupchat");
+									if (chatActivity.isGroup || chatActivity.isRounding) {
+										if (chatActivity.groupBean != null && !chatActivity.groupBean.getGroupId().equalsIgnoreCase(groupChatBean.getSessionid())) {
+											Log.i("pullsync","not same in groupchat page groupid");
+											if (!AppReference.Beginsync_chat && !AppReference.chatRecentSync)
+												AppReference.mainContext.ChatRecentEntry(groupChatBean, true);
+										}
+
+									} else if (str != null && chatActivity.buddy != null && !chatActivity.buddy.equalsIgnoreCase(str.trim())) {
+										Log.i("pullsync","not same in groupchat page buddyid");
+										if (!AppReference.Beginsync_chat && !AppReference.chatRecentSync)
+											AppReference.mainContext.ChatRecentEntry(groupChatBean, true);
+									}
+								} else {
+									Log.i("pullsync","GroupchatActivity context not available");
+									if (!AppReference.Beginsync_chat && !AppReference.chatRecentSync)
+										AppReference.mainContext.ChatRecentEntry(groupChatBean, true);
+								}
+							}else {
+								Log.i("pullsync","Appreference chatPullsync false");
+								if (!AppReference.Beginsync_chat && !AppReference.chatRecentSync)
+									AppReference.mainContext.ChatRecentEntry(groupChatBean, true);
+							}
 						}
 
 

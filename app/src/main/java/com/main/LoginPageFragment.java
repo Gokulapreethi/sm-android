@@ -381,7 +381,7 @@ public class LoginPageFragment extends Fragment {
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
 
                     if (keyCode == KeyEvent.KEYCODE_DEL) {
-                        edPswd.setText("");
+                       // edPswd.setText("");
                     }
                     return false;
                 }
@@ -400,7 +400,7 @@ public class LoginPageFragment extends Fragment {
                     email_error.setVisibility(View.GONE);
                     password_error.setVisibility(View.GONE);
 					if (edUserName.getText().toString().length() == 0) {
-						edPswd.setText("");
+						//edPswd.setText("");
 					}
 
                     if (edUserName.getText().toString().length() > 0
@@ -1534,7 +1534,7 @@ public class LoginPageFragment extends Fragment {
                     // TODO Auto-generated method stub
                     Log.i("login098", "inside handler");
 //                    edUserName.setText("");
-                    edPswd.setText("");
+                    //edPswd.setText("");
                 }
             });
 

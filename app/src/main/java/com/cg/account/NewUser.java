@@ -236,6 +236,7 @@ public class NewUser extends Activity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                state_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
             }
         });
 

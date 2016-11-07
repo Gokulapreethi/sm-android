@@ -167,14 +167,14 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                     fragmentManager.beginTransaction().replace(R.id.activity_main_content_fragment, filesFragment).commitAllowingStateLoss();
                 }
             });
-            holder.call_relay.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    CallHistoryFragment callhistoryFragment = CallHistoryFragment.newInstance(context);
-                    FragmentManager fragmentManager = SingleInstance.mainContext.getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.activity_main_content_fragment, callhistoryFragment).commitAllowingStateLoss();
-                }
-            });
+//            holder.call_relay.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    CallHistoryFragment callhistoryFragment = CallHistoryFragment.newInstance(context);
+//                    FragmentManager fragmentManager = SingleInstance.mainContext.getSupportFragmentManager();
+//                    fragmentManager.beginTransaction().replace(R.id.activity_main_content_fragment, callhistoryFragment).commitAllowingStateLoss();
+//                }
+//            });
             if(notifyBean!=null) {
                 Log.d("String","otifyid"+notifyBean.getFileid());
                 if (notifyBean.getProfilePic() != null && notifyBean.getProfilePic().length()>0) {
@@ -315,43 +315,27 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                         Log.i("t1", "----" + todayDate[i]);
                     }
                     Date today = df2.parse(todayDate[0]);
-                    String[] yesterdayDate = getYesterdayDateString(df).split(" ");
+                    String[] yesterdayDate = getYesterdayDateString(df,-1).split(" ");
                     Date yesterday = df2.parse(yesterdayDate[0]);
                     Log.i("dateformat", "receivedDate :: " + receivedDate);
                     Log.i("dateformat", "today :: " + today);
                     Log.i("dateformat", "yesterday :: " + yesterday);
 
                     if (receivedDate.compareTo(today) == 0) {
-//                        if (!isEntered) {
+                        if (!isEntered) {
                             holder.header_container.setVisibility(View.VISIBLE);
                             holder.header.setText("TODAY");
-//                            isEntered = true;
-//                        } else
-//                            holder.header_container.setVisibility(View.GONE);
-                        if (position > 0) {
-                            final NotifyListBean bean = fileList.get(position - 1);
-                            if (bean.getSortdate().split(" ")[0].equals(notifyBean.getSortdate().split(" ")[0])) {
-                                holder.header_container.setVisibility(View.GONE);
-                            } else {
-                                holder.header_container.setVisibility(View.VISIBLE);
-                            }
-                        }
+                            isEntered = true;
+                        } else
+                            holder.header_container.setVisibility(View.GONE);
                     } else if (receivedDate.compareTo(yesterday) == 0) {
-//                        if (!isEnter) {
+                        if (!isEnter) {
                             holder.header_container.setVisibility(View.VISIBLE);
                             holder.header.setText("YESTERDAY");
-//                            isEnter = true;
-//                        } else
-//                            holder.header_container.setVisibility(View.GONE);
+                            isEnter = true;
+                        } else
+                            holder.header_container.setVisibility(View.GONE);
 
-                        if (position > 0) {
-                            final NotifyListBean bean = fileList.get(position - 1);
-                            if (bean.getSortdate().split(" ")[0].equals(notifyBean.getSortdate().split(" ")[0])) {
-                                holder.header_container.setVisibility(View.GONE);
-                            } else {
-                                holder.header_container.setVisibility(View.VISIBLE);
-                            }
-                        }
                     } else {
                         holder.header_container.setVisibility(View.VISIBLE);
                         Log.i("abcd", "=========notifyBean.getSortdate()" + notifyBean.getSortdate());
@@ -380,7 +364,8 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
 
 
                         SimpleDateFormat parseFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
-                        SimpleDateFormat printFormat = new SimpleDateFormat("EEEE MMMM dd");
+//                        SimpleDateFormat printFormat = new SimpleDateFormat("EEEE MMMM dd");
+                        SimpleDateFormat printFormat = new SimpleDateFormat("dd MMM yyyy");
                         Date date = new Date();
                         try {
                             date = parseFormat.parse(formattedDate);
@@ -400,9 +385,10 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                         }
                         datelist.add(senttime);
                         if(iscontact) {
-                            if (senttime != null && senttime.contains(" ")) {
-                                holder.header.setText(senttime.split(" ")[0].toUpperCase());
-                            }
+//                            if (senttime != null && senttime.contains(" ")) {
+//                                holder.header.setText(senttime.split(" ")[0].toUpperCase());
+//                            }
+                            holder.header.setText(senttime);
                         }else{
                             holder.header.setText(senttime);
                         }
@@ -411,6 +397,62 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                     String[] times = time.split(":");
                     holder.time.setText(times[0] + ":" + times[1]);
                     Log.i("AAAA", "NOTIFYLIST ADAPTER Values " + time);
+
+
+                    if(iscontact) {
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+//                    SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
+                        SimpleDateFormat DayFormat = new SimpleDateFormat("EEEE MMMM dd");
+                        Calendar cal1 = Calendar.getInstance();
+                        String todayDate1 = format.format(cal1.getTime());
+                        if (todayDate1.equals(notifyBean.getSortdate().split(" ")[0])) {
+                            holder.header.setText("Today");
+                        } else if (getYesterdayDateString(format,-1).equals(notifyBean.getSortdate().split(" ")[0])) {
+                            holder.header.setText("Yesterday");
+                        } else if (getYesterdayDateString(format,-2).equals(notifyBean.getSortdate().split(" ")[0])) {
+                            Date d1 = format.parse(notifyBean.getSortdate().split(" ")[0]);
+                            String newdate = DayFormat.format(d1);
+                            holder.header.setText(newdate.split(" ")[0]);
+                        }else if (getYesterdayDateString(format,-3).equals(notifyBean.getSortdate().split(" ")[0])) {
+                            Date d1 = format.parse(notifyBean.getSortdate().split(" ")[0]);
+                            String newdate = DayFormat.format(d1);
+                            holder.header.setText(newdate.split(" ")[0]);
+                        }else if (getYesterdayDateString(format,-4).equals(notifyBean.getSortdate().split(" ")[0])) {
+                            Date d1 = format.parse(notifyBean.getSortdate().split(" ")[0]);
+                            String newdate = DayFormat.format(d1);
+                            holder.header.setText(newdate.split(" ")[0]);
+                        }else if (getYesterdayDateString(format,-5).equals(notifyBean.getSortdate().split(" ")[0])) {
+                            Date d1 = format.parse(notifyBean.getSortdate().split(" ")[0]);
+                            String newdate = DayFormat.format(d1);
+                            holder.header.setText(newdate.split(" ")[0]);
+                        }else if (getYesterdayDateString(format,-6).equals(notifyBean.getSortdate().split(" ")[0])) {
+                            Date d1 = format.parse(notifyBean.getSortdate().split(" ")[0]);
+                            String newdate = DayFormat.format(d1);
+                            holder.header.setText(newdate.split(" ")[0]);
+                        }else if (getYesterdayDateString(format,-7).equals(notifyBean.getSortdate().split(" ")[0])) {
+                            Date d1 = format.parse(notifyBean.getSortdate().split(" ")[0]);
+                            String newdate = DayFormat.format(d1);
+                            holder.header.setText(newdate.split(" ")[0]);
+                        }else if (getYesterdayDateString(format,-8).equals(notifyBean.getSortdate().split(" ")[0])) {
+                            Date d1 = format.parse(notifyBean.getSortdate().split(" ")[0]);
+                            String newdate = DayFormat.format(d1);
+                            holder.header.setText(newdate.split(" ")[0]);
+                        }else {
+                            Date d1 = format.parse(notifyBean.getSortdate().split(" ")[0]);
+                            String newdate = sdf.format(d1);
+                            holder.header.setText(newdate);
+                        }
+                        holder.header_container.setVisibility(View.VISIBLE);
+                        if (position > 0) {
+                            final NotifyListBean bean = fileList.get(position - 1);
+                            if (bean.getSortdate().split(" ")[0].equals(notifyBean.getSortdate().split(" ")[0])) {
+                                holder.header_container.setVisibility(View.GONE);
+                            } else {
+                                holder.header_container.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
                 }
 
 
@@ -505,14 +547,14 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                                 holder.buddyicon.setVisibility(View.VISIBLE);
                                 //For chatRecentlist
                                 //Start
-                                if(notifyBean.getCategory().equalsIgnoreCase("call")){
-                                    holder.fileType.setText(notifyBean.getUsername());
-                                    holder.fileName.setText("Missed Call");
-                                }
-//
-                                if(notifyBean.getType()!=null && !notifyBean.getType().trim().equalsIgnoreCase("text")){
-                                    holder.fileName.setText(notifyBean.getType());
-                                }
+//                                if(notifyBean.getCategory().equalsIgnoreCase("call")){
+//                                    holder.fileType.setText(notifyBean.getUsername());
+//                                    holder.fileName.setText("Missed Call");
+//                                }
+////
+//                                if(notifyBean.getType()!=null && !notifyBean.getType().trim().equalsIgnoreCase("text")){
+//                                    holder.fileName.setText(notifyBean.getType());
+//                                }
                                 //End
 //                                holder.fileIcon.setBackgroundResource(R.drawable.recent_message);
                             } else {
@@ -564,23 +606,24 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                                     if (newFile.exists())
                                         holder.fileName.setText(notifyBean.getType() + " received");
                                     else {
-                                        if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("image")){
+                                        if (notifyBean.getType() != null && notifyBean.getType().trim().equalsIgnoreCase("image")) {
                                             holder.fileName.setText("Image File Received");
-                                        }else if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("audio")){
+                                        } else if (notifyBean.getType() != null && notifyBean.getType().trim().equalsIgnoreCase("audio")) {
                                             holder.fileName.setText("Audio File Received");
-                                        }else if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("video")){
+                                        } else if (notifyBean.getType() != null && notifyBean.getType().trim().equalsIgnoreCase("video")) {
                                             holder.fileName.setText("Video File Received");
-                                        }else if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("sketch")){
+                                        } else if (notifyBean.getType() != null && notifyBean.getType().trim().equalsIgnoreCase("sketch")) {
                                             holder.fileName.setText("Sketch File Received");
-                                        }else if(notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("document")){
+                                        } else if (notifyBean.getType() != null && notifyBean.getType().trim().equalsIgnoreCase("document")) {
                                             holder.fileName.setText("Document File Received");
-                                        }else if(notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("mixedfile")){
+                                        } else if (notifyBean.getType() != null && notifyBean.getType().trim().equalsIgnoreCase("mixedfile")) {
                                             holder.fileName.setText("Mixed File Received");
-                                        }else {
+                                        } else {
                                             holder.fileName.setText("Files Received");
                                         }
                                     }
-                                } else {
+                                }
+                                else {
                                     if (iscontact) {
                                         holder.fileName.setText("Missed Call");
                                     } else{
@@ -590,18 +633,66 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                             }
 
                             if(iscontact){
-                                if(notifyBean.getCategory()!=null && notifyBean.getFileid()!=null &&
-                                       !notifyBean.getFileid().contains("@")&& notifyBean.getCategory().equalsIgnoreCase("call")){
-                                    holder.fileType.setText(notifyBean.getUsername());
-                                    holder.fileName.setText("Missed Call");
-                                }
-                                if(notifyBean.getType()!=null && notifyBean.getContent()!=null){
-                                    holder.fileName.setText(notifyBean.getContent());
-                                }
+//                                if(notifyBean.getCategory()!=null && notifyBean.getFileid()!=null &&
+//                                       !notifyBean.getFileid().contains("@")&& notifyBean.getCategory().equalsIgnoreCase("call")){
+//                                    holder.fileType.setText(notifyBean.getUsername());
+////                                    holder.fileName.setText("Missed call");
+//                                    holder.fileName.setText(notifyBean.getContent());
+//                                }
+//                                if(notifyBean.getType()!=null && notifyBean.getContent()!=null){
+//                                    holder.fileName.setText(notifyBean.getContent());
+//                                }
                                 if(notifyBean.getUsername()!=null){
                                     holder.fileType.setText(notifyBean.getUsername());
                                 }else if(notifyBean.getFrom()!=null){
                                     holder.fileType.setText(notifyBean.getFrom());
+                                }
+
+                                if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("text")) {
+                                    if (notifyBean.getContent() != null)
+                                        holder.fileName.setText(notifyBean.getContent());
+                                }else{
+                                    if (notifyBean.getType() != null && notifyBean.getType().trim().equalsIgnoreCase("image")) {
+                                        if(notifyBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)){
+                                            holder.fileName.setText("Image sent");
+                                        }else {
+                                            holder.fileName.setText("Image received");
+                                        }
+                                    } else if (notifyBean.getType() != null && notifyBean.getType().trim().equalsIgnoreCase("audio")) {
+                                        if(notifyBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)){
+                                            holder.fileName.setText("Audio sent");
+                                        }else {
+                                            holder.fileName.setText("Audio received");
+                                        }
+                                    } else if (notifyBean.getType() != null && notifyBean.getType().trim().equalsIgnoreCase("video")) {
+                                        if(notifyBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)){
+                                            holder.fileName.setText("Video sent");
+                                        }else {
+                                            holder.fileName.setText("Video received");
+                                        }
+                                    } else if (notifyBean.getType() != null && notifyBean.getType().trim().equalsIgnoreCase("sketch")) {
+                                        if(notifyBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)){
+                                            holder.fileName.setText("Sketch sent");
+                                        }else {
+                                            holder.fileName.setText("Sketch received");
+                                        }
+                                    } else if (notifyBean.getType() != null && notifyBean.getType().trim().equalsIgnoreCase("document")) {
+                                        if(notifyBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)){
+                                            holder.fileName.setText("Document sent");
+                                        }else {
+                                            holder.fileName.setText("Document received");
+                                        }
+                                    } else if (notifyBean.getType() != null && notifyBean.getType().trim().equalsIgnoreCase("mixedfile")) {
+                                        if(notifyBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)){
+                                            holder.fileName.setText("Mixed sent");
+                                        }else {
+                                            holder.fileName.setText("Mixed received");
+                                        }
+                                    } else if(notifyBean.getCategory()!=null && notifyBean.getCategory().equalsIgnoreCase("call")){
+                                        if (notifyBean.getContent() != null){
+                                            holder.fileName.setText(notifyBean.getContent());
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -648,10 +739,10 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
         }
         notifyDataSetChanged();
     }
-    private String getYesterdayDateString(SimpleDateFormat dateFormat) {
+    private String getYesterdayDateString(SimpleDateFormat dateFormat,int value) {
         try {
             Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DATE, -1);
+            cal.add(Calendar.DATE, value);
             Log.i("dateformat",
                     "yesterday format change :: "
                             + dateFormat.format(cal.getTime()));

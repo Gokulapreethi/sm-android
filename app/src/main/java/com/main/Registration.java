@@ -44,6 +44,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bean.ProfileBean;
 import com.cg.DB.DBAccess;
 import com.cg.account.TermsAndAgreement;
 import com.cg.account.VeratadVerification;
@@ -65,6 +66,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TreeSet;
 
 public class Registration extends Activity {
 
@@ -88,8 +90,8 @@ public class Registration extends Activity {
     ArrayList<String> states = new ArrayList<String>();
     ArrayList<String> specialityList = new ArrayList<String>();
     ArrayList<String> medicalschoolsList = new ArrayList<String>();
-    ArrayList<String> hospitalList = new ArrayList<String>();
-    ArrayList<String> medicalSocietyList = new ArrayList<String>();
+//    ArrayList<String> hospitalList = new ArrayList<>();
+    ArrayList<String> medicalSocietyList = new ArrayList<>();
     ArrayList<String> cityList=new ArrayList<String>();
     ArrayAdapter<String> stateAdapter;
     ArrayAdapter<String> hospitalDetailsAdapter;
@@ -599,6 +601,7 @@ public class Registration extends Activity {
 
                                                    @Override
                                                    public void afterTextChanged(Editable editable) {
+                                                       city_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
                                                    }
                                                });
 
@@ -665,9 +668,9 @@ public class Registration extends Activity {
                                                    }
                                                });
                                                cityList.addAll(SingleInstance.mainContext.cityList);
-
-                                               ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list,cityList);
-
+                                               TreeSet settree=new TreeSet(cityList);
+                                               ArrayList arrayList_city=new ArrayList(settree);
+                                               ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list,arrayList_city);
                                                dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
 
                                                city.setAdapter(dataAdapter);
@@ -707,6 +710,23 @@ public class Registration extends Activity {
                                                            offcstate_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
                                                            state1.showDropDown();
                                                        }
+                                                   }
+                                               });
+                                               state1.addTextChangedListener(new TextWatcher() {
+                                                   @Override
+                                                   public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                                   }
+
+                                                   @Override
+                                                   public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                                                   }
+
+                                                   @Override
+                                                   public void afterTextChanged(Editable s) {
+                                                       offcstate_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+
                                                    }
                                                });
 
@@ -952,7 +972,9 @@ public class Registration extends Activity {
 
 
         medicalSocietyList=DBAccess.getdbHeler().getMedicalSocietiesDetails();
-        medicalDetailsAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, medicalSocietyList);
+        TreeSet set3=new TreeSet(medicalSocietyList);
+        ArrayList arrayList1=new ArrayList(set3);
+        medicalDetailsAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list,arrayList1);
         association_membership.setAdapter(medicalDetailsAdapter);
         association_membership.setThreshold(30);
         association_img.setOnClickListener(new View.OnClickListener() {
@@ -972,7 +994,9 @@ public class Registration extends Activity {
             }
         });
 
-        hospitalList=DBAccess.getdbHeler().getHospitalDetails();
+        ArrayList<String> hospitalList=DBAccess.getdbHeler().getHospitalDetails();
+       TreeSet set=new TreeSet(hospitalList);
+        hospitalList=new ArrayList(set);
         hospitalDetailsAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, hospitalList);
         sp4.setAdapter(hospitalDetailsAdapter);
         sp4.setThreshold(30);
@@ -1024,6 +1048,23 @@ public class Registration extends Activity {
                     titel_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
                     sp1.showDropDown();
                 }
+            }
+        });
+        sp1.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                titel_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+
             }
         });
 
@@ -1091,7 +1132,7 @@ public class Registration extends Activity {
 
         list_secQue2 = new ArrayList<String>();
         list_secQue2.addAll(quesList);
-        list_secQue1.add("Other Question");
+       // list_secQue1.add("Other Question");
 
         dataAdapter_secQue2 = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, list_secQue2);
         dataAdapter_secQue2.setDropDownViewResource(R.layout.spinner_dropdown_list);
@@ -1100,7 +1141,7 @@ public class Registration extends Activity {
 
         list_secQue3 = new ArrayList<String>();
         list_secQue3.addAll(quesList);
-        list_secQue1.add("Other Question");
+       // list_secQue1.add("Other Question");
 
         dataAdapter_secQue3 = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, list_secQue3);
         dataAdapter_secQue3.setDropDownViewResource(R.layout.spinner_dropdown_list);
@@ -1147,6 +1188,7 @@ public class Registration extends Activity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                residency_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
             }
         });
 
@@ -1189,6 +1231,7 @@ public class Registration extends Activity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                fellow_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
             }
         });
 
@@ -1233,6 +1276,7 @@ public class Registration extends Activity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                prof_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
 
             }
         });
@@ -1275,12 +1319,15 @@ public class Registration extends Activity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                speciality_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
 
             }
         });
 
         medicalschoolsList=DBAccess.getdbHeler().getMedicalSchoolDetails();
-        dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list, medicalschoolsList);
+        TreeSet set2=new TreeSet(medicalschoolsList);
+        ArrayList arrayList=new ArrayList(set2);
+        dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list, arrayList);
         dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         medical_schools.setAdapter(dataAdapter);
         medical_schools.setThreshold(30);
@@ -1317,7 +1364,7 @@ public class Registration extends Activity {
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                medical_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
             }
         });
 
@@ -1381,6 +1428,7 @@ public class Registration extends Activity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                usertype_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
 
             }
 
@@ -1414,6 +1462,7 @@ public class Registration extends Activity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                state_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
             }
         });
         final String[] param = new String[28];
@@ -1461,6 +1510,7 @@ public class Registration extends Activity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                hospital_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
             }
         });
         association_membership.addTextChangedListener(new TextWatcher() {
@@ -1479,6 +1529,7 @@ public class Registration extends Activity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                association_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
             }
         });
         sp5.addTextChangedListener(new TextWatcher() {
@@ -1500,6 +1551,8 @@ public class Registration extends Activity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                ques1_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+
 
             }
         });
@@ -1540,6 +1593,7 @@ public class Registration extends Activity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                ques2_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
 
             }
         });
@@ -1580,24 +1634,28 @@ public class Registration extends Activity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                ques3_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
 
             }
         });
         ques3_img.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                ques3_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
                 sp7.showDropDown();
             }
         });
         ques2_img.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                ques2_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
                 sp6.showDropDown();
             }
         });
         ques1_img.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                ques1_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
                 sp5.showDropDown();
             }
         });
@@ -2197,7 +2255,7 @@ public class Registration extends Activity {
         return super.onKeyDown(keyCode, event);
     }
     public ArrayList<String> loadResidencyFiles(){
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         list.add("Abington Memorial Hospital Program");list.add("Advocate Christ Medical Center Program");list.add("Advocate Illinois Masonic Medical Center Program");list.add("Advocate Lutheran General Hospital Program");list.add("Albany Medical Center Program");list.add("Albert Einstein College of Medicine at Bronx-Lebanon Hospital Center Program");list.add("Albert Einstein Healthcare Network Program");list.add("Albert Einstein Medical Center Program");list.add("All Children's Hospital Program");list.add("Allegheny Health Network Medical Education Consortium (AGH) Program");list.add("Allegheny Health Network Medical Education Consortium (SVH) Program");list.add("Allegheny Health Network Medical Education Consortium (WPH) Program");list.add("Allegheny Health Network Medical Education Consortium (WPH/AGH) Program");list.add("AnMed Health (Anderson) Program");list.add("A-OPTIC/The Medical Center Program");list.add("Atlantic Health(Morristown) Program");list.add("Atlantic Health (Overlook) Program");list.add("Atlantic Health Program");list.add("Aurora Health Care Program");list.add("Baton Rouge General Medical Center Program");list.add("Bayfront Health St Petersburg Program");list.add("Baylor College of Medicine Program");list.add("Baylor College of Medicine/St Luke's Episcopal Hospital Program");list.add("Baylor University Medical Center Program");list.add("Baystate Medical Center/Tufts University School of Medicine Program");list.add("Beth Israel Deaconess Medical Center Program");list.add("Beth Israel Deaconess Medical Center/Harvard Medical School Program");list.add("Boston University Medical Center Program");list.add("Bridgeport Hospital Program");list.add("Bridgeport Hospital/Yale University Program");
         list.add("Brigham & Women's Hospital Program");list.add("Brigham and Women's Hospital Program");list.add("Brigham and Women's Hospital/Children's Hospital Program");list.add("Brigham and Women's Hospital/Harvard Medical School Program");list.add("Brigham and Women's Hospital/Massachusetts General Hospital Program");list.add("Brigham and Women's Hospital/Massachusetts General Hospital/Dana-Farber Cancer Institute Program");list.add("Bronx-Lebanon Hospital Center Program");list.add("Brookdale University Hospital and Medical Center Program");list.add("Brooklyn Hospital Center Program");list.add("Brown University (Women and Infants Hospital of Rhode Island) Program");list.add("Brown University Program");list.add("Brown University/Rhode Island Hospital-Lifespan Program");
         list.add("California Pacific Medical Center Program");list.add("Cambridge Health Alliance Program");list.add("Canton Medical Education Foundation/Aultman Hospital/NEOMED Program");list.add("Carilion Clinic-Virginia Tech Carilion School of Medicine Program");list.add("Carle Foundation Hospital Program");list.add("Carolinas Medical Center (Northeast-Cabarrus) Program");list.add("Carolinas Medical Center Program");list.add("Case Western Reserve Univ/Univ Hospitals Case Medical Center Program");list.add("Case Western Reserve University (MetroHealth) Program");list.add("Case Western Reserve University/Univ Hosp Case Med Ctr/Rainbow Babies and Childrens Hospital Program");list.add("Case Western Reserve University/University Hospitals Case Medical Center Program");list.add("Case Western Reserve University-Cleveland Clinic Foundation-MetroHealth Medical Center Program");list.add("Cedars-Sinai Medical Center Program");list.add("CEME/Largo Medical Center Program");list.add("CEME/Larkin Community Hospital Program");list.add("CEME/Magnolia Regional Health Center Program");list.add("CEME/N Broward Hospital District Program");list.add("CEME/Nova Southeastern University COM Program");list.add("CEME/Palmetto General Hosp Program");list.add("Charleston Area Medical Center/West Virginia University (Charleston Division) Program");list.add("Chicago Medical School at Rosalind Franklin University of Medicine and Science Program");list.add("Chicago Medical School/Rosalind Franklin Univ of Med & Sci Program");list.add("Children's Hospital Los Angeles Program");list.add("Children's Hospital Medical Center of Akron Program");list.add("Children's Hospital Medical Center of Akron/NEOMED Program");
@@ -2240,7 +2298,7 @@ public class Registration extends Activity {
     }
     public ArrayList<String> loadFellowship()
     {
-        ArrayList<String> list=new ArrayList<String>();
+        ArrayList<String> list=new ArrayList<>();
 
         list.add("AnMed Health (Anderson) Program");list.add("AnMed Health (Anderson) Rural Program");list.add("Anne Arundel Medical Center Program New Program");list.add("A-OPTIC/Alaska Family Medicine Residency/Providence Program");
         list.add("A-OPTIC/Central WA Family Med Residency Program");list.add("A-OPTIC/East Central Health Net Regional Rural Program");list.add("A-OPTIC/East Kentucky Osteo Hosp Program");

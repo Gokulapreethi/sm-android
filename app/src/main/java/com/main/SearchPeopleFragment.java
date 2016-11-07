@@ -41,6 +41,7 @@ import org.lib.model.WebServiceBean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 public class SearchPeopleFragment extends Fragment {
 
@@ -63,7 +64,7 @@ public class SearchPeopleFragment extends Fragment {
     ArrayList<String> stateList = new ArrayList<String>();
     ArrayList<String> specialityList = new ArrayList<String>();
     ArrayList<String> medicalschoolsList = new ArrayList<String>();
-    ArrayList<String> hospitalList = new ArrayList<String>();
+    ArrayList<String> hospitalList = new ArrayList<>();
     private boolean isUsertype=false,isState=false;
     private boolean isSpeciality=false,isMedical=false,isResidency=false;
     private boolean isFellow=false,isHospital=false,isCity=false;
@@ -380,9 +381,8 @@ public class SearchPeopleFragment extends Fragment {
                 });
 
                 hospitalList= DBAccess.getdbHeler().getHospitalDetails();
-
-                dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list,hospitalList);
-
+                TreeSet<String> treeSet=new TreeSet<>(hospitalList);
+                dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list, (List<String>) treeSet);
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
 
                 hospital.setAdapter(dataAdapter);

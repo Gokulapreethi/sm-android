@@ -294,7 +294,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	private Timer timerQA;
 
 	private MyTimerTask myTimerTask;
-
+	
 	private AlertDialog.Builder missedCallAlert;
 
 	private MyTimerTaskQA myTimerTaskQA;
@@ -2210,7 +2210,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 	/**
 	 * Logout Scenario
-	 *
+	 * 
 	 * @param status
 	 * @throws Exception
 	 */
@@ -7447,8 +7447,8 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 		Log.i("incoming", "AppmainActivity  - = - didReceiveIncomingCall");
 		Log.i("incoming", "callid :" + callid + " remoteinfo :" + remoteinfo);
-
-
+		
+		
 		handler.post(new Runnable() {
 
 			@Override
@@ -7543,9 +7543,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 			am.setStreamVolume(AudioManager.STREAM_MUSIC,
 					am.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
-
+			
 			// Missed Call Alert
-
+			
 			AlertDialog.Builder a = new AlertDialog.Builder(ctxt);
 			a.setTitle("Missed call alert");
 			a.setMessage("You missed a call from "+toUserName);
@@ -7555,9 +7555,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					dialog.dismiss();
 				}
 			});
-
+			
 			missedCallAlert = a;
-
+			
 			final Dialog dialog1 = new Dialog(ctxt);
 			dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
 			dialog1.setContentView(R.layout.callcustomdialog);
@@ -7566,7 +7566,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			TextView decline = (TextView) dialog1.findViewById(R.id.tv_cancel);
 			TextView tview = (TextView) dialog1.findViewById(R.id.call_alert1);
 			tview.setText("" + "\n" + toUserName);
-
+			
 
 			Message msg = new Message();
 			Bundle bndl = new Bundle();
@@ -7579,7 +7579,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				@Override
 				public void onClick(View v) {
 					Log.i("incoming", "accept clicked :  call_id :" + call_id);
-					callDisp.stopRingTone();
+					callDisp.stopRingTone();	
 					CommunicationBean bean = new CommunicationBean();
 					bean.setCall_id(call_id);
 					bean.setSendingStatusid("200");
@@ -7697,10 +7697,10 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			Log.i("Test", "WEBSERVICE RESPONSE RESULT: "+(String[])obj);
 			if (obj instanceof String[]) {
 				String[] temp = (String[]) obj;
-
-				profession = Arrays.copyOf(temp, temp.length);
+												
+				profession = Arrays.copyOf(temp, temp.length);																	
 					Log.i("Test", "RESULT String" + temp);
-			}
+			}							
 			Log.i("Test", "WEBSERVICE RESPONSE RESULT: "+profession);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -7805,7 +7805,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			e.printStackTrace();
 		}
 	}
-
+	
 	public Bitmap ShrinkBitmap(String file, int width, int height) {
 
 		BitmapFactory.Options bmpFactoryOptions = new BitmapFactory.Options();
@@ -9076,7 +9076,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 //							if(!DBAccess.getdbHeler().ChatRecentSortdateAvailableOrNot(groupChatBean.getSenttime(),false)) {
 								Log.i("recentSync","Appmain notifySyncChat Indivijual Chat Sortdate Not Availabel In Db");
 //
-									Log.i("recentSync", "Appmain notifySyncChat Indivijual Chat Ac or not");
+									Log.i("recentSync","Appmain notifySyncChat Indivijual Chat Ac or not");
 									NotifyListBean notifyListBean = new NotifyListBean();
 									notifyListBean.setFrom(groupChatBean.getFrom());
 									notifyListBean.setTo(groupChatBean.getTo());
@@ -9087,7 +9087,20 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 									notifyListBean.setSortdate(groupChatBean.getSenttime());
 									notifyListBean.setSendtime(groupChatBean.getOriginal_send_time());
 							if(groupChatBean.getSessionid()!=null && groupChatBean.getSessionid().contains("@")) {
-								notifyListBean.setFileid(groupChatBean.getFrom());
+								String str = new String(groupChatBean.getSessionid());
+//								String buddyname=groupChatBean.getSessionid();
+								if(groupChatBean.getFrom()!=null  &&
+										!groupChatBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)){
+									notifyListBean.setFileid(notifyListBean.getFrom());
+								} else if(groupChatBean.getTo()!=null  &&
+										!groupChatBean.getTo().equalsIgnoreCase(CallDispatcher.LoginUser)){
+									notifyListBean.setFileid(notifyListBean.getTo());
+								}
+//								if(str.contains(CallDispatcher.LoginUser)) {
+//									str.replaceFirst(CallDispatcher.LoginUser, "");
+//									Log.i("recentSync","Buddy Name-->"+str);
+//									notifyListBean.setFileid(str);
+//								}
 							}else{
 								notifyListBean.setFileid(groupChatBean.getSessionid());
 							}
@@ -9132,7 +9145,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 //										notifyListBean.setUnreadcallcount(groupChatBean.getCallcount());
 //									}
 //								}
-									ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(groupChatBean.getFrom());
+									ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(notifyListBean.getFileid());
 									if (pBean != null) {
 										notifyListBean.setProfilePic(pBean.getPhoto());
 										if(groupChatBean.getSessionid()!=null && groupChatBean.getSessionid().contains("@")) {
@@ -9595,7 +9608,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						}
 					}
 
-					gcBean.setTo(tem_names[i]);
+
 //					if (!signalingBean.getTo().equalsIgnoreCase(CallDispatcher.LoginUser)) {
 //						gcBean.setTo(signalingBean.getTo());
 //					} else if (!signalingBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)) {
@@ -9615,14 +9628,17 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			}}
 		Log.i("name","chatnames-->"+chatnames);
 
-
+					Log.i("name","gcBean.getGroupId()--->"+gcBean.getGroupId());
 					if(gcBean.getGroupId().contains("@")) {
 						gcBean.setCategory("I");
 						if(chatnames!=null)
 						gcBean.setSessionid(chatnames);
+						gcBean.setTo(tem_names[i]);
+
 					}else{
 						gcBean.setCategory("G");
 						gcBean.setSessionid(gcBean.getGroupId());
+						gcBean.setTo(gcBean.getGroupId());
 					}
 					gcBean.setSubCategory(CallDispatcher.LoginUser);
 					gcBean.setPrivateMembers(CallDispatcher.LoginUser+","+signalingBean.getParticipant_name());
@@ -9706,11 +9722,12 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			if(groupChatBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)){
 				notifyListBean.setUnreadchat("0");
 				notifyListBean.setUnreadcallcount("0");
+				is_new_chat=true;
 			}else {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
 				try {
 
-					if (!totcount[2].equalsIgnoreCase("0")) {
+					if (totcount[2]!=null && !totcount[2].equalsIgnoreCase("0")) {
 						Log.i("Gchat", "totcount[2] : " + totcount[2] + " groupChatBean.getSenttime() : " + groupChatBean.getSenttime());
 						Date last_Date = sdf.parse(totcount[2]);
 						Date received_Date = sdf.parse(groupChatBean.getSenttime());
@@ -9740,7 +9757,11 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 										notifyListBean.setUnreadcallcount(totcount[1]);
 									} else {
 										notifyListBean.setUnreadchat(totcount[0]);
-										notifyListBean.setUnreadcallcount(String.valueOf(Integer.parseInt(totcount[1]) + 1));
+										if(groupChatBean.getMessage()!=null && groupChatBean.getMessage().equalsIgnoreCase("Call missed")){
+											notifyListBean.setUnreadcallcount(String.valueOf(Integer.parseInt(totcount[1]) + 1));
+										}else {
+											notifyListBean.setUnreadcallcount(String.valueOf(totcount[1]));
+										}
 									}
 							}
 
@@ -9753,24 +9774,37 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 									notifyListBean.setUnreadcallcount(totcount[1]);
 								} else {
 									notifyListBean.setUnreadchat(totcount[0]);
-									notifyListBean.setUnreadcallcount(String.valueOf(Integer.parseInt(totcount[1]) + 1));
+									if(groupChatBean.getMessage()!=null && groupChatBean.getMessage().equalsIgnoreCase("Call missed")){
+										notifyListBean.setUnreadcallcount(String.valueOf(Integer.parseInt(totcount[1]) + 1));
+									}else {
+										notifyListBean.setUnreadcallcount(String.valueOf(totcount[1]));
+									}
 								}
 						}
 					} else {
 							if (chatEntry) {
+								Log.i("recententry","chatentry true-->");
 								notifyListBean.setUnreadchat(String.valueOf(Integer.parseInt(totcount[0]) + 1));
 								notifyListBean.setUnreadcallcount(totcount[1]);
+								Log.i("recententry","notifyListBean.setUnreadchat-->"+notifyListBean.getUnreadchat());
 							} else {
 								notifyListBean.setUnreadchat(totcount[0]);
-								notifyListBean.setUnreadcallcount(String.valueOf(Integer.parseInt(totcount[1]) + 1));
+								if(groupChatBean.getMessage()!=null && groupChatBean.getMessage().equalsIgnoreCase("Call missed")){
+									notifyListBean.setUnreadcallcount(String.valueOf(Integer.parseInt(totcount[1]) + 1));
+								}else {
+									notifyListBean.setUnreadcallcount(String.valueOf(totcount[1]));
+								}
 							}
 					}
 //					}
 				} catch (ParseException e) {
 					e.printStackTrace();
+				} catch (Exception e1){
+					e1.printStackTrace();
 				}
 			}
 		}
+		Log.i("Gchat","is_new_chat--->"+is_new_chat);
 		if(is_new_chat) {
 
 			ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(groupChatBean.getGroupId());

@@ -504,7 +504,9 @@ public class DashBoardFragment extends Fragment {
                             try {
                                 rl.removeAllViews();
                                 SingleInstance.mainContext.notifyUI();
-                                plusBtn.setVisibility(View.VISIBLE);
+                                if ( LoadFilesList(CallDispatcher.LoginUser) != null &&  LoadFilesList(CallDispatcher.LoginUser).size() > 0){
+                                plusBtn.setVisibility(View.VISIBLE);}
+                                else {plusBtn.setVisibility(View.GONE);}
 //                                clearAllBtn.setVisibility(View.VISIBLE);
                                 im_summary.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_summary));
                                 im_notification.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_notification_white));

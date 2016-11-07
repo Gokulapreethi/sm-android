@@ -60,6 +60,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TreeSet;
 
 import bsh.StringUtil;
 
@@ -633,6 +634,23 @@ public class MyAccountActivity extends Activity {
                             }
                         }
                     });
+                    city.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                            city_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+
+                        }
+                    });
                     states = DBAccess.getdbHeler().getStateDetails();
                     stateAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, states);
                     state1.setAdapter(stateAdapter);
@@ -651,6 +669,22 @@ public class MyAccountActivity extends Activity {
                                 offcstate_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_arrow_up));
                                 state1.showDropDown();
                             }
+                        }
+                    });
+                    state1.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                        offcstate_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
                         }
                     });
 
@@ -1107,6 +1141,7 @@ public class MyAccountActivity extends Activity {
 
                     @Override
                     public void afterTextChanged(Editable editable) {
+                        prof_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
                         if(rlay_professional_org.getText().toString().equalsIgnoreCase("Other")){
                             rlay_professional_org.setText("");
                         }
@@ -1146,6 +1181,22 @@ public class MyAccountActivity extends Activity {
                         }
                     }
                 });
+        title.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+titel_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+            }
+        });
 
                 list = new ArrayList<String>();
                 list.add("Student");
@@ -1175,6 +1226,22 @@ public class MyAccountActivity extends Activity {
                         }
                     }
                 });
+        usertype.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+usertype_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+            }
+        });
 
                 state.addTextChangedListener(new TextWatcher() {
                     @Override
@@ -1192,6 +1259,7 @@ public class MyAccountActivity extends Activity {
 
                     @Override
                     public void afterTextChanged(Editable editable) {
+                        state_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
                     }
                 });
 //        association_membership.addTextChangedListener(new TextWatcher() {
@@ -1215,7 +1283,9 @@ public class MyAccountActivity extends Activity {
 
 
                 medicalschoolsList = DBAccess.getdbHeler().getMedicalSchoolDetails();
-                dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list, medicalschoolsList);
+        TreeSet settree2=new TreeSet(medicalschoolsList);
+        ArrayList arraylist3=new ArrayList(settree2);
+                dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list, arraylist3);
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
                 medical_schools.setAdapter(dataAdapter);
                 medical_schools.setThreshold(30);
@@ -1235,6 +1305,22 @@ public class MyAccountActivity extends Activity {
                         }
                     }
                 });
+        medical_schools.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+       medical_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+            }
+        });
 
                 list = new ArrayList<String>();
                 Registration reg=new Registration();
@@ -1260,6 +1346,22 @@ public class MyAccountActivity extends Activity {
                     }
                 });
 
+        residency_pgm.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            residency_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+            }
+        });
                 list = new ArrayList<String>();
                 list.addAll(reg.loadFellowship());
                 dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list, list);
@@ -1282,6 +1384,22 @@ public class MyAccountActivity extends Activity {
                         }
                     }
                 });
+        fellowship_pgm.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+             fellow_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+            }
+        });
 
                 list = new ArrayList<String>();
                 list.add("MD");
@@ -1329,6 +1447,22 @@ public class MyAccountActivity extends Activity {
                         }
                     }
                 });
+        Speciality.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+speciality_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+            }
+        });
 
 
 //                hospital.addTextChangedListener(new TextWatcher() {
