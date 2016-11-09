@@ -381,8 +381,9 @@ public class SearchPeopleFragment extends Fragment {
                 });
 
                 hospitalList= DBAccess.getdbHeler().getHospitalDetails();
-                TreeSet<String> treeSet=new TreeSet<>(hospitalList);
-                dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list, (List<String>) treeSet);
+                TreeSet treeSet=new TreeSet(hospitalList);
+                ArrayList arrayList_treeset=new ArrayList(treeSet);
+                dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list,arrayList_treeset);
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
 
                 hospital.setAdapter(dataAdapter);
