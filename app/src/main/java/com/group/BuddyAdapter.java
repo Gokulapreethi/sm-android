@@ -100,6 +100,7 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 				holder.selectUser = (CheckBox) convertView.findViewById(R.id.sel_buddy);
 				holder.buddyicon = (ImageView) convertView.findViewById(R.id.buddyicon);
 				holder.statusIcon = (ImageView) convertView.findViewById(R.id.statusIcon);
+				holder.delete_mark = (ImageView) convertView.findViewById(R.id.delete_mark);
 				holder.buddyName = (TextView) convertView.findViewById(R.id.buddyName);
 				holder.occupation = (TextView) convertView.findViewById(R.id.occupation);
 				holder.header_title = (TextView) convertView.findViewById(R.id.header_title);
@@ -108,11 +109,14 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 			}else
 				holder = (ViewHolder) convertView.getTag();
 			final UserBean userBean = userList.get(position);
+           String buddy_name = null;
 			if(userBean!=null) {
 				if(userBean.getFirstname()!=null&&userBean.getFirstname().length()>1)
 				holder.buddyName.setText(userBean.getFirstname());
 				else
 					holder.buddyName.setText(userBean.getBuddyName());
+                buddy_name=userBean.getBuddyName();
+				holder.delete_mark.setVisibility(View.GONE);
 				if (userBean.isSelected()) {
 					holder.selectUser.setChecked(true);
 				} else {
@@ -188,9 +192,30 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 				});
 //
 			}
+            final String finalBuddy_name = buddy_name;
+			RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable
+					.get("roundingGroup");
+			boolean isMemberAdded=roundingGroup.isNew_member();
+			if(isMemberAdded && holder.cancel_lay.getVisibility()!=View.VISIBLE)
+				holder.delete_mark.setVisibility(View.VISIBLE);
+			holder.delete_mark.setTag(position);
+			holder.delete_mark.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					Log.i("BBB", "********BuddyAdapter-------" + finalBuddy_name);
+					RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable
+							.get("roundingGroup");
+					if (roundingGroup != null) {
+						roundingGroup.membersList.remove(userBean);
+						roundingGroup.refreshMembersList();
+					}
+				}
+			});
 			holder.cancel_lay.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
+					Log.i("AAAA", "group invite delete**********-----");
+
 					if (userList.size() > 1) {
 						if (userBean.getGroupid() != null) {
 							GroupBean gBean = DBAccess.getdbHeler().getGroupAndMembers(
@@ -198,7 +223,6 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 							gBean.setDeleteGroupMembers(userBean.getBuddyName());
 							gBean.setGroupName(userBean.getGroupname());
 							if (gBean.getGrouptype() != null) {
-								Log.i("AAAA", "group -----" + gBean.getGrouptype());
 								if (gBean.getGrouptype().equalsIgnoreCase("Rounding")) {
 									RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable
 											.get("roundingGroup");
@@ -227,20 +251,19 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 				}
 			});
 
-			return convertView;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
-
-
+        return convertView;
 	}
 
 	class ViewHolder {
 		CheckBox selectUser;
 		ImageView buddyicon;
 		ImageView statusIcon;
+		ImageView delete_mark;
 		TextView buddyName;
 		TextView occupation;
 		TextView header_title;

@@ -16,6 +16,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bean.UserBean;
 import com.cg.DB.DBAccess;
@@ -43,6 +44,7 @@ public class AssignPatientActivity extends Activity{
     private boolean fromMyPatient=false;
     public boolean isSearch=false;
     private ProgressDialog progress = null;
+    private int PatientSelectedCount;
 
     Vector<PatientDetailsBean> PatientList;
 
@@ -94,18 +96,21 @@ public class AssignPatientActivity extends Activity{
         assign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                Intent intent = new Intent(getApplicationContext(),
-                        AddGroupMembers.class);
-                ArrayList<String> buddylist = new ArrayList<String>();
-                for (UserBean userBean : membersList) {
-                    buddylist.add(userBean.getBuddyName());
-                }
-                intent.putExtra("fromRounding", true);
-                intent.putExtra("groupid", groupid);
-                intent.putStringArrayListExtra("buddylist", buddylist);
-                Log.i("AAAA", "members list " + buddylist.size());
-                startActivityForResult(intent, 3);
-                isSearch = false;
+                if(PatientSelectedCount>0) {
+                    Intent intent = new Intent(getApplicationContext(),
+                            AddGroupMembers.class);
+                    ArrayList<String> buddylist = new ArrayList<String>();
+                    for (UserBean userBean : membersList) {
+                        buddylist.add(userBean.getBuddyName());
+                    }
+                    intent.putExtra("fromRounding", true);
+                    intent.putExtra("groupid", groupid);
+                    intent.putStringArrayListExtra("buddylist", buddylist);
+                    Log.i("AAAA", "members list " + buddylist.size());
+                    startActivityForResult(intent, 3);
+                    isSearch = false;
+                }else
+                    showToast("Please select any patient");
             }
         });
         unassign.setOnClickListener(new View.OnClickListener() {
@@ -167,7 +172,19 @@ public class AssignPatientActivity extends Activity{
     public void countofcheckbox(int count)
     {
         Log.i("asdf", "count" + count);
+        PatientSelectedCount=count;
         selectedCount.setText(Integer.toString(count) + " selected");
+    }
+    private void showToast(String msg) {
+        try {
+            Toast.makeText(AssignPatientActivity.this, msg, Toast.LENGTH_SHORT)
+                    .show();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            if (AppReference.isWriteInFile)
+                AppReference.logger.error(e.getMessage(), e);
+            e.printStackTrace();
+        }
     }
     public void showprogress() {
         handler.post(new Runnable() {

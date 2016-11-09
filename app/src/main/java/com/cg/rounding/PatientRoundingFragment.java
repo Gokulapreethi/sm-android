@@ -120,6 +120,8 @@ public class PatientRoundingFragment extends Fragment {
     RolePatientManagementBean rolePatientManagementBean;
     RoleTaskMgtBean roleTaskMgtBean;
     Dialog dialog1;
+    public static String Patient_ActiveReportID;
+    public static String PatientID_Active;
 
     public static PatientRoundingFragment newInstance(Context context) {
         try {
@@ -1023,9 +1025,12 @@ public class PatientRoundingFragment extends Fragment {
                 }
             }
         });
+        if(pBean.getPatientid()!=null)
+        pDescBean = DBAccess.getdbHeler().getPatientDescriptionDetails(pBean.getPatientid(),Patient_ActiveReportID);
+        else
+            pDescBean = DBAccess.getdbHeler().getPatientDescriptionDetails(PatientID_Active,Patient_ActiveReportID);
 
-        pDescBean = DBAccess.getdbHeler().getPatientDescriptionDetails(pBean.getPatientid());
-        Log.i("AAAA","getPatientDesc from DB medications "+pDescBean.getMedications()+" testndvitals###"+pDescBean.getTestandvitals()+" patientid###"+pDescBean.getPatientid());
+        Log.i("BBB","getPatientDesc from DB medications "+pDescBean.getMedications()+" Active ID###=====>"+Patient_ActiveReportID+" patientid###==>"+pBean.getPatientid()+"==="+pDescBean.getPatientid());
 
         if (pDescBean != null) {
             reportid = pDescBean.getReportid();
@@ -2181,7 +2186,7 @@ public class PatientRoundingFragment extends Fragment {
                         DBAccess.getdbHeler().updateseallcomments(pBean.getDiagnosis(), pBean.getDate(), pBean.getPatientid());
                         Log.d("updateseeall", "clickevent" + pBean.getDiagnosis() + pBean.getDate() + pBean.getPatientid());
                         showprogress();
-                        Log.i("BBB","call webservice from active_click"+pcBean.getDiagnosis()+"-->"+pBean.getDiagnosis());
+                        Log.i("BBB","call webservice from active_click");
                         WebServiceReferences.webServiceClient.SetPatientDescription(pBean, patientRoundingFragment);
                         diagnosis.setText(pBean.getDiagnosis());
                         pcBean.setDate(pBean.getDate());

@@ -17,6 +17,7 @@ import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.SipNotificationListener;
 import com.cg.commonclass.WebServiceReferences;
+import com.cg.rounding.PatientRoundingFragment;
 import com.group.chat.ChatInfoBean;
 import com.main.AppMainActivity;
 import com.main.ContactsFragment;
@@ -3242,6 +3243,8 @@ public class XmlParser {
 					temp[1] = nodeMap.getNamedItem("patientid").getNodeValue();
 				if (nodeMap.getNamedItem("reportid") != null)
 					temp[2] = nodeMap.getNamedItem("reportid").getNodeValue();
+				PatientRoundingFragment.Patient_ActiveReportID=temp[2];
+				PatientRoundingFragment.PatientID_Active=temp[1];
 				WebServiceReferences.webServiceClient.GetPatientDescription(temp[1], temp[2], SingleInstance.mainContext);
 			}
 			list = doc.getElementsByTagName("MemberRights");

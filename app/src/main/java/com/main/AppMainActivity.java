@@ -8378,6 +8378,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			for(PatientDetailsBean pBean:pBeanList){
 				DBAccess.getdbHeler().insertorUpdatePatientDetails(pBean);
 			}
+			if(groupChatActivity!=null)
             groupChatActivity.refreshPatient();
 		}else if(obj instanceof WebServiceBean){
 			GroupChatActivity groupChatActivity =(GroupChatActivity)SingleInstance.contextTable.get("groupchat");

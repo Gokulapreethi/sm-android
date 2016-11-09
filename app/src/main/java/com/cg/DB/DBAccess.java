@@ -6589,7 +6589,7 @@ public class DBAccess extends SQLiteOpenHelper {
 
 	}
 	public int insertorUpdatTaskDetails(TaskDetailsBean taskBean) {
-		Log.i("patientdetails", "insertorUpdatTaskDetails updated String");
+		Log.i("BBB", "insertorUpdatTaskDetails updated String" );
 
 		int row = 0;
 		try {
@@ -10110,7 +10110,7 @@ public class DBAccess extends SQLiteOpenHelper {
 
 	public int insertorUpdatePatientDescriptions(PatientDescriptionBean pcBean) {
 		int row_id = 0;
-		Log.i("patientdetails", "insertorUpdatePatientDetails ");
+		Log.i("BBB", " DB insertorUpdatePatientDetails "+pcBean.getDiagnosis());
 		try {
 			if (!db.isOpen())
 				openDatabase();
@@ -10159,7 +10159,7 @@ public class DBAccess extends SQLiteOpenHelper {
 			return row_id;
 		}
 	}
-	public PatientDescriptionBean getPatientDescriptionDetails(String patientid) {
+	public PatientDescriptionBean getPatientDescriptionDetails(String patientid,String ReportID) {
 		PatientDescriptionBean groupBean = new PatientDescriptionBean();
 		try {
 			Cursor cur = null;
@@ -10170,8 +10170,12 @@ public class DBAccess extends SQLiteOpenHelper {
 			}
 			Log.i("AAA", "DB list  ");
 			String strGetQry = null;
+			if(ReportID!=null)
 			strGetQry = "select * from patientdescription where patientid='"
-					+ patientid + "'";
+					+ patientid + "'and reportid='" + ReportID + "'";
+			else
+				strGetQry = "select * from patientdescription where patientid='"
+						+ patientid + "'";
 			cur = db.rawQuery(strGetQry, null);
 			int len = cur.getCount();
 			Log.i("AAA", "length" + String.valueOf(len));
