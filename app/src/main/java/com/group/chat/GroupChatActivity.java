@@ -795,6 +795,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                         Intent intent = new Intent(context.getApplicationContext(),
                                                 GroupActivity.class);
                                         intent.putExtra("isEdit", true);
+                                        intent.putExtra("editgroup",true);
                                         intent.putExtra("id", groupBean.getGroupId());
                                         context.startActivity(intent);
                                     }
@@ -5931,15 +5932,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     Date d1 = format.parse(gcBean.getSenttime().split(" ")[0]);
                     String newdate = DayFormat.format(d1);
                     tv_today.setText(newdate.split(" ")[0]);
-                }else if (getYesterdayDateString(format,-7).equals(gcBean.getSenttime().split(" ")[0])) {
-                    Date d1 = format.parse(gcBean.getSenttime().split(" ")[0]);
-                    String newdate = DayFormat.format(d1);
-                    tv_today.setText(newdate.split(" ")[0]);
-                }else if (getYesterdayDateString(format,-8).equals(gcBean.getSenttime().split(" ")[0])) {
-                    Date d1 = format.parse(gcBean.getSenttime().split(" ")[0]);
-                    String newdate = DayFormat.format(d1);
-                    tv_today.setText(newdate.split(" ")[0]);
-                } else {
+                }else {
                     Date d1 = format.parse(gcBean.getSenttime().split(" ")[0]);
                     String newdate = sdf.format(d1);
                     tv_today.setText(newdate);

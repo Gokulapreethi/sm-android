@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -63,6 +65,7 @@ import com.cg.account.PinSecurity;
 import com.cg.callservices.MyAbsoluteLayout;
 import com.cg.commonclass.GroupListComparator;
 import com.cg.hostedconf.AppReference;
+import com.cg.quickaction.User;
 import com.cg.rounding.RoundingFragment;
 import com.cg.snazmed.R;
 import com.cg.account.ShareByProfile;
@@ -140,6 +143,8 @@ public class GroupActivity extends Activity implements OnClickListener {
 	AppMainActivity appMainActivity;
 	private LinearLayout Linearlay_info;
 
+	private boolean editgroup;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -186,6 +191,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 		memberAcceptedCount = (TextView) findViewById(R.id.members_count1);
 		lv_memberList = (LinearLayout) findViewById(R.id.lv_memberlist);
 		isEdit = getIntent().getBooleanExtra("isEdit", false);
+		editgroup=getIntent().getBooleanExtra("editgroup",false);
 		member_lay=(LinearLayout)findViewById(R.id.member_lay);
 		member_lay1=(LinearLayout)findViewById(R.id.member_lay1);
 //
@@ -332,6 +338,9 @@ public class GroupActivity extends Activity implements OnClickListener {
 									userBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
                             userBean.setBuddyName(tmp);
 							userBean.setProfilePic(pbean.getPhoto());
+							if(editgroup) {
+								userBean.setInvite(true);
+							}
 							for(BuddyInformationBean bib:ContactsFragment.getBuddyList()){
 								if(bib.getName().equalsIgnoreCase(tmp)) {
 									userBean.setStatus(bib.getStatus());
@@ -1370,6 +1379,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 					holder.buddyName = (TextView) convertView.findViewById(R.id.buddyName);
 					holder.occupation = (TextView) convertView.findViewById(R.id.occupation);
 					holder.header_title = (TextView) convertView.findViewById(R.id.header_title);
+					holder.ll_cancel=(LinearLayout) convertView.findViewById(R.id.cancel_lay);
 					convertView.setTag(holder);
 				}else
 					holder = (ViewHolder) convertView.getTag();
@@ -1410,6 +1420,19 @@ public class GroupActivity extends Activity implements OnClickListener {
 						holder.occupation.setTextColor(getResources().getColor(R.color.snazlgray));
 					}
 
+					if(bib.getInvite()){
+						holder.ll_cancel.setVisibility(View.VISIBLE);
+					}else {
+						holder.ll_cancel.setVisibility(View.GONE);
+					}
+                    holder.ll_cancel.setTag(bib.getBuddyName());
+					holder.ll_cancel.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View view) {
+                             editMembers(view);
+						}
+					});
+
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -1425,6 +1448,74 @@ public class GroupActivity extends Activity implements OnClickListener {
 		TextView buddyName;
 		TextView occupation;
 		TextView header_title;
+		LinearLayout ll_cancel;
 	}
 
+
+	public void editMembers(View view){
+
+				Vector<UserBean> tempList=(Vector<UserBean>)membersAcceptedList.clone();
+		        Log.i("removemember","buddyy remove--->"+view.getTag().toString());
+				for(int i=0;i<tempList.size();i++){
+					UserBean bean=membersAcceptedList.get(i);
+					if(bean.getBuddyName().equalsIgnoreCase(view.getTag().toString())) {
+						membersAcceptedList.remove(bean);
+						break;
+					}
+				}
+		memberAdapter=new MembersAdapter(this,R.layout.rounding_member_row,membersAcceptedList);
+		final int adapterCount1 = memberAdapter.getCount();
+		lv_memberList.removeAllViews();
+
+		for (int i = 0; i < adapterCount1; i++) {
+			View item = memberAdapter.getView(i, null, null);
+			lv_memberList.addView(item);
+		}
+
+		memberAcceptedCount.setText( " ("
+				+ String.valueOf(membersAcceptedList.size()) + ")");
+
+
+			Vector<UserBean> getdeleteAndAddMembers=(Vector<UserBean>)membersList.clone();
+//			getdeleteAndAddMembers.addAll(membersList);
+//			membersList.clear();
+		Vector<UserBean> deleteMembers=(Vector<UserBean>)membersAcceptedList.clone();
+//		for(UserBean bean:deleteMembers){
+//			bean.setSelected(true);
+//			membersList.add(bean);
+//		}
+//		UserBean bean=new UserBean();
+//		bean.setSelected(false);
+//		bean.setBuddyName(view.getTag().toString());
+//		membersList.add(bean);
+//		    membersList.addAll(getdeleteAndAddMembers);
+		membersList.clear();
+
+		HashMap<String,UserBean> beanHashMap=new HashMap<>();
+		for(UserBean bean:getdeleteAndAddMembers){
+			beanHashMap.put(bean.getBuddyName(),bean);
+		}
+		for(UserBean bean:deleteMembers){
+			bean.setSelected(true);
+			beanHashMap.put(bean.getBuddyName(),bean);
+		}
+		UserBean bean=new UserBean();
+		bean.setSelected(false);
+		bean.setBuddyName(view.getTag().toString());
+		beanHashMap.put(bean.getBuddyName(),bean);
+		Iterator iterator1 = beanHashMap.entrySet()
+				.iterator();
+
+		while (iterator1.hasNext()) {
+
+			Map.Entry mapEntry = (Map.Entry) iterator1.next();
+
+			UserBean userBean = (UserBean) mapEntry.getValue();
+			Log.i("removemember","buddyyName--->"+userBean.getBuddyName());
+			Log.i("removemember","buddyySelected--->"+userBean.isSelected());
+			membersList.add(userBean);
+		}
+
+
+	}
 }

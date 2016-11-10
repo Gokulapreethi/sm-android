@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bean.GroupChatBean;
 import com.bean.NotifyListBean;
@@ -236,24 +237,30 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                                     context.startActivity(intent);
                                 }
                             }else if(notifyBean.getFileid()!=null && !notifyBean.getFileid().contains("@")){
-                                if(!DBAccess.getdbHeler().ChatEntryAvailableOrNot(notifyBean.getFileid())) {
-                                    Log.i("syncchat","chatentry not available");
-                                    if(SingleInstance.instanceTable.containsKey("contactspage")){
-                                        Log.i("syncchat","Appmain contactspage available");
-                                        ContactsFragment contactsFragment=(ContactsFragment) SingleInstance.instanceTable.get("contactspage");
-                                        contactsFragment.showprogress();
-                                    }
-                                    AppReference.chatRecentSync = true;
-                                    AppReference.chatRecentSyncBuddyOrGroupid=notifyBean.getFileid();
+                                GroupBean groupBean = DBAccess.getdbHeler().getGroup(
+                                        "select * from grouplist where groupid='" + notifyBean.getFileid()+ "'");
+                                if(groupBean!=null) {
+                                    if (!DBAccess.getdbHeler().ChatEntryAvailableOrNot(notifyBean.getFileid())) {
+                                        Log.i("syncchat", "chatentry not available");
+                                        if (SingleInstance.instanceTable.containsKey("contactspage")) {
+                                            Log.i("syncchat", "Appmain contactspage available");
+                                            ContactsFragment contactsFragment = (ContactsFragment) SingleInstance.instanceTable.get("contactspage");
+                                            contactsFragment.showprogress();
+                                        }
+                                        AppReference.chatRecentSync = true;
+                                        AppReference.chatRecentSyncBuddyOrGroupid = notifyBean.getFileid();
 //                                    AppReference.Beginsync_chat = true;
 //                                    list_position = position;
 //                                    chatsync_contactlist=true;
-                                    WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"0",notifyBean.getFileid(),"","");
-                                }else {
-                                    Intent intent = new Intent(context, GroupChatActivity.class);
-                                    intent.putExtra("isGroup", true);
-                                    intent.putExtra("groupid", notifyBean.getFileid());
-                                    context.startActivity(intent);
+                                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "0", notifyBean.getFileid(), "", "");
+                                    } else {
+                                        Intent intent = new Intent(context, GroupChatActivity.class);
+                                        intent.putExtra("isGroup", true);
+                                        intent.putExtra("groupid", notifyBean.getFileid());
+                                        context.startActivity(intent);
+                                    }
+                                }else{
+                                    Toast.makeText(context,"You are Not Member in this Group",Toast.LENGTH_LONG).show();
                                 }
                             }
                         }else {
@@ -427,14 +434,6 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                             String newdate = DayFormat.format(d1);
                             holder.header.setText(newdate.split(" ")[0]);
                         }else if (getYesterdayDateString(format,-6).equals(notifyBean.getSortdate().split(" ")[0])) {
-                            Date d1 = format.parse(notifyBean.getSortdate().split(" ")[0]);
-                            String newdate = DayFormat.format(d1);
-                            holder.header.setText(newdate.split(" ")[0]);
-                        }else if (getYesterdayDateString(format,-7).equals(notifyBean.getSortdate().split(" ")[0])) {
-                            Date d1 = format.parse(notifyBean.getSortdate().split(" ")[0]);
-                            String newdate = DayFormat.format(d1);
-                            holder.header.setText(newdate.split(" ")[0]);
-                        }else if (getYesterdayDateString(format,-8).equals(notifyBean.getSortdate().split(" ")[0])) {
                             Date d1 = format.parse(notifyBean.getSortdate().split(" ")[0]);
                             String newdate = DayFormat.format(d1);
                             holder.header.setText(newdate.split(" ")[0]);
