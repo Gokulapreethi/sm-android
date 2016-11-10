@@ -195,7 +195,10 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
             final String finalBuddy_name = buddy_name;
 			RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable
 					.get("roundingGroup");
-			boolean isMemberAdded=roundingGroup.isNew_member();
+			boolean isMemberAdded=false;
+			if(roundingGroup!=null) {
+				 isMemberAdded = roundingGroup.isNew_member();
+			}
 			if(isMemberAdded && holder.cancel_lay.getVisibility()!=View.VISIBLE)
 				holder.delete_mark.setVisibility(View.VISIBLE);
 			holder.delete_mark.setTag(position);
