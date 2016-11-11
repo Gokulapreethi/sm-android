@@ -262,16 +262,20 @@ public class AssignPatientActivity extends Activity{
                     Bundle bundle = data.getExtras();
                     ArrayList<UserBean> list = (ArrayList<UserBean>) bundle
                             .get("list");
-                    String addedMembers = new String();
+                    String addedMembers="";
                     for (UserBean temp : list) {
-                        addedMembers = addedMembers + "," + temp.getBuddyName();
+                        if(temp.getBuddyName()!=null)
+                            if(addedMembers!=null && addedMembers.length()>0)
+                                addedMembers = addedMembers +","+ temp.getBuddyName();
+                            else
+                                addedMembers=temp.getBuddyName();
                     }
                     boolean isSelect = false;
                     for (PatientDetailsBean bean : PatientList) {
                         if (bean.isSelected()) {
                             isSelect = true;
-                            if (bean.getAssignedmembers() != null)
-                                bean.setAssignedmembers(bean.getAssignedmembers() + "," + addedMembers);
+                            if (bean.getAssignedmembers()!= null && bean.getAssignedmembers().length()>0)
+                                bean.setAssignedmembers(bean.getAssignedmembers()+"," + addedMembers);
                             else
                                 bean.setAssignedmembers(addedMembers);
                             WebServiceReferences.webServiceClient.SetPatientRecord(bean, context);
