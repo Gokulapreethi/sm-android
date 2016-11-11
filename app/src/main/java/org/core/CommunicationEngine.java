@@ -3606,7 +3606,7 @@ public class CommunicationEngine implements AudioRecorderListener,
 
 //					Log.i("Resolution","Before Encoding : Size : "+data.length+" time : "+new Date()+""+data);
 					if (encodeVideo) {
-						Log.i("Resolution","Before Orientation : Size : "+data.length+" time : "+getCurrentTimeStamp());
+//						Log.i("Resolution","Before Orientation : Size : "+data.length+" time : "+getCurrentTimeStamp());
 //						arg0 = rotateYUV420Degree90(arg0,width,height);
 						byte [] arg0 = new byte[width*height * 3 / 2];
 						if(camaera_id == 0) {
@@ -3618,7 +3618,7 @@ public class CommunicationEngine implements AudioRecorderListener,
 						} else {
 							videoCodec.RotateYUV420Degree(data, width, height, 270, arg0);
 						}
-						Log.i("Resolution", "After Orientation : Size : " + arg0.length + " time : " + getCurrentTimeStamp());
+//						Log.i("Resolution", "After Orientation : Size : " + arg0.length + " time : " + getCurrentTimeStamp());
 						byte[] yuvdata = new byte[width * height
 								+ (width * height) / 2];
 						byte[] coded_frame = new byte[1];
@@ -3695,7 +3695,7 @@ public class CommunicationEngine implements AudioRecorderListener,
 						}
 
 						if (encoded_data != null) {
-							Log.i("Resolution","After Encoding : Size : "+encoded_data.length+" time : "+getCurrentTimeStamp());
+//							Log.i("Resolution","After Encoding : Size : "+encoded_data.length+" time : "+getCurrentTimeStamp());
 							if (key_frame == 1) {
 
 								System.out.println("EEE" + key_frame);

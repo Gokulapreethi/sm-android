@@ -2,7 +2,6 @@ package com.cg.account;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -48,7 +47,6 @@ import com.util.SingleInstance;
 
 import org.lib.model.BuddyInformationBean;
 import org.lib.model.GroupBean;
-import org.lib.model.SignalingBean;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -73,6 +71,7 @@ public class AMAVerification extends Activity {
     LinearLayout dialogue;
     LinearLayout relay_search;
     private int checkBoxCounter = 0;
+    private String contact_state;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -782,7 +781,8 @@ public class AMAVerification extends Activity {
                             if(buddyname.toLowerCase().contains(String.valueOf(constraint)))
                                 buddyInformationBeans.add(buddyInformationBean);
                         }
-
+                    contact_state=ContactsFragment.SortType;
+                    ContactsFragment.SortType="ALPH";
                     buddyInformationBeans = GroupChatActivity.getAdapterList(buddyInformationBeans);
                     result.count = buddyInformationBeans.size();
                     result.values = buddyInformationBeans;
@@ -898,6 +898,8 @@ public class AMAVerification extends Activity {
             adapter.getItem(i).setSelected(false);
         }
         WebServiceReferences.contextTable.remove("amaverification");
+        if(contact_state!=null)
+        ContactsFragment.SortType=contact_state;
         super.onDestroy();
     }
 }

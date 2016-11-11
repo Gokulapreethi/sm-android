@@ -373,12 +373,12 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 									// if (CallDispatcher.sb.getBs_parentid() != null) {
 									CallDispatcher.sb
 											.setEndTime(objCallDispatcher.getCurrentDateandTime());
-									CallDispatcher.sb
-											.setCallDuration(SingleInstance.mainContext
-													.getCallDuration(CallDispatcher.sb
-																	.getStartTime(),
-															CallDispatcher.sb
-																	.getEndTime()));
+//									CallDispatcher.sb
+//											.setCallDuration(SingleInstance.mainContext
+//													.getCallDuration(CallDispatcher.sb
+//																	.getStartTime(),
+//															CallDispatcher.sb
+//																	.getEndTime()));
 									CallDispatcher.sb.setCallstatus("callattended");
 
 									//For Callhistory host and participant name entry
@@ -597,9 +597,15 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 										boolean isConferencemembers = CallDispatcher.conferenceMembers
 												.contains(buddy);
 
-										CallDispatcher.buddySignall.remove(buddy);
-										CallDispatcher.conferenceMembers.remove(buddy);
-										CallDispatcher.removed_current_conf_members.add(buddy);
+										if(CallDispatcher.buddySignall.containsKey(buddy)) {
+											CallDispatcher.buddySignall.remove(buddy);
+										}
+										if(isConferencemembers) {
+											CallDispatcher.conferenceMembers.remove(buddy);
+										}
+										if(!CallDispatcher.removed_current_conf_members.contains(buddy)) {
+											CallDispatcher.removed_current_conf_members.add(buddy);
+										}
 										if (CallDispatcher.conferenceMembers.size() == 0
 												&& CallDispatcher.conferenceRequest
 												.size() == 0) {
@@ -1886,12 +1892,12 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 														.getStartTime());
 												CallDispatcher.sb
 														.setEndTime(objCallDispatcher.getCurrentDateandTime());
-												CallDispatcher.sb
-														.setCallDuration(SingleInstance.mainContext
-																.getCallDuration(CallDispatcher.sb
-																				.getStartTime(),
-																		CallDispatcher.sb
-																				.getEndTime()));
+//												CallDispatcher.sb
+//														.setCallDuration(SingleInstance.mainContext
+//																.getCallDuration(CallDispatcher.sb
+//																				.getStartTime(),
+//																		CallDispatcher.sb
+//																				.getEndTime()));
 												CallDispatcher.sb.setCallstatus("callattended");
 
 												//For Callhistory host and participant name entry
@@ -2817,7 +2823,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 						}
 					}
 					for(UserBean bib:membersList){
-						if (CallDispatcher.conferenceMembers.size() < 3) {
+//						if (CallDispatcher.conferenceMembers.size() < 3) {
 
 							member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+1));
 
@@ -2833,14 +2839,14 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 								CallDispatcher.conferenceRequest
 										.put(bib.getBuddyName(), sb);
 							}
-						} else
-							Toast.makeText(
-									context,
-									SingleInstance.mainContext
-											.getResources()
-											.getString(
-													R.string.max_conf_members),
-									Toast.LENGTH_SHORT).show();
+//						} else
+//							Toast.makeText(
+//									context,
+//									SingleInstance.mainContext
+//											.getResources()
+//											.getString(
+//													R.string.max_conf_members),
+//									Toast.LENGTH_SHORT).show();
 					}
 				}
 			}
@@ -3158,6 +3164,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 	public void re_get_buddyViews(BuddyInformationBean bib) {
 		try {
+			Log.i("NotesVideo","re_get_buddyViews bib : "+bib+" "+bib.getFirstname());
 			if(bib.getFirstname().equalsIgnoreCase(CallDispatcher.LoginUser)) {
                 preview_hided = false;
             } else {
@@ -3306,7 +3313,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
                     preview_frameLayout.addView(onoff_preview);
                     preview_frameLayout.addView(flipcamera);
 
-                } else if (totalviews == 3) {
+                } else if (totalviews >= 3) {
                     RelativeLayout.LayoutParams relative_layoutParams1 = new RelativeLayout.LayoutParams(video_viewWidth/2,
                             video_viewHeight/2);
                     RelativeLayout.LayoutParams relative_layoutParams2 = new RelativeLayout.LayoutParams(video_viewWidth/2,
@@ -3434,7 +3441,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 							set_profile_image(1);
 						}
 
-					} else if (totalviews == 3) {
+					} else if (totalviews >= 3) {
 						RelativeLayout.LayoutParams relative_layoutParams1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 								video_viewHeight / 3);
 						RelativeLayout.LayoutParams relative_layoutParams2 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,

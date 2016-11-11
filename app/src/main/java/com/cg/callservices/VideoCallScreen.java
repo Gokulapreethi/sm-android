@@ -34,8 +34,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewTreeObserver;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.FrameLayout;
@@ -453,6 +451,11 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							// "One person is disconnect his call....");
 							CallDispatcher.conferenceMembers.remove(bundle
 									.getString("hangup"));
+							if(!CallDispatcher.removed_current_conf_members.contains(bundle
+									.getString("hangup"))) {
+								CallDispatcher.removed_current_conf_members.add(bundle
+										.getString("hangup"));
+							}
 							member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
 							/*
 							 * videoConferenceMembers.remove(0);
@@ -470,6 +473,11 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							Log.d("test", "Size "
 									+ CallDispatcher.conferenceMembers.size());
 							Log.d("test", "removed " + bundle.getString("bye"));
+							if(!CallDispatcher.removed_current_conf_members.contains(bundle
+									.getString("bye"))) {
+								CallDispatcher.removed_current_conf_members.add(bundle
+										.getString("bye"));
+							}
 							if (CallDispatcher.conferenceMembers
 									.contains(bundle.getString("bye"))) {
 
@@ -968,7 +976,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 					public void onClick(View v) {
 						try {
 
-							if (CallDispatcher.conferenceMembers.size() < 3) {
+//							if (CallDispatcher.conferenceMembers.size() < 3) {
 								if (alert == null) {
 
 									ShowOnlineBuddies("VC");
@@ -976,15 +984,15 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 									ShowOnlineBuddies("VC");
 								}
 
-							} else {
-
-								Toast.makeText(
-										context,
-										SingleInstance.mainContext.getResources()
-												.getString(
-                                                        R.string.max_conf_members),
-										Toast.LENGTH_SHORT).show();
-							}
+//							} else {
+//
+//								Toast.makeText(
+//										context,
+//										SingleInstance.mainContext.getResources()
+//												.getString(
+//                                                        R.string.max_conf_members),
+//										Toast.LENGTH_SHORT).show();
+//							}
 						} catch (Exception e) {
 							// TODO: handle exception
 							e.printStackTrace();
@@ -2623,7 +2631,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 						}
 					}
 					for(UserBean bib:membersList){
-						if (CallDispatcher.conferenceMembers.size() < 3) {
+//						if (CallDispatcher.conferenceMembers.size() < 3) {
 
 							if (objCallDispatcher != null) {
 								SignalingBean sb = objCallDispatcher.callconfernceUpdate(
@@ -2634,14 +2642,14 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 										.put(bib.getBuddyName(), sb);
 							}
 							member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+1));
-						} else
-							Toast.makeText(
-									context,
-									SingleInstance.mainContext
-											.getResources()
-											.getString(
-													R.string.max_conf_members),
-									Toast.LENGTH_SHORT).show();
+//						} else
+//							Toast.makeText(
+//									context,
+//									SingleInstance.mainContext
+//											.getResources()
+//											.getString(
+//													R.string.max_conf_members),
+//									Toast.LENGTH_SHORT).show();
 					}
 				}
 			}
@@ -4166,7 +4174,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 					preview_frameLayout.addView(onoff_preview);
 					preview_frameLayout.addView(flipcamera);
 
-				} else if (totalviews == 3) {
+				} else if (totalviews >= 3) {
 					RelativeLayout.LayoutParams relative_layoutParams1 = new RelativeLayout.LayoutParams(video_viewWidth/2,
 							video_viewHeight/2);
 					RelativeLayout.LayoutParams relative_layoutParams2 = new RelativeLayout.LayoutParams(video_viewWidth/2,
@@ -4293,7 +4301,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							set_profile_image(1);
 						}
 
-					} else if (totalviews == 3) {
+					} else if (totalviews >= 3) {
 						RelativeLayout.LayoutParams relative_layoutParams1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 								video_viewHeight / 3);
 						RelativeLayout.LayoutParams relative_layoutParams2 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,

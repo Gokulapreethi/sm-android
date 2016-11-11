@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.bean.EditForm;
-import com.bean.GroupChatBean;
 import com.bean.GroupChatPermissionBean;
 import com.bean.ProfileBean;
 import com.cg.account.ChangePassword;
@@ -13,11 +12,9 @@ import com.cg.account.MyAccountActivity;
 import com.cg.account.NewUser;
 import com.cg.account.PinAndTouchId;
 import com.cg.account.ResetPassword;
-import com.cg.account.Searchpeople;
 import com.cg.account.SecurityQuestions;
 import com.cg.account.forgotPassword;
 import com.cg.avatar.AvatarActivity;
-import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.files.FileInfoFragment;
 import com.cg.files.sendershare;
@@ -80,7 +77,6 @@ import org.lib.model.OfflineConfigurationBean;
 import org.lib.model.PatientCommentsBean;
 import org.lib.model.PatientDescriptionBean;
 import org.lib.model.PermissionBean;
-import org.lib.model.RoleAccessBean;
 import org.lib.model.ShareReminder;
 import org.lib.model.ShareSendBean;
 import org.lib.model.TaskDetailsBean;
@@ -89,7 +85,6 @@ import org.lib.model.WebServiceBean;
 import org.lib.xml.XmlParser;
 import org.net.AndroidInsecureKeepAliveHttpsTransportSE;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -198,7 +193,7 @@ public class WSRunner implements Runnable {
 				mEnvelope.setOutputSoapObject(mRequest);
 
 				androidHttpTransport.call(
-						quotes + mNamespace + mServicebean.getWsmethodname()
+			 			quotes + mNamespace + mServicebean.getWsmethodname()
 								+ quotes, mEnvelope);
 				mSp = (SoapPrimitive) mEnvelope.getResponse();
 

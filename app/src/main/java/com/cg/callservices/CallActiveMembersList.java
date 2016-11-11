@@ -494,7 +494,7 @@ public class CallActiveMembersList extends Activity {
                         }
                     }
                     for (UserBean bib : membersList) {
-                        if (CallDispatcher.conferenceMembers.size() < 3) {
+//                        if (CallDispatcher.conferenceMembers.size() < 3) {
 
                             if (objCallDispatcher != null) {
                                 SignalingBean sb = objCallDispatcher.callconfernceUpdate(
@@ -504,14 +504,14 @@ public class CallActiveMembersList extends Activity {
                                 CallDispatcher.conferenceRequest
                                         .put(bib.getBuddyName(), sb);
                             }
-                        } else
-                            Toast.makeText(
-                                    context,
-                                    SingleInstance.mainContext
-                                            .getResources()
-                                            .getString(
-                                                    R.string.max_conf_members),
-                                    Toast.LENGTH_SHORT).show();
+//                        } else
+//                            Toast.makeText(
+//                                    context,
+//                                    SingleInstance.mainContext
+//                                            .getResources()
+//                                            .getString(
+//                                                    R.string.max_conf_members),
+//                                    Toast.LENGTH_SHORT).show();
                     }
                 }
             }

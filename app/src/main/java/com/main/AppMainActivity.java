@@ -6961,6 +6961,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	public String getCallDuration(String startTime, String endTime) {
         Log.i("callduration123", "duration : ");
 		try {
+			if(startTime == null || endTime == null) {
+				return "00:00:00";
+			}
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ");
 			Date d1 = null;
 			Date d2 = null;
@@ -7002,7 +7005,8 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
+			return "00:00:00";
+//			return null;
 		}
 
 	}

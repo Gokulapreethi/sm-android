@@ -523,7 +523,7 @@ public class XmlParser {
 			list = doc.getElementsByTagName("text");
 			node = list.item(0);
 			nodeMap = node.getAttributes();
-			if(nodeMap.getNamedItem("text").getNodeValue()!=null) {
+			if(nodeMap.getNamedItem("text") != null && nodeMap.getNamedItem("text").getNodeValue()!=null) {
 				Log.d("zxz", "received lo "
 						+ nodeMap.getNamedItem("text").getNodeValue());
 				Log.i("xml", "Response xml"

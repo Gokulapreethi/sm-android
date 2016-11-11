@@ -2573,6 +2573,13 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 								}
 							}
 
+							if (SingleInstance.instanceTable.containsKey("connection")) {
+								CallConnectingScreen connectingScreen = (CallConnectingScreen)SingleInstance.instanceTable.get("connection");
+								if(connectingScreen != null) {
+									connectingScreen.removeInstance();
+								}
+							}
+
 							FragmentManager fm =
 									AppReference.mainContext.getSupportFragmentManager();
 							FragmentTransaction ft = fm.beginTransaction();
@@ -3341,6 +3348,13 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 										inCommingCallAlert inCommingcallAlert = (inCommingCallAlert) SingleInstance.instanceTable.get("alertscreen");
 										if (inCommingcallAlert != null) {
 											inCommingcallAlert.removeInstance();
+										}
+									}
+
+									if (SingleInstance.instanceTable.containsKey("connection")) {
+										CallConnectingScreen connectingScreen = (CallConnectingScreen)SingleInstance.instanceTable.get("connection");
+										if(connectingScreen != null) {
+											connectingScreen.removeInstance();
 										}
 									}
 
@@ -4179,6 +4193,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 			});
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 

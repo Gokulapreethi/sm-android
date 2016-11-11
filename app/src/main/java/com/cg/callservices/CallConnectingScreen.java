@@ -1079,6 +1079,7 @@ public class CallConnectingScreen extends Fragment {
 				AppReference.bacgroundFragment);
 		ft.commitAllowingStateLoss();
 		mainHeader.setVisibility(View.VISIBLE);
+		AppReference.mainContext.openNonClosedActivity();
 //		min_outcall.setVisibility(View.GONE);
 	}
 
