@@ -1027,11 +1027,7 @@ public class PatientRoundingFragment extends Fragment {
         });
         if(pBean.getPatientid()!=null)
         pDescBean = DBAccess.getdbHeler().getPatientDescriptionDetails(pBean.getPatientid(),Patient_ActiveReportID);
-        else
-            pDescBean = DBAccess.getdbHeler().getPatientDescriptionDetails(PatientID_Active,Patient_ActiveReportID);
-
-        Log.i("BBB","getPatientDesc from DB medications "+pDescBean.getMedications()+" Active ID###=====>"+Patient_ActiveReportID+" patientid###==>"+pBean.getPatientid()+"==="+pDescBean.getPatientid());
-
+               Log.i("BBB","getPatientDesc from DB ==>Active ReportID###=====>"+Patient_ActiveReportID+" patientid###==>"+pBean.getPatientid());
         if (pDescBean != null) {
             reportid = pDescBean.getReportid();
             if (pDescBean.getCurrentstatus() != null) {
@@ -1076,7 +1072,7 @@ public class PatientRoundingFragment extends Fragment {
                     }
                 }
             }
-            Log.i("BBB","*******desc diag"+pDescBean.getDiagnosis()+" medi***"+pDescBean.getMedications()+"test***"+pDescBean.getTestandvitals()+"hosp***"+pDescBean.getHospitalcourse()
+            Log.i("BBB","*******desc diag==>"+pDescBean.getDiagnosis()+" medi***==>"+pDescBean.getMedications()+"test***==>"+pDescBean.getTestandvitals()+"hosp***==> "+pDescBean.getHospitalcourse()
                     +"cosult***"+pDescBean.getConsults());
             if (pDescBean.getDiagnosis() != null)
                 diagnosis.setText(pDescBean.getDiagnosis());
@@ -2156,8 +2152,6 @@ public class PatientRoundingFragment extends Fragment {
                     holder = (ViewHolder) row.getTag();
                 }
                 final PatientDescriptionBean pBean = (PatientDescriptionBean) commentList.get(position);
-
-
                 if (position == 0) {
                     holder.header_title.setText("ACTIVE");
                     holder.active.setVisibility(View.GONE);
@@ -2186,11 +2180,13 @@ public class PatientRoundingFragment extends Fragment {
                         DBAccess.getdbHeler().updateseallcomments(pBean.getDiagnosis(), pBean.getDate(), pBean.getPatientid());
                         Log.d("updateseeall", "clickevent" + pBean.getDiagnosis() + pBean.getDate() + pBean.getPatientid());
                         showprogress();
-                        Log.i("BBB","call webservice from active_click");
-                        WebServiceReferences.webServiceClient.SetPatientDescription(pBean, patientRoundingFragment);
+                        Log.i("BBB","call webservice from active_click---------" +
+                                "--->"+pcBean.getReportid());
                         diagnosis.setText(pBean.getDiagnosis());
                         pcBean.setDate(pBean.getDate());
                         pcBean.setDiagnosis(pBean.getDiagnosis());
+                        pcBean.setActiveID(pBean.getActiveID());
+                        WebServiceReferences.webServiceClient.SetPatientDescription(pBean, patientRoundingFragment);
                         dialog1.dismiss();
                     }
                 });

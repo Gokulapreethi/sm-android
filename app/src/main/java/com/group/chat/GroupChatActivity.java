@@ -449,8 +449,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     .commitAllowingStateLoss();
 
             memberbean = DBAccess.getdbHeler().getMemberDetails(groupBean.getGroupId(), CallDispatcher.LoginUser);
-            roleAccessBean = DBAccess.getdbHeler().getRoleAccessDetails(groupBean.getGroupId(), memberbean.getRole());
-            rolePatientManagementBean = DBAccess.getdbHeler().getRolePatientManagement(groupBean.getGroupId(), memberbean.getRole());
+            refreshRole();
         }
         search.setOnClickListener(new OnClickListener() {
             @Override
@@ -10692,7 +10691,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         final TextView role = (TextView) v1.findViewById(R.id.role_sort);
         TextView groupname = (TextView) v1.findViewById(R.id.groupname);
         TextView groupDesc = (TextView) v1.findViewById(R.id.groupDesc);
-        TextView members_count = (TextView)v1.findViewById(R.id.members_count);
+        final TextView members_count = (TextView)v1.findViewById(R.id.members_count);
 //        members_count.setText(Integer.toString();
 
 
@@ -10787,7 +10786,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 allmemberslist.addAll(memberslist);
             }
         }
-        int count_memberslist = memberslist.size();
+        final int count_memberslist = memberslist.size();
         Log.d("memberslist", "value--->" + count_memberslist);
         members_count.setText("(" + Integer.toString(count_memberslist) + ")");
         online.setOnClickListener(new OnClickListener() {
@@ -10800,6 +10799,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 MembersAdapter adapter = new MembersAdapter(context, R.layout.rounding_member_row, getOnlineList(allmemberslist));
                 list.removeAllViews();
                 final int adapterCount = adapter.getCount();
+                members_count.setText("(" + Integer.toString(adapterCount) + ")");
                 for (int i = 0; i < adapterCount; i++) {
                     View item = adapter.getView(i, null, null);
                     list.addView(item);
@@ -10827,6 +10827,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 MembersAdapter adapter = new MembersAdapter(context, R.layout.rounding_member_row, allmemberslist);
                 list.removeAllViews();
                 final int adapterCount = adapter.getCount();
+                members_count.setText("(" + Integer.toString(adapterCount) + ")");
                 for (int i = 0; i < adapterCount; i++) {
                     View item = adapter.getView(i, null, null);
                     list.addView(item);
@@ -10849,6 +10850,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 MembersAdapter adapter = new MembersAdapter(context, R.layout.rounding_member_row, templist);
                 list.removeAllViews();
                 final int adapterCount = adapter.getCount();
+                members_count.setText("(" + Integer.toString(adapterCount) + ")");
                 for (int i = 0; i < adapterCount; i++) {
                     View item = adapter.getView(i, null, null);
                     list.addView(item);
@@ -13791,5 +13793,10 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             }
         },2000);
 
+    }
+    public void refreshRole()
+    {
+        roleAccessBean = DBAccess.getdbHeler().getRoleAccessDetails(groupBean.getGroupId(), memberbean.getRole());
+        rolePatientManagementBean = DBAccess.getdbHeler().getRolePatientManagement(groupBean.getGroupId(), memberbean.getRole());
     }
 }

@@ -8419,29 +8419,35 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 		}
 	}
+
 	public void notifyroleAccess(Object object) {
 		Log.i("sss", "notifyroleAccess");
 		if (object instanceof Vector) {
+			GroupChatActivity groupChatActivity = (GroupChatActivity) SingleInstance.contextTable.get("groupchat");
 			Vector<Object> resultObject = (Vector<Object>) object;
 			for (int i = 0; i < resultObject.size(); i++) {
 				if (resultObject.get(i) instanceof RoleAccessBean) {
-					RoleAccessBean beanList = (RoleAccessBean)resultObject.get(i);
-						DBAccess.getdbHeler().insertorupdateRoleAccess(beanList);
+					RoleAccessBean beanList = (RoleAccessBean) resultObject.get(i);
+					DBAccess.getdbHeler().insertorupdateRoleAccess(beanList);
+					if (groupChatActivity != null)
+						groupChatActivity.refreshRole();
 				}
 				if (resultObject.get(i) instanceof RolePatientManagementBean) {
-					RolePatientManagementBean beanList = (RolePatientManagementBean)resultObject.get(i);
+					RolePatientManagementBean beanList = (RolePatientManagementBean) resultObject.get(i);
 					DBAccess.getdbHeler().insertorupdateRolepatientAccess(beanList);
+					if (groupChatActivity != null)
+						groupChatActivity.refreshRole();
 				}
 				if (resultObject.get(i) instanceof RoleEditRndFormBean) {
-					RoleEditRndFormBean beanList = (RoleEditRndFormBean)resultObject.get(i);
+					RoleEditRndFormBean beanList = (RoleEditRndFormBean) resultObject.get(i);
 					DBAccess.getdbHeler().insertorupdateRoleEditRoundingFormAccess(beanList);
 				}
 				if (resultObject.get(i) instanceof RoleTaskMgtBean) {
-					RoleTaskMgtBean beanList = (RoleTaskMgtBean)resultObject.get(i);
+					RoleTaskMgtBean beanList = (RoleTaskMgtBean) resultObject.get(i);
 					DBAccess.getdbHeler().insertorupdateRoleTransactionAccess(beanList);
 				}
 				if (resultObject.get(i) instanceof RoleCommentsViewBean) {
-					RoleCommentsViewBean beanList = (RoleCommentsViewBean)resultObject.get(i);
+					RoleCommentsViewBean beanList = (RoleCommentsViewBean) resultObject.get(i);
 					DBAccess.getdbHeler().insertorupdateRoleCommentsViewAccess(beanList);
 				}
 			}

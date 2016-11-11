@@ -151,7 +151,7 @@ public class RoundingEditActivity extends Activity {
         ArrayList<String> list = new ArrayList<String>();
         list.add("Fellow");
         list.add("Attending");
-        list.add("Chief Residence");
+        list.add("Chief Resident");
         list.add("Resident");
         list.add("Med Student");
         list.add("Add New Role");
@@ -166,7 +166,7 @@ public class RoundingEditActivity extends Activity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if(charSequence.toString().equalsIgnoreCase("fellow")||charSequence.toString().equalsIgnoreCase("Attending")
-                        || charSequence.toString().equalsIgnoreCase("Resident") || charSequence.toString().equalsIgnoreCase("Chief Residence")
+                        || charSequence.toString().equalsIgnoreCase("Resident") || charSequence.toString().equalsIgnoreCase("Chief Resident")
                         || charSequence.toString().equalsIgnoreCase("Med Student"))
                     rights.setEnabled(false);
                 else
