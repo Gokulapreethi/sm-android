@@ -10531,32 +10531,31 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 int questionsCount;
-                if (groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
-                        (memberbean.getAdmin() != null && memberbean.getAdmin().equalsIgnoreCase("1")||
-                                (rolePatientManagementBean.getAdd() != null || rolePatientManagementBean.getAdd().equalsIgnoreCase("0")))) {
-                    if (patientType.equalsIgnoreCase("mypatient"))
-                        questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where groupid='"
-                                + groupId + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser + "%'");
-                    else
-                        questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where groupid='" + groupId + "' and assignedmembers=''");
-                    Log.i("BBB","entry count of mypatient and others**********"+questionsCount);
-                    if (questionsCount > 0 ||
-                            (rolePatientManagementBean.getAdd() != null && rolePatientManagementBean.getAdd().equalsIgnoreCase("1"))) {
-                        Intent intent = new Intent(context, AssignPatientActivity.class);
-                        intent.putExtra("groupid", groupId);
-                        intent.putExtra("groupname", groupBean.getGroupName());
-                        startActivity(intent);
-                    } else if(patientType.equals("mypatient"))
-                    {
-                        Intent intent = new Intent(context, AssignPatientActivity.class);
-                        intent.putExtra("groupid", groupId);
-                        intent.putExtra("groupname", groupBean.getGroupName());
-                        startActivity(intent);
-                    }else
-                        showToast("Members already assigned to these patient ");
-                } else
-                    showToast("You have no access to assign members to these patient ");
-                return true;
+                    if (groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+                          (memberbean.getAdmin() != null && memberbean.getAdmin().equalsIgnoreCase("1")
+                                  ||(rolePatientManagementBean.getAdd() == null || rolePatientManagementBean.getAdd().equalsIgnoreCase("0")))) {
+                        if (patientType.equalsIgnoreCase("mypatient"))
+                            questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where groupid='"
+                                    + groupId + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser + "%'");
+                        else
+                            questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where groupid='" + groupId + "' and assignedmembers=''");
+                        Log.i("BBB", "entry count of mypatient and others**********" + questionsCount);
+                        if (questionsCount > 0 ||
+                                (rolePatientManagementBean.getAdd() != null && rolePatientManagementBean.getAdd().equalsIgnoreCase("1"))) {
+                            Intent intent = new Intent(context, AssignPatientActivity.class);
+                            intent.putExtra("groupid", groupId);
+                            intent.putExtra("groupname", groupBean.getGroupName());
+                            startActivity(intent);
+                        } else if (patientType.equals("mypatient")) {
+                            Intent intent = new Intent(context, AssignPatientActivity.class);
+                            intent.putExtra("groupid", groupId);
+                            intent.putExtra("groupname", groupBean.getGroupName());
+                            startActivity(intent);
+                        } else
+                            showToast("Members already assigned to these patient ");
+                    } else
+                        showToast("You have no access to assign members to these patient ");
+                        return true;
             }
         });
         name.setOnClickListener(new View.OnClickListener() {
