@@ -109,7 +109,7 @@ public class Registration extends Activity {
     private boolean isSpeciality=false,isMedical=false,isResidency=false;
     private boolean isFellow=false,isHospital=false,isAssociation=false;
     private String add_citation="",add_officeaddress = "",add_association_mem = "", Addressline1,Addressline2, office_phone_no, office_fax, zip_code, city_value,office_address, state_value = "";
-
+    EditText etsecAns1,etsecAns2,etsecAns3;
 
     public String getFileName() {
         String strFilename = null;
@@ -176,9 +176,9 @@ public class Registration extends Activity {
         final Button plus_id = (Button)findViewById(R.id.plus_id);
         final EditText edPin = (EditText) findViewById(R.id.etpin);
         final EditText edCnfrmpin = (EditText) findViewById(R.id.etconfirmpin);
-        final EditText etsecAns1 = (EditText) findViewById(R.id.etsecAns1);
-        final EditText etsecAns2 = (EditText) findViewById(R.id.etsecAns2);
-        final EditText etsecAns3 = (EditText) findViewById(R.id.etsecAns3);
+        etsecAns1 = (EditText) findViewById(R.id.etsecAns1);
+        etsecAns2 = (EditText) findViewById(R.id.etsecAns2);
+        etsecAns3 = (EditText) findViewById(R.id.etsecAns3);
         etsecQues1 = (EditText) findViewById(R.id.etsecques1);
         etsecQues2 = (EditText) findViewById(R.id.etsecques2);
         etsecQues3 = (EditText) findViewById(R.id.etsecques3);
@@ -1764,23 +1764,29 @@ public class Registration extends Activity {
                                     sp7.getText().toString().equalsIgnoreCase("Choose Question")) {
                                 showAlert1("Please Enter valid secret questions");
                                 return;
-                            } else if (sp5.getText().toString().equalsIgnoreCase("Other Question") ||
+                            }
+                            if (!sp5.getText().toString().equalsIgnoreCase("Other Question") ||
+                                    !sp6.getText().toString().equalsIgnoreCase("Other Question") ||
+                                    !sp7.getText().toString().equalsIgnoreCase("Other Question")) {
+                                if (sp5.getText().toString() != null && !sp5.getText().toString().equalsIgnoreCase("Other Question"))
+                                    sb.setSecques1(sp5.getText().toString()
+                                            .trim());
+                                if (sp6.getText().toString() != null && !sp6.getText().toString().equalsIgnoreCase("Other Question"))
+                                    sb.setSecques2(sp6.getText().toString()
+                                            .trim());
+                                if (sp7.getText().toString() != null && !sp7.getText().toString().equalsIgnoreCase("Other Question"))
+                                    sb.setSecques3(sp7.getText().toString()
+                                            .trim());
+                            }
+                            if (sp5.getText().toString().equalsIgnoreCase("Other Question") ||
                                     sp6.getText().toString().equalsIgnoreCase("Other Question") ||
                                     sp7.getText().toString().equalsIgnoreCase("Other Question")) {
                                 if (sp5.getText().toString().equalsIgnoreCase("Other Question"))
-                                    sb.setSecques1(etsecQues1.toString().trim());
+                                    sb.setSecques1(etsecQues1.getText().toString().trim());
                                 if (sp6.getText().toString().equalsIgnoreCase("Other Question"))
-                                    sb.setSecques2(etsecQues2.toString().trim());
+                                    sb.setSecques2(etsecQues2.getText().toString().trim());
                                 if (sp7.getText().toString().equalsIgnoreCase("Other Question"))
-                                    sb.setSecques3(etsecQues3.toString().trim());
-
-                            } else {
-                                sb.setSecques1(sp5.getText().toString()
-                                        .trim());
-                                sb.setSecques2(sp6.getText().toString()
-                                        .trim());
-                                sb.setSecques3(sp7.getText().toString()
-                                        .trim());
+                                    sb.setSecques3(etsecQues3.getText().toString().trim());
                             }
                                 if (!WebServiceReferences.running) {
                                     String url = preferences.getString("url", null);

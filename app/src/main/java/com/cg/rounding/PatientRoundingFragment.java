@@ -69,6 +69,7 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -2073,7 +2074,9 @@ public class PatientRoundingFragment extends Fragment {
         AlertDialog alert1 = builder.create();
         alert1.show();
     }
-
+    public static boolean useList(String[] arr, String targetValue) {
+        return Arrays.asList(arr).contains(targetValue);
+    }
     @SuppressWarnings("unchecked")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -2096,11 +2099,19 @@ public class PatientRoundingFragment extends Fragment {
                                 addedMembers=temp.getBuddyName();
                     }
                     Log.i("ppp", "***assign Members patient--------->"+pBean.getAssignedmembers());
+                    String[] member_split = addedMembers.split(",");
+                    String[] addedMember_split = pBean.getAssignedmembers().split(",");
+                    for(int i=0;i<member_split.length;i++) {
+                        if (!useList(addedMember_split, member_split[i])) {
+                            if (pBean.getAssignedmembers() != null && pBean.getAssignedmembers().length() > 0)
 
-                    if (pBean.getAssignedmembers()!= null && pBean.getAssignedmembers().length()>0)
-                        pBean.setAssignedmembers(pBean.getAssignedmembers()+"," + addedMembers);
-                    else
-                        pBean.setAssignedmembers(addedMembers);
+                                pBean.setAssignedmembers(pBean.getAssignedmembers() + "," + member_split[i]);
+                            else
+                                pBean.setAssignedmembers(member_split[i]);
+                        }else
+                            Log.i("AAAA", "Assigned Member Duplication true=======>");
+
+                    }
                     WebServiceReferences.webServiceClient.SetPatientRecord(pBean, mainContext);
                     DBAccess.getdbHeler().insertorUpdatePatientDetails(pBean);
                 }

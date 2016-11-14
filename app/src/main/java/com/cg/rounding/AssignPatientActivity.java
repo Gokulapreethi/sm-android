@@ -31,7 +31,10 @@ import com.util.SingleInstance;
 import org.lib.PatientDetailsBean;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.TreeSet;
 import java.util.Vector;
 
 public class AssignPatientActivity extends Activity{
@@ -249,6 +252,9 @@ public class AssignPatientActivity extends Activity{
         }
         finish();
     }
+    public static boolean useList(String[] arr, String targetValue) {
+        return Arrays.asList(arr).contains(targetValue);
+    }
     @SuppressWarnings("unchecked")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -271,13 +277,24 @@ public class AssignPatientActivity extends Activity{
                                 addedMembers=temp.getBuddyName();
                     }
                     boolean isSelect = false;
+
                     for (PatientDetailsBean bean : PatientList) {
+                        String[] member_split = addedMembers.split(",");
+                        String[] addedMember_split = bean.getAssignedmembers().split(",");
                         if (bean.isSelected()) {
                             isSelect = true;
-                            if (bean.getAssignedmembers()!= null && bean.getAssignedmembers().length()>0)
-                                bean.setAssignedmembers(bean.getAssignedmembers()+"," + addedMembers);
-                            else
-                                bean.setAssignedmembers(addedMembers);
+                            for(int i=0;i<member_split.length;i++) {
+                                if (!useList(addedMember_split, member_split[i])) {
+                                    if (bean.getAssignedmembers() != null && bean.getAssignedmembers().length() > 0)
+
+                                        bean.setAssignedmembers(bean.getAssignedmembers() + "," +  member_split[i]);
+                                    else
+                                        bean.setAssignedmembers( member_split[i] );
+                                }else
+                                    Log.i("AAAA", "Assigned Member Duplication true=======>");
+
+                            }
+
                             WebServiceReferences.webServiceClient.SetPatientRecord(bean, context);
                             DBAccess.getdbHeler().insertorUpdatePatientDetails(bean);
                         }

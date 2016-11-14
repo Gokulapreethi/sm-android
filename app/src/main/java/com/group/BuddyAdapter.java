@@ -35,6 +35,7 @@ import com.util.SingleInstance;
 
 import org.lib.model.BuddyInformationBean;
 import org.lib.model.GroupBean;
+import org.lib.model.GroupMemberBean;
 
 public class BuddyAdapter extends ArrayAdapter<UserBean> {
 
@@ -105,6 +106,8 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 				holder.occupation = (TextView) convertView.findViewById(R.id.occupation);
 				holder.header_title = (TextView) convertView.findViewById(R.id.header_title);
 				holder.cancel_lay = (LinearLayout) convertView.findViewById(R.id.cancel_lay);
+				holder.memberRole = (TextView) convertView.findViewById(R.id.member_role);
+
 				convertView.setTag(holder);
 			}else
 				holder = (ViewHolder) convertView.getTag();
@@ -135,6 +138,30 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 //					holder.occupation.setText("Owner");
 //				else
 //					holder.occupation.setText("Prof.Designation");
+
+                GroupBean gmembersbean = DBAccess.getdbHeler().getGroupAndMembers(
+                        "select * from groupdetails where groupid=" + addGroupMembers.groupid);
+                if (gmembersbean != null) {
+                    if (gmembersbean.getInviteMembers() != null
+                            && gmembersbean.getInviteMembers().length() > 0) {
+                        String[] listRole = (gmembersbean.getInviteMembers())
+                                .split(",");
+                        for (String tmp : listRole) {
+                            GroupMemberBean bean12 = DBAccess.getdbHeler().getMemberDetails(addGroupMembers.groupid, tmp);
+                            boolean found = false;
+                            for (String element : listRole) {
+                                if (tmp.equals(userBean.getBuddyName())) {
+                                    Log.i("AAAA", "#########string Role " + bean12.getRole() + " element " + element);
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (found) {
+                                holder.memberRole.setText(bean12.getRole());
+                            }
+                        }
+                    }
+                }
 				if(userBean.getInvite()){
 					holder.selectUser.setVisibility(View.GONE);
 					holder.cancel_lay.setVisibility(View.VISIBLE);
@@ -271,6 +298,7 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 		TextView occupation;
 		TextView header_title;
 		LinearLayout cancel_lay;
+		TextView memberRole;
 	}
 	private  GroupFilter filter;
 	@Override
