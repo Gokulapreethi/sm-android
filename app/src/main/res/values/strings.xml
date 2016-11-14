@@ -364,8 +364,10 @@
     <!-- <string name="service_url"> https://172.16.1.92:8443/AlphaServices/Service</string> -->
     <!--<string name="service_url">https://122.165.92.35:443/SNAZMEDServices/Service</string>-->
     <string name="service_url">https://66.36.228.47:443/SNAZMEDServices/Service</string>
+    <!--<string name="service_url">https://192.168.0.100:443/SNAZMEDServices/Service</string>-->
     <!--<string name="service_url">https://www.snazevents.com/SNAZMEDServices/Service</string>-->
     <string name="service_url1">https://66.36.228.50:443/AddressAgentService/Service</string>
+    <!--<string name="service_url1">https://192.168.0.101:443/AddressAgentService/Service</string>-->
     <!--<string name="service_url">https://172.16.1.92:8443/SNAZMEDServices/Service</string>-->
     <!--<string name="service_url">https://172.16.1.112:8443/SNAZMEDServices/Service</string>-->
        <string name="error">Sorry, unable to continue with Notes. Please try again later.

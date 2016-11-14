@@ -1,42 +1,32 @@
 package com.group;
 
-import java.util.Vector;
-
-import org.lib.model.BuddyInformationBean;
-import org.lib.model.GroupBean;
-
-import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Environment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cg.DB.DBAccess;
+import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
-import com.cg.commonclass.CallDispatcher;
-import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
 import com.main.ContactsFragment;
 import com.util.SingleInstance;
+
+import org.lib.model.GroupBean;
+
+import java.util.Vector;
 
 public class GroupAdapter extends ArrayAdapter<GroupBean> {
 

@@ -315,7 +315,7 @@ public class CallHistoryActivity extends Activity {
 								if (buddies == null) {
 									buddies = "Me";
 								} else {
-									buddies = buddies + "," + "Me";
+									buddies = buddies + ", " + "Me";
 								}
 
 							} else {
@@ -326,14 +326,14 @@ public class CallHistoryActivity extends Activity {
 												if (buddies == null) {
 													buddies = bean.getFirstname() + " " + bean.getLastname();
 												} else {
-													buddies = buddies + "," + bean.getFirstname() + " " + bean.getLastname();
+													buddies = buddies + ", " + bean.getFirstname() + " " + bean.getLastname();
 												}
 
 											} else if (bean.getFirstname() != null) {
 												if (buddies == null) {
 													buddies = bean.getFirstname();
 												} else {
-													buddies = buddies + "," + bean.getFirstname();
+													buddies = buddies + ", " + bean.getFirstname();
 												}
 											}
 										}
@@ -347,7 +347,7 @@ public class CallHistoryActivity extends Activity {
 							if (buddies == null) {
 								buddies = "Me";
 							} else {
-								buddies = buddies + "," + "Me";
+								buddies = buddies + ", " + "Me";
 							}
 
 						} else {
@@ -358,7 +358,7 @@ public class CallHistoryActivity extends Activity {
 											if (buddies == null) {
 												buddies = bean.getFirstname() + " " + bean.getLastname();
 											} else {
-												buddies = buddies + "," + bean.getFirstname() + " " + bean.getLastname();
+												buddies = buddies + ", " + bean.getFirstname() + " " + bean.getLastname();
 											}
 
 
@@ -366,7 +366,7 @@ public class CallHistoryActivity extends Activity {
 											if (buddies == null) {
 												buddies = bean.getFirstname();
 											} else {
-												buddies = buddies + "," + bean.getFirstname();
+												buddies = buddies + ", " + bean.getFirstname();
 											}
 										}
 									}

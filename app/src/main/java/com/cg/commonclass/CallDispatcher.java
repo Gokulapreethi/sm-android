@@ -3259,7 +3259,13 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 					if(CallDispatcher.callHistoryDetails != null) {
 						SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
+						if (participant == null && hist_bean.getParticipants() != null) {
+							participant = hist_bean.getParticipants();
+						}
 						hist_bean.setParticipant_name(participant);
+						if(hist_bean.getStartTime() == null) {
+							hist_bean.setStartTime(getCurrentDateandTime());
+						}
 						hist_bean.setEndTime(getCurrentDateandTime());
 						hist_bean.setCallDuration(SingleInstance.mainContext
 								.getCallDuration(hist_bean.getStartTime(),
@@ -3502,6 +3508,9 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 					if(CallDispatcher.callHistoryDetails != null) {
 						SignalingBean hist_bean = CallDispatcher.callHistoryDetails;
+						if (participant == null && hist_bean.getParticipants() != null) {
+							participant = hist_bean.getParticipants();
+						}
 						hist_bean.setParticipant_name(participant);
 						if(hist_bean.getStartTime() == null) {
 							hist_bean.setStartTime(getCurrentDateandTime());
@@ -3973,7 +3982,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 	private void NoAnswer(final String Username, final String Calltype){
 
 
-		noanswerhandler.post(new Runnable() {
+		noanswerhandler.postDelayed(new Runnable() {
 
             @Override
             public void run() {
@@ -4061,7 +4070,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
                     }
                 });
             }
-        });
+        },2000);
 	}
 
 	private void openChatScreen(String noanswered_user, String mes_type){
@@ -12011,6 +12020,11 @@ private TrustManager[] get_trust_mgr() {
 							}
 
 							removed_current_conf_members = new ArrayList<String>();
+
+							WebServiceReferences.videoSSRC_total.clear();
+							WebServiceReferences.videoSSRC_total_list.clear();
+							WebServiceReferences.removed_videoSSRC_list.clear();
+
 							FragmentManager fm =
 									AppReference.mainContext.getSupportFragmentManager();
 							FragmentTransaction ft = fm.beginTransaction();

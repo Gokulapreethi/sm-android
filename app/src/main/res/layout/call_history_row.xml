@@ -192,11 +192,10 @@
             android:id="@+id/touser_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="7dp"
+            android:layout_marginLeft="20dp"
             android:layout_marginRight="5dp"
             android:ellipsize="end"
             android:gravity="right"
-            android:singleLine="true"
             android:textColor="@color/snazlgray"
             android:textSize="17dp" />
     </LinearLayout>
