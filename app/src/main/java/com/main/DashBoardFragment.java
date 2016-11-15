@@ -1017,7 +1017,7 @@ public class DashBoardFragment extends Fragment {
                     }
                 } else if (nbean.getNotifttype().equalsIgnoreCase("I")) {
                     Log.d("chatlist", "entry");
-                    if (nbean.getCategory().equalsIgnoreCase("I")) {
+                    if (nbean.getCategory()!=null && (nbean.getCategory().equalsIgnoreCase("I") ||nbean.getCategory().equalsIgnoreCase("g"))) {
                         if (chatlist.containsKey(nbean.getFrom())) {
                             Log.d("chatlist", "entries" + nbean.getFrom());
                             Log.d("chatlist", "entry1");

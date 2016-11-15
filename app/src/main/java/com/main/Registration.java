@@ -1675,6 +1675,8 @@ public class Registration extends Activity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                ques3_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
+
             }
         });
 
@@ -1806,7 +1808,19 @@ public class Registration extends Activity {
                                 CallDispatcher.LoginUser = sb.getEmailId();
                                 CallDispatcher.Password = sb.getPassword();
 
-                        } else if (edEmail.getText().toString().trim().length() == 0) {
+                        }
+                        else if (sp5.getText().toString().trim().length() == 0 || sp6.getText().toString().trim().length()==0 || sp7.getText().toString().trim().length()==0) {
+                            if (sp5.getText().toString().trim().length()==0)
+                                sp5.requestFocus();
+                            showAlert1("Please select Security question 1 ");
+                            if (sp6.getText().toString().trim().length()==0)
+                                sp6.requestFocus();
+                            showAlert1("Please select Security question 2 ");
+                            if (sp7.getText().toString().trim().length()==0)
+                                sp7.requestFocus();
+                            showAlert1("Please select Security question 3 ");
+                        }
+                        else if (edEmail.getText().toString().trim().length() == 0) {
                             edEmail.requestFocus();
                             showAlert1("Enter Email address");
                         } else if (!validateEmail(edEmail.getText().toString().trim())) {

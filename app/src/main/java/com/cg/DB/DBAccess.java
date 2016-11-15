@@ -11872,4 +11872,28 @@ public class DBAccess extends SQLiteOpenHelper {
 
 	}
 
+
+	public boolean deleteGroupChatOrBuddyRecentEntry(String groupIdOrbuddyname, String ownername) {
+
+		boolean delete = false;
+		try {
+			if (!db.isOpen())
+				openDatabase();
+
+			String strQuery = null;
+			if (groupIdOrbuddyname != null && ownername != null)
+				strQuery = "DELETE from chatrecentlist WHERE fileid='" + groupIdOrbuddyname
+						+ "' and owner='" + ownername + "'";
+			db.execSQL(strQuery);
+			delete = true;
+		} catch (Exception e) {
+			if (AppReference.isWriteInFile)
+				AppReference.logger.error(e.getMessage(), e);
+			else
+				e.printStackTrace();
+			delete = false;
+		}
+		return delete;
+
+	}
 }

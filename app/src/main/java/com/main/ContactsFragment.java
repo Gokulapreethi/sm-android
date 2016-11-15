@@ -4332,8 +4332,8 @@ public class ContactsFragment extends Fragment{
 			for (NotifyListBean bean : tempnotifylist) {
 				innerloop:
 				for(BuddyInformationBean buddyInformationBean:buddylist) {
-					if(buddyInformationBean.getEmailid()!=null &&bean.getFileid()!=null &&
-							buddyInformationBean.getEmailid().equalsIgnoreCase(bean.getFileid())) {
+					if(buddyInformationBean.getName()!=null &&bean.getFileid()!=null &&
+							buddyInformationBean.getName().equalsIgnoreCase(bean.getFileid())) {
 
 
 //						if (bean.getNotifttype().equalsIgnoreCase("F"))

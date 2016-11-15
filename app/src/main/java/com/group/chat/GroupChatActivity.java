@@ -7865,10 +7865,13 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             }else
             for (int i = 0; i < getBuddyList.size(); i++) {
                 BuddyInformationBean buddyInformationBean = (BuddyInformationBean) ContactsFragment.getBuddyList().get(i);
-                if (bname.equals(buddyInformationBean.getEmailid())) {
+                if (buddyInformationBean.getName()!=null && bname.equalsIgnoreCase(buddyInformationBean.getName())) {
                     name = buddyInformationBean.getFirstname() + " " + buddyInformationBean.getLastname();
                 }
             }
+        }
+        if(name==null){
+            name=bname;
         }
         return name;
     }

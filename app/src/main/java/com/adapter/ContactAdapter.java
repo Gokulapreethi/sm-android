@@ -75,12 +75,18 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
     public int getItemViewType(int position) {
 //            return super.getItemViewType(position);
 //            return position % 3;
-        BuddyInformationBean bib = contactList.get(position);
-        if(bib.getStatus()!=null && bib.getStatus().equalsIgnoreCase("pending")){
-            return 1;
-        }else if(bib.getStatus()!=null && bib.getStatus().equalsIgnoreCase("new")){
-            return 1;
-        }else{
+        Log.i("buddy","getItemViewType--->"+position);
+        Log.i("buddy","contactList.size()--->"+contactList.size());
+        if(contactList.size()>position) {
+            BuddyInformationBean bib = contactList.get(position);
+            if (bib.getStatus() != null && bib.getStatus().equalsIgnoreCase("pending")) {
+                return 1;
+            } else if (bib.getStatus() != null && bib.getStatus().equalsIgnoreCase("new")) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }else {
             return 0;
         }
     }

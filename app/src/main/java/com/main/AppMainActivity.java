@@ -1540,6 +1540,31 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				DBAccess.getdbHeler(getApplicationContext())
 						.deleteGroupChatEntryLocally(groupBean.getGroupId(),
 								CallDispatcher.LoginUser);
+
+				//For chatRecent entry remove
+				//Start
+				DBAccess.getdbHeler(context).deleteGroupChatOrBuddyRecentEntry(groupBean.getGroupId(),CallDispatcher.LoginUser);
+				if(SingleInstance.instanceTable.containsKey("contactspage")){
+					final ContactsFragment contactsFragment=(ContactsFragment) SingleInstance.instanceTable.get("contactspage");
+					if(contactsFragment!=null && contactsFragment.chatgroup_recent){
+						for(NotifyListBean notifyListBean:contactsFragment.grouprecentlist){
+							if(notifyListBean.getFileid()!=null &&
+									notifyListBean.getFileid().equalsIgnoreCase(groupBean.getGroupId())){
+								contactsFragment.grouprecentlist.remove(notifyListBean);
+								break;
+							}
+						}
+						handler.post(new Runnable() {
+							@Override
+							public void run() {
+								if(contactsFragment.notifyAdapter!=null){
+									contactsFragment.notifyAdapter.notifyDataSetChanged();
+								}
+							}
+						});
+					}
+				}
+				//End
 			}
 
 			if (deleteGroup != null) {
@@ -5289,7 +5314,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					// TODO Auto-generated method stub
 					ContactsFragment contactsFragment = ContactsFragment
 							.getInstance(getApplicationContext());
-					contactsFragment.getList();
+					if(!contactsFragment.chatgroup_recent) {
+						contactsFragment.getList();
+					}
 					RoundingFragment roundingFragment = RoundingFragment
 							.newInstance(getApplicationContext());
 					roundingFragment.getList();
@@ -5698,6 +5725,32 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 									showToast("you have been removed from "
 											+ fullname
 											+ " contact list");
+									//For chatRecent entry remove
+									//Start
+									if(bInfo!=null && bInfo.getName()!=null) {
+										DBAccess.getdbHeler(context).deleteGroupChatOrBuddyRecentEntry(bInfo.getName(), CallDispatcher.LoginUser);
+										if (SingleInstance.instanceTable.containsKey("contactspage")) {
+											final ContactsFragment contactsFragment = (ContactsFragment) SingleInstance.instanceTable.get("contactspage");
+											if (contactsFragment != null && contactsFragment.chatIndivijaul_recent) {
+												for (NotifyListBean notifyListBean : contactsFragment.contactrecentlist) {
+													if (notifyListBean.getFileid() != null &&
+															notifyListBean.getFileid().equalsIgnoreCase(bInfo.getName())) {
+														contactsFragment.contactrecentlist.remove(notifyListBean);
+														break;
+													}
+												}
+												handler.post(new Runnable() {
+													@Override
+													public void run() {
+														if (contactsFragment.notifyAdapter != null) {
+															contactsFragment.notifyAdapter.notifyDataSetChanged();
+														}
+													}
+												});
+											}
+										}
+									}
+									//End
 									if (WebServiceReferences.contextTable
 											.containsKey("viewprofileactivity")) {
 										ViewProfiles vProfiles = (ViewProfiles) WebServiceReferences.contextTable
@@ -9258,7 +9311,6 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 							if (!groupChatBean.getSessionid().contains("@")) {
 								signalingBean.setChatid(groupChatBean.getSessionid());
 							}
-
 							DBAccess.getdbHeler().insertGroupCallChat(signalingBean);
 
 

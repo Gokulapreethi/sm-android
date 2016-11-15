@@ -58,6 +58,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.Vector;
 
 public class RoundNewPatientActivity extends Activity {
@@ -244,6 +245,10 @@ public class RoundNewPatientActivity extends Activity {
             @Override
             public void onClick(View view) {
                 finish();
+                InputMethodManager imm = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+
             }
         });
         ed_dob.setOnClickListener(new View.OnClickListener() {
@@ -331,6 +336,7 @@ public class RoundNewPatientActivity extends Activity {
             }
             @Override
             public void afterTextChanged(Editable editable) {
+                hospital_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
             }
         });
         ed_middlename.addTextChangedListener(new TextWatcher() {
@@ -449,11 +455,13 @@ public class RoundNewPatientActivity extends Activity {
             public void afterTextChanged(Editable editable) {
             }
         });
-        List<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         list=DBAccess.getdbHeler().getHospitalDetails();
+        TreeSet settree=new TreeSet(list);
+        ArrayList arrayList_list=new ArrayList(settree);
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>
-                (this, R.layout.spinner_dropdown_list, list);
+                (this, R.layout.spinner_dropdown_list, arrayList_list);
 
         dataAdapter.setDropDownViewResource
                 (R.layout.spinner_dropdown_list);

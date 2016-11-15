@@ -564,37 +564,86 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                             if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("image"))
                                 if(notifyBean.getCategory().equalsIgnoreCase("I")){
                                     holder.fileType.setText(notifyBean.getUsername());
-                                }else
+                                }else if(notifyBean.getCategory()!=null && notifyBean.getCategory().equalsIgnoreCase("g")){
+                                    if(DBAccess.getdbHeler().getGroupName(
+                                            "select * from grouplist where groupid='" + notifyBean.getFileid() + "'")!=null) {
+                                        holder.fileType.setText(DBAccess.getdbHeler().getGroupName(
+                                                "select * from grouplist where groupid='" + notifyBean.getFileid() + "'"));
+                                    }
+                                }
+                                else
                                     holder.fileType.setText(notifyBean.getOwner());
                             else if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("text"))
                                 if(notifyBean.getCategory().equalsIgnoreCase("I")){
                                     holder.fileType.setText(notifyBean.getUsername());
-                                }else
+                                }else if(notifyBean.getCategory()!=null && notifyBean.getCategory().equalsIgnoreCase("g")){
+                                    if(DBAccess.getdbHeler().getGroupName(
+                                            "select * from grouplist where groupid='" + notifyBean.getFileid() + "'")!=null) {
+                                        holder.fileType.setText(DBAccess.getdbHeler().getGroupName(
+                                                "select * from grouplist where groupid='" + notifyBean.getFileid() + "'"));
+                                    }
+                                }
+                                else
                                     holder.fileType.setText(notifyBean.getOwner());
                             else if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("audio"))
                                 if(notifyBean.getCategory().equalsIgnoreCase("I")){
                                     holder.fileType.setText(notifyBean.getUsername());
-                                }else
+                                }else if(notifyBean.getCategory()!=null && notifyBean.getCategory().equalsIgnoreCase("g")){
+                                    if(DBAccess.getdbHeler().getGroupName(
+                                            "select * from grouplist where groupid='" + notifyBean.getFileid() + "'")!=null) {
+                                        holder.fileType.setText(DBAccess.getdbHeler().getGroupName(
+                                                "select * from grouplist where groupid='" + notifyBean.getFileid() + "'"));
+                                    }
+                                }
+                                else
                                     holder.fileType.setText(notifyBean.getOwner());
                             else if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("video"))
                                 if(notifyBean.getCategory().equalsIgnoreCase("I")){
                                     holder.fileType.setText(notifyBean.getUsername());
-                                }else
+                                }else if(notifyBean.getCategory()!=null && notifyBean.getCategory().equalsIgnoreCase("g")){
+                                    if(DBAccess.getdbHeler().getGroupName(
+                                            "select * from grouplist where groupid='" + notifyBean.getFileid() + "'")!=null) {
+                                        holder.fileType.setText(DBAccess.getdbHeler().getGroupName(
+                                                "select * from grouplist where groupid='" + notifyBean.getFileid() + "'"));
+                                    }
+                                }
+                                else
                                     holder.fileType.setText(notifyBean.getOwner());
                             else if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("sketch"))
                                 if(notifyBean.getCategory().equalsIgnoreCase("I")){
                                     holder.fileType.setText(notifyBean.getUsername());
-                                }else
+                                }else if(notifyBean.getCategory()!=null && notifyBean.getCategory().equalsIgnoreCase("g")){
+                                    if(DBAccess.getdbHeler().getGroupName(
+                                            "select * from grouplist where groupid='" + notifyBean.getFileid() + "'")!=null) {
+                                        holder.fileType.setText(DBAccess.getdbHeler().getGroupName(
+                                                "select * from grouplist where groupid='" + notifyBean.getFileid() + "'"));
+                                    }
+                                }
+                                else
                                     holder.fileType.setText(notifyBean.getOwner());
                             else if(notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("document"))
                                 if(notifyBean.getCategory().equalsIgnoreCase("I")){
                                     holder.fileType.setText(notifyBean.getUsername());
-                                }else
+                                }else if(notifyBean.getCategory()!=null && notifyBean.getCategory().equalsIgnoreCase("g")){
+                                    if(DBAccess.getdbHeler().getGroupName(
+                                            "select * from grouplist where groupid='" + notifyBean.getFileid() + "'")!=null) {
+                                        holder.fileType.setText(DBAccess.getdbHeler().getGroupName(
+                                                "select * from grouplist where groupid='" + notifyBean.getFileid() + "'"));
+                                    }
+                                }
+                                else
                                     holder.fileType.setText(notifyBean.getOwner());
                             else if(notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("mixedfile"))
                                 if(notifyBean.getCategory().equalsIgnoreCase("I")){
                                     holder.fileType.setText(notifyBean.getUsername());
-                                }else
+                                }else if(notifyBean.getCategory()!=null && notifyBean.getCategory().equalsIgnoreCase("g")){
+                                    if(DBAccess.getdbHeler().getGroupName(
+                                            "select * from grouplist where groupid='" + notifyBean.getFileid() + "'")!=null) {
+                                        holder.fileType.setText(DBAccess.getdbHeler().getGroupName(
+                                                "select * from grouplist where groupid='" + notifyBean.getFileid() + "'"));
+                                    }
+                                }
+                                else
                                     holder.fileType.setText(notifyBean.getOwner());
                             if (notifyBean.getType()!=null && notifyBean.getType().trim().equalsIgnoreCase("text")) {
                                 if (notifyBean.getContent() != null)

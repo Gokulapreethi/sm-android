@@ -39,6 +39,13 @@
             android:textColor="#FFFFFF" />
 
     </RelativeLayout>
+    <com.group.VerticalScrollview
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/header"
+        android:scrollbarStyle="insideOverlay"
+ >
+   
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -200,6 +207,7 @@
         </LinearLayout>
 
     </LinearLayout>
+    </com.group.VerticalScrollview>
 
     <LinearLayout
         android:id="@+id/parent_flip"

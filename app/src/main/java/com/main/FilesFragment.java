@@ -1006,8 +1006,8 @@ public class FilesFragment extends Fragment implements OnClickListener {
 		try {
 			final AlertDialog.Builder alert = new AlertDialog.Builder(
 					context);
-			alert.setTitle("Alert");
-			alert.setMessage("Are you sure want to sync all files?");
+			alert.setTitle("Sync Files");
+			alert.setMessage("Do you want to sync all files");
 			alert.setCancelable(false);
 			alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 				@Override

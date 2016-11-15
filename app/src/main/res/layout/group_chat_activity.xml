@@ -498,7 +498,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_margin="5dp"
                                 android:hint="Type your message"
-                                android:inputType="textMultiLine"
+                                android:inputType="textCapSentences|textMultiLine"
                                 android:textColor="@color/black"
                                 android:textColorHint="@color/snazash" />
 
