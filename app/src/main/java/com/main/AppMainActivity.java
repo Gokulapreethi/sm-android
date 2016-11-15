@@ -9311,6 +9311,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 							if (!groupChatBean.getSessionid().contains("@")) {
 								signalingBean.setChatid(groupChatBean.getSessionid());
 							}
+							DBAccess.getdbHeler().insertOrUpdateCallHistory(signalingBean);
 							DBAccess.getdbHeler().insertGroupCallChat(signalingBean);
 
 
