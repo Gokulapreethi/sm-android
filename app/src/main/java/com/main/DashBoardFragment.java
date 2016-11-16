@@ -1,5 +1,6 @@
 package com.main;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -82,7 +83,7 @@ public class DashBoardFragment extends Fragment {
     RelativeLayout.LayoutParams param1, param2;
     LinearLayout header;
     private Boolean isSearch=false;
-    private  String setType = new String();
+    public   String setType = new String();
     private Button plusBtn, clearAllBtn;
     public ListView notifylistview;
     public NotifyListAdapter notifyAdapter=null;
@@ -93,6 +94,7 @@ public class DashBoardFragment extends Fragment {
     int audio=0, videos=0,other=0,image=0,chat=0;
     Vector<FileDetailsBean> fBeanList;
     RelativeLayout mainHeader;
+    public static ProgressDialog pDialog;
     public static DashBoardFragment newInstance(Context context) {
         try {
             if (dashBoardFragment == null) {
@@ -218,6 +220,8 @@ public class DashBoardFragment extends Fragment {
             Button backBtn = (Button) getActivity().findViewById(R.id.backbtn);
             backBtn.setVisibility(View.GONE);
             imageLoader = new ImageLoader(mainContext);
+            SingleInstance.instanceTable.put("dashboard",dashBoardFragment);
+
             view = null;
             if (view == null) {
                 view = inflater.inflate(R.layout.tabcontent, null);
@@ -504,9 +508,7 @@ public class DashBoardFragment extends Fragment {
                             try {
                                 rl.removeAllViews();
                                 SingleInstance.mainContext.notifyUI();
-                                if ( LoadFilesList(CallDispatcher.LoginUser) != null &&  LoadFilesList(CallDispatcher.LoginUser).size() > 0){
-                                plusBtn.setVisibility(View.VISIBLE);}
-                                else {plusBtn.setVisibility(View.GONE);}
+
 //                                clearAllBtn.setVisibility(View.VISIBLE);
                                 im_summary.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_summary));
                                 im_notification.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_notification_white));
@@ -519,10 +521,10 @@ public class DashBoardFragment extends Fragment {
                                 LinearLayout no_notify=(LinearLayout)v2.findViewById(R.id.no_notify);
                                 notifylistview = (ListView) v2.findViewById(R.id.notify_list);
 //                                LoadFilesList(CallDispatcher.LoginUser);
-                                notifyAdapter = new NotifyListAdapter(mainContext, LoadFilesList(CallDispatcher.LoginUser));
-                                notifylistview.setAdapter(notifyAdapter);
-                                notifyAdapter.isFromOther(false);
-                                notifyAdapter.notifyDataSetChanged();
+//                                notifyAdapter = new NotifyListAdapter(mainContext, notificationList());
+//                                notifylistview.setAdapter(notifyAdapter);
+//                                notifyAdapter.isFromOther(true);
+//                                notifyAdapter.notifyDataSetChanged();
                                 clearAllBtn.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -538,20 +540,41 @@ public class DashBoardFragment extends Fragment {
                                 rl_notify.setVisibility(View.VISIBLE);
                                 tv_rl_notify.setVisibility(View.VISIBLE);
                                 bt_rl_notify.setVisibility(View.VISIBLE);
-                                if(tempnotifylist.size()>0) {
-                                    notifylistview.setVisibility(View.VISIBLE);
-                                    no_notify.setVisibility(View.GONE);
-                                }else {
-                                    notifylistview.setVisibility(View.GONE);
-                                    no_notify.setVisibility(View.VISIBLE);
-                                    rl_notify.setVisibility(View.GONE);
-                                }
-                                int count1 = DBAccess.getdbHeler(mainContext)
-                                        .getUnreadMsgCount(CallDispatcher.LoginUser);
+
+//                                int count1 = DBAccess.getdbHeler(mainContext)
+//                                        .getUnreadMsgCount(CallDispatcher.LoginUser);
                                 int count2 = DBAccess.getdbHeler(mainContext)
                                         .getUnreadFileCount(CallDispatcher.LoginUser);
-                                int count3 = DBAccess.getdbHeler(mainContext)
-                                        .getUnreadCallCount(CallDispatcher.LoginUser);
+//                                int count3 = DBAccess.getdbHeler(mainContext)
+//                                        .getUnreadCallCount(CallDispatcher.LoginUser);
+
+                                int count1=0;int count3=0;
+                                for(NotifyListBean notifyListBean: notificationList()){
+                                    if(notifyListBean.getChatcount()!=null &&
+                                            !notifyListBean.getChatcount().equalsIgnoreCase("0") && !notifyListBean.getChatcount().equalsIgnoreCase("")) {
+                                        if (count1 == 0) {
+                                            count1 = Integer.parseInt(notifyListBean.getChatcount());
+                                        } else {
+                                            count1 = count1 + Integer.parseInt(notifyListBean.getChatcount());
+                                        }
+                                        if(notifyListBean.getCallcount()!=null &&
+                                                !notifyListBean.getCallcount().equalsIgnoreCase("0") && !notifyListBean.getCallcount().equalsIgnoreCase("")) {
+                                            if (count3 == 0) {
+                                                count3 = Integer.parseInt(notifyListBean.getCallcount());
+                                            } else {
+                                                count3 = count3 + Integer.parseInt(notifyListBean.getCallcount());
+                                            }
+                                        }
+                                    }else if(notifyListBean.getCallcount()!=null &&
+                                            !notifyListBean.getCallcount().equalsIgnoreCase("0") && !notifyListBean.getCallcount().equalsIgnoreCase("")) {
+                                        if (count3 == 0) {
+                                            count3 = Integer.parseInt(notifyListBean.getCallcount());
+                                        } else {
+                                            count3 = count3 + Integer.parseInt(notifyListBean.getCallcount());
+                                        }
+                                    }
+                                }
+
                                 if (setType.equals("ll_warn")) {
                                     rl_notify.setBackgroundColor(getResources().getColor(R.color.yellow));
                                     tv_rl_notify.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dashboard_attention_white, 0, 0, 0);
@@ -568,6 +591,15 @@ public class DashBoardFragment extends Fragment {
                                     }else{
                                         tv_rl_notify.setText(count1+" unread message");
                                     }
+                                    Vector<NotifyListBean> msg_list=(Vector<NotifyListBean>) notificationList().clone();
+                                    tempnotifylist.clear();
+                                    for(NotifyListBean notifyListBean:msg_list){
+                                        if(notifyListBean.getChatcount()!=null &&
+                                                !notifyListBean.getChatcount().equalsIgnoreCase("0") && !notifyListBean.getChatcount().equalsIgnoreCase("")){
+                                            tempnotifylist.add(notifyListBean);
+                                        }
+                                    }
+
                                 } else if (setType.equals("ll_call")) {
                                     rl_notify.setBackgroundColor(getResources().getColor(R.color.green));
                                     tv_rl_notify.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dashboard_call_white, 0, 0, 0);
@@ -575,6 +607,14 @@ public class DashBoardFragment extends Fragment {
                                         tv_rl_notify.setText(count3+" missed calls");
                                     }else{
                                         tv_rl_notify.setText(count3 + " missed call");
+                                    }
+                                    Vector<NotifyListBean> call_list=(Vector<NotifyListBean>) notificationList().clone();
+                                    tempnotifylist.clear();
+                                    for(NotifyListBean notifyListBean:call_list){
+                                        if(notifyListBean.getCallcount()!=null &&
+                                                !notifyListBean.getCallcount().equalsIgnoreCase("0") && !notifyListBean.getCallcount().equalsIgnoreCase("")){
+                                            tempnotifylist.add(notifyListBean);
+                                        }
                                     }
                                 } else if (setType.equals("ll_file")) {
                                     rl_notify.setBackgroundColor(getResources().getColor(R.color.orange));
@@ -587,6 +627,9 @@ public class DashBoardFragment extends Fragment {
                                 } else {
                                     rl_notify.setVisibility(View.GONE);
                                     setType = "";
+                                    tempnotifylist.clear();
+                                    tempnotifylist=notificationList();
+
                                 }
                                 bt_rl_notify.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -597,36 +640,55 @@ public class DashBoardFragment extends Fragment {
                                         LoadFilesList(CallDispatcher.LoginUser);
                                     }
                                 });
-                                notifylistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                                        NotifyListBean notifyBean = (NotifyListBean) notifyAdapter
-                                                .getItem(position);
-                                        Log.i("AAAA", "NOTIFY LIST from user1 " + notifyBean.getFileid());
-                                        if (notifyBean.getNotifttype().equalsIgnoreCase("C")) {
-//                                            appMainActivity.historyfragment();
-                                        } else if (notifyBean.getNotifttype().equalsIgnoreCase("I")) {
-                                            rl_notify.setVisibility(View.GONE);
-                                            if(notifyBean.getCategory().equalsIgnoreCase("G")){
-                                                Intent intent = new Intent(mainContext,
-                                                        GroupChatActivity.class);
-                                                intent.putExtra("isGroup", true);
-                                                intent.putExtra("groupid",
-                                                        notifyBean.getFileid());
-                                                startActivity(intent);
-                                            }else {
-                                                Intent intent = new Intent(mainContext,
-                                                        GroupChatActivity.class);
-                                                intent.putExtra("isGroup", false);
-                                                intent.putExtra("buddy",
-                                                        notifyBean.getFileid());
-                                                startActivity(intent);
-                                            }
-                                        } else if (notifyBean.getNotifttype().equalsIgnoreCase("F")) {
-                                            appMainActivity.fileFragment();
-                                        }
-                                    }
-                                });
+
+                                if ( tempnotifylist != null &&  tempnotifylist.size() > 0){
+                                    plusBtn.setVisibility(View.VISIBLE);}
+                                else {plusBtn.setVisibility(View.GONE);}
+
+                                if(tempnotifylist.size()>0) {
+                                    notifylistview.setVisibility(View.VISIBLE);
+                                    no_notify.setVisibility(View.GONE);
+                                }else {
+                                    notifylistview.setVisibility(View.GONE);
+                                    no_notify.setVisibility(View.VISIBLE);
+                                    rl_notify.setVisibility(View.GONE);
+                                }
+
+                                notifyAdapter = new NotifyListAdapter(mainContext, tempnotifylist);
+                                notifylistview.setAdapter(notifyAdapter);
+                                notifyAdapter.isFromOther(true);
+                                notifyAdapter.notifyDataSetChanged();
+
+//                                notifylistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                                    @Override
+//                                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+//                                        NotifyListBean notifyBean = (NotifyListBean) notifyAdapter
+//                                                .getItem(position);
+//                                        Log.i("AAAA", "NOTIFY LIST from user1 " + notifyBean.getFileid());
+//                                        if (notifyBean.getNotifttype().equalsIgnoreCase("C")) {
+////                                            appMainActivity.historyfragment();
+//                                        } else if (notifyBean.getNotifttype().equalsIgnoreCase("I")) {
+////                                            rl_notify.setVisibility(View.GONE);
+//                                            if(notifyBean.getCategory().equalsIgnoreCase("G")){
+//                                                Intent intent = new Intent(mainContext,
+//                                                        GroupChatActivity.class);
+//                                                intent.putExtra("isGroup", true);
+//                                                intent.putExtra("groupid",
+//                                                        notifyBean.getFileid());
+//                                                startActivity(intent);
+//                                            }else {
+//                                                Intent intent = new Intent(mainContext,
+//                                                        GroupChatActivity.class);
+//                                                intent.putExtra("isGroup", false);
+//                                                intent.putExtra("buddy",
+//                                                        notifyBean.getFileid());
+//                                                startActivity(intent);
+//                                            }
+//                                        } else if (notifyBean.getNotifttype().equalsIgnoreCase("F")) {
+//                                            appMainActivity.fileFragment();
+//                                        }
+//                                    }
+//                                });
                                 ed_search.addTextChangedListener(new TextWatcher() {
 
                                     public void afterTextChanged(Editable s) {
@@ -890,12 +952,42 @@ public class DashBoardFragment extends Fragment {
     public void updateCount()
     {
         int count1=0, count2=0, count3=0;
-        count1 = DBAccess.getdbHeler(mainContext)
-                .getUnreadMsgCount(CallDispatcher.LoginUser);
-        count2 = DBAccess.getdbHeler(mainContext)
-                .getUnreadFileCount(CallDispatcher.LoginUser);
-        count3 = DBAccess.getdbHeler(mainContext)
-                .getUnreadCallCount(CallDispatcher.LoginUser);
+//        count1 = DBAccess.getdbHeler(mainContext)
+//                .getUnreadMsgCount(CallDispatcher.LoginUser);
+//        count2 = DBAccess.getdbHeler(mainContext)
+//                .getUnreadFileCount(CallDispatcher.LoginUser);
+//        count3 = DBAccess.getdbHeler(mainContext)
+//                .getUnreadCallCount(CallDispatcher.LoginUser);
+
+        //New Count Entry
+        //Start
+        Vector<NotifyListBean> countlist=notificationList();
+        for(NotifyListBean notifyListBean: countlist){
+            if(notifyListBean.getChatcount()!=null &&
+                    !notifyListBean.getChatcount().equalsIgnoreCase("0") && !notifyListBean.getChatcount().equalsIgnoreCase("")) {
+                if (count1 == 0) {
+                    count1 = Integer.parseInt(notifyListBean.getChatcount());
+                } else {
+                    count1 = count1 + Integer.parseInt(notifyListBean.getChatcount());
+                }
+                if(notifyListBean.getCallcount()!=null &&
+                        !notifyListBean.getCallcount().equalsIgnoreCase("0") && !notifyListBean.getCallcount().equalsIgnoreCase("")) {
+                    if (count3 == 0) {
+                        count3 = Integer.parseInt(notifyListBean.getCallcount());
+                    } else {
+                        count3 = count3 + Integer.parseInt(notifyListBean.getCallcount());
+                    }
+                }
+            }else if(notifyListBean.getCallcount()!=null &&
+                    !notifyListBean.getCallcount().equalsIgnoreCase("0") && !notifyListBean.getCallcount().equalsIgnoreCase("")) {
+                if (count3 == 0) {
+                    count3 = Integer.parseInt(notifyListBean.getCallcount());
+                } else {
+                    count3 = count3 + Integer.parseInt(notifyListBean.getCallcount());
+                }
+            }
+        }
+        //End
 
         if(count3 > 0) {
             call_tv.setText(Integer.toString(count3));
@@ -916,6 +1008,12 @@ public class DashBoardFragment extends Fragment {
             ll_msg.setVisibility(View.GONE);
         }
         ll_warn.setVisibility(View.GONE);
+
+
+
+
+
+
     }
     protected void ShowToast(String string) {
         // TODO Auto-generated method stub
@@ -1067,5 +1165,50 @@ public class DashBoardFragment extends Fragment {
         Log.d("listcount","chatlist"+chatlist.size());
         Log.d("listcount","calllist"+calllist.size());
         return templist;
+    }
+
+
+    public Vector<NotifyListBean> notificationList(){
+        tempnotifylist.clear();
+        if(DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,false)!=null) {
+            Vector<NotifyListBean> templist=DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,false);
+            for(NotifyListBean notifyListBean:templist){
+                if(notifyListBean.getChatcount()!=null &&
+                        !notifyListBean.getChatcount().equalsIgnoreCase("0") && !notifyListBean.getChatcount().equalsIgnoreCase("")){
+                    tempnotifylist.add(notifyListBean);
+                }else if(notifyListBean.getCallcount()!=null &&
+                        !notifyListBean.getCallcount().equalsIgnoreCase("0") && !notifyListBean.getCallcount().equalsIgnoreCase("")){
+                    tempnotifylist.add(notifyListBean);
+                }
+            }
+        }
+        Collections.sort(tempnotifylist, new DateComparator());
+        return tempnotifylist;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        setType="";
+        SingleInstance.instanceTable.remove("dashboard");
+    }
+
+    public void showprogress() {
+        // TODO Auto-generated method stub
+        pDialog = new ProgressDialog(mainContext);
+        pDialog.setCancelable(false);
+        pDialog.setMessage("Progress ...");
+        pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        pDialog.setProgress(0);
+        pDialog.setMax(100);
+        pDialog.show();
+
+    }
+
+    public static void cancelDialog() {
+        if (pDialog != null && pDialog.isShowing()) {
+            pDialog.dismiss();
+            pDialog = null;
+        }
     }
 }

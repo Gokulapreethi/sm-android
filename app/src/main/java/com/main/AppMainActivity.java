@@ -6888,12 +6888,40 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			@Override
 			public void run() {
                 int dashCount = 0;
-                dashCount += DBAccess.getdbHeler(context)
-                        .getUnreadMsgCount(CallDispatcher.LoginUser);
-                dashCount += DBAccess.getdbHeler(context)
-                        .getUnreadFileCount(CallDispatcher.LoginUser);
-                dashCount += DBAccess.getdbHeler(context)
-                        .getUnreadCallCount(CallDispatcher.LoginUser);
+//                dashCount += DBAccess.getdbHeler(context)
+//                        .getUnreadMsgCount(CallDispatcher.LoginUser);
+//                dashCount += DBAccess.getdbHeler(context)
+//                        .getUnreadFileCount(CallDispatcher.LoginUser);
+//                dashCount += DBAccess.getdbHeler(context)
+//                        .getUnreadCallCount(CallDispatcher.LoginUser);
+				if(DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,false)!=null) {
+					Vector<NotifyListBean> countlist=DBAccess.getdbHeler().getChatRecentList(CallDispatcher.LoginUser,false);
+					for(NotifyListBean notifyListBean: countlist){
+						if(notifyListBean.getChatcount()!=null &&
+								!notifyListBean.getChatcount().equalsIgnoreCase("0") && !notifyListBean.getChatcount().equalsIgnoreCase("")) {
+							if (dashCount == 0) {
+								dashCount = Integer.parseInt(notifyListBean.getChatcount());
+							} else {
+								dashCount = dashCount + Integer.parseInt(notifyListBean.getChatcount());
+							}
+							if(notifyListBean.getCallcount()!=null &&
+									!notifyListBean.getCallcount().equalsIgnoreCase("0") && !notifyListBean.getCallcount().equalsIgnoreCase("")) {
+								if (dashCount == 0) {
+									dashCount = Integer.parseInt(notifyListBean.getCallcount());
+								} else {
+									dashCount = dashCount + Integer.parseInt(notifyListBean.getCallcount());
+								}
+							}
+						}else if(notifyListBean.getCallcount()!=null &&
+								!notifyListBean.getCallcount().equalsIgnoreCase("0") && !notifyListBean.getCallcount().equalsIgnoreCase("")) {
+							if (dashCount == 0) {
+								dashCount = Integer.parseInt(notifyListBean.getCallcount());
+							} else {
+								dashCount = dashCount + Integer.parseInt(notifyListBean.getCallcount());
+							}
+						}
+					}
+				}
                 TextView dash_count = (TextView) findViewById(R.id.dash_count);
                 if (dashCount > 0) {
                     dash_count.setText(Integer.toString(dashCount));
@@ -9379,6 +9407,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						ContactsFragment contactsFragment=(ContactsFragment) SingleInstance.instanceTable.get("contactspage");
 						contactsFragment.cancelDialog();
 					}
+					DashBoardFragment.cancelDialog();
 					AppReference.chatRecentSync=false;
 					Intent intent = new Intent(context, GroupChatActivity.class);
 					if(AppReference.chatRecentSyncBuddyOrGroupid.contains("@")){
@@ -9885,6 +9914,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			}
 //		notifyListBean.setServerdatetime(groupChatBean.getServerdateandtime());
 			DBAccess.getdbHeler().insertChatRecentList(notifyListBean, false);
+			AppReference.mainContext.notifyUI();
 		}
 	}
 }

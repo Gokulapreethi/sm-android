@@ -225,6 +225,11 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                                         ContactsFragment contactsFragment=(ContactsFragment) SingleInstance.instanceTable.get("contactspage");
                                         contactsFragment.showprogress();
                                     }
+                                    if(SingleInstance.instanceTable.containsKey("dashboard")){
+                                        Log.i("syncchat","Appmain contactspage available");
+                                        DashBoardFragment dashBoardFragment=(DashBoardFragment) SingleInstance.instanceTable.get("dashboard");
+                                        dashBoardFragment.showprogress();
+                                    }
                                     AppReference.chatRecentSync = true;
                                     AppReference.chatRecentSyncBuddyOrGroupid=notifyBean.getFileid();
 //                                    list_position = position;
@@ -246,6 +251,11 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                                             Log.i("syncchat", "Appmain contactspage available");
                                             ContactsFragment contactsFragment = (ContactsFragment) SingleInstance.instanceTable.get("contactspage");
                                             contactsFragment.showprogress();
+                                        }
+                                        if(SingleInstance.instanceTable.containsKey("dashboard")){
+                                            Log.i("syncchat","Appmain contactspage available");
+                                            DashBoardFragment dashBoardFragment=(DashBoardFragment) SingleInstance.instanceTable.get("dashboard");
+                                            dashBoardFragment.showprogress();
                                         }
                                         AppReference.chatRecentSync = true;
                                         AppReference.chatRecentSyncBuddyOrGroupid = notifyBean.getFileid();
