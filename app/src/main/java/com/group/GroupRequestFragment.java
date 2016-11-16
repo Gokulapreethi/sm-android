@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bean.ProfileBean;
+import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.commonclass.WebServiceReferences;
 import com.cg.hostedconf.AppReference;
@@ -33,6 +34,7 @@ import com.util.SingleInstance;
 
 import org.lib.model.BuddyInformationBean;
 import org.lib.model.GroupBean;
+import org.lib.model.GroupMemberBean;
 import org.lib.webservice.WebServiceClientProcess;
 
 import java.io.File;
@@ -168,7 +170,7 @@ public class GroupRequestFragment extends Fragment {
                     }
                 }
                 membercount=memberslist.size();
-                members.setText("("+membercount+")");
+                members.setText("  ("+membercount+")");
                 MembersAdapter adapter=new MembersAdapter(SingleInstance.mainContext,R.layout.find_people_item,memberslist);
                 final int adapterCount = adapter.getCount();
 
@@ -237,6 +239,7 @@ public class GroupRequestFragment extends Fragment {
                     holder.buddyName = (TextView) convertView.findViewById(R.id.buddyName);
                     holder.occupation = (TextView) convertView.findViewById(R.id.occupation);
                     holder.header_title = (TextView) convertView.findViewById(R.id.header_title);
+                    holder.memberRole = (TextView) convertView.findViewById(R.id.member_role);
                     convertView.setTag(holder);
                 }else
                     holder = (ViewHolder) convertView.getTag();
@@ -251,10 +254,11 @@ public class GroupRequestFragment extends Fragment {
                     }
                     holder.header_title.setVisibility(View.GONE);
                     holder.selectUser.setVisibility(View.GONE);
+                    holder.memberRole.setVisibility(View.GONE);
                     if(bib.getStatus()!=null) {
                         if (bib.getStatus().equals("0")) {
                             holder.statusIcon.setBackgroundResource(R.drawable.n_offline);
-                        } else if (bib.getStatus().equals("1")) {
+                        } else if (bib.getStatus().equals("1" )) {
                             holder.statusIcon.setBackgroundResource(R.drawable.n_online);
                         } else if (bib.getStatus().equals("2")) {
                             holder.statusIcon.setBackgroundResource(R.drawable.m_busy);
@@ -264,9 +268,13 @@ public class GroupRequestFragment extends Fragment {
                             holder.statusIcon.setBackgroundResource(R.drawable.n_offline);
                         }
                     }
-                    holder.buddyName.setText(bib.getFirstname());
 //                    if(bib.getOccupation()!=null)
 //                     holder.occupation.setText(bib.getOccupation());
+                    ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(bib.getName());
+                    holder.buddyName.setText(bib.getFirstname()+", "+pbean.getProfession());
+
+                    if(pbean!=null)
+                        holder.occupation.setText(pbean.getSpeciality());
                     if(bib.isSelected()) {
                         holder.occupation.setText("Owner");
                         holder.occupation.setTextColor(getResources().getColor(R.color.green));
@@ -285,7 +293,7 @@ public class GroupRequestFragment extends Fragment {
         ImageView statusIcon;
         TextView buddyName;
         TextView occupation;
-        TextView header_title;
+        TextView header_title,memberRole;
     }
     public void showDialog() {
         handler.post(new Runnable() {

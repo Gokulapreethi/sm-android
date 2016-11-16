@@ -22,7 +22,7 @@
             android:layout_height="160dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:background="@drawable/img_user"
+            android:background="@drawable/group_usericon"
             android:layout_centerHorizontal="true" />
         <TextView
             android:id="@+id/groupname"
@@ -70,7 +70,7 @@
                 android:textSize="12sp"
                 android:gravity="center"
                 android:textColor="@color/blue2"
-                android:text="MEMBERS"
+                android:text="   MEMBERS"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/tv_mem"
                 android:layout_toEndOf="@+id/tv_mem" />

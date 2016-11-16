@@ -667,6 +667,9 @@ public class PatientRoundingFragment extends Fragment {
                     holder.buddyName.setText(bib.getFirstname());
 //                    if(bib.getOccupation()!=null)
 //                     holder.occupation.setText(bib.getOccupation());
+                    ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(bib.getBuddyName());
+                    holder.occupation.setText(pBean.getSpeciality());
+
                     if (bib.isSelected()) {
                         holder.occupation.setText("Owner");
                         holder.occupation.setTextColor(getResources().getColor(R.color.green));

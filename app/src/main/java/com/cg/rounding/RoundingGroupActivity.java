@@ -1014,34 +1014,32 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
     }
 
     public void refreshMembersList() {
-        handler.post(new Runnable() {
+            handler.post(new Runnable() {
 
-            @Override
-            public void run() {
-                // TODO Auto-generated method stub
-                if(membersList.size()>0)
-                    member_lay.setVisibility(View.VISIBLE);
-                if(membersAcceptedList.size()>0)
-                    member_lay1.setVisibility(View.VISIBLE);
-                memberCount.setText("("
-                        + String.valueOf(membersList.size()) + ")");
-                memberAcceptedCount.setText("("
-                        + String.valueOf(membersAcceptedList.size()) + ")");
-                lv_buddylist.removeAllViews();
-                setIsaNew_member(true);
-                adapter = new BuddyAdapter(RoundingGroupActivity.this, membersList);
-                final int adapterCount = adapter.getCount();
-
-                for (int i = 0; i < adapterCount; i++) {
-                    View item = adapter.getView(i, null, null);
-                    lv_buddylist.addView(item);
+                @Override
+                public void run() {
+                    // TODO Auto-generated method stub
+                    if (membersList.size() > 0)
+                        member_lay.setVisibility(View.VISIBLE);
+                    if (membersAcceptedList.size() > 0)
+                        member_lay1.setVisibility(View.VISIBLE);
+                    memberCount.setText("("
+                            + String.valueOf(membersList.size()) + ")");
+                    memberAcceptedCount.setText("("
+                            + String.valueOf(membersAcceptedList.size()) + ")");
+                    lv_buddylist.removeAllViews();
+                    setIsaNew_member(true);
+                    adapter = new BuddyAdapter(RoundingGroupActivity.this, membersList);
+                    final int adapterCount = adapter.getCount();
+                    for (int i = 0; i < adapterCount; i++) {
+                        View item = adapter.getView(i, null, null);
+                        lv_buddylist.addView(item);
+                    }
+                    adapter.notifyDataSetChanged();
+                    if (memberAdapter != null)
+                        memberAdapter.notifyDataSetChanged();
                 }
-                adapter.notifyDataSetChanged();
-                if(memberAdapter!=null)
-                    memberAdapter.notifyDataSetChanged();
-            }
-        });
-
+            });
     }
  public void refreshMembersAdapterList() {
         handler.post(new Runnable() {
@@ -1214,8 +1212,10 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                         holder.occupation.setTextColor(getResources().getColor(R.color.snazlgray));
                     }
                     ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(bib.getBuddyName());
+          
+
                     if(pbean!=null)
-                        holder.occupation.setText(pbean.getProfession());
+                        holder.occupation.setText(pbean.getSpeciality());
                     if(bib.getRole()!=null){
                         holder.role.setText(bib.getRole());
                     }else

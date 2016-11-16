@@ -10759,12 +10759,12 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 if (pBean != null)
                     if (pBean.getTitle()!=null &&(pBean.getTitle().equalsIgnoreCase("Dr.")
                             || pBean.getTitle().equalsIgnoreCase("Prof.")))
-                        ownerbean.setFirstname(pBean.getTitle() + pBean.getFirstname());
+                        ownerbean.setFirstname(pBean.getTitle() + pBean.getFirstname()+", "+pBean.getProfession());
                     else
-                        ownerbean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname());
+                        ownerbean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname()+", "+pBean.getProfession());
                 if(pBean!=null)
-                    if(pBean.getProfession()!=null)
-                        ownerbean.setOccupation(pBean.getProfession());
+                    if(pBean.getSpeciality()!=null)
+                        ownerbean.setOccupation(pBean.getSpeciality());
                 ownerbean.setLastname(pBean.getLastname());
                 ownerbean.setName(gBean.getOwnerName());
                 ownerbean.setSelected(true);
@@ -10785,12 +10785,12 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     if (pbean != null)
                         if (pbean.getTitle()!=null &&(pbean.getTitle().equalsIgnoreCase("Dr.")
                                 || pbean.getTitle().equalsIgnoreCase("Prof.")))
-                            uBean.setFirstname(pbean.getTitle() + pbean.getFirstname());
+                            uBean.setFirstname(pbean.getTitle() + pbean.getFirstname()+", "+pBean.getProfession());
                         else
-                            uBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
+                            uBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname()+", "+pBean.getProfession());
                     if(pbean!=null)
-                        if(pbean.getProfession()!=null)
-                            uBean.setOccupation(pbean.getProfession());
+                        if(pbean.getSpeciality()!=null)
+                            uBean.setOccupation(pbean.getSpeciality());
                     uBean.setLastname(pbean.getLastname());
                     uBean.setName(tmp);
                     uBean.setStatus("offline");
@@ -10924,17 +10924,15 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     && gBean.getActiveGroupMembers().length() > 0) {
                 String[] mlist = (gBean.getActiveGroupMembers())
                         .split(",");
-
                 ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(gBean.getOwnerName());
-
                 if (pbean != null)
                     if (pbean.getTitle()!=null &&(pbean.getTitle().equalsIgnoreCase("Dr.") || pbean.getTitle().equalsIgnoreCase("Prof.")))
-                        ownerbean.setFirstname(pbean.getTitle() + pbean.getFirstname());
+                        ownerbean.setFirstname(pbean.getTitle() + pbean.getFirstname()+", "+pbean.getProfession());
                     else
-                        ownerbean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
+                        ownerbean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname()+", "+pbean.getProfession());
                 if(pbean!=null)
-                    if(pbean.getProfession()!=null)
-                        ownerbean.setOccupation(pbean.getProfession());
+                    if(pbean.getSpeciality()!=null)
+                        ownerbean.setOccupation(pbean.getSpeciality());
                 ownerbean.setLastname(pbean.getLastname());
                 ownerbean.setSelected(true);
                 ownerbean.setName(gBean.getOwnerName());
@@ -10956,12 +10954,12 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     if (pBean != null)
                         if (pBean.getTitle()!=null &&(pBean.getTitle().equalsIgnoreCase("Dr.")
                                 || pBean.getTitle().equalsIgnoreCase("Prof.")))
-                            uBean.setFirstname(pBean.getTitle() + pBean.getFirstname());
+                            uBean.setFirstname(pBean.getTitle() + pBean.getFirstname()+", "+pbean.getProfession());
                         else
-                            uBean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname());
+                            uBean.setFirstname(pBean.getFirstname() + " " + pBean.getLastname()+", "+pbean.getProfession());
                     if(pBean!=null)
-                        if(pBean.getProfession()!=null)
-                            uBean.setOccupation(pBean.getProfession());
+                        if(pBean.getSpeciality()!=null)
+                            uBean.setOccupation(pBean.getSpeciality());
                     uBean.setLastname(pBean.getLastname());
                     uBean.setName(tmp);
                     uBean.setStatus("offline");
@@ -11161,7 +11159,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         Log.d("Members group","value---------->"+ membercount);
         ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(gBean.getOwnerName());
         if (pbean != null)
-            owner.setText(pbean.getFirstname() + " " + pbean.getLastname());
+            owner.setText(pbean.getFirstname() + " " + pbean.getLastname()+","+pbean.getProfession());
 
         if (gBean.getGroupIcon() != null) {
             String profilePic = groupBean.getGroupIcon();

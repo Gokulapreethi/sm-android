@@ -132,36 +132,37 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 					holder.statusIcon.setVisibility(View.VISIBLE);
 				ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(userBean.getBuddyName());
 				if(pbean!=null)
-					holder.occupation.setText(pbean.getProfession());
+					holder.occupation.setText(pbean.getSpeciality());
 
 //				if (userBean.isOwner())
 //					holder.occupation.setText("Owner");
 //				else
 //					holder.occupation.setText("Prof.Designation");
-
-                GroupBean gmembersbean = DBAccess.getdbHeler().getGroupAndMembers(
-                        "select * from groupdetails where groupid=" + addGroupMembers.groupid);
-                if (gmembersbean != null) {
-                    if (gmembersbean.getInviteMembers() != null
-                            && gmembersbean.getInviteMembers().length() > 0) {
-                        String[] listRole = (gmembersbean.getInviteMembers())
-                                .split(",");
-                        for (String tmp : listRole) {
-                            GroupMemberBean bean12 = DBAccess.getdbHeler().getMemberDetails(addGroupMembers.groupid, tmp);
-                            boolean found = false;
-                            for (String element : listRole) {
-                                if (tmp.equals(userBean.getBuddyName())) {
-                                    Log.i("AAAA", "#########string Role " + bean12.getRole() + " element " + element);
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            if (found) {
-                                holder.memberRole.setText(bean12.getRole());
-                            }
-                        }
-                    }
-                }
+				if(addGroupMembers!=null) {
+					GroupBean gmembersbean = DBAccess.getdbHeler().getGroupAndMembers(
+							"select * from groupdetails where groupid=" + addGroupMembers.groupid);
+					if (gmembersbean != null) {
+						if (gmembersbean.getInviteMembers() != null
+								&& gmembersbean.getInviteMembers().length() > 0) {
+							String[] listRole = (gmembersbean.getInviteMembers())
+									.split(",");
+							for (String tmp : listRole) {
+								GroupMemberBean bean12 = DBAccess.getdbHeler().getMemberDetails(addGroupMembers.groupid, tmp);
+								boolean found = false;
+								for (String element : listRole) {
+									if (tmp.equals(userBean.getBuddyName())) {
+										Log.i("AAAA", "#########string Role " + bean12.getRole() + " element " + element);
+										found = true;
+										break;
+									}
+								}
+								if (found) {
+									holder.memberRole.setText(bean12.getRole());
+								}
+							}
+						}
+					}
+				}
 				if(userBean.getInvite()){
 					holder.selectUser.setVisibility(View.GONE);
 					holder.cancel_lay.setVisibility(View.VISIBLE);

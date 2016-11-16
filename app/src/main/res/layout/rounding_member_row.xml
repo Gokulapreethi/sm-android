@@ -158,6 +158,13 @@
                     android:text="CANCEL"/>
 
             </LinearLayout>
+            <ImageView
+                android:id="@+id/delete_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/input_delete"
+                android:visibility="gone"/>
+
 
         </LinearLayout>
 

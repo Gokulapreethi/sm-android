@@ -536,6 +536,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 
 					}
 				}, 1000);
+				Log.i("AAA"," GroupID in from GroupActivity,==============>...."+groupid);
 				Intent intent = new Intent(getApplicationContext(),
 						AddGroupMembers.class);
 				ArrayList<String> buddylist = new ArrayList<String>();
@@ -1260,6 +1261,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 
 				for (int i = 0; i < adapterCount; i++) {
 					View item = adapter.getView(i, null, null);
+					if(item!=null)
 					lv_buddylist.addView(item);
 			}
 				adapter.notifyDataSetChanged();

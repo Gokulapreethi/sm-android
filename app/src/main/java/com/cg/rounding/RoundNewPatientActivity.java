@@ -34,6 +34,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bean.ProfileBean;
 import com.bean.UserBean;
 import com.cg.DB.DBAccess;
 import com.cg.commonclass.CallDispatcher;
@@ -46,6 +47,7 @@ import com.util.SingleInstance;
 
 import org.lib.PatientDetailsBean;
 import org.lib.model.GroupBean;
+import org.lib.model.GroupMemberBean;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -682,6 +684,7 @@ public class RoundNewPatientActivity extends Activity {
                     holder.occupation = (TextView) convertView.findViewById(R.id.occupation);
                     holder.position = (TextView) convertView.findViewById(R.id.position);
                     holder.rights = (TextView) convertView.findViewById(R.id.rights);
+                    holder.delete_end = (ImageView) convertView.findViewById(R.id.delete_end);
                     holder.header_title = (TextView) convertView.findViewById(R.id.header_title);
                     convertView.setTag(holder);
                 }else
@@ -696,12 +699,16 @@ public class RoundNewPatientActivity extends Activity {
                         }
                     }
                     holder.header_title.setVisibility(View.GONE);
+                    holder.delete_end.setVisibility(View.VISIBLE);
                     holder.edit.setVisibility(View.GONE);
                     holder.buddyName.setText(bib.getFirstname());
+                    ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(bib.getBuddyName());
+                    if(pbean!=null)
+                        holder.occupation.setText(pbean.getSpeciality());
                     if(bib.getBuddyName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
 
                         holder.rights.setVisibility(View.VISIBLE);
-                        holder.rights.setText("creator");
+                        holder.rights.setText("Owner");
                         holder.rights.setTextColor(getResources().getColor(R.color.green));
                     }else{
 
@@ -710,7 +717,37 @@ public class RoundNewPatientActivity extends Activity {
                     }
 
                     holder.statusIcon.setVisibility(View.GONE);
-
+                    holder.delete_end.setTag(i);
+                    holder.delete_end.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                                membersList.remove(bib);
+                                refreshMembersList();
+                        }
+                    });
+                    GroupBean gmembersbean = DBAccess.getdbHeler().getGroupAndMembers(
+                            "select * from groupdetails where groupid=" + groupid);
+                    if (gmembersbean != null) {
+                        if (gmembersbean.getInviteMembers() != null
+                                && gmembersbean.getInviteMembers().length() > 0) {
+                            String[] listRole = (gmembersbean.getInviteMembers())
+                                    .split(",");
+                            for (String tmp : listRole) {
+                                GroupMemberBean bean12 = DBAccess.getdbHeler().getMemberDetails(groupid, tmp);
+                                boolean found = false;
+                                for (String element : listRole) {
+                                    if (tmp.equals(bib.getBuddyName())) {
+                                        Log.i("AAAA", "#########string Role " + bean12.getRole() + " element " + element);
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if (found) {
+                                    holder.position.setText(bean12.getRole());
+                                }
+                            }
+                        }
+                    }
                 }
             }catch(Exception e){
                 e.printStackTrace();
@@ -721,7 +758,7 @@ public class RoundNewPatientActivity extends Activity {
     }
     public static class ViewHolder {
         ImageView buddyicon;
-        ImageView statusIcon,edit;
+        ImageView statusIcon,edit,delete_end;
         TextView buddyName;
         TextView occupation,position,rights;
         TextView header_title;

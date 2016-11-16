@@ -694,7 +694,7 @@ public class TaskCreationActivity extends Activity {
                     holder.edit.setVisibility(View.GONE);
                     ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(bib.getName());
                     if(pbean!=null)
-                        holder.occupation.setText(pbean.getProfession());
+                        holder.occupation.setText(pbean.getSpeciality());
                     holder.buddyName.setText(bib.getFirstname());
                     if(bib.getName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
                         holder.buddyName.setText("Me");

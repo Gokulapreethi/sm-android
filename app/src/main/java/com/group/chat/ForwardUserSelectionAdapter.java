@@ -112,7 +112,7 @@ public class ForwardUserSelectionAdapter extends ArrayAdapter<BuddyInformationBe
                     }
                 }
                 ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(userBean.getName());
-                    holder.occupation.setText(pBean.getProfession());
+                    holder.occupation.setText(pBean.getSpeciality());
                 if(userBean.isSelected()){
                     holder.selectUser.setChecked(true);
                 }else{
