@@ -946,6 +946,9 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             @Override
             public void onClick(View v) {
                 setDefault();
+                View view =getCurrentFocus();
+                if (view != null) {
+                    hideKeyboard();}
                 search.setVisibility(View.GONE);
                 isMemberTab=true;
                 if (!isGroup && !isRounding)
@@ -970,6 +973,9 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             @Override
             public void onClick(View v) {
                 setDefault();
+                View view =getCurrentFocus();
+                if (view != null) {
+                    hideKeyboard();}
                 search.setVisibility(View.GONE);
                 isMemberTab=false;
                 if (isRounding) {
@@ -987,6 +993,9 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             @Override
             public void onClick(View v) {
                 setDefault();
+                View view =getCurrentFocus();
+                if (view != null) {
+                    hideKeyboard();}
                 search.setVisibility(View.GONE);
                 isMemberTab=false;
                 if (isRounding) {
@@ -13379,12 +13388,35 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                     dashCount = dashCount + Integer.parseInt(notifyListBean.getCallcount());
                                 }
                             }
+                            if(notifyListBean.getFilecount()!=null &&
+                                    !notifyListBean.getFilecount().equalsIgnoreCase("0") && !notifyListBean.getFilecount().equalsIgnoreCase("")) {
+                                if (dashCount == 0) {
+                                    dashCount = Integer.parseInt(notifyListBean.getFilecount());
+                                } else {
+                                    dashCount = dashCount + Integer.parseInt(notifyListBean.getFilecount());
+                                }
+                            }
                         }else if(notifyListBean.getCallcount()!=null &&
                                 !notifyListBean.getCallcount().equalsIgnoreCase("0") && !notifyListBean.getCallcount().equalsIgnoreCase("")) {
                             if (dashCount == 0) {
                                 dashCount = Integer.parseInt(notifyListBean.getCallcount());
                             } else {
                                 dashCount = dashCount + Integer.parseInt(notifyListBean.getCallcount());
+                            }
+                            if(notifyListBean.getFilecount()!=null &&
+                                    !notifyListBean.getFilecount().equalsIgnoreCase("0") && !notifyListBean.getFilecount().equalsIgnoreCase("")) {
+                                if (dashCount == 0) {
+                                    dashCount = Integer.parseInt(notifyListBean.getFilecount());
+                                } else {
+                                    dashCount = dashCount + Integer.parseInt(notifyListBean.getFilecount());
+                                }
+                            }
+                        }else if(notifyListBean.getFilecount()!=null &&
+                                !notifyListBean.getFilecount().equalsIgnoreCase("0") && !notifyListBean.getFilecount().equalsIgnoreCase("")) {
+                            if (dashCount == 0) {
+                                dashCount = Integer.parseInt(notifyListBean.getFilecount());
+                            } else {
+                                dashCount = dashCount + Integer.parseInt(notifyListBean.getFilecount());
                             }
                         }
                     }

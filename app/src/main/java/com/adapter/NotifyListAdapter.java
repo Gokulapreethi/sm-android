@@ -217,34 +217,8 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                     @Override
                     public void onClick(View v) {
                         if(iscontact){
-                            if(notifyBean.getFileid()!=null && notifyBean.getFileid().contains("@")){
-                                if(!DBAccess.getdbHeler().ChatEntryAvailableOrNot(notifyBean.getFileid())) {
-                                    Log.i("syncchat","chatentry not available");
-                                    if(SingleInstance.instanceTable.containsKey("contactspage")){
-                                        Log.i("syncchat","Appmain contactspage available");
-                                        ContactsFragment contactsFragment=(ContactsFragment) SingleInstance.instanceTable.get("contactspage");
-                                        contactsFragment.showprogress();
-                                    }
-                                    if(SingleInstance.instanceTable.containsKey("dashboard")){
-                                        Log.i("syncchat","Appmain contactspage available");
-                                        DashBoardFragment dashBoardFragment=(DashBoardFragment) SingleInstance.instanceTable.get("dashboard");
-                                        dashBoardFragment.showprogress();
-                                    }
-                                    AppReference.chatRecentSync = true;
-                                    AppReference.chatRecentSyncBuddyOrGroupid=notifyBean.getFileid();
-//                                    list_position = position;
-//                                    chatsync_contactlist=true;
-                                    WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext,"0",notifyBean.getFileid(),"","");
-                                }else {
-                                    Intent intent = new Intent(context, GroupChatActivity.class);
-                                    intent.putExtra("isGroup", false);
-                                    intent.putExtra("buddy", notifyBean.getFileid());
-                                    context.startActivity(intent);
-                                }
-                            }else if(notifyBean.getFileid()!=null && !notifyBean.getFileid().contains("@")){
-                                GroupBean groupBean = DBAccess.getdbHeler().getGroup(
-                                        "select * from grouplist where groupid='" + notifyBean.getFileid()+ "'");
-                                if(groupBean!=null) {
+                            if(notifyBean.getNotifttype()!=null && notifyBean.getNotifttype().equalsIgnoreCase("I")) {
+                                if (notifyBean.getFileid() != null && notifyBean.getFileid().contains("@")) {
                                     if (!DBAccess.getdbHeler().ChatEntryAvailableOrNot(notifyBean.getFileid())) {
                                         Log.i("syncchat", "chatentry not available");
                                         if (SingleInstance.instanceTable.containsKey("contactspage")) {
@@ -252,26 +226,58 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                                             ContactsFragment contactsFragment = (ContactsFragment) SingleInstance.instanceTable.get("contactspage");
                                             contactsFragment.showprogress();
                                         }
-                                        if(SingleInstance.instanceTable.containsKey("dashboard")){
-                                            Log.i("syncchat","Appmain contactspage available");
-                                            DashBoardFragment dashBoardFragment=(DashBoardFragment) SingleInstance.instanceTable.get("dashboard");
+                                        if (SingleInstance.instanceTable.containsKey("dashboard")) {
+                                            Log.i("syncchat", "Appmain contactspage available");
+                                            DashBoardFragment dashBoardFragment = (DashBoardFragment) SingleInstance.instanceTable.get("dashboard");
                                             dashBoardFragment.showprogress();
                                         }
                                         AppReference.chatRecentSync = true;
                                         AppReference.chatRecentSyncBuddyOrGroupid = notifyBean.getFileid();
-//                                    AppReference.Beginsync_chat = true;
 //                                    list_position = position;
 //                                    chatsync_contactlist=true;
                                         WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "0", notifyBean.getFileid(), "", "");
                                     } else {
                                         Intent intent = new Intent(context, GroupChatActivity.class);
-                                        intent.putExtra("isGroup", true);
-                                        intent.putExtra("groupid", notifyBean.getFileid());
+                                        intent.putExtra("isGroup", false);
+                                        intent.putExtra("buddy", notifyBean.getFileid());
                                         context.startActivity(intent);
                                     }
-                                }else{
-                                    Toast.makeText(context,"You are Not Member in this Group",Toast.LENGTH_LONG).show();
+                                } else if (notifyBean.getFileid() != null && !notifyBean.getFileid().contains("@")) {
+                                    GroupBean groupBean = DBAccess.getdbHeler().getGroup(
+                                            "select * from grouplist where groupid='" + notifyBean.getFileid() + "'");
+                                    if (groupBean != null) {
+                                        if (!DBAccess.getdbHeler().ChatEntryAvailableOrNot(notifyBean.getFileid())) {
+                                            Log.i("syncchat", "chatentry not available");
+                                            if (SingleInstance.instanceTable.containsKey("contactspage")) {
+                                                Log.i("syncchat", "Appmain contactspage available");
+                                                ContactsFragment contactsFragment = (ContactsFragment) SingleInstance.instanceTable.get("contactspage");
+                                                contactsFragment.showprogress();
+                                            }
+                                            if (SingleInstance.instanceTable.containsKey("dashboard")) {
+                                                Log.i("syncchat", "Appmain contactspage available");
+                                                DashBoardFragment dashBoardFragment = (DashBoardFragment) SingleInstance.instanceTable.get("dashboard");
+                                                dashBoardFragment.showprogress();
+                                            }
+                                            AppReference.chatRecentSync = true;
+                                            AppReference.chatRecentSyncBuddyOrGroupid = notifyBean.getFileid();
+//                                    AppReference.Beginsync_chat = true;
+//                                    list_position = position;
+//                                    chatsync_contactlist=true;
+                                            WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "0", notifyBean.getFileid(), "", "");
+                                        } else {
+                                            Intent intent = new Intent(context, GroupChatActivity.class);
+                                            intent.putExtra("isGroup", true);
+                                            intent.putExtra("groupid", notifyBean.getFileid());
+                                            context.startActivity(intent);
+                                        }
+                                    } else {
+                                        Toast.makeText(context, "You are Not Member in this Group", Toast.LENGTH_LONG).show();
+                                    }
                                 }
+                            }else if(notifyBean.getNotifttype()!=null && notifyBean.getNotifttype().equalsIgnoreCase("F")){
+                                FilesFragment filesFragment = FilesFragment.newInstance(context);
+                                FragmentManager fragmentManager = SingleInstance.mainContext.getSupportFragmentManager();
+                                fragmentManager.beginTransaction().replace(R.id.activity_main_content_fragment, filesFragment).commitAllowingStateLoss();
                             }
                         }else {
                             if (notifyBean.getCategory().equalsIgnoreCase("I")) {
@@ -489,7 +495,7 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                             else if (notifyBean.getType().trim().equalsIgnoreCase("document"))
                                 holder.fileName.setText("Document file received");
                             if (notifyBean.getContent() != null)
-                                holder.fileType.setText(notifyBean.getUsername() + " shared new file");
+                                holder.fileType.setText(notifyBean.getUsername());
                         } else if (notifyBean.getNotifttype().trim().equalsIgnoreCase("C")) {
                             holder.fileType.setVisibility(View.GONE);
                             holder.file_type1.setVisibility(View.VISIBLE);
@@ -787,8 +793,8 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
         if (charText.length() == 0) {
             fileList.addAll(dashBoardFragment.seacrhnotifylist);
         } else {
-            for (NotifyListBean storedData : dashBoardFragment.notifyList) {
-                if (storedData.getFrom()
+            for (NotifyListBean storedData : dashBoardFragment.seacrhnotifylist) {
+                if (storedData.getUsername()
                         .toLowerCase(Locale.getDefault()).contains(charText) && storedData.getViewed()==0) {
                     fileList.add(storedData);
                 }

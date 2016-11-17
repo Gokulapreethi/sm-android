@@ -6912,12 +6912,35 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 									dashCount = dashCount + Integer.parseInt(notifyListBean.getCallcount());
 								}
 							}
+							if(notifyListBean.getFilecount()!=null &&
+									!notifyListBean.getFilecount().equalsIgnoreCase("0") && !notifyListBean.getFilecount().equalsIgnoreCase("")) {
+								if (dashCount == 0) {
+									dashCount = Integer.parseInt(notifyListBean.getFilecount());
+								} else {
+									dashCount = dashCount + Integer.parseInt(notifyListBean.getFilecount());
+								}
+							}
 						}else if(notifyListBean.getCallcount()!=null &&
 								!notifyListBean.getCallcount().equalsIgnoreCase("0") && !notifyListBean.getCallcount().equalsIgnoreCase("")) {
 							if (dashCount == 0) {
 								dashCount = Integer.parseInt(notifyListBean.getCallcount());
 							} else {
 								dashCount = dashCount + Integer.parseInt(notifyListBean.getCallcount());
+							}
+							if(notifyListBean.getFilecount()!=null &&
+									!notifyListBean.getFilecount().equalsIgnoreCase("0") && !notifyListBean.getFilecount().equalsIgnoreCase("")) {
+								if (dashCount == 0) {
+									dashCount = Integer.parseInt(notifyListBean.getFilecount());
+								} else {
+									dashCount = dashCount + Integer.parseInt(notifyListBean.getFilecount());
+								}
+							}
+						}else if(notifyListBean.getFilecount()!=null &&
+								!notifyListBean.getFilecount().equalsIgnoreCase("0") && !notifyListBean.getFilecount().equalsIgnoreCase("")) {
+							if (dashCount == 0) {
+								dashCount = Integer.parseInt(notifyListBean.getFilecount());
+							} else {
+								dashCount = dashCount + Integer.parseInt(notifyListBean.getFilecount());
 							}
 						}
 					}
