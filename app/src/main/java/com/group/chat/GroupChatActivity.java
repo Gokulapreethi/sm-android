@@ -290,6 +290,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
     TextView tv_chat, tv_profie, tv_info, tv_file, tv_links;
     ImageView chat_img, profile_img, info_img, file_img, links_img;
     View view_chat, view_profile, view_info, view_snazbox, view_links;
+    public boolean isFromChat=false;
     public static HashMap<String, String> buddyStatus = new HashMap<String, String>();
     public static String patientType = "name";
     public String sorting = "online";
@@ -445,6 +446,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
             RoundingFragment changePassword = RoundingFragment.newInstance(context);
             FragmentManager fragmentManager = SingleInstance.mainContext
                     .getSupportFragmentManager();
+
             fragmentManager.beginTransaction().replace(
                     R.id.activity_main_content_fragment, changePassword)
                     .commitAllowingStateLoss();
@@ -12798,7 +12800,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
     String sortorder="";
     private void FilesProcess()
     {
-
+        isFromChat=true;
         final LinearLayout content = (LinearLayout) findViewById(R.id.content);
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         content.removeAllViews();

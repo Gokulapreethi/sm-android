@@ -901,6 +901,7 @@ public class PatientRoundingFragment extends Fragment {
                         (roleAccessBean.getTaskmanagement() != null && roleAccessBean.getTaskmanagement().equalsIgnoreCase("1"))) {
                     Intent intent = new Intent(mainContext, TaskCreationActivity.class);
                     intent.putExtra("groupid", gBean.getGroupId());
+                    intent.putExtra("patientid", pBean.getPatientid());
                     startActivity(intent);
                 } else
                     showToast("You have no access to create Task ");

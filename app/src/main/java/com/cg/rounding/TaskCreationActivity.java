@@ -329,7 +329,10 @@ public class TaskCreationActivity extends Activity {
 
         final java.sql.Date todayDate = new java.sql.Date(System.currentTimeMillis());
         Log.d("string", "todaydate" + Calendar.getInstance().getTime());
-
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy h:mm aa");
+        final SimpleDateFormat myFormat = new SimpleDateFormat("MM-dd-yyyy h:mm aa");
+        final String DateAs_Now = dateFormat.format(date);
 
         reminder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -337,42 +340,33 @@ public class TaskCreationActivity extends Activity {
                 DatePickerPopWin pickerPopWin = new DatePickerPopWin.Builder(TaskCreationActivity.this,true, new DatePickerPopWin.OnDatePickedListener() {
                         @Override
                         public void onDatePickCompleted(int month, int day, int year, int hour, int minute, String am, String dateDesc) {
-//                            Toast.makeText(TaskCreationActivity.this, dateDesc, Toast.LENGTH_SHORT).show();
-                            Log.d("boolean", "valueof2" + dateDesc);
-                            String Hour = String.valueOf(hour);
-                            String Minute = String.valueOf(minute);
-                            String AM = am;
-                            String[] time= dateDesc.split(" ");
-                            String correcttime = time[1]+" "+time[2];
-                            Date date = new Date();
-                            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                            String inputString2 = dateFormat.format(date);
-                            String Today = inputString2;
-                            SimpleDateFormat myFormat = new SimpleDateFormat("dd-MM-yyyy h:mm a");
+                            Log.d("string", "selected date" + dateDesc);
+                            Log.d("string", "Date Now......" + DateAs_Now);
+                            Log.d("string", "Due Date and TIme......" +ed_dueDate.getText().toString()+" "+ed_dueTime.getText().toString());
+                            String end_time=ed_dueDate.getText().toString()+" "+ed_dueTime.getText().toString();
+                            String start_time=DateAs_Now;
+                            Log.d("string", "Date......" + start_time.compareTo(dateDesc));
+                            Log.d("string", "bool Date......" + dateDesc.compareTo(end_time));
                             Date date1 = null;
                             Date date2 = null;
-                            Date date3 = null;
-
-                            try {
-                                date1 = myFormat.parse(dateDesc);
-                                date2 = myFormat.parse(ed_dueDate.getText().toString()+" "+ed_dueTime.getText().toString());
-                                date3 = todayDate;
-                            } catch (Exception e) {
+                            Date date3=null;
+                            try{
+                                date1=myFormat.parse(start_time);
+                                date2=myFormat.parse(end_time);
+                                date3=myFormat.parse(dateDesc);
+                            }catch (Exception e)
+                            {
                                 e.printStackTrace();
                             }
-//                            if (date1.compareTo(date3) < 0) {
-//                                Log.i("AAAA","dat and time today----");
-//                                remindTime.setText(ed_dueDate.getText().toString() + " " + ed_dueTime.getText().toString());
-//                            }
-                            if (date3.compareTo(date1) <0 && date1.compareTo(date2) < 0) {
+                            if (date3.after(date1) && date3.before(date2)) {
                                 remindTime.setText(dateDesc);
-//                                remindTime.setText(todayDate.toString() + " " + correcttime);
-                            }else {
-//                                remindTime.setText(dateDesc);
+                                Log.d("string", "falls between start and end , go to screen 1 ");
+                            }
+                            else{
+                                Log.d("string", "does not fall between start and end , go to screen 2 ");
                                 Toast.makeText(context, "Please set correct reminder...",
                                         Toast.LENGTH_SHORT).show();
                             }
-
                         }
                     }).textConfirm("DONE") //text of confirm button
                             .textCancel("CANCEL") //text of cancel button
@@ -603,8 +597,8 @@ public class TaskCreationActivity extends Activity {
         ListView listView=(ListView)dialog1.findViewById(R.id.listview_assign);
         Button cancel=(Button)dialog1.findViewById(R.id.cancel);
         final TextView AssignMembers=(TextView)dialog1.findViewById(R.id.donebtn);
-
-
+        if(patientid!=null)
+            loadMembers();
         final MembersAdapter adapter=new MembersAdapter(this,R.layout.rounding_member_row, members);
         listView.setAdapter(adapter);
         cancel.setOnClickListener(new View.OnClickListener() {
