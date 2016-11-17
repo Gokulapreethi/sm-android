@@ -1129,8 +1129,8 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 		try {
 
-			final GroupChatActivity gcActivity = (GroupChatActivity) SingleInstance.contextTable
-					.get("groupchat");
+//			final GroupChatActivity gcActivity = (GroupChatActivity) SingleInstance.contextTable
+//					.get("groupchat");
 
 			SingleInstance.printLog("UDP_NOTIFICATION",
 					"Received UDP Notification", "INFO", null);
@@ -1197,10 +1197,14 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 						}
 					} else if(groupChatBean.getMimetype()!=null && (groupChatBean.getMimetype().equalsIgnoreCase("ac") ||
 							groupChatBean.getMimetype().equalsIgnoreCase("vc"))) {
-						UdpMessageBean bean = new UdpMessageBean();
-						bean.setType("101");
-						bean.setResponseObject(groupChatBean);
-						ReadMessageAck(bean);
+
+						if (groupChatBean.getComment() != null && groupChatBean.getComment().equalsIgnoreCase("callattended")) {
+							Log.i("READACK","send ACK for Call server messages");
+							UdpMessageBean bean = new UdpMessageBean();
+							bean.setType("101");
+							bean.setResponseObject(groupChatBean);
+							ReadMessageAck(bean);
+						}
 					}
 				} else {
 					processGroupChatChanges(groupChatBean);
@@ -9327,7 +9331,8 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 
 					}else {
 						if (groupChatBean.getMimetype() != null && (groupChatBean.getMimetype().equalsIgnoreCase("ac")
-								|| groupChatBean.getMimetype().equalsIgnoreCase("vc"))) {
+								|| groupChatBean.getMimetype().equalsIgnoreCase("vc")) && groupChatBean.getSubCategory() != null
+								&& groupChatBean.getSubCategory().equalsIgnoreCase(CallDispatcher.LoginUser)) {
 							Log.i("entering", "groupchatbean type ac vc----->");
 							SignalingBean signalingBean = new SignalingBean();
 							signalingBean.setHost(groupChatBean.getReminderTime());
@@ -9340,6 +9345,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 							}
 							signalingBean.setSessionid(groupChatBean.getParentId());
 							signalingBean.setEndTime(groupChatBean.getSenttime());
+							signalingBean.setStartTime(groupChatBean.getSenttime());
 							if (groupChatBean.getPrivateMembers().contains(",")) {
 								String names[] = groupChatBean.getPrivateMembers().split(",");
 								String temp = null;
@@ -9348,7 +9354,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 										if (temp == null) {
 											temp = names[j];
 										} else {
-											temp = temp + "," + names[j];
+											if(!temp.contains(names[j])) {
+												temp = temp + "," + names[j];
+											}
 										}
 									}
 								}
@@ -9356,6 +9364,14 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 									signalingBean.setParticipant_name(temp);
 							} else {
 								signalingBean.setParticipant_name(groupChatBean.getPrivateMembers());
+							}
+
+							if(!signalingBean.getHost().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+								if(signalingBean.getParticipant_name() == null || signalingBean.getParticipant_name().length() <= 3) {
+									signalingBean.setParticipant_name(CallDispatcher.LoginUser);
+								} else if(signalingBean.getParticipant_name() != null && !signalingBean.getParticipant_name().contains(CallDispatcher.LoginUser)){
+									signalingBean.setParticipant_name(signalingBean.getParticipant_name()+","+CallDispatcher.LoginUser);
+								}
 							}
 							signalingBean.setCallDuration(groupChatBean.getMessage());
 							signalingBean.setCallstatus(groupChatBean.getComment());
@@ -9699,7 +9715,11 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 //                gcBean.setUnreadStatus(1);
 					gcBean.setMessage(signalingBean.getCallDuration());
 					gcBean.setSignalid(Utility.getSessionID());
-					gcBean.setSenttime(getCurrentDateandTime());
+					if(signalingBean.getStartTime() != null) {
+						gcBean.setSenttime(signalingBean.getStartTime());
+					} else {
+						gcBean.setSenttime(getCurrentDateandTime());
+					}
 					gcBean.setSenttimez("GMT");
 					gcBean.setDateandtime(getCurrentDateandTime());
 
