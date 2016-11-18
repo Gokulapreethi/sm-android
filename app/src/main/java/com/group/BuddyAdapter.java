@@ -138,7 +138,8 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 //					holder.occupation.setText("Owner");
 //				else
 //					holder.occupation.setText("Prof.Designation");
-				if(addGroupMembers!=null) {
+				if(addGroupMembers!=null && addGroupMembers.groupid!=null && DBAccess.getdbHeler().getGroupAndMembers(
+						"select * from groupdetails where groupid=" + addGroupMembers.groupid)!=null) {
 					GroupBean gmembersbean = DBAccess.getdbHeler().getGroupAndMembers(
 							"select * from groupdetails where groupid=" + addGroupMembers.groupid);
 					if (gmembersbean != null) {

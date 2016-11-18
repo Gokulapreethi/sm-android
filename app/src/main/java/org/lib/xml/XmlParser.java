@@ -8188,20 +8188,22 @@ public class XmlParser {
 				}
 				syncList.add(cBean);
 				element = (Element) doc.getElementsByTagName("status").item(i);
-				ChatInfoBean chatInfoBean = new ChatInfoBean();
-				if (element.getAttribute("user") != null)
-					chatInfoBean.setName(element.getAttribute("user").trim());
-				if (element.getAttribute("sentstatustime") != null)
-					chatInfoBean.setSentstatustime(element.getAttribute("sentstatustime").trim());
-				Log.i("valueof", "beanvale1" + chatInfoBean.getSentstatustime());
-				if (element.getAttribute("deliverstatustime") != null)
-					chatInfoBean.setDeliverstatustime(element.getAttribute("deliverstatustime").trim());
-				Log.i("valueof", "beanvale2" + chatInfoBean.getDeliverstatustime());
-				if (element.getAttribute("readstatustime") != null)
-					chatInfoBean.setDate(element.getAttribute("readstatustime").trim());
-				Log.i("valueof", "beanvale3" + chatInfoBean.getDate());
-				chatInfoBean.setSid(cBean.getSignalid());
-				syncList.add(chatInfoBean);
+				if(element!=null) {
+					ChatInfoBean chatInfoBean = new ChatInfoBean();
+					if (element.getAttribute("user") != null)
+						chatInfoBean.setName(element.getAttribute("user").trim());
+					if (element.getAttribute("sentstatustime") != null)
+						chatInfoBean.setSentstatustime(element.getAttribute("sentstatustime").trim());
+					Log.i("valueof", "beanvale1" + chatInfoBean.getSentstatustime());
+					if (element.getAttribute("deliverstatustime") != null)
+						chatInfoBean.setDeliverstatustime(element.getAttribute("deliverstatustime").trim());
+					Log.i("valueof", "beanvale2" + chatInfoBean.getDeliverstatustime());
+					if (element.getAttribute("readstatustime") != null)
+						chatInfoBean.setDate(element.getAttribute("readstatustime").trim());
+					Log.i("valueof", "beanvale3" + chatInfoBean.getDate());
+					chatInfoBean.setSid(cBean.getSignalid());
+					syncList.add(chatInfoBean);
+				}
 
 
 //				Element firstLevel = (Element)node;

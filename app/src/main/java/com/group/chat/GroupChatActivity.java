@@ -2581,7 +2581,9 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 });
                 Log.i("chat", "chat123 end of oncreate");
                 if (chatList != null && chatList.size() > 0) {
-                    mainListPositionForSpecialMessage(chatList.size() - 1);
+                    if(!AppReference.chatPullSync) {
+                        mainListPositionForSpecialMessage(chatList.size() - 1);
+                    }
                 }
 
                 replayback.setOnClickListener(new OnClickListener() {
@@ -3638,7 +3640,9 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
     private void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) this
                 .getSystemService(Service.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(message.getWindowToken(), 0);
+        if(imm!=null && message!=null) {
+            imm.hideSoftInputFromWindow(message.getWindowToken(), 0);
+        }
 
         // imm.showSoftInput(ed, 0);
     }
@@ -13870,14 +13874,15 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 if(swipeContainer!=null) {
                     swipeContainer.setRefreshing(false);
                 }
-                AppReference.chatPullSync=false;
+
                 chatprocess();
-//                handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        AppReference.chatPullSync=false;
 //                        lv.setSelection(0);
-//                    }
-//                },1000);
+                    }
+                },1000);
 
             }
         },2000);
