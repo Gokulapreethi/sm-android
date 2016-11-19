@@ -1,6 +1,5 @@
 package com.group.chat;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -122,7 +121,6 @@ import com.cg.rounding.TaskDateComparator;
 import com.cg.snazmed.R;
 import com.chat.ChatBean;
 import com.ftp.ChatFTPBean;
-import com.ftp.FTPPoolManager;
 import com.group.BuddyAdapter;
 import com.group.GroupActivity;
 import com.group.ViewGroups;
@@ -158,7 +156,6 @@ import org.lib.model.RolePatientManagementBean;
 import org.lib.model.TaskDetailsBean;
 import org.lib.model.UdpMessageBean;
 import org.lib.model.WebServiceBean;
-import org.lib.xml.XmlComposer;
 import org.lib.xml.XmlParser;
 import org.net.AndroidInsecureKeepAliveHttpsTransportSE;
 import org.util.Utility;
@@ -1606,6 +1603,12 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                 Log.d("Test", "Inside Group VideoConference onclick");
                                 if (!CallDispatcher.isCallInitiate) {
                                     if(!CallDispatcher.GSMCallisAccepted) {
+                                        CallDispatcher.removed_current_conf_members = new ArrayList<String>();
+                                        CallDispatcher.conference_connecting_Members = new ArrayList<String>();
+
+                                        WebServiceReferences.videoSSRC_total.clear();
+                                        WebServiceReferences.videoSSRC_total_list.clear();
+                                        WebServiceReferences.removed_videoSSRC_list.clear();
                                         groupCallMenu(2);
                                     } else {
                                         showToast("Please Try again... GSM call in progress");
@@ -1616,6 +1619,12 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                             } else {
                                 if (!CallDispatcher.isCallInitiate) {
                                     if (!CallDispatcher.GSMCallisAccepted) {
+                                        CallDispatcher.removed_current_conf_members = new ArrayList<String>();
+                                        CallDispatcher.conference_connecting_Members = new ArrayList<String>();
+
+                                        WebServiceReferences.videoSSRC_total.clear();
+                                        WebServiceReferences.videoSSRC_total_list.clear();
+                                        WebServiceReferences.removed_videoSSRC_list.clear();
                                         individualCallMenu(1);
                                     } else {
                                         showToast("Please Try again... GSM call in progress");
@@ -2892,7 +2901,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     gcBean.setGroupId(groupBean.getGroupId());
                     gcBean.setCategory("G");
                 } else {
-                    gcBean.setTo(buddy);
+                    gcBean.setTo(CallDispatcher.LoginUser);
 //                    gcBean.setSessionid(CallDispatcher.LoginUser + buddy);
                     TreeSet<String> treeSet=new TreeSet<>();
                     treeSet.add(CallDispatcher.LoginUser);
@@ -5289,6 +5298,12 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                     if (gcpBean.getAudioConference().equalsIgnoreCase("1")) {
                                         if (!CallDispatcher.isCallInitiate) {
                                             if (!CallDispatcher.GSMCallisAccepted) {
+                                                CallDispatcher.removed_current_conf_members = new ArrayList<String>();
+                                                CallDispatcher.conference_connecting_Members = new ArrayList<String>();
+
+                                                WebServiceReferences.videoSSRC_total.clear();
+                                                WebServiceReferences.videoSSRC_total_list.clear();
+                                                WebServiceReferences.removed_videoSSRC_list.clear();
                                                 groupCallMenu(0);
                                             } else {
                                                 showToast("Please Try again... GSM call  in progress");
@@ -5302,6 +5317,12 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                 } else {
                                     if (!CallDispatcher.isCallInitiate) {
                                         if (!CallDispatcher.GSMCallisAccepted) {
+                                            CallDispatcher.removed_current_conf_members = new ArrayList<String>();
+                                            CallDispatcher.conference_connecting_Members = new ArrayList<String>();
+
+                                            WebServiceReferences.videoSSRC_total.clear();
+                                            WebServiceReferences.videoSSRC_total_list.clear();
+                                            WebServiceReferences.removed_videoSSRC_list.clear();
                                             individualCallMenu(0);
                                         } else {
                                             showToast("Please Try again... GSM call in progress");

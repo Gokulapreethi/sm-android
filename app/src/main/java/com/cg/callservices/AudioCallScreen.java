@@ -554,8 +554,10 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 									String buddy = bun.getString("buddy");
 									boolean state = bun.getBoolean("state");
-
-									Log.d("LM", "----->inside handler state " + state);
+									if(CallDispatcher.conference_connecting_Members.contains(buddy)) {
+										CallDispatcher.conference_connecting_Members.remove(buddy);
+									}
+									Log.d("LM", "----->inside handler state " + state + " buddy : "+buddy);
 
 									if (state) {
 
@@ -648,7 +650,13 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 
 										}
 									}
-									member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
+									member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() +CallDispatcher.removed_current_conf_members.size()+CallDispatcher.conference_connecting_Members.size() + 1));
+									if(SingleInstance.instanceTable.containsKey("callactivememberslist")) {
+										CallActiveMembersList callActiveMembersList = (CallActiveMembersList) SingleInstance.instanceTable.get("callactivememberslist");
+										if(callActiveMembersList != null) {
+											callActiveMembersList.notifyMembersCountChanged();
+										}
+									}
 									resetVideoViews(!preview_hided);
 
 								}
@@ -859,7 +867,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-					member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
+					member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+CallDispatcher.removed_current_conf_members.size()+CallDispatcher.conference_connecting_Members.size() + 1));
 				}
 			}, 100);
 			member_lay.setVisibility(View.VISIBLE);
@@ -1036,7 +1044,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			members.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
+					member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() +CallDispatcher.removed_current_conf_members.size()+CallDispatcher.conference_connecting_Members.size()+ 1));
 					Intent i = new Intent(AppReference.mainContext, CallActiveMembersList.class);
 					i.putExtra("timer", chTimer.getText().toString());
 					i.putExtra("calltype",currentcall_type);
@@ -1592,7 +1600,7 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 					public void run() {
 
 						try {
-							member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
+							member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+CallDispatcher.removed_current_conf_members.size()+CallDispatcher.conference_connecting_Members.size() + 1));
 						} catch (Exception e) {
 							// TODO: handle exception
 							e.printStackTrace();
@@ -2824,8 +2832,15 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 					}
 					for(UserBean bib:membersList){
 //						if (CallDispatcher.conferenceMembers.size() < 3) {
-
-							member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+1));
+							if(bib != null && bib.getBuddyName() != null) {
+								if(CallDispatcher.removed_current_conf_members.contains(bib.getBuddyName())) {
+									CallDispatcher.removed_current_conf_members.remove(bib.getBuddyName());
+								}
+								if(!CallDispatcher.conference_connecting_Members.contains(bib.getBuddyName())) {
+									CallDispatcher.conference_connecting_Members.add(bib.getBuddyName());
+								}
+							}
+							member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+CallDispatcher.removed_current_conf_members.size()+CallDispatcher.conference_connecting_Members.size()+1));
 
 							if (objCallDispatcher != null) {
 								String p_c_type = "";

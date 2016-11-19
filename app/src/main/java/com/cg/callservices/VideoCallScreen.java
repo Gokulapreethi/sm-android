@@ -310,7 +310,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							// ad.notifyDataSetChanged();
 							// }
 							// switchVideo(bundle.getString("newbuddy"));
-							member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
+							member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+CallDispatcher.removed_current_conf_members.size()+CallDispatcher.conference_connecting_Members.size() + 1));
 							handler.postDelayed(new Runnable() {
 								@Override
 								public void run() {
@@ -327,6 +327,13 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 									processCallRequest(2, transactionBean, "disablevideo");
 								}
 							}, 2000);
+
+							if(SingleInstance.instanceTable.containsKey("callactivememberslist")) {
+								CallActiveMembersList callActiveMembersList = (CallActiveMembersList) SingleInstance.instanceTable.get("callactivememberslist");
+								if(callActiveMembersList != null) {
+									callActiveMembersList.notifyMembersCountChanged();
+								}
+							}
 						} else if (bundle.containsKey("newrequest")) {
 							SignalingBean bean = (SignalingBean) bundle
 									.getSerializable("newrequest");
@@ -456,7 +463,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 								CallDispatcher.removed_current_conf_members.add(bundle
 										.getString("hangup"));
 							}
-							member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
+							member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+CallDispatcher.removed_current_conf_members.size()+CallDispatcher.conference_connecting_Members.size() + 1));
 							/*
 							 * videoConferenceMembers.remove(0);
 							 */
@@ -484,7 +491,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 								Log.d("test", "removed");
 								CallDispatcher.conferenceMembers.remove(bundle
 										.getString("bye"));
-								member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
+								member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+CallDispatcher.removed_current_conf_members.size()+CallDispatcher.conference_connecting_Members.size() + 1));
 							}
 
 							// Log.d("", "removed user");
@@ -501,6 +508,12 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							}
 
 							if (CallDispatcher.conferenceMembers.size() > 0) {
+								if(SingleInstance.instanceTable.containsKey("callactivememberslist")) {
+									CallActiveMembersList callActiveMembersList = (CallActiveMembersList) SingleInstance.instanceTable.get("callactivememberslist");
+									if(callActiveMembersList != null) {
+										callActiveMembersList.notifyMembersCountChanged();
+									}
+								}
 								resetVideoViews(!preview_hided);
 //								switchVideo(CallDispatcher.conferenceMembers
 //										.get(0));
@@ -1000,11 +1013,11 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 					}
 				});
-				member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+1));
+				member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+CallDispatcher.removed_current_conf_members.size()+CallDispatcher.conference_connecting_Members.size()+1));
 				members.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + 1));
+						member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() +CallDispatcher.removed_current_conf_members.size()+CallDispatcher.conference_connecting_Members.size()+ 1));
 						Intent i = new Intent(AppReference.mainContext, CallActiveMembersList.class);
 						i.putExtra("timer", chTimer.getText().toString());
 						i.putExtra("sessionId", sessionid);
@@ -2631,6 +2644,14 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 						}
 					}
 					for(UserBean bib:membersList){
+						if(bib != null && bib.getBuddyName() != null) {
+							if(CallDispatcher.removed_current_conf_members.contains(bib.getBuddyName())) {
+								CallDispatcher.removed_current_conf_members.remove(bib.getBuddyName());
+							}
+							if(!CallDispatcher.conference_connecting_Members.contains(bib.getBuddyName())) {
+								CallDispatcher.conference_connecting_Members.add(bib.getBuddyName());
+							}
+						}
 //						if (CallDispatcher.conferenceMembers.size() < 3) {
 
 							if (objCallDispatcher != null) {
@@ -2641,7 +2662,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 								CallDispatcher.conferenceRequest
 										.put(bib.getBuddyName(), sb);
 							}
-							member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+1));
+							member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+CallDispatcher.removed_current_conf_members.size()+CallDispatcher.conference_connecting_Members.size()+1));
 //						} else
 //							Toast.makeText(
 //									context,
@@ -2729,7 +2750,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 							public void run() {
 
 								try {
-									member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+1));
+									member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+CallDispatcher.removed_current_conf_members.size()+CallDispatcher.conference_connecting_Members.size()+1));
 								} catch (Exception e) {
 									// TODO: handle exception
 									e.printStackTrace();
@@ -2990,6 +3011,9 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 	public void UpdateConferenceMembers(String from, boolean b) {
 		try {
 			// Log.d("test", "From " + from + " b " + b);
+			if(CallDispatcher.conference_connecting_Members.contains(from)) {
+				CallDispatcher.conference_connecting_Members.remove(from);
+			}
 			if (!b) {
 
 				if(WebServiceReferences.videoSSRC_total != null && WebServiceReferences.videoSSRC_total.size() > 0){

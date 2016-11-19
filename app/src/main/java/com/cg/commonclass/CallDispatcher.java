@@ -509,6 +509,8 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 
 	public static ArrayList<String> removed_current_conf_members = new ArrayList<>();
 
+	public static ArrayList<String> conference_connecting_Members = new ArrayList<String>();
+
 	public static HashMap<String, SignalingBean> conferenceMember_Details = new HashMap<String, SignalingBean>();
 	/**
 	 * Check video call full screen state.
@@ -4964,7 +4966,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 						}
 
 					}
-				} else if (message.getResponseObject() != null) {
+				 } else if (message.getResponseObject() != null) {
 					if (SingleInstance.contextTable.containsKey("MAIN")) {
 						((AppMainActivity) SingleInstance.contextTable
                                 .get("MAIN")).notifyUDPupdates(message
@@ -12020,6 +12022,7 @@ private TrustManager[] get_trust_mgr() {
 							}
 
 							removed_current_conf_members = new ArrayList<String>();
+							conference_connecting_Members = new ArrayList<String>();
 
 							WebServiceReferences.videoSSRC_total.clear();
 							WebServiceReferences.videoSSRC_total_list.clear();

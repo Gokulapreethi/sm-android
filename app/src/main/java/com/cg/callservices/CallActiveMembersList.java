@@ -77,7 +77,9 @@ public class CallActiveMembersList extends Activity {
     String calltype = "";
     private String previous_call_type = "";
     private boolean preview_disabled = false;
-
+    private int frame_received_users_count = 0;
+    private Vector<BuddyInformationBean> total_objects = new Vector<BuddyInformationBean>();
+    CallMembersList calladapter;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -144,87 +146,8 @@ public class CallActiveMembersList extends Activity {
                 SignalingBean pbean = (SignalingBean) mapEntry.getValue();
             }
 
-            Vector<BuddyInformationBean> participant_objects = new Vector<BuddyInformationBean>();
-            Vector<BuddyInformationBean> total_objects = new Vector<BuddyInformationBean>();
-
-            ProfileBean bean = SingleInstance.myAccountBean;
-            String user_name = CallDispatcher.LoginUser;
-
-            BuddyInformationBean ownbean = new BuddyInformationBean();
-            ownbean.setFirstname(user_name);
-            ownbean.setStatus(CallDispatcher.myStatus);
-            ownbean.setMode("connected");
-            ownbean.setProfile_picpath(bean.getPhoto());
-            ownbean.setVideo_removed(preview_disabled);
-
-            if (host.equalsIgnoreCase(CallDispatcher.LoginUser)) {
-                total_objects.add(ownbean);
-            } else {
-                participant_objects.add(ownbean);
-            }
-
-
-            for (String user : CallDispatcher.conferenceMembers) {
-                boolean havebuddy = false;
-                boolean videoremoved = false;
-                String v_ssrc = "";
-                Set set = WebServiceReferences.videoSSRC_total.entrySet();
-                Iterator j = set.iterator();
-
-                while(j.hasNext()) {
-                    Map.Entry me = (Map.Entry)j.next();
-                    Log.i("Join", " key :" + me.getKey() + ": ");
-                    Log.i("Join", " value :" + me.getValue());
-                    VideoThreadBean value = (VideoThreadBean) me.getValue();
-                    Log.i("Join", " name :" + value.getMember_name()+ " user  : "+user);
-                    if(user.equalsIgnoreCase(value.getMember_name())) {
-                        v_ssrc = ""+(Integer) me.getKey();
-                        videoremoved = value.isVideoRemoved();
-                    }
-                }
-
-                for (BuddyInformationBean buddyInformationBean : ContactsFragment.getBuddyList()) {
-                    if (user.equalsIgnoreCase(buddyInformationBean.getEmailid())) {
-                        havebuddy = true;
-                        SignalingBean sb = CallDispatcher.buddySignall.get(buddyInformationBean.getEmailid());
-//                        if(sb.getType().equalsIgnoreCase("2"))
-//                            buddyInformationBean.setMode("connected");
-//                        else if(sb.getType().equalsIgnoreCase("1") && sb.getResult().equalsIgnoreCase("1"))
-//                            buddyInformationBean.setMode("connecting...");
-//                        else if(sb.getType().equalsIgnoreCase("1") && sb.getResult().equalsIgnoreCase("0"))
-//                            buddyInformationBean.setMode("connecting...");
-//                        else
-                        buddyInformationBean.setMode("connected");
-                        ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(user);
-                        buddyInformationBean.setProfile_picpath(pBean.getPhoto());
-                        buddyInformationBean.setVideo_removed(videoremoved);
-                        buddyInformationBean.setVideo_ssrc(v_ssrc);
-                        Log.i("AudioCall", "");
-                        if (user.equalsIgnoreCase(host)) {
-                            total_objects.add(buddyInformationBean);
-                        } else {
-                            participant_objects.add(buddyInformationBean);
-                        }
-                    }
-                }
-
-                if (havebuddy) {
-
-                } else {
-                    BuddyInformationBean informationBean = new BuddyInformationBean();
-                    informationBean.setEmailid(user);
-                    informationBean.setMode("connected");
-                    informationBean.setVideo_removed(videoremoved);
-                    informationBean.setVideo_ssrc(v_ssrc);
-                    participant_objects.add(informationBean);
-                }
-            }
-
-            if (participant_objects.size() > 0) {
-                total_objects.addAll(participant_objects);
-            }
-
-            CallMembersList calladapter = new CallMembersList(context, R.layout.callmembers, total_objects);
+            loadAdapter();
+             calladapter = new CallMembersList(context, R.layout.callmembers, total_objects);
             searchResult.setAdapter(calladapter);
 
             cancel.setOnClickListener(new View.OnClickListener() {
@@ -235,6 +158,214 @@ public class CallActiveMembersList extends Activity {
             });
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            loadAdapter();
+            calladapter.notifyDataSetChanged();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadAdapter() {
+        total_objects.clear();
+        Vector<BuddyInformationBean> participant_objects = new Vector<BuddyInformationBean>();
+
+
+        ProfileBean bean = SingleInstance.myAccountBean;
+        String user_name = CallDispatcher.LoginUser;
+
+        BuddyInformationBean ownbean = new BuddyInformationBean();
+        ownbean.setFirstname(user_name);
+        ownbean.setStatus(CallDispatcher.myStatus);
+        ownbean.setMode("connected");
+        ownbean.setProfile_picpath(bean.getPhoto());
+        ownbean.setVideo_removed(preview_disabled);
+
+        if (host.equalsIgnoreCase(CallDispatcher.LoginUser)) {
+            total_objects.add(ownbean);
+        } else {
+            participant_objects.add(ownbean);
+        }
+
+
+        for (String user : CallDispatcher.conferenceMembers) {
+            boolean havebuddy = false;
+            boolean videoremoved = false;
+            String v_ssrc = "";
+            Set set = WebServiceReferences.videoSSRC_total.entrySet();
+            Iterator j = set.iterator();
+
+            while(j.hasNext()) {
+                Map.Entry me = (Map.Entry)j.next();
+                Log.i("Join", " key :" + me.getKey() + ": ");
+                Log.i("Join", " value :" + me.getValue());
+                VideoThreadBean value = (VideoThreadBean) me.getValue();
+                Log.i("Join", " name :" + value.getMember_name()+ " user  : "+user);
+                if(user.equalsIgnoreCase(value.getMember_name())) {
+                    v_ssrc = ""+(Integer) me.getKey();
+                    videoremoved = value.isVideoRemoved();
+                    if(!videoremoved) {
+                        frame_received_users_count= frame_received_users_count+1;
+                    }
+                }
+            }
+
+            for (BuddyInformationBean buddyInformationBean : ContactsFragment.getBuddyList()) {
+                if (user.equalsIgnoreCase(buddyInformationBean.getEmailid())) {
+                    havebuddy = true;
+                    SignalingBean sb = CallDispatcher.buddySignall.get(buddyInformationBean.getEmailid());
+//                        if(sb.getType().equalsIgnoreCase("2"))
+//                            buddyInformationBean.setMode("connected");
+//                        else if(sb.getType().equalsIgnoreCase("1") && sb.getResult().equalsIgnoreCase("1"))
+//                            buddyInformationBean.setMode("connecting...");
+//                        else if(sb.getType().equalsIgnoreCase("1") && sb.getResult().equalsIgnoreCase("0"))
+//                            buddyInformationBean.setMode("connecting...");
+//                        else
+                    buddyInformationBean.setMode("connected");
+                    ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(user);
+                    buddyInformationBean.setProfile_picpath(pBean.getPhoto());
+                    buddyInformationBean.setVideo_removed(videoremoved);
+                    buddyInformationBean.setVideo_ssrc(v_ssrc);
+                    Log.i("AudioCall", "");
+                    if (user.equalsIgnoreCase(host)) {
+                        total_objects.add(buddyInformationBean);
+                    } else {
+                        participant_objects.add(buddyInformationBean);
+                    }
+                }
+            }
+
+            if (havebuddy) {
+
+            } else {
+                BuddyInformationBean informationBean = new BuddyInformationBean();
+                informationBean.setEmailid(user);
+                informationBean.setMode("connected");
+                informationBean.setVideo_removed(videoremoved);
+                informationBean.setVideo_ssrc(v_ssrc);
+                participant_objects.add(informationBean);
+            }
+        }
+
+        for(String user :CallDispatcher.removed_current_conf_members) {
+            boolean havebuddy = false;
+            boolean videoremoved = false;
+            String v_ssrc = "";
+            Set set = WebServiceReferences.videoSSRC_total.entrySet();
+            Iterator j = set.iterator();
+
+            while(j.hasNext()) {
+                Map.Entry me = (Map.Entry)j.next();
+                Log.i("Join", " key :" + me.getKey() + ": ");
+                Log.i("Join", " value :" + me.getValue());
+                VideoThreadBean value = (VideoThreadBean) me.getValue();
+                Log.i("Join", " name :" + value.getMember_name()+ " user  : "+user);
+                if(user.equalsIgnoreCase(value.getMember_name())) {
+                    v_ssrc = ""+(Integer) me.getKey();
+//                        videoremoved = value.isVideoRemoved();
+                }
+            }
+
+            for (BuddyInformationBean buddyInformationBean : ContactsFragment.getBuddyList()) {
+                if (user.equalsIgnoreCase(buddyInformationBean.getEmailid())) {
+                    havebuddy = true;
+                    SignalingBean sb = CallDispatcher.buddySignall.get(buddyInformationBean.getEmailid());
+//                        if(sb.getType().equalsIgnoreCase("2"))
+//                            buddyInformationBean.setMode("connected");
+//                        else if(sb.getType().equalsIgnoreCase("1") && sb.getResult().equalsIgnoreCase("1"))
+//                            buddyInformationBean.setMode("connecting...");
+//                        else if(sb.getType().equalsIgnoreCase("1") && sb.getResult().equalsIgnoreCase("0"))
+//                            buddyInformationBean.setMode("connecting...");
+//                        else
+                    buddyInformationBean.setMode("declined");
+                    ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(user);
+                    buddyInformationBean.setProfile_picpath(pBean.getPhoto());
+                    buddyInformationBean.setVideo_removed(videoremoved);
+                    buddyInformationBean.setVideo_ssrc(v_ssrc);
+                    if (user.equalsIgnoreCase(host)) {
+                        total_objects.add(buddyInformationBean);
+                    } else {
+                        participant_objects.add(buddyInformationBean);
+                    }
+                }
+            }
+
+            if (havebuddy) {
+
+            } else {
+                BuddyInformationBean informationBean = new BuddyInformationBean();
+                informationBean.setEmailid(user);
+                informationBean.setMode("declined");
+                informationBean.setVideo_removed(videoremoved);
+                informationBean.setVideo_ssrc(v_ssrc);
+                participant_objects.add(informationBean);
+            }
+        }
+
+        for(String user : CallDispatcher.conference_connecting_Members) {
+            boolean havebuddy = false;
+            boolean videoremoved = false;
+            String v_ssrc = "";
+            Set set = WebServiceReferences.videoSSRC_total.entrySet();
+            Iterator j = set.iterator();
+
+            while(j.hasNext()) {
+                Map.Entry me = (Map.Entry)j.next();
+                Log.i("Join", " key :" + me.getKey() + ": ");
+                Log.i("Join", " value :" + me.getValue());
+                VideoThreadBean value = (VideoThreadBean) me.getValue();
+                Log.i("Join", " name :" + value.getMember_name()+ " user  : "+user);
+                if(user.equalsIgnoreCase(value.getMember_name())) {
+                    v_ssrc = ""+(Integer) me.getKey();
+//                        videoremoved = value.isVideoRemoved();
+                }
+            }
+
+            for (BuddyInformationBean buddyInformationBean : ContactsFragment.getBuddyList()) {
+                if (user.equalsIgnoreCase(buddyInformationBean.getEmailid())) {
+                    havebuddy = true;
+                    SignalingBean sb = CallDispatcher.buddySignall.get(buddyInformationBean.getEmailid());
+//                        if(sb.getType().equalsIgnoreCase("2"))
+//                            buddyInformationBean.setMode("connected");
+//                        else if(sb.getType().equalsIgnoreCase("1") && sb.getResult().equalsIgnoreCase("1"))
+//                            buddyInformationBean.setMode("connecting...");
+//                        else if(sb.getType().equalsIgnoreCase("1") && sb.getResult().equalsIgnoreCase("0"))
+//                            buddyInformationBean.setMode("connecting...");
+//                        else
+                    buddyInformationBean.setMode("connecting ...");
+                    ProfileBean pBean = DBAccess.getdbHeler().getProfileDetails(user);
+                    buddyInformationBean.setProfile_picpath(pBean.getPhoto());
+                    buddyInformationBean.setVideo_removed(videoremoved);
+                    buddyInformationBean.setVideo_ssrc(v_ssrc);
+                    if (user.equalsIgnoreCase(host)) {
+                        total_objects.add(buddyInformationBean);
+                    } else {
+                        participant_objects.add(buddyInformationBean);
+                    }
+                }
+            }
+
+            if (havebuddy) {
+
+            } else {
+                BuddyInformationBean informationBean = new BuddyInformationBean();
+                informationBean.setEmailid(user);
+                informationBean.setMode("connecting ...");
+                informationBean.setVideo_removed(videoremoved);
+                informationBean.setVideo_ssrc(v_ssrc);
+                participant_objects.add(informationBean);
+            }
+        }
+
+        if (participant_objects.size() > 0) {
+            total_objects.addAll(participant_objects);
         }
     }
 
@@ -341,9 +472,11 @@ public class CallActiveMembersList extends Activity {
                     }
                     if (bib.getMode() != null) {
                         holder.occupation.setText(bib.getMode());
-                        if (bib.getMode().equalsIgnoreCase("connected"))
+                        if (bib.getMode().equalsIgnoreCase("connected")) {
                             holder.occupation.setTextColor(getResources().getColor(R.color.blue2));
-                        else
+                        }else if(bib.getMode().equalsIgnoreCase("declined")) {
+                            holder.occupation.setTextColor(getResources().getColor(R.color.grey3));
+                        } else
                             holder.occupation.setTextColor(getResources().getColor(R.color.yellow));
                     }
 
@@ -356,19 +489,26 @@ public class CallActiveMembersList extends Activity {
                     holder.refresh.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-
-                            bib.setVideo_removed(!bib.isVideo_removed());
-                            v.setVisibility(View.GONE);
-                             Object objCallScreen = SingleInstance.instanceTable
-                                    .get("callscreen");
-                            if (objCallScreen != null) {
-                                if(objCallScreen instanceof AudioCallScreen) {
-                                    AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
-                                    acalObj.re_get_buddyViews(bib);
-                                } else if(objCallScreen instanceof VideoCallScreen) {
-                                    VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
-                                    acalObj.re_get_buddyViews(bib);
+                            if(frame_received_users_count < 3) {
+                                frame_received_users_count = frame_received_users_count+1;
+                                bib.setVideo_removed(!bib.isVideo_removed());
+                                v.setVisibility(View.GONE);
+                                Object objCallScreen = SingleInstance.instanceTable
+                                        .get("callscreen");
+                                if (objCallScreen != null) {
+                                    if (objCallScreen instanceof AudioCallScreen) {
+                                        AudioCallScreen acalObj = (AudioCallScreen) objCallScreen;
+                                        acalObj.re_get_buddyViews(bib);
+                                    } else if (objCallScreen instanceof VideoCallScreen) {
+                                        VideoCallScreen acalObj = (VideoCallScreen) objCallScreen;
+                                        acalObj.re_get_buddyViews(bib);
+                                    }
                                 }
+                            } else {
+                                Toast.makeText(
+                                        context,
+                                        SingleInstance.mainContext.getResources().getString(
+                                                R.string.max_frames_reached), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -495,7 +635,14 @@ public class CallActiveMembersList extends Activity {
                     }
                     for (UserBean bib : membersList) {
 //                        if (CallDispatcher.conferenceMembers.size() < 3) {
-
+                        if(bib != null && bib.getBuddyName() != null) {
+                            if(CallDispatcher.removed_current_conf_members.contains(bib.getBuddyName())) {
+                                CallDispatcher.removed_current_conf_members.remove(bib.getBuddyName());
+                            }
+                            if(!CallDispatcher.conference_connecting_Members.contains(bib.getBuddyName())) {
+                                CallDispatcher.conference_connecting_Members.add(bib.getBuddyName());
+                            }
+                        }
                             if (objCallDispatcher != null) {
                                 SignalingBean sb = objCallDispatcher.callconfernceUpdate(
                                         bib.getBuddyName(),
@@ -514,6 +661,7 @@ public class CallActiveMembersList extends Activity {
 //                                    Toast.LENGTH_SHORT).show();
                     }
                 }
+                loadAdapter();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -627,6 +775,10 @@ public class CallActiveMembersList extends Activity {
             }
         });
 
+    }
+
+    public void notifyMembersCountChanged(){
+        loadAdapter();
     }
 
     @Override
