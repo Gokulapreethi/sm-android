@@ -2901,7 +2901,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                     gcBean.setGroupId(groupBean.getGroupId());
                     gcBean.setCategory("G");
                 } else {
-                    gcBean.setTo(CallDispatcher.LoginUser);
+                    gcBean.setTo(buddy);
 //                    gcBean.setSessionid(CallDispatcher.LoginUser + buddy);
                     TreeSet<String> treeSet=new TreeSet<>();
                     treeSet.add(CallDispatcher.LoginUser);

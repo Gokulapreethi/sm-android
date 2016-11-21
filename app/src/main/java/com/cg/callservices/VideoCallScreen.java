@@ -966,7 +966,7 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 				CallDispatcher.videoScreenVisibleState = true;
 
 				ImageView add = (ImageView) rootView.findViewById(R.id.add);
-
+				LinearLayout member_layout = (LinearLayout) rootView.findViewById(R.id.member_lay);
 				member_count = (TextView) rootView.findViewById(R.id.members_count);
 				Button members = (Button) rootView.findViewById(R.id.members);
 				add.setKeepScreenOn(true);
@@ -1013,8 +1013,28 @@ public class VideoCallScreen extends Fragment implements VideoCallback,
 
 					}
 				});
-				member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size()+CallDispatcher.removed_current_conf_members.size()+CallDispatcher.conference_connecting_Members.size()+1));
+				member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + CallDispatcher.removed_current_conf_members.size() + CallDispatcher.conference_connecting_Members.size() + 1));
 				members.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() + CallDispatcher.removed_current_conf_members.size() + CallDispatcher.conference_connecting_Members.size() + 1));
+						Intent i = new Intent(AppReference.mainContext, CallActiveMembersList.class);
+						i.putExtra("timer", chTimer.getText().toString());
+						i.putExtra("sessionId", sessionid);
+						i.putExtra("calltype", "VC");
+						i.putExtra("host", host);
+						i.putExtra("fromscreen", "videocallscreen");
+						i.putExtra("precalltype", "VC");
+						if ((boolean) btn_video.getTag() && preview_hided) {
+							i.putExtra("previewdiabled", preview_hided);
+						} else {
+							i.putExtra("previewdiabled", false);
+						}
+						AppReference.mainContext.startActivity(i);
+					}
+				});
+
+				member_layout.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() +CallDispatcher.removed_current_conf_members.size()+CallDispatcher.conference_connecting_Members.size()+ 1));

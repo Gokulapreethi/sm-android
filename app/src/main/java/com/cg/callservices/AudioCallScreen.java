@@ -994,12 +994,12 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			minimize.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Log.i("Float","minimize.setOnClickListener");
+					Log.i("Float", "minimize.setOnClickListener");
 					try {
-						Intent serviceIntent = new Intent(AppReference.mainContext.getApplication(),ChatHeadDrawerService.class);
-						serviceIntent.putExtra("sview",2);
-						serviceIntent.putExtra("callscreen","ACS");
-						if(currentcall_type.equalsIgnoreCase("VC")) {
+						Intent serviceIntent = new Intent(AppReference.mainContext.getApplication(), ChatHeadDrawerService.class);
+						serviceIntent.putExtra("sview", 2);
+						serviceIntent.putExtra("callscreen", "ACS");
+						if (currentcall_type.equalsIgnoreCase("VC")) {
 							serviceIntent.putExtra("calltype", "VC");
 						} else {
 							serviceIntent.putExtra("calltype", "AC");
@@ -1042,6 +1042,27 @@ public class AudioCallScreen extends Fragment implements VideoCallback {
 			});
 
 			members.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() +CallDispatcher.removed_current_conf_members.size()+CallDispatcher.conference_connecting_Members.size()+ 1));
+					Intent i = new Intent(AppReference.mainContext, CallActiveMembersList.class);
+					i.putExtra("timer", chTimer.getText().toString());
+					i.putExtra("calltype",currentcall_type);
+					i.putExtra("sessionId", strSessionId);
+					i.putExtra("host", host);
+					i.putExtra("fromscreen","audiocallscreen");
+					i.putExtra("precalltype","AC");
+					if((boolean) videoEnableBtn.getTag() && preview_hided) {
+						i.putExtra("previewdiabled", preview_hided);
+					} else {
+						i.putExtra("previewdiabled", false);
+					}
+					AppReference.mainContext.startActivity(i);
+
+				}
+			});
+
+			member_lay.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					member_count.setText(String.valueOf(CallDispatcher.conferenceMembers.size() +CallDispatcher.removed_current_conf_members.size()+CallDispatcher.conference_connecting_Members.size()+ 1));
