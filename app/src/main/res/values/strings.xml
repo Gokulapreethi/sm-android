@@ -294,6 +294,7 @@
     <string name="large_image">Kindly Select someother image,this image is too large</string>
     <string name="max_conf_members">You can add only 3 contacts to a conference</string>
     <string name="sorry_no_online_users">Sorry no online users</string>
+    <string name="max_frames_reached">You have reached Maximum number of frames</string>
     <string name="unable_send_video">Currently this people unable to send Video</string>
     <string name="no_active_participants">No active conference participants</string>
     <string name="selected_user_is_in_offline">Selected user is in Offline</string>
