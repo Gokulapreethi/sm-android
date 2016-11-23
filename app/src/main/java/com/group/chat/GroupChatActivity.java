@@ -3818,11 +3818,11 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 showprogress();
                 String mindate=DBAccess.getdbHeler().getminDateandTime();
                 if(mindate!=null) {
-                    String[] date = mindate.split(" ");
+//                    String[] date = mindate.split(" ");
                     if (!isfromgroup)
-                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "3", buddy, date[0],"");
+                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "3", buddy, "",mindate);
                     else
-                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "3", groupId, date[0],"");
+                        WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "3", groupId, "",mindate);
                 }else{
                     if (!isfromgroup)
                         WebServiceReferences.webServiceClient.ChatSync(CallDispatcher.LoginUser, SingleInstance.mainContext, "1", buddy, "","");
@@ -8352,6 +8352,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
     private void loadTotalChatHistory(String groupOrBuddyName) {
         if (loadChatHistory(groupOrBuddyName) != null)
             chatList = loadChatHistory(groupOrBuddyName);
+        Log.i("chatlistsize","chatlist size------>"+chatList.size());
         Collections.sort(chatList, new GroupMessageComparator());
 //        if (SingleInstance.groupChatHistory.get(groupOrBuddyName) != null
 //                && SingleInstance.groupChatHistory.get(groupOrBuddyName).size() > 0) {

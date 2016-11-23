@@ -611,9 +611,9 @@ public class MyAccountActivity extends Activity {
                         }
                     });
                     cityList.addAll(SingleInstance.mainContext.cityList);
-
-                    ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list,cityList);
-
+                    TreeSet treeSet_citylist=new TreeSet(cityList);
+                    ArrayList arrayList_citylist=new ArrayList(treeSet_citylist);
+                    ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list,arrayList_citylist);
                     dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
 
                     city.setAdapter(dataAdapter);
@@ -652,7 +652,9 @@ public class MyAccountActivity extends Activity {
                         }
                     });
                     states = DBAccess.getdbHeler().getStateDetails();
-                    stateAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, states);
+                    TreeSet treeset_states=new TreeSet(states);
+                    ArrayList arraylist_states=new ArrayList(treeset_states);
+                    stateAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, arraylist_states);
                     state1.setAdapter(stateAdapter);
                     state1.setThreshold(30);
                     offcstate_img.setOnClickListener(new View.OnClickListener() {
@@ -862,7 +864,9 @@ public class MyAccountActivity extends Activity {
 
 
         stateList= DBAccess.getdbHeler().getStateDetails();
-        stateAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, stateList);
+        TreeSet treeset_statelist=new TreeSet(stateList);
+        ArrayList arraylist_statelist=new ArrayList(treeset_statelist);
+        stateAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, arraylist_statelist);
         state.setAdapter(stateAdapter);
         state.setThreshold(30);
         state_img.setOnClickListener(new View.OnClickListener() {
@@ -884,7 +888,9 @@ public class MyAccountActivity extends Activity {
 
         hospitalList.add("Add Hospital Affiliation");
         hospitalList.addAll(DBAccess.getdbHeler().getHospitalDetails());
-        hospitalDetailsAdapter = new ArrayAdapter<String>(context, R.layout.spinner_lay, hospitalList);
+        TreeSet treeset_hospitallist=new TreeSet(hospitalList);
+        ArrayList arraylist_hospitallist=new ArrayList(treeset_hospitallist);
+        hospitalDetailsAdapter = new ArrayAdapter<String>(context, R.layout.spinner_lay, arraylist_hospitallist);
         hospitalDetailsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         hospital.setAdapter(hospitalDetailsAdapter);
 
@@ -962,7 +968,9 @@ public class MyAccountActivity extends Activity {
 
         medicalSocietyList.add("Choose Association");
         medicalSocietyList.addAll(DBAccess.getdbHeler().getMedicalSocietiesDetails());
-        medicalDetailsAdapter = new ArrayAdapter<String>(context, R.layout.spinner_lay, medicalSocietyList);
+        TreeSet treeset_medicalsocietylist=new TreeSet(medicalSocietyList);
+        ArrayList arraylist_medicalsocietylist=new ArrayList(treeset_medicalsocietylist);
+        medicalDetailsAdapter = new ArrayAdapter<String>(context, R.layout.spinner_lay, arraylist_medicalsocietylist);
         medicalDetailsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
         association_membership.setAdapter(medicalDetailsAdapter);
         association_membership.setPrompt("Choose Association");
@@ -1156,9 +1164,10 @@ public class MyAccountActivity extends Activity {
                 list.add("Mrs.");
                 list.add("Dr.");
                 list.add("Prof.");
-
+        TreeSet treeset_title=new TreeSet(list);
+        ArrayList arraylist_title=new ArrayList(treeset_title);
                 ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>
-                        (this, R.layout.spinner_dropdown_list, list);
+                        (this, R.layout.spinner_dropdown_list, arraylist_title);
 
                 dataAdapter.setDropDownViewResource
                         (R.layout.spinner_dropdown_list);
@@ -1204,8 +1213,9 @@ titel_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arro
                 list.add("Fellow");
                 list.add("Attending");
                 list.add("Other");
-
-                dataAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, list);
+        TreeSet treeset_usertype=new TreeSet(list);
+        ArrayList arraylist_usertype=new ArrayList(treeset_usertype);
+                dataAdapter = new ArrayAdapter<String>(context, R.layout.spinner_dropdown_list, arraylist_usertype);
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
 
                 usertype.setAdapter(dataAdapter);
@@ -1325,7 +1335,9 @@ usertype_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_a
                 list = new ArrayList<String>();
                 Registration reg=new Registration();
                 list.addAll(reg.loadResidencyFiles());
-                dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list, list);
+        TreeSet treeset_residency=new TreeSet(list);
+        ArrayList arraylist_residency=new ArrayList(treeset_residency);
+                dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list,arraylist_residency);
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
                 residency_pgm.setAdapter(dataAdapter);
                 residency_pgm.setThreshold(30);
@@ -1364,7 +1376,9 @@ usertype_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_a
         });
                 list = new ArrayList<String>();
                 list.addAll(reg.loadFellowship());
-                dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list, list);
+        TreeSet treeset_fellowship=new TreeSet(list);
+        ArrayList arraylist_fellowship=new ArrayList(treeset_fellowship);
+                dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list, arraylist_fellowship);
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
                 fellowship_pgm.setAdapter(dataAdapter);
                 fellowship_pgm.setThreshold(30);
@@ -1405,7 +1419,9 @@ usertype_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_a
                 list.add("MD");
                 list.add("DO");
                 list.add("Other");
-                dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list, list);
+        TreeSet treeset_list=new TreeSet(list);
+        ArrayList arrayList_treeset=new ArrayList(treeset_list);
+                dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list, arrayList_treeset);
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
                 rlay_professional_org.setAdapter(dataAdapter);
                 rlay_professional_org.setThreshold(30);
@@ -1427,7 +1443,9 @@ usertype_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_a
                 });
 
                 specialityList = DBAccess.getdbHeler().getSpecialityDetails();
-                dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list, specialityList);
+        TreeSet treeset_specialitylist=new TreeSet(specialityList);
+        ArrayList arraylist_specialitylist=new ArrayList(treeset_specialitylist);
+                dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_list, arraylist_specialitylist);
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
                 Speciality.setAdapter(dataAdapter);
                 Speciality.setThreshold(30);

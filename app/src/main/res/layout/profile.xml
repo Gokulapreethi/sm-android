@@ -238,6 +238,7 @@
                     android:gravity="left"
                     android:padding="7dp"
                     android:text="Sex"
+                    android:id="@+id/sextextview"
                     android:textColor="#808080"
                     android:textSize="15dp" />
 

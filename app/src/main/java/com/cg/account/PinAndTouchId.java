@@ -153,9 +153,9 @@ public class PinAndTouchId extends Fragment {
                 TextView tv_note = (TextView) dialog.findViewById(R.id.tv_note);
                 Button btn_ok = (Button) dialog.findViewById(R.id.btn_ok);
                 error_img.setVisibility(View.VISIBLE);
-                tv_title.setVisibility(View.VISIBLE);
+                tv_title.setVisibility(View.GONE);
                 tv_firstLine.setVisibility(View.VISIBLE);
-                tv_firstLine.setText("You need to activate\nthe option in your\nphone settings");
+                tv_firstLine.setText("In order to utilize touch id\n in SnazMed,you need to \n activate this feature in \n your phone settings ");
                 tv_secondLine.setVisibility(View.GONE);
                 tv_note.setVisibility(View.GONE);
                 btn_ok.setText("OK");

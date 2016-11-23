@@ -171,7 +171,13 @@ public class SearchPeopleFragment extends Fragment {
                 residency = (AutoCompleteTextView) _rootView.findViewById(R.id.resi_pro);
                 fellow = (AutoCompleteTextView) _rootView.findViewById(R.id.fellow);
                 gender = (RadioGroup) _rootView.findViewById(R.id.gender);
+                gender.setVisibility(View.GONE);
+                TextView sex=(TextView)_rootView.findViewById(R.id.textview_sex);
+                sex.setVisibility(View.GONE);
+                View view_undersex=(View)_rootView.findViewById(R.id.view_undersexfield);
+                view_undersex.setVisibility(View.GONE);
                 final ImageView usertype_img=(ImageView)_rootView.findViewById(R.id.usertype_img);
+                usertype_img.setVisibility(View.VISIBLE);
                 final ImageView state_img=(ImageView)_rootView.findViewById(R.id.state_img);
                 final ImageView speciality_img=(ImageView)_rootView.findViewById(R.id.specialty_img);
                 final ImageView medical_img=(ImageView)_rootView.findViewById(R.id.medical_img);
@@ -302,8 +308,9 @@ public class SearchPeopleFragment extends Fragment {
                 });
 
                 stateList= DBAccess.getdbHeler().getStateDetails();
-
-                dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list,stateList);
+                TreeSet treeSet_statelist=new TreeSet(stateList);
+                ArrayList arrayList_statelist=new ArrayList(treeSet_statelist);
+                dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list,arrayList_statelist);
 
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
 
@@ -330,9 +337,9 @@ public class SearchPeopleFragment extends Fragment {
 
                 list = new ArrayList<String>();
                 list.addAll(SingleInstance.mainContext.cityList);
-
-                dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list,list);
-
+                TreeSet treeSet_citylist=new TreeSet(list);
+                ArrayList arrayList_citylist=new ArrayList(treeSet_citylist);
+                dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list,arrayList_citylist);
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
 
                 city.setAdapter(dataAdapter);
@@ -356,8 +363,9 @@ public class SearchPeopleFragment extends Fragment {
                 });
 
                 specialityList= DBAccess.getdbHeler().getSpecialityDetails();
-                dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list,specialityList);
-
+                TreeSet treeSet_specialitylist=new TreeSet(specialityList);
+                ArrayList arrayList_specialitylist=new ArrayList(treeSet_specialitylist);
+                dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list,arrayList_specialitylist);
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
 
                 speciality.setAdapter(dataAdapter);
@@ -381,9 +389,9 @@ public class SearchPeopleFragment extends Fragment {
                 });
 
                 hospitalList= DBAccess.getdbHeler().getHospitalDetails();
-                TreeSet treeSet=new TreeSet(hospitalList);
-                ArrayList arrayList_treeset=new ArrayList(treeSet);
-                dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list,arrayList_treeset);
+                TreeSet treeSet_hospital=new TreeSet(hospitalList);
+                ArrayList arrayList_hospital=new ArrayList(treeSet_hospital);
+                dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list,arrayList_hospital);
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
 
                 hospital.setAdapter(dataAdapter);
@@ -407,8 +415,9 @@ public class SearchPeopleFragment extends Fragment {
                 });
 
                 medicalschoolsList= DBAccess.getdbHeler().getMedicalSchoolDetails();
-
-                dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list,medicalschoolsList);
+                TreeSet treeSet_medicalschoollist=new TreeSet(medicalschoolsList);
+                ArrayList arrayList_medicalschoollist=new ArrayList(treeSet_medicalschoollist);
+                dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list,arrayList_medicalschoollist);
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
                 medical.setAdapter(dataAdapter);
                 medical.setThreshold(1);
@@ -433,8 +442,9 @@ public class SearchPeopleFragment extends Fragment {
                 list = new ArrayList<String>();
                 Registration reg=new Registration();
                 list.addAll(reg.loadResidencyFiles());
-
-                dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list,list);
+                TreeSet treeSet_residency=new TreeSet(list);
+                ArrayList arrayList_residency=new ArrayList(treeSet_residency);
+                dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list,arrayList_residency);
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
                 residency.setAdapter(dataAdapter);
                 residency.setThreshold(1);
@@ -457,8 +467,9 @@ public class SearchPeopleFragment extends Fragment {
                 });
                 list = new ArrayList<String>();
                 list.addAll(reg.loadFellowship());
-
-                dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list,list);
+                TreeSet treeSet_fellow=new TreeSet(list);
+                ArrayList arrayList_fellow=new ArrayList(treeSet_fellow);
+                dataAdapter = new ArrayAdapter<String>(mainContext, R.layout.spinner_dropdown_list,arrayList_fellow);
                 dataAdapter.setDropDownViewResource(R.layout.spinner_dropdown_list);
                 fellow.setAdapter(dataAdapter);
                 fellow.setThreshold(1);
@@ -495,6 +506,7 @@ public class SearchPeopleFragment extends Fragment {
 
                     @Override
                     public void afterTextChanged(Editable editable) {
+                        usertype_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
                     }
                 });
                 state.addTextChangedListener(new TextWatcher() {
@@ -511,6 +523,7 @@ public class SearchPeopleFragment extends Fragment {
                     }
                     @Override
                     public void afterTextChanged(Editable editable) {
+                        state_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
                     }
                 });
                 speciality.addTextChangedListener(new TextWatcher() {
@@ -527,6 +540,7 @@ public class SearchPeopleFragment extends Fragment {
                     }
                     @Override
                     public void afterTextChanged(Editable editable) {
+                        speciality_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
                     }
                 });
                 city.addTextChangedListener(new TextWatcher() {
@@ -543,6 +557,7 @@ public class SearchPeopleFragment extends Fragment {
                     }
                     @Override
                     public void afterTextChanged(Editable editable) {
+                        city_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
                     }
                 });
                 hospital.addTextChangedListener(new TextWatcher() {
@@ -559,6 +574,7 @@ public class SearchPeopleFragment extends Fragment {
                     }
                     @Override
                     public void afterTextChanged(Editable editable) {
+                        hospital_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
                     }
                 });
                 medical.addTextChangedListener(new TextWatcher() {
@@ -575,6 +591,7 @@ public class SearchPeopleFragment extends Fragment {
                     }
                     @Override
                     public void afterTextChanged(Editable editable) {
+                        medical_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
                     }
                 });
                 residency.addTextChangedListener(new TextWatcher() {
@@ -591,6 +608,7 @@ public class SearchPeopleFragment extends Fragment {
                     }
                     @Override
                     public void afterTextChanged(Editable editable) {
+                        residency_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
                     }
                 });
                 fellow.addTextChangedListener(new TextWatcher() {
@@ -607,6 +625,7 @@ public class SearchPeopleFragment extends Fragment {
                     }
                     @Override
                     public void afterTextChanged(Editable editable) {
+                        fellow_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input_arrow));
                     }
                 });
 

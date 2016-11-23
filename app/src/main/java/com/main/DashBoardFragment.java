@@ -46,6 +46,7 @@ import com.image.utils.ImageLoader;
 import com.util.PieChart;
 import com.util.SingleInstance;
 
+import org.lib.model.BuddyInformationBean;
 import org.lib.model.FileDetailsBean;
 
 import java.io.File;
@@ -1309,6 +1310,39 @@ public class DashBoardFragment extends Fragment {
                 }
             }
         }
+
+        Vector<BuddyInformationBean> buddylist=ContactsFragment.getBuddyList();
+        Vector<NotifyListBean> onlineStatus=(Vector<NotifyListBean>)tempnotifylist.clone();
+        for (NotifyListBean bean : onlineStatus) {
+            innerloop:
+            for(BuddyInformationBean buddyInformationBean:buddylist) {
+                if(bean.getNotifttype()!=null && bean.getNotifttype().equalsIgnoreCase("I")) {
+                    if (buddyInformationBean.getName() != null && bean.getFileid() != null &&
+                            buddyInformationBean.getName().equalsIgnoreCase(bean.getFileid())) {
+                        if (bean.getFileid() != null && bean.getFileid().contains("@")) {
+                            tempnotifylist.remove(bean);
+                            if (buddyInformationBean.getStatus() != null)
+                                bean.setSetStatus(buddyInformationBean.getStatus());
+                            tempnotifylist.add(bean);
+                        }
+                        break innerloop;
+                    }
+                }else if(bean.getNotifttype()!=null && bean.getNotifttype().equalsIgnoreCase("F")){
+                    if (buddyInformationBean.getName() != null && bean.getFrom() != null &&
+                            buddyInformationBean.getName().equalsIgnoreCase(bean.getFrom())) {
+                        tempnotifylist.remove(bean);
+                        if (buddyInformationBean.getStatus() != null)
+                            bean.setSetStatus(buddyInformationBean.getStatus());
+                        tempnotifylist.add(bean);
+                        break innerloop;
+                    }
+
+                }
+            }
+        }
+
+
+
         Collections.sort(tempnotifylist, new DateComparator());
         return tempnotifylist;
     }

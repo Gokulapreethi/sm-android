@@ -229,7 +229,7 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 				for(int i = 0, l = originalList.size(); i < l; i++)
 				{
 					GroupBean groupBean = originalList.get(i);
-					if(groupBean.getGroupName().toLowerCase().startsWith(String.valueOf(constraint)))
+					if(groupBean.getGroupName().toLowerCase().contains(String.valueOf(constraint)))
 						gBeans.add(groupBean);
 				}
 				result.count = gBeans.size();

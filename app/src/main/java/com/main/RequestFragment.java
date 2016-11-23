@@ -131,6 +131,10 @@ public class RequestFragment extends Fragment {
                 LinearLayout accept = (LinearLayout) _rootView.findViewById(R.id.accept);
                 final LinearLayout reject = (LinearLayout) _rootView.findViewById(R.id.reject);
                 TextView status = (TextView) _rootView.findViewById(R.id.status);
+                TextView sex=(TextView)_rootView.findViewById(R.id.sex);
+                TextView sextextview=(TextView)_rootView.findViewById(R.id.sextextview);
+                sextextview.setVisibility(View.GONE);
+                sex.setVisibility(View.GONE);
                 if(isAccept.equalsIgnoreCase("accept")) {
                     status.setText("invite received");
                     accept.setVisibility(View.VISIBLE);

@@ -11523,7 +11523,9 @@ public class DBAccess extends SQLiteOpenHelper {
 			Cursor cur = null;
 			if (!db.isOpen())
 				openDatabase();
-			String strGetQry = "select min(dateandtime) from chat where username='"
+//			String strGetQry = "select min(dateandtime) from chat where username='"
+//					+ CallDispatcher.LoginUser + "'";
+			String strGetQry = "select min(serverdateandtime) from chat where username='"
 					+ CallDispatcher.LoginUser + "'";
 			cur = db.rawQuery(strGetQry, null);
 			cur.moveToFirst();

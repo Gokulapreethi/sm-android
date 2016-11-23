@@ -80,7 +80,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="5dp"
-                android:background="#7E8080" />
+                android:background="#7E8080"
+                android:id="@+id/view_underusertype"/>
 
             <TextView
                 android:id="@+id/tv_fname"
@@ -406,6 +407,7 @@
                 android:gravity="left"
                 android:padding="7dp"
                 android:text="Sex"
+                android:id="@+id/textview_sex"
                 android:textColor="#808080"
                 android:textSize="15dp" />
 
@@ -445,7 +447,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="5dp"
-                android:background="#7E8080" />
+                android:background="#7E8080"
+                android:id="@+id/view_undersexfield"/>
             <TextView
                 android:id="@+id/tv_medical"
                 android:layout_width="wrap_content"

@@ -28,7 +28,6 @@
                 android:gravity="center"
                 android:textColor="@color/pink"
                 android:textSize="17sp"
-                android:visibility="invisible"
                 />
 
             <TextView

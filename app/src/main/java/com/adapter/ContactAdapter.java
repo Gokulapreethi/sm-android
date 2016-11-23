@@ -213,7 +213,11 @@ public class ContactAdapter extends ArrayAdapter<BuddyInformationBean> {
                                 if (SingleInstance.mainContext
                                         .isNetworkConnectionAvailable()) {
                                     RequestFragment requestFragment = RequestFragment.newInstance(SingleInstance.mainContext);
+									if(buddyInformationBean.getFirstname()!=null && buddyInformationBean.getLastname()!=null){
+									requestFragment.reject(buddyInformationBean.getFirstname()+" "+ buddyInformationBean.getLastname());
+									}else{
                                     requestFragment.reject(buddyInformationBean.getName());
+									}									
                                     requestFragment.setFrom(false);
                                 } else {
                                     ContactsFragment

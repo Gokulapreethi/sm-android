@@ -33,7 +33,7 @@
 
                     <ImageView
                         android:id="@+id/purchase_button"
-                        android:layout_width="wrap_content"
+                        android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:background="@drawable/img_print"
                         android:layout_gravity="center"
