@@ -49,6 +49,7 @@ import com.cg.snazmed.R;
 import com.group.AddGroupMembers;
 import com.group.chat.GroupChatActivity;
 import com.image.utils.ImageLoader;
+import com.main.AppMainActivity;
 import com.main.ContactsFragment;
 import com.util.SingleInstance;
 
@@ -123,6 +124,8 @@ public class PatientRoundingFragment extends Fragment {
     Dialog dialog1;
     public static String Patient_ActiveReportID;
     public static String PatientID_Active;
+    private boolean isMakeActiveClicked=false;
+    private ListView listview;
 
     public static PatientRoundingFragment newInstance(Context context) {
         try {
@@ -724,9 +727,9 @@ public class PatientRoundingFragment extends Fragment {
         Button cancel = (Button) dialog1.findViewById(R.id.cancel);
         TextView header_name = (TextView) dialog1.findViewById(R.id.header_title);
         header_name.setText(title);
-        ListView listview = (ListView) dialog1.findViewById(R.id.listview);
-        String strGetQry = "select * from seeallpatientdetails where groupid='"
-                + pBean.getGroupid() + "'and patientid='" + pBean.getPatientid() + "' ORDER BY active DESC";
+         listview = (ListView) dialog1.findViewById(R.id.listview);
+        String strGetQry = "select * from patientdescription where groupid='"
+                + pBean.getGroupid() + "'and patientid='" + pBean.getPatientid() + "'and diagnosis!='"+""+"' ORDER BY modifieddate DESC";
         isfromedit_diagnosis = true;
         Vector<PatientDescriptionBean> comments = DBAccess.getdbHeler().getseallcomments(strGetQry);
         Log.d("listvalues", "string" + comments.size());
@@ -742,6 +745,22 @@ public class PatientRoundingFragment extends Fragment {
 
     }
 
+    public void refreshSeeAllAdapter() {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                String strGetQry = "select * from patientdescription where groupid='"
+                        + pBean.getGroupid() + "'and patientid='" + pBean.getPatientid() + "'and diagnosis!='"+" "+"' ORDER BY modifieddate DESC";
+                isfromedit_diagnosis = true;
+                Vector<PatientDescriptionBean> comments = DBAccess.getdbHeler().getseallcomments(strGetQry);
+                Log.d("listvalues", "string" + comments.size());
+                seealladapter = new Seealladapter(mainContext, R.layout.seeall_row, comments);
+                listview.setAdapter(seealladapter);
+                seealladapter.notifyDataSetChanged();
+
+            }
+        });
+    }
     private void editDiagnosisDescription(String editingContent, String edittitle, final String edithint) {
         final Dialog dialog1 = new Dialog(mainContext);
         dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -763,8 +782,8 @@ public class PatientRoundingFragment extends Fragment {
             newDescription.setHint(edithint);
         }
         isfromedit_diagnosis = false;
-        String strGetQry = "select * from seeallpatientdetails where groupid='"
-                + pBean.getGroupid() + "'and patientid='" + pBean.getPatientid() + "' ORDER BY active DESC";
+        String strGetQry = "select * from patientdescription where groupid='"
+                + pBean.getGroupid() + "'and patientid='" + pBean.getPatientid() + "'and diagnosis!='"+" "+"'ORDER BY modifieddate DESC";
 
         Vector<PatientDescriptionBean> comments = DBAccess.getdbHeler().getseallcomments(strGetQry);
         Log.d("listvalues", "string" + comments.size());
@@ -795,32 +814,32 @@ public class PatientRoundingFragment extends Fragment {
                 Log.i("SSS", "content copied" + pastingContentCopy);
                 pcBean.setPatientid(pBean.getPatientid());
                 pcBean.setGroupid(gBean.getGroupId());
-                if (reportid != null)
-                    pcBean.setReportid(reportid);
+//                if (reportid != null)
+//                    pcBean.setReportid(reportid);
                 pcBean.setReportcreator(CallDispatcher.LoginUser);
 
                 if (editTag == 0) {
-                    if(pastingContentCopy!=null)
-                    pcBean.setDiagnosis(pastingContentCopy);
+                    if (pastingContentCopy != null)
+                        pcBean.setDiagnosis(pastingContentCopy);
                     diagnosis.setText(pastingContentCopy);
                 } else if (editTag == 1) {
-                    if(pastingContentCopy!=null)
+                    if (pastingContentCopy != null)
                         pcBean.setMedications(pastingContentCopy);
                     medications.setText(pastingContentCopy);
                 } else if (editTag == 2) {
-                    if(pastingContentCopy!=null)
+                    if (pastingContentCopy != null)
                         pcBean.setTestandvitals(pastingContentCopy);
                     testandvitals.setText(pastingContentCopy);
                 } else if (editTag == 3) {
-                    if(pastingContentCopy!=null)
+                    if (pastingContentCopy != null)
                         pcBean.setHospitalcourse(pastingContentCopy);
                     hospital.setText(pastingContentCopy);
                 } else if (editTag == 4) {
-                    if(pastingContentCopy!=null)
+                    if (pastingContentCopy != null)
                         pcBean.setConsults(pastingContentCopy);
                     consults.setText(pastingContentCopy);
                 } else {
-                    if(pastingContentCopy!=null)
+                    if (pastingContentCopy != null)
                         pcBean.setCurrentstatus(pastingContentCopy);
 //                    currentstatus.setText(pastingContentCopy);
                     if (pastingContentCopy.length() > 0) {
@@ -868,12 +887,14 @@ public class PatientRoundingFragment extends Fragment {
                         }
                     }
                 }
+                deleteExisting_content();
                 showprogress();
-                Log.i("BBB","call webservice from edit_done");
+                Log.i("BBB", "call webservice from edit_done");
+                pcBean.setReportid("");
                 WebServiceReferences.webServiceClient.SetPatientDescription(pcBean, patientRoundingFragment);
                 pcBean.setDate(getCurrentDateandTime());
-                if (edithint.equalsIgnoreCase("diagnosis"))
-                    DBAccess.getdbHeler().insertseallcomments(pcBean);
+//                if (edithint.equalsIgnoreCase("diagnosis"))
+//                    DBAccess.getdbHeler().insertseallcomments(pcBean);
                 dialog1.dismiss();
             }
         });
@@ -885,6 +906,20 @@ public class PatientRoundingFragment extends Fragment {
         });
     }
 
+    private void deleteExisting_content() {
+        if (editTag != 0)
+            pcBean.setDiagnosis("");
+        if (editTag != 1)
+            pcBean.setMedications("");
+        if (editTag != 2)
+            pcBean.setTestandvitals("");
+        if (editTag != 3)
+            pcBean.setHospitalcourse("");
+        if (editTag != 4)
+            pcBean.setConsults("");
+        if (editTag != 5)
+            pcBean.setCurrentstatus("");
+    }
     private void taskProcess() {
         final LinearLayout content = (LinearLayout) _rootView.findViewById(R.id.content);
         content.removeAllViews();
@@ -937,7 +972,7 @@ public class PatientRoundingFragment extends Fragment {
                 TaskDetailsBean tBean = (TaskDetailsBean) taskAdapter.getItem(i);
                 if (gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
                         tBean.getTaskstatus().equalsIgnoreCase("0") && (roleAccessBean.getTaskmanagement() != null && roleAccessBean.getTaskmanagement().equalsIgnoreCase("1"))) {
-                    Log.i("ppp", "roleAccess of the task_member" +roleAccessBean.getTaskmanagement());
+                    Log.i("ppp", "roleAccess of the task_member" + roleAccessBean.getTaskmanagement());
                     Intent intent = new Intent(SingleInstance.mainContext, TaskCreationActivity.class);
                     intent.putExtra("groupid", tBean.getGroupid());
                     intent.putExtra("taskid", tBean.getTaskId());
@@ -1030,9 +1065,10 @@ public class PatientRoundingFragment extends Fragment {
                 }
             }
         });
-        if(pBean.getPatientid()!=null)
-        pDescBean = DBAccess.getdbHeler().getPatientDescriptionDetails(pBean.getPatientid(),Patient_ActiveReportID);
-               Log.i("BBB","getPatientDesc from DB ==>Active ReportID###=====>"+Patient_ActiveReportID+" patientid###==>"+pBean.getPatientid());
+//        if (pBean.getPatientid() != null)
+//            pDescBean = DBAccess.getdbHeler().getPatientDescriptionDetails(pBean.getPatientid());
+        pDescBean=getLatestDescr_patient();
+        Log.i("BBB", "getPatientDesc from DB ==>Active ReportID###=====>" + Patient_ActiveReportID + " patientid###==>" + pBean.getPatientid());
         if (pDescBean != null) {
             reportid = pDescBean.getReportid();
             if (pDescBean.getCurrentstatus() != null) {
@@ -1077,8 +1113,8 @@ public class PatientRoundingFragment extends Fragment {
                     }
                 }
             }
-            Log.i("BBB","*******desc diag==>"+pDescBean.getDiagnosis()+" medi***==>"+pDescBean.getMedications()+"test***==>"+pDescBean.getTestandvitals()+"hosp***==> "+pDescBean.getHospitalcourse()
-                    +"cosult***"+pDescBean.getConsults());
+            Log.i("BBB", "*******desc diag==>" + pDescBean.getDiagnosis() + " medi***==>" + pDescBean.getMedications() + "test***==>" + pDescBean.getTestandvitals() + "hosp***==> " + pDescBean.getHospitalcourse()
+                    + "cosult***" + pDescBean.getConsults());
             if (pDescBean.getDiagnosis() != null)
                 diagnosis.setText(pDescBean.getDiagnosis());
             if (pDescBean.getMedications() != null)
@@ -1162,8 +1198,8 @@ public class PatientRoundingFragment extends Fragment {
                             String currentstatus = "";
                             pcBean.setPatientid(pBean.getPatientid());
                             pcBean.setGroupid(gBean.getGroupId());
-                            if (reportid != null)
-                                pcBean.setReportid(reportid);
+//                            if (reportid != null)
+//                                pcBean.setReportid(reportid);
                             pcBean.setReportcreator(CallDispatcher.LoginUser);
                             if (pDescBean.getCurrentstatus() != null)
                                 currentstatus = pDescBean.getCurrentstatus();
@@ -1171,8 +1207,8 @@ public class PatientRoundingFragment extends Fragment {
 //                            if (currentstatus.contains(status[0])) {
 //                                status[0] = "";
 //                            } else {
-                                pcBean.setCurrentstatus(currentstatus + " " + status[0]);
-                                pDescBean.setCurrentstatus(currentstatus + " " + status[0]);
+                                pcBean.setCurrentstatus(status[0]);
+                                pDescBean.setCurrentstatus(status[0]);
 
                                 if (currentstatus != null) {
                                     String[] split = pcBean.getCurrentstatus().split(" ");
@@ -1218,7 +1254,12 @@ public class PatientRoundingFragment extends Fragment {
                                 }
 //                            }
                                 Log.i("BBB", "call webservice from status_click");
-
+                                pcBean.setReportid("");
+                                pcBean.setDiagnosis("");
+                                pcBean.setMedications("");
+                                pcBean.setTestandvitals("");
+                                pcBean.setHospitalcourse("");
+                                pcBean.setConsults("");
                                 WebServiceReferences.webServiceClient.SetPatientDescription(pcBean, patientRoundingFragment);
                             }
                         }
@@ -1404,15 +1445,100 @@ public class PatientRoundingFragment extends Fragment {
         }
     }
 
+    public PatientDescriptionBean getLatestDescr_patient() {
+        PatientDescriptionBean pDescrBean=DBAccess.getdbHeler().getPatientDescriptionDetails(pBean.getPatientid());
+        strQuery = "select currentstatus from patientdescription where patientid='"+ pBean.getPatientid()  + "'and currentstatus!='" + "" + "'";
+        ArrayList<String> status_List=DBAccess.getdbHeler().getDesc_patient_status(strQuery);
+        Log.i("string","status of the patient ***************"+status_List.size());
+        StringBuffer Status_total = new StringBuffer();
+        if(status_List.size() > 0){
+            Status_total.append(status_List.get(0));
+            for(int i=1; i < status_List.size(); i++)
+                Status_total.append(" ").append(status_List.get(i));
+        }
+        if(status_List!=null && status_List.size()>0)
+        {
+            pDescrBean.setCurrentstatus(Status_total.toString());
+            DBAccess.getdbHeler().UpdatePatientStatus(Status_total.toString(),"patientid='" + pcBean.getPatientid() + "' and groupid='" + pcBean.getGroupid() + "'");
+        }
+        Log.i("string","current status*************"+ pDescrBean.getCurrentstatus());
+
+        strQuery = "select medications from patientdescription where patientid='"+ pBean.getPatientid()  + "'and medications!='" + "" + "'";
+        ArrayList<String> medi_List=DBAccess.getdbHeler().getDesc_patient_medication(strQuery);
+        Log.i("string","Medi of the patient ***************"+medi_List);
+        if(medi_List!=null && medi_List.size()>0)
+        {
+            if(medi_List.size()==1)
+                pDescrBean.setMedications(medi_List.get(0));
+            else
+                pDescrBean.setMedications(medi_List.get(medi_List.size()-1));
+        }
+        Log.i("string","current Medi*************"+pDescrBean.getMedications());
+
+        strQuery = "select diagnosis from patientdescription where patientid='"+ pBean.getPatientid()  + "'and diagnosis!='" + "" + "' ORDER BY modifieddate DESC";
+        ArrayList<String> diag_List=DBAccess.getdbHeler().getDesc_patient_diagnosis(strQuery);
+        Log.i("string","diagnosis of the patient ***************"+diag_List);
+        if(diag_List!=null && diag_List.size()>0)
+        {
+            pDescrBean.setDiagnosis(diag_List.get(0));
+        }
+        Log.i("string","current diagnosis*************"+pDescrBean.getDiagnosis());
+
+        strQuery = "select testandvitals from patientdescription where patientid='"+ pBean.getPatientid()  + "'and testandvitals!='" + "" + "'";
+        ArrayList<String> testvital_List=DBAccess.getdbHeler().getDesc_patient_testvital(strQuery);
+        Log.i("string","testandvitals of the patient ***************"+testvital_List);
+        if(testvital_List!=null && testvital_List.size()>0)
+        {
+            if(testvital_List.size()==1)
+                pDescrBean.setTestandvitals(testvital_List.get(0));
+            else
+                pDescrBean.setTestandvitals(testvital_List.get(testvital_List.size()-1));
+        }
+        Log.i("string","current testandvitals*************"+ pDescrBean.getTestandvitals());
+
+        strQuery = "select hospitalcourse from patientdescription where patientid='"+ pBean.getPatientid()  + "'and hospitalcourse!='" + "" + "'";
+        ArrayList<String> hospital_List=DBAccess.getdbHeler().getDesc_patient_hospital(strQuery);
+        Log.i("string","hospitalcourse of the patient ***************"+hospital_List);
+        if(hospital_List!=null && hospital_List.size()>0)
+        {
+            if(hospital_List.size()==1)
+                pDescrBean.setHospitalcourse(hospital_List.get(0));
+            else
+                pDescrBean.setHospitalcourse(hospital_List.get(hospital_List.size()-1));
+        }
+        Log.i("string","current hospitalcourse*************"+pDescrBean.getHospitalcourse());
+
+        strQuery = "select consults from patientdescription where patientid='"+ pBean.getPatientid()  + "'and consults!='" + "" + "'";
+        ArrayList<String> consults_List=DBAccess.getdbHeler().getDesc_patient_consults(strQuery);
+        Log.i("string","consults of the patient ***************"+consults_List);
+        if(consults_List!=null && consults_List.size()>0)
+        {
+            if(consults_List.size()==1)
+                pDescrBean.setConsults(consults_List.get(0));
+            else
+                pDescrBean.setConsults(consults_List.get(consults_List.size()-1));
+        }
+        Log.i("string","current consults*************"+ pDescrBean.getConsults());
+        return pDescrBean;
+    }
+
     public void notifySetPatientDescription(Object obj) {
         cancelDialog();
         if (obj instanceof String[]) {
             String[] result = (String[]) obj;
             pcBean.setPatientid(result[0]);
             pcBean.setReportid(result[1]);
-            Log.i("BBB","insertorUpdate desc patientID "+result[0]);
+            pcBean.setCreateddate(result[3]);
+            pcBean.setModifieddate(result[4]);
+            Log.i("BBB", "notify setpatientdesc create and modify date___--- " + result[3]+ "modify000000"+result[4]);
+            if(isMakeActiveClicked) {
+                refreshSeeAllAdapter();
+                DBAccess.getdbHeler().updateActiveDescription(pcBean, "patientid='" + pcBean.getPatientid() + "' and reportid='" + pcBean.getReportid() + "'");
+                Log.i("rose", "******notify setpatientdesc from make active)******************");
+            }
+            else
             DBAccess.getdbHeler().insertorUpdatePatientDescriptions(pcBean);
-            DBAccess.getdbHeler().updateseallcomments(pcBean.getDiagnosis(), pcBean.getDate(), pcBean.getPatientid());
+//            DBAccess.getdbHeler().updateseallcomments(pcBean.getDiagnosis(), pcBean.getDate(), pcBean.getPatientid());
         }
     }
 
@@ -2009,7 +2135,7 @@ public class PatientRoundingFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d("ppp", "The onResume() event");
-        Log.i("BBB","call webservice getpatientdesc from rounding_patient refresh");
+        Log.i("BBB", "call webservice getpatientdesc from rounding_patient refresh");
 
         WebServiceReferences.webServiceClient.GetPatientDescription(pBean.getPatientid(), "", SingleInstance.mainContext);
 
@@ -2078,9 +2204,11 @@ public class PatientRoundingFragment extends Fragment {
         AlertDialog alert1 = builder.create();
         alert1.show();
     }
+
     public static boolean useList(String[] arr, String targetValue) {
         return Arrays.asList(arr).contains(targetValue);
     }
+
     @SuppressWarnings("unchecked")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -2096,25 +2224,24 @@ public class PatientRoundingFragment extends Fragment {
                             .get("list");
                     String addedMembers = "";
                     for (UserBean temp : list) {
-                        if(temp.getBuddyName()!=null)
-                            if(addedMembers!=null && addedMembers.length()>0)
-                                addedMembers = addedMembers +","+ temp.getBuddyName();
-                        else
-                                addedMembers=temp.getBuddyName();
+                        if (temp.getBuddyName() != null)
+                            if (addedMembers != null && addedMembers.length() > 0)
+                                addedMembers = addedMembers + "," + temp.getBuddyName();
+                            else
+                                addedMembers = temp.getBuddyName();
                     }
-                    Log.i("ppp", "***assign Members patient--------->"+pBean.getAssignedmembers());
+                    Log.i("ppp", "***assign Members patient--------->" + pBean.getAssignedmembers());
                     String[] member_split = addedMembers.split(",");
                     String[] addedMember_split = pBean.getAssignedmembers().split(",");
-                    for(int i=0;i<member_split.length;i++) {
+                    for (int i = 0; i < member_split.length; i++) {
                         if (!useList(addedMember_split, member_split[i])) {
                             if (pBean.getAssignedmembers() != null && pBean.getAssignedmembers().length() > 0)
 
                                 pBean.setAssignedmembers(pBean.getAssignedmembers() + "," + member_split[i]);
                             else
                                 pBean.setAssignedmembers(member_split[i]);
-                        }else
+                        } else
                             Log.i("AAAA", "Assigned Member Duplication true=======>");
-
                     }
                     WebServiceReferences.webServiceClient.SetPatientRecord(pBean, mainContext);
                     DBAccess.getdbHeler().insertorUpdatePatientDetails(pBean);
@@ -2192,16 +2319,19 @@ public class PatientRoundingFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Log.d("updateseeall", "clickevent1");
-                        DBAccess.getdbHeler().updateseallcomments(pBean.getDiagnosis(), pBean.getDate(), pBean.getPatientid());
+                        isMakeActiveClicked=true;
+//                        DBAccess.getdbHeler().updateseallcomments(pBean.getDiagnosis(), pBean.getDate(), pBean.getPatientid());
                         Log.d("updateseeall", "clickevent" + pBean.getDiagnosis() + pBean.getDate() + pBean.getPatientid());
                         showprogress();
-                        Log.i("BBB","call webservice from active_click---------" +
-                                "--->"+pcBean.getReportid());
+                        Log.i("BBB", "-----------------------------------------------------");
+                        Log.i("BBB", "active_click---------" + "--->" + pBean.getReportid());
+                        Log.i("BBB", "-----------------------------------------------------");
+
+//                        pBean.setReportid(pcBean.getReportid());
+                        WebServiceReferences.webServiceClient.SetPatientDescription(pBean, patientRoundingFragment);
                         diagnosis.setText(pBean.getDiagnosis());
                         pcBean.setDate(pBean.getDate());
                         pcBean.setDiagnosis(pBean.getDiagnosis());
-                        pcBean.setActiveID(pBean.getActiveID());
-                        WebServiceReferences.webServiceClient.SetPatientDescription(pBean, patientRoundingFragment);
                         dialog1.dismiss();
                     }
                 });

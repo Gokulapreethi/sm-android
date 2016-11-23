@@ -69,6 +69,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -140,6 +141,11 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
     boolean isatoz=true;
     private HashMap<String,Object> current_open_activity_detail = new HashMap<String,Object>();
     private boolean save_state = false;
+    private boolean isNew_member=false;
+    public static String SelectedBuddiesToDelete="";
+
+    public RoundingGroupActivity() {
+    }
 
     public boolean isNew_member() {
         return isNew_member;
@@ -149,7 +155,6 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
         isNew_member = new_member;
     }
 
-    private boolean isNew_member=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -351,6 +356,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
             member_lay.setVisibility(View.VISIBLE);
             member_lay1.setVisibility(View.VISIBLE);
             edit_pic.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_edit_photo));
+            Log.i("string","from roundingEdit------------");
             refreshMembersList();
             if (groupBean != null) {Log.d("Test",
                     "$$$$$GroupCreatedDate@@@@@ " + groupBean.getCreatedDate());
@@ -442,7 +448,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                             UserBean userBean = new UserBean();
                             ProfileBean pbean=DBAccess.getdbHeler().getProfileDetails(tmp);
                             if(pbean!=null)
-                                if(pbean.getTitle()!=null &&pbean.getTitle().equalsIgnoreCase("Dr.") || pbean.getTitle().equalsIgnoreCase("Prof."))
+                                if(pbean.getTitle()!=null && pbean.getTitle().equalsIgnoreCase("Dr.") || pbean.getTitle().equalsIgnoreCase("Prof."))
                                     userBean.setFirstname(pbean.getTitle() +pbean.getFirstname());
                                 else
                                     userBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
@@ -707,6 +713,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                     if (data != null) {
                         isModify = true;
                     }
+                    Log.i("string","from rounding OnActResult 3------------");
                     refreshMembersList();
                 }
             } else if ((requestCode == 8) && (resultCode == -1)) {
@@ -737,6 +744,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                         }
 
                     }
+                    Log.i("string","from rounding OnActResult 1 0r 8------------");
                     refreshMembersList();
                 }
 
@@ -941,6 +949,9 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                     if (deleteMembers.length() > 0)
                         groupBean.setDeleteGroupMembers(deleteMembers
                                 .substring(0, deleteMembers.length() - 1));
+                    SelectedBuddiesToDelete=isExist_AddedList(addMembers,SelectedBuddiesToDelete);
+                    if (SelectedBuddiesToDelete!=null && SelectedBuddiesToDelete.length() > 0 )
+                        groupBean.setDeleteGroupMembers(SelectedBuddiesToDelete);
                 } else if (membersAcceptedList.size() != 0 && isduplicate) {
                     String delete_Member = "";
                     String addExistingMembers = "";
@@ -983,6 +994,23 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
         RoundingList=getGroupList(RoundingList);
         return RoundingList;
 
+    }
+    public static boolean IsExistList(String[] arr, String targetValue) {
+        return Arrays.asList(arr).contains(targetValue);
+    }
+    private String isExist_AddedList(String add,String delete)
+    {
+        String[] MemberToadd = add.split(",");
+        String[] MemberTodelete = delete.split(",");
+        String unique_buddiesDelete="";
+        for(int i=0;i<MemberTodelete.length;i++) {
+            if (!IsExistList(MemberToadd, MemberTodelete[i])) {
+                unique_buddiesDelete=MemberTodelete[i];
+            }else
+                Log.i("AAAA", "Member Duplication true=======>");
+
+        }
+        return unique_buddiesDelete;
     }
     public static Vector<GroupBean> loadNewGroupsFromDB() {
         try {
@@ -1275,6 +1303,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
         TextView rights,role;
     }
     public void notifyCreateRoundingGroup(Object obj) {
+        SelectedBuddiesToDelete="";
         if (obj instanceof GroupBean) {
             isEdit = true;
             final GroupBean groupBean = (GroupBean) obj;
@@ -1345,6 +1374,8 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                     }
                 }
                 callDisp.getdbHeler(context).insertorUpdateGroupMembers(groupBean);
+                Log.i("string","from rounding notifycreateRoundgroup-----------");
+
                 refreshMembersList();
                 handler.post(new Runnable() {
 

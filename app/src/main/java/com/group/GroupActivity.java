@@ -145,6 +145,16 @@ public class GroupActivity extends Activity implements OnClickListener {
 
 	private boolean editgroup;
 
+    public boolean isFromGroupCreation() {
+        return isFromGroupCreation;
+    }
+
+    public void setFromGroupCreation(boolean fromGroupCreation) {
+        isFromGroupCreation = fromGroupCreation;
+    }
+
+    private boolean isFromGroupCreation=false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -549,6 +559,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 				intent.putStringArrayListExtra("buddylist", buddylist);
 				intent.putExtra("fromcall", false);
 				intent.putExtra("groupid",groupid);
+				intent.putExtra("fromContact",true);
 				startActivityForResult(intent, 3);
 			}
 		});
@@ -1241,7 +1252,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 		}
 	}
 	
-	private void refreshMembersList() {
+	public void refreshMembersList() {
 		handler.post(new Runnable() {
 
 			@Override
@@ -1256,6 +1267,7 @@ public class GroupActivity extends Activity implements OnClickListener {
 				memberAcceptedCount.setText(" ("
 						+ String.valueOf(membersAcceptedList.size()) + ")");
 				lv_buddylist.removeAllViews();
+                setFromGroupCreation(true);
 				adapter = new BuddyAdapter(GroupActivity.this, membersList);
 				final int adapterCount = adapter.getCount();
 

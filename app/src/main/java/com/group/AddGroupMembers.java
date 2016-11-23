@@ -68,7 +68,7 @@ public class AddGroupMembers extends Activity {
     private TextView text_memeberscount;
 
     Vector<UserBean> contactList = new Vector<UserBean>();
-    Boolean fromCall, fromRounding, frompatientfragment;
+    Boolean fromCall, fromRounding, frompatientfragment,isfromContact;
     String groupid, calltype;
 
     @Override
@@ -91,6 +91,7 @@ public class AddGroupMembers extends Activity {
             fromCall = getIntent().getBooleanExtra("fromcall", false);
             frompatientfragment = getIntent().getBooleanExtra("frompatientfragment", false);
             groupid = getIntent().getStringExtra("groupid");
+            isfromContact = getIntent().getBooleanExtra("fromContact",false);
             back = (Button) findViewById(R.id.btn_backaddcontact);
             search = (Button) findViewById(R.id.search);
             done = (Button) findViewById(R.id.btn_done);

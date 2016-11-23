@@ -94,10 +94,10 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 		try {
 			ViewHolder holder;
 
-			holder = new ViewHolder();
 			if(convertView == null) {
 				inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				convertView = inflater.inflate(R.layout.find_people_item, null);
+				holder = new ViewHolder();
 				holder.selectUser = (CheckBox) convertView.findViewById(R.id.sel_buddy);
 				holder.buddyicon = (ImageView) convertView.findViewById(R.id.buddyicon);
 				holder.statusIcon = (ImageView) convertView.findViewById(R.id.statusIcon);
@@ -226,62 +226,88 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 					.get("roundingGroup");
 			boolean isMemberAdded=false;
 			if(roundingGroup!=null) {
-				 isMemberAdded = roundingGroup.isNew_member();
+                Log.i("string","isMembberAdded------------"+roundingGroup.isNew_member());
+                isMemberAdded = roundingGroup.isNew_member();
 			}
-			if(isMemberAdded && holder.cancel_lay.getVisibility()!=View.VISIBLE)
+            GroupActivity groupAct = (GroupActivity) SingleInstance.contextTable
+                    .get("groupActivity");
+           boolean fromContacts=false;
+            if(groupAct!=null)
+                fromContacts=groupAct.isFromGroupCreation();
+
+			if((isMemberAdded==true ||
+                    (addGroupMembers!=null && addGroupMembers.isfromContact!=null && addGroupMembers.isfromContact ||fromContacts )) && holder.cancel_lay.getVisibility()!=View.VISIBLE)
 				holder.delete_mark.setVisibility(View.VISIBLE);
 			holder.delete_mark.setTag(position);
-			holder.delete_mark.setOnClickListener(new View.OnClickListener() {
+            final boolean finalFromContacts = fromContacts;
+            holder.delete_mark.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
-					Log.i("BBB", "********BuddyAdapter-------" + finalBuddy_name);
 					RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable
 							.get("roundingGroup");
 					if (roundingGroup != null) {
 						roundingGroup.membersList.remove(userBean);
 						roundingGroup.refreshMembersList();
 					}
-				}
-			});
-			holder.cancel_lay.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					Log.i("AAAA", "group invite delete**********-----");
+                    GroupActivity groupActivity = (GroupActivity) SingleInstance.contextTable
+                            .get("groupActivity");
+                    if (addGroupMembers != null && addGroupMembers.isfromContact) {
+                        if (groupActivity != null) {
+                            groupActivity.membersList.remove(userBean);
+                            groupActivity.refreshMembersList();
+                        }
+                    }else if(finalFromContacts)
+                    {
+                        if (groupActivity != null) {
+                            groupActivity.membersList.remove(userBean);
+                            groupActivity.refreshMembersList();
+                        }
+                    }
+                }
+            });
+            holder.cancel_lay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.i("AAAA", "group invite delete**********-----");
+                    RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable
+                            .get("roundingGroup");
+                    if (userList.size() > 1) {
+                        if (userBean.getGroupid() != null) {
+                            GroupBean gBean = DBAccess.getdbHeler().getGroupAndMembers(
+                                    "select * from groupdetails where groupid=" + userBean.getGroupid());
+                            gBean.setDeleteGroupMembers(userBean.getBuddyName());
+                            gBean.setGroupName(userBean.getGroupname());
+                            if (roundingGroup.SelectedBuddiesToDelete != null && roundingGroup.SelectedBuddiesToDelete.length() > 0)
+                                roundingGroup.SelectedBuddiesToDelete = roundingGroup.SelectedBuddiesToDelete + "," + userBean.getBuddyName();
+                            else
+                                roundingGroup.SelectedBuddiesToDelete = userBean.getBuddyName();
+                            Log.i("string", "from buddy adapter deletebuddies-----------" + roundingGroup.SelectedBuddiesToDelete);
+                            if (gBean.getGrouptype() != null) {
+                                if (gBean.getGrouptype().equalsIgnoreCase("Rounding")) {
+                                    if (roundingGroup != null)
+                                        roundingGroup.membersList.remove(userBean);
+                                    roundingGroup.refreshMembersList();
+//										roundingGroup.showprogress();
+//									WebServiceReferences.webServiceClient.createRoundingGroup(gBean, roundingGroup);
+                                }
+                            } else {
+                                if (roundingGroup != null) {
+                                    roundingGroup.membersList.remove(userBean);
+                                    roundingGroup.refreshMembersList();
+                                } else {
+                                    GroupActivity groupActivity = (GroupActivity) SingleInstance.contextTable
+                                            .get("groupActivity");
+                                    if (groupActivity != null)
+                                        groupActivity.showprogress();
+                                    WebServiceReferences.webServiceClient.createGroup(gBean, groupActivity);
+                                }
 
-					if (userList.size() > 1) {
-						if (userBean.getGroupid() != null) {
-							GroupBean gBean = DBAccess.getdbHeler().getGroupAndMembers(
-									"select * from groupdetails where groupid=" + userBean.getGroupid());
-							gBean.setDeleteGroupMembers(userBean.getBuddyName());
-							gBean.setGroupName(userBean.getGroupname());
-							if (gBean.getGrouptype() != null) {
-								if (gBean.getGrouptype().equalsIgnoreCase("Rounding")) {
-									RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable
-											.get("roundingGroup");
-									if (roundingGroup != null)
-										roundingGroup.showprogress();
-									WebServiceReferences.webServiceClient.createRoundingGroup(gBean, roundingGroup);
-								}
-							} else {
-								RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable
-										.get("roundingGroup");
-								if (roundingGroup != null) {
-									roundingGroup.membersList.remove(userBean);
-									roundingGroup.refreshMembersList();
-								} else {
-									GroupActivity groupActivity = (GroupActivity) SingleInstance.contextTable
-											.get("groupActivity");
-									if (groupActivity != null)
-										groupActivity.showprogress();
-									WebServiceReferences.webServiceClient.createGroup(gBean, groupActivity);
-								}
-
-							}
-						}
-					}else
-						Toast.makeText(context, "Minimum two members is needed to be in the group...", Toast.LENGTH_SHORT).show();
-				}
-			});
+                            }
+                        }
+                    } else
+                        Toast.makeText(context, "Minimum two members is needed to be in the group...", Toast.LENGTH_SHORT).show();
+                }
+            });
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

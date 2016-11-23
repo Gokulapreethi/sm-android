@@ -18,17 +18,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cg.DB.DBAccess;
 import com.cg.snazmed.R;
 import com.cg.commonclass.CallDispatcher;
 import com.cg.hostedconf.AppReference;
+import com.group.chat.GroupChatActivity;
 import com.image.utils.FileImageLoader;
 import com.main.FilesFragment;
 import com.util.SingleInstance;
@@ -105,6 +108,7 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
                 holder.fileName = (TextView) convertView.findViewById(R.id.file_name);
                 holder.fileName.setTypeface(tf_regular);
                 holder.ttlText = (TextView) convertView.findViewById(R.id.ttl_text);
+                holder.date_modified = (TextView) convertView.findViewById(R.id.date_modified);
                 holder.checkbox = (CheckBox) convertView.findViewById(R.id.file_check);
                 holder.dateTime = (TextView) convertView.findViewById(R.id.date_time);
                 holder.fileIcon = (ImageView) convertView.findViewById(R.id.file_icon);
@@ -114,6 +118,7 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
                 holder.type = (TextView) convertView.findViewById(R.id.type);
                 holder.size = (TextView) convertView.findViewById(R.id.size);
                 holder.header = (TextView) convertView.findViewById(R.id.header_title);
+                holder.sie_type_layout = (LinearLayout) convertView.findViewById(R.id.size_type);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -276,6 +281,16 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
             }
 
             holder.fileName.setText(filename);
+            final GroupChatActivity gChat = (GroupChatActivity) SingleInstance.contextTable
+                    .get("groupchat");
+            if(gChat!=null)
+            {
+                if(gChat.isFromChat)
+                {
+                    holder.date_modified.setText("Latest Update");
+                    holder.sie_type_layout.setVisibility(convertView.GONE);
+                }
+            }
             String Imagepath = Environment
                     .getExternalStorageDirectory()
                     + "/COMMedia/";
@@ -375,7 +390,8 @@ public class FilesAdapter extends ArrayAdapter<CompleteListBean> {
         ImageView unreadIcon;
         TextView from_user;
         TextView type;
-        TextView size, header;
+        TextView size, header,date_modified;
+        LinearLayout sie_type_layout;
     }
 
 

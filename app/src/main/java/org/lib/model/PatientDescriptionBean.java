@@ -13,6 +13,25 @@ public class PatientDescriptionBean {
     private String consults="";
     private String reportmodifier;
     private String groupid;
+    private String createddate;
+
+    public String getCreateddate() {
+        return createddate;
+    }
+
+    public void setCreateddate(String createddate) {
+        this.createddate = createddate;
+    }
+
+    public String getModifieddate() {
+        return modifieddate;
+    }
+
+    public void setModifieddate(String modifieddate) {
+        this.modifieddate = modifieddate;
+    }
+
+    private String modifieddate;
 
     public String getActiveID() {
         return activeID;

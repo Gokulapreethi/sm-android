@@ -3245,6 +3245,10 @@ public class XmlParser {
 					temp[2] = nodeMap.getNamedItem("reportid").getNodeValue();
 				PatientRoundingFragment.Patient_ActiveReportID=temp[2];
 				PatientRoundingFragment.PatientID_Active=temp[1];
+				AppMainActivity appMainActivity = (AppMainActivity) SingleInstance.contextTable
+						.get("MAIN");
+				appMainActivity.isDiagnosisFrombuddy=true;
+				Log.i("rose","xml parser patientdesc isDiagnosisFrombuddy=====>"+appMainActivity.isDiagnosisFrombuddy);
 				WebServiceReferences.webServiceClient.GetPatientDescription(temp[1], temp[2], SingleInstance.mainContext);
 			}
 			list = doc.getElementsByTagName("MemberRights");
@@ -7645,7 +7649,7 @@ public class XmlParser {
 
 	public String[] parseSetPatientDescription(String xml) {
 		String[] result = null;
-		result=new String[3];
+		result=new String[5];
 		try {
 			dbf = DocumentBuilderFactory.newInstance();
 			db = dbf.newDocumentBuilder();
@@ -7665,6 +7669,12 @@ public class XmlParser {
 			}
 			if (nodeMap.getNamedItem("creatorname") != null) {
 				result[2] = nodeMap.getNamedItem("creatorname").getNodeValue();
+			}
+			if (nodeMap.getNamedItem("createdtime") != null) {
+				result[3] = nodeMap.getNamedItem("createdtime").getNodeValue();
+			}
+			if (nodeMap.getNamedItem("modifiedtime") != null) {
+				result[4] = nodeMap.getNamedItem("modifiedtime").getNodeValue();
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -7949,6 +7959,12 @@ public class XmlParser {
 							.getNodeValue());
 				if (nodeMap.getNamedItem("consults") != null)
 					bean.setConsults(nodeMap.getNamedItem("consults")
+							.getNodeValue());
+                if (nodeMap.getNamedItem("createdtime") != null)
+					bean.setCreateddate(nodeMap.getNamedItem("createdtime")
+							.getNodeValue());
+                if (nodeMap.getNamedItem("modifiedtime") != null)
+					bean.setModifieddate(nodeMap.getNamedItem("modifiedtime")
 							.getNodeValue());
 				response_list.add(bean);
 			}

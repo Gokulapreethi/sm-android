@@ -348,6 +348,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 	public String activityOnTop;
 	public boolean openPinActivity=false;
 	public boolean isTouchIdEnabled=true;
+    public boolean isDiagnosisFrombuddy=false;
 
 	private RelativeLayout mainHeader;
 
@@ -6965,7 +6966,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 				else
 					userName.setText(CallDispatcher.LoginUser);
                 String status_1 = loadCurrentStatus();
-                TextView status = (TextView) findViewById(R.id.status);
+                  TextView status = (TextView) findViewById(R.id.status);
                 ImageView img_status = (ImageView) findViewById(R.id.img_status);
                 if(status_1.equalsIgnoreCase("online")){
                     status.setText("Online");
@@ -8516,6 +8517,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 			Vector<PatientDescriptionBean> pBeanList=(Vector<PatientDescriptionBean>)obj;
 			for(PatientDescriptionBean pBean:pBeanList){
 				DBAccess.getdbHeler().insertorUpdatePatientDescriptions(pBean);
+                Log.i("rose","notifyGetPatientDescription isDiagnosisFrombuddy=====>"+isDiagnosisFrombuddy);
+//				pBean.setDate(getCurrentDateandTime());
+//				DBAccess.getdbHeler().insertseallcomments(pBean);
 				Log.d("rose", "value--->" + pBean.getPatientid());
 			}
 

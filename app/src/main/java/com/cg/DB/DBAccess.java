@@ -145,7 +145,7 @@ public class DBAccess extends SQLiteOpenHelper {
 	String patientdetails = "create table if not exists patientdetails(groupid nvarchar(25), patientid nvarchar(25), creatorname nvarchar(25), firstname nvarchar(25), middlename nvarchar(25), lastname nvarchar(25), dob nvarchar(25), sex nvarchar(25),hospital nvarchar(25), mrn nvarchar(25), floor nvarchar(25), ward nvarchar(25), room nvarchar(25), bed nvarchar(25),admissiondate nvarchar(25), assignedmembers nvarchar(255),status nvarchar(25))";
 	String taskdetails ="create table if not exists taskdetails(groupid nvarchar(25), taskid nvarchar(25), patientid nvarchar(25),creatorname nvarchar(25), taskdesc nvarchar(25), callpatient nvarchar(25), duedate nvarchar(25), duetime nvarchar(25), setreminder nvarchar(25),timetoremind nvarchar(25),assignmembers nvarchar(25),taskstatus nvarchar(25))";
 	String patientcomments = "create table if not exists patientcomments(groupid nvarchar(25), commentid nvarchar(25),patientid nvarchar(25),groupowner nvarchar(25), groupmember nvarchar(25), dateandtime nvarchar(25), comments nvarchar(225))";
-	String patientdescription = "create table if not exists patientdescription(patientid nvarchar(25),groupid nvarchar(25), reportid nvarchar(25),creatorname nvarchar(25),currentstatus nvarchar(25), diagnosis nvarchar(200), medications nvarchar(255),testandvitals nvarchar(255),hospitalcourse nvarchar(100),consults nvarchar(255),reportmodifier nvarchar(100))";
+	String patientdescription = "create table if not exists patientdescription(patientid nvarchar(25),groupid nvarchar(25), reportid nvarchar(25),creatorname nvarchar(25),currentstatus nvarchar(25), diagnosis nvarchar(200), medications nvarchar(255),testandvitals nvarchar(255),hospitalcourse nvarchar(100),consults nvarchar(255),reportmodifier nvarchar(100),createddate nvarchar(100),modifieddate nvarchar(100))";
 	String roleaccess ="create table if not exists roleaccess(groupid nvarchar(25), groupOwner nvarchar(25), groupmember nvarchar(25), roleid nvarchar(25), role nvarchar(25), patientmanagement tinyint(1), taskmanagement tinyint(1), editroundingform tinyint(1), commentsview tinyint(1))";
 	String rolepatientmgt ="create table if not exists rolepatientmgt(groupid nvarchar(25), groupOwner nvarchar(25), groupmember nvarchar(25), roleid nvarchar(25), role nvarchar(25), padd tinyint(1), pmodify tinyint(1), pdelete tinyint(1), discharge tinyint(1))";
 	String roleeditroundignform ="create table if not exists roleeditroundignform(groupid nvarchar(25), groupOwner nvarchar(25), groupmember nvarchar(25), roleid nvarchar(25), role nvarchar(25), status tinyint(1), diagnosis tinyint(1), testandvitals tinyint(1), hospitalcourse tinyint(1), notes tinyint(1), consults tinyint(1))";
@@ -158,7 +158,7 @@ public class DBAccess extends SQLiteOpenHelper {
 	String specialitydetails ="create table if not exists specialitydetails(speciality nvarchar(200),code nvarchar(25))";
 	String hospitaldetails ="create table if not exists hospitaldetails(hospitalname nvarchar(200))";
 	String medicalsocieties ="create table if not exists medicalsocieties(id nvarchar(25),medicalsociety nvarchar(200))";
-	String seeallpatientdetails = "create table if not exists seeallpatientdetails(groupid nvarchar(25), patientid nvarchar(100), diagnosis nvarchar(100), active nvarchar(100), commentdate nvarchar(100))";
+	String seeallpatientdetails = "create table if not exists seeallpatientdetails(groupid nvarchar(25), patientid nvarchar(100),reportid nvarchar(100), diagnosis nvarchar(100), active nvarchar(100), commentdate nvarchar(100))";
 	String chatrecentlist ="create table if not exists chatrecentlist(fromuser text,touser text,owner text,type text,content text,media text,sortdate text,notifytype text,viewed integer,fileid text,category text,username text,profilepic text,unreadchat text,callcount text,serverdatetime text,callsessionid text,senttime text)";
 	String groupchatrecentlist ="create table if not exists groupchatrecentlist(fromuser text,touser text,owner text,type text,content text,media text,sortdate text,notifytype text,viewed integer,fileid text,category text,username text,profilepic text,unreadchat text,callcount text,serverdatetime text)";
 	private CallDispatcher callDisp;
@@ -9933,6 +9933,7 @@ public class DBAccess extends SQLiteOpenHelper {
 			cv.put("bed", pBean.getBed());
 			cv.put("admissiondate", pBean.getAdmissiondate());
 			cv.put("assignedmembers", pBean.getAssignedmembers());
+			Log.i("BBB", "Assigned Members.. " +pBean.getAssignedmembers());
 
 			if (isRecordExists("select * from patientdetails where groupid='"
 					+ pBean.getGroupid() + "'and patientid='" + pBean.getPatientid() + "'")) {
@@ -10110,7 +10111,8 @@ public class DBAccess extends SQLiteOpenHelper {
 
 	public int insertorUpdatePatientDescriptions(PatientDescriptionBean pcBean) {
 		int row_id = 0;
-		Log.i("BBB", " DB insertorUpdatePatientDetails "+pcBean.getDiagnosis());
+        Log.i("rose", "****************************************");
+        Log.i("rose", " DB ****diagnosis "+pcBean.getDiagnosis());
 		try {
 			if (!db.isOpen())
 				openDatabase();
@@ -10125,6 +10127,9 @@ public class DBAccess extends SQLiteOpenHelper {
 			cv.put("testandvitals", pcBean.getTestandvitals());
 			cv.put("hospitalcourse",pcBean.getHospitalcourse());
 			cv.put("consults", pcBean.getConsults());
+            cv.put("createddate",pcBean.getCreateddate());
+            cv.put("modifieddate",pcBean.getModifieddate());
+
 
 			if (isRecordExists("select * from patientdescription where patientid='"
 					+ pcBean.getPatientid() + "'and reportid='" + pcBean.getReportid() + "'"))
@@ -10133,7 +10138,7 @@ public class DBAccess extends SQLiteOpenHelper {
 			else {
 				row_id = (int) db.insert("patientdescription", null, cv);
 			}
-			UpdatePatientStatus(pcBean.getCurrentstatus(),pcBean.getPatientid(),pcBean.getGroupid());
+//			UpdatePatientStatus(pcBean.getCurrentstatus(),pcBean.getPatientid(),pcBean.getGroupid());
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -10142,24 +10147,24 @@ public class DBAccess extends SQLiteOpenHelper {
 			return row_id;
 		}
 	}
-	public int UpdatePatientStatus(String status,String patientid,String groupid) {
+	public int UpdatePatientStatus(String CurrenStatus,String condition) {
 		int row_id = 0;
-		Log.i("patientdetails", "insertorUpdatePatientDetails ");
 		try {
 			if (!db.isOpen())
 				openDatabase();
 			ContentValues cv = new ContentValues();
-			cv.put("status", status);
-			row_id = (int) db.update("patientdetails", cv, "groupid='" + groupid + "'and patientid='" + patientid + "'", null);
+			cv.put("status", CurrenStatus);
+
+			row_id = (int) db.update("patientdetails", cv, condition, null);
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
-
-		} finally {
+			Log.i("thread", "came to update component" + e.toString());
+		}finally {
 			return row_id;
 		}
 	}
-	public PatientDescriptionBean getPatientDescriptionDetails(String patientid,String ReportID) {
+	public PatientDescriptionBean getPatientDescriptionDetails(String patientid) {
 		PatientDescriptionBean groupBean = new PatientDescriptionBean();
 		try {
 			Cursor cur = null;
@@ -10170,12 +10175,12 @@ public class DBAccess extends SQLiteOpenHelper {
 			}
 			Log.i("AAA", "DB list  ");
 			String strGetQry = null;
-			if(ReportID!=null)
+//			if(ReportID!=null)
 			strGetQry = "select * from patientdescription where patientid='"
-					+ patientid + "'and reportid='" + ReportID + "'";
-			else
-				strGetQry = "select * from patientdescription where patientid='"
-						+ patientid + "'";
+					+ patientid + "'";
+//			else
+//				strGetQry = "select * from patientdescription where patientid='"
+//						+ patientid + "'";
 			cur = db.rawQuery(strGetQry, null);
 			int len = cur.getCount();
 			Log.i("AAA", "length" + String.valueOf(len));
@@ -10193,6 +10198,9 @@ public class DBAccess extends SQLiteOpenHelper {
 				groupBean.setHospitalcourse(cur.getString(8));
 				groupBean.setConsults(cur.getString(9));
 				groupBean.setReportmodifier(cur.getString(10));
+                groupBean.setCreateddate((cur.getString(11)));
+                groupBean.setModifieddate((cur.getString(12)));
+
 				cur.moveToNext();
 			}
 			cur.close();
@@ -10911,18 +10919,27 @@ public class DBAccess extends SQLiteOpenHelper {
 	}
 	public int insertseallcomments(PatientDescriptionBean pbean){
 		int comment_id = 0;
+		Log.i("rose","DB  insertseallcomments &&&&&&&&&&");
+
 		try{
 			if(!db.isOpen())
 				openDatabase();
 			ContentValues cv = new ContentValues();
 			cv.put("groupid", pbean.getGroupid());
 			cv.put("patientid", pbean.getPatientid());
+			cv.put("reportid",pbean.getReportid());
 			cv.put("active",pbean.getActiveID());
 			if(pbean.getDiagnosis()!=null)
 			cv.put("diagnosis", pbean.getDiagnosis());
 			if(pbean.getDate()!=null)
 				cv.put("commentdate",pbean.getDate());
-			comment_id = (int)db.insert("seeallpatientdetails", null, cv);
+			if (isRecordExists("select * from seeallpatientdetails where reportid='"
+					+ pbean.getReportid() + "'")) {
+				comment_id = (int) db.update("seeallpatientdetails", cv,
+						"reportid='" + pbean.getReportid() + "'", null);
+			} else {
+				comment_id = (int)db.insert("seeallpatientdetails", null, cv);
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -10959,14 +10976,14 @@ public class DBAccess extends SQLiteOpenHelper {
 			while (cur.isAfterLast() == false) {
 				Log.d("Stringvalue", "dbvalue2");
 				PatientDescriptionBean pBean = new PatientDescriptionBean();
-				pBean.setGroupid(cur.getString(0));
-				pBean.setDiagnosis(cur.getString(2));
-				pBean.setActiveID(cur.getString(3));
-				pBean.setDate(cur.getString(4));
-				pBean.setPatientid(cur.getString(1));
+				pBean.setGroupid(cur.getString(cur.getColumnIndex("groupid")));
+				pBean.setDiagnosis(cur.getString(cur.getColumnIndex("diagnosis")));
+				pBean.setDate(cur.getString(cur.getColumnIndex("modifieddate")));
+				pBean.setPatientid(cur.getString(cur.getColumnIndex("patientid")));
+                pBean.setReportid(cur.getString(cur.getColumnIndex("reportid")));
 				cur.moveToNext();
 				seeallcomment.add(pBean);
-				Log.d("Stringvalue","dbvalue"+pBean.getDiagnosis());
+				Log.d("string","db diagnosis seeALLvalue_____"+pBean.getDiagnosis());
 			}
 			cur.close();
 
@@ -11896,4 +11913,170 @@ public class DBAccess extends SQLiteOpenHelper {
 		return delete;
 
 	}
+	public ArrayList<String> getDesc_patient_status(String Query) {
+            Cursor cur;
+            ArrayList<String> DescList = new ArrayList<String>();
+            try {
+                if (!db.isOpen())
+                    openDatabase();
+                String query = Query;
+                cur = db.rawQuery(query, null);
+                cur.moveToFirst();
+                while (!cur.isAfterLast()) {
+                    DescList.add(cur.getString(cur.getColumnIndex("currentstatus")));
+                    cur.moveToNext();
+                }
+                cur.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        return DescList;
+        }
+    public ArrayList<String> getDesc_patient_medication(String Query) {
+        Cursor cur;
+        ArrayList<String> DescList = new ArrayList<String>();
+        try {
+            if (!db.isOpen())
+                openDatabase();
+            String query = Query;
+            cur = db.rawQuery(query, null);
+            cur.moveToFirst();
+            while (!cur.isAfterLast()) {
+                DescList.add(cur.getString(cur.getColumnIndex("medications")));
+                cur.moveToNext();
+            }
+            cur.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return DescList;
+    }
+    public ArrayList<String> getDesc_patient_diagnosis(String Query) {
+        Cursor cur;
+        ArrayList<String> DescList = new ArrayList<String>();
+        try {
+            if (!db.isOpen())
+                openDatabase();
+            String query = Query;
+            cur = db.rawQuery(query, null);
+            cur.moveToFirst();
+            while (!cur.isAfterLast()) {
+                DescList.add(cur.getString(cur.getColumnIndex("diagnosis")));
+                cur.moveToNext();
+            }
+            cur.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return DescList;
+    }
+    public ArrayList<String> getDesc_patient_testvital(String Query) {
+        Cursor cur;
+        ArrayList<String> DescList = new ArrayList<String>();
+        try {
+            if (!db.isOpen())
+                openDatabase();
+            String query = Query;
+            cur = db.rawQuery(query, null);
+            cur.moveToFirst();
+            while (!cur.isAfterLast()) {
+                DescList.add(cur.getString(cur.getColumnIndex("testandvitals")));
+                cur.moveToNext();
+            }
+            cur.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return DescList;
+    }
+    public ArrayList<String> getDesc_patient_hospital(String Query) {
+        Cursor cur;
+        ArrayList<String> DescList = new ArrayList<String>();
+        try {
+            if (!db.isOpen())
+                openDatabase();
+            String query = Query;
+            cur = db.rawQuery(query, null);
+            cur.moveToFirst();
+            while (!cur.isAfterLast()) {
+                DescList.add(cur.getString(cur.getColumnIndex("hospitalcourse")));
+                cur.moveToNext();
+            }
+            cur.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return DescList;
+    }
+    public ArrayList<String> getDesc_patient_consults(String Query) {
+        Cursor cur;
+        ArrayList<String> DescList = new ArrayList<String>();
+        try {
+            if (!db.isOpen())
+                openDatabase();
+            String query = Query;
+            cur = db.rawQuery(query, null);
+            cur.moveToFirst();
+            while (!cur.isAfterLast()) {
+                DescList.add(cur.getString(cur.getColumnIndex("consults")));
+                cur.moveToNext();
+            }
+            cur.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return DescList;
+    }
+    public Vector<PatientDescriptionBean> getdiagnosis_For_seeAll(String Query) {
+        Cursor cur;
+        Vector<PatientDescriptionBean> seeall_list = new Vector<PatientDescriptionBean>();
+        try {
+            if (!db.isOpen())
+                openDatabase();
+            String query = Query;
+            cur = db.rawQuery(query, null);
+            cur.moveToFirst();
+            while (cur.isAfterLast() == false) {
+                PatientDescriptionBean pBean = new PatientDescriptionBean();
+                pBean.setPatientid(cur.getString(cur.getColumnIndex("patientid")));
+                pBean.setGroupid(cur.getString(cur.getColumnIndex("groupid")));
+                pBean.setDiagnosis(cur.getString(cur.getColumnIndex("diagnosis")));
+                pBean.setDate(cur.getString(cur.getColumnIndex("modifieddate")));
+                cur.moveToNext();
+                seeall_list.add(pBean);
+                Log.d("rose", "dbvalue2"+pBean.getDiagnosis());
+            }
+            cur.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return seeall_list;
+    }
+	public int updateActiveDescription(PatientDescriptionBean pcBean,String where) {
+        int row_id = 0;
+        try {
+            if (!db.isOpen())
+                openDatabase();
+            ContentValues cv = new ContentValues();
+            cv.put("patientid", pcBean.getPatientid());
+            cv.put("groupid", pcBean.getGroupid());
+            cv.put("reportid", pcBean.getReportid());
+            cv.put("creatorname", pcBean.getReportcreator());
+            cv.put("currentstatus", pcBean.getCurrentstatus());
+            cv.put("diagnosis", pcBean.getDiagnosis());
+            cv.put("medications", pcBean.getMedications());
+            cv.put("testandvitals", pcBean.getTestandvitals());
+            cv.put("hospitalcourse", pcBean.getHospitalcourse());
+            cv.put("consults", pcBean.getConsults());
+            cv.put("createddate", pcBean.getCreateddate());
+            cv.put("modifieddate", pcBean.getModifieddate());
+            row_id = (int) db.update("patientdescription", cv, where, null);
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+            Log.i("thread", "came to update component" + e.toString());
+        }finally {
+            return row_id;
+        }
+    }
 }
