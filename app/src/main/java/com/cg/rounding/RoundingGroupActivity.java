@@ -1005,7 +1005,13 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
         String unique_buddiesDelete="";
         for(int i=0;i<MemberTodelete.length;i++) {
             if (!IsExistList(MemberToadd, MemberTodelete[i])) {
-                unique_buddiesDelete=MemberTodelete[i];
+                if(unique_buddiesDelete.length()==0) {
+                    unique_buddiesDelete = MemberTodelete[i];
+                }
+                else {
+                    unique_buddiesDelete = unique_buddiesDelete + "," + MemberTodelete[i];
+                }
+
             }else
                 Log.i("AAAA", "Member Duplication true=======>");
 
@@ -1240,7 +1246,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                         holder.occupation.setTextColor(getResources().getColor(R.color.snazlgray));
                     }
                     ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(bib.getBuddyName());
-          
+
 
                     if(pbean!=null)
                         holder.occupation.setText(pbean.getSpeciality());
@@ -1256,6 +1262,8 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
 //                            if(gBean.getGroupId()!=null) {
 //                                GroupBean groupBean = DBAccess.getdbHeler().getGroupAndMembers(
 //                                        "select * from grouplist where groupid=" + gBean.getGroupId());
+                            RoundingGroupActivity roundingGroup = (RoundingGroupActivity) SingleInstance.contextTable
+                                    .get("roundingGroup");
                             Log.i("AAA","********before  membersAcceptedList size-------"+membersAcceptedList.size());
                             if (isduplicate) {
                                 gBean.setDeleteGroupMembers(bib.getBuddyName());
@@ -1268,8 +1276,14 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                             if(!isduplicate) {
                                 gBean.setDeleteGroupMembers(bib.getBuddyName());
                                 gBean.setGroupName(groupBean.getGroupName());
-                                showprogress();
-                                WebServiceReferences.webServiceClient.createRoundingGroup(gBean, context);
+                                if (roundingGroup.SelectedBuddiesToDelete != null && roundingGroup.SelectedBuddiesToDelete.length() > 0)
+                                    roundingGroup.SelectedBuddiesToDelete = roundingGroup.SelectedBuddiesToDelete + "," + bib.getBuddyName();
+                                else
+                                    roundingGroup.SelectedBuddiesToDelete = bib.getBuddyName();
+                                membersAcceptedList.remove(bib);
+                                refreshMembersAdapterList();
+//                                showprogress();
+//                                WebServiceReferences.webServiceClient.createRoundingGroup(gBean, context);
                             }
 //                            }
                         }

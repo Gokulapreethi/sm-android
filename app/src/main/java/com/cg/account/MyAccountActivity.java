@@ -44,6 +44,7 @@ import com.cg.hostedconf.AppReference;
 import com.cg.snazmed.R;
 import com.image.utils.ImageLoader;
 import com.main.AppMainActivity;
+import com.main.ContactsFragment;
 import com.main.MyAccountFragment;
 import com.main.Registration;
 import com.util.CustomVideoCamera;
@@ -108,6 +109,7 @@ public class MyAccountActivity extends Activity {
     boolean iszipchar=true;
     boolean isfaxNochar=true,isfaxNochar2=true;
     boolean isphNochar=true,isphNochar2=true;
+    private String Ac_name_Changed;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -1538,7 +1540,9 @@ speciality_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input
                             pBean.setTos("1");
                             pBean.setBaa("1");
                             SingleInstance.myAccountBean = pBean;
+                            Ac_name_Changed= pBean.getUsername();
                             WebServiceReferences.webServiceClient.SetMyAccount(pBean, MyAccountActivity.this);
+
                             showDialog();
 
                         } else {
@@ -1695,6 +1699,8 @@ speciality_img.setBackgroundDrawable(getResources().getDrawable(R.drawable.input
                                 }
                             });
                             finish();
+                            WebServiceReferences.webServiceClient.GetAllProfile(
+                                    CallDispatcher.LoginUser, Ac_name_Changed,SingleInstance.mainContext);
 
                         } else
                             Toast.makeText(MyAccountActivity.this,

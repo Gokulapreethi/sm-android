@@ -627,7 +627,7 @@ public class AttendingRightsActivity extends Activity {
         save_rights.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(ch_pm.isChecked() || ch_er.isChecked() || ch_cv.isChecked() || ch_tm.isChecked()){
+//                if(ch_pm.isChecked() || ch_er.isChecked() || ch_cv.isChecked() || ch_tm.isChecked()){
                     rolePatientManagementBean.setGroupid(groupId);
                     roleEditRndFormBean.setGroupid(groupId);
                     roleTaskMgtBean.setGroupid(groupId);
@@ -777,7 +777,7 @@ public class AttendingRightsActivity extends Activity {
                     else
                         roleAccessBean.setCommentsview("0");
 
-                }
+//                }
                 showprogress();
                 WebServiceReferences.webServiceClient.SetOrEditRoleAccess(rolePatientManagementBean,roleEditRndFormBean,roleTaskMgtBean,roleCommentsViewBean, mainContext);
             }

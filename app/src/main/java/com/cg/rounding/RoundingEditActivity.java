@@ -111,6 +111,8 @@ public class RoundingEditActivity extends Activity {
         String profilepic = null,status1 = null;
         ProfileBean pBean=DBAccess.getdbHeler().getProfileDetails(buddyname);
         profilepic= pBean.getPhoto();
+        if(pBean!=null)
+        profession.setText(pBean.getProfession());
         imageLoader = new ImageLoader(SingleInstance.mainContext);
         if(buddyname.equalsIgnoreCase(CallDispatcher.LoginUser))
             status1=CallDispatcher.myStatus;
@@ -148,6 +150,7 @@ public class RoundingEditActivity extends Activity {
                 statusIcon.setBackgroundResource(R.drawable.offline_icon);
             }
         }
+
         ArrayList<String> list = new ArrayList<String>();
         list.add("Fellow");
         list.add("Attending");

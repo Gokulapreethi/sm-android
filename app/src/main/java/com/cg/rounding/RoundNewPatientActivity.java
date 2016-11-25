@@ -161,65 +161,71 @@ public class RoundNewPatientActivity extends Activity {
                 window.setGravity(Gravity.BOTTOM);
                 dialog.show();
                 TextView cancel = (TextView) dialog.findViewById(R.id.cancel);
-                ListView patient_list=(ListView)dialog.findViewById(R.id.patient_list);
-                Button create=(Button)dialog.findViewById(R.id.create_patient);
+                ListView patient_list = (ListView) dialog.findViewById(R.id.patient_list);
+                Button create = (Button) dialog.findViewById(R.id.create_patient);
                 String strGetQry = "select * from patientdetails where groupid='"
                         + groupid + "'";
-                PatientList=DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
-                final ChoosePatientAdapter adapter=new ChoosePatientAdapter(context,R.layout.choose_patient_row,PatientList);
-                patient_list.setAdapter(adapter);
-                cancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-                    }
-                });
-                create.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-                    }
-                });
-                patient_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        choosepBean=(PatientDetailsBean)adapter.getItem(i);
-                        Log.i("patientdetails","list onclick"+choosepBean.getFirstname());
-                        dialog.dismiss();
-                        if(choosepBean!=null){
-                            Log.i("patientdetails","list onclick if"+choosepBean.getFirstname());
-                            if(choosepBean.getFirstname()!=null)
-                                ed_firstname.setText(choosepBean.getFirstname());
-                            if(choosepBean.getMiddlename()!=null)
-                                ed_middlename.setText(choosepBean.getMiddlename());
-                            if(choosepBean.getLastname()!=null)
-                                ed_lastname.setText(choosepBean.getLastname());
-                            if(choosepBean.getDob()!=null)
-                                ed_dob.setText(choosepBean.getDob());
-                            if(choosepBean.getMrn()!=null)
-                                ed_mrn.setText(choosepBean.getMrn());
-                            if(choosepBean.getFloor()!=null)
-                                ed_floor.setText(choosepBean.getFloor());
-                            if(choosepBean.getRoom()!=null)
-                                ed_room.setText(choosepBean.getRoom());
-                            if(choosepBean.getBed()!=null)
-                                ed_bed.setText(choosepBean.getBed());
-                            if(choosepBean.getWard()!=null)
-                                ed_ward.setText(choosepBean.getWard());
-                            if(choosepBean.getAdmissiondate()!=null)
-                                ed_Admitdate.setText(choosepBean.getAdmissiondate());
-                            if(choosepBean.getSex().equalsIgnoreCase("male")){
-                                radioFemale.setChecked(false);
-                                radioMale.setChecked(true);
-                            } else if(choosepBean.getSex().equalsIgnoreCase("female")){
-                                radioFemale.setChecked(true);
-                                radioMale.setChecked(false);
-                            }
-
+                PatientList = DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
+                Log.i("rose", "patient size********" + PatientList.size());
+                if (PatientList.size() > 0) {
+                    final ChoosePatientAdapter adapter = new ChoosePatientAdapter(context, R.layout.choose_patient_row, PatientList);
+                    patient_list.setAdapter(adapter);
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
                         }
-                    }
-                });
+                    });
+                    create.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                        }
+                    });
+                    patient_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            choosepBean = (PatientDetailsBean) adapter.getItem(i);
+                            Log.i("patientdetails", "list onclick" + choosepBean.getFirstname());
+                            dialog.dismiss();
+                            if (choosepBean != null) {
+                                Log.i("patientdetails", "list onclick if" + choosepBean.getFirstname());
+                                if (choosepBean.getFirstname() != null)
+                                    ed_firstname.setText(choosepBean.getFirstname());
+                                if (choosepBean.getMiddlename() != null)
+                                    ed_middlename.setText(choosepBean.getMiddlename());
+                                if (choosepBean.getLastname() != null)
+                                    ed_lastname.setText(choosepBean.getLastname());
+                                if (choosepBean.getDob() != null)
+                                    ed_dob.setText(choosepBean.getDob());
+                                if (choosepBean.getMrn() != null)
+                                    ed_mrn.setText(choosepBean.getMrn());
+                                if (choosepBean.getFloor() != null)
+                                    ed_floor.setText(choosepBean.getFloor());
+                                if (choosepBean.getRoom() != null)
+                                    ed_room.setText(choosepBean.getRoom());
+                                if (choosepBean.getBed() != null)
+                                    ed_bed.setText(choosepBean.getBed());
+                                if (choosepBean.getWard() != null)
+                                    ed_ward.setText(choosepBean.getWard());
+                                if (choosepBean.getAdmissiondate() != null)
+                                    ed_Admitdate.setText(choosepBean.getAdmissiondate());
+                                if (choosepBean.getSex().equalsIgnoreCase("male")) {
+                                    radioFemale.setChecked(false);
+                                    radioMale.setChecked(true);
+                                } else if (choosepBean.getSex().equalsIgnoreCase("female")) {
+                                    radioFemale.setChecked(true);
+                                    radioMale.setChecked(false);
+                                }
 
+                            }
+                        }
+                    });
+
+                }else {
+                    showToast("No Patients in the list");
+                    dialog.dismiss();
+                }
             }
         });
 
