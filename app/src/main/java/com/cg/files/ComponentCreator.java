@@ -542,7 +542,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 				}
 
 				/*
-				 * 
+				 *
 				 * if
 				 * (WebServiceReferences.contextTable.containsKey("notepicker"))
 				 * { if (noteType != null) { showNoteView(noteType);
@@ -552,7 +552,7 @@ public class ComponentCreator extends Activity implements IMNotifier {
 				 * showNoteView(noteType); Log.i("log", "inside notetype"); } }
 				 * else if (WebServiceReferences.contextTable
 				 * .containsKey("sharenotepicker")) {
-				 * 
+				 *
 				 * if (noteType != null) { showNoteView(noteType);
 				 * Log.i("notepicker", "inside share notetype"); } } else { if
 				 * (noteType != null) { showNoteView(noteType); } }
@@ -1459,16 +1459,26 @@ public class ComponentCreator extends Activity implements IMNotifier {
 		if (CompleteListView.textnotes == null)
 			CompleteListView.textnotes = new TextNoteDatas();
 
-		CompleteListView.textnotes.checkAndCreate(ComponentPath, edNotes
-				.getText().toString());
+		CompleteListView.textnotes.checkAndCreate(ComponentPath,edNotes
+                .getText().toString());
 	}
 
+    private void Delte_exist_file() {
+        Log.i("rose","Existing path complBean.getContentpath()"+complBean.getContentpath());
+        File file = new File(complBean.getContentpath());
+        String strDeleteQry = "delete from component where componentid="
+                + complBean.getComponentId();
+        callDisp.getdbHeler(context).ExecuteQuery(
+                strDeleteQry);
+    }
     private void saveFile() {
         try {
             onCreateFile=true;
 			Log.i("BBB","FILE currentResource   "+GET_RESOURCES);
 
-            if (GET_RESOURCES == TEXT) {
+
+
+			if (GET_RESOURCES == TEXT) {
 
 				if (edNotes.getText().toString().trim().length() != 0) {
 					createTextNote();
@@ -1564,112 +1574,38 @@ public class ComponentCreator extends Activity implements IMNotifier {
 					if (ComponentPath != null) {
 						strIPath = ComponentPath;
 						if (GET_RESOURCES == CAPTURE_VIDEO) {
+                            if(!fromNewFile)
+                                Delte_exist_file();
 							File vfile = new File(ComponentPath + ".mp4");
 							File vfile1 = new File(ComponentPath + ".jpg");
 							if (vfile.exists() && vfile1.exists()) {
 //								complBean.setComment(fileDesc.getText().toString().trim());
-								cbean = DBAccess.getdbHeler(context).putDBEntry(
-										GET_RESOURCES,
-										ComponentPath,
-										WebServiceReferences
-												.getNoteCreateTimeForFiles(),
-										filename.getText().toString().trim(),
-										complBean,fileDesc.getText().toString().trim());
-								if (SingleInstance.ContactSharng
-										|| parentID != null) {
-									SingleInstance.ContactSharng = false;
-									complBean = cbean;
-									complBean.setBsstatus("Received");
-									complBean.setBstype("Order");
-									complBean.setDirection("In");
-									complBean.setFromUser(buddyname);
-									if (parentID != null) {
-										complBean.setParent_id(parentID);
-									} else {
-										complBean.setParent_id(Utility
-												.getSessionID());
-									}
-								}
+                                overriteVideoFile();
+                            } else {
+                                if(!vfile.exists())
+                                   vfile.createNewFile();
+                                if(!vfile1.exists())
+                                    vfile1.createNewFile();
+                                overriteVideoFile();
 
-								if (cbean != null) {
-									// if (send)
-									// showToast("Video note sent succesfully");
-									if (!send)
-										showToast(SingleInstance.mainContext
-												.getResources()
-												.getString(
-														R.string.video_note_saved_succesfully));
-									ON_CREATE = false;
-									callDisp.cmp = cbean;
-									openNote();
-
-								}
-
-							} else {
-								showToast(SingleInstance.mainContext.getResources()
-										.getString(R.string.pls_create_note));
+//								showToast(SingleInstance.mainContext.getResources()
+//										.getString(R.string.pls_create_note));
 							}
 
 						} else {
-							File fle = new File(ComponentPath);
-							if (fle.exists()) {
+                            if(!fromNewFile)
+                               Delte_exist_file();
+                            File fle = new File(ComponentPath);
+                            Log.i("rose","New path complBean.getContentpath()"+ComponentPath);
+
+                            if (fle.exists()) {
 //								complBean.setComment(fileDesc.getText().toString().trim());
-								cbean = DBAccess.getdbHeler(context).putDBEntry(
-										GET_RESOURCES,
-										ComponentPath,
-										WebServiceReferences
-												.getNoteCreateTimeForFiles(),
-										filename.getText().toString().trim(),
-										complBean,fileDesc.getText().toString().trim());
-								Log.i("getresource","value"+GET_RESOURCES);
-								if (SingleInstance.ContactSharng
-										|| parentID != null) {
-									SingleInstance.ContactSharng = false;
-									complBean = cbean;
-									complBean.setBsstatus("Received");
-									complBean.setBstype("Order");
-									complBean.setDirection("In");
-									complBean.setFromUser(buddyname);
-									if (parentID != null) {
-										complBean.setParent_id(parentID);
-									} else {
-										complBean.setParent_id(Utility
-												.getSessionID());
-									}
-								}
-
-								if (cbean != null) {
-									if (GET_RESOURCES == AUDIO) {
-										// if (send)
-										// showToast("Audio note sent succesfully");
-										if (!send) {
-											ON_CREATE = false;
-											callDisp.cmp = cbean;
-											openNote();
-											showToast(SingleInstance.mainContext
-													.getResources()
-													.getString(
-															R.string.audio_note_saved_succesfully));
-										}
-									} else {
-										// if (send)
-										// showToast("Image note sent succesfully");
-										if (!send) {
-											ON_CREATE = false;
-											callDisp.cmp = cbean;
-											Log.i("getresources","valueof___________>");
-											openNote();
-											showToast(SingleInstance.mainContext
-													.getResources()
-													.getString(
-															R.string.image_note_saved_succesfully));
-										}
-									}
-								}
-
-							} else {
-								showToast(SingleInstance.mainContext.getResources()
-										.getString(R.string.pls_create_note));
+                                overriteAudioOrImageFile();
+                            } else {
+                                fle.createNewFile();
+                                overriteAudioOrImageFile();
+//								showToast(SingleInstance.mainContext.getResources()
+//										.getString(R.string.pls_create_note));
 							}
 						}
 					} else {
@@ -1730,6 +1666,102 @@ public class ComponentCreator extends Activity implements IMNotifier {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+    private void overriteVideoFile()
+    {
+        cbean = DBAccess.getdbHeler(context).putDBEntry(
+                GET_RESOURCES,
+                ComponentPath,
+                WebServiceReferences
+                        .getNoteCreateTimeForFiles(),
+                filename.getText().toString().trim(),
+                complBean,fileDesc.getText().toString().trim());
+        if (SingleInstance.ContactSharng
+                || parentID != null) {
+            SingleInstance.ContactSharng = false;
+            complBean = cbean;
+            complBean.setBsstatus("Received");
+            complBean.setBstype("Order");
+            complBean.setDirection("In");
+            complBean.setFromUser(buddyname);
+            if (parentID != null) {
+                complBean.setParent_id(parentID);
+            } else {
+                complBean.setParent_id(Utility
+                        .getSessionID());
+            }
+        }
+
+        if (cbean != null) {
+            // if (send)
+            // showToast("Video note sent succesfully");
+            if (!send)
+                showToast(SingleInstance.mainContext
+                        .getResources()
+                        .getString(
+                                R.string.video_note_saved_succesfully));
+            ON_CREATE = false;
+            callDisp.cmp = cbean;
+            openNote();
+
+        }
+    }
+    private void overriteAudioOrImageFile()
+    {
+        cbean = DBAccess.getdbHeler(context).putDBEntry(
+                GET_RESOURCES,
+                ComponentPath,
+                WebServiceReferences
+                        .getNoteCreateTimeForFiles(),
+                filename.getText().toString().trim(),
+                complBean,fileDesc.getText().toString().trim());
+        Log.i("getresource","value"+GET_RESOURCES);
+        if (SingleInstance.ContactSharng
+                || parentID != null) {
+            SingleInstance.ContactSharng = false;
+            complBean = cbean;
+            complBean.setBsstatus("Received");
+            complBean.setBstype("Order");
+            complBean.setDirection("In");
+            complBean.setFromUser(buddyname);
+            if (parentID != null) {
+                complBean.setParent_id(parentID);
+            } else {
+                complBean.setParent_id(Utility
+                        .getSessionID());
+            }
+        }
+
+        if (cbean != null) {
+            if (GET_RESOURCES == AUDIO) {
+                // if (send)
+                // showToast("Audio note sent succesfully");
+                if (!send) {
+                    ON_CREATE = false;
+                    callDisp.cmp = cbean;
+                    openNote();
+                    showToast(SingleInstance.mainContext
+                            .getResources()
+                            .getString(
+                                    R.string.audio_note_saved_succesfully));
+                }
+            } else {
+                // if (send)
+                // showToast("Image note sent succesfully");
+                if (!send) {
+                    ON_CREATE = false;
+                    callDisp.cmp = cbean;
+                    Log.i("getresources","valueof___________>");
+                    openNote();
+                    showToast(SingleInstance.mainContext
+                            .getResources()
+                            .getString(
+                                    R.string.image_note_saved_succesfully));
+                }
+            }
+        }
+
+
     }
 
 	private void openNote() {

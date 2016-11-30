@@ -78,11 +78,13 @@ public class RoundingPatientAdapter extends ArrayAdapter<PatientDetailsBean> {
             } else {
                 holder = (ViewHolder) row.getTag();
             }
-            Log.i("patientdetails", "adapter " + patientlist.size());
+            Log.i("string", "patient no member selected adapter " + patientlist.size());
             final PatientDetailsBean pBean = patientlist.get(position);
+            int checked=0;
             if (pBean != null) {
                 if (pBean.isSelected()) {
                     holder.select.setChecked(true);
+
                 } else {
                     holder.select.setChecked(false);
                     Log.i("patientdetails", "adapter false");
@@ -250,8 +252,10 @@ public class RoundingPatientAdapter extends ArrayAdapter<PatientDetailsBean> {
                                     checkBoxCounter++;
                                     if (assignpatient != null) {
                                         assignpatient.countofcheckbox(checkBoxCounter);
+//                                        assignpatient.setSelectall();
                                     }
                                 } else {
+//                                    assignpatient.setSelectall();
                                     pBean.setSelected(false);
                                     checkBoxCounter--;
                                     if (assignpatient != null) {

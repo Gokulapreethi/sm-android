@@ -48,6 +48,8 @@ public class AssignPatientActivity extends Activity{
     public boolean isSearch=false;
     private ProgressDialog progress = null;
     private int PatientSelectedCount;
+    private int Countofcheckeditems;
+    CheckBox btn_selectall;
 
     Vector<PatientDetailsBean> PatientList;
 
@@ -60,7 +62,7 @@ public class AssignPatientActivity extends Activity{
         WebServiceReferences.contextTable.put("assignpatient", context);
 
         TextView header=(TextView)findViewById(R.id.tx_headingaddcontact);
-        final CheckBox btn_selectall=(CheckBox)findViewById(R.id.btn_selectall);
+        btn_selectall=(CheckBox)findViewById(R.id.btn_selectall);
         selectedCount=(TextView)findViewById(R.id.selected);
         final Button assign=(Button)findViewById(R.id.btn_done);
         final Button back=(Button)findViewById(R.id.btn_backaddcontact);
@@ -85,6 +87,7 @@ public class AssignPatientActivity extends Activity{
 
         PatientList=DBAccess.getdbHeler().getAllPatientDetails(strGetQry);
         Log.i("BBB","patient isMyPatient@@@@@@@@@$$$$$  =="+GroupChatActivity.patientType);
+
 
         if(GroupChatActivity.patientType.equalsIgnoreCase("mypatient")){
             unassign_lay.setVisibility(View.VISIBLE);
@@ -140,23 +143,22 @@ public class AssignPatientActivity extends Activity{
                 finish();
             }
         });
-        btn_selectall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
+        btn_selectall.setTag(true);
+        btn_selectall.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                                         boolean isChecked) {
-                // TODO Auto-generated method stub
-                Log.i("AAAA", "select all");
+            public void onClick(View v) {
                 try {
-                    if (isChecked) {
-                        for (int i = 0; i < PatientList.size(); i++) {
-                            adapter.getItem(i).setSelected(true);
+                    if ((Boolean) btn_selectall.isChecked()) {
+                        for (PatientDetailsBean Bean : PatientList) {
+                            Bean.setSelected(true);
                         }
+                        btn_selectall.setTag(false);
                         countofcheckbox(PatientList.size());
                     } else {
-                        for (int i = 0; i < PatientList.size(); i++) {
-                            adapter.getItem(i).setSelected(false);
+                        for (PatientDetailsBean Bean : PatientList) {
+                            Bean.setSelected(false);
                         }
+                        btn_selectall.setTag(true);
                         countofcheckbox(0);
                     }
                     adapter.notifyDataSetChanged();
@@ -167,16 +169,19 @@ public class AssignPatientActivity extends Activity{
                     else
                         e.printStackTrace();
                 }
-
             }
         });
-
     }
     public void countofcheckbox(int count)
     {
         Log.i("asdf", "count" + count);
         PatientSelectedCount=count;
+        Countofcheckeditems=count;
         selectedCount.setText(Integer.toString(count) + " selected");
+        if (count == PatientList.size())
+            btn_selectall.setChecked(true);
+        else
+            btn_selectall.setChecked(false);
     }
     private void showToast(String msg) {
         try {
@@ -188,6 +193,13 @@ public class AssignPatientActivity extends Activity{
                 AppReference.logger.error(e.getMessage(), e);
             e.printStackTrace();
         }
+    }
+    public void setSelectall()
+    {
+        if(PatientList.size()==Countofcheckeditems)
+            btn_selectall.setChecked(true);
+        else if(Countofcheckeditems<PatientList.size())
+            btn_selectall.setChecked(false);
     }
     public void showprogress() {
         handler.post(new Runnable() {
