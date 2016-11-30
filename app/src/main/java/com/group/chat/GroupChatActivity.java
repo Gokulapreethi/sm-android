@@ -10600,7 +10600,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 int questionsCount;
                     if (groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
                           (memberbean.getAdmin() != null && memberbean.getAdmin().equalsIgnoreCase("1")
-                                  ||(rolePatientManagementBean.getAdd() == null || rolePatientManagementBean.getAdd().equalsIgnoreCase("0")))) {
+                                  ||(rolePatientManagementBean.getAdd() == null || rolePatientManagementBean.getAdd().equalsIgnoreCase("0"))
+                                  || (rolePatientManagementBean.getAdd() != null && rolePatientManagementBean.getAdd().equalsIgnoreCase("1")))) {
                         if (patientType.equalsIgnoreCase("mypatient"))
                             questionsCount = DBAccess.getdbHeler().countEntryDetails("select * from patientdetails where groupid='"
                                     + groupId + "' and assignedmembers LIKE '%" + CallDispatcher.LoginUser + "%'");
