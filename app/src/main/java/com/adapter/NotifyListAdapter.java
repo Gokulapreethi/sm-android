@@ -211,7 +211,7 @@ public class NotifyListAdapter extends ArrayAdapter<NotifyListBean> {
                 if(notifyBean.getFileid()!=null && notifyBean.getFileid().contains("@")) {
                     holder.imagestatus.setVisibility(View.VISIBLE);
                 }else{
-                    holder.imagestatus.setVisibility(View.GONE);
+                    holder.imagestatus.setVisibility(View.INVISIBLE);
                 }
                 holder.list_container.setOnClickListener(new View.OnClickListener() {
                     @Override

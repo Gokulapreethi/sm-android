@@ -8173,8 +8173,8 @@ public class XmlParser {
 				if(nodeMap.getNamedItem("unreadchat")!=null) {
 					cBean.setUnreadchat(nodeMap.getNamedItem("unreadchat").getNodeValue());
 				}
-				if(nodeMap.getNamedItem("callcount")!=null) {
-					cBean.setCallcount(nodeMap.getNamedItem("callcount").getNodeValue());
+				if(nodeMap.getNamedItem("unreadcall")!=null) {
+					cBean.setCallcount(nodeMap.getNamedItem("unreadcall").getNodeValue());
 				}
 //				cBean.setDateandtime(cBean.getSenttime());
 				if (nodeMap.getNamedItem("sentstatustime") != null)

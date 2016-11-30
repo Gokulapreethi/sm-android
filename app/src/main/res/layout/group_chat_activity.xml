@@ -492,16 +492,15 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical">
 
-                            <EditText
-                                android:id="@+id/txt_msg"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="5dp"
-                                android:hint="Type your message"
-                                android:inputType="textCapSentences|textMultiLine"
-                                android:textColor="@color/black"
-                                android:textColorHint="@color/snazash" />
-
+                                <EditText
+                                    android:id="@+id/txt_msg"
+                                    android:layout_width="245dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="5dp"
+                                    android:hint="          Type your message"
+                                    android:inputType="textCapSentences|textMultiLine"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="@color/snazash" />
 
 
                             <LinearLayout
@@ -546,6 +545,7 @@
                 android:layout_width="42dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
                 android:background="@color/blue3">
 
                 <Button

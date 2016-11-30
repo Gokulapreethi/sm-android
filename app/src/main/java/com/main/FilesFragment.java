@@ -61,6 +61,7 @@ import com.cg.commongui.listswipe.SwipeMenuCreator;
 import com.cg.commongui.listswipe.SwipeMenuItem;
 import com.cg.commongui.listswipe.SwipeMenuListView;
 import com.cg.files.CompleteListBean;
+import com.cg.files.CompleteListView;
 import com.cg.files.ComponentCreator;
 import com.cg.files.Components;
 import com.cg.files.FileInfoFragment;
@@ -86,12 +87,14 @@ import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.Vector;
 /**
@@ -302,6 +305,11 @@ public class FilesFragment extends Fragment implements OnClickListener {
 						date_sort.setTextColor(getResources().getColor(R.color.white));
 						alpha_sort.setTextColor(getResources().getColor(R.color.snazlgray));
 						type_sort.setTextColor(getResources().getColor(R.color.snazlgray));
+						Collections.sort(filesList, new Comparator<CompleteListBean>() {
+							public int compare(CompleteListBean m1, CompleteListBean m2) {
+								return m1.getDateAndTime().compareTo(m2.getDateAndTime());
+							}
+						});
 						filesAdapter = new FilesAdapter(context, filesList);
 						listView.setAdapter(filesAdapter);
 						filesAdapter.notifyDataSetChanged();
@@ -314,6 +322,11 @@ public class FilesFragment extends Fragment implements OnClickListener {
 						date_sort.setTextColor(getResources().getColor(R.color.snazlgray));
 						alpha_sort.setTextColor(getResources().getColor(R.color.white));
 						type_sort.setTextColor(getResources().getColor(R.color.snazlgray));
+Collections.sort(filesList, new Comparator<CompleteListBean>() {
+							public int compare(CompleteListBean m1, CompleteListBean m2) {
+								return m1.getContentName().compareTo(m2.getContentName());
+							}
+						});
 						filesAdapter = new FilesAdapter(context, filesList);
 						listView.setAdapter(filesAdapter);
 						filesAdapter.notifyDataSetChanged();
@@ -326,6 +339,11 @@ public class FilesFragment extends Fragment implements OnClickListener {
 						date_sort.setTextColor(getResources().getColor(R.color.snazlgray));
 						alpha_sort.setTextColor(getResources().getColor(R.color.snazlgray));
 						type_sort.setTextColor(getResources().getColor(R.color.white));
+						Collections.sort(filesList, new Comparator<CompleteListBean>() {
+							public int compare(CompleteListBean m1, CompleteListBean m2) {
+								return m1.getcomponentType().compareTo(m2.getcomponentType());
+							}
+						});
 						filesAdapter = new FilesAdapter(context, getSortType(filesList));
 						listView.setAdapter(filesAdapter);
 						filesAdapter.notifyDataSetChanged();

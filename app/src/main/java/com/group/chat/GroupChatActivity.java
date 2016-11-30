@@ -197,6 +197,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
     private ListView memlist_splmsg, listViewPatient;
     int finalTime, startTime, swipeposition;
     String tick = "&#x2713";
+    String attachicon="&#128206";
     private MediaRecorder mRecorder = null;
     public static Vector<SendListUIBean> SendListUI;
     public static SendChatListAdapter sendlistadapter;
@@ -868,7 +869,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 ProfileBean bean = DBAccess.getdbHeler().getProfileDetails(buddy);
                 nickname=bean.getFirstname()+" "+bean.getLastname();
             }
-            txtView01.setText(nickname);
+            txtView01.setText(nickname.toUpperCase());
         }else if (isGroup && !isRounding) {
             txtView01.setText(groupBean.getGroupName().toUpperCase());
             header.setWeightSum(5);
@@ -1418,7 +1419,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 String pen = "&#x270D";
 //                pen="&#128393";
 //                pen= "\uD83D\uDD89";
-                typingstatus.setText(nickname + " is typing " + Html.fromHtml(pen));
+                typingstatus.setText(nickname + " is Typing " + Html.fromHtml(pen));
                 msgoptionview = (LinearLayout) v1.findViewById(R.id.splmsglay1);
                 LL_privateReply=(LinearLayout) v1.findViewById(R.id.rl_private);
                 settingsBtn.setOnClickListener(this);
@@ -13155,24 +13156,24 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         if (groupChatBean.getMediaName().contains("COMMedia")) {
                             if(!groupChatBean.getMediaName().split("COMMedia/")[1].equalsIgnoreCase("null")){
                                 if(message==null){
-                                    message=groupChatBean.getMediaName().split("COMMedia/")[1];
+                                    message=Html.fromHtml(attachicon)+groupChatBean.getMediaName().split("COMMedia/")[1];
                                 }else{
-                                    message=message+"\n"+groupChatBean.getMediaName().split("COMMedia/")[1];
+                                    message=message+"\n"+Html.fromHtml(attachicon)+groupChatBean.getMediaName().split("COMMedia/")[1];
                                 }
                             }
 
                         }else{
                             if(message==null){
-                                message=groupChatBean.getMediaName();
+                                message=Html.fromHtml(attachicon)+groupChatBean.getMediaName();
                             }else{
-                                message=message+"\n"+groupChatBean.getMediaName();
+                                message=message+"\n"+Html.fromHtml(attachicon)+groupChatBean.getMediaName();
                             }
                         }
                     }else{
                                     if (message == null) {
-                                        message = "Audio";
+                                        message = Html.fromHtml(attachicon)+"Audio";
                                     } else {
-                                        message = message + "\n" + "Audio";
+                                        message = message + "\n"+Html.fromHtml(attachicon) + "Audio";
                                     }
                     }
                 }
@@ -13181,24 +13182,24 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         if (groupChatBean.getMediaName().contains("COMMedia")) {
                             if(!groupChatBean.getMediaName().split("COMMedia/")[1].equalsIgnoreCase("null")){
                                 if(message==null){
-                                    message=groupChatBean.getMediaName().split("COMMedia/")[1];
+                                    message=Html.fromHtml(attachicon)+groupChatBean.getMediaName().split("COMMedia/")[1];
                                 }else{
-                                    message=message+"\n"+groupChatBean.getMediaName().split("COMMedia/")[1];
+                                    message=message+"\n"+Html.fromHtml(attachicon)+groupChatBean.getMediaName().split("COMMedia/")[1];
                                 }
                             }
 
                         }else{
                             if(message==null){
-                                message=groupChatBean.getMediaName();
+                                message=Html.fromHtml(attachicon)+groupChatBean.getMediaName();
                             }else{
-                                message=message+"\n"+groupChatBean.getMediaName();
+                                message=message+"\n"+Html.fromHtml(attachicon)+groupChatBean.getMediaName();
                             }
                         }
                     }else{
                         if (message == null) {
-                            message = "Image";
+                            message = Html.fromHtml(attachicon)+"Image";
                         } else {
-                            message = message + "\n" + "Image";
+                            message = message + "\n" +Html.fromHtml(attachicon)+ "Image";
                         }
                     }                }
                 if(groupChatBean.getMimetype().equalsIgnoreCase("sketch")){
@@ -13206,24 +13207,24 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         if (groupChatBean.getMediaName().contains("COMMedia")) {
                             if(!groupChatBean.getMediaName().split("COMMedia/")[1].equalsIgnoreCase("null")){
                                 if(message==null){
-                                    message=groupChatBean.getMediaName().split("COMMedia/")[1];
+                                    message=Html.fromHtml(attachicon)+groupChatBean.getMediaName().split("COMMedia/")[1];
                                 }else{
-                                    message=message+"\n"+groupChatBean.getMediaName().split("COMMedia/")[1];
+                                    message=message+"\n"+Html.fromHtml(attachicon)+groupChatBean.getMediaName().split("COMMedia/")[1];
                                 }
                             }
 
                         }else{
                             if(message==null){
-                                message=groupChatBean.getMediaName();
+                                message=Html.fromHtml(attachicon)+groupChatBean.getMediaName();
                             }else{
-                                message=message+"\n"+groupChatBean.getMediaName();
+                                message=message+"\n"+Html.fromHtml(attachicon)+groupChatBean.getMediaName();
                             }
                         }
                     }else{
                         if (message == null) {
-                            message = "Sketch";
+                            message =Html.fromHtml(attachicon) +"Sketch";
                         } else {
-                            message = message + "\n" + "Sketch";
+                            message = message + "\n"+Html.fromHtml(attachicon) + "Sketch";
                         }
                     }
                 }
@@ -13232,24 +13233,24 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         if (groupChatBean.getMediaName().contains("COMMedia")) {
                             if(!groupChatBean.getMediaName().split("COMMedia/")[1].equalsIgnoreCase("null")){
                                 if(message==null){
-                                    message=groupChatBean.getMediaName().split("COMMedia/")[1];
+                                    message=Html.fromHtml(attachicon)+groupChatBean.getMediaName().split("COMMedia/")[1];
                                 }else{
-                                    message=message+"\n"+groupChatBean.getMediaName().split("COMMedia/")[1];
+                                    message=message+"\n"+Html.fromHtml(attachicon)+groupChatBean.getMediaName().split("COMMedia/")[1];
                                 }
                             }
 
                         }else{
                             if(message==null){
-                                message=groupChatBean.getMediaName();
+                                message=Html.fromHtml(attachicon)+groupChatBean.getMediaName();
                             }else{
-                                message=message+"\n"+groupChatBean.getMediaName();
+                                message=message+"\n"+Html.fromHtml(attachicon)+groupChatBean.getMediaName();
                             }
                         }
                     }else{
                         if (message == null) {
-                            message = "Document";
+                            message =Html.fromHtml(attachicon)+ "Document";
                         } else {
-                            message = message + "\n" + "Document";
+                            message = message + "\n"+Html.fromHtml(attachicon) + "Document";
                         }
                     }
                 }
@@ -13258,24 +13259,24 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         if (groupChatBean.getMediaName().contains("COMMedia")) {
                             if(!groupChatBean.getMediaName().split("COMMedia/")[1].equalsIgnoreCase("null")){
                                 if(message==null){
-                                    message=groupChatBean.getMediaName().split("COMMedia/")[1];
+                                    message=Html.fromHtml(attachicon)+groupChatBean.getMediaName().split("COMMedia/")[1];
                                 }else{
-                                    message=message+"\n"+groupChatBean.getMediaName().split("COMMedia/")[1];
+                                    message=message+"\n"+Html.fromHtml(attachicon)+groupChatBean.getMediaName().split("COMMedia/")[1];
                                 }
                             }
 
                         }else{
                             if(message==null){
-                                message=groupChatBean.getMediaName();
+                                message=Html.fromHtml(attachicon)+groupChatBean.getMediaName();
                             }else{
-                                message=message+"\n"+groupChatBean.getMediaName();
+                                message=message+"\n"+Html.fromHtml(attachicon)+groupChatBean.getMediaName();
                             }
                         }
                     }else{
                         if (message == null) {
-                            message = "Video";
+                            message =Html.fromHtml(attachicon)+"Video";
                         } else {
-                            message = message + "\n" + "Video";
+                            message = message + "\n"+Html.fromHtml(attachicon) + "Video";
                         }
                     }
                 }
@@ -13287,18 +13288,18 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                 if(fname[i].contains("COMMedia")) {
                                     if (message == null) {
                                         if(!fname[i].split("COMMedia/")[1].equalsIgnoreCase("null")){
-                                            message=fname[i].split("COMMedia/")[1];
+                                            message=Html.fromHtml(attachicon)+fname[i].split("COMMedia/")[1];
                                         }
                                     } else {
                                         if(!fname[i].split("COMMedia/")[1].equalsIgnoreCase("null")) {
-                                            message = message + "\n" + fname[i].split("COMMedia/")[1];
+                                            message = message + "\n"+Html.fromHtml(attachicon) + fname[i].split("COMMedia/")[1];
                                         }
                                     }
                                 }else{
                                     if(message==null){
-                                        message=fname[i];
+                                        message=Html.fromHtml(attachicon)+fname[i];
                                     }else{
-                                        message=message+"\n"+fname[i];
+                                        message=message+"\n"+Html.fromHtml(attachicon)+fname[i];
                                     }
                                 }
                             }
@@ -13310,14 +13311,14 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                                     }
                                 }else{
                                     if(!groupChatBean.getMediaName().split("COMMedia/")[1].equalsIgnoreCase("null")) {
-                                        message = message + "\n" + groupChatBean.getMediaName().split("COMMedia/")[1];
+                                        message = message + "\n"+Html.fromHtml(attachicon) + groupChatBean.getMediaName().split("COMMedia/")[1];
                                     }
                                 }
                             }else{
                                 if(message==null){
-                                    message=groupChatBean.getMediaName();
+                                    message=Html.fromHtml(attachicon)+groupChatBean.getMediaName();
                                 }else{
-                                    message=message+"\n"+groupChatBean.getMediaName();
+                                    message=message+"\n"+Html.fromHtml(attachicon)+groupChatBean.getMediaName();
                                 }
                             }
                         }

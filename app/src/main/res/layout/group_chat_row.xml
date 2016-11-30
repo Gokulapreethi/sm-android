@@ -435,7 +435,7 @@
                     android:layout_height="wrap_content"
 
                     android:layout_marginTop="5dp"
-                    android:text="Reply"
+                    android:text="REPLY"
                     android:layout_marginLeft="60dp"
                     android:textColor="@color/white"
                     android:padding="8dp"
@@ -463,7 +463,7 @@
                     android:layout_height="wrap_content"
 
                     android:layout_marginTop="5dp"
-                    android:text="Confirm"
+                    android:text="CONFIRM"
                     android:layout_marginLeft="60dp"
                     android:textColor="@color/white"
                     android:padding="8dp"
