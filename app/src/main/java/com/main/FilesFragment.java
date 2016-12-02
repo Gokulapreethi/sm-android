@@ -339,14 +339,7 @@ Collections.sort(filesList, new Comparator<CompleteListBean>() {
 						date_sort.setTextColor(getResources().getColor(R.color.snazlgray));
 						alpha_sort.setTextColor(getResources().getColor(R.color.snazlgray));
 						type_sort.setTextColor(getResources().getColor(R.color.white));
-						Collections.sort(filesList, new Comparator<CompleteListBean>() {
-							public int compare(CompleteListBean m1, CompleteListBean m2) {
-								return m1.getcomponentType().compareTo(m2.getcomponentType());
-							}
-						});
-						filesAdapter = new FilesAdapter(context, getSortType(filesList));
-						listView.setAdapter(filesAdapter);
-						filesAdapter.notifyDataSetChanged();
+						 performonclick();
 					}
 				});
 
@@ -665,6 +658,17 @@ Collections.sort(filesList, new Comparator<CompleteListBean>() {
 			((ViewGroup) view.getParent()).removeView(view);
 		}
 		return view;
+	}
+
+	private void performonclick() {
+		Collections.sort(filesList, new Comparator<CompleteListBean>() {
+			public int compare(CompleteListBean m1, CompleteListBean m2) {
+				return m1.getcomponentType().compareTo(m2.getcomponentType());
+			}
+		});
+		filesAdapter = new FilesAdapter(context, getSortType(filesList));
+		listView.setAdapter(filesAdapter);
+		filesAdapter.notifyDataSetChanged();
 	}
 
 	public void closeOpenedDialogs(){
@@ -2193,8 +2197,7 @@ Collections.sort(filesList, new Comparator<CompleteListBean>() {
 				view = inflater.inflate(R.layout.files_list, null);
 				listView = (SwipeMenuListView) view.findViewById(R.id.filesList);
 			}
-			listView.setAdapter(filesAdapter);
-			filesAdapter.notifyDataSetChanged();
+			performonclick();
 			getCount = listView.getAdapter().getCount();
 			if (ed_search != null && filesAdapter.getCount() > 0
 					|| filesList.size() > 0) {

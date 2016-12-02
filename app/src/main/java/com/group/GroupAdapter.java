@@ -82,7 +82,8 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 			} else {
 				holder = (ViewHolder) row.getTag();
 			}
-			final GroupBean groupBean = (GroupBean) ContactsFragment.getGroupList().get(position);
+//			final GroupBean groupBean = (GroupBean) ContactsFragment.getGroupList().get(position);
+			final GroupBean groupBean = (GroupBean) grouplist.get(position);
 				TextView tv_groupName = (TextView) row
 						.findViewById(R.id.group_name);
 				tv_groupName.setText(groupBean.getGroupName());
@@ -99,7 +100,8 @@ public class GroupAdapter extends ArrayAdapter<GroupBean> {
 				holder.header_title.setText(name.toUpperCase());
 			}
 			if(position>0){
-				GroupBean gBean=(GroupBean) ContactsFragment.getGroupList().get(position - 1);
+//				GroupBean gBean=(GroupBean) ContactsFragment.getGroupList().get(position - 1);
+				GroupBean gBean=(GroupBean) grouplist.get(position - 1);
 				if(groupBean.getStatus().equalsIgnoreCase("request"))
 					holder.header_title.setVisibility(View.GONE);
 				else {

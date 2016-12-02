@@ -49,6 +49,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -350,6 +351,13 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
     boolean search_enable=false;
 
     private SwipeRefreshLayout swipeContainer;
+	
+	//For Scroll
+    Vector<GroupChatBean> getAllMsgFromDB;
+    int lastValue;
+    boolean Scroll=false;
+    String buddyORgroupid=null;
+    boolean pulltoReferesh=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -357,6 +365,8 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.fragment_chat_profile2);
+        Scroll=false;
+        pulltoReferesh=false;
         txtView01 = (TextView) findViewById(R.id.txtView01);
 
         search_enable=true;
@@ -945,6 +955,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         profilechat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                pulltoReferesh=false;
                 setDefault();
                 View view =getCurrentFocus();
                 if (view != null) {
@@ -972,6 +983,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         snazbox_chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                pulltoReferesh=false;
                 setDefault();
                 View view =getCurrentFocus();
                 if (view != null) {
@@ -992,6 +1004,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         link_chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                pulltoReferesh=false;
                 setDefault();
                 View view =getCurrentFocus();
                 if (view != null) {
@@ -1925,6 +1938,90 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
                     }
                 });
+
+                lv.setOnScrollListener(new AbsListView.OnScrollListener() {
+                    @Override
+                    public void onScrollStateChanged(AbsListView absListView, int i) {
+
+                    }
+
+                    @Override
+                    public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                        int count=DBAccess.getdbHeler().getBuddyOrGroupcount();
+                        Log.i("chatlist","scroll count-->"+count);
+                        if(count!=0 && count>=10){
+                            Scroll=true;
+                        }else if(count!=0 && count<10){
+                            Scroll=true;
+                        }else{
+                            Scroll=false;
+                        }
+                         if(firstVisibleItem==0 && adapter!=null && Scroll){
+                             int currentPosition = lv.getFirstVisiblePosition();
+                             Log.i("chatlist","currentPosition-->"+currentPosition);
+                             /*if(getAllMsgFromDB!=null && getAllMsgFromDB.size()>0){
+                                 Log.i("chatlist", "getAllMsgFromDB size--->" + getAllMsgFromDB.size());
+                                 for(int i=lastValue;i>=lastValue-20;i--) {
+
+                                     Log.i("chatlist", "i--->"+i);
+                                     if(i>=1) {
+                                         Log.i("chatlist", "if(i>=1)--->"+i);
+                                         if(i==1){
+                                             Scroll=true;
+                                         }
+                                         GroupChatBean groupChatBean = getAllMsgFromDB.get(i - 1);
+                                         chatList.add(groupChatBean);
+                                         if (lastValue - 20 == i) {
+                                             lastValue = i;
+                                             break;
+                                         }
+                                     }
+                                     Log.i("chatlist", "i value--->"+i);
+                                 }
+                                 Collections.sort(chatList, new GroupMessageComparator());
+                                 Log.i("chatlist", "chatlist value--->"+chatList.size());
+                                 adapter.notifyDataSetChanged();
+                                 lv.setSelectionFromTop(currentPosition + 1, 0);
+
+                             }*/
+                             if(chatList!=null && chatList.size()>0) {
+                                 Vector<GroupChatBean> scroll_list=loadChatHistory(buddyORgroupid,count,true);
+                                 if (buddyORgroupid != null && scroll_list != null && scroll_list.size() > 0) {
+//                                     Log.i("chatlist", "getAllMsgFromDB size--->" + getAllMsgFromDB.size());
+//                                     for (int i = lastValue; i >= lastValue - 20; i--) {
+//
+//                                         Log.i("chatlist", "i--->" + i);
+//                                         if (i >= 1) {
+//                                             Log.i("chatlist", "if(i>=1)--->" + i);
+//                                             if (i == 1) {
+//                                                 Scroll = true;
+//                                             }
+//                                             GroupChatBean groupChatBean = getAllMsgFromDB.get(i - 1);
+//                                             chatList.add(groupChatBean);
+//                                             if (lastValue - 20 == i) {
+//                                                 lastValue = i;
+//                                                 break;
+//                                             }
+//                                         }
+//                                         Log.i("chatlist", "i value--->" + i);
+//                                     }
+                                     Log.i("chatlist", "chatlist 0 position id--->" + chatList.get(0).getId());
+                                     for(GroupChatBean groupChatBean:scroll_list){
+                                         chatList.add(groupChatBean);
+                                     }
+
+                                     Collections.sort(chatList, new GroupMessageComparator());
+                                     Log.i("chatlist", "chatlist value--->" + chatList.size());
+                                     adapter.notifyDataSetChanged();
+                                     if(currentPosition==0 && count!=0 && count>=10)
+                                     lv.setSelectionFromTop(currentPosition + 10, 0);
+
+                                 }
+                             }
+                         }
+                    }
+                });
+
                 SwipeMenuCreator creator = new SwipeMenuCreator() {
 
                     @Override
@@ -2591,8 +2688,12 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 });
                 Log.i("chat", "chat123 end of oncreate");
                 if (chatList != null && chatList.size() > 0) {
-                    if(!AppReference.chatPullSync) {
+                    if(!pulltoReferesh) {
                         mainListPositionForSpecialMessage(chatList.size() - 1);
+                    }else if(chatList.size()>=10){
+                        if(chatList.size()>=10){
+                            lv.setSelectionFromTop(10, 0);
+                        }
                     }
                 }
 
@@ -3657,11 +3758,13 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
         // imm.showSoftInput(ed, 0);
     }
 
-    private Vector<GroupChatBean> loadChatHistory(String groupId) {
+    private Vector<GroupChatBean> loadChatHistory(String groupId,int count,boolean begin) {
 
         try {
+            Log.i("chatlistget","GroupchatActivity Before Db Method Call");
             Vector<GroupChatBean> groupChatList = DBAccess.getdbHeler()
-                    .getGroupChatHistory(groupId, true);
+                    .getGroupChatHistory(groupId, begin,count);
+            Log.i("chatlistget","GroupchatActivity After Db Method Call");
             Vector<GroupChatBean> gcList = DBAccess.getdbHeler().loadHistoryGC(
                     groupChatList);
             return gcList;
@@ -3677,7 +3780,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
     private Vector<GroupChatBean> loadIndividualChatHistory(String groupId) {
         try {
             Vector<GroupChatBean> chatList = callDisp.getdbHeler(context)
-                    .getGroupChatHistory(groupId, false);
+                    .getGroupChatHistory(groupId, false,0);
             return chatList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -5770,7 +5873,7 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
 
     }
 
-    private void showprogress() {
+    public void showprogress() {
 
         dialog = new ProgressDialog(context);
         dialog.setCancelable(false);
@@ -8351,10 +8454,71 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
     }
 
     private void loadTotalChatHistory(String groupOrBuddyName) {
-        if (loadChatHistory(groupOrBuddyName) != null)
-            chatList = loadChatHistory(groupOrBuddyName);
-        Log.i("chatlistsize","chatlist size------>"+chatList.size());
-        Collections.sort(chatList, new GroupMessageComparator());
+        int row=0;
+        buddyORgroupid=groupOrBuddyName;
+        if(groupOrBuddyName!=null){
+//           maxid=DBAccess.getdbHeler().getChatMaxID(groupOrBuddyName);
+            row=DBAccess.getdbHeler().getChatrowCount(groupOrBuddyName);
+            if(pulltoReferesh){
+                row=0;
+            }
+//            Log.i("chatlist","maxid--->"+maxid);
+            Log.i("chatlist","row--->"+row);
+        }
+        if (loadChatHistory(groupOrBuddyName,row,false) != null) {
+            chatList=new Vector<>();
+            Vector<GroupChatBean> list=loadChatHistory(groupOrBuddyName, row,false);
+            Collections.sort(list, new GroupMessageComparator());
+            if(list!=null && list.size()>0){
+                Log.i("chatlist", "getAllMsgFromDB size--->" + list.size());
+                for(int i=(list.size());i>=0;i--) {
+                    Log.i("chatlist", "i--->"+i);
+                    if(i>=1) {
+                        GroupChatBean groupChatBean = list.get(i - 1);
+                        chatList.add(groupChatBean);
+//                        if (chatList.size() == 20) {
+//                            break;
+//                        }
+                    }
+                    Log.i("chatlist", "i value--->"+i);
+                }
+            }
+            if(chatList!=null && chatList.size()>0){
+                for(GroupChatBean groupChatBean:chatList){
+                    if(!groupChatBean.getFrom().equalsIgnoreCase(CallDispatcher.LoginUser)
+                            && groupChatBean.getUnreadStatus()==0){
+                        UdpMessageBean bean = new UdpMessageBean();
+                        bean.setType("101");
+                        bean.setResponseObject(groupChatBean);
+                        SingleInstance.mainContext.ReadMessageAck(bean);
+                    }
+                }
+            }
+           /* getAllMsgFromDB=loadChatHistory(groupOrBuddyName, 0);
+            Collections.sort(getAllMsgFromDB, new GroupMessageComparator());
+            if(getAllMsgFromDB!=null && getAllMsgFromDB.size()>0){
+                Log.i("chatlist", "getAllMsgFromDB size--->" + getAllMsgFromDB.size());
+                Scroll=false;
+                    for(int i=(getAllMsgFromDB.size());i>=0;i--) {
+                        Log.i("chatlist", "i--->"+i);
+                        if(i>=1) {
+                            GroupChatBean groupChatBean = getAllMsgFromDB.get(i - 1);
+                            chatList.add(groupChatBean);
+                            lastValue = i;
+                            if (chatList.size() == 20) {
+                                break;
+                            }
+                        }
+                        Log.i("chatlist", "i value--->"+i);
+                    }
+            }*/
+//            chatList = loadChatHistory(groupOrBuddyName, 0);
+            Log.i("chatlist", "chatList size--->" + chatList.size());
+            Collections.sort(chatList, new GroupMessageComparator());
+            if(chatList!=null && chatList.size()>0){
+                lastValue = Integer.parseInt(chatList.get(0).getId());
+            }
+        }
 //        if (SingleInstance.groupChatHistory.get(groupOrBuddyName) != null
 //                && SingleInstance.groupChatHistory.get(groupOrBuddyName).size() > 0) {
 //            chatList = SingleInstance.groupChatHistory.get(groupOrBuddyName);
@@ -13898,15 +14062,16 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                 if(swipeContainer!=null) {
                     swipeContainer.setRefreshing(false);
                 }
-
+                AppReference.chatPullSync=false;
+ pulltoReferesh=true;
                 chatprocess();
-                handler.postDelayed(new Runnable() {
+               /* handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        AppReference.chatPullSync=false;
+
 //                        lv.setSelection(0);
                     }
-                },1000);
+                },1000);*/
 
             }
         },2000);

@@ -164,6 +164,7 @@ import com.main.AppMainActivity;
 import com.main.AvatarFragment;
 import com.main.ContactsFragment;
 import com.main.CreateProfileFragment;
+import com.main.DashBoardFragment;
 import com.main.ExchangesFragment;
 import com.main.FilesFragment;
 import com.main.FormsFragment;
@@ -12028,6 +12029,11 @@ private TrustManager[] get_trust_mgr() {
 							WebServiceReferences.videoSSRC_total_list.clear();
 							WebServiceReferences.removed_videoSSRC_list.clear();
 
+							if(SingleInstance.instanceTable.containsKey("contactspage")){
+								ContactsFragment contactsFragment=(ContactsFragment) SingleInstance.instanceTable.get("contactspage");
+								contactsFragment.cancelDialog();
+							}
+							DashBoardFragment.cancelDialog();
 							FragmentManager fm =
 									AppReference.mainContext.getSupportFragmentManager();
 							FragmentTransaction ft = fm.beginTransaction();

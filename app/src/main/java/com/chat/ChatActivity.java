@@ -438,7 +438,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 		try {
 			Vector<GroupChatBean> chatList = callDisp.getdbHeler(context)
 					.getGroupChatHistory(CallDispatcher.LoginUser + buddy,
-							false);
+							false,0);
 			return chatList;
 		} catch (Exception e) {
 			e.printStackTrace();

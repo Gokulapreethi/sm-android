@@ -162,6 +162,7 @@ public class DBAccess extends SQLiteOpenHelper {
 	String chatrecentlist ="create table if not exists chatrecentlist(fromuser text,touser text,owner text,type text,content text,media text,sortdate text,notifytype text,viewed integer,fileid text,category text,username text,profilepic text,unreadchat text,callcount text,serverdatetime text,callsessionid text,senttime text)";
 	String groupchatrecentlist ="create table if not exists groupchatrecentlist(fromuser text,touser text,owner text,type text,content text,media text,sortdate text,notifytype text,viewed integer,fileid text,category text,username text,profilepic text,unreadchat text,callcount text,serverdatetime text)";
 	private CallDispatcher callDisp;
+	private int buddyOrgroup_count=0;
 
 	public DBAccess(Context context) {
 
@@ -7269,58 +7270,87 @@ public class DBAccess extends SQLiteOpenHelper {
 		return chatList;
 	}
 
-	public Vector<GroupChatBean> getGroupChatHistory(String groupid,
-			boolean group) {
-		Vector<GroupChatBean> groupChatList = new Vector<GroupChatBean>();
-		try {
-			Cursor cur = null;
-			if (!db.isOpen())
-				openDatabase();
-			String query = "";
-			if (group)
-				query = "select * from chat where groupid='" + groupid
-						+ "' and username ='" + CallDispatcher.LoginUser + "'";
-			Log.i("group123", "query : " + query);
-			cur = db.rawQuery(query, null);
-			cur.moveToFirst();
-			while (cur.isAfterLast() == false) {
-				GroupChatBean groupChatBean = new GroupChatBean();
-				groupChatBean.setId(cur.getString(0));
-				groupChatBean.setCategory(cur.getString(1));
-				groupChatBean.setSubCategory(cur.getString(2));
-				groupChatBean.setGroupId(cur.getString(3));
-				groupChatBean.setUsername(cur.getString(4));
-				groupChatBean.setMimetype(cur.getString(5));
-				groupChatBean.setFrom(cur.getString(6));
-				groupChatBean.setTo(cur.getString(7));
-				groupChatBean.setMessage(cur.getString(8));
-				groupChatBean.setMediaName(cur.getString(9));
-				groupChatBean.setFtpUsername(cur.getString(10));
-				groupChatBean.setFtpPassword(cur.getString(11));
-				groupChatBean.setSessionid(cur.getString(12));
-				groupChatBean.setSignalid(cur.getString(13));
-				groupChatBean.setSenttime(cur.getString(14));
-				groupChatBean.setSenttimez(cur.getString(15));
-				groupChatBean.setPrivateMembers(cur.getString(16));
-				groupChatBean.setParentId(cur.getString(17));
-				groupChatBean.setReminderTime(cur.getString(18));
-				groupChatBean.setStatus(cur.getInt(19));
-                groupChatBean.setUnreadStatus(cur.getInt(20));
-                groupChatBean.setThumb(cur.getInt(21));
-                groupChatBean.setReply(cur.getString(22));
-                groupChatBean.setReplied(cur.getString(23));
-				if(cur.getString(26) != null && cur.getString(26).equalsIgnoreCase("join")) {
-					groupChatBean.setIsJoin(true);
-				} else {
-					groupChatBean.setIsJoin(false);
-				}
-                groupChatBean.setWithdrawn(cur.getString(27));
-				if(cur.getString(28)!=null)
-				groupChatBean.setSenderWithdraw(cur.getString(28));
-				groupChatBean.setDateandtime(cur.getString(29));
-				String status=LoadChatInfo(groupChatBean.getSignalid());
-				groupChatBean.setSent(status);
-				Log.i("BBB","chat staus "+status);
+	public Vector<GroupChatBean> getGroupChatHistory(final String groupid,
+			final boolean group,int count) {
+		final Vector<GroupChatBean> groupChatList = new Vector<GroupChatBean>();
+		Log.i("chatlistget","thread Starting count--->"+count);
+				try {
+					boolean countAboveten=false;
+					Cursor cur = null;
+					if (!db.isOpen())
+						openDatabase();
+					String query = "";
+//					if(group){
+					if(count!=0 && count>=10) {
+						count = count - 10;
+						buddyOrgroup_count = count;
+						countAboveten=true;
+					}else if(count<10){
+						count=count;
+						buddyOrgroup_count = 0;
+					}else{
+						count=0;
+						buddyOrgroup_count = 0;
+					}
+//					}
+					Log.i("chatlist","db count--->"+count);
+					Log.i("chatlist","buddyOrgroup_count--->"+buddyOrgroup_count);
+//					if (group) {
+						if(count==0 && !countAboveten){
+							query = "select * from chat where groupid='" + groupid
+									+ "' and username ='" + CallDispatcher.LoginUser +"'";
+						}else if(count<10 && !countAboveten){
+							query = "select * from chat where groupid='" + groupid
+									+ "' and username ='" + CallDispatcher.LoginUser + "' order by dateandtime ASC LIMIT "+count+" OFFSET 0";
+						}
+					    else {
+//							query = "select * from chat where groupid='" + groupid
+//									+ "' and username ='" + CallDispatcher.LoginUser + "' and id<=" + count + " LIMIT 20";
+							query = "select * from chat where groupid='" + groupid
+									+ "' and username ='" + CallDispatcher.LoginUser + "' order by dateandtime ASC LIMIT 10 OFFSET "+count+"";
+						}
+//					}
+					Log.i("group123", "query : " + query);
+					cur = db.rawQuery(query, null);
+					cur.moveToFirst();
+					while (cur.isAfterLast() == false) {
+						GroupChatBean groupChatBean = new GroupChatBean();
+						groupChatBean.setId(cur.getString(0));
+						groupChatBean.setCategory(cur.getString(1));
+						groupChatBean.setSubCategory(cur.getString(2));
+						groupChatBean.setGroupId(cur.getString(3));
+						groupChatBean.setUsername(cur.getString(4));
+						groupChatBean.setMimetype(cur.getString(5));
+						groupChatBean.setFrom(cur.getString(6));
+						groupChatBean.setTo(cur.getString(7));
+						groupChatBean.setMessage(cur.getString(8));
+						groupChatBean.setMediaName(cur.getString(9));
+						groupChatBean.setFtpUsername(cur.getString(10));
+						groupChatBean.setFtpPassword(cur.getString(11));
+						groupChatBean.setSessionid(cur.getString(12));
+						groupChatBean.setSignalid(cur.getString(13));
+						groupChatBean.setSenttime(cur.getString(14));
+						groupChatBean.setSenttimez(cur.getString(15));
+						groupChatBean.setPrivateMembers(cur.getString(16));
+						groupChatBean.setParentId(cur.getString(17));
+						groupChatBean.setReminderTime(cur.getString(18));
+						groupChatBean.setStatus(cur.getInt(19));
+						groupChatBean.setUnreadStatus(cur.getInt(20));
+						groupChatBean.setThumb(cur.getInt(21));
+						groupChatBean.setReply(cur.getString(22));
+						groupChatBean.setReplied(cur.getString(23));
+						if(cur.getString(26) != null && cur.getString(26).equalsIgnoreCase("join")) {
+							groupChatBean.setIsJoin(true);
+						} else {
+							groupChatBean.setIsJoin(false);
+						}
+						groupChatBean.setWithdrawn(cur.getString(27));
+						if(cur.getString(28)!=null)
+							groupChatBean.setSenderWithdraw(cur.getString(28));
+						groupChatBean.setDateandtime(cur.getString(29));
+						String status=LoadChatInfo(groupChatBean.getSignalid());
+						groupChatBean.setSent(status);
+						Log.i("BBB","chat staus "+status);
 
 				groupChatList.add(groupChatBean);
 				cur.moveToNext();
@@ -12081,4 +12111,55 @@ public class DBAccess extends SQLiteOpenHelper {
             return row_id;
         }
     }
+	
+		public int getChatMaxID(String username) {
+		int count = 0;
+		try {
+			Cursor cur = null;
+			if (!db.isOpen())
+				openDatabase();
+			String query = "select id from chat where groupid='"+username+"' and username='"
+					+ CallDispatcher.LoginUser + "'";
+			cur = db.rawQuery(query, null);
+			cur.moveToFirst();
+			while (cur.isAfterLast() == false) {
+				count = cur.getInt(0);
+				cur.moveToNext();
+			}
+			cur.close();
+		} catch (Exception e) {
+			if (AppReference.isWriteInFile)
+				AppReference.logger.error(e.getMessage(), e);
+			else
+				e.printStackTrace();
+		}
+		return count;
+
+	}
+
+	public int getChatrowCount(String username) {
+
+		int count = 0;
+		try {
+			Cursor cur = null;
+			if (!db.isOpen())
+				openDatabase();
+			String query ="select * from chat where groupid='"+username+"' and username='"
+					+ CallDispatcher.LoginUser + "'";
+			cur = db.rawQuery(query, null);
+			count = cur.getCount();
+			cur.close();
+		} catch (Exception e) {
+			if (AppReference.isWriteInFile)
+				AppReference.logger.error(e.getMessage(), e);
+			else
+				e.printStackTrace();
+		}
+		return count;
+
+	}
+
+    public int getBuddyOrGroupcount(){
+		return buddyOrgroup_count;
+	}
 }
