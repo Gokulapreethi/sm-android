@@ -134,9 +134,10 @@ public class TaskCreationActivity extends Activity {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                InputMethodManager imm = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+//                InputMethodManager imm = (InputMethodManager)
+//                        getSystemService(Context.INPUT_METHOD_SERVICE);
+//                if(imm!=null)
+//                imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
                 finish();
             }
         });
@@ -332,7 +333,11 @@ public class TaskCreationActivity extends Activity {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy h:mm aa");
         final SimpleDateFormat myFormat = new SimpleDateFormat("MM-dd-yyyy h:mm aa");
+        final SimpleDateFormat forPrevDate = new SimpleDateFormat("MM-dd-yyyy");
+        final SimpleDateFormat OnlyDate=new SimpleDateFormat(("MM-dd-yyyy"));
+        final String datewithNoTime = OnlyDate.format(date);
         final String DateAs_Now = dateFormat.format(date);
+
 
         reminder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -347,26 +352,38 @@ public class TaskCreationActivity extends Activity {
                             String start_time=DateAs_Now;
                             Log.d("string", "Date......" + start_time.compareTo(dateDesc));
                             Log.d("string", "bool Date......" + dateDesc.compareTo(end_time));
+                            Log.d("string", "Date......" + datewithNoTime);
+                            Log.d("string", "user Date......" + ed_dueDate.getText().toString());
+
+
                             Date date1 = null;
                             Date date2 = null;
                             Date date3=null;
+                            Date currentDateNotime=null;
+
+                            Date UserGivenDate=null;
                             try{
                                 date1=myFormat.parse(start_time);
                                 date2=myFormat.parse(end_time);
                                 date3=myFormat.parse(dateDesc);
+                                currentDateNotime=forPrevDate.parse(datewithNoTime);
+                                UserGivenDate=forPrevDate.parse(ed_dueDate.getText().toString());
                             }catch (Exception e)
                             {
                                 e.printStackTrace();
                             }
-                            if (date3.after(date1) && date3.before(date2)) {
-                                remindTime.setText(dateDesc);
-                                Log.d("string", "falls between start and end , go to screen 1 ");
-                            }
-                            else{
-                                Log.d("string", "does not fall between start and end , go to screen 2 ");
-                                Toast.makeText(context, "Please set correct reminder...",
+                            if(UserGivenDate.after(currentDateNotime)|| UserGivenDate.equals(currentDateNotime)) {
+                                if (date3.after(date1) && date3.before(date2)) {
+                                    remindTime.setText(dateDesc);
+                                    Log.d("string", "falls between start and end , go to screen 1 ");
+                                } else {
+                                    Log.d("string", "does not fall between start and end , go to screen 2 ");
+                                    Toast.makeText(context, "Please set correct reminder...",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }else
+                                Toast.makeText(context, "Please select correct date",
                                         Toast.LENGTH_SHORT).show();
-                            }
                         }
                     }).textConfirm("DONE") //text of confirm button
                             .textCancel("CANCEL") //text of cancel button

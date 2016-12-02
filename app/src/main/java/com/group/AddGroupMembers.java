@@ -261,6 +261,15 @@ public class AddGroupMembers extends Activity {
                     contactList.add(userBean);
                 }
             }
+            if(fromRounding && contactList.size()==0)
+            {
+                UserBean userBean=new UserBean();
+                ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(CallDispatcher.LoginUser);
+                userBean.setProfilePic(pbean.getPhoto());
+                userBean.setFirstname(pbean.getFirstname() + " " + pbean.getLastname());
+                userBean.setBuddyName(CallDispatcher.LoginUser);
+                contactList.add(userBean);
+            }
             Collections.sort(contactList, new UserNameComparator());
             adapter = new BuddyAdapter(this, contactList);
             lv_addcontact.setAdapter(adapter);

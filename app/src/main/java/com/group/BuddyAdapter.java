@@ -107,6 +107,7 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 				holder.header_title = (TextView) convertView.findViewById(R.id.header_title);
 				holder.cancel_lay = (LinearLayout) convertView.findViewById(R.id.cancel_lay);
 				holder.memberRole = (TextView) convertView.findViewById(R.id.member_role);
+				holder.OwnerRole = (TextView) convertView.findViewById(R.id.rights);
 
 				convertView.setTag(holder);
 			}else
@@ -134,10 +135,9 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 				if(pbean!=null)
 					holder.occupation.setText(pbean.getSpeciality());
 
-//				if (userBean.isOwner())
-//					holder.occupation.setText("Owner");
-//				else
-//					holder.occupation.setText("Prof.Designation");
+				if (userBean.getBuddyName().equalsIgnoreCase(CallDispatcher.LoginUser))
+                    holder.OwnerRole.setVisibility(View.VISIBLE);
+//					holder.OwnerRole.setText("Owner");
 				if(addGroupMembers!=null && addGroupMembers.groupid!=null && DBAccess.getdbHeler().getGroupAndMembers(
 						"select * from groupdetails where groupid=" + addGroupMembers.groupid)!=null) {
 					GroupBean gmembersbean = DBAccess.getdbHeler().getGroupAndMembers(
@@ -327,6 +327,7 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 		TextView header_title;
 		LinearLayout cancel_lay;
 		TextView memberRole;
+		TextView OwnerRole;
 	}
 	private  GroupFilter filter;
 	@Override
