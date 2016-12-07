@@ -108,26 +108,28 @@ public class RoundingTaskAdapter extends ArrayAdapter<TaskDetailsBean> {
                 }
 
                 if (tBean.getDuedate() != null) {
-                    String[] split = tBean.getCrtDuetime().split(" ");
-                    int Duemin = Integer.parseInt(split[1]);
-                    int DueHour=Integer.parseInt(split[0]);
-                    Log.i("ppp", "adapter getDuedate" + tBean.getDuedate());
-
-                    if (DueHour <=0 && Duemin <=0) {
-                        DateFormat inputFormat = new SimpleDateFormat("MM-dd-yyyy");
-                        DateFormat outputFormat = new SimpleDateFormat("MMM dd");
-                        Date date = inputFormat.parse(tBean.getDuedate());
-                        String outputDateStr = outputFormat.format(date);
-                        Log.i("ppp", "duee date and time" + outputDateStr+""+tBean.getDuetime());
-                        Log.i("ppp", "_________remaining time_________" +split[0]+"hours "+split[1]+"min");
-                        holder.pending_hours.setText(outputDateStr+" "+tBean.getDuetime());
-                    } else if(DueHour!=0 && Duemin!=0)
-                        holder.pending_hours.setText(DueHour + " hours "+Duemin+" min");
-                    else if(DueHour==0 && Duemin!=0)
-                        holder.pending_hours.setText(Duemin + " min ");
-                    else if(DueHour!=0 && Duemin==0)
-                        holder.pending_hours.setText(DueHour+" hours");
-
+                    Log.i("calender", "task time" + tBean.getCrtDuetime());
+                    if(tBean.getCrtDuetime()!=null) {
+                        String[] split = tBean.getCrtDuetime().split(" ");
+                        int Duemin = Integer.parseInt(split[1]);
+                        int DueHour = Integer.parseInt(split[0]);
+                        Log.i("ppp", "adapter getDuedate" + tBean.getDuedate());
+                        if (DueHour <= 0 && Duemin <= 0) {
+                            DateFormat inputFormat = new SimpleDateFormat("MM-dd-yyyy");
+                            DateFormat outputFormat = new SimpleDateFormat("MMM dd");
+                            Date date = inputFormat.parse(tBean.getDuedate());
+                            String outputDateStr = outputFormat.format(date);
+                            Log.i("ppp", "duee date and time" + outputDateStr + "" + tBean.getDuetime());
+                            Log.i("ppp", "_________remaining time_________" + split[0] + "hours " + split[1] + "min");
+                            holder.pending_hours.setText(outputDateStr + " " + tBean.getDuetime());
+                        } else if (DueHour != 0 && Duemin != 0)
+                            holder.pending_hours.setText(DueHour + " hours " + Duemin + " min");
+                        else if (DueHour == 0 && Duemin != 0)
+                            holder.pending_hours.setText(Duemin + " min ");
+                        else if (DueHour != 0 && Duemin == 0)
+                            holder.pending_hours.setText(DueHour + " hours");
+                    }else
+                        holder.pending_hours.setText(tBean.getDuedate());
                 }
                 if (tBean.getHeader() != null) {
                     holder.headertext.setText(tBean.getHeader());
@@ -139,7 +141,6 @@ public class RoundingTaskAdapter extends ArrayAdapter<TaskDetailsBean> {
                     holder.chbox1.setEnabled(false);
                 } else {
                     Log.i("calender", "task status" + tBean.getPatientname()+"-=> "+tBean.getTaskstatus());
-
                     holder.chbox1.setChecked(false);
                 }
                 holder.chbox1

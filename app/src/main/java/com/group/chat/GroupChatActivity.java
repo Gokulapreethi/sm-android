@@ -638,8 +638,14 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                             delete.setBackgroundColor(context.getResources().getColor(R.color.black));
                             ownership.setEnabled(false);
                             ownership.setBackgroundColor(context.getResources().getColor(R.color.black));
-                            edit.setEnabled(false);
-                            edit.setBackgroundColor(context.getResources().getColor(R.color.black));
+                            if(!(memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1"))) {
+                                edit.setEnabled(false);
+                                edit.setBackgroundColor(context.getResources().getColor(R.color.black));
+                            }
+                            if(!(memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1"))) {
+                                role.setEnabled(false);
+                                role.setBackgroundColor(context.getResources().getColor(R.color.black));
+                            }
                         }
                         if(!(groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
                                 (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("1"))||
@@ -653,11 +659,11 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                             newPatient.setEnabled(false);
                             newPatient.setBackgroundColor(context.getResources().getColor(R.color.black));
                         }
-                        if(!groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
-                                (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("0")) ){
-                            role.setEnabled(false);
-                            role.setBackgroundColor(context.getResources().getColor(R.color.black));
-                        }
+//                        if(!(groupBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) ||
+//                                (memberbean.getAdmin()!=null && memberbean.getAdmin().equalsIgnoreCase("0"))) ){
+//                            role.setEnabled(false);
+//                            role.setBackgroundColor(context.getResources().getColor(R.color.black));
+//                        }
                         edit.setOnClickListener(new OnClickListener() {
                             @Override
                             public void onClick(View view) {

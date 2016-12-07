@@ -227,9 +227,11 @@ public class TaskCreationActivity extends Activity {
                     }
                     taskbean.setAssignedMembers(assignedMembers);
                     taskbean.setTaskstatus("0");
-
+                    if(remainderTag==0 && isEdit)
+                         Toast.makeText(context, "Please set reminder...", Toast.LENGTH_SHORT).show();
+                    else{
                     WebServiceReferences.webServiceClient.SetTaskRecord(taskbean, context);
-                    showprogress();
+                    showprogress();}
                 }
                 else if(ed_taskDesc.getText().toString().trim().length() == 0) {
                     Toast.makeText(context,
@@ -321,6 +323,7 @@ public class TaskCreationActivity extends Activity {
                         }
                     }else{
                         btn_touch.setChecked(false);
+                        remainderTag = 0;
                         Toast.makeText(context, "Please Select the Due date and time to set reminder", Toast.LENGTH_SHORT).show();
                     }
 

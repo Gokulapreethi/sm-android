@@ -315,8 +315,9 @@ public class PatientRoundingFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         dialog.dismiss();
-                        showprogress();
-                        WebServiceReferences.webServiceClient.dischargePatient(CallDispatcher.LoginUser, pBean.getGroupid(), patientid, patientRoundingFragment);
+                        showAlertForDeletepatient();
+//                        showprogress();
+//                        WebServiceReferences.webServiceClient.dischargePatient(CallDispatcher.LoginUser, pBean.getGroupid(), patientid, patientRoundingFragment);
                     }
                 });
                 deletePatient.setOnClickListener(new View.OnClickListener() {
@@ -436,6 +437,71 @@ public class PatientRoundingFragment extends Fragment {
         return _rootView;
     }
 
+    private void showAlertForDeletepatient()
+    {
+        try {
+            if (SingleInstance.mainContext.isNetworkConnectionAvailable()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(
+                        getActivity());
+                builder.setTitle("Warning !");
+                builder.setMessage(
+                        "Are you sure want to delete this patient?")
+                        .setCancelable(false)
+                        .setPositiveButton(SingleInstance.mainContext.getResources().getString(R.string.yes)
+                                ,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int id) {
+                                        if (!WebServiceReferences.running) {
+                                            calldisp.startWebService(
+                                                    getResources()
+                                                            .getString(
+                                                                    R.string.service_url),
+                                                    "80");
+                                        }
+                                        showprogress();
+                                        WebServiceReferences.webServiceClient.dischargePatient(CallDispatcher.LoginUser, pBean.getGroupid(), patientid, patientRoundingFragment);
+                                    }
+                                })
+                        .setNegativeButton("No",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+                AlertDialog alert1 = builder.create();
+                alert1.show();
+            } else {
+                ShowError("Info",
+                        "Check Internet Connection Unable to Connect server",
+                        mainContext);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    public void ShowError(String Title, String Message, Context con) {
+        try {
+            AlertDialog confirmation = new AlertDialog.Builder(con).create();
+            confirmation.setTitle(Title);
+            confirmation.setMessage(Message);
+            confirmation.setCancelable(true);
+            confirmation.setButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // TODO Auto-generated method stub
+
+                }
+            });
+
+            confirmation.show();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
     private void MembersProcess() {
         final LinearLayout content = (LinearLayout) _rootView.findViewById(R.id.content);
@@ -1625,6 +1691,7 @@ public class PatientRoundingFragment extends Fragment {
         team.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                send_lay.setVisibility(View.GONE);
                 if (gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser)
                         || (roleAccessBean.getCommentsview() != null &&
                         roleAccessBean.getCommentsview().equalsIgnoreCase("1"))) {
@@ -1633,14 +1700,16 @@ public class PatientRoundingFragment extends Fragment {
                     team.setTextColor(getResources().getColor(R.color.white));
                     all.setTextColor(getResources().getColor(R.color.snazlgray));
                     CommentsSort();
-                } else
+                } else {
                     showToast("You don't have access to view these comments");
-                send_lay.setVisibility(View.GONE);
+                    send_lay.setVisibility(View.VISIBLE);
+                }
             }
         });
         all.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                send_lay.setVisibility(View.GONE);
                 if (gBean.getOwnerName().equalsIgnoreCase(CallDispatcher.LoginUser) || (roleAccessBean.getCommentsview() != null &&
                         roleAccessBean.getCommentsview().equalsIgnoreCase("1"))) {
                     commentType = "all";
@@ -1648,9 +1717,10 @@ public class PatientRoundingFragment extends Fragment {
                     team.setTextColor(getResources().getColor(R.color.snazlgray));
                     all.setTextColor(getResources().getColor(R.color.white));
                     CommentsSort();
-                } else
+                } else {
                     showToast("You don't have access to view these comments");
-                send_lay.setVisibility(View.GONE);
+                    send_lay.setVisibility(View.VISIBLE);
+                }
             }
         });
         send.setOnClickListener(new View.OnClickListener() {

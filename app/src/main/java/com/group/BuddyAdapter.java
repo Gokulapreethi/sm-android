@@ -130,7 +130,7 @@ public class BuddyAdapter extends ArrayAdapter<UserBean> {
 				if(userBean.isFromchat())
 					holder.statusIcon.setVisibility(View.GONE);
 				else
-					holder.statusIcon.setVisibility(View.VISIBLE);
+					holder.statusIcon.setVisibility(View.GONE);
 				ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(userBean.getBuddyName());
 				if(pbean!=null)
 					holder.occupation.setText(pbean.getSpeciality());

@@ -872,7 +872,7 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                 if (SingleInstance.mainContext.isNetworkConnectionAvailable()) {
 
                     if (groupName.length() > 0 && groupName.length() <= 20
-                            && isGroupNameValidate(groupName) && (membersList.size()>0 || membersAcceptedList.size()>0)) {
+                            && isGroupNameValidate(groupName) && (membersList.size()>0 && membersAcceptedList.size()>0)) {
                         hideKeyboard();
                         // callDisp.showprogress(CallDispatcher.pdialog, context);
                         groupBean=new GroupBean();
@@ -893,9 +893,10 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                             showToast("Special Characters -/. Are only allowed");
                         } else if (groupName.length() > 20) {
                             showToast("Groupname must be 1-15 characters");
-                        } else if(membersAcceptedList.size()==0){
+                        } else if(membersAcceptedList.size()==0 ||membersList.size()==0 ){
                             showToast("Please select group members");
-                        } else {
+                        }
+                        else {
                             Toast.makeText(getApplicationContext(),
                                     "Please Enter The Group Name", 1).show();
                         }
@@ -1211,9 +1212,13 @@ public class RoundingGroupActivity extends Activity implements View.OnClickListe
                             imageLoader.DisplayImage(pic_Path, holder.buddyicon, R.drawable.img_user);
                         }
                     }
+                    if(bib.getBuddyName().equalsIgnoreCase(CallDispatcher.LoginUser))
+                        holder.delete_mark.setVisibility(View.GONE);
+                    else
+                    holder.delete_mark.setVisibility(View.VISIBLE);
+
                     holder.statusIcon.setVisibility(View.GONE);
                     holder.header_title.setVisibility(View.GONE);
-                    holder.delete_mark.setVisibility(View.VISIBLE);
                     if(bib.getStatus()!=null) {
                         Log.i("AAAA","Buddy adapter status "+bib.getStatus());
                         if (bib.getStatus().equalsIgnoreCase("offline") || bib.getStatus().equalsIgnoreCase("stealth")) {
