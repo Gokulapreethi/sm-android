@@ -2069,6 +2069,7 @@ public class XmlComposer {
 			builder.append(bean.getFtpPassword());
 			builder.append("\"/>");
 			builder.append("</com>");
+			Log.i("chatsend","composeGroupChatXML---->"+builder.toString());
 			return builder.toString();
 		} catch (Exception e) {
 			if (AppReference.isWriteInFile)
@@ -2131,6 +2132,7 @@ public class XmlComposer {
             builder.append(bean.getSenttime());
             builder.append("\"/>");
             builder.append("</com>");
+			Log.i("chatsend","composeGroupChat101XML---->"+builder.toString());
             return builder.toString();
         } catch (Exception e) {
             e.printStackTrace();

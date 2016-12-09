@@ -1200,6 +1200,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 							groupChatBean.getMimetype().equalsIgnoreCase("vc"))) {
 
 						if (groupChatBean.getComment() != null && groupChatBean.getComment().equalsIgnoreCase("callattended")) {
+							Log.i("chatsend","send ACK for Call server messages");
 							Log.i("READACK","send ACK for Call server messages");
 							UdpMessageBean bean = new UdpMessageBean();
 							bean.setType("101");
@@ -6959,9 +6960,9 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
                 }
 				ProfileBean bean=SingleInstance.myAccountBean;
                 TextView userName = (TextView) findViewById(R.id.userName);
-				if(bean.getFirstname()!=null && bean.getLastname()!=null)
+				if(bean!=null && bean.getFirstname()!=null && bean.getLastname()!=null)
                 	userName.setText(bean.getFirstname()+" "+bean.getLastname());
-				else if(bean.getNickname()!=null)
+				else if(bean!=null && bean.getNickname()!=null)
 					userName.setText(bean.getNickname());
 				else
 					userName.setText(CallDispatcher.LoginUser);
@@ -9348,7 +9349,7 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 								signalingBean.setCallType("VC");
 							}
 							signalingBean.setSessionid(groupChatBean.getParentId());
-							signalingBean.setEndTime(groupChatBean.getSenttime());
+							signalingBean.setEndTime(groupChatBean.getDateandtime());
 							signalingBean.setStartTime(groupChatBean.getSenttime());
 							if (groupChatBean.getPrivateMembers().contains(",")) {
 								String names[] = groupChatBean.getPrivateMembers().split(",");
@@ -9379,11 +9380,12 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 							}
 							signalingBean.setCallDuration(groupChatBean.getMessage());
 							signalingBean.setCallstatus(groupChatBean.getComment());
+							signalingBean.setDateandtime(groupChatBean.getDateandtime());
 							if (!groupChatBean.getSessionid().contains("@")) {
 								signalingBean.setChatid(groupChatBean.getSessionid());
 							}
 							DBAccess.getdbHeler().insertOrUpdateCallHistory(signalingBean);
-							DBAccess.getdbHeler().insertGroupCallChat(signalingBean);
+							DBAccess.getdbHeler().insertGroupCallChat(signalingBean,true);
 
 
 						} else {
@@ -9790,6 +9792,11 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 					if(AppReference.mainContext!=null){
 						if(!DBAccess.getdbHeler().ChatRecentCallSessionidAvailableOrNot(signalingBean.getSessionid())) {
 							Log.i("recententry","CallEntryToServer SessionIdNotAvailable");
+							Log.i("recententry","From user---->"+signalingBean.getHost());
+							Log.i("recententry","To user---->"+gcBean.getGroupId());
+							Log.i("recententry","SessionId--->"+signalingBean.getSessionid());
+
+
 							GroupChatBean groupChatBean = gcBean.clone();
 							groupChatBean.setFrom(signalingBean.getHost());
 							groupChatBean.setTo(groupChatBean.getGroupId());
@@ -9801,6 +9808,8 @@ public class AppMainActivity extends FragmentActivity implements PjsuaInterface,
 							}else {
 								groupChatBean.setMessage("Call missed");
 							}
+							Log.i("recententry","Messgae--->"+groupChatBean.getMessage());
+							Log.i("recententry","Messgae--->"+gcBean.getSessionid());
 							AppReference.mainContext.ChatRecentEntry(groupChatBean,false);
 						}
 					}

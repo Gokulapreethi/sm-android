@@ -11419,7 +11419,7 @@ public class DBAccess extends SQLiteOpenHelper {
 		}
 	}
 
-	public int insertGroupCallChat(SignalingBean groupChatBean) {
+	public int insertGroupCallChat(SignalingBean groupChatBean,boolean SyncChatTime) {
 		Log.i("callentry","came to insertGroupCallChat :"+groupChatBean.getParticipants());
 		int row = 0;
 		try {
@@ -11465,7 +11465,11 @@ public class DBAccess extends SQLiteOpenHelper {
 			cv.put("ftppassword", groupChatBean.getParticipant_name());
 			cv.put("remindertime", groupChatBean.getCallDuration());
 			cv.put("subcategory", groupChatBean.getCallstatus());
-			cv.put("dateandtime", groupChatBean.getEndTime());
+			if(SyncChatTime){
+				cv.put("dateandtime", groupChatBean.getDateandtime());
+			}else {
+				cv.put("dateandtime", groupChatBean.getEndTime());
+			}
 
 			if(groupChatBean.getCallstatus() != null && groupChatBean.getCallstatus().equalsIgnoreCase("missedcall")) {
 				cv.put("unview","join");

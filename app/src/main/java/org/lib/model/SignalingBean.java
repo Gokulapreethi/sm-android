@@ -17,6 +17,7 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class SignalingBean implements Serializable, Cloneable {
 
+	private String dateandtime=null;
 	private String sessionid = null;
 	private String signalid = null;
 	private String from = null;
@@ -640,4 +641,11 @@ public class SignalingBean implements Serializable, Cloneable {
 		this.participant_name = participant_name;
 	}
 
+	public String getDateandtime() {
+		return dateandtime;
+	}
+
+	public void setDateandtime(String dateandtime) {
+		this.dateandtime = dateandtime;
+	}
 }

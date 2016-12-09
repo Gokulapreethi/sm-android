@@ -2560,7 +2560,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 											hist_bean.getEndTime()));
 //							hist_bean.setCallstatus("callattended");
 							DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
-							int row=DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+							int row=DBAccess.getdbHeler().insertGroupCallChat(hist_bean,false);
 							if(AppReference.mainContext != null && row==1) {
 								AppReference.mainContext.CallEntryToServer(hist_bean);
 							}
@@ -3275,7 +3275,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 										hist_bean.getEndTime()));
 						hist_bean.setCallstatus("callattended");
 						DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
-						int row=DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+						int row=DBAccess.getdbHeler().insertGroupCallChat(hist_bean,false);
 						if(AppReference.mainContext != null && row==1) {
 							AppReference.mainContext.CallEntryToServer(hist_bean);
 						}
@@ -3524,7 +3524,7 @@ public class CallDispatcher implements WebServiceCallback, CallSessionListener,
 										hist_bean.getEndTime()));
 						hist_bean.setCallstatus("callattended");
 						DBAccess.getdbHeler().insertOrUpdateCallHistory(hist_bean);
-						int row=DBAccess.getdbHeler().insertGroupCallChat(hist_bean);
+						int row=DBAccess.getdbHeler().insertGroupCallChat(hist_bean,false);
 						if(AppReference.mainContext != null && row==1) {
 							AppReference.mainContext.CallEntryToServer(hist_bean);
 						}

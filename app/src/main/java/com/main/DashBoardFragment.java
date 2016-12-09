@@ -1372,4 +1372,23 @@ public class DashBoardFragment extends Fragment {
             pDialog = null;
         }
     }
+
+    @Override
+    public void onResume() {
+
+        super.onResume();
+        if(tempnotifylist!=null && tempnotifylist.size()==0){
+            if(rl_notify!=null){
+                rl_notify.setVisibility(View.GONE);
+            }
+            LayoutInflater layoutInflater = (LayoutInflater) mainContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View v2 = layoutInflater.inflate(R.layout.notification, rl);
+            LinearLayout no_notify=(LinearLayout)v2.findViewById(R.id.no_notify);
+            no_notify.setVisibility(View.VISIBLE);
+            if(plusBtn!=null)
+                plusBtn.setVisibility(View.GONE);
+            if(notifylistview!=null)
+                notifylistview.setVisibility(View.GONE);
+        }
+    }
 }
