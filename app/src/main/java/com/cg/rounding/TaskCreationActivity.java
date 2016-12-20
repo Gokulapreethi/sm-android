@@ -73,6 +73,7 @@ public class TaskCreationActivity extends Activity {
     TextView reminder;
     private String groupid,taskid,patientid;
     private int remainderTag=0;
+    private boolean isWrongDuedate=false;
     private  TextView ed_assignMember;
     private static ProgressDialog pDialog;
     String assignedMembers;
@@ -227,7 +228,7 @@ public class TaskCreationActivity extends Activity {
                     }
                     taskbean.setAssignedMembers(assignedMembers);
                     taskbean.setTaskstatus("0");
-                    if(remainderTag==0 && isEdit)
+                    if(remainderTag==0 && isEdit ||isWrongDuedate)
                          Toast.makeText(context, "Please set reminder...", Toast.LENGTH_SHORT).show();
                     else{
                     WebServiceReferences.webServiceClient.SetTaskRecord(taskbean, context);
@@ -358,7 +359,6 @@ public class TaskCreationActivity extends Activity {
                             Log.d("string", "Date......" + datewithNoTime);
                             Log.d("string", "user Date......" + ed_dueDate.getText().toString());
 
-
                             Date date1 = null;
                             Date date2 = null;
                             Date date3=null;
@@ -376,6 +376,7 @@ public class TaskCreationActivity extends Activity {
                                 e.printStackTrace();
                             }
                             if(UserGivenDate.after(currentDateNotime)|| UserGivenDate.equals(currentDateNotime)) {
+                                isWrongDuedate = false;
                                 if (date3.after(date1) && date3.before(date2)) {
                                     remindTime.setText(dateDesc);
                                     Log.d("string", "falls between start and end , go to screen 1 ");
@@ -384,9 +385,11 @@ public class TaskCreationActivity extends Activity {
                                     Toast.makeText(context, "Please set correct reminder...",
                                             Toast.LENGTH_SHORT).show();
                                 }
-                            }else
-                                Toast.makeText(context, "Please select correct date",
+                            }else {
+                                isWrongDuedate = true;
+                                Toast.makeText(context, "Please select due date",
                                         Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }).textConfirm("DONE") //text of confirm button
                             .textCancel("CANCEL") //text of cancel button

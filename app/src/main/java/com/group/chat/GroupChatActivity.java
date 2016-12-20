@@ -12355,9 +12355,18 @@ public class GroupChatActivity extends FragmentActivity implements OnClickListen
                         }
                     }
                     holder.header_title.setVisibility(View.GONE);
-                    holder.buddyName.setText(bib.getFirstname());
-                    if (bib.getOccupation() != null)
-                        holder.occupation.setText(bib.getOccupation());
+                    if (bib.getBuddyName().equalsIgnoreCase(CallDispatcher.LoginUser)) {
+                        ProfileBean ubean = SingleInstance.myAccountBean;
+                        holder.buddyName.setText(ubean.getFirstname() + " " + ubean.getLastname());
+                    }else
+                        holder.buddyName.setText(bib.getFirstname());
+                    Log.i("BBB","BuddyName======"+bib.getFirstname());
+                    Log.i("BBB","BuddyName owner======"+bib.getBuddyName());
+//                    if (bib.getOccupation() != null)
+//                        holder.occupation.setText(bib.getOccupation());
+                    ProfileBean pbean = DBAccess.getdbHeler().getProfileDetails(bib.getBuddyName());
+                    if(pbean!=null)
+                        holder.occupation.setText(pbean.getProfession());
                     if (bib.getRole() != null) {
                         holder.role.setText(bib.getRole());
                     }

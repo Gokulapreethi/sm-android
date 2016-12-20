@@ -56,10 +56,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -544,7 +546,9 @@ public class RoundNewPatientActivity extends Activity {
                     } else
                         pBean.setSex("");
                     addedMembers = "";
+
                     for (String name : assignedMembers) {
+                        if(!addedMembers.contains(name))
                         addedMembers = addedMembers + name + ",";
                     }
                     pBean.setGroupid(groupid);
