@@ -67,7 +67,7 @@ import java.util.Vector;
 public class TaskCreationActivity extends Activity {
 
     AutoCompleteTextView patient;
-    TextView ed_dueDate;
+    TextView ed_dueDate,ed_dueTime;
     private Context context;
     private SimpleDateFormat dateFormatter;
     TextView reminder;
@@ -109,7 +109,7 @@ public class TaskCreationActivity extends Activity {
         final TextView dueDate=(TextView)findViewById(R.id.dueDate);
         final TextView dueTime=(TextView)findViewById(R.id.dueTime);
         ed_dueDate=(TextView)findViewById(R.id.ed_dueDate);
-        final TextView ed_dueTime=(TextView)findViewById(R.id.ed_dueTime);
+         ed_dueTime=(TextView)findViewById(R.id.ed_dueTime);
         final TextView title=(TextView)findViewById(R.id.txtView01);
 
         final TextView patientName=(TextView)findViewById(R.id.patientName);
@@ -228,7 +228,9 @@ public class TaskCreationActivity extends Activity {
                     }
                     taskbean.setAssignedMembers(assignedMembers);
                     taskbean.setTaskstatus("0");
-                    if(remainderTag==0 && isEdit ||isWrongDuedate)
+                    boolean isRemindOK=remindCheck(remindTime.getText().toString());
+                    Log.d("string", "Reminder Check......" + isRemindOK);
+                    if(remainderTag==0 && isEdit || !isRemindOK ||isWrongDuedate)
                          Toast.makeText(context, "Please set reminder...", Toast.LENGTH_SHORT).show();
                     else{
                     WebServiceReferences.webServiceClient.SetTaskRecord(taskbean, context);
@@ -333,14 +335,14 @@ public class TaskCreationActivity extends Activity {
             });
 
         final java.sql.Date todayDate = new java.sql.Date(System.currentTimeMillis());
-        Log.d("string", "todaydate" + Calendar.getInstance().getTime());
+        /*Log.d("string", "todaydate" + Calendar.getInstance().getTime());
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy h:mm aa");
         final SimpleDateFormat myFormat = new SimpleDateFormat("MM-dd-yyyy h:mm aa");
         final SimpleDateFormat forPrevDate = new SimpleDateFormat("MM-dd-yyyy");
         final SimpleDateFormat OnlyDate=new SimpleDateFormat(("MM-dd-yyyy"));
         final String datewithNoTime = OnlyDate.format(date);
-        final String DateAs_Now = dateFormat.format(date);
+        final String DateAs_Now = dateFormat.format(date);*/
 
 
         reminder.setOnClickListener(new View.OnClickListener() {
@@ -349,7 +351,17 @@ public class TaskCreationActivity extends Activity {
                 DatePickerPopWin pickerPopWin = new DatePickerPopWin.Builder(TaskCreationActivity.this,true, new DatePickerPopWin.OnDatePickedListener() {
                         @Override
                         public void onDatePickCompleted(int month, int day, int year, int hour, int minute, String am, String dateDesc) {
-                            Log.d("string", "selected date" + dateDesc);
+                            boolean isRemindOK=remindCheck(dateDesc);
+                            Log.d("string", "Reminder Check......" + isRemindOK);
+
+                            if(isRemindOK)
+                            {
+                                remindTime.setText(dateDesc);
+                            }else {
+                                Toast.makeText(context, "Please set correct reminder...",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                            /*Log.d("string", "selected date" + dateDesc);
                             Log.d("string", "Date Now......" + DateAs_Now);
                             Log.d("string", "Due Date and TIme......" +ed_dueDate.getText().toString()+" "+ed_dueTime.getText().toString());
                             String end_time=ed_dueDate.getText().toString()+" "+ed_dueTime.getText().toString();
@@ -389,7 +401,7 @@ public class TaskCreationActivity extends Activity {
                                 isWrongDuedate = true;
                                 Toast.makeText(context, "Please select due date",
                                         Toast.LENGTH_SHORT).show();
-                            }
+                            }*/
                         }
                     }).textConfirm("DONE") //text of confirm button
                             .textCancel("CANCEL") //text of cancel button
@@ -540,6 +552,47 @@ public class TaskCreationActivity extends Activity {
             System.out.println(parseFormat.format(date) + " = " + displayFormat.format(date));
         }
 
+    public boolean remindCheck(String dateDesc)
+    {
+        boolean isReminderOK=false;
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy h:mm aa");
+        final SimpleDateFormat myFormat = new SimpleDateFormat("MM-dd-yyyy h:mm aa");
+        final SimpleDateFormat forPrevDate = new SimpleDateFormat("MM-dd-yyyy");
+        final SimpleDateFormat OnlyDate=new SimpleDateFormat(("MM-dd-yyyy"));
+        final String datewithNoTime = OnlyDate.format(date);
+        final String DateAs_Now = dateFormat.format(date);
+        String end_time = ed_dueDate.getText().toString() + " " + ed_dueTime.getText().toString();
+        String start_time = DateAs_Now;
+        Date date1 = null;
+        Date date2 = null;
+        Date date3 = null;
+        Date currentDateNotime = null;
+
+        Date UserGivenDate = null;
+        try {
+            date1 = myFormat.parse(start_time);
+            date2 = myFormat.parse(end_time);
+            date3 = myFormat.parse(dateDesc);
+            currentDateNotime = forPrevDate.parse(datewithNoTime);
+            UserGivenDate = forPrevDate.parse(ed_dueDate.getText().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (UserGivenDate.after(currentDateNotime) || UserGivenDate.equals(currentDateNotime)) {
+            isWrongDuedate = false;
+            if (date3.after(date1) && date3.before(date2)) {
+                remindTime.setText(dateDesc);
+                isReminderOK=true;
+            } else {
+                isReminderOK=false;
+            }
+        } else {
+            isWrongDuedate = true;
+            isReminderOK=false;
+        }
+        return isReminderOK;
+    }
     public void notifytaskcreated(Object obj) {
         cancelDialog();
         Log.i("sss", "notifytaskcreated updated ");
